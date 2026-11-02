@@ -6,3 +6,6 @@ dapps/build/**/*.so
 dapps/build/**/*-keypair.json
 dapps/app/node_modules/
 dapps/app/dist/
+
+*deployer*.json
+.solcollege/
