@@ -27,10 +27,19 @@ def forks():
     out+=d['nodes']
     if not d['pageInfo']['hasNextPage']: return out
     c=d['pageInfo']['endCursor']
+def colosseum():
+  try:
+    st=json.loads(subprocess.check_output(['gh','api','repos/Blockchains/colosseum-forker/contents/state.json','-H','Accept: application/vnd.github.raw'],stderr=subprocess.DEVNULL))
+    return {v['fork'].split('/')[-1].lower() for v in st.values() if v.get('fork') and v.get('status') in ('created','exists')}
+  except Exception: return None
 def main():
   src,names,items=catalog(); fs=forks()
-  if names: sel=[r for r in fs if r['name'] in names and r.get('parent')]
-  else: sel=[r for r in fs if r.get('parent') and r.get('defaultBranchRef') and re.search(KW,json.dumps(r['parent']).lower()+r['name'].lower())]
+  # Colosseum forks: the forker's state.json when the token can read it; otherwise every Solana-looking fork.
+  # The catalog only refreshes nightly, so it is a union, never the only source (it was, and froze lessons at 356 repos).
+  col=colosseum()
+  solana=lambda r:re.search(KW,json.dumps(r['parent']).lower()+r['name'].lower())
+  sel=[r for r in fs if r.get('parent') and r.get('defaultBranchRef') and ((names and r['name'] in names) or (r['name'].lower() in col if col else solana(r)))]
+  print('forks:',len(fs),'colosseum list:',len(col) if col else 'n/a (keyword fallback)','selected:',len(sel))
   projects=[]
   for r in sel:
     p=r['parent']; lic=(p['licenseInfo'] or {}).get('spdxId')
@@ -44,7 +53,7 @@ def main():
     if os.path.exists(d):
       subprocess.run(['timeout','120','sh','-c',f'git -C {d} fetch -q --depth 1 origin {pr["branch"]} && git -C {d} reset -q --hard FETCH_HEAD'],stderr=subprocess.DEVNULL)
     if not os.path.exists(d):
-      subprocess.run(['timeout','180','git','clone','-q','--depth','1','--filter=blob:limit=400k',pr['fork']+'.git',d],stderr=subprocess.DEVNULL)
+      subprocess.run(['timeout','180','git','clone','-q','--depth','1','--filter=blob:limit=150k',pr['fork']+'.git',d],stderr=subprocess.DEVNULL)
     if os.path.exists(d):
       pr['commit']=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() or pr['commit']
   with cf.ThreadPoolExecutor(6) as ex: list(ex.map(clone,projects))
