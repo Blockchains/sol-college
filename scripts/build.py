@@ -247,10 +247,10 @@ MW=json.load(open('dapps/mainnet-wallets.json')) if os.path.exists('dapps/mainne
 MWD={d['slug']:d for d in MW['dapps']}
 if MW['dapps']:
   os.makedirs(f'{OUT}/dapps',exist_ok=True); shutil.copy('dapps/mainnet-wallets.json',f'{OUT}/dapps/mainnet-wallets.json')
-MAINNET_JS='''<script>(function(){const RPC='https://api.mainnet-beta.solana.com';
+MAINNET_JS='''<script>(function(){const RPCS=['https://api.mainnet-beta.solana.com','https://solana-rpc.publicnode.com'];
 document.querySelectorAll('.golive:not([data-done])').forEach(async el=>{el.dataset.done=1;const a=el.dataset.addr,need=+el.dataset.need,st0=el.dataset.status;
 const q=s=>el.querySelector(s);q('.cp').onclick=()=>navigator.clipboard.writeText(a).then(()=>{q('.cp').textContent='Copied'});
-try{const r=await fetch(RPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getBalance',params:[a]})});const b=(await r.json()).result.value/1e9,p=Math.min(100,b/need*100);q('progress').value=p;q('.amt').textContent=b.toFixed(3)+' / '+need+' SOL ('+p.toFixed(0)+'%)';
+try{let b=null;for(const u of RPCS){try{const r=await fetch(u,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getBalance',params:[a]})});b=(await r.json()).result.value/1e9;break}catch(e){}}if(b===null)throw 0;const p=Math.min(100,b/need*100);q('progress').value=p;q('.amt').textContent=b.toFixed(3)+' / '+need+' SOL ('+p.toFixed(0)+'%)';
 let st=st0;if(st==='Devnet only'&&b>0)st=b>=need?'Funded, deploying soon':'Funding';q('.st').textContent=st}catch(e){q('.amt').textContent='Could not read the mainnet balance right now.'}});})();</script>'''
 def mainnet_panel(sl):
   d=MWD.get(sl)
