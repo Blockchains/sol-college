@@ -1,0 +1,38 @@
+name: Verify fork lessons
+# Rebuilds, tests and exercises each fork lesson on a local solana-test-validator (no mainnet, no real funds, no paid APIs).
+on:
+  workflow_dispatch:
+    inputs:
+      projects: {description: "Space-separated work-dir names (blank = all lesson forks)", required: false, default: ""}
+  schedule: [{cron: "23 4 * * 1"}]   # weekly, Monday 04:23 UTC
+permissions: {contents: read}
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: {node-version: "24"}
+      - uses: actions/setup-go@v5
+        with: {go-version: "stable"}
+      - name: Toolchains (Rust, Solana CLI, avm + Anchor versions, pnpm)
+        run: |
+          rustup toolchain install stable 1.79.0 nightly-2025-04-01 --profile minimal
+          sh -c "$(curl -sSfL https://release.anza.xyz/v2.3.13/install)"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> $GITHUB_PATH
+          cargo install --git https://github.com/coral-xyz/anchor avm --locked
+          for v in 0.29.0 0.30.1 0.31.1 0.32.1; do ~/.cargo/bin/avm install $v; done
+          npm i -g pnpm@10
+          mkdir -p ~/tbin && printf '#!/bin/sh\nexec npx -y yarn@1 "$@"\n' > ~/tbin/yarn && chmod +x ~/tbin/yarn
+          solana-keygen new --no-bip39-passphrase -s -o ~/.config/solana/id.json
+      - name: Embedded Postgres for flows that need a database
+        run: mkdir -p ~/pg && cd ~/pg && npm init -y >/dev/null && npm i @embedded-postgres/linux-x64@17.5.0-beta.15 && chmod +x node_modules/@embedded-postgres/linux-x64/native/bin/*
+      - name: Run
+        run: |
+          P="${{ github.event.inputs.projects }}"
+          [ -n "$P" ] || P=$(python3 -c "import json;s=json.load(open('tests/specs.json'));import glob,os;print(' '.join(json.load(open(f))['name'] for f in sorted(glob.glob('tests/results/*.json')) if not s.get(json.load(open(f))['name'],{}).get('unpublish')))")
+          python3 tests/run_fork.py $P
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with: {name: fork-verification, path: "tests/results\ntests/logs"}

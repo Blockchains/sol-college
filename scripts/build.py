@@ -138,6 +138,9 @@ for pr in P:
   pr['kx']=key_excerpts(pr) if (pr['permissive'] and n>=5) else []
   if pr['kx']: KEEP.append(pr)
   else: EXCL['too little code' if n<5 else ('licence not permissive' if not pr['permissive'] else 'no teachable Solana code found')]+=1
+import tested
+UNP=tested.unpublished(); REMOVED=[(p,UNP[p['name']]) for p in KEEP if p['name'] in UNP]
+KEEP=[p for p in KEEP if p['name'] not in UNP]
 TOTAL=len(P); P=KEEP
 LES=[]
 for L in LESSONS:
@@ -188,7 +191,19 @@ f'''<section class=hero><p class=eyebrow>Learn by example</p><h1>Learn Solana fr
 <section class=note><h2>Also on Sol.College</h2><p>Our original programme on solar-powered AI edge nodes is still here: <a href="/edge-ai/">overview</a>, the <a href="/calculator">energy-to-compute calculator</a>, <a href="/learn">operator courses</a>, <a href="/resources">resources</a>, the <a href="/for-teams">pilot for teams</a> and <a href="/contact">contact</a>.</p></section>''',
 ld=[{"@type":"WebSite","name":"Sol.College","url":SITE+"/","description":"Learn to build on Solana from real code."},{"@type":"EducationalOrganization","name":"Sol.College","url":SITE}])
 # ---------- explore
-json.dump([dict(n=p['name'],s=p['slug'],d=p['description'][:200],st=p['stars'],l=p['language'] or 'Other',c=p['categories'],f=p['frameworks'],u=p['pushed'][:10],lic=p['license'] or 'none',fk=p['fork'],o=p['original']) for p in P],open(OUT+'/projects.json','w'))
+lessons_by_proj=collections.defaultdict(list)
+for L,ex in LES:
+  for x in ex: lessons_by_proj[x['project']['name']].append(L)
+json.dump([dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code']) for pr in P for x in pr['kx']]+[dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code'],lesson=L['slug']) for L,ex in LES for x in ex],open(OUT+'/excerpts.json','w'))
+TOPICS=['escrow','vault','oracle','swap','stake','staking','nft','mint','pda','cpi','token-2022','auction','dao','governance','prediction','payment','solana pay','blink','airdrop','lottery','amm','lending','bridge','dispute','game','agent','metadata','compressed','merkle','multisig','subscription','marketplace','reward','vesting','faucet']
+def kw(p):
+  t=set()
+  for L in lessons_by_proj.get(p['name'],[]): t.update([L['slug'],L['title'].lower()])
+  blob=' '.join(x['code'].lower()+' '+x['file'].lower() for x in p['kx'])+' '+(p['description'] or '').lower()
+  src=''.join(read(q)[:20000].lower() for _,q in list(files(p['name'],('.rs','.ts','.tsx','.js')))[:200]) if p['cloned'] else ''
+  t.update(w for w in TOPICS if w in blob or w in src)
+  return ' '.join(sorted(t))
+json.dump([dict(k=kw(p),n=p['name'],s=p['slug'],d=p['description'][:200],st=p['stars'],l=p['language'] or 'Other',c=p['categories'],f=p['frameworks'],u=p['pushed'][:10],lic=p['license'] or 'none',fk=p['fork'],o=p['original']) for p in P],open(OUT+'/projects.json','w'))
 opt=lambda xs:''.join(f'<option>{E(x)}</option>' for x in xs)
 page('/explore/','Explore the Solana SuperStack: projects by category and framework',f'Search and filter {len(P)} Solana projects by category, framework (Anchor, native, Pinocchio), language, stars and activity, with links to forks and originals.',
 f'''<h1>Explore the SuperStack</h1><p class=lead>{len(P)} projects from {src_note}. Filter by category, framework, language, licence and activity.</p>
@@ -199,15 +214,12 @@ const P=[],$=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,
 const PERM=/^(MIT|Apache-2.0|BSD-2-Clause|BSD-3-Clause|ISC|CC0-1.0|Unlicense|0BSD|MIT-0)$/;
 fetch('/projects.json').then(r=>r.json()).then(d=>{{P.push(...d);const u=new URLSearchParams(location.search);for(const[k,id]of[['q','q'],['category','fc'],['framework','ff'],['language','fl'],['sort','so']])if(u.get(k))$(id).value=u.get(k);draw()}});
 function draw(){{const q=$('q').value.toLowerCase(),c=$('fc').value,f=$('ff').value,l=$('fl').value,s=$('so').value,pm=$('fp').checked;
-let r=P.filter(p=>(!q||(p.n+' '+p.d+' '+p.f.join(' ')).toLowerCase().includes(q))&&(!c||p.c.includes(c))&&(!f||p.f.includes(f))&&(!l||p.l===l)&&(!pm||PERM.test(p.lic)));
+let r=P.filter(p=>(!q||(p.n+' '+p.d+' '+p.f.join(' ')+' '+(p.k||'')).toLowerCase().includes(q))&&(!c||p.c.includes(c))&&(!f||p.f.includes(f))&&(!l||p.l===l)&&(!pm||PERM.test(p.lic)));
 r.sort((a,b)=>s==='n'?a.n.localeCompare(b.n):s==='u'?b.u.localeCompare(a.u):b.st-a.st);
 $('count').textContent=r.length+' of '+P.length+' projects';
 $('res').innerHTML=r.map(p=>`<article class=card><h3><a href="/explore/${{p.s}}/">${{esc(p.n)}}</a></h3><p>${{esc(p.d.slice(0,160))}}</p><p class=meta>★ ${{p.st.toLocaleString()}} · ${{esc(p.l)}} · active ${{p.u}} · ${{esc(p.lic)}}</p><div>${{p.c.map(x=>`<span class=chip>${{esc(x)}}</span>`).join('')}}${{p.f.slice(0,4).map(x=>`<span class="chip fw">${{esc(x)}}</span>`).join('')}}</div><p class=meta><a href="${{p.fk}}">fork</a> · <a href="${{p.o}}">original</a></p></article>`).join('')}}
 for(const id of['q','fc','ff','fl','so','fp'])$(id).addEventListener('input',draw);
 </script>''',ld=[{"@type":"CollectionPage","name":"Solana SuperStack explorer","url":SITE+"/explore/"}],crumbs=[('/','Home'),('/explore/','Explore')])
-lessons_by_proj=collections.defaultdict(list)
-for L,ex in LES:
-  for x in ex: lessons_by_proj[x['project']['name']].append(L)
 lesson_for_cat={'DeFi':['pdas','cpis','spl-tokens','oracles','escrow'],'Payments':['solana-pay','spl-tokens','blinks-actions','transactions'],'NFTs & Digital Assets':['nfts','compressed-nfts','token-2022'],'AI & Agents':['ai-agents','transactions','blinks-actions'],'Gaming':['pdas','compressed-nfts','transactions'],'DePIN':['oracles','compressed-nfts','spl-tokens'],'Consumer & Social':['blinks-actions','compressed-nfts','solana-pay'],'Wallets & Identity':['transactions','pdas'],'Governance & DAOs':['pdas','cpis','account-constraints'],'Infrastructure & Tooling':['transactions','account-constraints'],'Other':['pdas','cpis']}
 have={L['slug']:L for L,_ in LES}
 ideas=[]
@@ -226,6 +238,7 @@ for pr in P:
     body+=('<h2>What it does</h2><p>From the project README:</p><blockquote>'+E(summ)+'</blockquote>' if summ else '')+facts
     body+=f"<h2>Architecture</h2><p>{n} source files. By extension: {', '.join(f'{E(e)} ×{c}' for e,c in ext)}.</p><table class=tbl><thead><tr><th>Top-level directory</th><th>Source files</th></tr></thead><tbody>"+''.join(f'<tr><td><a href="{pr["fork"]}/tree/{pr["commit"]}/{"" if d=="(root)" else E(d)}"><code>{E(d)}</code></a></td><td>{c}</td></tr>' for d,c in top)+"</tbody></table>"
     if progs: body+="<p>On-chain programs: "+', '.join(f'<a href="{pr["fork"]}/tree/{pr["commit"]}/{E(p)}"><code>{E(p)}</code></a>' for p in progs)+"</p>"
+    if kx: body+=tested.guide(pr,'work/'+pr['name'])
     if kx: body+="<h2>Key code, explained</h2><p>Excerpts chosen automatically where the code uses the most Solana concepts, pinned to the fork's commit.</p>"+''.join(code(x) for x in kx)
     if cmds: body+="<h2>How to run, build and test</h2><p>These commands come from the repo's own manifests (package.json scripts, Anchor.toml, Cargo, go.mod, Makefile). Check the README for prerequisites and environment variables.</p><table class=tbl><thead><tr><th>Directory</th><th>Command</th><th>Runs</th></tr></thead><tbody>"+''.join(f'<tr><td><code>{E(d)}</code></td><td><code>{E(c)}</code></td><td>{E(x) if pr["permissive"] or not x else ""}</td></tr>' for d,c,x in cmds)+"</tbody></table>"
     else: body+="<h2>How to run</h2><p>No package.json, Anchor.toml, Cargo.toml, go.mod or Makefile was found near the root. See the project README.</p>"
@@ -285,16 +298,19 @@ import urllib.request
 PUB=os.environ.get('PUBLISHED_FROM','https://blockchains.github.io/sol-college')+'/published.json'
 try: prev=json.loads(urllib.request.urlopen(PUB,timeout=20).read())
 except Exception: prev=[]
-known={x['path'] for x in prev}; now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+known={x['path'] for x in prev if x.get('type')!='updated'}; now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
 for pr in P:
   pth=f"/explore/{pr['slug']}/"
   if pth not in known: prev.append(dict(path=pth,url=SITE+pth,project=pr['name'],original=pr['original_name'],published=now))
+  res=tested.result(pr) if pr['kx'] else None
+  if res and not any(x.get('type')=='updated' and x['path']==pth and x.get('tested')==res['tested'] for x in prev):
+    prev.append(dict(path=pth,url=SITE+pth,project=pr['name'],original=pr['original_name'],published=now,type='updated',tested=res['tested'],status=res['status']))
 live={f"/explore/{p['slug']}/" for p in P}
 cur=[x for x in prev if x['path'] in live]; cur.sort(key=lambda x:x['published'],reverse=True)
 json.dump(prev,open(OUT+'/published.json','w'),indent=1)
-open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Project | URL |\n|---|---|---|\n'+''.join(f"| {x['published']} | {x['project']} | {x['url']} |\n" for x in cur))
+open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Change | Project | URL |\n|---|---|---|---|\n'+''.join(f"| {x['published']} | {'updated: '+x.get('status','')+' build guide' if x.get('type')=='updated' else 'new'} | {x['project']} | {x['url']} |\n" for x in cur))
 page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
-'<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a></td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
+'<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else ""}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
 # ---------- legacy home preserved at /edge-ai/
 if os.path.exists('legacy/index.html'):
   t=open('legacy/index.html').read()
