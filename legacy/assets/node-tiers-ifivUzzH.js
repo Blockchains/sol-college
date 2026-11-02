@@ -1,0 +1,1 @@
+var e=`/assets/node-tiers-B-xaCACk.jpg`;export{e as t};
