@@ -191,7 +191,7 @@ Running test suite: "/tmp/scbuild/seloongmun/anchor/Anchor.toml"
       at Object.<anonymous> (tests/seloongmun.spec.ts:6:59)
 
   console.log
-    seloongmunKeypair Account: 4gtx6oc5PTwvjjeqDSJiitSHSjs8mHsfHcyrKBk6p3xr
+    seloongmunKeypair Account: <pubkey redacted>
 
       at tests/seloongmun.spec.ts:16:11
 
