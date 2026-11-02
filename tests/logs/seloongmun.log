@@ -1,0 +1,536 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/seloongmun.git /tmp/scbuild/seloongmun && git -C /tmp/scbuild/seloongmun checkout -q e3144132664c173861bd8a3797eaaa34610cddad)
+
+[exit 0, 3s]
+
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 1552 packages in 11s
+npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+npm warn install-scripts 5 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   @swc/core@1.3.107 (postinstall: node postinstall.js)
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 12s]
+
+$ (cd anchor && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 61 packages in 2s
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 2s]
+
+$ (cd anchor && npm install --no-audit --no-fund --legacy-peer-deps)
+
+up to date in 234ms
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)
+npm warn install-scripts   bufferutil@4.1.0 (install: node-gyp rebuild)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp rebuild)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 0s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py)
+Found incorrect program id declaration in "/tmp/scbuild/seloongmun/anchor/programs/seloongmun/src/lib.rs"
+Updated to A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr
+
+Found incorrect program id declaration in Anchor.toml for the program `seloongmun`
+Updated to A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr
+
+All program id declarations are synced.
+
+[exit 0, 0s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 build)
+info: uninstalling toolchain solana
+info: toolchain solana uninstalled
+   Compiling proc-macro2 v1.0.78
+   Compiling unicode-ident v1.0.12
+   Compiling version_check v0.9.4
+   Compiling typenum v1.17.0
+   Compiling syn v1.0.109
+   Compiling serde v1.0.197
+   Compiling thiserror v1.0.57
+   Compiling serde_json v1.0.114
+   Compiling semver v1.0.22
+   Compiling anyhow v1.0.80
+   Compiling itoa v1.0.10
+   Compiling cfg-if v1.0.0
+   Compiling unicode-segmentation v1.11.0
+   Compiling ryu v1.0.17
+   Compiling cpufeatures v0.2.12
+   Compiling libc v0.2.153
+   Compiling rustc_version v0.4.0
+   Compiling quote v1.0.35
+   Compiling generic-array v0.14.7
+   Compiling heck v0.3.3
+   Compiling syn v2.0.51
+   Compiling bs58 v0.5.0
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling autocfg v1.1.0
+   Compiling once_cell v1.19.0
+   Compiling jobserver v0.1.28
+   Compiling proc-macro-error v1.0.4
+   Compiling hashbrown v0.14.3
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling cc v1.0.83
+   Compiling sha2 v0.10.8
+   Compiling subtle v2.5.0
+   Compiling equivalent v1.0.1
+   Compiling indexmap v2.2.3
+   Compiling ahash v0.8.9
+   Compiling ahash v0.7.8
+   Compiling winnow v0.5.40
+   Compiling toml_datetime v0.6.5
+   Compiling feature-probe v0.1.1
+   Compiling solana-frozen-abi-macro v1.18.3
+   Compiling bv v0.11.1
+   Compiling rustversion v1.0.14
+   Compiling cfg_aliases v0.1.1
+   Compiling zerocopy v0.7.32
+   Compiling borsh v1.3.1
+   Compiling num-traits v0.2.18
+   Compiling memoffset v0.9.0
+   Compiling solana-frozen-abi v1.18.3
+   Compiling hashbrown v0.11.2
+   Compiling hashbrown v0.13.2
+   Compiling toml_edit v0.21.1
+   Compiling borsh-derive-internal v0.10.3
+   Compiling borsh-derive-internal v0.9.3
+   Compiling borsh-schema-derive-internal v0.9.3
+   Compiling borsh-schema-derive-internal v0.10.3
+   Compiling proc-macro-crate v3.1.0
+   Compiling bs58 v0.4.0
+   Compiling arrayvec v0.7.4
+   Compiling blake3 v1.5.0
+   Compiling solana-program v1.18.3
+   Compiling constant_time_eq v0.3.0
+   Compiling log v0.4.20
+   Compiling lazy_static v1.4.0
+   Compiling keccak v0.1.5
+   Compiling either v1.10.0
+   Compiling arrayref v0.3.7
+   Compiling itertools v0.10.5
+   Compiling sha3 v0.10.8
+   Compiling getrandom v0.2.12
+   Compiling base64 v0.13.1
+   Compiling anchor-derive-space v0.29.0
+   Compiling serde_derive v1.0.197
+   Compiling thiserror-impl v1.0.57
+   Compiling syn_derive v0.1.8
+   Compiling bytemuck_derive v1.5.0
+   Compiling solana-sdk-macro v1.18.3
+   Compiling num-derive v0.4.2
+   Compiling borsh-derive v1.3.1
+   Compiling bytemuck v1.14.3
+   Compiling toml v0.5.11
+   Compiling serde_bytes v0.11.14
+   Compiling bincode v1.3.3
+   Compiling anchor-syn v0.29.0
+   Compiling proc-macro-crate v0.1.5
+   Compiling borsh-derive v0.9.3
+   Compiling borsh-derive v0.10.3
+   Compiling borsh v0.10.3
+   Compiling borsh v0.9.3
+   Compiling anchor-attribute-event v0.29.0
+   Compiling anchor-attribute-access-control v0.29.0
+   Compiling anchor-derive-accounts v0.29.0
+   Compiling anchor-attribute-constant v0.29.0
+   Compiling anchor-attribute-program v0.29.0
+   Compiling anchor-attribute-account v0.29.0
+   Compiling anchor-derive-serde v0.29.0
+   Compiling anchor-attribute-error v0.29.0
+   Compiling anchor-lang v0.29.0
+   Compiling seloongmun v0.1.0 (/tmp/scbuild/seloongmun/anchor/programs/seloongmun)
+    Finished release [optimized] target(s) in 1m 07s
+
+[exit 0, 68s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "/tmp/scbuild/seloongmun/anchor/Anchor.toml"
+
+
+> nx run anchor:jest
+
+  console.warn
+    bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+
+      4 | import { Seloongmun } from '../target/types/seloongmun';
+      5 | const { SystemProgram } = anchor.web3;
+    > 6 |
+        | ^
+      7 | describe('seloongmun', () => {
+      8 |   // Configure the client to use the local cluster.
+      9 |   const provider = anchor.AnchorProvider.env();
+
+      at Object.<anonymous> (node_modules/bigint-buffer/dist/node.js:10:17)
+      at Object.<anonymous> (node_modules/@solana/web3.js/lib/index.cjs.js:10:20)
+      at Object.<anonymous> (node_modules/@coral-xyz/anchor/src/nodewallet.ts:2:1)
+      at Object.<anonymous> (node_modules/@coral-xyz/anchor/src/index.ts:1:1)
+      at Object.<anonymous> (tests/seloongmun.spec.ts:6:59)
+
+  console.log
+    seloongmunKeypair Account: 4gtx6oc5PTwvjjeqDSJiitSHSjs8mHsfHcyrKBk6p3xr
+
+      at tests/seloongmun.spec.ts:16:11
+
+  console.log
+    seloongmunPDA Account: 72yjJrrdMSkS3KbhnRf4dwJ1Zcsyx5tTP67qKM5cpEMW
+
+      at tests/seloongmun.spec.ts:22:11
+
+  console.log
+    safeVaultPDA Account: J7ubm1NaynoXg5oC3TMC5noD3YCKL4xBoLusVx6QTEcv
+
+      at tests/seloongmun.spec.ts:27:11
+
+  console.log
+    Account Balance before Draw:
+
+      at tests/seloongmun.spec.ts:28:11
+
+  console.log
+    Last Card Draw:  255
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:41:13)
+
+  console.log
+    seloongmunPDA R Pole:  2♦(6)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:42:13)
+
+  console.log
+    seloongmunPDA L Pole:  4♥(13)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:46:13)
+
+  console.log
+    seloongmunPDA deck:  4503599627362239(1111111111111111111111111111111111111101111110111111)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:50:13)
+
+  console.log
+    Account Balance	safevault: 6.0010092(poll:2000000000)	player499999993.9979627
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:60:13)
+
+  console.log
+    R Pole:  2♦(6) L Pole:  4♥(13) deck:  4503599627362239(1111111111111111111111111111111111111101111110111111), remaining50
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  8♥(29)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 7.0010092(poll:2900000000)	player499999992.9979577
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  J♦(42) L Pole:  Q♥(45) deck:  4464016671891391(1111110110111111111111011111111111111101111110111111), remaining47
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  7♣(27)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 8.0010092(poll:3800000000)	player499999991.9979527
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  A♠(0) L Pole:  2♠(4) deck:  4464016537673646(1111110110111111111111010111111111111101111110101110), remaining44
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  4♠(12)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 9.0010092(poll:4700000000)	player499999990.99794763
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  J♠(40) L Pole:  Q♣(47) deck:  4322179537686446(1111010110101111111111010111111111111100111110101110), remaining41
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  6♥(21)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 10.0010092(poll:5600000000)	player499999989.9979426
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  4♣(15) L Pole:  K♥(49) deck:  3759229582135214(1101010110101111111111010111110111110100111110101110), remaining38
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  A♦(2)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 11.0010092(poll:6500000000)	player499999988.9979377
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  2♣(7) L Pole:  Q♦(46) deck:  3688860837957418(1101000110101111111111010111110111110100111100101010), remaining35
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  2♥(5)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 13.0010092(poll:8300000000)	player499999986.9979327
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  6♦(22) L Pole:  10♠(36) deck:  3688792114286346(1101000110101110111111010111100111110100111100001010), remaining32
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  7♠(24)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 12.0010092(poll:7300000000)	player499999987.99792767
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  3♥(9) L Pole:  4♥(13) deck:  4503599627361791(1111111111111111111111111111111111111101110111111111), remaining50
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  2♠(4)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 13.0010092(poll:8200000000)	player499999986.99792266
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  9♥(33) L Pole:  10♦(38) deck:  4503316159520239(1111111111111011110111111111111111111101110111101111), remaining47
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  Q♦(46)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 14.0010092(poll:9100000000)	player499999985.9979177
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  A♠(0) L Pole:  7♦(26) deck:  4432947348233710(1111101111111011110111111011111111111101110111101110), remaining44
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:70:15)
+
+  console.log
+    Card Draw:  6♠(20)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:97:15)
+
+  console.log
+    Account Balance	safevault: 13.0010092(poll:8100000000)	player499999986.9979127
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:104:15)
+
+  console.log
+    R Pole:  5♠(16) L Pole:  5♣(19) deck:  4432947346595310(1111101111111011110111111011111001101101110111101110), remaining41
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:116:13)
+
+  console.log
+    Safe-Vault balance: 13001.0092	pool: 8100
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:135:13)
+
+  console.log
+    Card Draw:  10♣(39)
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:152:13)
+
+  console.log
+    Safe-Vault balance: 13001009240	pool: 8100000000
+
+      at Object.<anonymous> (tests/seloongmun.spec.ts:158:13)
+
+
+ 
+
+ >  NX   Successfully ran target jest for project anchor
+
+
+PASS anchor tests/seloongmun.spec.ts (5.301 s)
+  seloongmun
+    ✓ init (458 ms)
+    ✓ draw (4093 ms)
+    ✓ safe-vault-test (405 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        5.375 s, estimated 6 s
+Ran all test suites.
+
+[exit 0, 8s]
+
+$ (cd anchor && solana airdrop 100 -u localhost >/dev/null; ~/.avm/bin/anchor-0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+Deploying cluster: http://127.0.0.1:8899
+Upgrade authority: ~/.config/solana/id.json
+Deploying program "seloongmun"...
+Program path: /tmp/scbuild/seloongmun/anchor/target/deploy/seloongmun.so...
+Program Id: A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr
+
+Deploy success
+
+[exit 0, 5s]
+
+$ (cd anchor && solana program show A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr -u localhost && solana transaction-history A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr -u localhost --limit 20)
+
+Program Id: A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr
+Owner: BPFLoaderUpgradeab1e11111111111111111111111
+ProgramData Address: A5xDz4vNGVMi9r7zzpjpeJ628Y9GSm6ZeqaYTfMkL2Ss
+Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv
+Last Deployed In Slot: 14
+Data Length: 228128 (0x37b20) bytes
+Balance: 1.58897496 SOL
+
+[REDACTED-KEY]
+1 transactions found
+
+
+[exit 0, 0s]
+
+$ (cd . && npm run build)
+
+> @seloongmun/source@0.0.0 build
+> nx build web
+
+
+ >  NX   Running target build for project web and 1 task it depends on:
+
+ 
+
+> nx run anchor:build
+
+Bundling anchor...
+  index.cjs.js 3.953 KB
+  index.esm.js 3.81 KB
+⚡ Done in 0.57s
+
+> nx run web:build:production
+
+- warn No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+- info Creating an optimized production build...
+🌼   daisyUI 4.7.2
+├─ ✔︎ 2 themes added		https://daisyui.com/docs/themes
+╰─ ★ Star daisyUI on GitHub	https://github.com/saadeghi/daisyui
+- info Skipping linting
+- info Checking validity of types...
+
+ 
+
+ >  NX   Running target build for project web and 1 task it depends on failed
+
+   Failed tasks:
+   
+   - web:build:production
+   
+   Hint: run the command with --verbose for more details.
+
+(node:2652307) [DEP0060] DeprecationWarning: The `util._extend` API is deprecated. Please use Object.assign() instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Warning, in Nx 18 environment variables starting with NX_ will not be available in the browser, and currently will not work with @nx/next:server executor.
+Please rename the following environment variables: NX_NO_CLOUD using Next.js' built-in support for environment variables. Reference https://nextjs.org/docs/pages/api-reference/next-config-js/env
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx browserslist@latest --update-db
+  Why you should do it regularly: https://github.com/browserslist/browserslist#browsers-data-updating
+- warn Compiled with warnings
+./components/seloongmun/seloongmun-data-access.tsx
+Attempted import error: 'getShootingProgramId' is not exported from '@seloongmun/anchor' (imported as 'getShootingProgramId').
+Import trace for requested module:
+./components/seloongmun/seloongmun-data-access.tsx
+./components/seloongmun/seloongmun-feature.tsx
+./components/seloongmun/seloongmun-data-access.tsx
+Attempted import error: 'ShootingIDL' is not exported from '@seloongmun/anchor' (imported as 'ShootingIDL').
+Import trace for requested module:
+./components/seloongmun/seloongmun-data-access.tsx
+./components/seloongmun/seloongmun-feature.tsx
+./components/seloongmun/seloongmun-data-access.tsx
+Attempted import error: 'getShootingProgramId' is not exported from '@seloongmun/anchor' (imported as 'getShootingProgramId').
+Import trace for requested module:
+./components/seloongmun/seloongmun-data-access.tsx
+./components/seloongmun/seloongmun-feature.tsx
+./components/seloongmun/seloongmun-data-access.tsx
+Attempted import error: 'ShootingIDL' is not exported from '@seloongmun/anchor' (imported as 'ShootingIDL').
+Import trace for requested module:
+./components/seloongmun/seloongmun-data-access.tsx
+./components/seloongmun/seloongmun-feature.tsx
+Failed to compile.
+./components/seloongmun/seloongmun-data-access.tsx:3:10
+Type error: Module '"@seloongmun/anchor"' has no exported member 'ShootingIDL'.
+[0m [90m 1 | [39m[32m'use client'[39m[33m;[39m[0m
+[0m [90m 2 | [39m[0m
+[0m[31m[1m>[22m[39m[90m 3 | [39m[36mimport[39m { [33mShootingIDL[39m[33m,[39m getShootingProgramId } [36mfrom[39m [32m'@seloongmun/anchor'[39m[33m;[39m[0m
+[0m [90m   | [39m         [31m[1m^[22m[39m[0m
+[0m [90m 4 | [39m[36mimport[39m { [33mProgram[39m } [36mfrom[39m [32m'@coral-xyz/anchor'[39m[33m;[39m[0m
+[0m [90m 5 | [39m[36mimport[39m { useConnection } [36mfrom[39m [32m'@solana/wallet-adapter-react'[39m[33m;[39m[0m
+[0m [90m 6 | [39m[36mimport[39m { [33mCluster[39m[33m,[39m [33mKeypair[39m[33m,[39m [33mPublicKey[39m } [36mfrom[39m [32m'@solana/web3.js'[39m[33m;[39m[0m
+Error occurred while trying to run the build command
+1
+
+[exit 1, 21s]

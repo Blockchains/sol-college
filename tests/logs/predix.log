@@ -1,0 +1,452 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/Predix.git /tmp/scbuild/predix && git -C /tmp/scbuild/predix checkout -q 6f577914bb63f29b17892d70ff465d908a46782f)
+
+[exit 0, 4s]
+
+$ (cd . && sed -i "s/pub system_program: AccountInfo<'info>,/pub system_program: Program<'info, System>,/" programs/predix/src/lib.rs)
+
+[exit 0, 0s]
+
+$ (cd . && cd app && npm pkg set devDependencies.react-refresh=^0.14.0)
+
+[exit 0, 0s]
+
+$ (cd . && sed -i 's#/learn react/i#/select wallet/i#' app/src/App.test.tsx)
+
+[exit 0, 0s]
+
+$ (cd . && npx -y yarn@1 install --ignore-engines --network-timeout 600000)
+yarn install v1.22.22
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+Done in 1.38s.
+
+[exit 0, 3s]
+
+$ (cd app && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 2136 packages in 17s
+npm warn deprecated @walletconnect/types@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+npm warn deprecated @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+npm warn deprecated @babel/plugin-proposal-private-methods@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
+npm warn deprecated @babel/plugin-proposal-numeric-separator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
+npm warn deprecated @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+npm warn deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+npm warn deprecated @walletconnect/mobile-registry@1.4.0: Deprecated in favor of dynamic registry available from: https://github.com/walletconnect/walletconnect-registry
+npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm warn deprecated @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+npm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead
+npm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0
+npm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
+npm warn deprecated @toruslabs/openlogin-utils@3.0.0: Not supported. Pls upgrade
+npm warn deprecated @toruslabs/openlogin-jrpc@3.2.0: Not supported. Pls upgrade
+npm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+npm warn deprecated @walletconnect/qrcode-modal@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated ripple-lib@1.10.1: ripple-lib is deprecated. Please migrate to xrpl.js using this migration guide: https://xrpl.org/xrpljs2-migration-guide.html
+npm warn install-scripts 10 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   blake-hash@2.0.0 (install: node-gyp-build || exit 0)
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   core-js@3.36.0 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
+npm warn install-scripts   core-js-pure@3.36.0 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
+npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)
+npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)
+npm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo "secp256k1 bindings compilation fail. Pure JS implementation will be used.")
+npm warn install-scripts   usb@2.12.1 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 17s]
+
+$ (cd . && npx -y yarn@1 install --ignore-engines --network-timeout 600000)
+yarn install v1.22.22
+[1/4] Resolving packages...
+success Already up-to-date.
+Done in 0.08s.
+
+[exit 0, 1s]
+
+$ (cd . && ~/.avm/bin/anchor-0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py)
+Found incorrect program id declaration in "/tmp/scbuild/predix/programs/predix/src/lib.rs"
+Updated to Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD
+
+Found incorrect program id declaration in Anchor.toml for the program `predix`
+Updated to Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD
+
+All program id declarations are synced.
+
+[exit 0, 0s]
+
+$ (cd . && ~/.avm/bin/anchor-0.29.0 build)
+warning: virtual workspace defaulting to `resolver = "1"` despite one or more workspace members being on edition 2021 which implies `resolver = "2"`
+note: to keep the current resolver, specify `workspace.resolver = "1"` in the workspace root's manifest
+note: to use the edition 2021 resolver, specify `workspace.resolver = "2"` in the workspace root's manifest
+note: for more details see https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions
+   Compiling proc-macro2 v1.0.78
+   Compiling unicode-ident v1.0.12
+   Compiling version_check v0.9.4
+   Compiling serde v1.0.197
+   Compiling typenum v1.17.0
+   Compiling syn v1.0.109
+   Compiling thiserror v1.0.57
+   Compiling serde_json v1.0.114
+   Compiling semver v1.0.22
+   Compiling subtle v2.5.0
+   Compiling anyhow v1.0.80
+   Compiling cpufeatures v0.2.12
+   Compiling cfg-if v1.0.0
+   Compiling unicode-segmentation v1.11.0
+   Compiling libc v0.2.153
+   Compiling ryu v1.0.17
+   Compiling itoa v1.0.10
+   Compiling quote v1.0.35
+   Compiling syn v2.0.52
+   Compiling generic-array v0.14.7
+   Compiling heck v0.3.3
+   Compiling rustc_version v0.4.0
+   Compiling bs58 v0.5.0
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling once_cell v1.19.0
+   Compiling autocfg v1.1.0
+   Compiling proc-macro-error v1.0.4
+   Compiling hashbrown v0.14.3
+   Compiling equivalent v1.0.1
+   Compiling ahash v0.7.8
+   Compiling ahash v0.8.11
+   Compiling winnow v0.5.40
+   Compiling indexmap v2.2.5
+   Compiling toml_datetime v0.6.5
+   Compiling feature-probe v0.1.1
+   Compiling solana-frozen-abi-macro v1.18.4
+   Compiling jobserver v0.1.28
+   Compiling bv v0.11.1
+   Compiling cc v1.0.90
+   Compiling rustversion v1.0.14
+   Compiling cfg_aliases v0.1.1
+   Compiling zerocopy v0.7.32
+   Compiling borsh v1.3.1
+   Compiling memoffset v0.9.0
+   Compiling num-traits v0.2.18
+   Compiling solana-frozen-abi v1.18.4
+   Compiling hashbrown v0.11.2
+   Compiling hashbrown v0.13.2
+   Compiling toml_edit v0.21.1
+   Compiling lazy_static v1.4.0
+   Compiling bs58 v0.4.0
+   Compiling borsh-derive-internal v0.10.3
+   Compiling borsh-schema-derive-internal v0.10.3
+   Compiling borsh-derive-internal v0.9.3
+   Compiling proc-macro-crate v3.1.0
+   Compiling borsh-schema-derive-internal v0.9.3
+   Compiling keccak v0.1.5
+   Compiling either v1.10.0
+   Compiling arrayvec v0.7.4
+   Compiling arrayref v0.3.7
+   Compiling constant_time_eq v0.3.0
+   Compiling log v0.4.21
+   Compiling itertools v0.10.5
+   Compiling getrandom v0.2.12
+   Compiling base64 v0.13.1
+   Compiling blake3 v1.5.0
+   Compiling solana-program v1.18.4
+   Compiling serde_derive v1.0.197
+   Compiling thiserror-impl v1.0.57
+   Compiling syn_derive v0.1.8
+   Compiling bytemuck_derive v1.5.0
+   Compiling solana-sdk-macro v1.18.4
+   Compiling num-derive v0.4.2
+   Compiling anchor-derive-space v0.29.0
+   Compiling borsh-derive v1.3.1
+   Compiling bytemuck v1.14.3
+   Compiling serde_bytes v0.11.14
+   Compiling bincode v1.3.3
+   Compiling toml v0.5.11
+   Compiling crypto-common v0.1.6
+   Compiling block-buffer v0.10.4
+   Compiling digest v0.10.7
+   Compiling sha2 v0.10.8
+   Compiling sha3 v0.10.8
+   Compiling proc-macro-crate v0.1.5
+   Compiling anchor-syn v0.29.0
+   Compiling borsh-derive v0.9.3
+   Compiling borsh-derive v0.10.3
+   Compiling borsh v0.9.3
+   Compiling borsh v0.10.3
+   Compiling anchor-attribute-program v0.29.0
+   Compiling anchor-attribute-error v0.29.0
+   Compiling anchor-derive-serde v0.29.0
+   Compiling anchor-attribute-account v0.29.0
+   Compiling anchor-attribute-event v0.29.0
+   Compiling anchor-attribute-constant v0.29.0
+   Compiling anchor-derive-accounts v0.29.0
+   Compiling anchor-attribute-access-control v0.29.0
+   Compiling anchor-lang v0.29.0
+   Compiling predix v0.1.0 (/tmp/scbuild/predix/programs/predix)
+warning: unused import: `anchor_lang::system_program`
+ --> programs/predix/src/lib.rs:2:5
+  |
+2 | use anchor_lang::system_program;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` on by default
+
+warning: unused variable: `analyst`
+  --> programs/predix/src/lib.rs:13:13
+   |
+13 |         let analyst = &ctx.accounts.analyst;
+   |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_analyst`
+   |
+   = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `authority`
+  --> programs/predix/src/lib.rs:19:9
+   |
+19 |         authority: Pubkey,
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_authority`
+
+warning: unused variable: `ctx`
+  --> programs/predix/src/lib.rs:32:24
+   |
+32 |     pub fn participate(ctx: Context<Participate>, participant_public_key: Pubkey) -> Result<()> {
+   |                        ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: unused variable: `participant_public_key`
+  --> programs/predix/src/lib.rs:32:51
+   |
+32 |     pub fn participate(ctx: Context<Participate>, participant_public_key: Pubkey) -> Result<()> {
+   |                                                   ^^^^^^^^^^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_participant_public_key`
+
+warning: unused variable: `analyst`
+  --> programs/predix/src/lib.rs:44:13
+   |
+44 |         let analyst = &mut ctx.accounts.analyst;
+   |             ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_analyst`
+
+warning: unused variable: `real_data`
+  --> programs/predix/src/lib.rs:40:9
+   |
+40 |         real_data: String,
+   |         ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_real_data`
+
+warning: unused variable: `post_id`
+  --> programs/predix/src/lib.rs:41:9
+   |
+41 |         post_id: u32,
+   |         ^^^^^^^ help: if this is intentional, prefix it with an underscore: `_post_id`
+
+warning: unused variable: `ctx`
+  --> programs/predix/src/lib.rs:56:21
+   |
+56 |     pub fn buy_post(ctx: Context<BuyPost>) -> Result<()> {
+   |                     ^^^ help: if this is intentional, prefix it with an underscore: `_ctx`
+
+warning: `predix` (lib) generated 9 warnings (run `cargo fix --lib -p predix` to apply 9 suggestions)
+    Finished release [optimized] target(s) in 1m 10s
+
+[exit 0, 71s]
+
+$ (cd . && ~/.avm/bin/anchor-0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "/tmp/scbuild/predix/Anchor.toml"
+
+yarn run v1.22.22
+$ /tmp/scbuild/predix/node_modules/.bin/ts-mocha -p ./tsconfig.json -t 1000000 'tests/**/*.ts'
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+
+Error: target/idl/predix.json doesn't exist. Did you run `anchor build`?
+    at Object.get (/tmp/scbuild/predix/node_modules/@coral-xyz/anchor/src/workspace.ts:64:15)
+    at Suite.<anonymous> (/tmp/scbuild/predix/tests/predix.ts:9:36)
+    at Object.create (/tmp/scbuild/predix/node_modules/mocha/lib/interfaces/common.js:148:19)
+    at context.describe.context.context (/tmp/scbuild/predix/node_modules/mocha/lib/interfaces/bdd.js:42:27)
+    at Object.<anonymous> (/tmp/scbuild/predix/tests/predix.ts:5:1)
+    at Module._compile (node:internal/modules/cjs/loader:1929:14)
+    at Module.m._compile (/tmp/scbuild/predix/node_modules/ts-node/src/index.ts:439:23)
+    at node:internal/modules/cjs/loader:2060:10
+    at Object.require.extensions.<computed> [as .ts] (/tmp/scbuild/predix/node_modules/ts-node/src/index.ts:442:12)
+    at Module.load (node:internal/modules/cjs/loader:1651:32)
+    at Module._load (node:internal/modules/cjs/loader:1443:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:261:19)
+    at Module.require (node:internal/modules/cjs/loader:1674:12)
+    at require (node:internal/modules/helpers:157:16)
+    at Object.exports.requireOrImport (/tmp/scbuild/predix/node_modules/mocha/lib/nodejs/esm-utils.js:60:20)
+    at Object.exports.loadFilesAsync (/tmp/scbuild/predix/node_modules/mocha/lib/nodejs/esm-utils.js:103:20)
+    at singleRun (/tmp/scbuild/predix/node_modules/mocha/lib/cli/run-helpers.js:125:3)
+    at Object.exports.handler (/tmp/scbuild/predix/node_modules/mocha/lib/cli/run.js:374:5)
+error Command failed with exit code 1.
+Error: No such file or directory (os error 2)
+
+[exit 1, 3s]
+
+$ (cd . && solana airdrop 100 -u localhost >/dev/null; ~/.avm/bin/anchor-0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+Deploying cluster: http://localhost:8899
+Upgrade authority: ~/.config/solana/id.json
+Deploying program "predix"...
+Program path: /tmp/scbuild/predix/target/deploy/predix.so...
+Program Id: Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD
+
+Deploy success
+
+[exit 0, 5s]
+
+$ (cd . && solana program show Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD -u localhost && solana transaction-history Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD -u localhost --limit 20)
+
+Program Id: Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD
+Owner: BPFLoaderUpgradeab1e11111111111111111111111
+ProgramData Address: Gcc2Jwq8eaFVhZLaAUsdMjEyWL7H3qkk4gvvcFXiM78h
+Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv
+Last Deployed In Slot: 14
+Data Length: 240280 (0x3aa98) bytes
+Balance: 1.67355288 SOL
+
+[REDACTED-KEY]
+1 transactions found
+
+
+[exit 0, 0s]
+
+$ (cd app && npm run build)
+
+> app@0.1.0 build
+> craco build
+
+Creating an optimized production build...
+
+Treating warnings as errors because process.env.CI = true.
+Most CI servers set it automatically.
+
+Failed to compile.
+
+Module not found: Error: Can't resolve 'vm' in '/tmp/scbuild/predix/app/node_modules/asn1.js/lib/asn1'
+BREAKING CHANGE: webpack < 5 used to include polyfills for node.js core modules by default.
+This is no longer the case. Verify if you need this module and configure a polyfill for it.
+
+If you want to include a polyfill, you need to:
+	- add a fallback 'resolve.fallback: { "vm": require.resolve("vm-browserify") }'
+	- install 'vm-browserify'
+If you don't want to include a polyfill, you can use an empty module like this:
+	resolve.fallback: { "vm": false }
+
+[eslint] 
+src/app/App.tsx
+  Line 1:17:  'FC' is defined but never used  @typescript-eslint/no-unused-vars
+
+
+(node:2682341) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[0;33mOne of your dependencies, babel-preset-react-app, is importing the
+"@babel/plugin-proposal-private-property-in-object" package without
+declaring it in its dependencies. This is currently working because
+"@babel/plugin-proposal-private-property-in-object" is already in your
+node_modules folder for unrelated reasons, but it [1mmay break at any time[0;33m.
+
+babel-preset-react-app is part of the create-react-app project, [1mwhich
+is not maintianed anymore[0;33m. It is thus unlikely that this bug will
+ever be fixed. Add "@babel/plugin-proposal-private-property-in-object" to
+your devDependencies to work around this error. This will make this message
+go away.[0m
+  
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[exit 1, 21s]
+
+$ (cd app && npm run test)
+
+> app@0.1.0 test
+> craco test
+
+  console.warn
+    bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+
+      1 | import React, { FC, useMemo } from 'react';
+    > 2 | import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+        | ^
+      3 | import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+      4 | import { UnsafeBurnerWalletAdapter } from '@solana/wallet-adapter-wallets';
+      5 | import {
+
+      at Object.<anonymous> (node_modules/bigint-buffer/dist/node.js:10:17)
+      at Object.<anonymous> (node_modules/@solana/web3.js/lib/index.cjs.js:10:20)
+      at Object.<anonymous> (node_modules/@solana/wallet-adapter-react/src/ConnectionProvider.tsx:1:1)
+      at Object.<anonymous> (node_modules/@solana/wallet-adapter-react/src/index.ts:1:1)
+      at Object.<anonymous> (src/app/App.tsx:2:1)
+      at Object.<anonymous> (src/App.test.tsx:3:1)
+      at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+      at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+      at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+      at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
+
+  console.warn
+    Your application is presently configured to use the `UnsafeBurnerWalletAdapter`. Find and remove it, then replace it with a list of adapters for wallets you would like your application to support. See https://github.com/solana-labs/wallet-adapter#usage for an example.
+
+      34 |              * in the npm package `@solana/wallet-adapter-wallets`.
+      35 |              */
+    > 36 |             new UnsafeBurnerWalletAdapter(),
+         |             ^
+      37 |         ],
+      38 |         // eslint-disable-next-line react-hooks/exhaustive-deps
+      39 |         [network]
+
+      at new UnsafeBurnerWalletAdapter (node_modules/@solana/wallet-adapter-unsafe-burner/src/adapter.ts:35:17)
+      at src/app/App.tsx:36:13
+      at mountMemo (node_modules/react-dom/cjs/react-dom.development.js:17225:19)
+      at Object.useMemo (node_modules/react-dom/cjs/react-dom.development.js:17670:16)
+      at useMemo (node_modules/react/cjs/react.development.js:1650:21)
+      at App (src/app/App.tsx:22:28)
+      at renderWithHooks (node_modules/react-dom/cjs/react-dom.development.js:16305:18)
+      at mountIndeterminateComponent (node_modules/react-dom/cjs/react-dom.development.js:20074:13)
+      at beginWork (node_modules/react-dom/cjs/react-dom.development.js:21587:16)
+      at beginWork$1 (node_modules/react-dom/cjs/react-dom.development.js:27426:14)
+      at performUnitOfWork (node_modules/react-dom/cjs/react-dom.development.js:26560:12)
+      at workLoopSync (node_modules/react-dom/cjs/react-dom.development.js:26466:5)
+      at renderRootSync (node_modules/react-dom/cjs/react-dom.development.js:26434:7)
+      at performConcurrentWorkOnRoot (node_modules/react-dom/cjs/react-dom.development.js:25738:74)
+      at flushActQueue (node_modules/react/cjs/react.development.js:2667:24)
+      at act (node_modules/react/cjs/react.development.js:2582:11)
+      at node_modules/@testing-library/react/dist/act-compat.js:63:25
+      at renderRoot (node_modules/@testing-library/react/dist/pure.js:159:26)
+      at render (node_modules/@testing-library/react/dist/pure.js:246:10)
+      at Object.<anonymous> (src/App.test.tsx:6:9)
+      at TestScheduler.scheduleTests (node_modules/@jest/core/build/TestScheduler.js:333:13)
+      at runJest (node_modules/@jest/core/build/runJest.js:404:19)
+      at _run10000 (node_modules/@jest/core/build/cli/index.js:320:7)
+      at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)
+
+PASS src/App.test.tsx
+  ✓ renders learn react link (41 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        1.326 s
+Ran all test suites.
+Jest did not exit one second after the test run has completed.
+
+This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.
+[0;33mOne of your dependencies, babel-preset-react-app, is importing the
+"@babel/plugin-proposal-private-property-in-object" package without
+declaring it in its dependencies. This is currently working because
+"@babel/plugin-proposal-private-property-in-object" is already in your
+node_modules folder for unrelated reasons, but it [1mmay break at any time[0;33m.
+
+babel-preset-react-app is part of the create-react-app project, [1mwhich
+is not maintianed anymore[0;33m. It is thus unlikely that this bug will
+ever be fixed. Add "@babel/plugin-proposal-private-property-in-object" to
+your devDependencies to work around this error. This will make this message
+go away.[0m
+  
+
+[exit 0, 4s]

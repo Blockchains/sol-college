@@ -20,10 +20,16 @@
   "."
  ],
  "program_ids": {
-  "gree": "Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V"
+  "gree": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK"
  },
  "anchor_version": "0.29.0",
- "signatures": [],
+ "signatures": [
+  [
+   "gree",
+   "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+   "338dVtyAKZfrQYfZdinovo7WdbakX3jpZsT9YnDPqUqeVC2AJTd9cm7wPAVxrhW2kj8DWrXNwpsPHDVmCRQPW6t1"
+  ]
+ ],
  "steps": [
   {
    "phase": "clone",
@@ -38,7 +44,7 @@
    "cwd": ".",
    "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
    "exit": 0,
-   "secs": 16,
+   "secs": 14,
    "tail": "npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
   },
   {
@@ -60,55 +66,63 @@
   {
    "phase": "configure",
    "cwd": "anchor",
-   "cmd": "anchor@0.29.0 keys sync",
+   "cmd": "anchor@0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py",
    "exit": 0,
    "secs": 0,
-   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/gree/anchor/programs/gree/src/lib.rs\"\nUpdated to Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V\nFound incorrect program id declaration in Anchor.toml for the program `gree`\nUpdated to Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V\nAll program id declarations are synced."
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/gree/anchor/programs/gree/src/lib.rs\"\nUpdated to CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK\nFound incorrect program id declaration in Anchor.toml for the program `gree`\nUpdated to CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK\nAll program id declarations are synced."
   },
   {
    "phase": "build",
    "cwd": "anchor",
    "cmd": "anchor@0.29.0 build",
    "exit": 0,
-   "secs": 84,
-   "tail": "   Compiling spl-token-2022 v2.0.2\n   Compiling spl-token-2022 v0.9.0\n   Compiling spl-associated-token-account v2.3.1\n   Compiling anchor-spl v0.29.0\n   Compiling gree v0.1.0 (/tmp/scbuild/gree/anchor/programs/gree)\n    Finished release [optimized] target(s) in 1m 23s"
+   "secs": 89,
+   "tail": "   Compiling spl-token-2022 v2.0.2\n   Compiling spl-token-2022 v0.9.0\n   Compiling spl-associated-token-account v2.3.1\n   Compiling anchor-spl v0.29.0\n   Compiling gree v0.1.0 (/tmp/scbuild/gree/anchor/programs/gree)\n    Finished release [optimized] target(s) in 1m 28s"
+  },
+  {
+   "phase": "configure",
+   "cwd": "anchor",
+   "cmd": "add Metaplex Token Metadata to [[test.genesis]] in Anchor.toml (program bytes dumped read-only from a public cluster)",
+   "exit": 0,
+   "secs": 0,
+   "tail": ""
   },
   {
    "phase": "test",
    "cwd": "anchor",
    "cmd": "anchor@0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
-   "exit": 1,
-   "secs": 3,
-   "tail": "      at processTicksAndRejections (node:internal/process/task_queues:104:5)\ninfo Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.\nwarning package.json: No license field\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nerror Command failed with exit code 1."
+   "exit": 0,
+   "secs": 4,
+   "tail": "  \u2714 mints nft! (339ms)\n  1 passing (341ms)\nDone in 1.60s.\nwarning package.json: No license field\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)"
   },
   {
    "phase": "deploy",
    "cwd": "anchor",
    "cmd": "solana airdrop 100 -u localhost >/dev/null; anchor@0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
-   "exit": 1,
-   "secs": 0,
-   "tail": "Upgrade authority: ~/.config/solana/id.json\nDeploying program \"gree\"...\nProgram path: /tmp/scbuild/gree/anchor/target/deploy/gree.so...\nThere was a problem deploying: Output { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"\" }.\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+   "exit": 0,
+   "secs": 6,
+   "tail": "Deploying cluster: http://localhost:8899\nUpgrade authority: ~/.config/solana/id.json\nDeploying program \"gree\"...\nProgram path: /tmp/scbuild/gree/anchor/target/deploy/gree.so...\nProgram Id: CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK\nDeploy success"
   },
   {
    "phase": "verify",
    "cwd": "anchor",
-   "cmd": "solana program show Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V -u localhost && solana transaction-history Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V -u localhost --limit 20",
-   "exit": 1,
+   "cmd": "solana program show CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK -u localhost && solana transaction-history CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK -u localhost --limit 20",
+   "exit": 0,
    "secs": 0,
-   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+   "tail": "Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv\nLast Deployed In Slot: 18\nData Length: 282640 (0x45010) bytes\nBalance: 1.96837848 SOL\n[REDACTED-KEY]\n1 transactions found"
   },
   {
    "phase": "build",
    "cwd": ".",
    "cmd": "npm run build",
    "exit": 0,
-   "secs": 25,
+   "secs": 21,
    "tail": "Browserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
   }
  ],
  "build": "pass",
- "test": "fail",
- "deploy": "fail",
- "status": "builds",
+ "test": "pass",
+ "deploy": "pass",
+ "status": "operational",
  "notes": ""
 }

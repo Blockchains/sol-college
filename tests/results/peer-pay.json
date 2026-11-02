@@ -1,0 +1,88 @@
+{
+ "name": "peer-pay",
+ "slug": "peer-pay",
+ "fork": "https://github.com/Blockchains/peer-pay",
+ "commit": "ca496be4f2ee1ce5e4154922ec9a40c35029177b",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "escrow"
+ ],
+ "apps": [
+  "frontend"
+ ],
+ "program_ids": {},
+ "anchor_version": "0.29.0",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/peer-pay.git /tmp/scbuild/peer-pay && git -C /tmp/scbuild/peer-pay checkout -q ca496be4f2ee1ce5e4154922ec9a40c35029177b",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": "frontend",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 18,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
+   "cwd": "escrow",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 6,
+   "tail": "npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   sqlite3@5.1.7 (install: prebuild-install -r napi || node-gyp rebuild)\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
+   "cwd": "escrow",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 0,
+   "tail": "npm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp rebuild)\nnpm warn install-scripts   sqlite3@5.1.7 (install: node-gyp rebuild)\nnpm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp rebuild)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "configure",
+   "cwd": "escrow",
+   "cmd": "anchor@0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/peer-pay/escrow/programs/mm_escrow/src/lib.rs\"\nUpdated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL\nFound incorrect program id declaration in Anchor.toml for the program `mm_escrow`\nUpdated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": "escrow",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 1,
+   "secs": 2,
+   "tail": "note: to keep the current resolver, specify `workspace.resolver = \"1\"` in the workspace root's manifest\nnote: to use the edition 2021 resolver, specify `workspace.resolver = \"2\"` in the workspace root's manifest\nnote: for more details see https://doc.rust-lang.org/cargo/reference/resolver.html#resolver-versions\nerror: failed to parse lock file at: /tmp/scbuild/peer-pay/escrow/Cargo.lock\nCaused by:\n  lock file version 4 requires `-Znext-lockfile-bump`"
+  },
+  {
+   "phase": "build",
+   "cwd": "frontend",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 11,
+   "tail": "> Build error occurred\nError: Failed to collect page data for /utils\n    at /tmp/scbuild/peer-pay/frontend/node_modules/next/dist/build/utils.js:1258:15\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  type: 'Error'\n}"
+  }
+ ],
+ "build": "fail",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": ""
+}

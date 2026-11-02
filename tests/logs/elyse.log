@@ -1,0 +1,127 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/elyse.git /tmp/scbuild/elyse && git -C /tmp/scbuild/elyse checkout -q 77b39ebe97763dc1ab86b10699e99ba616ed8e28)
+
+[exit 0, 5s]
+
+$ (cd elyse-app && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 1630 packages in 13s
+npm warn deprecated w3c-hr-time@1.0.2: Use your platform's native performance.now() and performance.timeOrigin.
+npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn deprecated rollup-plugin-terser@7.0.2: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-terser
+npm warn deprecated workbox-cacheable-response@6.6.0: workbox-background-sync@6.6.0
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated workbox-google-analytics@6.6.0: It is not compatible with newer versions of GA starting with v4, as long as you are using GAv3 it should be ok, but the package is not longer being maintained
+npm warn deprecated q@1.5.1: You or someone you depend on is using Q, the JavaScript Promise library that gave JavaScript developers strong feelings about promises. They can almost certainly migrate to the native JavaScript promise now. Thank you literally everyone for joining me in this bet against the odds. Be excellent to each other.
+npm warn deprecated
+npm warn deprecated (For a CapTP with native promises, see @endo/eventual-send and @endo/captp)
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+npm warn deprecated domexception@2.0.1: Use your platform's native DOMException instead
+npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm warn deprecated svgo@1.3.2: This SVGO version is no longer supported. Upgrade to v2.x.x.
+npm warn deprecated @humanwhocodes/config-array@0.11.14: Use @eslint/config-array instead
+npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+npm warn deprecated @babel/plugin-proposal-optional-chaining@7.21.0: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-optional-chaining instead.
+npm warn deprecated @babel/plugin-proposal-numeric-separator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-numeric-separator instead.
+npm warn deprecated @babel/plugin-proposal-class-properties@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-class-properties instead.
+npm warn deprecated @babel/plugin-proposal-private-methods@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-private-methods instead.
+npm warn deprecated @babel/plugin-proposal-nullish-coalescing-operator@7.18.6: This proposal has been merged to the ECMAScript standard and thus this plugin is no longer maintained. Please use @babel/plugin-transform-nullish-coalescing-operator instead.
+npm warn install-scripts 8 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   @fortawesome/fontawesome-common-types@6.5.2 (postinstall: node attribution.js)
+npm warn install-scripts   @fortawesome/fontawesome-svg-core@6.5.2 (postinstall: node attribution.js)
+npm warn install-scripts   @fortawesome/free-solid-svg-icons@6.5.2 (postinstall: node attribution.js)
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   core-js@3.37.1 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
+npm warn install-scripts   core-js-pure@3.37.1 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 14s]
+
+$ (cd elyse-app && npm run build)
+
+> elyse-app@0.1.0 build
+> webpack --config webpack.config.js --mode production
+
+assets by status 13 MiB [big]
+  assets by path images/ 7.27 MiB
+    asset images/Intersect.8b0b2b608c81e537bdfedc8af323bb3b.png 4.87 MiB [emitted] [immutable] [from: src/assets/images/Intersect.png] [big] (auxiliary name: main)
+    asset images/nft_gif.656a1f14dd141f71577e7f1f8701d4e0.gif 1.73 MiB [emitted] [immutable] [from: src/assets/images/nft_gif.gif] [big] (auxiliary name: main)
+    asset images/earn.5ff7579ff9a19f3789ee3981ba2e44c4.gif 689 KiB [emitted] [immutable] [from: src/assets/images/earn.gif] [big] (auxiliary name: main)
+  asset media/video_new.fb8db221155e2260bda25bb1f7f5542c.mp4 5.23 MiB [emitted] [immutable] [from: src/assets/videos/video_new.mp4] [big] (auxiliary name: main)
+  asset bundle.js 539 KiB [emitted] [minimized] [big] (name: main) 1 related asset
+asset images/elyse_logo.bc14e5477d8ef078540bec45fea75f8e.png 25.3 KiB [emitted] [immutable] [from: src/assets/images/elyse_logo.png] (auxiliary name: main)
+asset index.html 477 bytes [emitted]
+orphan modules 1.17 MiB [orphan] 107 modules
+runtime modules 3.33 KiB 9 modules
+cacheable modules 1.6 MiB
+  modules by path ./node_modules/ 458 KiB 35 modules
+  modules by path ./src/ 1.15 MiB
+    ./src/index.js + 84 modules 1.14 MiB [built] [code generated]
+    ./node_modules/css-loader/dist/cjs.js!./src/assets/styles/Home.css 3.92 KiB [built] [code generated]
+    ./node_modules/css-loader/dist/cjs.js!./src/assets/styles/appPage.css 12 KiB [built] [code generated]
+  buffer (ignored) 15 bytes [optional] [built] [code generated]
+
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  images/Intersect.8b0b2b608c81e537bdfedc8af323bb3b.png (4.87 MiB)
+  images/nft_gif.656a1f14dd141f71577e7f1f8701d4e0.gif (1.73 MiB)
+  images/earn.5ff7579ff9a19f3789ee3981ba2e44c4.gif (689 KiB)
+  media/video_new.fb8db221155e2260bda25bb1f7f5542c.mp4 (5.23 MiB)
+  bundle.js (539 KiB)
+
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  main (539 KiB)
+      bundle.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+webpack 5.92.1 compiled with 3 warnings in 6963 ms
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[exit 0, 8s]
+
+$ (cd app_page && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 598 packages in 3s
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 3s]
+
+$ (cd app_page && npm run build)
+
+> app_page@1.0.0 build
+> webpack --mode production
+
+asset solana.js 12.4 KiB [emitted] [javascript module] [minimized] (name: main) 1 related asset
+./app.js 20.7 KiB [built] [code generated]
+webpack 5.91.0 compiled successfully in 746 ms
+
+[exit 0, 1s]
+
+$ (cd elyse-app && bash /workspace/sol-college/repo/tests/serve_probe.sh 3103 / python3 -m http.server 3103 -d dist)
+GET http://127.0.0.1:3103/ -> 200
+<title>React App
+
+[exit 0, 2s]
+
+$ (cd app_page && bash /workspace/sol-college/repo/tests/serve_probe.sh 3104 / python3 -m http.server 3104)
+GET http://127.0.0.1:3104/ -> 200
+<title> ELYSE 
+
+[exit 0, 2s]

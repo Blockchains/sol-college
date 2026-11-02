@@ -128,5 +128,19 @@
  },
  "broker.Electrodo": {
   "unpublish": "Cannot run without third-party credentials (i4Trust/iSHARE participant certificates, Fronius inverter API, Pinata, Chainstack); all 13 jest suites fail without them."
+ },
+ "epoch": {
+  "apps": [],
+  "run": [
+   {
+    "cmd": "rm -f epoch_sa_key.json && cargo build --workspace 2>&1 | tail -40",
+    "timeout": 3600
+   },
+   {
+    "cmd": "cargo test --workspace 2>&1 | tail -60",
+    "timeout": 3600
+   }
+  ],
+  "notes": "Off-chain Rust indexer/API for Drift (program dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH, live on mainnet; not epoch's own program). Running the server needs Postgres/TimescaleDB and a Google Cloud Storage service account (env GOOGLE_APPLICATION_CREDENTIALS). The fork commits epoch_sa_key.json, a possible leaked GCP service-account key: the harness deletes it before building, it is never read, and it must be revoked by its owner."
  }
 }

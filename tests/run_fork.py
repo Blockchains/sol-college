@@ -32,13 +32,13 @@ def pm(d):
 INST={'pnpm':'pnpm install --no-frozen-lockfile','yarn':'npx -y yarn@1 install --ignore-engines --network-timeout 600000','npm':'npm install --no-audit --no-fund --legacy-peer-deps'}
 RUNC={'pnpm':'pnpm run','yarn':'npx -y yarn@1 run','npm':'npm run'}
 VAL=None
-def validator(start):
+def validator(start,extra=()):
   global VAL
   if VAL: VAL.terminate(); VAL.wait(); VAL=None
   subprocess.run('pkill -f solana-test-validator',shell=True); time.sleep(3)
   if start:
     shutil.rmtree('/tmp/sc-ledger',ignore_errors=True)
-    VAL=subprocess.Popen(['solana-test-validator','--reset','--quiet','--ledger','/tmp/sc-ledger'],env=ENV,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    VAL=subprocess.Popen(['solana-test-validator','--reset','--quiet','--ledger','/tmp/sc-ledger',*extra],env=ENV,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     for _ in range(90):
       if subprocess.run('solana cluster-version -u localhost',shell=True,env=ENV,capture_output=True).returncode==0: break
       time.sleep(1)
@@ -64,8 +64,11 @@ def run(name,extra=None):
     installed.add(a); r.sh('install',INST[pm(f'{r.dir}/{a}')],a,timeout=1800)
   for a in anchors:
     ad=f'{r.dir}/{a}'; cargo=' '.join(open(x).read() for x in glob.glob(ad+'/programs/*/Cargo.toml'))
-    m=re.search(r'anchor-lang\s*=\s*(?:\{[^}]*version\s*=\s*)?"[=^~]?(\d+\.\d+)\.(\d+)',cargo); av={'0.29':'0.29.0','0.30':'0.30.1','0.31':'0.31.1','0.32':'0.32.1'}.get(m.group(1) if m else '','0.32.1')
+    m=re.search(r'anchor-lang\s*=\s*(?:\{[^}]*version\s*=\s*)?"[=^~]?(\d+\.\d+)\.(\d+)',cargo); av={'0.29':'0.29.0','0.30':'0.30.1','0.31':'0.31.1','0.32':'0.32.1'}.get(m.group(1) if m else '','0.29.0' if m and m.group(1) in ('0.24','0.25','0.26','0.27','0.28') else '0.32.1')
     A=('RUSTUP_TOOLCHAIN=nightly-2025-04-01 ' if av.startswith('0.30') else '')+os.path.expanduser(f'~/.avm/bin/anchor-{av}'); r.anchor_version=av
+    lk=ad+'/Cargo.lock'
+    if os.path.exists(lk) and re.search(r'^version = 4$',open(lk).read(),re.M):
+      open(lk,'w').write(re.sub(r'^version = 4$','version = 3',open(lk).read(),flags=re.M)); r.steps.append(dict(phase='configure',cwd=a,cmd="Cargo.lock 'version = 4' -> 'version = 3' (the cargo bundled with Solana platform-tools cannot read v4 lockfiles)",exit=0,secs=0,tail=''))
     if os.path.exists(ad+'/package.json'): r.sh('install',INST[pm(ad)],a)
     r.sh('configure',f'{A} keys sync && python3 {ROOT}/tests/sync_all_clusters.py',a)
     ok,out=r.sh('build',f'{A} build',a,timeout=2400)
@@ -84,14 +87,11 @@ def run(name,extra=None):
       tok,_=r.sh('test',f'{A} test --skip-build --provider.cluster localnet --provider.wallet {ENV["ANCHOR_WALLET"]}',a,timeout=1500)
       led=ad+'/.anchor/test-ledger' if tok else None
     else: led=None
-    if not led or not os.path.isdir(led):
-      validator(True); r.sh('deploy',f'solana airdrop 100 -u localhost >/dev/null; {A} deploy --provider.cluster localnet --provider.wallet {ENV["ANCHOR_WALLET"]}',a,timeout=600)
-    else:
-      global VAL
-      VAL=subprocess.Popen(['solana-test-validator','--ledger',led,'--quiet'],env=ENV,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL); time.sleep(8)
-      for _ in range(40):
-        if subprocess.run('solana cluster-version -u localhost',shell=True,env=ENV,capture_output=True).returncode==0: break
-        time.sleep(1)
+    # Always deploy to a fresh validator (reusing anchor's test-ledger was flaky); wait until it answers before deploying.
+    gx=('--bpf-program','metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s',os.path.expanduser('~/tbin/mpl_token_metadata.so')) if 'metaqbxx' in open(ad+'/Anchor.toml').read() else ()
+    led=None
+    if validator(True,gx): r.sh('deploy',f'solana airdrop 100 -u localhost >/dev/null; {A} deploy --provider.cluster localnet --provider.wallet {ENV["ANCHOR_WALLET"]}',a,timeout=600)
+    else: r.steps.append(dict(phase='deploy',cwd=a,cmd='solana-test-validator did not become ready in 150s',exit=1,secs=150,tail=''))
     for prog,pid in progids.items():
       ok,out=r.sh('verify',f'solana program show {pid} -u localhost && solana transaction-history {pid} -u localhost --limit 20',a,timeout=60)
       if ok and led and os.path.isdir(led): r.steps.append(dict(phase='deploy',cwd=a,cmd='anchor test (deploys to its local validator)',exit=0,secs=0,tail=out.split('\n')[0][:200]))

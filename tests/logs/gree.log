@@ -1,0 +1,300 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/gree.git /tmp/scbuild/gree && git -C /tmp/scbuild/gree checkout -q 7ef8c89e9b317f2f7f664588b1c58aaac7b816dd)
+
+[exit 0, 3s]
+
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 1754 packages in 14s
+npm warn deprecated stable@0.1.8: Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility
+npm warn deprecated abab@2.0.6: Use your platform's native atob() and btoa() methods instead
+npm warn deprecated sourcemap-codec@1.4.8: Please use @jridgewell/sourcemap-codec instead
+npm warn deprecated domexception@4.0.0: Use your platform's native DOMException instead
+npm warn install-scripts 8 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   @swc/core@1.3.107 (postinstall: node postinstall.js)
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   core-js-pure@3.36.1 (postinstall: node -e "try{require('./postinstall')}catch(e){}")
+npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)
+npm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)
+npm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 14s]
+
+$ (cd anchor && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 170 packages in 2s
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 2s]
+
+$ (cd anchor && npm install --no-audit --no-fund --legacy-peer-deps)
+
+up to date in 383ms
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp rebuild)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp rebuild)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 0s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py)
+Found incorrect program id declaration in "/tmp/scbuild/gree/anchor/programs/gree/src/lib.rs"
+Updated to CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK
+
+Found incorrect program id declaration in Anchor.toml for the program `gree`
+Updated to CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK
+
+All program id declarations are synced.
+
+[exit 0, 0s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 build)
+   Compiling proc-macro2 v1.0.78
+   Compiling unicode-ident v1.0.12
+   Compiling version_check v0.9.4
+   Compiling typenum v1.17.0
+   Compiling syn v1.0.109
+   Compiling serde v1.0.197
+   Compiling thiserror v1.0.57
+   Compiling serde_json v1.0.114
+   Compiling semver v1.0.22
+   Compiling libc v0.2.153
+   Compiling cpufeatures v0.2.12
+   Compiling cfg-if v1.0.0
+   Compiling equivalent v1.0.1
+   Compiling hashbrown v0.14.3
+   Compiling toml_datetime v0.6.5
+   Compiling rustc_version v0.4.0
+   Compiling autocfg v1.1.0
+   Compiling generic-array v0.14.7
+   Compiling quote v1.0.35
+   Compiling indexmap v2.2.3
+   Compiling syn v2.0.51
+   Compiling jobserver v0.1.28
+   Compiling proc-macro-error-attr v1.0.4
+   Compiling winnow v0.5.40
+   Compiling once_cell v1.19.0
+   Compiling cc v1.0.83
+   Compiling block-buffer v0.10.4
+   Compiling crypto-common v0.1.6
+   Compiling digest v0.10.7
+   Compiling sha2 v0.10.8
+   Compiling proc-macro-error v1.0.4
+   Compiling subtle v2.4.1
+   Compiling ahash v0.8.9
+   Compiling ahash v0.7.8
+   Compiling feature-probe v0.1.1
+   Compiling solana-frozen-abi-macro v1.18.3
+   Compiling bv v0.11.1
+   Compiling cfg_aliases v0.1.1
+   Compiling rustversion v1.0.14
+   Compiling zerocopy v0.7.32
+   Compiling borsh v1.3.1
+   Compiling toml_edit v0.21.1
+   Compiling num-traits v0.2.18
+   Compiling memoffset v0.9.0
+   Compiling solana-frozen-abi v1.18.3
+   Compiling hashbrown v0.11.2
+   Compiling hashbrown v0.13.2
+   Compiling log v0.4.20
+   Compiling ryu v1.0.17
+   Compiling constant_time_eq v0.3.0
+   Compiling keccak v0.1.5
+   Compiling proc-macro-crate v3.1.0
+   Compiling bs58 v0.4.0
+   Compiling borsh-derive-internal v0.10.3
+   Compiling borsh-derive-internal v0.9.3
+   Compiling borsh-schema-derive-internal v0.9.3
+   Compiling blake3 v1.5.0
+   Compiling borsh-schema-derive-internal v0.10.3
+   Compiling solana-program v1.18.3
+   Compiling lazy_static v1.4.0
+   Compiling either v1.10.0
+   Compiling arrayvec v0.7.4
+   Compiling itoa v1.0.10
+   Compiling arrayref v0.3.7
+   Compiling itertools v0.10.5
+   Compiling sha3 v0.10.8
+   Compiling getrandom v0.2.12
+   Compiling anyhow v1.0.80
+   Compiling base64 v0.21.7
+   Compiling unicode-segmentation v1.11.0
+   Compiling bs58 v0.5.0
+   Compiling solana-security-txt v1.1.1
+   Compiling assert_matches v1.5.0
+   Compiling base64 v0.13.1
+   Compiling heck v0.3.3
+   Compiling serde_derive v1.0.197
+   Compiling thiserror-impl v1.0.57
+   Compiling syn_derive v0.1.8
+   Compiling bytemuck_derive v1.5.0
+   Compiling solana-sdk-macro v1.18.3
+   Compiling num-derive v0.4.2
+   Compiling spl-program-error-derive v0.3.2
+   Compiling num_enum_derive v0.7.2
+   Compiling borsh-derive v1.3.1
+   Compiling anchor-derive-space v0.29.0
+   Compiling num-derive v0.3.3
+   Compiling spl-discriminator-syn v0.1.2
+   Compiling bytemuck v1.14.3
+   Compiling spl-discriminator-derive v0.1.2
+   Compiling num_enum v0.7.2
+   Compiling toml v0.5.11
+   Compiling serde_bytes v0.11.14
+   Compiling bincode v1.3.3
+   Compiling anchor-syn v0.29.0
+   Compiling proc-macro-crate v0.1.5
+   Compiling borsh-derive v0.9.3
+   Compiling borsh-derive v0.10.3
+   Compiling borsh v0.9.3
+   Compiling borsh v0.10.3
+   Compiling anchor-derive-serde v0.29.0
+   Compiling anchor-attribute-program v0.29.0
+   Compiling anchor-attribute-account v0.29.0
+   Compiling anchor-attribute-error v0.29.0
+   Compiling anchor-attribute-event v0.29.0
+   Compiling anchor-attribute-constant v0.29.0
+   Compiling anchor-derive-accounts v0.29.0
+   Compiling anchor-attribute-access-control v0.29.0
+   Compiling solana-zk-token-sdk v1.18.3
+   Compiling spl-program-error v0.3.1
+   Compiling spl-discriminator v0.1.1
+   Compiling spl-token v4.0.1
+   Compiling spl-memo v4.0.1
+   Compiling mpl-token-metadata v3.2.3
+   Compiling spl-pod v0.1.1
+   Compiling spl-type-length-value v0.3.1
+   Compiling spl-token-group-interface v0.1.1
+   Compiling spl-token-metadata-interface v0.2.1
+   Compiling spl-tlv-account-resolution v0.5.2
+   Compiling spl-tlv-account-resolution v0.4.0
+   Compiling anchor-lang v0.29.0
+   Compiling spl-transfer-hook-interface v0.5.1
+   Compiling spl-transfer-hook-interface v0.3.0
+   Compiling spl-token-2022 v2.0.2
+   Compiling spl-token-2022 v0.9.0
+   Compiling spl-associated-token-account v2.3.1
+   Compiling anchor-spl v0.29.0
+   Compiling gree v0.1.0 (/tmp/scbuild/gree/anchor/programs/gree)
+    Finished release [optimized] target(s) in 1m 28s
+
+[exit 0, 89s]
+
+$ (cd anchor && ~/.avm/bin/anchor-0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+
+Found a 'test' script in the Anchor.toml. Running it as a test suite!
+
+Running test suite: "/tmp/scbuild/gree/anchor/Anchor.toml"
+
+yarn run v1.22.22
+$ /tmp/scbuild/gree/anchor/node_modules/.bin/ts-mocha -p ./tsconfig.json -t 1000000 'tests/**/*.ts'
+
+
+mint nft tx: https://explorer.solana.com/tx/[REDACTED-KEY]?cluster=devnet
+minted nft: https://explorer.solana.com/address/EpWGop3neoLTHBpgKdNHDh8nWrv3cnC8wcbShNSqpmtM?cluster=devnet
+  ✔ mints nft! (339ms)
+
+  1 passing (341ms)
+
+Done in 1.60s.
+warning package.json: No license field
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+
+[exit 0, 4s]
+
+$ (cd anchor && solana airdrop 100 -u localhost >/dev/null; ~/.avm/bin/anchor-0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json)
+Deploying cluster: http://localhost:8899
+Upgrade authority: ~/.config/solana/id.json
+Deploying program "gree"...
+Program path: /tmp/scbuild/gree/anchor/target/deploy/gree.so...
+Program Id: CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK
+
+Deploy success
+
+[exit 0, 6s]
+
+$ (cd anchor && solana program show CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK -u localhost && solana transaction-history CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK -u localhost --limit 20)
+
+Program Id: CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK
+Owner: BPFLoaderUpgradeab1e11111111111111111111111
+ProgramData Address: 3hHSsbhaYEjg8uuoeCgr9W53Uu278kAZgotFv8Avd362
+Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv
+Last Deployed In Slot: 18
+Data Length: 282640 (0x45010) bytes
+Balance: 1.96837848 SOL
+
+[REDACTED-KEY]
+1 transactions found
+
+
+[exit 0, 0s]
+
+$ (cd . && npm run build)
+
+> @gree/source@0.0.0 build
+> nx build web
+
+
+ >  NX   Running target build for project web and 1 task it depends on:
+
+ 
+
+> nx run anchor:build
+
+Bundling anchor...
+  index.cjs.js 2.562 KB
+  index.esm.js 2.462 KB
+⚡ Done in 0.70s
+
+> nx run web:build:production
+
+
+🌼   daisyUI 4.7.2
+├─ ✔︎ 2 themes added		https://daisyui.com/docs/themes
+╰─ ★ Star daisyUI on GitHub	https://github.com/saadeghi/daisyui
+
+Entrypoint [1mmain[39m[22m [1m[33m[big][39m[22m 3.12 MiB = [1m[32mruntime.4f98ed54436a8a1b.js[39m[22m 3.05 KiB [1m[32mmain.2a5262955c05aa46.css[39m[22m 4.78 KiB [1m[32mmain.81808821ecd2e529.js[39m[22m 3.11 MiB
+Entrypoint [1mstyles[39m[22m 61.6 KiB = [1m[32mruntime.4f98ed54436a8a1b.js[39m[22m 3.05 KiB [1m[32mstyles.7fe8669df73725bc.css[39m[22m 58.5 KiB [1m[32mstyles.d6f5f3695fd77138.js[39m[22m 112 bytes
+chunk (runtime: runtime) [1m[32m120.3080e1659b154f7d.js[39m[22m 7.51 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32mruntime.4f98ed54436a8a1b.js[39m[22m (runtime) 8 KiB [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m149.410ad26a7446fee0.js[39m[22m 30 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m166.614ac65a0a7d6763.js[39m[22m 645 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m229.f7e3c10a904a7a70.js[39m[22m 1.29 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m437.01275bc7dfe3ef24.js[39m[22m (id hint: vendors) 1.43 MiB [1m[32m[rendered][39m[22m [1m[33msplit chunk (cache group: defaultVendors)[39m[22m
+chunk (runtime: runtime) [1m[32m659.5751008eee27e84a.js[39m[22m (id hint: vendors) 843 KiB [1m[32m[rendered][39m[22m [1m[33msplit chunk (cache group: defaultVendors)[39m[22m
+chunk (runtime: runtime) [1m[32mmain.2a5262955c05aa46.css[39m[22m, [1m[32mmain.81808821ecd2e529.js[39m[22m (main) 7.5 MiB (javascript) 6.14 KiB (css/mini-extract) [1m[33m[initial][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32mstyles.7fe8669df73725bc.css[39m[22m, [1m[32mstyles.d6f5f3695fd77138.js[39m[22m (styles) 50 bytes (javascript) 74.2 KiB (css/mini-extract) [1m[33m[initial][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m901.1fdd8f09888bb956.js[39m[22m 853 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m985.63733be616b2df59.js[39m[22m 1.57 KiB [1m[32m[rendered][39m[22m
+webpack compiled [1m[32msuccessfully[39m[22m (e93b19c4965b9763)
+
+ 
+
+ >  NX   Successfully ran target build for project web and 1 task it depends on
+
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+(node:2659624) [DEP0180] DeprecationWarning: fs.Stats constructor is deprecated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+[exit 0, 21s]

@@ -1,0 +1,313 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/SnakeAI.git /tmp/scbuild/snakeai && git -C /tmp/scbuild/snakeai checkout -q 007b40d9088318558902422ac3abcfedc39c79e4)
+
+[exit 0, 4s]
+
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+> snake-ai@1.0.0 postinstall
+> husky install
+
+husky - Git hooks installed
+
+> snake-ai@1.0.0 prepare
+> npm run build
+
+
+> snake-ai@1.0.0 build
+> rimraf dist && tsc
+
+src/ai/AIAgent.ts(8,3): error TS2724: '"../types"' has no exported member named 'GameEventType'. Did you mean 'GameEvent'?
+src/ai/AIAgent.ts(14,30): error TS2307: Cannot find module './behavior/BehaviorTree' or its corresponding type declarations.
+src/ai/AIAgent.ts(15,31): error TS2307: Cannot find module './analysis/EventAnalyzer' or its corresponding type declarations.
+src/ai/AIAgent.ts(16,23): error TS2306: File '/tmp/scbuild/snakeai/src/utils/retry.ts' is not a module.
+src/ai/DecisionModel.ts(19,16): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(22,9): error TS2322: Type 'string' is not assignable to type 'ActivationIdentifier | undefined'.
+src/ai/DecisionModel.ts(29,18): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(32,11): error TS2322: Type 'string' is not assignable to type 'ActivationIdentifier | undefined'.
+src/ai/DecisionModel.ts(38,16): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(54,31): error TS2531: Object is possibly 'null'.
+src/ai/DecisionModel.ts(67,26): error TS2531: Object is possibly 'null'.
+src/ai/DecisionModel.ts(74,7): error TS2322: Type 'number | Tensor<Rank>' is not assignable to type 'number | undefined'.
+  Type 'Tensor<Rank>' is not assignable to type 'number'.
+src/ai/DecisionModel.ts(75,7): error TS2322: Type 'number | Tensor<Rank>' is not assignable to type 'number | undefined'.
+src/ai/analysis/MarketAnalyzer.ts(1,42): error TS2307: Cannot find module '../utils/indicators' or its corresponding type declarations.
+src/ai/analysis/MarketAnalyzer.ts(50,27): error TS2322: Type '{ type: string; resource: string; price: number; confidence: number; }[]' is not assignable to type '{ type: "BUY" | "SELL"; resource: string; price: number; confidence: number; }[]'.
+  Type '{ type: string; resource: string; price: number; confidence: number; }' is not assignable to type '{ type: "BUY" | "SELL"; resource: string; price: number; confidence: number; }'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"BUY" | "SELL"'.
+src/ai/llm/LLMService.ts(1,10): error TS2614: Module '"openai"' has no exported member 'Configuration'. Did you mean to use 'import Configuration from "openai"' instead?
+src/ai/llm/LLMService.ts(1,25): error TS2724: '"openai"' has no exported member named 'OpenAIApi'. Did you mean 'OpenAI'?
+src/ai/llm/LLMService.ts(101,42): error TS18048: 'agentState.resources' is possibly 'undefined'.
+src/ai/market/MarketAnalyzer.ts(42,38): error TS7006: Parameter 'price' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(42,45): error TS7006: Parameter 'resourceType' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(51,39): error TS7006: Parameter 'volume' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(51,47): error TS7006: Parameter 'resourceType' implicitly has an 'any' type.
+src/blockchain/BlockchainAdapter.ts(8,3): error TS2305: Module '"../types"' has no exported member 'TransactionConfig'.
+src/blockchain/BlockchainAdapter.ts(9,3): error TS2305: Module '"../types"' has no exported member 'NetworkConfig'.
+src/blockchain/BlockchainAdapter.ts(14,13): error TS2564: Property 'contract' has no initializer and is not definitely assigned in the constructor.
+src/blockchain/BlockchainAdapter.ts(78,5): error TS2322: Type 'Promise<boolean>' is not assignable to type 'boolean'.
+src/blockchain/EthereumAdapter.ts(6,3): error TS2305: Module '"../types"' has no exported member 'TransactionConfig'.
+src/blockchain/EthereumAdapter.ts(7,3): error TS2305: Module '"../types"' has no exported member 'NetworkConfig'.
+src/blockchain/EthereumAdapter.ts(8,3): error TS2305: Module '"../types"' has no exported member 'ContractMethod'.
+src/blockchain/EthereumAdapter.ts(11,25): error TS2307: Cannot find module '../contracts/GameABI' or its corresponding type declarations.
+src/blockchain/EthereumAdapter.ts(12,23): error TS2306: File '/tmp/scbuild/snakeai/src/utils/retry.ts' is not a module.
+src/blockchain/EthereumAdapter.ts(95,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/blockchain/EthereumAdapter.ts(98,36): error TS2345: Argument of type 'TransactionReceipt' is not assignable to parameter of type 'string'.
+src/blockchain/EthereumAdapter.ts(99,44): error TS2345: Argument of type 'TransactionReceipt' is not assignable to parameter of type 'string'.
+src/blockchain/EthereumAdapter.ts(121,9): error TS2322: Type '{ type: any; data: any; blockNumber: any; transactionHash: any; }' is not assignable to type 'BlockchainEvent'.
+  Object literal may only specify known properties, and 'transactionHash' does not exist in type 'BlockchainEvent'.
+src/blockchain/adapters/BSCAdapter.ts(1,10): error TS2305: Module '"../../types"' has no exported member 'NetworkConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(12,3): error TS2305: Module '"../../types"' has no exported member 'NetworkConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(16,3): error TS2305: Module '"../../types"' has no exported member 'TransactionConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(23,11): error TS2564: Property 'program' has no initializer and is not definitely assigned in the constructor.
+src/core/GameManager.ts(37,9): error TS2345: Argument of type 'string' is not assignable to parameter of type 'GameEventType'.
+src/db/DatabaseManager.ts(36,42): error TS2344: Type 'T' does not satisfy the constraint 'ObjectLiteral'.
+src/db/entities/Agent.ts(10,14): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(12,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(12,3): error TS2564: Property 'id' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(15,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(15,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(18,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(18,3): error TS2564: Property 'state' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(21,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(21,3): error TS2564: Property 'modelConfig' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(24,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(24,3): error TS2564: Property 'createdAt' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(27,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(27,3): error TS2564: Property 'updatedAt' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(10,14): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(12,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(12,3): error TS2564: Property 'id' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(16,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(16,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(19,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(19,3): error TS2564: Property 'data' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(23,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(23,3): error TS2564: Property 'timestamp' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(26,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(29,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(29,3): error TS2564: Property 'createdAt' has no initializer and is not definitely assigned in the constructor.
+src/examples/GameExample.ts(12,5): error TS2554: Expected 1 arguments, but got 2.
+src/examples/GameExample.ts(20,18): error TS2554: Expected 5 arguments, but got 4.
+src/examples/GameExample.ts(43,29): error TS2345: Argument of type 'SimpleNPCAgent' is not assignable to parameter of type 'IAgent'.
+  Property 'state' is private in type 'SimpleNPCAgent' but not in type 'IAgent'.
+src/examples/SimpleNPCAgent.ts(7,3): error TS2724: '"../types"' has no exported member named 'GameEventType'. Did you mean 'GameEvent'?
+src/examples/SimpleNPCAgent.ts(9,26): error TS2307: Cannot find module '../types/common' or its corresponding type declarations.
+src/examples/SimpleNPCAgent.ts(25,14): error TS2415: Class 'SimpleNPCAgent' incorrectly extends base class 'BaseAgent'.
+  Property 'state' is private in type 'SimpleNPCAgent' but not in type 'BaseAgent'.
+src/examples/SimpleNPCAgent.ts(139,33): error TS2339: Property 'findPlayerById' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(142,14): error TS2339: Property 'isInRange' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(149,28): error TS2339: Property 'selectBestWeapon' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(161,23): error TS2339: Property 'calculateInterceptPosition' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(169,34): error TS2339: Property 'findNearestResource' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(174,14): error TS2339: Property 'isInRange' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(192,28): error TS2339: Property 'findBestTradeOpportunity' does not exist on type 'SimpleNPCAgent'.
+src/examples/aiAgentExample.ts(6,19): error TS2554: Expected 5 arguments, but got 4.
+src/examples/aiAgentExample.ts(30,17): error TS2339: Property 'trainModel' does not exist on type 'AIAgent'.
+src/index.ts(30,24): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(39,21): error TS2304: Cannot find name 'BlockchainAdapter'.
+src/index.ts(43,26): error TS2304: Cannot find name 'SolanaAdapter'.
+src/index.ts(52,26): error TS2304: Cannot find name 'BSCAdapter'.
+src/index.ts(60,26): error TS2304: Cannot find name 'EthereumAdapter'.
+src/index.ts(68,28): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(77,11): error TS2304: Cannot find name 'AgentType'.
+src/index.ts(77,11): error TS4073: Parameter 'type' of public method from exported class has or is using private name 'AgentType'.
+src/index.ts(78,19): error TS2304: Cannot find name 'AgentState'.
+src/index.ts(78,19): error TS4073: Parameter 'initialState' of public method from exported class has or is using private name 'AgentState'.
+src/index.ts(79,18): error TS2304: Cannot find name 'AIModelConfig'.
+src/index.ts(79,18): error TS4073: Parameter 'modelConfig' of public method from exported class has or is using private name 'AIModelConfig'.
+src/index.ts(80,6): error TS2304: Cannot find name 'AIAgent'.
+src/index.ts(80,6): error TS4055: Return type of public method from exported class has or is using private name 'AIAgent'.
+src/index.ts(81,23): error TS2304: Cannot find name 'AIAgent'.
+src/index.ts(86,21): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(86,21): error TS4055: Return type of public method from exported class has or is using private name 'GameManager'.
+src/services/AgentStorageService.ts(33,5): error TS2322: Type 'AIModelConfig | null' is not assignable to type 'object'.
+  Type 'null' is not assignable to type 'object'.
+src/services/EventStorageService.ts(57,20): error TS2304: Cannot find name 'Between'.
+src/types/index.ts(24,14): error TS2304: Cannot find name 'Position'.
+src/types/index.ts(24,14): error TS4033: Property 'position' of exported interface has or is using private name 'Position'.
+npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated glob@7.2.3: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated yaeti@0.0.6: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+npm warn deprecated har-validator@5.1.5: this library is no longer supported
+npm warn deprecated mkdirp-promise@5.0.1: This package is broken and no longer maintained. 'mkdirp' itself supports promises now, please switch to that.
+npm warn deprecated are-we-there-yet@2.0.0: This package is no longer supported.
+npm warn deprecated gauge@3.0.2: This package is no longer supported.
+npm warn deprecated request@2.88.2: request has been deprecated, see https://github.com/request/request/issues/3142
+npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
+npm warn deprecated @humanwhocodes/object-schema@2.0.3: Use @eslint/object-schema instead
+npm warn deprecated npmlog@5.0.1: This package is no longer supported.
+npm warn deprecated multibase@0.6.1: This module has been superseded by the multiformats module
+npm warn deprecated @types/web3@1.2.2: This is a stub types definition. web3 provides its own type definitions, so you do not need this installed.
+npm warn deprecated multicodec@0.5.7: This module has been superseded by the multiformats module
+npm warn deprecated rimraf@2.7.1: Rimraf versions prior to v4 are no longer supported
+npm warn deprecated multicodec@1.0.4: This module has been superseded by the multiformats module
+npm warn deprecated uuid@3.4.0: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+npm warn deprecated multibase@0.7.0: This module has been superseded by the multiformats module
+npm warn deprecated tar@6.2.1: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated tar@4.4.19: Old versions of tar are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated uuid@8.3.2: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated uuid@9.0.1: uuid@10 and below is no longer supported.  For ESM codebases, update to uuid@latest.  For CommonJS codebases, use uuid@11 (but be aware this version will likely be deprecated in 2028).
+npm warn deprecated cids@0.7.5: This module has been superseded by the multiformats module
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated glob@10.5.0: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+npm error code 1
+npm error path /tmp/scbuild/snakeai
+npm error command failed
+npm error command sh -c npm run build
+npm error A complete log of this run can be found in: ~/.npm/_logs/2026-11-02T16_57_41_008Z-debug-0.log
+
+[exit 1, 23s]
+
+$ (cd . && npm run build)
+
+> snake-ai@1.0.0 build
+> rimraf dist && tsc
+
+src/ai/AIAgent.ts(8,3): error TS2724: '"../types"' has no exported member named 'GameEventType'. Did you mean 'GameEvent'?
+src/ai/AIAgent.ts(14,30): error TS2307: Cannot find module './behavior/BehaviorTree' or its corresponding type declarations.
+src/ai/AIAgent.ts(15,31): error TS2307: Cannot find module './analysis/EventAnalyzer' or its corresponding type declarations.
+src/ai/AIAgent.ts(16,23): error TS2306: File '/tmp/scbuild/snakeai/src/utils/retry.ts' is not a module.
+src/ai/DecisionModel.ts(19,16): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(22,9): error TS2322: Type 'string' is not assignable to type 'ActivationIdentifier | undefined'.
+src/ai/DecisionModel.ts(29,18): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(32,11): error TS2322: Type 'string' is not assignable to type 'ActivationIdentifier | undefined'.
+src/ai/DecisionModel.ts(38,16): error TS2339: Property 'add' does not exist on type 'LayersModel'.
+src/ai/DecisionModel.ts(54,31): error TS2531: Object is possibly 'null'.
+src/ai/DecisionModel.ts(67,26): error TS2531: Object is possibly 'null'.
+src/ai/DecisionModel.ts(74,7): error TS2322: Type 'number | Tensor<Rank>' is not assignable to type 'number | undefined'.
+  Type 'Tensor<Rank>' is not assignable to type 'number'.
+src/ai/DecisionModel.ts(75,7): error TS2322: Type 'number | Tensor<Rank>' is not assignable to type 'number | undefined'.
+src/ai/analysis/MarketAnalyzer.ts(1,42): error TS2307: Cannot find module '../utils/indicators' or its corresponding type declarations.
+src/ai/analysis/MarketAnalyzer.ts(50,27): error TS2322: Type '{ type: string; resource: string; price: number; confidence: number; }[]' is not assignable to type '{ type: "BUY" | "SELL"; resource: string; price: number; confidence: number; }[]'.
+  Type '{ type: string; resource: string; price: number; confidence: number; }' is not assignable to type '{ type: "BUY" | "SELL"; resource: string; price: number; confidence: number; }'.
+    Types of property 'type' are incompatible.
+      Type 'string' is not assignable to type '"BUY" | "SELL"'.
+src/ai/llm/LLMService.ts(1,10): error TS2614: Module '"openai"' has no exported member 'Configuration'. Did you mean to use 'import Configuration from "openai"' instead?
+src/ai/llm/LLMService.ts(1,25): error TS2724: '"openai"' has no exported member named 'OpenAIApi'. Did you mean 'OpenAI'?
+src/ai/llm/LLMService.ts(101,42): error TS18048: 'agentState.resources' is possibly 'undefined'.
+src/ai/market/MarketAnalyzer.ts(42,38): error TS7006: Parameter 'price' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(42,45): error TS7006: Parameter 'resourceType' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(51,39): error TS7006: Parameter 'volume' implicitly has an 'any' type.
+src/ai/market/MarketAnalyzer.ts(51,47): error TS7006: Parameter 'resourceType' implicitly has an 'any' type.
+src/blockchain/BlockchainAdapter.ts(8,3): error TS2305: Module '"../types"' has no exported member 'TransactionConfig'.
+src/blockchain/BlockchainAdapter.ts(9,3): error TS2305: Module '"../types"' has no exported member 'NetworkConfig'.
+src/blockchain/BlockchainAdapter.ts(14,13): error TS2564: Property 'contract' has no initializer and is not definitely assigned in the constructor.
+src/blockchain/BlockchainAdapter.ts(78,5): error TS2322: Type 'Promise<boolean>' is not assignable to type 'boolean'.
+src/blockchain/EthereumAdapter.ts(6,3): error TS2305: Module '"../types"' has no exported member 'TransactionConfig'.
+src/blockchain/EthereumAdapter.ts(7,3): error TS2305: Module '"../types"' has no exported member 'NetworkConfig'.
+src/blockchain/EthereumAdapter.ts(8,3): error TS2305: Module '"../types"' has no exported member 'ContractMethod'.
+src/blockchain/EthereumAdapter.ts(11,25): error TS2307: Cannot find module '../contracts/GameABI' or its corresponding type declarations.
+src/blockchain/EthereumAdapter.ts(12,23): error TS2306: File '/tmp/scbuild/snakeai/src/utils/retry.ts' is not a module.
+src/blockchain/EthereumAdapter.ts(95,9): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/blockchain/EthereumAdapter.ts(98,36): error TS2345: Argument of type 'TransactionReceipt' is not assignable to parameter of type 'string'.
+src/blockchain/EthereumAdapter.ts(99,44): error TS2345: Argument of type 'TransactionReceipt' is not assignable to parameter of type 'string'.
+src/blockchain/EthereumAdapter.ts(121,9): error TS2322: Type '{ type: any; data: any; blockNumber: any; transactionHash: any; }' is not assignable to type 'BlockchainEvent'.
+  Object literal may only specify known properties, and 'transactionHash' does not exist in type 'BlockchainEvent'.
+src/blockchain/adapters/BSCAdapter.ts(1,10): error TS2305: Module '"../../types"' has no exported member 'NetworkConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(12,3): error TS2305: Module '"../../types"' has no exported member 'NetworkConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(16,3): error TS2305: Module '"../../types"' has no exported member 'TransactionConfig'.
+src/blockchain/adapters/SolanaAdapter.ts(23,11): error TS2564: Property 'program' has no initializer and is not definitely assigned in the constructor.
+src/core/GameManager.ts(37,9): error TS2345: Argument of type 'string' is not assignable to parameter of type 'GameEventType'.
+src/db/DatabaseManager.ts(36,42): error TS2344: Type 'T' does not satisfy the constraint 'ObjectLiteral'.
+src/db/entities/Agent.ts(10,14): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(12,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(12,3): error TS2564: Property 'id' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(15,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(15,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(18,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(18,3): error TS2564: Property 'state' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(21,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(21,3): error TS2564: Property 'modelConfig' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(24,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(24,3): error TS2564: Property 'createdAt' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/Agent.ts(27,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/Agent.ts(27,3): error TS2564: Property 'updatedAt' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(10,14): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(12,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(12,3): error TS2564: Property 'id' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(16,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(16,3): error TS2564: Property 'type' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(19,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(19,3): error TS2564: Property 'data' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(23,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(23,3): error TS2564: Property 'timestamp' has no initializer and is not definitely assigned in the constructor.
+src/db/entities/GameEvent.ts(26,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(29,3): error TS1219: Experimental support for decorators is a feature that is subject to change in a future release. Set the 'experimentalDecorators' option in your 'tsconfig' or 'jsconfig' to remove this warning.
+src/db/entities/GameEvent.ts(29,3): error TS2564: Property 'createdAt' has no initializer and is not definitely assigned in the constructor.
+src/examples/GameExample.ts(12,5): error TS2554: Expected 1 arguments, but got 2.
+src/examples/GameExample.ts(20,18): error TS2554: Expected 5 arguments, but got 4.
+src/examples/GameExample.ts(43,29): error TS2345: Argument of type 'SimpleNPCAgent' is not assignable to parameter of type 'IAgent'.
+  Property 'state' is private in type 'SimpleNPCAgent' but not in type 'IAgent'.
+src/examples/SimpleNPCAgent.ts(7,3): error TS2724: '"../types"' has no exported member named 'GameEventType'. Did you mean 'GameEvent'?
+src/examples/SimpleNPCAgent.ts(9,26): error TS2307: Cannot find module '../types/common' or its corresponding type declarations.
+src/examples/SimpleNPCAgent.ts(25,14): error TS2415: Class 'SimpleNPCAgent' incorrectly extends base class 'BaseAgent'.
+  Property 'state' is private in type 'SimpleNPCAgent' but not in type 'BaseAgent'.
+src/examples/SimpleNPCAgent.ts(139,33): error TS2339: Property 'findPlayerById' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(142,14): error TS2339: Property 'isInRange' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(149,28): error TS2339: Property 'selectBestWeapon' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(161,23): error TS2339: Property 'calculateInterceptPosition' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(169,34): error TS2339: Property 'findNearestResource' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(174,14): error TS2339: Property 'isInRange' does not exist on type 'SimpleNPCAgent'.
+src/examples/SimpleNPCAgent.ts(192,28): error TS2339: Property 'findBestTradeOpportunity' does not exist on type 'SimpleNPCAgent'.
+src/examples/aiAgentExample.ts(6,19): error TS2554: Expected 5 arguments, but got 4.
+src/examples/aiAgentExample.ts(30,17): error TS2339: Property 'trainModel' does not exist on type 'AIAgent'.
+src/index.ts(30,24): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(39,21): error TS2304: Cannot find name 'BlockchainAdapter'.
+src/index.ts(43,26): error TS2304: Cannot find name 'SolanaAdapter'.
+src/index.ts(52,26): error TS2304: Cannot find name 'BSCAdapter'.
+src/index.ts(60,26): error TS2304: Cannot find name 'EthereumAdapter'.
+src/index.ts(68,28): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(77,11): error TS2304: Cannot find name 'AgentType'.
+src/index.ts(77,11): error TS4073: Parameter 'type' of public method from exported class has or is using private name 'AgentType'.
+src/index.ts(78,19): error TS2304: Cannot find name 'AgentState'.
+src/index.ts(78,19): error TS4073: Parameter 'initialState' of public method from exported class has or is using private name 'AgentState'.
+src/index.ts(79,18): error TS2304: Cannot find name 'AIModelConfig'.
+src/index.ts(79,18): error TS4073: Parameter 'modelConfig' of public method from exported class has or is using private name 'AIModelConfig'.
+src/index.ts(80,6): error TS2304: Cannot find name 'AIAgent'.
+src/index.ts(80,6): error TS4055: Return type of public method from exported class has or is using private name 'AIAgent'.
+src/index.ts(81,23): error TS2304: Cannot find name 'AIAgent'.
+src/index.ts(86,21): error TS2304: Cannot find name 'GameManager'.
+src/index.ts(86,21): error TS4055: Return type of public method from exported class has or is using private name 'GameManager'.
+src/services/AgentStorageService.ts(33,5): error TS2322: Type 'AIModelConfig | null' is not assignable to type 'object'.
+  Type 'null' is not assignable to type 'object'.
+src/services/EventStorageService.ts(57,20): error TS2304: Cannot find name 'Between'.
+src/types/index.ts(24,14): error TS2304: Cannot find name 'Position'.
+src/types/index.ts(24,14): error TS4033: Property 'position' of exported interface has or is using private name 'Position'.
+
+[exit 1, 3s]
+
+$ (cd . && npm run test -- --watchAll=false 2>&1 || npm run test)
+
+> snake-ai@1.0.0 test
+> jest --watchAll=false
+
+No tests found, exiting with code 1
+Run with `--passWithNoTests` to exit with code 0
+In /tmp/scbuild/snakeai
+  123 files checked.
+  testMatch: **/__tests__/**/*.[jt]s?(x), **/?(*.)+(spec|test).[tj]s?(x) - 0 matches
+  testPathIgnorePatterns: /node_modules/ - 123 matches
+  testRegex:  - 0 matches
+Pattern:  - 0 matches
+
+> snake-ai@1.0.0 test
+> jest
+
+No tests found, exiting with code 1
+Run with `--passWithNoTests` to exit with code 0
+In /tmp/scbuild/snakeai
+  123 files checked.
+  testMatch: **/__tests__/**/*.[jt]s?(x), **/?(*.)+(spec|test).[tj]s?(x) - 0 matches
+  testPathIgnorePatterns: /node_modules/ - 123 matches
+  testRegex:  - 0 matches
+Pattern:  - 0 matches
+
+[exit 1, 1s]

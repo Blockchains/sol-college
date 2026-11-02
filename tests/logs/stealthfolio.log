@@ -1,0 +1,113 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/stealthfolio.git /tmp/scbuild/stealthfolio && git -C /tmp/scbuild/stealthfolio checkout -q 7781de14155a013f6b66dac7d008f1750fa50fa7)
+
+[exit 0, 3s]
+
+$ (cd . && cp nextjs/.env.template nextjs/.env.local && sed -i 's#^RPC=.*#RPC=https://api.devnet.solana.com#; s#^SOLANA_ENDPOINT=.*#SOLANA_ENDPOINT=https://api.devnet.solana.com#' nextjs/.env.local)
+
+[exit 0, 0s]
+
+$ (cd nextjs && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 1013 packages in 13s
+npm warn deprecated @walletconnect/types@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated @walletconnect/mobile-registry@1.4.0: Deprecated in favor of dynamic registry available from: https://github.com/walletconnect/walletconnect-registry
+npm warn deprecated @toruslabs/openlogin-utils@3.0.0: Not supported. Pls upgrade
+npm warn deprecated @toruslabs/openlogin-jrpc@3.2.0: Not supported. Pls upgrade
+npm warn deprecated @walletconnect/qrcode-modal@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated ripple-lib@1.10.1: ripple-lib is deprecated. Please migrate to xrpl.js using this migration guide: https://xrpl.org/xrpljs2-migration-guide.html
+npm warn install-scripts 8 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   blake-hash@2.0.0 (install: node-gyp-build || exit 0)
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)
+npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)
+npm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo "secp256k1 bindings compilation fail. Pure JS implementation will be used.")
+npm warn install-scripts   usb@2.12.1 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 13s]
+
+$ (cd nextjs && npm run build)
+
+> stealthfolio@0.1.0 build
+> next build
+
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+   ▲ Next.js 14.1.4
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/7) ...
+
+   Generating static pages (1/7) 
+
+   Generating static pages (3/7) 
+
+   Generating static pages (5/7) 
+
+ ✓ Generating static pages (7/7) 
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    174 B          89.6 kB
+├ ○ /_not-found                          882 B          85.3 kB
+├ ○ /home                                27.5 kB         337 kB
+└ ○ /transact                            5.87 kB         316 kB
++ First Load JS shared by all            84.4 kB
+  ├ chunks/69-286961041a966993.js        29 kB
+  ├ chunks/fd9d1056-4c619b537e90e9f3.js  53.4 kB
+  └ other shared chunks (total)          2.01 kB
+
+
+○  (Static)  prerendered as static content
+
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+
+[exit 0, 20s]
+
+$ (cd relayer && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 128 packages in 1s
+
+[exit 0, 1s]
+
+$ (cd relayer && npm run build)
+
+> relayer@1.0.0 build
+> npm install && npx tsc
+
+
+up to date, audited 129 packages in 1s
+
+17 packages are looking for funding
+  run `npm fund` for details
+
+13 vulnerabilities (4 low, 1 moderate, 7 high, 1 critical)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+[exit 0, 4s]
+
+$ (cd nextjs && bash /workspace/sol-college/repo/tests/serve_probe.sh 3101 / npx next start -p 3101)
+GET http://127.0.0.1:3101/ -> 200
+
+[exit 0, 2s]

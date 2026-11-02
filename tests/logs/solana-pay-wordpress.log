@@ -1,0 +1,45 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/solana-pay-wordpress.git /tmp/scbuild/solana-pay-wordpress && git -C /tmp/scbuild/solana-pay-wordpress checkout -q fd02c2ab79d2d18f82f3538ad257eae399564c66)
+
+[exit 0, 3s]
+
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 969 packages in 5s
+npm warn deprecated @walletconnect/types@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated @walletconnect/mobile-registry@1.4.0: Deprecated in favor of dynamic registry available from: https://github.com/walletconnect/walletconnect-registry
+npm warn deprecated @toruslabs/openlogin-utils@3.0.0: Not supported. Pls upgrade
+npm warn deprecated @toruslabs/openlogin-jrpc@3.2.0: Not supported. Pls upgrade
+npm warn deprecated @walletconnect/qrcode-modal@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
+npm warn deprecated ripple-lib@1.10.1: ripple-lib is deprecated. Please migrate to xrpl.js using this migration guide: https://xrpl.org/xrpljs2-migration-guide.html
+npm warn install-scripts 8 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   blake-hash@2.0.0 (install: node-gyp-build || exit 0)
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)
+npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)
+npm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo "secp256k1 bindings compilation fail. Pure JS implementation will be used.")
+npm warn install-scripts   usb@2.12.1 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 5s]
+
+$ (cd . && npm run build)
+
+> solana-pay-wordpress@0.0.1 build
+> webpack --mode production
+
+assets by status 394 bytes [cached] 1 asset
+./core/includes/assets/js/backend-scripts.tsx 39 bytes [built] [code generated] [1 error]
+
+ERROR in ./core/includes/assets/js/backend-scripts.tsx
+Module build failed (from ./node_modules/ts-loader/index.js):
+Error: Could not load TypeScript. Try installing with `yarn add typescript` or `npm install typescript`. If TypeScript is installed globally, try using `yarn link typescript` or `npm link typescript`.
+    at Object.loader (/tmp/scbuild/solana-pay-wordpress/node_modules/ts-loader/dist/index.js:18:18)
+
+webpack 5.91.0 compiled with 1 error in 173 ms
+Failed to load ./.env.
+
+[exit 1, 1s]

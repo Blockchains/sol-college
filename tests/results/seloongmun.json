@@ -20,10 +20,16 @@
   "."
  ],
  "program_ids": {
-  "seloongmun": "HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX"
+  "seloongmun": "A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr"
  },
  "anchor_version": "0.29.0",
- "signatures": [],
+ "signatures": [
+  [
+   "seloongmun",
+   "A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr",
+   "5excrsC2rvLdBGekGNNb6uTUn66g19rG7H5zyuNLCaTVtt2Xvf1PuNPeqUsGdyTfShbsBJcLdDfEqxoMpnBzTuvF"
+  ]
+ ],
  "steps": [
   {
    "phase": "clone",
@@ -35,72 +41,80 @@
   },
   {
    "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 12,
+   "tail": "npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
    "cwd": "anchor",
    "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
    "exit": 0,
-   "secs": 3,
+   "secs": 2,
    "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
+   "cwd": "anchor",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 0,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp rebuild)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp rebuild)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
   },
   {
    "phase": "configure",
    "cwd": "anchor",
-   "cmd": "anchor@0.29.0 keys sync",
+   "cmd": "anchor@0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py",
    "exit": 0,
    "secs": 0,
-   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/seloongmun/anchor/programs/seloongmun/src/lib.rs\"\nUpdated to HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX\nFound incorrect program id declaration in Anchor.toml for the program `seloongmun`\nUpdated to HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX\nAll program id declarations are synced."
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/seloongmun/anchor/programs/seloongmun/src/lib.rs\"\nUpdated to A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr\nFound incorrect program id declaration in Anchor.toml for the program `seloongmun`\nUpdated to A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr\nAll program id declarations are synced."
   },
   {
    "phase": "build",
    "cwd": "anchor",
    "cmd": "anchor@0.29.0 build",
    "exit": 0,
-   "secs": 65,
-   "tail": "   Compiling anchor-attribute-access-control v0.29.0\n   Compiling anchor-attribute-program v0.29.0\n   Compiling anchor-derive-accounts v0.29.0\n   Compiling anchor-lang v0.29.0\n   Compiling seloongmun v0.1.0 (/tmp/scbuild/seloongmun/anchor/programs/seloongmun)\n    Finished release [optimized] target(s) in 1m 04s"
+   "secs": 68,
+   "tail": "   Compiling anchor-attribute-account v0.29.0\n   Compiling anchor-derive-serde v0.29.0\n   Compiling anchor-attribute-error v0.29.0\n   Compiling anchor-lang v0.29.0\n   Compiling seloongmun v0.1.0 (/tmp/scbuild/seloongmun/anchor/programs/seloongmun)\n    Finished release [optimized] target(s) in 1m 07s"
   },
   {
    "phase": "test",
    "cwd": "anchor",
    "cmd": "anchor@0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
-   "exit": 1,
-   "secs": 1,
-   "tail": "Found a 'test' script in the Anchor.toml. Running it as a test suite!\nRunning test suite: \"/tmp/scbuild/seloongmun/anchor/Anchor.toml\"\nFailed to run test: ../node_modules/.bin/nx run anchor:jest: No such file or directory (os error 2)\nError: ../node_modules/.bin/nx run anchor:jest\nCaused by:\n    No such file or directory (os error 2)"
+   "exit": 0,
+   "secs": 8,
+   "tail": "    \u2713 safe-vault-test (405 ms)\nTest Suites: 1 passed, 1 total\nTests:       3 passed, 3 total\nSnapshots:   0 total\nTime:        5.375 s, estimated 6 s\nRan all test suites."
   },
   {
    "phase": "deploy",
    "cwd": "anchor",
    "cmd": "solana airdrop 100 -u localhost >/dev/null; anchor@0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
-   "exit": 1,
-   "secs": 0,
-   "tail": "Upgrade authority: ~/.config/solana/id.json\nDeploying program \"seloongmun\"...\nProgram path: /tmp/scbuild/seloongmun/anchor/target/deploy/seloongmun.so...\nThere was a problem deploying: Output { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"\" }.\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)\nError: RPC request error: cluster version query failed: error sending request for url (http://127.0.0.1:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+   "exit": 0,
+   "secs": 5,
+   "tail": "Deploying cluster: http://127.0.0.1:8899\nUpgrade authority: ~/.config/solana/id.json\nDeploying program \"seloongmun\"...\nProgram path: /tmp/scbuild/seloongmun/anchor/target/deploy/seloongmun.so...\nProgram Id: A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr\nDeploy success"
   },
   {
    "phase": "verify",
    "cwd": "anchor",
-   "cmd": "solana program show HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX -u localhost && solana transaction-history HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX -u localhost --limit 20",
-   "exit": 1,
-   "secs": 0,
-   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
-  },
-  {
-   "phase": "install",
-   "cwd": ".",
-   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "cmd": "solana program show A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr -u localhost && solana transaction-history A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr -u localhost --limit 20",
    "exit": 0,
-   "secs": 17,
-   "tail": "npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+   "secs": 0,
+   "tail": "Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv\nLast Deployed In Slot: 14\nData Length: 228128 (0x37b20) bytes\nBalance: 1.58897496 SOL\n[REDACTED-KEY]\n1 transactions found"
   },
   {
    "phase": "build",
    "cwd": ".",
    "cmd": "npm run build",
    "exit": 1,
-   "secs": 18,
+   "secs": 21,
    "tail": "\u001b[0m \u001b[90m   | \u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 4 | \u001b[39m\u001b[36mimport\u001b[39m { \u001b[33mProgram\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'@coral-xyz/anchor'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 5 | \u001b[39m\u001b[36mimport\u001b[39m { useConnection } \u001b[36mfrom\u001b[39m \u001b[32m'@solana/wallet-adapter-react'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 6 | \u001b[39m\u001b[36mimport\u001b[39m { \u001b[33mCluster\u001b[39m\u001b[33m,\u001b[39m \u001b[33mKeypair\u001b[39m\u001b[33m,\u001b[39m \u001b[33mPublicKey\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'@solana/web3.js'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\nError occurred while trying to run the build command\n1"
   }
  ],
  "build": "fail",
- "test": "fail",
- "deploy": "fail",
+ "test": "pass",
+ "deploy": "pass",
  "status": "fails",
  "notes": ""
 }

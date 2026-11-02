@@ -1,0 +1,65 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/solstage-web.git /tmp/scbuild/solstage-web && git -C /tmp/scbuild/solstage-web checkout -q 28fe02dcd83a550a15552be6464abea6b5892c78)
+
+[exit 0, 4s]
+
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 856 packages in 11s
+npm warn install-scripts 6 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   esbuild@0.19.12 (postinstall: node install.js)
+npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)
+npm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 11s]
+
+$ (cd . && npm run build)
+
+> solstage-web@0.0.0 build
+> tsc && vite build
+
+vite v5.1.6 building for production...
+transforming...
+
+🌼   daisyUI 4.7.3
+├─ ✔︎ 2 themes added		https://daisyui.com/docs/themes
+╰─ ★ Star daisyUI on GitHub	https://github.com/saadeghi/daisyui
+
+✓ 9821 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                      0.48 kB │ gzip:   0.30 kB
+dist/assets/solstage-logo-RzsPpyc0.ico              56.87 kB
+dist/assets/solstage-logo-EZcQOWl0.png             786.34 kB
+dist/assets/account-detail-feature-D5UPnZ8d.css      0.12 kB │ gzip:   0.08 kB
+dist/assets/index-Dky0X_kN.css                      70.10 kB │ gzip:  11.22 kB
+dist/assets/account-list-feature-CiQi4lGK.js         0.29 kB │ gzip:   0.23 kB
+dist/assets/dashboard-feature--8aIne5A.js           95.28 kB │ gzip:  29.40 kB
+dist/assets/account-detail-feature-BVlncDd1.js     118.10 kB │ gzip:  38.12 kB
+dist/assets/index-DFC6AkFD.js                      178.99 kB │ gzip:  61.56 kB
+dist/assets/index-_LQB1XwD.js                    2,385.86 kB │ gzip: 627.31 kB
+✓ built in 18.37s
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+node_modules/vm-browserify/index.js (110:11): Use of eval in "node_modules/vm-browserify/index.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+node_modules/js-sha256/src/sha256.js (83:17): Use of eval in "node_modules/js-sha256/src/sha256.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+node_modules/js-sha256/src/sha256.js (84:17): Use of eval in "node_modules/js-sha256/src/sha256.js" is strongly discouraged as it poses security risks and may cause issues with minification.
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+
+[exit 0, 22s]
+
+$ (cd . && bash /workspace/sol-college/repo/tests/serve_probe.sh 3102 / npx vite preview --port 3102 --strictPort)
+GET http://localhost:3102/ -> 200
+<title>Solstage
+
+[exit 0, 2s]
