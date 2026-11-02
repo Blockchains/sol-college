@@ -35,6 +35,7 @@ VAL=None
 def validator(start):
   global VAL
   if VAL: VAL.terminate(); VAL.wait(); VAL=None
+  subprocess.run('pkill -f solana-test-validator',shell=True); time.sleep(3)
   if start:
     shutil.rmtree('/tmp/sc-ledger',ignore_errors=True)
     VAL=subprocess.Popen(['solana-test-validator','--reset','--quiet','--ledger','/tmp/sc-ledger'],env=ENV,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
@@ -76,6 +77,10 @@ def run(name,extra=None):
     if not ok: continue
     for kp in glob.glob(f'{ad}/target/deploy/*-keypair.json'): progids[os.path.basename(kp)[:-13]]=ver(f'solana address -k {kp}')
     if glob.glob(ad+'/tests/*.ts')+glob.glob(ad+'/tests/*.js'):
+      at=open(ad+'/Anchor.toml').read()
+      if 'metaqbxx' not in at and subprocess.run(f"grep -rqsE 'mpl-token-metadata|mpl_token_metadata|metaqbxx' {ad}/programs {ad}/tests",shell=True).returncode==0:
+        open(ad+'/Anchor.toml','a').write('\n[[test.genesis]]\naddress = "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"\nprogram = "'+os.path.expanduser('~/tbin/mpl_token_metadata.so')+'"\n')
+        r.steps.append(dict(phase='configure',cwd=a,cmd='add Metaplex Token Metadata to [[test.genesis]] in Anchor.toml (program bytes dumped read-only from a public cluster)',exit=0,secs=0,tail=''))
       tok,_=r.sh('test',f'{A} test --skip-build --provider.cluster localnet --provider.wallet {ENV["ANCHOR_WALLET"]}',a,timeout=1500)
       led=ad+'/.anchor/test-ledger' if tok else None
     else: led=None
