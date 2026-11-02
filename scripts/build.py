@@ -169,12 +169,12 @@ def dapp_verified(p):
   f=f"dapps/deployed/{p['slug']}.json"
   try: d=json.load(open(f)); return bool(d.get('devnet') and d.get('sigs'))
   except Exception: return False
-# New lessons go live only once their own dapp is verified on devnet with a real transaction (dapps/deployed/<slug>.json has sigs).
+# New lessons publish one per build whether or not their dapp is deployed yet; undeployed ones show an honest 'Devnet deploy pending' status
+# and flip to live automatically once dapps/autodeploy.sh writes dapps/deployed/<slug>.json (with real devnet tx sigs).
 new=[p for p in KEEP if f"/explore/{p['slug']}/" not in KNOWN]
-PENDING_DAPP=[p for p in new if not dapp_verified(p)]
-new=[p for p in new if dapp_verified(p)]
+PENDING_DAPP=[p for p in KEEP if not dapp_verified(p)]
 new.sort(key=lambda p:(-len(p['kx']),-len(p['sf']),-p['stars'],p['name']))
-WAIT=(new[BATCH:] if prev is not None else [])+PENDING_DAPP
+WAIT=new[BATCH:] if prev is not None else []
 KEEP=[p for p in KEEP if p not in WAIT]
 print('lessons kept:',len(KEEP),'awaiting dapp:',len(PENDING_DAPP),'waiting:',len(WAIT),'excluded:',dict(EXCL))
 TOTAL=len(P); P=KEEP
@@ -329,7 +329,7 @@ for pr in P:
     dh=dapp(pr)
     if not dh:
       QUEUE.append((pr['slug'],pr['fork'],pr['commit'],'anchor' if 'Anchor' in pr['frameworks'] else ('program' if progs else 'client')))
-      dh=f'<section class=note><h2>Dapp: deploying</h2><p>This fork is queued for its own live dapp on Sol.College, with a Devnet/Mainnet switch. It appears here, at <code>/dapps/{pr["slug"]}/</code>, once it is deployed and checked on devnet. Until then, run it locally with the commands below.</p></section>'
+      dh=f'<section class=note><h2>Dapp: devnet deploy pending</h2><p><b>⏳ Devnet deploy pending — goes live when the devnet wallet is topped up.</b> This fork&#39;s own dapp is not deployed yet, so there is no program address or transaction to show. It is queued in <a href="/dapp-queue.txt">dapp-queue.txt</a>; once devnet SOL is available it is deployed, exercised with real devnet transactions, and this section switches to the live dapp at <code>/dapps/{pr["slug"]}/</code>. Until then, the lesson and step-by-step guide below are complete, and you can run it locally with the commands below.</p></section>'
     body+=dh+mainnet_panel(re.sub(r'[^a-z0-9-]+','-',pr['name'].lower()))
     if kx: body+="<h2>Key code, explained</h2><p>Excerpts chosen automatically where the code uses the most Solana concepts, pinned to the fork's commit.</p>"+''.join(code(x) for x in kx)
     if cmds: body+="<h2>How to run, build and test</h2><p>These commands come from the repo's own manifests (package.json scripts, Anchor.toml, Cargo, go.mod, Makefile). Check the README for prerequisites and environment variables.</p><table class=tbl><thead><tr><th>Directory</th><th>Command</th><th>Runs</th></tr></thead><tbody>"+''.join(f'<tr><td><code>{E(d)}</code></td><td><code>{E(c)}</code></td><td>{E(x) if pr["permissive"] or not x else ""}</td></tr>' for d,c,x in cmds)+"</tbody></table>"
@@ -425,8 +425,8 @@ def qk(p):
   k='anchor' if 'Anchor' in p['frameworks'] else ('program' if any(r.endswith('src/lib.rs') for r,_ in files(p['name'],('lib.rs',))) else 'client')
   rs=sum(1 for r,_ in files(p['name'],('.rs',)) if 'programs/' in r or r.endswith('lib.rs'))
   return (RANK[k],rs,-p['stars']),k,rs
-QL=sorted(((qk(p),p) for p in PENDING_DAPP),key=lambda x:x[0][0])
-open(OUT+'/dapp-queue.txt','w').write('# Cheapest first (client-only, then smallest programs). slug fork commit kind rust_files. New lessons publish only after dapps/deployed/<slug>.json has devnet sigs.\n'+''.join(f"{p['slug']} {p['fork']} {p['commit']} {k} {rs}\n" for (_,k,rs),p in QL)+''.join(f'{a} {b} {c} {d} live-lesson\n' for a,b,c,d in QUEUE))
+QL=sorted(((qk(p),p) for p in PENDING_DAPP if p in WAIT),key=lambda x:x[0][0])
+open(OUT+'/dapp-queue.txt','w').write('# Cheapest first (client-only, then smallest programs). slug fork commit kind rust_files. Lessons publish regardless; these dapps show Devnet deploy pending until deployed.\n'+''.join(f"{p['slug']} {p['fork']} {p['commit']} {k} {rs}\n" for (_,k,rs),p in QL)+''.join(f'{a} {b} {c} {d} live-lesson\n' for a,b,c,d in QUEUE))
 open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Change | Project | URL |\n|---|---|---|---|\n'+''.join(f"| {x['published']} | {'updated: '+x.get('status','')+' build guide' if x.get('type')=='updated' else 'new'} | {x['project']} | {x['url']} |\n" for x in cur))
 page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
 '<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else (" <span class=chip>Live on mainnet</span>" if x.get("type")=="live-mainnet" else "")}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
