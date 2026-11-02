@@ -1,0 +1,101 @@
+{
+ "note": "Public addresses only. Send SOL to a dapp address to deploy that dapp to mainnet; otherwise it stays on devnet. Alpha, unaudited, high-risk software; no return of any kind is promised. Estimates: program rent for ~2x program size plus fees, +10% margin. Leftover SOL after a deploy is refunded only to the owner upgrade-authority address.",
+ "upgrade_authority": "4nuAMzhpAwTg5BeUVj2cWRYxGNMyQnKvR7jDiAhzSSWC",
+ "shared_wallet": {
+  "address": "92jSnFr37JpBucMW26pLCkKF4hpe8eCaXz6DBUF1EMeM",
+  "sol_needed_all": 26.74,
+  "note": "Fund everything at once: the watcher deploys dapps in this order while this balance covers the next one."
+ },
+ "rpc": "public mainnet-beta endpoint",
+ "dapps": [
+  {
+   "slug": "poe-solana",
+   "lesson": "/explore/poe-solana/",
+   "address": "Bhi4azbMaaqZsDkPXw8eXwpcARGZt1x99U8VQti8QjrU",
+   "devnet_twin": "Az5zvSzcC4b5UtCPswMqR3q1BVtSm2cMWwKT5A3jWSzj",
+   "program": "6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5",
+   "program_bytes": 551744,
+   "estimate_sol": 5.61,
+   "sol_needed": 6.17,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "valhalla",
+   "lesson": "/explore/valhalla/",
+   "address": "E5HdCUtB9Y1YmxEX6654jEqsHNza4S3jZrgyGAdf1LeB",
+   "devnet_twin": "CofzjwLHnMDEc1W6qDKWXHyMeTWuLnKTLmHf2NMmv5Nk",
+   "program": "8GWqUTMexNSAGRk455M5qBtDabP8BxxsGWkxeAjSWbCJ",
+   "program_bytes": 496824,
+   "estimate_sol": 5.05,
+   "sol_needed": 5.56,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "gree",
+   "lesson": "/explore/gree/",
+   "address": "8PxsLLHqCFbNSWaGthRN5HGM3CSL1WC42eJyT4Swkeia",
+   "devnet_twin": "9pAp4TQg9btXJ9zVcjKg1JfFfFfAFdTNvR6kVo4NMHfy",
+   "program": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+   "program_bytes": 282640,
+   "estimate_sol": 2.88,
+   "sol_needed": 3.17,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "predix",
+   "lesson": "/explore/predix/",
+   "address": "GQyAScXSWqLrz5RxevDCyc6CFeKdvLcWLGdS1ZnUgw3b",
+   "devnet_twin": "3nrA6tHdsFK5WCY56esgBMDtF1JahU7nrn5AezTQtGYw",
+   "program": "Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD",
+   "program_bytes": 240280,
+   "estimate_sol": 2.44,
+   "sol_needed": 2.68,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "mons-dot-rehab",
+   "lesson": "/explore/mons-dot-rehab/",
+   "address": "AuHuew3BoZdGFKijAggzo2xsN3LWS2JxTtTEngrb9Vvz",
+   "devnet_twin": "HLX5Jc8ePodygvosbL2WMLvTJxLMbb88GBnyDgyBuVbB",
+   "program": "EMAwPxwMDP76YB4yCva9DGgMbedEQjzduEiJXVgfGr4Z",
+   "program_bytes": 233648,
+   "estimate_sol": 2.38,
+   "sol_needed": 2.62,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "seloongmun",
+   "lesson": "/explore/seloongmun/",
+   "address": "2urEJ6nKqZfmawuMCKPYF6VGXdiG14VhfvQ19Wrh3NSV",
+   "devnet_twin": "4MWuVAs8QuTFEp38BRoC7mbnFHFcSwqtDS31fjCF83Yc",
+   "program": "A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr",
+   "program_bytes": 228128,
+   "estimate_sol": 2.32,
+   "sol_needed": 2.55,
+   "extra_to_use_sol": 6,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "kryptpay-solana-contract",
+   "lesson": "/explore/kryptpay-solana-contract/",
+   "address": "HUrgDoR4Eba3QYF9NK7BFyQedyvPWEyEyg3mRTqPn4c",
+   "devnet_twin": "Hn235uApfWUH6XZnAhpngF1Xf8uQ1G198383t6Y1qrMV",
+   "program": "4t7s1ip7eKcwytjwQMnCtf8nZ2RCTuBNxR7faFL7XoAV",
+   "program_bytes": 221480,
+   "estimate_sol": 2.25,
+   "sol_needed": 2.48,
+   "status": "Devnet only"
+  },
+  {
+   "slug": "sca",
+   "lesson": "/explore/sca/",
+   "address": "7wYkK9uMQFStwKz2inoFRq582hQpBQxp6M7n5CbxGFn5",
+   "devnet_twin": "3kKe39t4C7GB9Y4JhFJGf9oYpNm39jPHQDTzzqfWbaho",
+   "program": "4DYMdXX8KSE8s4vvgNkEsE6K3Q6YiQL8x6MYiwC3k8xH",
+   "program_bytes": 134584,
+   "estimate_sol": 1.37,
+   "sol_needed": 1.51,
+   "status": "Devnet only"
+  }
+ ]
+}

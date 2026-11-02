@@ -236,6 +236,27 @@ def static_dapp(sl):
   if not os.path.isdir(src): return ''
   shutil.copytree(src,f'{OUT}/dapps/{sl}',dirs_exist_ok=True)
   return f'''<section class=note><h2>Open the dapp</h2><p><a class=btn href="/dapps/{sl}/">Open the dapp</a> {E(STATIC_NOTE.get(sl,"The fork's own frontend, built unchanged except for its base path."))} Connect your own wallet; every transaction is signed in your wallet. Use devnet with free SOL from <a href="https://faucet.solana.com">faucet.solana.com</a>. <b>Mainnet uses real tokens: alpha software, high risk.</b></p><p>Built with <code>dapps/static_build.sh {sl}</code>.</p></section>'''
+MW=json.load(open('dapps/mainnet-wallets.json')) if os.path.exists('dapps/mainnet-wallets.json') else {'dapps':[]}
+MWD={d['slug']:d for d in MW['dapps']}
+if MW['dapps']:
+  os.makedirs(f'{OUT}/dapps',exist_ok=True); shutil.copy('dapps/mainnet-wallets.json',f'{OUT}/dapps/mainnet-wallets.json')
+MAINNET_JS='''<script>(function(){const RPC='https://api.mainnet-beta.solana.com';
+document.querySelectorAll('.golive:not([data-done])').forEach(async el=>{el.dataset.done=1;const a=el.dataset.addr,need=+el.dataset.need,st0=el.dataset.status;
+const q=s=>el.querySelector(s);q('.cp').onclick=()=>navigator.clipboard.writeText(a).then(()=>{q('.cp').textContent='Copied'});
+try{const r=await fetch(RPC,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:1,method:'getBalance',params:[a]})});const b=(await r.json()).result.value/1e9,p=Math.min(100,b/need*100);q('progress').value=p;q('.amt').textContent=b.toFixed(3)+' / '+need+' SOL ('+p.toFixed(0)+'%)';
+let st=st0;if(st==='Devnet only'&&b>0)st=b>=need?'Funded, deploying soon':'Funding';q('.st').textContent=st}catch(e){q('.amt').textContent='Could not read the mainnet balance right now.'}});})();</script>'''
+def mainnet_panel(sl):
+  d=MWD.get(sl)
+  if not d: return ''
+  qr=open(f'dapps/qr/{sl}.svg').read(); qr=qr[qr.index('<svg'):].replace('<svg ','<svg style="width:168px;height:168px;display:block" ',1)
+  live=f'<p><b>Live on mainnet:</b> program <a href="https://explorer.solana.com/address/{E(d["mainnet_program"])}"><code>{E(d["mainnet_program"])}</code></a></p>' if d.get('mainnet_program') else ''
+  extra=f' After deploy, it needs about {d["extra_to_use_sol"]} SOL more to actually be used.' if d.get('extra_to_use_sol') else ''
+  return f'''<section class="note golive" data-addr="{E(d['address'])}" data-need="{d['sol_needed']}" data-status="{E(d['status'])}"><h2>Go live on mainnet</h2>{live}
+<p>This dapp runs on <b>devnet</b> until its own mainnet wallet is funded. Send <b>{d['sol_needed']} SOL</b> (estimate incl. ~10% margin) to the address below and it deploys to mainnet automatically.{extra} Leftover SOL after deploy is refunded only to the owner wallet.</p>
+<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center"><div style="background:#fff;padding:6px;border-radius:6px" role=img aria-label="QR code of the funding address">{qr}</div>
+<div style="flex:1;min-width:240px"><p>Funding address:<br><code class=addr style="word-break:break-all;font-size:15px">{E(d['address'])}</code> <button class="btn cp" type=button>Copy</button></p>
+<p>Funding progress: <progress max=100 value=0 style="width:100%"></progress><br><span class=amt>reading mainnet balance...</span></p><p>Status: <b class=st>{E(d['status'])}</b></p></div></div>
+<div class=warn><b>Alpha, high-risk, unaudited software.</b> Funding pays only for deploying this program; it buys nothing and no return of any kind is promised. Mainnet uses real funds and you can lose what you send. Alternative: fund every dapp at once via <code>{E(MW['shared_wallet']['address'])}</code> ({MW['shared_wallet']['sol_needed_all']} SOL for all; <a href="/dapps/mainnet-wallets.json">registry</a>).</div>{MAINNET_JS}</section>'''
 def dapp(pr):
   sl=re.sub(r'[^a-z0-9-]+','-',pr['name'].lower()); f=f'dapps/deployed/{sl}.json'
   if os.path.isdir(f'dapps/static/{sl}'): return static_dapp(sl)
@@ -244,7 +265,7 @@ def dapp(pr):
   idls=[x for x in idls if not x.endswith('-keypair.json') and (not d.get('idl') or x.endswith(d['idl']))]
   if not d.get('devnet') or not idls: return ''
   o=f'{OUT}/dapps/{sl}/'; os.makedirs(o,exist_ok=True)
-  shutil.copy('dapps/app/index.html',o); shutil.copy('dapps/app/dist/app.js',o); shutil.copy(idls[0],o+'idl.json')
+  open(o+'index.html','w').write(open('dapps/app/index.html').read().replace('</body>','<div style="max-width:900px;margin:24px auto;padding:0 16px">'+mainnet_panel(sl)+'</div></body>')); shutil.copy('dapps/app/dist/app.js',o); shutil.copy(idls[0],o+'idl.json')
   json.dump(dict(name=pr['name'],fork=pr['fork'],commit=pr['commit'],lesson=f"/explore/{pr['slug']}/",programs=dict(devnet=d['devnet'],mainnet=d.get('mainnet'))),open(o+'config.json','w'))
   DAPPS[pr['name']]=d
   mn=f"Mainnet: upstream program <code>{E(d['mainnet'])}</code> (alpha, high risk, real funds)" if d.get('mainnet') else 'Mainnet: not yet deployed on mainnet (needs owner approval), so it is disabled'
@@ -302,7 +323,7 @@ for pr in P:
     if not dh:
       QUEUE.append((pr['slug'],pr['fork'],pr['commit'],'anchor' if 'Anchor' in pr['frameworks'] else ('program' if progs else 'client')))
       dh=f'<section class=note><h2>Dapp: deploying</h2><p>This fork is queued for its own live dapp on Sol.College, with a Devnet/Mainnet switch. It appears here, at <code>/dapps/{pr["slug"]}/</code>, once it is deployed and checked on devnet. Until then, run it locally with the commands below.</p></section>'
-    body+=dh
+    body+=dh+mainnet_panel(re.sub(r'[^a-z0-9-]+','-',pr['name'].lower()))
     if kx: body+="<h2>Key code, explained</h2><p>Excerpts chosen automatically where the code uses the most Solana concepts, pinned to the fork's commit.</p>"+''.join(code(x) for x in kx)
     if cmds: body+="<h2>How to run, build and test</h2><p>These commands come from the repo's own manifests (package.json scripts, Anchor.toml, Cargo, go.mod, Makefile). Check the README for prerequisites and environment variables.</p><table class=tbl><thead><tr><th>Directory</th><th>Command</th><th>Runs</th></tr></thead><tbody>"+''.join(f'<tr><td><code>{E(d)}</code></td><td><code>{E(c)}</code></td><td>{E(x) if pr["permissive"] or not x else ""}</td></tr>' for d,c,x in cmds)+"</tbody></table>"
     else: body+="<h2>How to run</h2><p>No package.json, Anchor.toml, Cargo.toml, go.mod or Makefile was found near the root. See the project README.</p>"
@@ -387,12 +408,15 @@ for pr in P:
   if res and not any(x.get('type')=='updated' and x['path']==pth and x.get('tested')==res['tested'] for x in prev):
     prev.append(dict(path=pth,url=SITE+pth,project=pr['name'],original=pr['original_name'],published=now,type='updated',tested=res['tested'],status=res['status']))
 live={f"/explore/{p['slug']}/" for p in P}
+for m in (json.load(open('dapps/mainnet-live.json')) if os.path.exists('dapps/mainnet-live.json') else []):
+  pth=f"/explore/{m['slug']}/"
+  if not any(x.get('type')=='live-mainnet' and x['path']==pth for x in prev): prev.append(dict(path=pth,url=SITE+pth,project=m['slug']+': Live on mainnet',original='mainnet program '+m['program'],published=m['published'],type='live-mainnet',program=m['program']))
 cur=[x for x in prev if x['path'] in live]; cur.sort(key=lambda x:x['published'],reverse=True)
 json.dump(prev,open(OUT+'/published.json','w'),indent=1)
 open(OUT+'/dapp-queue.txt','w').write('# slug fork commit kind: lessons without a live dapp yet, for dapps/deploy.py <slug> devnet\n'+''.join(f'{a} {b} {c} {d}\n' for a,b,c,d in QUEUE))
 open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Change | Project | URL |\n|---|---|---|---|\n'+''.join(f"| {x['published']} | {'updated: '+x.get('status','')+' build guide' if x.get('type')=='updated' else 'new'} | {x['project']} | {x['url']} |\n" for x in cur))
 page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
-'<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else ""}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
+'<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else (" <span class=chip>Live on mainnet</span>" if x.get("type")=="live-mainnet" else "")}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
 # ---------- legacy home preserved at /edge-ai/
 if os.path.exists('legacy/index.html'):
   t=open('legacy/index.html').read()
