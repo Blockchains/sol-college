@@ -1,0 +1,46 @@
+{
+ "name": "sca",
+ "slug": "sca",
+ "fork": "https://github.com/Blockchains/sca",
+ "commit": "699122f3f3d117d763ed286227ed026b9031d3c2",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [],
+ "program_ids": {
+  "sca": "FfqDdvxk1VJbc9XGDXqMRetnXWEpC2qZoKDDPisVUXSU"
+ },
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/sca.git /tmp/scbuild/sca && git -C /tmp/scbuild/sca checkout -q 699122f3f3d117d763ed286227ed026b9031d3c2",
+   "exit": 0,
+   "secs": 2,
+   "tail": ""
+  },
+  {
+   "phase": "run",
+   "cwd": ".",
+   "cmd": "bash /workspace/sol-college/repo/tests/flows/sca.sh",
+   "exit": 0,
+   "secs": 37,
+   "tail": "    at async Connection.sendRawTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:7992:20)\n    at async Connection.sendTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:7983:12)\n    at async sendAndConfirmTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:2155:21) {\n  logs: []\n}\nNode.js v24.22.1"
+  }
+ ],
+ "build": "none",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": "Native (non-Anchor) program. The repo's hardcoded program ID is swapped for a fresh local keypair, and the Pinata upload is stubbed because it needs a Pinata JWT."
+}

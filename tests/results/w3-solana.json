@@ -1,0 +1,44 @@
+{
+ "name": "w3-solana",
+ "slug": "w3-solana",
+ "fork": "https://github.com/Blockchains/w3-solana",
+ "commit": "4516015499860a2326345f4351b36f6853ad983f",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/w3-solana.git /tmp/scbuild/w3-solana && git -C /tmp/scbuild/w3-solana checkout -q 4516015499860a2326345f4351b36f6853ad983f",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "run",
+   "cwd": ".",
+   "cmd": "bash /workspace/sol-college/repo/tests/flows/w3-solana.sh",
+   "exit": 1,
+   "secs": 2,
+   "tail": "lock file version 4 requires `-Znext-lockfile-bump`\nError: Unable to open program file: No such file or directory (os error 2)"
+  }
+ ],
+ "build": "none",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": "The repo commits a sample signer private key (w3-uploader.yaml) and a keypair byte array (docker/Dockerfile). Never use or fund these; the flow generates throwaway keys. Gateway resolves <name>.w3sol.xyz Host headers; locally we send the Host header with curl."
+}

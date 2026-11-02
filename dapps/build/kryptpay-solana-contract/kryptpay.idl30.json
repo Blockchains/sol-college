@@ -1,0 +1,122 @@
+{
+  "address": "4t7s1ip7eKcwytjwQMnCtf8nZ2RCTuBNxR7faFL7XoAV",
+  "metadata": {
+    "name": "kryptpay",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "transfer_spl_tokens",
+      "discriminator": [
+        20,
+        18,
+        113,
+        207,
+        62,
+        6,
+        205,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "from",
+          "signer": true
+        },
+        {
+          "name": "from_ata",
+          "writable": true
+        },
+        {
+          "name": "to_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "krystal_token"
+        },
+        {
+          "name": "krystal_token_account"
+        },
+        {
+          "name": "platform_account",
+          "docs": [
+            "to which lamports are being transferred. Since the transfer operation",
+            "requires modifying the account data, it is necessary for this field",
+            "to be mutable. No additional checks through types are necessary for",
+            "this field as the safety of the operation is ensured by the program logic."
+          ]
+        },
+        {
+          "name": "associated_token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "transfer_lamports",
+      "discriminator": [
+        62,
+        53,
+        201,
+        68,
+        102,
+        134,
+        83,
+        103
+      ],
+      "accounts": [
+        {
+          "name": "from",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "to",
+          "docs": [
+            "to which lamports are being transferred. Since the transfer operation",
+            "requires modifying the account data, it is necessary for this field",
+            "to be mutable. No additional checks through types are necessary for",
+            "this field as the safety of the operation is ensured by the program logic."
+          ],
+          "writable": true
+        },
+        {
+          "name": "krystal_token_account"
+        },
+        {
+          "name": "to_ata"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program"
+        },
+        {
+          "name": "platform_account",
+          "docs": [
+            "to which lamports are being transferred. Since the transfer operation",
+            "requires modifying the account data, it is necessary for this field",
+            "to be mutable. No additional checks through types are necessary for",
+            "this field as the safety of the operation is ensured by the program logic."
+          ],
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ]
+}

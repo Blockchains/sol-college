@@ -7,9 +7,21 @@ $ (cd . && cp nextjs/.env.template nextjs/.env.local && sed -i 's#^RPC=.*#RPC=ht
 
 [exit 0, 0s]
 
+$ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 71 packages in 1s
+npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:
+npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
+npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
+npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
+npm warn install-scripts
+npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
+
+[exit 0, 1s]
+
 $ (cd nextjs && npm install --no-audit --no-fund --legacy-peer-deps)
 
-added 1013 packages in 13s
+added 1013 packages in 6m
 npm warn deprecated @walletconnect/types@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
 npm warn deprecated @walletconnect/mobile-registry@1.4.0: Deprecated in favor of dynamic registry available from: https://github.com/walletconnect/walletconnect-registry
 npm warn deprecated @toruslabs/openlogin-utils@3.0.0: Not supported. Pls upgrade
@@ -28,7 +40,13 @@ npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
 npm warn install-scripts
 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
 
-[exit 0, 13s]
+[exit 0, 339s]
+
+$ (cd relayer && npm install --no-audit --no-fund --legacy-peer-deps)
+
+added 128 packages in 651ms
+
+[exit 0, 1s]
 
 $ (cd nextjs && npm run build)
 
@@ -79,13 +97,7 @@ bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
 bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
 bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
 
-[exit 0, 20s]
-
-$ (cd relayer && npm install --no-audit --no-fund --legacy-peer-deps)
-
-added 128 packages in 1s
-
-[exit 0, 1s]
+[exit 0, 18s]
 
 $ (cd relayer && npm run build)
 
@@ -93,7 +105,7 @@ $ (cd relayer && npm run build)
 > npm install && npx tsc
 
 
-up to date, audited 129 packages in 1s
+up to date, audited 129 packages in 649ms
 
 17 packages are looking for funding
   run `npm fund` for details
@@ -105,9 +117,9 @@ To address all issues, run:
 
 Run `npm audit` for details.
 
-[exit 0, 4s]
+[exit 0, 151s]
 
 $ (cd nextjs && bash /workspace/sol-college/repo/tests/serve_probe.sh 3101 / npx next start -p 3101)
-GET http://127.0.0.1:3101/ -> 200
+GET http://localhost:3101/ -> 200
 
-[exit 0, 2s]
+[exit 0, 3s]

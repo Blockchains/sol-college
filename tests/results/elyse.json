@@ -27,7 +27,7 @@
    "cwd": "/tmp",
    "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/elyse.git /tmp/scbuild/elyse && git -C /tmp/scbuild/elyse checkout -q 77b39ebe97763dc1ab86b10699e99ba616ed8e28",
    "exit": 0,
-   "secs": 5,
+   "secs": 15,
    "tail": ""
   },
   {
@@ -39,20 +39,20 @@
    "tail": "npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   core-js@3.37.1 (postinstall: node -e \"try{require('./postinstall')}catch(e){}\")\nnpm warn install-scripts   core-js-pure@3.37.1 (postinstall: node -e \"try{require('./postinstall')}catch(e){}\")\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
   },
   {
-   "phase": "build",
-   "cwd": "elyse-app",
-   "cmd": "npm run build",
-   "exit": 0,
-   "secs": 8,
-   "tail": "You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.\nFor more info visit https://webpack.js.org/guides/code-splitting/\nwebpack 5.92.1 compiled with 3 warnings in 6963 ms\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
-  },
-  {
    "phase": "install",
    "cwd": "app_page",
    "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
    "exit": 0,
-   "secs": 3,
+   "secs": 4,
    "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": "elyse-app",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 9,
+   "tail": "You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.\nFor more info visit https://webpack.js.org/guides/code-splitting/\nwebpack 5.92.1 compiled with 3 warnings in 8219 ms\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
   },
   {
    "phase": "build",
@@ -60,7 +60,7 @@
    "cmd": "npm run build",
    "exit": 0,
    "secs": 1,
-   "tail": "> app_page@1.0.0 build\n> webpack --mode production\nasset solana.js 12.4 KiB [emitted] [javascript module] [minimized] (name: main) 1 related asset\n./app.js 20.7 KiB [built] [code generated]\nwebpack 5.91.0 compiled successfully in 746 ms"
+   "tail": "> app_page@1.0.0 build\n> webpack --mode production\nasset solana.js 12.4 KiB [emitted] [javascript module] [minimized] (name: main) 1 related asset\n./app.js 20.7 KiB [built] [code generated]\nwebpack 5.91.0 compiled successfully in 898 ms"
   },
   {
    "phase": "run",
@@ -68,7 +68,7 @@
    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3103 / python3 -m http.server 3103 -d dist",
    "exit": 0,
    "secs": 2,
-   "tail": "GET http://127.0.0.1:3103/ -> 200\n<title>React App"
+   "tail": "GET http://localhost:3103/ -> 200\n<title>React App"
   },
   {
    "phase": "run",
@@ -76,7 +76,7 @@
    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3104 / python3 -m http.server 3104",
    "exit": 0,
    "secs": 2,
-   "tail": "GET http://127.0.0.1:3104/ -> 200\n<title> ELYSE"
+   "tail": "GET http://localhost:3104/ -> 200\n<title> ELYSE"
   }
  ],
  "build": "pass",

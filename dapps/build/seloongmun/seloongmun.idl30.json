@@ -1,0 +1,235 @@
+{
+ "address": "A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr",
+ "metadata": {
+  "name": "seloongmun",
+  "version": "0.1.0",
+  "spec": "0.1.0"
+ },
+ "instructions": [
+  {
+   "name": "initialize",
+   "discriminator": [
+    175,
+    175,
+    109,
+    31,
+    13,
+    152,
+    155,
+    237
+   ],
+   "accounts": [
+    {
+     "name": "safe_vault",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         115,
+         97,
+         102,
+         101,
+         118,
+         97,
+         117,
+         108,
+         116
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "name": "seloongmun",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         115,
+         101,
+         108,
+         111,
+         111,
+         110,
+         103,
+         109,
+         117,
+         110
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "name": "signer",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "system_program"
+    }
+   ],
+   "args": []
+  },
+  {
+   "name": "draw",
+   "discriminator": [
+    61,
+    40,
+    62,
+    184,
+    31,
+    176,
+    24,
+    130
+   ],
+   "accounts": [
+    {
+     "name": "player",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "safe_vault",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         115,
+         97,
+         102,
+         101,
+         118,
+         97,
+         117,
+         108,
+         116
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "name": "seloongmun",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         115,
+         101,
+         108,
+         111,
+         111,
+         110,
+         103,
+         109,
+         117,
+         110
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "name": "system_program"
+    }
+   ],
+   "args": [
+    {
+     "name": "amount",
+     "type": "u64"
+    }
+   ]
+  }
+ ],
+ "accounts": [
+  {
+   "name": "Seloongmun",
+   "discriminator": [
+    185,
+    124,
+    14,
+    148,
+    197,
+    79,
+    92,
+    200
+   ]
+  },
+  {
+   "name": "SafeVault",
+   "discriminator": [
+    22,
+    13,
+    36,
+    41,
+    182,
+    47,
+    90,
+    219
+   ]
+  }
+ ],
+ "errors": [
+  {
+   "code": 6000,
+   "name": "NotEnoughBet",
+   "msg": "Your wallet should have at least double than your bet"
+  },
+  {
+   "code": 6001,
+   "name": "NotEnoughFund",
+   "msg": "You betting more than our pool"
+  }
+ ],
+ "types": [
+  {
+   "name": "Seloongmun",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "last_card",
+      "type": "u8"
+     },
+     {
+      "name": "left_pole",
+      "type": "u8"
+     },
+     {
+      "name": "right_pole",
+      "type": "u8"
+     },
+     {
+      "name": "deck",
+      "type": "u64"
+     }
+    ]
+   }
+  },
+  {
+   "name": "SafeVault",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "reserve_rate",
+      "type": "u8"
+     },
+     {
+      "name": "pool_amount",
+      "type": "u64"
+     }
+    ]
+   }
+  }
+ ]
+}

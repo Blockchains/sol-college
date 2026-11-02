@@ -1,0 +1,289 @@
+{
+  "address": "Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD",
+  "metadata": {
+    "name": "hello_anchor",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "init_analyst",
+      "discriminator": [
+        210,
+        90,
+        152,
+        80,
+        207,
+        187,
+        233,
+        131
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "analyst",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_insight",
+      "discriminator": [
+        255,
+        136,
+        100,
+        139,
+        120,
+        25,
+        56,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "insight",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "authority",
+          "type": "pubkey"
+        },
+        {
+          "name": "crypto_name",
+          "type": "string"
+        },
+        {
+          "name": "encrypted_content",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "participate",
+      "discriminator": [
+        71,
+        30,
+        209,
+        149,
+        172,
+        95,
+        73,
+        193
+      ],
+      "accounts": [
+        {
+          "name": "participant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "insight",
+          "writable": true
+        },
+        {
+          "name": "analyst"
+        },
+        {
+          "name": "participant_to_insight",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "participant_public_key",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "validate_insight",
+      "discriminator": [
+        75,
+        74,
+        204,
+        170,
+        231,
+        119,
+        167,
+        61
+      ],
+      "accounts": [
+        {
+          "name": "insight",
+          "writable": true
+        },
+        {
+          "name": "analyst",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "real_data",
+          "type": "string"
+        },
+        {
+          "name": "post_id",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "buy_post",
+      "discriminator": [
+        159,
+        252,
+        4,
+        170,
+        227,
+        72,
+        124,
+        31
+      ],
+      "accounts": [],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Analyst",
+      "discriminator": [
+        5,
+        109,
+        170,
+        179,
+        124,
+        13,
+        95,
+        86
+      ]
+    },
+    {
+      "name": "Insight",
+      "discriminator": [
+        206,
+        128,
+        249,
+        73,
+        82,
+        249,
+        235,
+        209
+      ]
+    },
+    {
+      "name": "ParticipantToInsight",
+      "discriminator": [
+        230,
+        163,
+        107,
+        228,
+        232,
+        240,
+        100,
+        39
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Analyst",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pub_key",
+            "type": "pubkey"
+          },
+          {
+            "name": "trust_point",
+            "type": "u8"
+          },
+          {
+            "name": "insight_count",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Insight",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "insight_id",
+            "type": "u32"
+          },
+          {
+            "name": "analyst",
+            "type": "pubkey"
+          },
+          {
+            "name": "encrypted_content",
+            "type": "string"
+          },
+          {
+            "name": "crypto_name",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "validated",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ParticipantToInsight",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "participant",
+            "type": "pubkey"
+          },
+          {
+            "name": "analyst_pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "encrypted_content",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

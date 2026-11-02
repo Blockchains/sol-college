@@ -1,0 +1,205 @@
+{
+  "version": "0.1.0",
+  "name": "hello_anchor",
+  "instructions": [
+    {
+      "name": "initAnalyst",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "analyst",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createInsight",
+      "accounts": [
+        {
+          "name": "signer",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "insight",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "authority",
+          "type": "publicKey"
+        },
+        {
+          "name": "cryptoName",
+          "type": "string"
+        },
+        {
+          "name": "encryptedContent",
+          "type": "string"
+        },
+        {
+          "name": "timestamp",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "participate",
+      "accounts": [
+        {
+          "name": "participant",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "insight",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "analyst",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "participantToInsight",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "participantPublicKey",
+          "type": "publicKey"
+        }
+      ]
+    },
+    {
+      "name": "validateInsight",
+      "accounts": [
+        {
+          "name": "insight",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "analyst",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "realData",
+          "type": "string"
+        },
+        {
+          "name": "postId",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "buyPost",
+      "accounts": [],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Analyst",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubKey",
+            "type": "publicKey"
+          },
+          {
+            "name": "trustPoint",
+            "type": "u8"
+          },
+          {
+            "name": "insightCount",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Insight",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "insightId",
+            "type": "u32"
+          },
+          {
+            "name": "analyst",
+            "type": "publicKey"
+          },
+          {
+            "name": "encryptedContent",
+            "type": "string"
+          },
+          {
+            "name": "cryptoName",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "validated",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ParticipantToInsight",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "participant",
+            "type": "publicKey"
+          },
+          {
+            "name": "analystPubkey",
+            "type": "publicKey"
+          },
+          {
+            "name": "encryptedContent",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}

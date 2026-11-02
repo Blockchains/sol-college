@@ -1,11 +1,11 @@
 
 $ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/solstage-web.git /tmp/scbuild/solstage-web && git -C /tmp/scbuild/solstage-web checkout -q 28fe02dcd83a550a15552be6464abea6b5892c78)
 
-[exit 0, 4s]
+[exit 0, 3s]
 
 $ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
 
-added 856 packages in 11s
+added 856 packages in 15s
 npm warn install-scripts 6 packages have install scripts not yet covered by allowScripts:
 npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo "Couldn't build bindings. Non-native version used.")
 npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)
@@ -16,7 +16,7 @@ npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
 npm warn install-scripts
 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
 
-[exit 0, 11s]
+[exit 0, 15s]
 
 $ (cd . && npm run build)
 
@@ -43,7 +43,7 @@ dist/assets/dashboard-feature--8aIne5A.js           95.28 kB │ gzip:  29.40 kB
 dist/assets/account-detail-feature-BVlncDd1.js     118.10 kB │ gzip:  38.12 kB
 dist/assets/index-DFC6AkFD.js                      178.99 kB │ gzip:  61.56 kB
 dist/assets/index-_LQB1XwD.js                    2,385.86 kB │ gzip: 627.31 kB
-✓ built in 18.37s
+✓ built in 16.48s
 Browserslist: caniuse-lite is outdated. Please run:
   npx update-browserslist-db@latest
   Why you should do it regularly: https://github.com/browserslist/update-db#readme
@@ -56,7 +56,7 @@ node_modules/js-sha256/src/sha256.js (84:17): Use of eval in "node_modules/js-sh
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 
-[exit 0, 22s]
+[exit 0, 20s]
 
 $ (cd . && bash /workspace/sol-college/repo/tests/serve_probe.sh 3102 / npx vite preview --port 3102 --strictPort)
 GET http://localhost:3102/ -> 200

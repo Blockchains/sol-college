@@ -1,0 +1,26 @@
+{
+ "slug": "gree",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <gree-keypair> gree.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Data Length: 282640 (0x45010) bytes",
+    "Balance: 1.43669004 SOL"
+   ]
+  }
+ ],
+ "program": "gree",
+ "idl": "gree.idl30.json",
+ "devnet": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+ "sigs": [
+  {
+   "label": "init_nft",
+   "sig": "3H2db8BzBkBiB13QE5SD6NqqB4mhcqPoUP7L4D55NngUcmq9HGQX1YxyScxn1xn6gGvXSH5LjLzyaRQq5s8EwVzC"
+  }
+ ],
+ "skipped": [],
+ "verified": "2026-11-02",
+ "mainnet": null
+}

@@ -1,0 +1,224 @@
+{
+ "address": "EMAwPxwMDP76YB4yCva9DGgMbedEQjzduEiJXVgfGr4Z",
+ "metadata": {
+  "name": "mons_dot_rehab",
+  "version": "0.1.0",
+  "spec": "0.1.0"
+ },
+ "instructions": [
+  {
+   "name": "create_game",
+   "discriminator": [
+    124,
+    69,
+    75,
+    66,
+    184,
+    220,
+    72,
+    206
+   ],
+   "accounts": [
+    {
+     "name": "game",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         103,
+         97,
+         109,
+         101
+        ]
+       },
+       {
+        "kind": "arg",
+        "path": "game_id"
+       }
+      ]
+     }
+    },
+    {
+     "name": "host",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "system_program"
+    }
+   ],
+   "args": [
+    {
+     "name": "game_id",
+     "type": "u64"
+    }
+   ]
+  },
+  {
+   "name": "join_game",
+   "discriminator": [
+    107,
+    112,
+    18,
+    38,
+    56,
+    173,
+    60,
+    128
+   ],
+   "accounts": [
+    {
+     "name": "game",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         103,
+         97,
+         109,
+         101
+        ]
+       },
+       {
+        "kind": "arg",
+        "path": "game_id"
+       }
+      ]
+     }
+    },
+    {
+     "name": "guest",
+     "signer": true
+    },
+    {
+     "name": "system_program"
+    }
+   ],
+   "args": [
+    {
+     "name": "game_id",
+     "type": "u64"
+    }
+   ]
+  },
+  {
+   "name": "end_game",
+   "discriminator": [
+    224,
+    135,
+    245,
+    99,
+    67,
+    175,
+    121,
+    252
+   ],
+   "accounts": [
+    {
+     "name": "game",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         103,
+         97,
+         109,
+         101
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "game.game_id",
+        "account": "Game"
+       }
+      ]
+     }
+    },
+    {
+     "name": "caller",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "verifier",
+     "signer": true
+    }
+   ],
+   "args": []
+  }
+ ],
+ "accounts": [
+  {
+   "name": "Game",
+   "discriminator": [
+    27,
+    90,
+    166,
+    125,
+    74,
+    100,
+    121,
+    18
+   ]
+  }
+ ],
+ "errors": [
+  {
+   "code": 6000,
+   "name": "GameNotFound",
+   "msg": "The specified game was not found."
+  },
+  {
+   "code": 6001,
+   "name": "GameAlreadyJoined",
+   "msg": "This game has already been joined."
+  },
+  {
+   "code": 6002,
+   "name": "GameAlreadyResolvedOrInsufficientFunds",
+   "msg": "The game has already been resolved or has insufficient funds."
+  },
+  {
+   "code": 6003,
+   "name": "Unauthorized",
+   "msg": "Unauthorized action."
+  },
+  {
+   "code": 6004,
+   "name": "AmountOverflow",
+   "msg": "Amount overflow."
+  }
+ ],
+ "types": [
+  {
+   "name": "Game",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "game_id",
+      "type": "u64"
+     },
+     {
+      "name": "host_id",
+      "type": "pubkey"
+     },
+     {
+      "name": "guest_id",
+      "type": "pubkey"
+     },
+     {
+      "name": "bump",
+      "type": "u8"
+     }
+    ]
+   }
+  }
+ ]
+}

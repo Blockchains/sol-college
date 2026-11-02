@@ -26,7 +26,7 @@
    "cwd": "/tmp",
    "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/solstage-web.git /tmp/scbuild/solstage-web && git -C /tmp/scbuild/solstage-web checkout -q 28fe02dcd83a550a15552be6464abea6b5892c78",
    "exit": 0,
-   "secs": 4,
+   "secs": 3,
    "tail": ""
   },
   {
@@ -34,7 +34,7 @@
    "cwd": ".",
    "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
    "exit": 0,
-   "secs": 11,
+   "secs": 15,
    "tail": "npm warn install-scripts   esbuild@0.19.12 (postinstall: node install.js)\nnpm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
   },
   {
@@ -42,7 +42,7 @@
    "cwd": ".",
    "cmd": "npm run build",
    "exit": 0,
-   "secs": 22,
+   "secs": 20,
    "tail": "node_modules/js-sha256/src/sha256.js (83:17): Use of eval in \"node_modules/js-sha256/src/sha256.js\" is strongly discouraged as it poses security risks and may cause issues with minification.\nnode_modules/js-sha256/src/sha256.js (84:17): Use of eval in \"node_modules/js-sha256/src/sha256.js\" is strongly discouraged as it poses security risks and may cause issues with minification.\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit."
   },
   {

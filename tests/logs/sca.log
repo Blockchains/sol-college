@@ -1,0 +1,32 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/sca.git /tmp/scbuild/sca && git -C /tmp/scbuild/sca checkout -q 699122f3f3d117d763ed286227ed026b9031d3c2)
+
+[exit 0, 2s]
+
+$ (cd . && bash /workspace/sol-college/repo/tests/flows/sca.sh)
+warning: `sca` (lib) generated 5 warnings (run `cargo fix --lib -p sca` to apply 5 suggestions)
+    Finished release [optimized] target(s) in 26.95s
+Program Id: FfqDdvxk1VJbc9XGDXqMRetnXWEpC2qZoKDDPisVUXSU
+
+PROGRAM sca FfqDdvxk1VJbc9XGDXqMRetnXWEpC2qZoKDDPisVUXSU
+Using seller cDj3ZH7wE3MZYJo4MpPpVtyTxTUtBdNW9jnT56us1Bs
+[REDACTED-KEY]
+1 transactions found
+
+bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)
+/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:8026
+      throw new SendTransactionError('failed to send transaction: ' + res.error.message, logs);
+            ^
+
+SendTransactionError: failed to send transaction: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.
+    at Connection.sendEncodedTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:8026:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Connection.sendRawTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:7992:20)
+    at async Connection.sendTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:7983:12)
+    at async sendAndConfirmTransaction (/tmp/scbuild/sca/test/node_modules/@solana/web3.js/lib/index.cjs.js:2155:21) {
+  logs: []
+}
+
+Node.js v24.22.1
+
+[exit 0, 37s]

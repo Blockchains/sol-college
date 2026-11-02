@@ -1,0 +1,54 @@
+{
+ "create_game.game": {
+  "seeds": [
+   {
+    "kind": "const",
+    "value": [
+     103,
+     97,
+     109,
+     101
+    ]
+   },
+   {
+    "kind": "arg",
+    "path": "game_id"
+   }
+  ]
+ },
+ "join_game.game": {
+  "seeds": [
+   {
+    "kind": "const",
+    "value": [
+     103,
+     97,
+     109,
+     101
+    ]
+   },
+   {
+    "kind": "arg",
+    "path": "game_id"
+   }
+  ]
+ },
+ "end_game.game": {
+  "seeds": [
+   {
+    "kind": "const",
+    "value": [
+     103,
+     97,
+     109,
+     101
+    ]
+   },
+   {
+    "kind": "account",
+    "path": "game.game_id",
+    "account": "Game"
+   }
+  ]
+ }
+}

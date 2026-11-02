@@ -1,0 +1,23 @@
+{
+ "slug": "kryptpay-solana-contract",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <kryptpay-keypair> kryptpay.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Program Id: 4t7s1ip7eKcwytjwQMnCtf8nZ2RCTuBNxR7faFL7XoAV"
+   ]
+  }
+ ],
+ "program": "kryptpay",
+ "idl": "kryptpay.idl30.json",
+ "devnet": "4t7s1ip7eKcwytjwQMnCtf8nZ2RCTuBNxR7faFL7XoAV",
+ "sigs": [],
+ "skipped": [
+  "transfer_spl_tokens: needs account from_ata",
+  "transfer_lamports: needs account to"
+ ],
+ "verified": "2026-11-02",
+ "mainnet": null
+}

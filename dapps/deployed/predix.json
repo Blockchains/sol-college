@@ -1,0 +1,37 @@
+{
+ "slug": "predix",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <predix-keypair> predix.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Data Length: 240280 (0x3aa98) bytes",
+    "Balance: 1.22150124 SOL"
+   ]
+  }
+ ],
+ "program": "predix",
+ "idl": "predix.idl30.json",
+ "devnet": "Ck2Y19mfRhoAVaBADQUNC7oGnycnM5jLAh23sFa8xUiD",
+ "sigs": [
+  {
+   "label": "init_analyst",
+   "sig": "5m59Pz1kGSefzKcidouXpWZHyQUk1UWpZBq9Nt4bBSC2xakgDdXFavJUEmbsUqhiC4P828nSn4fFGdjmzCfHS4y4"
+  },
+  {
+   "label": "create_insight",
+   "sig": "4LryS3vApuPttf1rHQ4VwHAV5cBNS2C1SoFuS4PKkm5JiaNJ2d5JyCZVjsivWuTCocmP9xs2rQTRWxKb8xcZxRE1"
+  },
+  {
+   "label": "buy_post",
+   "sig": "syCwnhvDjE2G27QxohS67X4cRguReLroFC4pTpVC7j7FX8WE1hz5MyKFpTjpBW81a78TS1gJxTN6BMNoi1GN6ym"
+  }
+ ],
+ "skipped": [
+  "participate: needs account insight",
+  "validate_insight: needs account insight"
+ ],
+ "verified": "2026-11-02",
+ "mainnet": null
+}

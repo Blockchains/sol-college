@@ -3,7 +3,7 @@ $ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/tok
 
 [exit 0, 4s]
 
-$ (cd . && npm pkg delete devDependencies.@pubkey-ui/generators)
+$ (cd . && npm pkg delete dependencies.@pubkey-ui/generators)
 npm warn Unknown project config "strict-peer-dependencies". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
 npm warn Unknown project config "auto-install-peers". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
 
@@ -19,18 +19,329 @@ Progress: resolved 1, reused 0, downloaded 0, added 0
  WARN  deprecated @solana-developers/preset-anchor@2.0.0: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
  WARN  deprecated eslint@8.56.0: This version is no longer supported. Please see https://eslint.org/version-support for other options.
  WARN  deprecated @apollo/server@4.13.0: Apollo Server v4 is end-of-life since January 26, 2026. As long as you are already using a non-EOL version of Node.js, upgrading to v5 should take only a few minutes. See https://www.apollographql.com/docs/apollo-server/previous-versions for details.
-Progress: resolved 97, reused 68, downloaded 0, added 0
+Progress: resolved 76, reused 75, downloaded 0, added 0
  WARN  deprecated passport-discord@0.1.4: This package is no longer maintained. Please consider migrating to a maintained alternative, (following packages are author unvetted) such as: discord-strategy, passport-discord-auth, ...
-Progress: resolved 159, reused 158, downloaded 0, added 0
- ERR_PNPM_FETCH_404  GET https://registry.npmjs.org/@pubkey-ui%2Fgenerators: Not Found - 404
+Progress: resolved 154, reused 151, downloaded 0, added 0
+Progress: resolved 217, reused 215, downloaded 0, added 0
+Progress: resolved 296, reused 295, downloaded 0, added 0
+Progress: resolved 438, reused 416, downloaded 1, added 0
+Progress: resolved 588, reused 557, downloaded 1, added 0
+Progress: resolved 872, reused 823, downloaded 1, added 0
+Progress: resolved 1087, reused 1039, downloaded 1, added 0
+Progress: resolved 1264, reused 1213, downloaded 1, added 0
+Progress: resolved 1404, reused 1356, downloaded 1, added 0
+Progress: resolved 1733, reused 1649, downloaded 1, added 0
+Progress: resolved 1897, reused 1815, downloaded 3, added 0
+Progress: resolved 2137, reused 2045, downloaded 3, added 0
+Progress: resolved 2223, reused 2132, downloaded 3, added 0
+Progress: resolved 2257, reused 2166, downloaded 3, added 0
+ WARN  29 deprecated subdependencies found: @apollo/server-gateway-interface@1.1.1, @apollo/server-plugin-landing-page-graphql-playground@4.0.0, @babel/plugin-proposal-class-properties@7.18.6, @babel/plugin-proposal-object-rest-spread@7.20.7, @graphql-tools/prisma-loader@8.0.17, @humanwhocodes/config-array@0.11.14, @humanwhocodes/object-schema@2.0.3, @solana-developers/preset-common@2.0.0, @types/minimatch@6.0.0, abab@2.0.6, are-we-there-yet@2.0.0, domexception@4.0.0, gauge@3.0.2, glob@7.1.4, glob@7.2.3, inflight@1.0.6, lodash.omit@4.5.0, multer@1.4.4-lts.1, node-domexception@1.0.0, npmlog@5.0.1, rimraf@3.0.2, sourcemap-codec@1.4.8, stable@0.1.8, subscriptions-transport-ws@0.11.0, tar@6.2.1, uuid@8.3.2, uuid@9.0.1, whatwg-encoding@2.0.0, xmldom@0.1.31
+Progress: resolved 2332, reused 2239, downloaded 5, added 0
+Packages: +2248
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 2332, reused 2239, downloaded 5, added 1520
+Progress: resolved 2332, reused 2239, downloaded 5, added 2247
+Progress: resolved 2332, reused 2239, downloaded 5, added 2248, done
+ WARN  Issues with peer dependencies found
+.
+├─┬ @swc-node/register 1.6.8
+│ └─┬ @swc-node/core 1.15.0
+│   └── ✕ unmet peer @swc/core@">= 1.13.3": found 1.3.102
+├─┬ @nestjs/graphql 12.2.2
+│ └─┬ subscriptions-transport-ws 0.11.0
+│   └─┬ ws 7.5.13
+│     └── ✕ unmet peer utf-8-validate@^5.0.2: found 6.0.6
+├─┬ @solana/wallet-adapter-react 0.15.40
+│ ├─┬ @solana/wallet-standard-wallet-adapter-react 1.1.8
+│ │ └─┬ @solana/wallet-standard-wallet-adapter-base 1.1.7
+│ │   ├── ✕ unmet peer bs58@^6.0.0: found 5.0.0
+│ │   └─┬ @solana/wallet-standard-util 1.2.0
+│ │     └─┬ @solana/addresses 8.6.0
+│ │       ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │       ├─┬ @solana/nominal-types 8.6.0
+│ │       │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │       ├─┬ @solana/assertions 8.6.0
+│ │       │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │       │ └─┬ @solana/errors 8.6.0
+│ │       │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │       └─┬ @solana/codecs-strings 8.6.0
+│ │         ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │         └─┬ @solana/codecs-numbers 8.6.0
+│ │           ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ │           └─┬ @solana/codecs-core 8.6.0
+│ │             └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│ └─┬ @solana-mobile/wallet-adapter-mobile 2.3.0
+│   └─┬ @solana-mobile/wallet-standard-mobile 0.6.0
+│     └─┬ @solana-mobile/mobile-wallet-adapter-protocol 2.3.0
+│       └─┬ @solana/kit 7.1.1
+│         ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/codecs 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/codecs-numbers 7.1.1
+│         │ │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ └─┬ @solana/codecs-core 7.1.1
+│         │ │   ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │   └─┬ @solana/errors 7.1.1
+│         │ │     └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/options 7.1.1
+│         │ │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ ├─┬ @solana/codecs-strings 7.1.1
+│         │ │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ └─┬ @solana/codecs-data-structures 7.1.1
+│         │ │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/fixed-points 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/rpc 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/functional 7.1.1
+│         │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/rpc-types 7.1.1
+│         │ │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ ├─┬ @solana/nominal-types 7.1.1
+│         │ │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ └─┬ @solana/addresses 7.1.1
+│         │ │   ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │   └─┬ @solana/assertions 7.1.1
+│         │ │     └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/rpc-spec-types 7.1.1
+│         │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/rpc-spec 7.1.1
+│         │ │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ └─┬ @solana/subscribable 7.1.1
+│         │ │   ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │   └─┬ @solana/promises 7.1.1
+│         │ │     └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/rpc-api 7.1.1
+│         │ │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ ├─┬ @solana/keys 7.1.1
+│         │ │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ ├─┬ @solana/rpc-parsed-types 7.1.1
+│         │ │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ ├─┬ @solana/rpc-transformers 7.1.1
+│         │ │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │ └─┬ @solana/transactions 7.1.1
+│         │ │   ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │   ├─┬ @solana/instructions 7.1.1
+│         │ │   │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ │   └─┬ @solana/transaction-messages 7.1.1
+│         │ │     └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/fast-stable-stringify 7.1.1
+│         │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/rpc-transport-http 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/signers 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/offchain-messages 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/sysvars 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/accounts 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/plugin-core 7.1.1
+│         │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/programs 7.1.1
+│         │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/instruction-plans 7.1.1
+│         │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/plugin-interfaces 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/rpc-subscriptions-spec 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/program-client-core 7.1.1
+│         │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/transaction-introspection 7.1.1
+│         │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         ├─┬ @solana/rpc-subscriptions 7.1.1
+│         │ ├── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ ├─┬ @solana/rpc-subscriptions-channel-websocket 7.1.1
+│         │ │ └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         │ └─┬ @solana/rpc-subscriptions-api 7.1.1
+│         │   └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+│         └─┬ @solana/transaction-confirmation 7.1.1
+│           └── ✕ unmet peer typescript@>=5.4.0: found 5.3.3
+└─┬ react-native 0.88.1
+  ├── ✕ unmet peer @types/react@^19.1.1: found 18.2.47
+  ├── ✕ unmet peer react@^19.3.0: found 18.2.0
+  └─┬ @react-native/virtualized-lists 0.88.1
+    └── ✕ unmet peer @types/react@^19.2.0: found 18.2.47
 
-This error happened while installing a direct dependency of /tmp/scbuild/tokengator
+dependencies:
++ @apollo/server 4.13.0 (5.5.1 is available) deprecated
++ @clack/prompts 0.7.0 (1.8.1 is available)
++ @coral-xyz/anchor 0.29.0 (0.32.1 is available)
++ @mantine/core 7.17.8 (9.7.4 is available)
++ @mantine/dates 7.17.8 (9.7.4 is available)
++ @mantine/form 7.17.8 (9.7.4 is available)
++ @mantine/hooks 7.17.8 (9.7.4 is available)
++ @mantine/modals 7.17.8 (9.7.4 is available)
++ @mantine/notifications 7.17.8 (9.7.4 is available)
++ @mrleebo/prisma-ast 0.8.1 (0.16.0 is available)
++ @nestjs/apollo 12.2.2 (14.1.2 is available)
++ @nestjs/common 10.3.0 (12.3.2 is available)
++ @nestjs/config 3.3.0 (12.0.1 is available)
++ @nestjs/core 10.3.0 (12.3.2 is available)
++ @nestjs/event-emitter 2.1.1 (12.0.1 is available)
++ @nestjs/graphql 12.2.2 (14.1.2 is available)
++ @nestjs/jwt 10.2.0 (12.0.3 is available)
++ @nestjs/passport 10.0.3 (12.0.0 is available)
++ @nestjs/platform-express 10.3.0 (12.3.2 is available)
++ @nestjs/schedule 4.1.2 (12.0.2 is available)
++ @nestjs/serve-static 4.0.2 (12.1.1 is available)
++ @nx/devkit 17.2.8 (24.0.3 is available)
++ @prisma/client 5.8.0 (7.10.1 is available)
++ @pubkey-program-library/sdk 1.7.1
++ @pubkey-ui/core 1.7.0
++ @pubkeyapp/solana-verify-wallet 1.3.3 (1.4.0-beta.0 is available)
++ @pubkeyapp/wallet-adapter-mantine-ui 2.4.3
++ @solana-developers/helpers 2.8.1
++ @solana/spl-token 0.4.15
++ @solana/spl-token-metadata 0.1.6
++ @solana/wallet-adapter-base 0.9.28
++ @solana/wallet-adapter-react 0.15.40
++ @solana/web3.js 1.99.0 (3.1.1 is available)
++ @swc/helpers 0.5.3 (0.5.23 is available)
++ @tabler/icons-react 2.47.0 (3.50.0 is available)
++ @tanstack/react-query 5.105.2
++ @yudiel/react-qr-scanner 2.0.0-beta.3 (2.6.0 is available)
++ axios 1.21.0
++ bcrypt 5.1.1 (6.0.0 is available)
++ bs58 5.0.0 (6.0.0 is available)
++ buffer 6.0.3
++ canvacord 6.0.4
++ clsx 2.1.0 (2.1.1 is available)
++ cookie-parser 1.4.7
++ dotenv 16.6.1 (18.0.9 is available)
++ express 4.22.3 (5.3.0 is available)
++ express-serve-static-core 0.1.1
++ express-session 1.19.0
++ graphql 16.14.2 (17.0.2 is available)
++ graphql-codegen-typescript-validation-schema 0.12.1 (0.19.0 is available)
++ graphql-scalars 1.26.0 (2.0.1 is available)
++ joi 17.13.9 (18.3.1 is available)
++ jotai 2.20.3 (3.0.1 is available)
++ linkify-react 4.4.0
++ linkifyjs 4.4.0
++ lru-cache 10.4.3 (11.5.3 is available)
++ mantine-datatable 7.17.1 (9.4.0 is available)
++ passport 0.7.0
++ passport-discord 0.1.4 deprecated
++ passport-github 1.1.0
++ passport-google-oauth20 2.0.0
++ passport-jwt 4.0.1
++ passport-twitter 1.0.4
++ prisma-extension-pagination 0.6.0 (0.7.6 is available)
++ prisma-field-encryption 1.6.0
++ react 18.2.0 (19.3.1 is available)
++ react-dom 18.2.0 (19.3.1 is available)
++ react-router-dom 6.21.1 (7.18.5 is available)
++ reflect-metadata 0.1.14 (0.2.2 is available)
++ rxjs 7.8.2
++ satori 0.10.14 (0.63.2 is available)
++ sharp 0.33.5 (0.35.5 is available)
++ slugify 1.6.9
++ text-to-svg 3.1.5
++ timeago-react 3.0.7
++ tslib 2.9.1
++ tweetnacl 1.0.3
++ zod 3.25.76 (4.6.7 is available)
 
-@pubkey-ui/generators is not in the npm registry, or you have no permission to fetch it.
+devDependencies:
++ @47ng/cloak 1.2.0
++ @babel/core 7.29.7 (8.1.0 is available)
++ @babel/preset-react 7.29.7 (8.0.1 is available)
++ @graphql-codegen/add 5.0.3 (7.1.1 is available)
++ @graphql-codegen/cli 5.0.0 (7.4.6 is available)
++ @graphql-codegen/typescript 4.0.1 (6.1.2 is available)
++ @graphql-codegen/typescript-document-nodes 4.0.1 (6.1.1 is available)
++ @graphql-codegen/typescript-graphql-request 6.4.0 (7.1.0 is available)
++ @graphql-codegen/typescript-operations 4.6.1 (6.2.0 is available)
++ @nestjs/schematics 10.1.0 (12.0.12 is available)
++ @nestjs/testing 10.3.0 (12.3.2 is available)
++ @nx/cypress 17.2.8 (24.0.3 is available)
++ @nx/eslint 17.2.8 (24.0.3 is available)
++ @nx/eslint-plugin 17.2.8 (24.0.3 is available)
++ @nx/jest 17.2.8 (24.0.3 is available)
++ @nx/js 17.2.8 (24.0.3 is available)
++ @nx/nest 17.2.8 (24.0.3 is available)
++ @nx/node 17.2.8 (24.0.3 is available)
++ @nx/plugin 17.2.8 (24.0.3 is available)
++ @nx/react 17.2.8 (24.0.3 is available)
++ @nx/rollup 17.2.8 (24.0.3 is available)
++ @nx/webpack 17.2.8 (24.0.3 is available)
++ @nx/workspace 17.2.8 (24.0.3 is available)
++ @parcel/watcher 2.6.0
++ @pmmmwh/react-refresh-webpack-plugin 0.5.17 (0.6.3 is available)
++ @solana-developers/preset-anchor 2.0.0 (3.1.0 is available) deprecated
++ @svgr/webpack 8.1.0
++ @swc-node/register 1.6.8 (1.12.1 is available)
++ @swc/cli 0.1.65 (0.8.2 is available)
++ @swc/core 1.3.102 (1.16.21 is available)
++ @swc/jest 0.2.29 (0.2.39 is available)
++ @testing-library/react 14.1.2 (16.3.3 is available)
++ @types/bcrypt 5.0.2 (6.0.0 is available)
++ @types/jest 29.5.14 (30.0.0 is available)
++ @types/node 20.10.8 (26.6.6 is available)
++ @types/passport-discord 0.1.16
++ @types/passport-github 1.1.14
++ @types/passport-google-oauth20 2.0.17
++ @types/passport-jwt 4.0.1
++ @types/passport-twitter 1.0.40
++ @types/pluralize 0.0.33
++ @types/react 18.2.47 (19.3.0 is available)
++ @types/react-dom 18.2.18 (19.3.0 is available)
++ @types/text-to-svg 3.1.4
++ @typescript-eslint/eslint-plugin 6.18.1 (8.72.1 is available)
++ @typescript-eslint/parser 6.18.1 (8.72.1 is available)
++ babel-jest 29.7.0 (30.5.2 is available)
++ core-js 3.51.0
++ cypress 13.17.0 (16.2.1 is available)
++ dayjs 1.11.23
++ en-inflectors 1.0.12
++ eslint 8.56.0 (10.14.0 is available) deprecated
++ eslint-config-prettier 9.1.0 (10.1.8 is available)
++ eslint-plugin-cypress 2.15.1 (7.0.2 is available)
++ eslint-plugin-import 2.29.1 (2.32.0 is available)
++ eslint-plugin-jsx-a11y 6.8.0 (6.10.2 is available)
++ eslint-plugin-react 7.33.2 (7.37.5 is available)
++ eslint-plugin-react-hooks 4.6.0 (7.1.1 is available)
++ graphql-request 6.1.0 (7.4.0 is available)
++ graphql-tag 2.12.7
++ husky 8.0.3 (9.1.7 is available)
++ jest 29.7.0 (30.5.2 is available)
++ jest-environment-jsdom 29.7.0 (30.5.2 is available)
++ jest-environment-node 29.7.0 (30.5.2 is available)
++ lint-staged 15.5.2 (17.6.0 is available)
++ localtunnel 2.0.2
++ nx 17.2.8 (24.0.3 is available)
++ pg 8.23.1
++ pluralize 8.0.0
++ postcss 8.5.32
++ postcss-preset-mantine 1.18.0
++ postcss-simple-vars 7.0.1
++ prettier 2.8.8 (3.9.10 is available)
++ prisma 5.22.0 (8.0.0-rc.29 is available)
++ react-refresh 0.14.2 (0.19.0 is available)
++ ts-jest 29.4.15
++ ts-morph 21.0.1 (28.0.0 is available)
++ ts-node 10.9.2
++ typescript 5.3.3 (7.0.2 is available)
++ url-loader 4.1.1
++ webpack 5.112.2
 
-No authorization header was set for the request.
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @apollo/protobufjs@1.2.8, @nestjs/core@10.3.0,      │
+│   @parcel/watcher@2.6.0, @prisma/client@5.8.0, @prisma/engines@5.22.0,       │
+│   @swc/core@1.3.102, bcrypt@5.1.1, bigint-buffer@1.1.5, bufferutil@4.1.0,    │
+│   core-js-pure@3.51.0, core-js@3.51.0, cypress@13.17.0, nx@17.1.3,           │
+│   nx@17.2.8, prisma@5.22.0, sharp@0.33.5, utf-8-validate@6.0.6.              │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 20.3s using pnpm v10.34.6
 
-[exit 1, 3s]
+[exit 0, 21s]
 
 $ (cd . && pnpm run build)
 
@@ -41,15 +352,155 @@ $ (cd . && pnpm run build)
 > @tokengator/source@0.0.0 build:web /tmp/scbuild/tokengator
 > nx build web
 
- ELIFECYCLE  Command failed.
- WARN   Local package.json exists, but node_modules missing, did you mean to install?
- ELIFECYCLE  Command failed with exit code 1.
- WARN   Local package.json exists, but node_modules missing, did you mean to install?
-sh: 1: nx: not found
 
-[exit 1, 1s]
+ >  NX   Nx Cloud manually disabled
+
+   Nx will continue running, but nothing will be written or read from the remote cache.
+   Run details will also not be available in the Nx Cloud UI.
+   
+   If this wasn't intentional, check for the NX_NO_CLOUD environment variable or the --no-cloud flag.
+
+
+ >  NX   --skip-nx-cache disables the connection to Nx Cloud for the current run.
+
+   The remote cache will not be read from or written to during this run.
+
+
+ >  NX   Running target build for project web and 1 task it depends on:
+
+ 
+
+> nx run sdk:build
+
+Compiling TypeScript files for project "sdk"...
+Done compiling TypeScript files for project "sdk".
+
+> nx run web:build:production
+
+Entrypoint [1mmain[39m[22m [1m[33m[big][39m[22m 1.77 MiB = [1m[32mruntime.f7604c8d5d17af2c.js[39m[22m 5.85 KiB [1m[32mmain.3fbb60848536a418.css[39m[22m 230 KiB [1m[32mmain.019c9fae833f42b1.js[39m[22m 1.54 MiB
+Entrypoint [1mstyles[39m[22m 6.06 KiB = [1m[32mruntime.f7604c8d5d17af2c.js[39m[22m 5.85 KiB [1m[32mstyles.d4aabf12dfc92a14.css[39m[22m 125 bytes [1m[32mstyles.cd10681c4f906b96.js[39m[22m 94 bytes
+chunk (runtime: runtime) [1m[32m164.3f1cc98cc376d345.js[39m[22m 12.6 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m356.6ca05b1353a484ba.js[39m[22m 25 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m822.b572aa02a3f14ee4.js[39m[22m 18.4 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m935.19d490300cbe3eca.js[39m[22m 34.2 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1111.47d7068e4d204d8d.js[39m[22m 640 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1233.df952d1504513633.js[39m[22m 24.1 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1646.47e3368554676224.js[39m[22m 32.5 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1840.223380ef724c1f28.js[39m[22m 32.5 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32mstyles.d4aabf12dfc92a14.css[39m[22m, [1m[32mstyles.cd10681c4f906b96.js[39m[22m (styles) 50 bytes (javascript) 147 bytes (css/mini-extract) [1m[33m[initial][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1904.d9526e02c4989d90.js[39m[22m 18.3 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m1982.0f0ccac3495e3c35.js[39m[22m, [1m[32m1982.38115cbc0cf95a95.css[39m[22m 48 KiB (javascript) 9.28 KiB (css/mini-extract) [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2278.cfd0b60c81d712e8.js[39m[22m 33.3 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2334.dfd6f5031368cfe8.js[39m[22m 34.9 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2630.31e95fc2dc2a9ea6.js[39m[22m 24.8 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2693.4adc9e3af2aaaded.js[39m[22m (id hint: vendors) 439 KiB [1m[32m[rendered][39m[22m [1m[33msplit chunk (cache group: defaultVendors)[39m[22m
+chunk (runtime: runtime) [1m[32m2758.6373787f9a7207f6.js[39m[22m 12.9 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2932.780c463e717f2a52.js[39m[22m 746 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m2953.2f1aa948aa437eb6.js[39m[22m 8.26 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m3057.7dd235ed3b3df3b7.js[39m[22m 43.4 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m3291.4bf8f286b048bced.js[39m[22m 64.1 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m3484.32799570769a7a38.js[39m[22m 32.5 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m3992.6719d645ac39bc61.js[39m[22m 6 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m4047.c0ba3b4f8ccbaed2.js[39m[22m 709 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m4233.f14c67d7973f2585.js[39m[22m 486 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m4308.1cbee6f80022537d.js[39m[22m 4.53 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m4446.1a688dd56aaf0ebe.js[39m[22m 17.6 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5093.df7b275a76b08b5f.js[39m[22m 726 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5262.7aaecac7866f3dc5.js[39m[22m 13.1 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5486.b54f37ed2e405d5e.js[39m[22m 10.2 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5520.ea9805d6a0869d90.js[39m[22m 1.68 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5731.fa41964891abd055.js[39m[22m 419 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m5758.96ccb9eef2a4c1cf.js[39m[22m 28.4 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6039.0bee8dcede7a500c.js[39m[22m 724 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6186.99862dba47527c6a.js[39m[22m 24.1 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6332.d80d4990a13fb95b.js[39m[22m 34.1 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6411.26d80aefd0d3cdef.js[39m[22m 779 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6496.74d8440fee354b9a.js[39m[22m 36.6 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m6858.f45f5c0d4f4d62f7.js[39m[22m 24.5 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m7213.db5b0164b3e12c35.js[39m[22m 25.8 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m7471.f1e403970ace2507.js[39m[22m 671 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m7660.2c08845fddc9a1c3.js[39m[22m 13.6 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m7886.f31664602f338913.js[39m[22m 4.87 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m7933.d5251f197af4ceff.js[39m[22m 373 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8019.c1649629f40929bc.js[39m[22m 1.52 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8039.696faf8a1358ef57.js[39m[22m 729 bytes [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8236.85b861ef103d2e86.js[39m[22m 4.35 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8378.00b7b2db5a89f382.js[39m[22m 19.9 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8393.a9b3eb41e0ad4ef6.js[39m[22m 2.34 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8584.731e7c262271cf69.js[39m[22m 28.2 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8606.f49022ea14b0d3eb.js[39m[22m 23.9 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8610.c8bc6678767bca1c.js[39m[22m 32.9 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32mmain.3fbb60848536a418.css[39m[22m, [1m[32mmain.019c9fae833f42b1.js[39m[22m (main) 4.89 MiB (javascript) 268 KiB (css/mini-extract) [1m[33m[initial][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m8952.1646f4f9a7068601.js[39m[22m 4.63 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32mruntime.f7604c8d5d17af2c.js[39m[22m (runtime) 13.2 KiB [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m9367.075970ba3a6a322e.js[39m[22m 34.4 KiB [1m[32m[rendered][39m[22m
+chunk (runtime: runtime) [1m[32m9385.00018c910a3486f0.js[39m[22m 9.51 KiB [1m[32m[rendered][39m[22m
+webpack compiled [1m[32msuccessfully[39m[22m (b85c9dbb80d94f24)
+
+ 
+
+ >  NX   Successfully ran target build for project web and 1 task it depends on
+
+
+Prisma schema loaded from prisma/schema.prisma
+
+✔ Generated Prisma Client (v5.8.0) to ./node_modules/.pnpm/@prisma+client@5.8.0_prisma@5.22.0/node_modules/@prisma/client in 113ms
+
+Start by importing your Prisma Client (See: https://pris.ly/d/importing-client)
+
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+
+warn Versions of prisma@5.22.0 and @prisma/client@5.8.0 don't match.
+This might lead to unexpected behavior.
+Please make sure they have the same version.
+
+> @tokengator/source@0.0.0 build:api /tmp/scbuild/tokengator
+> nx build api
+
+
+ >  NX   Nx Cloud manually disabled
+
+   Nx will continue running, but nothing will be written or read from the remote cache.
+   Run details will also not be available in the Nx Cloud UI.
+   
+   If this wasn't intentional, check for the NX_NO_CLOUD environment variable or the --no-cloud flag.
+
+
+ >  NX   --skip-nx-cache disables the connection to Nx Cloud for the current run.
+
+   The remote cache will not be read from or written to during this run.
+
+
+> nx run api:build:production
+
+chunk (runtime: main) [1m[32mmain.js[39m[22m (main) 552 KiB [1m[33m[entry][39m[22m [1m[32m[rendered][39m[22m
+webpack compiled [1m[32msuccessfully[39m[22m (e8ab27342d540d6d)
+
+ 
+
+ >  NX   Successfully ran target build for project api
+
+
+Option "isolatedConfig" is deprecated: Automatic configuration of Webpack is deprecated in favor of an explicit 'webpack.config.js' file. This option will be removed in Nx 18. See https://nx.dev/recipes/webpack/webpack-config-setup.
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.29                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+Option "isolatedConfig" is deprecated: Automatic configuration of Webpack is deprecated in favor of an explicit 'webpack.config.js' file. This option will be removed in Nx 18. See https://nx.dev/recipes/webpack/webpack-config-setup.
+
+[exit 0, 32s]
 
 $ (cd . && bash /workspace/sol-college/repo/tests/flows/tokengator.sh)
-/workspace/sol-college/repo/tests/flows/tokengator.sh: line 5: /usr/lib/postgresql/17/bin/initdb: No such file or directory
+2
+🚀  Your database is now in sync with your Prisma schema. Done in 77ms
 
-[exit 127, 0s]
+uptime:
+
+[exit 7, 183s]

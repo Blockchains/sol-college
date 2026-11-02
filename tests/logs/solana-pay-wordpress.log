@@ -3,9 +3,13 @@ $ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/sol
 
 [exit 0, 3s]
 
+$ (cd . && npm pkg set devDependencies.typescript=^5)
+
+[exit 0, 0s]
+
 $ (cd . && npm install --no-audit --no-fund --legacy-peer-deps)
 
-added 969 packages in 5s
+added 970 packages in 13s
 npm warn deprecated @walletconnect/types@1.8.0: WalletConnect's v1 SDKs are now deprecated. Please upgrade to a v2 SDK. For details see: https://docs.walletconnect.com/
 npm warn deprecated @walletconnect/mobile-registry@1.4.0: Deprecated in favor of dynamic registry available from: https://github.com/walletconnect/walletconnect-registry
 npm warn deprecated @toruslabs/openlogin-utils@3.0.0: Not supported. Pls upgrade
@@ -24,22 +28,39 @@ npm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)
 npm warn install-scripts
 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
 
-[exit 0, 5s]
+[exit 0, 14s]
 
 $ (cd . && npm run build)
 
 > solana-pay-wordpress@0.0.1 build
 > webpack --mode production
 
-assets by status 394 bytes [cached] 1 asset
-./core/includes/assets/js/backend-scripts.tsx 39 bytes [built] [code generated] [1 error]
+asset bundle.js 588 KiB [emitted] [minimized] [big] (name: main) 1 related asset
+orphan modules 227 KiB [orphan] 34 modules
+runtime modules 1.07 KiB 6 modules
+modules by path ./node_modules/ 1.35 MiB 134 modules
+modules by path ./core/includes/assets/js/*.tsx 14.5 KiB
+  ./core/includes/assets/js/backend-scripts.tsx 1.99 KiB [built] [code generated]
+  ./core/includes/assets/js/solana-pay-button.tsx 8.25 KiB [built] [code generated]
+  ./core/includes/assets/js/solana-pay-container.tsx 742 bytes [built] [code generated]
+  ./core/includes/assets/js/solana-wallet.tsx 3.58 KiB [built] [code generated]
+buffer (ignored) 15 bytes [optional] [built] [code generated]
 
-ERROR in ./core/includes/assets/js/backend-scripts.tsx
-Module build failed (from ./node_modules/ts-loader/index.js):
-Error: Could not load TypeScript. Try installing with `yarn add typescript` or `npm install typescript`. If TypeScript is installed globally, try using `yarn link typescript` or `npm link typescript`.
-    at Object.loader (/tmp/scbuild/solana-pay-wordpress/node_modules/ts-loader/dist/index.js:18:18)
+WARNING in asset size limit: The following asset(s) exceed the recommended size limit (244 KiB).
+This can impact web performance.
+Assets: 
+  bundle.js (588 KiB)
 
-webpack 5.91.0 compiled with 1 error in 173 ms
+WARNING in entrypoint size limit: The following entrypoint(s) combined asset size exceeds the recommended limit (244 KiB). This can impact web performance.
+Entrypoints:
+  main (588 KiB)
+      bundle.js
+
+WARNING in webpack performance recommendations: 
+You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.
+For more info visit https://webpack.js.org/guides/code-splitting/
+
+webpack 5.91.0 compiled with 3 warnings in 6287 ms
 Failed to load ./.env.
 
-[exit 1, 1s]
+[exit 0, 7s]

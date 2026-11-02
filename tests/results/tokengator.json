@@ -32,7 +32,7 @@
   {
    "phase": "configure",
    "cwd": ".",
-   "cmd": "npm pkg delete devDependencies.@pubkey-ui/generators",
+   "cmd": "npm pkg delete dependencies.@pubkey-ui/generators",
    "exit": 0,
    "secs": 0,
    "tail": "npm warn Unknown project config \"strict-peer-dependencies\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.\nnpm warn Unknown project config \"auto-install-peers\". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options."
@@ -49,30 +49,30 @@
    "phase": "install",
    "cwd": ".",
    "cmd": "pnpm install --no-frozen-lockfile",
-   "exit": 1,
-   "secs": 3,
-   "tail": "\u2009WARN\u2009 deprecated passport-discord@0.1.4: This package is no longer maintained. Please consider migrating to a maintained alternative, (following packages are author unvetted) such as: discord-strategy, passport-discord-auth, ...\nProgress: resolved 159, reused 158, downloaded 0, added 0\n\u2009ERR_PNPM_FETCH_404\u2009 GET https://registry.npmjs.org/@pubkey-ui%2Fgenerators: Not Found - 404\nThis error happened while installing a direct dependency of /tmp/scbuild/tokengator\n@pubkey-ui/generators is not in the npm registry, or you have no permission to fetch it.\nNo authorization header was set for the request."
+   "exit": 0,
+   "secs": 21,
+   "tail": "\u2502   nx@17.2.8, prisma@5.22.0, sharp@0.33.5, utf-8-validate@6.0.6.              \u2502\n\u2502   Run \"pnpm approve-builds\" to pick which dependencies should be allowed     \u2502\n\u2502   to run scripts.                                                            \u2502\n\u2502                                                                              \u2502\n\u2570\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u256f\nDone in 20.3s using pnpm v10.34.6"
   },
   {
    "phase": "build",
    "cwd": ".",
    "cmd": "pnpm run build",
-   "exit": 1,
-   "secs": 1,
-   "tail": "> nx build web\n\u2009ELIFECYCLE\u2009 Command failed.\n\u2009WARN\u2009  Local package.json exists, but node_modules missing, did you mean to install?\n\u2009ELIFECYCLE\u2009 Command failed with exit code 1.\n\u2009WARN\u2009  Local package.json exists, but node_modules missing, did you mean to install?\nsh: 1: nx: not found"
+   "exit": 0,
+   "secs": 32,
+   "tail": "\u2502                                                         \u2502\n\u2502  Run the following to update                            \u2502\n\u2502    npm i --save-dev prisma@latest                       \u2502\n\u2502    npm i @prisma/client@latest                          \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\nOption \"isolatedConfig\" is deprecated: Automatic configuration of Webpack is deprecated in favor of an explicit 'webpack.config.js' file. This option will be removed in Nx 18. See https://nx.dev/recipes/webpack/webpack-config-setup."
   },
   {
    "phase": "run",
    "cwd": ".",
    "cmd": "bash /workspace/sol-college/repo/tests/flows/tokengator.sh",
-   "exit": 127,
-   "secs": 0,
-   "tail": "/workspace/sol-college/repo/tests/flows/tokengator.sh: line 5: /usr/lib/postgresql/17/bin/initdb: No such file or directory"
+   "exit": 7,
+   "secs": 183,
+   "tail": "2\n\ud83d\ude80  Your database is now in sync with your Prisma schema. Done in 77ms\nuptime:"
   }
  ],
- "build": "fail",
+ "build": "pass",
  "test": "none",
  "deploy": "none",
- "status": "fails",
+ "status": "builds",
  "notes": "Postgres 17 runs locally on port 5433. The fee payer is a throwaway keypair generated per run."
 }

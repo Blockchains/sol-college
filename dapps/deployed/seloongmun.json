@@ -1,0 +1,24 @@
+{
+ "slug": "seloongmun",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <seloongmun-keypair> seloongmun.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Data Length: 228128 (0x37b20) bytes",
+    "Balance: 1.15976908 SOL"
+   ]
+  }
+ ],
+ "program": "seloongmun",
+ "idl": "seloongmun.idl30.json",
+ "devnet": "A6565D1zQG8aqg3z2sNGTr8F89scCWGLJRsPq3YBEXfr",
+ "sigs": [],
+ "skipped": [
+  "initialize: Simulation failed. ",
+  "draw: AnchorError caused by account: safe_vault. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already"
+ ],
+ "verified": "2026-11-02",
+ "mainnet": null
+}

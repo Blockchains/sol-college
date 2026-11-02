@@ -7,7 +7,7 @@ import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 const RPC = { devnet: 'https://api.devnet.solana.com', mainnet: 'https://api.mainnet-beta.solana.com' };
 const WELL_KNOWN = { systemProgram: SystemProgram.programId.toBase58(), rent: SYSVAR_RENT_PUBKEY.toBase58(),
   tokenProgram: 'TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA', token2022Program: 'TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb',
-  associatedTokenProgram: 'ATokenGPvbdGVxr1b2hvZbsiqW5xTx6ePxjYCWHvVTp8tAY', tokenMetadataProgram: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' };
+  associatedTokenProgram: 'ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL', tokenMetadataProgram: 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s' };
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const camel = (s) => s.replace(/_([a-z0-9])/g, (_, c) => c.toUpperCase());
 let cfg, idl, net = new URLSearchParams(location.search).get('network') === 'mainnet' ? 'mainnet' : 'devnet', wallet = null, conn, program;

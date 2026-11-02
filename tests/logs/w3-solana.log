@@ -1,0 +1,10 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/w3-solana.git /tmp/scbuild/w3-solana && git -C /tmp/scbuild/w3-solana checkout -q 4516015499860a2326345f4351b36f6853ad983f)
+
+[exit 0, 3s]
+
+$ (cd . && bash /workspace/sol-college/repo/tests/flows/w3-solana.sh)
+  lock file version 4 requires `-Znext-lockfile-bump`
+Error: Unable to open program file: No such file or directory (os error 2)
+
+[exit 1, 2s]
