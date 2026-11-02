@@ -71,6 +71,7 @@ def run(name,extra=None):
       open(lk,'w').write(re.sub(r'^version = 4$','version = 3',open(lk).read(),flags=re.M)); r.steps.append(dict(phase='configure',cwd=a,cmd="Cargo.lock 'version = 4' -> 'version = 3' (the cargo bundled with Solana platform-tools cannot read v4 lockfiles)",exit=0,secs=0,tail=''))
     if os.path.exists(ad+'/package.json'): r.sh('install',INST[pm(ad)],a)
     r.sh('configure',f'{A} keys sync && python3 {ROOT}/tests/sync_all_clusters.py',a)
+    if os.path.exists(lk): open(lk,'w').write(re.sub(r'^version = 4$','version = 3',open(lk).read(),flags=re.M))  # keys sync can rewrite it
     ok,out=r.sh('build',f'{A} build',a,timeout=2400)
     for _ in range(3):
       fx=("cargo update -p ahash --precise 0.8.11 && sed -i 's/^version = 4/version = 3/' Cargo.lock" if 'stdsimd' in out else "cargo update -p proc-macro2 && sed -i 's/^version = 4/version = 3/' Cargo.lock" if 'SourceFile' in out or 'source_file' in out else None) if not ok else None

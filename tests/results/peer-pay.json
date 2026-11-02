@@ -28,7 +28,7 @@
    "cwd": "/tmp",
    "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/peer-pay.git /tmp/scbuild/peer-pay && git -C /tmp/scbuild/peer-pay checkout -q ca496be4f2ee1ce5e4154922ec9a40c35029177b",
    "exit": 0,
-   "secs": 3,
+   "secs": 4,
    "tail": ""
   },
   {
@@ -36,7 +36,7 @@
    "cwd": "frontend",
    "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
    "exit": 0,
-   "secs": 18,
+   "secs": 17,
    "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
   },
   {
@@ -61,7 +61,7 @@
    "cmd": "anchor@0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py",
    "exit": 0,
    "secs": 0,
-   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/peer-pay/escrow/programs/mm_escrow/src/lib.rs\"\nUpdated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL\nFound incorrect program id declaration in Anchor.toml for the program `mm_escrow`\nUpdated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL\nAll program id declarations are synced."
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/peer-pay/escrow/programs/mm_escrow/src/lib.rs\"\nUpdated to FKrBWxxeMiRbMn4iHqLFfEYuy3QTjZ2ntuvdReF5sm9a\nFound incorrect program id declaration in Anchor.toml for the program `mm_escrow`\nUpdated to FKrBWxxeMiRbMn4iHqLFfEYuy3QTjZ2ntuvdReF5sm9a\nAll program id declarations are synced."
   },
   {
    "phase": "build",
@@ -76,7 +76,7 @@
    "cwd": "frontend",
    "cmd": "npm run build",
    "exit": 1,
-   "secs": 11,
+   "secs": 12,
    "tail": "> Build error occurred\nError: Failed to collect page data for /utils\n    at /tmp/scbuild/peer-pay/frontend/node_modules/next/dist/build/utils.js:1258:15\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\n  type: 'Error'\n}"
   }
  ],

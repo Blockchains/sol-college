@@ -141,6 +141,7 @@
     "timeout": 3600
    }
   ],
-  "notes": "Off-chain Rust indexer/API for Drift (program dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH, live on mainnet; not epoch's own program). Running the server needs Postgres/TimescaleDB and a Google Cloud Storage service account (env GOOGLE_APPLICATION_CREDENTIALS). The fork commits epoch_sa_key.json, a possible leaked GCP service-account key: the harness deletes it before building, it is never read, and it must be revoked by its owner."
+  "notes": "Off-chain Rust indexer/API for Drift (program dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH, live on mainnet; not epoch's own program). Running the server needs Postgres/TimescaleDB and a Google Cloud Storage service account (env GOOGLE_APPLICATION_CREDENTIALS). The fork commits epoch_sa_key.json, a possible leaked GCP service-account key: the harness deletes it before building, it is never read, and it must be revoked by its owner.",
+  "unpublish": "Genuinely unbuildable from the fork: Cargo.toml pulls crates from a private registry (ssh://git@ssh.shipyard.rs/epoch/crate-index.git) that needs the owner's SSH credentials. It also commits epoch_sa_key.json, a possible leaked GCP service-account key."
  }
 }

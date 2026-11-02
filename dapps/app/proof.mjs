@@ -14,20 +14,21 @@ const WK = { systemProgram: SystemProgram.programId, rent: SYSVAR_RENT_PUBKEY, t
 const flat = (a) => a.flatMap((x) => (x.accounts ? flat(x.accounts) : [x]));
 const sample = (t, name) => {
   if (typeof t === 'string') {
-    if (/^[ui](64|128)$/.test(t)) return /id$/i.test(name) ? (globalThis.__id ??= new BN(Date.now() % 1e9)) : new BN(1); if (/^[uif]\d+$/.test(t)) return 1; if (t === 'bool') return true;
+    if (/^[ui](64|128)$/.test(t)) return /id$/i.test(name) ? (globalThis.__id ??= new BN(Date.now() % 1e9)) : new BN(1); if (/^[uif]\d+$/.test(t)) return /pos|^x$|^y$/i.test(name) ? Math.floor(Math.random() * 200) : 1; if (t === 'bool') return true;
     if (t === 'string') return /symbol/i.test(name) ? 'SOLC' : /uri|url|link/i.test(name) ? 'https://sol.college/' : 'solcollege'; if (t === 'pubkey' || t === 'publicKey') return payer.publicKey; if (t === 'bytes') return Buffer.from([1]);
   }
   if (t.option) return null; if (t.array) return Array.from({ length: t.array[1] }, () => sample(t.array[0], name)); if (t.vec) return [];
   throw new Error('complex arg ' + JSON.stringify(t));
 };
-const only = process.env.IXS ? process.env.IXS.split(',') : null; let n = 0;
+const only = process.env.IXS ? process.env.IXS.split(',') : null; let n = 0; const CACHE = {};
 for (const ix of idl.instructions) {
   if (only && !only.includes(ix.name)) continue;
   try {
     const accs = {}, extra = [];
     for (const a of flat(ix.accounts)) {
       const k = camel(a.name);
-      if (a.address || a.pda) continue;
+      if (a.address) continue;
+      if (a.pda) { if (CACHE[k] && a.pda.seeds.some((x) => x.kind === 'account' && x.path.startsWith(a.name + '.'))) accs[k] = CACHE[k]; continue; }
       if (WK[k]) accs[k] = WK[k];
       else if (a.signer) { if (/payer|authority|user|owner|signer|admin|creator|initializer|maker|seller|buyer|player|fee/i.test(a.name) || !accs.__p) { accs[k] = payer.publicKey; accs.__p = 1; } else { const kp = Keypair.generate(); extra.push(kp); accs[k] = kp.publicKey; } }
       else extra.__d = [...(extra.__d || []), a];
@@ -44,7 +45,8 @@ for (const ix of idl.instructions) {
     delete extra.__d;
     delete accs.__p;
     const args = ix.args.map((a) => sample(a.type, a.name));
-    const sig = await program.methods[camel(ix.name)](...args).accountsPartial(accs).signers(extra).rpc();
+    const b = program.methods[camel(ix.name)](...args).accountsPartial(accs).signers(extra);
+    const pk = await b.pubkeys(); const sig = await b.rpc(); Object.assign(CACHE, pk);
     console.log(`SIG ${ix.name} ${sig}`); n++;
   } catch (e) { console.log(`SKIP ${ix.name}: ${String(e.message || e).split('\n')[0].slice(0, 160)}`); if (process.env.DEBUG) console.log(e.logs || e); }
 }

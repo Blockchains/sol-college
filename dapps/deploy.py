@@ -35,4 +35,4 @@ for so in sos:
 os.makedirs(f'{ROOT}/dapps/deployed',exist_ok=True)
 f=f'{ROOT}/dapps/deployed/{slug}.json' if cl=='devnet' else f'{ROOT}/dapps/build/{slug}/localnet.json'
 prev=json.load(open(f)) if os.path.exists(f) else {}
-prev.update(out); json.dump(prev,open(f,'w'),indent=1); print(json.dumps({k:v for k,v in out.items() if k!='steps'},indent=1))
+old=prev.get('sigs',[]); prev.update(out); prev['sigs']=old+[x for x in out.get('sigs',[]) if x not in old]; json.dump(prev,open(f,'w'),indent=1); print(json.dumps({k:v for k,v in out.items() if k!='steps'},indent=1))

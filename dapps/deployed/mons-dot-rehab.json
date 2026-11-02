@@ -17,15 +17,15 @@
  "sigs": [
   {
    "label": "create_game",
-   "sig": "47SUHWqYChYoq2esMb9YTRypjGfreL2yHa2nvuM91qkqe3r6VgKJSxqXf1cLWnmiVGm2HLA9WBaF1JpcywUzZDZa"
+   "sig": "37oLWG5vAGjovAPVfkxsJr2vC8jk2qmMA6jgK4aekmefNcciepW1FjTMnv8bwMhuY8AfFWQbMovQBFAMP4Rngu1C"
   },
   {
    "label": "join_game",
-   "sig": "4TxLEX7mHE655uwvHWHvPJ4BBuEiFQVQ8C4kWeAbwF2V4AEy1AmWzMzWSpPQ8BDGrjTTNAezcAYFcVhv8j1cjFUw"
+   "sig": "3ytwYTQjTm8WGKJGn3cVqnsr1egqEkwBQUt9XGSTLtKzYUPXKUnjgGXgp7yEksrc7wyFfYcMamavWXVRPaB7V2Ru"
   }
  ],
  "skipped": [
-  "end_game: Reached maximum depth for account resolution"
+  "end_game: AnchorError thrown in programs/mons-dot-rehab/src/lib.rs:67. Error Code: Unauthorized. Error Number: 6003. Error Message: Unauthorized action.."
  ],
  "verified": "2026-11-02",
  "mainnet": null

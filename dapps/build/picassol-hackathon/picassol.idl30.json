@@ -1,0 +1,257 @@
+{
+ "address": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
+ "metadata": {
+  "name": "picassol",
+  "version": "0.1.0",
+  "spec": "0.1.0"
+ },
+ "instructions": [
+  {
+   "name": "create_pixel",
+   "discriminator": [
+    79,
+    93,
+    54,
+    140,
+    128,
+    202,
+    193,
+    216
+   ],
+   "accounts": [
+    {
+     "name": "pixel",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         112,
+         105,
+         120,
+         101,
+         108
+        ]
+       },
+       {
+        "kind": "arg",
+        "path": "pos_x"
+       },
+       {
+        "kind": "arg",
+        "path": "pos_y"
+       }
+      ]
+     }
+    },
+    {
+     "name": "user",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "system_program"
+    }
+   ],
+   "args": [
+    {
+     "name": "pos_x",
+     "type": "u8"
+    },
+    {
+     "name": "pos_y",
+     "type": "u8"
+    },
+    {
+     "name": "init_col_r",
+     "type": "u8"
+    },
+    {
+     "name": "init_col_g",
+     "type": "u8"
+    },
+    {
+     "name": "init_col_b",
+     "type": "u8"
+    }
+   ]
+  },
+  {
+   "name": "update_pixel",
+   "discriminator": [
+    206,
+    142,
+    40,
+    102,
+    170,
+    124,
+    205,
+    251
+   ],
+   "accounts": [
+    {
+     "name": "pixel",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         112,
+         105,
+         120,
+         101,
+         108
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "pixel.pos_x",
+        "account": "Pixel"
+       },
+       {
+        "kind": "account",
+        "path": "pixel.pos_y",
+        "account": "Pixel"
+       }
+      ]
+     }
+    }
+   ],
+   "args": [
+    {
+     "name": "new_col_r",
+     "type": "u8"
+    },
+    {
+     "name": "new_col_g",
+     "type": "u8"
+    },
+    {
+     "name": "new_col_b",
+     "type": "u8"
+    }
+   ]
+  }
+ ],
+ "accounts": [
+  {
+   "name": "Pixel",
+   "discriminator": [
+    54,
+    195,
+    214,
+    222,
+    39,
+    180,
+    218,
+    84
+   ]
+  }
+ ],
+ "events": [
+  {
+   "name": "PixelChanged",
+   "discriminator": [
+    140,
+    76,
+    21,
+    27,
+    179,
+    226,
+    1,
+    84
+   ]
+  }
+ ],
+ "errors": [
+  {
+   "code": 6000,
+   "name": "InvalidXCoordinate",
+   "msg": "The given X co-ordinate is not between 0-99"
+  },
+  {
+   "code": 6001,
+   "name": "InvalidYCoordinate",
+   "msg": "The given Y co-ordinate is not between 0-99"
+  },
+  {
+   "code": 6002,
+   "name": "InvalidRColor",
+   "msg": "The given R color is not between 0-255"
+  },
+  {
+   "code": 6003,
+   "name": "InvalidGColor",
+   "msg": "The given G color is not between 0-255"
+  },
+  {
+   "code": 6004,
+   "name": "InvalidBColor",
+   "msg": "The given B color is not between 0-255"
+  }
+ ],
+ "types": [
+  {
+   "name": "Pixel",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "pos_x",
+      "type": "u8"
+     },
+     {
+      "name": "pos_y",
+      "type": "u8"
+     },
+     {
+      "name": "col_r",
+      "type": "u8"
+     },
+     {
+      "name": "col_g",
+      "type": "u8"
+     },
+     {
+      "name": "col_b",
+      "type": "u8"
+     },
+     {
+      "name": "bump",
+      "type": "u8"
+     }
+    ]
+   }
+  },
+  {
+   "name": "PixelChanged",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "pos_x",
+      "type": "u8"
+     },
+     {
+      "name": "pos_y",
+      "type": "u8"
+     },
+     {
+      "name": "col_r",
+      "type": "u8"
+     },
+     {
+      "name": "col_g",
+      "type": "u8"
+     },
+     {
+      "name": "col_b",
+      "type": "u8"
+     }
+    ]
+   }
+  }
+ ]
+}

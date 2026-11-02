@@ -1,0 +1,30 @@
+{
+ "slug": "picassol-hackathon",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <picassol-keypair> picassol.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Data Length: 221792 (0x36260) bytes",
+    "Balance: 1.1275822 SOL"
+   ]
+  }
+ ],
+ "program": "picassol",
+ "idl": "picassol.idl30.json",
+ "devnet": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
+ "sigs": [
+  {
+   "label": "create_pixel",
+   "sig": "5G5qhPmGt6fxAbfGKTH2njKZjc5A1kVWMm98Q4gW1YU96VRMfXLP7ny8Ci484iAyqWRDFXVk1nDprCLsfEvuuZfg"
+  },
+  {
+   "label": "update_pixel",
+   "sig": "5WyyieFxV7WQqQHrfiDCxFDztKvf8nArPifnLUuarBHAsuy8uMXK6wGhG7LNWXNZWdSDJGAMp5xUa3SAkTiJPHak"
+  }
+ ],
+ "skipped": [],
+ "verified": "2026-11-02",
+ "mainnet": "5rV2CJ8bYV4qEt8qcmhZ1Ty3o6eM7K1LAJDDFipPNyx2"
+}

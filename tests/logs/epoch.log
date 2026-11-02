@@ -1,0 +1,46 @@
+
+$ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/epoch.git /tmp/scbuild/epoch && git -C /tmp/scbuild/epoch checkout -q 09c8df36e03eff4a0c48688c21f26601ed9c29ac)
+
+[exit 0, 3s]
+
+$ (cd . && rm -f epoch_sa_key.json && cargo build --workspace 2>&1 | tail -40)
+info: syncing channel updates for 1.75.0-x86_64-unknown-linux-gnu
+info: latest update on 2023-12-28 for version 1.75.0 (82e1608df 2023-12-21)
+info: downloading 6 components
+warn: the missing active toolchain `1.75.0-x86_64-unknown-linux-gnu` has been auto-installed
+warn: this might cause rustup commands to take longer time to finish than expected
+info: you may opt out with `RUSTUP_AUTO_INSTALL=0` or `rustup set auto-install disable`
+    Updating crates.io index
+    Updating `epoch` index
+Connection closed by 198.18.0.1 port 22
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+error: Unable to update registry `epoch`
+
+Caused by:
+  failed to fetch `ssh://git@ssh.shipyard.rs/epoch/crate-index.git`
+
+Caused by:
+  process didn't exit successfully: `git fetch --force --update-head-ok 'ssh://git@ssh.shipyard.rs/epoch/crate-index.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+
+[exit 0, 10s]
+
+$ (cd . && cargo test --workspace 2>&1 | tail -60)
+    Updating crates.io index
+    Updating `epoch` index
+Connection closed by 198.18.0.1 port 22
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+error: Unable to update registry `epoch`
+
+Caused by:
+  failed to fetch `ssh://git@ssh.shipyard.rs/epoch/crate-index.git`
+
+Caused by:
+  process didn't exit successfully: `git fetch --force --update-head-ok 'ssh://git@ssh.shipyard.rs/epoch/crate-index.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)
+
+[exit 0, 0s]

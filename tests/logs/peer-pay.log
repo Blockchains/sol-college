@@ -1,11 +1,11 @@
 
 $ (cd /tmp && git clone -q --filter=blob:none https://github.com/Blockchains/peer-pay.git /tmp/scbuild/peer-pay && git -C /tmp/scbuild/peer-pay checkout -q ca496be4f2ee1ce5e4154922ec9a40c35029177b)
 
-[exit 0, 3s]
+[exit 0, 4s]
 
 $ (cd frontend && npm install --no-audit --no-fund --legacy-peer-deps)
 
-added 685 packages in 18s
+added 685 packages in 17s
 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
 npm warn deprecated @humanwhocodes/config-array@0.13.0: Use @eslint/config-array instead
 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
@@ -22,7 +22,7 @@ npm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp-build)
 npm warn install-scripts
 npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow.
 
-[exit 0, 18s]
+[exit 0, 17s]
 
 $ (cd escrow && npm install --no-audit --no-fund --legacy-peer-deps)
 
@@ -50,7 +50,7 @@ npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install
 
 $ (cd escrow && npm install --no-audit --no-fund --legacy-peer-deps)
 
-up to date in 332ms
+up to date in 335ms
 npm warn install-scripts 4 packages have install scripts not yet covered by allowScripts:
 npm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)
 npm warn install-scripts   bufferutil@4.1.0 (install: node-gyp rebuild)
@@ -63,16 +63,18 @@ npm warn install-scripts Run `npm install-scripts ls` to review, or `npm install
 
 $ (cd escrow && ~/.avm/bin/anchor-0.29.0 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py)
 Found incorrect program id declaration in "/tmp/scbuild/peer-pay/escrow/programs/mm_escrow/src/lib.rs"
-Updated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL
+Updated to FKrBWxxeMiRbMn4iHqLFfEYuy3QTjZ2ntuvdReF5sm9a
 
 Found incorrect program id declaration in Anchor.toml for the program `mm_escrow`
-Updated to AaneSsUTcszJ6BCBzTQKzm1kovAKwQajkjd4tmGUSUBL
+Updated to FKrBWxxeMiRbMn4iHqLFfEYuy3QTjZ2ntuvdReF5sm9a
 
 All program id declarations are synced.
 
 [exit 0, 0s]
 
 $ (cd escrow && ~/.avm/bin/anchor-0.29.0 build)
+info: uninstalling toolchain solana
+info: toolchain solana uninstalled
 warning: virtual workspace defaulting to `resolver = "1"` despite one or more workspace members being on edition 2021 which implies `resolver = "2"`
 note: to keep the current resolver, specify `workspace.resolver = "1"` in the workspace root's manifest
 note: to use the edition 2021 resolver, specify `workspace.resolver = "2"` in the workspace root's manifest
@@ -122,4 +124,4 @@ Error: Failed to collect page data for /utils
   type: 'Error'
 }
 
-[exit 1, 11s]
+[exit 1, 12s]

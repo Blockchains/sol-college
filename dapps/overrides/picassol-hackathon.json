@@ -1,0 +1,48 @@
+{
+ "create_pixel.pixel": {
+  "seeds": [
+   {
+    "kind": "const",
+    "value": [
+     112,
+     105,
+     120,
+     101,
+     108
+    ]
+   },
+   {
+    "kind": "arg",
+    "path": "pos_x"
+   },
+   {
+    "kind": "arg",
+    "path": "pos_y"
+   }
+  ]
+ },
+ "update_pixel.pixel": {
+  "seeds": [
+   {
+    "kind": "const",
+    "value": [
+     112,
+     105,
+     120,
+     101,
+     108
+    ]
+   },
+   {
+    "kind": "account",
+    "path": "pixel.pos_x",
+    "account": "Pixel"
+   },
+   {
+    "kind": "account",
+    "path": "pixel.pos_y",
+    "account": "Pixel"
+   }
+  ]
+ }
+}

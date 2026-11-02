@@ -1,0 +1,52 @@
+{
+ "name": "epoch",
+ "slug": "epoch",
+ "fork": "https://github.com/Blockchains/epoch",
+ "commit": "09c8df36e03eff4a0c48688c21f26601ed9c29ac",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/epoch.git /tmp/scbuild/epoch && git -C /tmp/scbuild/epoch checkout -q 09c8df36e03eff4a0c48688c21f26601ed9c29ac",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "run",
+   "cwd": ".",
+   "cmd": "rm -f epoch_sa_key.json && cargo build --workspace 2>&1 | tail -40",
+   "exit": 0,
+   "secs": 10,
+   "tail": "and the repository exists.\nerror: Unable to update registry `epoch`\nCaused by:\n  failed to fetch `ssh://git@ssh.shipyard.rs/epoch/crate-index.git`\nCaused by:\n  process didn't exit successfully: `git fetch --force --update-head-ok 'ssh://git@ssh.shipyard.rs/epoch/crate-index.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)"
+  },
+  {
+   "phase": "run",
+   "cwd": ".",
+   "cmd": "cargo test --workspace 2>&1 | tail -60",
+   "exit": 0,
+   "secs": 0,
+   "tail": "and the repository exists.\nerror: Unable to update registry `epoch`\nCaused by:\n  failed to fetch `ssh://git@ssh.shipyard.rs/epoch/crate-index.git`\nCaused by:\n  process didn't exit successfully: `git fetch --force --update-head-ok 'ssh://git@ssh.shipyard.rs/epoch/crate-index.git' '+HEAD:refs/remotes/origin/HEAD'` (exit status: 128)"
+  }
+ ],
+ "build": "none",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": "Off-chain Rust indexer/API for Drift (program dRiftyHA39MWEi3m9aunc5MzRF1JYuBsbn6VPcn33UH, live on mainnet; not epoch's own program). Running the server needs Postgres/TimescaleDB and a Google Cloud Storage service account (env GOOGLE_APPLICATION_CREDENTIALS). The fork commits epoch_sa_key.json, a possible leaked GCP service-account key: the harness deletes it before building, it is never read, and it must be revoked by its owner."
+}
