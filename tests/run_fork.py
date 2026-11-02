@@ -7,6 +7,7 @@ B='/tmp/scbuild'; os.makedirs(B,exist_ok=True); os.makedirs(ROOT+'/tests/results
 ENV=dict(os.environ,CI='1',NEXT_TELEMETRY_DISABLED='1',NX_NO_CLOUD='true',NX_DAEMON='false',ANCHOR_PROVIDER_URL='http://127.0.0.1:8899',
   PATH=':'.join([os.path.expanduser(p) for p in ['~/tbin','~/.cargo/bin','~/.local/share/solana/install/active_release/bin','~/.local/bin']]+[os.environ['PATH']]))
 ENV['ANCHOR_WALLET']=os.path.expanduser('~/.config/solana/id.json')
+ENV['PATH']=os.path.expanduser('~/.local/share/solana/install/releases/2.3.13/solana-release/bin')+':'+ENV['PATH']  # pin: something on the shared box keeps switching active_release
 RED=[(re.compile(r'(api[-_]?key=|token=|secret=)[^\s&"]+',re.I),r'\1[REDACTED]'),(re.compile(r'https://[^\s"]*(helius|alchemy|quiknode|quicknode|infura|ankr)[^\s"]*',re.I),'https://[REDACTED-RPC]'),
      (re.compile(r'\b[1-9A-HJ-NP-Za-km-z]{80,90}\b'),'[REDACTED-KEY]'),(re.compile(r'/home/box'),'~')]
 def red(s):
