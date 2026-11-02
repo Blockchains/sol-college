@@ -216,4 +216,10 @@ open(OUT+'/CNAME','w').write(os.environ.get('SITE_CNAME','')) if os.environ.get(
 open(OUT+'/.nojekyll','w').write('')
 shutil.copy(OUT+'/index.html',OUT+'/404.html') if not os.path.exists(OUT+'/404.html') else None
 json.dump(dict(projects=len(P),lessons=len(LES),excerpts=sum(len(e) for _,e in LES),ideas=len(ideas),guides=len(GUIDES),pages=len(urls)),open(OUT+'/stats.json','w'))
+BASE=os.environ.get('SITE_BASE','').rstrip('/')
+if BASE:  # preview under a project-pages subpath: rewrite root-relative links in generated pages
+  for f in SM:
+    fp=OUT+f+'index.html'; t=open(fp).read()
+    t=re.sub(r'(href|src)="/(?!/)',lambda m:f'{m.group(1)}="{BASE}/',t).replace("fetch('/projects.json')",f"fetch('{BASE}/projects.json')").replace('href="/explore/${{','href="'+BASE+'/explore/${{').replace('href="/explore/${p.s}',f'href="{BASE}/explore/${{p.s}}')
+    open(fp,'w').write(t)
 print(open(OUT+'/stats.json').read())

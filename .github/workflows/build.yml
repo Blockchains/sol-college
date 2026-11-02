@@ -17,7 +17,7 @@ jobs:
         env: {GH_TOKEN: "${{ secrets.CATALOG_TOKEN || github.token }}"}
         run: python3 scripts/fetch_data.py
       - name: Build site
-        env: {SITE_CNAME: "${{ vars.SITE_CNAME }}"}
+        env: {SITE_CNAME: "${{ vars.SITE_CNAME }}", SITE_BASE: "${{ vars.SITE_BASE }}"}
         run: cd scripts && cd .. && PYTHONPATH=scripts python3 scripts/build.py
       - uses: actions/upload-pages-artifact@v3
         with: {path: site}
