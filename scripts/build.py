@@ -164,12 +164,19 @@ try: prev=json.loads(urllib.request.urlopen(PUB,timeout=20).read())
 except Exception: prev=None
 if prev is None and os.path.exists('site_published.json'): prev=json.load(open('site_published.json'))
 KNOWN={x['path'] for x in (prev or []) if x.get('type')!='updated'}
-BATCH=int(os.environ.get('PUBLISH_BATCH','25'))
+BATCH=int(os.environ.get('PUBLISH_BATCH','1'))
+def dapp_verified(p):
+  f=f"dapps/deployed/{p['slug']}.json"
+  try: d=json.load(open(f)); return bool(d.get('devnet') and d.get('sigs'))
+  except Exception: return False
+# New lessons go live only once their own dapp is verified on devnet with a real transaction (dapps/deployed/<slug>.json has sigs).
 new=[p for p in KEEP if f"/explore/{p['slug']}/" not in KNOWN]
+PENDING_DAPP=[p for p in new if not dapp_verified(p)]
+new=[p for p in new if dapp_verified(p)]
 new.sort(key=lambda p:(-len(p['kx']),-len(p['sf']),-p['stars'],p['name']))
-WAIT=new[BATCH:] if prev is not None else []
+WAIT=(new[BATCH:] if prev is not None else [])+PENDING_DAPP
 KEEP=[p for p in KEEP if p not in WAIT]
-print('lessons kept:',len(KEEP),'new this build:',len(new)-len(WAIT),'waiting:',len(WAIT),'excluded:',dict(EXCL))
+print('lessons kept:',len(KEEP),'awaiting dapp:',len(PENDING_DAPP),'waiting:',len(WAIT),'excluded:',dict(EXCL))
 TOTAL=len(P); P=KEEP
 LES=[]
 for L in LESSONS:
@@ -413,7 +420,13 @@ for m in (json.load(open('dapps/mainnet-live.json')) if os.path.exists('dapps/ma
   if not any(x.get('type')=='live-mainnet' and x['path']==pth for x in prev): prev.append(dict(path=pth,url=SITE+pth,project=m['slug']+': Live on mainnet',original='mainnet program '+m['program'],published=m['published'],type='live-mainnet',program=m['program']))
 cur=[x for x in prev if x['path'] in live]; cur.sort(key=lambda x:x['published'],reverse=True)
 json.dump(prev,open(OUT+'/published.json','w'),indent=1)
-open(OUT+'/dapp-queue.txt','w').write('# slug fork commit kind: lessons without a live dapp yet, for dapps/deploy.py <slug> devnet\n'+''.join(f'{a} {b} {c} {d}\n' for a,b,c,d in QUEUE))
+RANK={'client':0,'program':1,'anchor':2}
+def qk(p):
+  k='anchor' if 'Anchor' in p['frameworks'] else ('program' if any(r.endswith('src/lib.rs') for r,_ in files(p['name'],('lib.rs',))) else 'client')
+  rs=sum(1 for r,_ in files(p['name'],('.rs',)) if 'programs/' in r or r.endswith('lib.rs'))
+  return (RANK[k],rs,-p['stars']),k,rs
+QL=sorted(((qk(p),p) for p in PENDING_DAPP),key=lambda x:x[0][0])
+open(OUT+'/dapp-queue.txt','w').write('# Cheapest first (client-only, then smallest programs). slug fork commit kind rust_files. New lessons publish only after dapps/deployed/<slug>.json has devnet sigs.\n'+''.join(f"{p['slug']} {p['fork']} {p['commit']} {k} {rs}\n" for (_,k,rs),p in QL)+''.join(f'{a} {b} {c} {d} live-lesson\n' for a,b,c,d in QUEUE))
 open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Change | Project | URL |\n|---|---|---|---|\n'+''.join(f"| {x['published']} | {'updated: '+x.get('status','')+' build guide' if x.get('type')=='updated' else 'new'} | {x['project']} | {x['url']} |\n" for x in cur))
 page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
 '<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else (" <span class=chip>Live on mainnet</span>" if x.get("type")=="live-mainnet" else "")}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
@@ -464,7 +477,7 @@ for f in os.listdir('static'):
 open(OUT+'/CNAME','w').write(os.environ.get('SITE_CNAME','')) if os.environ.get('SITE_CNAME') else None
 open(OUT+'/.nojekyll','w').write('')
 shutil.copy(OUT+'/index.html',OUT+'/404.html') if not os.path.exists(OUT+'/404.html') else None
-json.dump(dict(projects=len(P),lessons=len(LES),excerpts=sum(len(e) for _,e in LES),ideas=len(ideas),levels=dict(LEVEL),forks_total=TOTAL,excluded=dict(EXCL),waiting=len(WAIT),guides=len(GUIDES),pages=len(urls)),open(OUT+'/stats.json','w'))
+json.dump(dict(projects=len(P),lessons=len(LES),excerpts=sum(len(e) for _,e in LES),ideas=len(ideas),levels=dict(LEVEL),forks_total=TOTAL,excluded=dict(EXCL),waiting=len(WAIT),awaiting_dapp=len(PENDING_DAPP),guides=len(GUIDES),pages=len(urls)),open(OUT+'/stats.json','w'))
 BASE=os.environ.get('SITE_BASE','').rstrip('/')
 if BASE:
   SM=list(SM)  # preview under a project-pages subpath: rewrite root-relative links in generated pages
