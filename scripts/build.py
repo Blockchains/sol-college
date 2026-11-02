@@ -1,5 +1,7 @@
 import json,os,re,html,shutil,collections,glob,datetime
 from content import LESSONS,NOTES,CATEGORIES,GUIDES
+import hubs
+GUIDES=GUIDES+[hubs.BUILD_DAPP]
 SITE='https://sol.college'; OUT='site'; E=html.escape
 data=json.load(open('data/projects.json')); P=data['projects']
 shutil.rmtree(OUT,ignore_errors=True)
@@ -148,21 +150,33 @@ for L in LESSONS:
   if ex: LES.append((L,ex))
 # ---------- layout
 CSS=open('scripts/style.css').read()
-NAV=[('/explore/','Explore'),('/new/','New'),('/learn-by-example/','Learn by example'),('/what-to-build/','What to build'),('/how-to-build/','How to build')]
-def page(path,title,desc,body,ld=None,crumbs=None):
+NAV=[('/learn-solana/','Learn Solana'),('/topics/','Topics'),('/explore/','Explore'),('/new/','New'),('/learn-by-example/','Learn by example'),('/what-to-build/','What to build'),('/how-to-build/','How to build')]
+def fit(s,n):
+  s=' '.join(s.split())
+  if len(s)<=n: return s
+  for sep in ((' | ',': ',' (',' — ') if n<=60 else ()):
+    if sep in s and len(s.split(sep)[0])>=20 and len(s.rsplit(sep,1)[0])<=n: return s.rsplit(sep,1)[0].strip()
+  return s[:n-1].rsplit(' ',1)[0].rstrip(',;:.-')+'…'
+OGS=[('/learn-solana/','path'),('/learn-by-example/','learn'),('/explore/','explore'),('/how-to-build/','build'),('/what-to-build/','ideas'),('/topics/','topics'),('/glossary/','glossary'),('/faq/','faq')]
+LASTMOD={}
+def page(path,title,desc,body,ld=None,crumbs=None,og=None,noindex=False,lastmod=None):
+  title=fit(title,60); desc=fit(desc,158); og=next((f'/og/{v}.png' for k,v in OGS if path.startswith(k)),'/og.png')
+  if lastmod: LASTMOD[path]=lastmod
   url=SITE+path; lds=[dict({"@context":"https://schema.org"},**x) for x in (ld or [])]
   if crumbs: lds.append({"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":i+1,"name":n,"item":SITE+u} for i,(u,n) in enumerate(crumbs)]})
   nav=''.join(f'<a href="{u}"{" aria-current=page" if path.startswith(u) else ""}>{n}</a>' for u,n in NAV)
   bc=('<nav class=crumbs aria-label=Breadcrumb>'+' / '.join(f'<a href="{u}">{E(n)}</a>' for u,n in crumbs[:-1])+f' / <span>{E(crumbs[-1][1])}</span></nav>') if crumbs else ''
   h=f'''<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>{E(title)}</title><meta name=description content="{E(desc)}"><link rel=canonical href="{url}">
-<meta property=og:type content=website><meta property=og:title content="{E(title)}"><meta property=og:description content="{E(desc)}"><meta property=og:url content="{url}"><meta property=og:site_name content="Sol.College"><meta property=og:image content="{SITE}/og.png"><meta name=twitter:card content=summary_large_image>
-<meta name=theme-color content="#0b0a14"><link rel=icon href="/favicon.svg" type="image/svg+xml"><link rel=icon href="/favicon.png" type="image/png"><link rel=alternate type=text/plain href="/llms.txt" title="llms.txt">
+{'<meta name=robots content="noindex">' if noindex else ''}<meta property=og:type content={'article' if path.startswith(('/learn-by-example/','/how-to-build/','/explore/')) and path.count('/')>2 else 'website'}><meta property=og:title content="{E(title)}"><meta property=og:description content="{E(desc)}"><meta property=og:url content="{url}"><meta property=og:site_name content="Sol.College"><meta property=og:locale content=en_GB><meta property=og:image content="{SITE}{og}"><meta property=og:image:width content=1200><meta property=og:image:height content=630><meta property=og:image:alt content="Sol.College: {E(title)}">
+<meta name=twitter:card content=summary_large_image><meta name=twitter:title content="{E(title)}"><meta name=twitter:description content="{E(desc)}"><meta name=twitter:image content="{SITE}{og}">
+<meta name=theme-color content="#0b0a14"><link rel=icon href="/favicon.ico" sizes=48x48><link rel=icon href="/favicon.svg" type="image/svg+xml"><link rel=icon type=image/png sizes=32x32 href="/favicon-32x32.png"><link rel=icon type=image/png sizes=16x16 href="/favicon-16x16.png"><link rel=apple-touch-icon sizes=180x180 href="/apple-touch-icon.png"><link rel=manifest href="/site.webmanifest"><link rel=alternate type=application/atom+xml href="/feed.xml" title="New on Sol.College"><link rel=alternate type=text/plain href="/llms.txt" title="llms.txt">
 <style>{CSS}</style>{''.join(f'<script type="application/ld+json">{json.dumps(x)}</script>' for x in lds)}</head><body>
 <a class=skip href="#main">Skip to content</a><header class=top><a class=brand href="/"><span class=logo aria-hidden=true></span>Sol.College</a><nav aria-label=Main>{nav}</nav></header>
 <main id=main>{bc}{body}</main><footer><p>Sol.College: learn Solana from real code in the <a href="https://github.com/Blockchains/solana-superstack">SuperStack</a>. Code excerpts are quoted under their original permissive licences, with attribution and permalinks. Facts link to <a href="https://solana.com/docs">Solana</a> and <a href="https://www.anchor-lang.com/docs">Anchor</a> docs.</p>
-<p><a href="/explore/">Explore</a> · <a href="/learn-by-example/">Lessons</a> · <a href="/what-to-build/">Ideas</a> · <a href="/how-to-build/">Guides</a> · <a href="/edge-ai/">Solar AI edge nodes</a> · <a href="/legal/terms">Terms</a> · <a href="/legal/privacy">Privacy</a> · Data refreshed {data['generated'][:10]}</p></footer></body></html>'''
-  d=OUT+path; os.makedirs(d,exist_ok=True); open(d+'index.html','w').write(h); SM.append(path)
+<p><a href="/learn-solana/">Learn Solana</a> · <a href="/topics/">Topics</a> · <a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a> · <a href="/explore/">Explore</a> · <a href="/learn-by-example/">Lessons</a> · <a href="/what-to-build/">Ideas</a> · <a href="/how-to-build/">Guides</a> · <a href="/edge-ai/">Solar AI edge nodes</a> · <a href="/legal/terms/">Terms</a> · <a href="/legal/privacy/">Privacy</a> · <a href="/feed.xml">Feed</a> · Data refreshed {data['generated'][:10]}</p></footer></body></html>'''
+  d=OUT+path; os.makedirs(d,exist_ok=True); open(d+'index.html','w').write(h)
+  if not noindex: SM.append(path)
 SM=[]
 def chips(xs,cls='chip'): return ''.join(f'<span class={cls}>{E(x)}</span>' for x in xs)
 def card(pr):
@@ -181,15 +195,6 @@ langc=collections.Counter(p['language'] or 'Other' for p in P)
 nperm=sum(p['permissive'] for p in P)
 src_note='the <a href="https://github.com/Blockchains/solana-superstack">Solana SuperStack catalog</a>' if data['source']=='superstack' else 'the Solana repositories forked into the <a href="https://github.com/Blockchains?tab=repositories&type=fork">Blockchains</a> GitHub account (the SuperStack catalog is being assembled and will replace this list automatically)'
 top=sorted(P,key=lambda p:-p['stars'])[:6]
-page('/','Sol.College: learn to build on Solana from real code','Explore the Solana SuperStack, study annotated excerpts from real open-source Solana projects, and find what to build next. Free and refreshed nightly.',
-f'''<section class=hero><p class=eyebrow>Learn by example</p><h1>Learn Solana from <em>real code</em>.</h1><p class=lead>Every lesson here is built from excerpts of real, permissively licensed projects in {src_note}, with permalinks to the exact lines at a pinned commit and a plain-English walkthrough.</p>
-<div class=stats><a href="/explore/"><b>{len(P)}</b>projects</a><a href="/learn-by-example/"><b>{len(LES)}</b>lessons</a><a href="/learn-by-example/"><b>{sum(len(e) for _,e in LES)}</b>annotated excerpts</a><a href="/what-to-build/"><b>{len(cats)}</b>idea pages</a></div>
-<p class=cta><a class=btn href="/learn-by-example/">Start learning</a> <a class="btn ghost" href="/explore/">Explore the SuperStack</a></p></section>
-<section><h2>Lessons</h2><div class=grid>{''.join(f'<article class=card><h3><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></h3><p>{E(L["intro"][:150])}…</p><p class=meta>{len(ex)} real excerpts</p></article>' for L,ex in LES)}</div></section>
-<section><h2>Most-starred projects in the stack</h2><div class=grid>{''.join(card(p) for p in top)}</div></section>
-<section class=split><div><h2>What to build</h2><p>Idea pages built from the shape of the catalog: where strong projects are scarce, which stacks dominate each category, and a starter path through real modules.</p><a class=btn href="/what-to-build/">See the gaps</a></div><div><h2>How to build</h2><p>Practical guides to setup, the Anchor workflow, testing, deploying from devnet to mainnet, and a security checklist, each linked to the official docs.</p><a class=btn href="/how-to-build/">Read the guides</a></div></section>
-<section class=note><h2>Also on Sol.College</h2><p>Our original programme on solar-powered AI edge nodes is still here: <a href="/edge-ai/">overview</a>, the <a href="/calculator">energy-to-compute calculator</a>, <a href="/learn">operator courses</a>, <a href="/resources">resources</a>, the <a href="/for-teams">pilot for teams</a> and <a href="/contact">contact</a>.</p></section>''',
-ld=[{"@type":"WebSite","name":"Sol.College","url":SITE+"/","description":"Learn to build on Solana from real code."},{"@type":"EducationalOrganization","name":"Sol.College","url":SITE}])
 # ---------- explore
 lessons_by_proj=collections.defaultdict(list)
 for L,ex in LES:
@@ -260,19 +265,39 @@ for pr in P:
     ideas_l=[have[s] for s in lesson_for_cat.get(pr['categories'][0],[]) if s in have][:3]
     body+="<h2>What you could build from it</h2><ul>"+f"<li>Fork <a href='{pr['fork']}'>the SuperStack copy</a> and extend it within the {E(pr['categories'][0])} gaps listed on <a href='/what-to-build/{re.sub('[^a-z0-9]+','-',pr['categories'][0].lower()).strip('-')}/'>the idea page</a>.</li>"+''.join(f'<li>Learn the pattern first: <a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></li>' for L in ideas_l)+"</ul>"
   if ls: body+='<h2>Used in lessons</h2><ul>'+''.join(f'<li><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></li>' for L in ls)+'</ul>'
-  page(f"/explore/{pr['slug']}/",f"{pr['name']}: {'code walkthrough' if level=='lesson' else 'Solana project'} ({', '.join(pr['categories'])})",(pr['description'] or pr['name'])[:140]+' Architecture, key code, how to run it, and what to build.',body,
-  ld=[{"@type":"SoftwareSourceCode","name":pr['name'],"codeRepository":pr['original'],"programmingLanguage":pr['language'],"license":pr['license']}]+([{"@type":"LearningResource","name":pr['name']+" code walkthrough","isAccessibleForFree":True,"citation":[x['url'] for x in kx]}] if kx else []),crumbs=[('/','Home'),('/explore/','Explore'),(f"/explore/{pr['slug']}/",pr['name'])])
+  page(f"/explore/{pr['slug']}/",f"{pr['name']}: Solana {'code walkthrough' if level=='lesson' else 'project'} ({pr['categories'][0]})",fit((pr['description'] or pr['name']+': open-source Solana project.').rstrip('.')+'.',95)+' Architecture, key code, how to run it, and what to build.',body,lastmod=pr['pushed'][:10],
+  ld=[{"@type":"SoftwareSourceCode","name":pr['name'],"url":f"{SITE}/explore/{pr['slug']}/","codeRepository":pr['original'],"isBasedOn":pr['fork'],"runtimePlatform":"Solana","programmingLanguage":pr['language'],"license":pr['license']}]+([{"@type":"LearningResource","name":pr['name']+" code walkthrough","isAccessibleForFree":True,"citation":[x['url'] for x in kx]}] if kx else []),crumbs=[('/','Home'),('/explore/','Explore'),(f"/explore/{pr['slug']}/",pr['name'])])
+# ---------- topic hubs, learning path, glossary, FAQ
+HUBS=hubs.render(globals()); TOPIC_OF=globals().get('TOPIC_OF',{})
+page('/','Sol.College: learn Solana development from real code','Free Solana tutorials built from real open-source code: a beginner-to-advanced path, annotated Anchor lessons, topic hubs, guides and a project explorer.',
+f'''<section class=hero><p class=eyebrow>Learn by example</p><h1>Learn Solana from <em>real code</em>.</h1><p class=lead>Every lesson here is built from excerpts of real, permissively licensed projects in {src_note}, with permalinks to the exact lines at a pinned commit and a plain-English walkthrough.</p>
+<div class=stats><a href="/explore/"><b>{len(P)}</b>projects</a><a href="/learn-by-example/"><b>{len(LES)}</b>lessons</a><a href="/learn-by-example/"><b>{sum(len(e) for _,e in LES)}</b>annotated excerpts</a><a href="/what-to-build/"><b>{len(cats)}</b>idea pages</a></div>
+<p class=cta><a class=btn href="/learn-solana/">Start the learning path</a> <a class="btn ghost" href="/learn-by-example/">All lessons</a> <a class="btn ghost" href="/explore/">Explore the SuperStack</a></p></section>
+<section><h2>Lessons</h2><div class=grid>{''.join(f'<article class=card><h3><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></h3><p>{E(L["intro"][:150])}…</p><p class=meta>{len(ex)} real excerpts</p></article>' for L,ex in LES)}</div></section>
+<section><h2>Learn by topic</h2><p>{' '.join(f'<a class=chip href="/topics/{T["slug"]}/">{E(T["name"])}</a>' for T in HUBS)} · <a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a></p></section>
+<section><h2>Most-starred projects in the stack</h2><div class=grid>{''.join(card(p) for p in sorted(P,key=lambda p:-p['stars'])[:6])}</div></section>
+<section class=split><div><h2>What to build</h2><p>Idea pages built from the shape of the catalog: where strong projects are scarce, which stacks dominate each category, and a starter path through real modules.</p><a class=btn href="/what-to-build/">See the gaps</a></div><div><h2>How to build</h2><p>Practical guides to setup, the Anchor workflow, testing, deploying from devnet to mainnet, and a security checklist, each linked to the official docs.</p><a class=btn href="/how-to-build/">Read the guides</a></div></section>
+<section class=note><h2>Also on Sol.College</h2><p>Our original programme on solar-powered AI edge nodes is still here: <a href="/edge-ai/">overview</a>, the <a href="/calculator">energy-to-compute calculator</a>, <a href="/learn">operator courses</a>, <a href="/resources">resources</a>, the <a href="/for-teams">pilot for teams</a> and <a href="/contact">contact</a>.</p></section>''',
+ld=[{"@type":"WebSite","@id":SITE+"/#website","name":"Sol.College","url":SITE+"/","inLanguage":"en","description":"Learn to build on Solana from real code.","publisher":{"@id":SITE+"/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":SITE+"/explore/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":["Organization","EducationalOrganization"],"@id":SITE+"/#org","name":"Sol.College","url":SITE+"/","logo":SITE+"/android-chrome-512x512.png","sameAs":["https://github.com/Blockchains/sol-college"]}])
 # ---------- lessons
 page('/learn-by-example/','Learn Solana by example: annotated lessons from real code',f'{len(LES)} Solana lessons (PDAs, CPIs, SPL tokens, Token-2022, escrow, NFTs, oracles, Solana Pay, Blinks, AI agents) built from real code excerpts with permalinks.',
 f'<h1>Learn by example</h1><p class=lead>Each lesson explains one concept, then walks through real excerpts from projects in the stack, pinned to a commit.</p><div class=grid>'+''.join(f'<article class=card><h3><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></h3><p>{E(L["intro"][:170])}…</p><p class=meta>{len(ex)} excerpts from {", ".join(E(x["project"]["name"]) for x in ex[:3])}</p></article>' for L,ex in LES)+'</div>',
 ld=[{"@type":"Course","name":"Learn Solana by example","description":"Annotated lessons built from real open-source Solana code.","url":SITE+"/learn-by-example/","provider":{"@type":"Organization","name":"Sol.College","url":SITE},"isAccessibleForFree":True,"hasCourseInstance":{"@type":"CourseInstance","courseMode":"online","courseWorkload":"PT3H"},"offers":{"@type":"Offer","price":0,"priceCurrency":"USD","category":"Free"},"hasPart":[{"@type":"LearningResource","name":L['title'],"url":f"{SITE}/learn-by-example/{L['slug']}/"} for L,_ in LES]}],crumbs=[('/','Home'),('/learn-by-example/','Learn by example')])
+def related(L):
+  ts=TOPIC_OF.get(L['slug'],[]); out=[]
+  for T in ts:
+    for s in T['ls']:
+      if s!=L['slug'] and have[s] not in out: out.append(have[s])
+  return out[:5] or [x for x,_ in LES if x is not L][:3]
 for i,(L,ex) in enumerate(LES):
   nxt=LES[(i+1)%len(LES)][0]
-  page(f"/learn-by-example/{L['slug']}/",f"{L['title']}: Solana lesson with real code",L['intro'][:155],
+  page(f"/learn-by-example/{L['slug']}/",f"{L['title']} | Solana tutorial",L['intro'],
   f'''<article class=lesson><h1>{E(L['title'])}</h1><p class=lead>{E(L['intro'])}</p><p class=docs>Reference: {' · '.join(f'<a href="{u}">{E(n)}</a>' for n,u in L['docs'])}</p>
 <h2>Real code, line by line</h2><p>{len(ex)} excerpts from different projects. Each caption links the exact lines at the fork's pinned commit. The notes below each excerpt explain the lines that matter.</p>{''.join(code(x) for x in ex)}
-<h2>Go further</h2><ul>{''.join(f'<li><a href="/explore/{x["project"]["slug"]}/">{E(x["project"]["name"])}</a>: explore the full project</li>' for x in ex)}<li>Next lesson: <a href="/learn-by-example/{nxt['slug']}/">{E(nxt['title'])}</a></li></ul></article>''',
-  ld=[{"@type":"LearningResource","name":L['title'],"description":L['intro'],"learningResourceType":"Annotated code example","educationalLevel":"Intermediate","isAccessibleForFree":True,"isPartOf":{"@type":"Course","name":"Learn Solana by example","url":SITE+"/learn-by-example/"},"citation":[x['url'] for x in ex]}],
+<h2>Go further</h2><ul>{''.join(f'<li><a href="/explore/{x["project"]["slug"]}/">{E(x["project"]["name"])}</a>: explore the full project</li>' for x in ex)}<li>Next lesson: <a href="/learn-by-example/{nxt['slug']}/">{E(nxt['title'])}</a></li></ul>
+<h2>Related lessons</h2><ul>{''.join(f'<li><a href="/learn-by-example/{R["slug"]}/">{E(R["title"])}</a></li>' for R in related(L))}</ul>
+<p>Topics: {''.join(f'<a class=chip href="/topics/{T["slug"]}/">{E(T["name"])}</a>' for T in TOPIC_OF.get(L['slug'],[]))} · <a href="/learn-solana/">Learning path</a> · <a href="/glossary/">Glossary</a></p></article>''',
+  ld=[{"@type":"LearningResource","name":L['title'],"description":L['intro'],"url":f"{SITE}/learn-by-example/{L['slug']}/","inLanguage":"en","learningResourceType":"Annotated code example","educationalLevel":hubs.LEVEL.get(L['slug'],'Intermediate'),"teaches":L['title'],"isAccessibleForFree":True,"provider":{"@type":"Organization","name":"Sol.College","url":SITE},"isPartOf":{"@type":"Course","name":"Learn Solana by example","url":SITE+"/learn-by-example/","provider":{"@type":"Organization","name":"Sol.College","url":SITE}},"citation":[x['url'] for x in ex]}]+[{"@type":"SoftwareSourceCode","name":f"{x['project']['name']}: {x['file']}","codeRepository":x['project']['fork'],"url":x['url'],"programmingLanguage":"Rust" if x['file'].endswith('.rs') else "TypeScript","license":x['project']['license']} for x in ex[:3]],
   crumbs=[('/','Home'),('/learn-by-example/','Learn by example'),(f"/learn-by-example/{L['slug']}/",L['title'])])
 # ---------- ideas
 for c,ps in sorted(cats.items(),key=lambda kv:len(kv[1])):
@@ -310,7 +335,7 @@ page('/how-to-build/','How to build on Solana: setup, Anchor, testing, deploy, s
 '<h1>How to build</h1><div class=grid>'+''.join(f'<article class=card><h3><a href="/how-to-build/{g["slug"]}/">{E(g["title"])}</a></h3><p>{E(g["body"][0][1][:140])}…</p></article>' for g in GUIDES)+'</div>',crumbs=[('/','Home'),('/how-to-build/','How to build')])
 # ---------- changelog of published fork pages
 import urllib.request
-PUB=os.environ.get('PUBLISHED_FROM','https://blockchains.github.io/sol-college')+'/published.json'
+PUB=os.environ.get('PUBLISHED_FROM','https://sol.college')+'/published.json'
 try: prev=json.loads(urllib.request.urlopen(PUB,timeout=20).read())
 except Exception: prev=[]
 known={x['path'] for x in prev if x.get('type')!='updated'}; now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -333,14 +358,43 @@ if os.path.exists('legacy/index.html'):
   t=t.replace('<link rel="canonical" href="https://sol.college/"/>','<link rel="canonical" href="https://sol.college/edge-ai/"/>')
   os.makedirs(OUT+'/edge-ai',exist_ok=True); open(OUT+'/edge-ai/index.html','w').write(t)
 legacy=[os.path.dirname(os.path.relpath(f,'legacy')) for f in glob.glob('legacy/**/index.html',recursive=True)]
+# ---------- 404
+page('/404/','Page not found | Sol.College','This page does not exist. Try the learning path, the lessons or the project explorer.',
+'<h1>Page not found</h1><p class=lead>That address doesn\'t exist on Sol.College, or it moved.</p><ul><li><a href="/learn-solana/">Learn Solana: the learning path</a></li><li><a href="/learn-by-example/">All lessons</a></li><li><a href="/topics/">Topics</a></li><li><a href="/explore/">Explore projects</a> (searchable)</li><li><a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a></li></ul>',noindex=True)
+shutil.move(OUT+'/404/index.html',OUT+'/404.html'); shutil.rmtree(OUT+'/404',ignore_errors=True)
+# ---------- legacy pages: trailing-slash canonicals (GitHub Pages redirects /x to /x/) and the shared icon set
+ICONS='<link rel="icon" href="/favicon.ico" sizes="48x48"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="manifest" href="/site.webmanifest"/><meta name="theme-color" content="#0b0a14"/>'
+legacy=[os.path.dirname(os.path.relpath(f,'legacy')) for f in glob.glob('legacy/**/index.html',recursive=True)]
+for l in legacy+['edge-ai']:
+  fp=f'{OUT}/{l}/index.html'.replace('/./','/')
+  if not os.path.exists(fp): continue
+  t=open(fp,encoding='utf-8',errors='surrogateescape').read()
+  t=re.sub(r'((?:rel="canonical" href|property="og:url" content)="https://sol\.college/[^"]*?[^/"])"',r'\1/"',t)
+  LT={'about':'About SOL.COLLEGE: solar-powered AI infrastructure','contact':'Contact SOL.COLLEGE: nodes, courses and pilots','edge-ai':'SOL.COLLEGE: solar-powered AI edge nodes and training','learn':'Solar, storage and local AI courses | SOL.COLLEGE'}
+  if l in LT: t=re.sub(r'<title>[^<]*</title>',f'<title>{LT[l]}</title>',t,1)
+  t=re.sub(r'(<meta name="description" content=")([^"]*)"',lambda m:m.group(1)+(m.group(2) if len(html.unescape(m.group(2)))<=158 else E(fit(html.unescape(m.group(2)),158)))+'"',t,1)
+  if l=='auth': t=t.replace('<head>','<head><meta name="robots" content="noindex"/>',1)
+  if '/site.webmanifest' not in t: t=t.replace('</head>',ICONS+'</head>',1)
+  open(fp,'w',encoding='utf-8',errors='surrogateescape').write(t)
 # ---------- seo files
-today=datetime.date.today().isoformat()
-urls=sorted(set(SM+['/edge-ai/']+['/'+l for l in legacy if l and l!='.']))
-open(OUT+'/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{SITE}{u}</loc><lastmod>{today}</lastmod></url>' for u in urls)+'</urlset>')
+today=datetime.date.today().isoformat(); gen=data['generated'][:10]
+import subprocess
+try: LEGACY_LM=subprocess.run(['git','log','-1','--format=%cs','--','legacy'],capture_output=True,text=True).stdout.strip() or today
+except Exception: LEGACY_LM=today
+urls=sorted(set(SM+['/edge-ai/']+['/'+l+'/' for l in legacy if l and l!='.' and l!='auth']))
+def lm(u):
+  if u in LASTMOD: return max(LASTMOD[u],gen) if u.startswith('/explore/') else LASTMOD[u]
+  return today if u in SM else LEGACY_LM
+open(OUT+'/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{SITE}{u}</loc><lastmod>{lm(u)}</lastmod></url>\n' for u in urls)+'</urlset>\n')
+open(OUT+'/sitemap-index.xml','w').write(f'<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>{SITE}/sitemap.xml</loc><lastmod>{today}</lastmod></sitemap></sitemapindex>\n')
 open(OUT+'/robots.txt','w').write(f'User-agent: *\nAllow: /\nDisallow: /auth\n\nSitemap: {SITE}/sitemap.xml\n')
-open(OUT+'/llms.txt','w').write(f"# Sol.College\n\n> Learn to build on Solana from real code: an explorer of the Solana SuperStack, annotated lessons built from permissively licensed excerpts with permalinks, idea pages and practical guides.\n\n## Lessons\n"+''.join(f"- [{L['title']}]({SITE}/learn-by-example/{L['slug']}/): {L['intro'][:120]}\n" for L,_ in LES)+"\n## Guides\n"+''.join(f"- [{g['title']}]({SITE}/how-to-build/{g['slug']}/)\n" for g in GUIDES)+"\n## What to build\n"+''.join(f"- [{c}]({SITE}/what-to-build/{s}/)\n" for c,s,_,_ in ideas)+f"\n## Data\n- [Project catalog JSON]({SITE}/projects.json): {len(P)} projects\n- [Explorer]({SITE}/explore/)\n\n## Optional\n- [Solar AI edge nodes programme]({SITE}/edge-ai/)\n")
-for f in ('favicon.svg','og.png'):
-  if os.path.exists('static/'+f): shutil.copy('static/'+f,OUT+'/'+f)
+# Atom feed of newly published lessons and project walkthroughs
+xe=lambda x:html.escape(str(x),quote=True)
+ent=[x for x in cur if x.get('type')!='updated'][:50]
+open(OUT+'/feed.xml','w').write(f'<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom"><title>New on Sol.College</title><subtitle>New Solana code walkthroughs built from real open-source projects</subtitle><link href="{SITE}/feed.xml" rel="self"/><link href="{SITE}/new/"/><id>{SITE}/feed.xml</id><updated>{(ent[0]["published"] if ent else now)}</updated><author><name>Sol.College</name></author><icon>{SITE}/favicon-32x32.png</icon>'+''.join(f'<entry><title>{xe(x["project"])}: Solana code walkthrough</title><link href="{xe(x["url"])}"/><id>{xe(x["url"])}</id><published>{x["published"]}</published><updated>{x["published"]}</updated><summary>Walkthrough of {xe(x["original"])}: architecture, annotated code, and how to build and run it.</summary></entry>' for x in ent)+'</feed>\n')
+open(OUT+'/llms.txt','w').write(f"# Sol.College\n\n> Learn to build on Solana from real code: an explorer of the Solana SuperStack, annotated lessons built from permissively licensed excerpts with permalinks, idea pages and practical guides.\n\n## Lessons\n"+''.join(f"- [{L['title']}]({SITE}/learn-by-example/{L['slug']}/): {L['intro'][:120]}\n" for L,_ in LES)+"\n## Start here\n- [Learn Solana: beginner-to-advanced path]({SITE}/learn-solana/)\n- [Topics]({SITE}/topics/)\n- [Glossary]({SITE}/glossary/)\n- [FAQ]({SITE}/faq/)\n\n## Guides\n"+''.join(f"- [{g['title']}]({SITE}/how-to-build/{g['slug']}/)\n" for g in GUIDES)+"\n## What to build\n"+''.join(f"- [{c}]({SITE}/what-to-build/{s}/)\n" for c,s,_,_ in ideas)+f"\n## Data\n- [Project catalog JSON]({SITE}/projects.json): {len(P)} projects\n- [Explorer]({SITE}/explore/)\n\n## Optional\n- [Solar AI edge nodes programme]({SITE}/edge-ai/)\n")
+for f in os.listdir('static'):
+  (shutil.copytree if os.path.isdir('static/'+f) else shutil.copy)('static/'+f,OUT+'/'+f)
 open(OUT+'/CNAME','w').write(os.environ.get('SITE_CNAME','')) if os.environ.get('SITE_CNAME') else None
 open(OUT+'/.nojekyll','w').write('')
 shutil.copy(OUT+'/index.html',OUT+'/404.html') if not os.path.exists(OUT+'/404.html') else None

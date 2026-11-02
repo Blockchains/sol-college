@@ -19,3 +19,4 @@ pre{margin:0;overflow:auto;padding:12px 0;font:13px/1.55 ui-monospace,SFMono-Reg
 .tbl{width:100%;border-collapse:collapse}.tbl td,.tbl th{border-bottom:1px solid var(--line);padding:10px;text-align:left}
 footer{border-top:1px solid var(--line);padding:24px clamp(16px,4vw,48px);color:var(--mut);font-size:14px}
 @media(max-width:600px){.facts{grid-template-columns:1fr}.top nav{gap:4px 12px;font-size:14px}}
+.path{padding-left:1.2em}.path>li{margin:0 0 18px}.path h2{font-size:1.3em}.gloss dt{font-weight:800;margin-top:16px;color:#fff}.gloss dd{margin:4px 0 0;color:var(--mut)}
