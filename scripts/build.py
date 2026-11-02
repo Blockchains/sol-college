@@ -228,8 +228,17 @@ for L,ex in LES:
   for x in ex: lessons_by_proj[x['project']['name']].append(L)
 json.dump([dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code']) for pr in P for x in pr['kx']]+[dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code'],lesson=L['slug']) for L,ex in LES for x in ex],open(OUT+'/excerpts.json','w'))
 DAPPS={}
+STATIC_NOTE={'solstage-web':'The fork\'s own Vite/React frontend, with its built-in cluster switch (devnet / mainnet). It reads wallets and NFTs; it has no on-chain program of its own.',
+ 'stealthfolio':'The fork\'s own Next.js frontend (static export). Private transfers go through Light Protocol, whose relayer is a separate service the fork does not host.',
+ 'elyse':'The fork\'s own webpack frontend (wallet dashboard). It reads balances from public RPCs; it has no on-chain program of its own.'}
+def static_dapp(sl):
+  src=f'dapps/static/{sl}'
+  if not os.path.isdir(src): return ''
+  shutil.copytree(src,f'{OUT}/dapps/{sl}',dirs_exist_ok=True)
+  return f'''<section class=note><h2>Open the dapp</h2><p><a class=btn href="/dapps/{sl}/">Open the dapp</a> {E(STATIC_NOTE.get(sl,"The fork's own frontend, built unchanged except for its base path."))} Connect your own wallet; every transaction is signed in your wallet. Use devnet with free SOL from <a href="https://faucet.solana.com">faucet.solana.com</a>. <b>Mainnet uses real tokens: alpha software, high risk.</b></p><p>Built with <code>dapps/static_build.sh {sl}</code>.</p></section>'''
 def dapp(pr):
   sl=re.sub(r'[^a-z0-9-]+','-',pr['name'].lower()); f=f'dapps/deployed/{sl}.json'
+  if os.path.isdir(f'dapps/static/{sl}'): return static_dapp(sl)
   if not (os.path.exists(f) and os.path.exists('dapps/app/dist/app.js')): return ''
   d=json.load(open(f)); idls=sorted(glob.glob(f'dapps/build/{sl}/*.json'))
   idls=[x for x in idls if not x.endswith('-keypair.json') and (not d.get('idl') or x.endswith(d['idl']))]
