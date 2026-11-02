@@ -41,6 +41,8 @@ def main():
   os.makedirs('work',exist_ok=True)
   def clone(pr):
     d='work/'+pr['name']
+    if os.path.exists(d):
+      subprocess.run(['timeout','120','sh','-c',f'git -C {d} fetch -q --depth 1 origin {pr["branch"]} && git -C {d} reset -q --hard FETCH_HEAD'],stderr=subprocess.DEVNULL)
     if not os.path.exists(d):
       subprocess.run(['timeout','180','git','clone','-q','--depth','1','--filter=blob:limit=400k',pr['fork']+'.git',d],stderr=subprocess.DEVNULL)
     if os.path.exists(d):

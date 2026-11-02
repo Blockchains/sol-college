@@ -74,13 +74,78 @@ def excerpt_for(L):
     if top and (top[0]>=4 and top[1]['notes'] or top[0]>=5): best.append(top)
   best.sort(key=lambda t:(-t[0],-t[1]['project']['stars']))
   return [t[1] for t in best[:6]]
+SRC_EXT=('.rs','.ts','.tsx','.js','.jsx','.py','.go','.sol','.move','.c','.cpp')
+def manifest_cmds(pr):
+  root='work/'+pr['name']; cmds=[]
+  for rel,p in files(pr['name'],('package.json',)):
+    if rel.count('/')>2: continue
+    try: sc=json.load(open(p)).get('scripts',{})
+    except Exception: continue
+    d=os.path.dirname(rel) or '.'
+    for k in ('dev','start','build','test','lint','deploy'):
+      if k in sc: cmds.append((d,f"npm run {k}",sc[k][:120]))
+  for rel,p in files(pr['name'],('Anchor.toml',)):
+    d=os.path.dirname(rel) or '.'; cmds+= [(d,'anchor build','compile programs and generate IDLs'),(d,'anchor test','local validator + test suite')]
+    m=re.search(r'\[scripts\]([^\[]*)',read(p))
+    if m:
+      for k,v in re.findall(r'^\s*([\w-]+)\s*=\s*"([^"]*)"',m.group(1),re.M): cmds.append((d,f'anchor run {k}',v[:120]))
+  for rel,p in files(pr['name'],('Cargo.toml',)):
+    if rel=='Cargo.toml': cmds+=[('.','cargo build','Rust workspace build'),('.','cargo test','Rust tests')]
+  for rel,p in files(pr['name'],('go.mod',)):
+    if rel=='go.mod': cmds+=[('.','go build ./...',''),('.','go test ./...','')]
+  if os.path.exists(root+'/Makefile'):
+    for t in re.findall(r'^([a-zA-Z][\w-]*):',read(root+'/Makefile'),re.M)[:8]: cmds.append(('.',f'make {t}','Makefile target'))
+  seen=set(); return [c for c in cmds if not (c[:2] in seen or seen.add(c[:2]))][:16]
+def readme_summary(pr):
+  for n in ('README.md','readme.md','README.MD','Readme.md'):
+    t=read(f"work/{pr['name']}/{n}")
+    if t:
+      t=re.sub(r'```.*?```|<[^>]+>|!\[[^\]]*\]\([^)]*\)','',t,flags=re.S)
+      for para in re.split(r'\n\s*\n',t):
+        x=' '.join(l.strip() for l in para.split('\n') if not l.strip().startswith(('#','|','[!','-','*','>','=')))
+        x=re.sub(r'\[([^\]]+)\]\([^)]*\)',r'\1',x).strip()
+        if len(x)>80: return x[:600]
+  return ''
+def arch(pr):
+  root='work/'+pr['name']; top=collections.Counter(); ext=collections.Counter(); n=0
+  for rel,p in files(pr['name'],SRC_EXT):
+    n+=1; ext[os.path.splitext(rel)[1]]+=1; top[rel.split('/')[0] if '/' in rel else '(root)']+=1
+  progs=sorted({os.path.dirname(os.path.dirname(r)) for r,_ in files(pr['name'],('lib.rs',)) if r.endswith('src/lib.rs') and 'programs/' in r})[:8]
+  return n,top.most_common(8),ext.most_common(6),progs
+def key_excerpts(pr,k=4):
+  c=[]
+  for rel,path in files(pr['name'],SRC_EXT):
+    if BAD.search(rel) or re.search(r'\.test\.|\.spec\.|(^|/)tests?/',rel): continue
+    lines=read(path).split('\n')
+    for s in range(0,max(1,len(lines)-10),12):
+      block=lines[s:s+24]
+      while block and not block[-1].strip(): block.pop()
+      if len(block)<6 or any(len(x)>180 for x in block): continue
+      notes=[]
+      for j,x in enumerate(block):
+        for rx,msg in NOTES:
+          if re.search(rx,x) and not any(q[1]==msg for q in notes): notes.append((s+j+1,msg,x.strip()[:90]))
+      if len(notes)>=2: c.append((len(notes),rel,s,block,notes))
+  c.sort(key=lambda t:-t[0]); out=[];usedf=set()
+  for sc,rel,s,block,notes in c:
+    if rel in usedf: continue
+    usedf.add(rel); out.append(dict(project=pr,file=rel,start=s+1,end=s+len(block),code='\n'.join(block),notes=notes[:7],url=f"{pr['fork']}/blob/{pr['commit']}/{rel}#L{s+1}-L{s+len(block)}"))
+    if len(out)>=k: break
+  return out
+EXCL=collections.Counter(); KEEP=[]
+for pr in P:
+  n=arch(pr)[0] if pr['cloned'] else 0
+  pr['kx']=key_excerpts(pr) if (pr['permissive'] and n>=5) else []
+  if pr['kx']: KEEP.append(pr)
+  else: EXCL['too little code' if n<5 else ('licence not permissive' if not pr['permissive'] else 'no teachable Solana code found')]+=1
+TOTAL=len(P); P=KEEP
 LES=[]
 for L in LESSONS:
   ex=excerpt_for(L)
   if ex: LES.append((L,ex))
 # ---------- layout
 CSS=open('scripts/style.css').read()
-NAV=[('/explore/','Explore'),('/learn-by-example/','Learn by example'),('/what-to-build/','What to build'),('/how-to-build/','How to build')]
+NAV=[('/explore/','Explore'),('/new/','New'),('/learn-by-example/','Learn by example'),('/what-to-build/','What to build'),('/how-to-build/','How to build')]
 def page(path,title,desc,body,ld=None,crumbs=None):
   url=SITE+path; lds=[dict({"@context":"https://schema.org"},**x) for x in (ld or [])]
   if crumbs: lds.append({"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":i+1,"name":n,"item":SITE+u} for i,(u,n) in enumerate(crumbs)]})
@@ -98,7 +163,7 @@ def page(path,title,desc,body,ld=None,crumbs=None):
 SM=[]
 def chips(xs,cls='chip'): return ''.join(f'<span class={cls}>{E(x)}</span>' for x in xs)
 def card(pr):
-  return f'''<article class=card><h3><a href="/explore/{pr['slug']}/">{E(pr['name'])}</a></h3><p>{E(pr['description'][:160])}</p><p class=meta>★ {pr['stars']:,} · {E(pr['language'] or '—')} · {E(pr['license'] or 'no licence')}</p><div>{chips(pr['categories'])}{chips(pr['frameworks'][:4],'chip fw')}</div></article>'''
+  return f'''<article class=card><h3><a href="/explore/{pr['slug']}/">{E(pr['name'])}</a></h3><p>{E(pr['description'][:160])}</p><p class=meta>{ {'lesson':'📘 lesson','guide':'🧭 guide','listing':'listing'}.get(pr.get('level'),'')} · ★ {pr['stars']:,} · {E(pr['language'] or '—')} · {E(pr['license'] or 'no licence')}</p><div>{chips(pr['categories'])}{chips(pr['frameworks'][:4],'chip fw')}</div></article>'''
 def code(ex):
   pr=ex['project']; lang='rust' if ex['file'].endswith('.rs') else 'ts'
   rows=''.join(f'<span class=ln data-n="{ex["start"]+i}">{E(l) or " "}</span>' for i,l in enumerate(ex['code'].split('\n')))
@@ -143,12 +208,32 @@ for(const id of['q','fc','ff','fl','so','fp'])$(id).addEventListener('input',dra
 lessons_by_proj=collections.defaultdict(list)
 for L,ex in LES:
   for x in ex: lessons_by_proj[x['project']['name']].append(L)
+lesson_for_cat={'DeFi':['pdas','cpis','spl-tokens','oracles','escrow'],'Payments':['solana-pay','spl-tokens','blinks-actions','transactions'],'NFTs & Digital Assets':['nfts','compressed-nfts','token-2022'],'AI & Agents':['ai-agents','transactions','blinks-actions'],'Gaming':['pdas','compressed-nfts','transactions'],'DePIN':['oracles','compressed-nfts','spl-tokens'],'Consumer & Social':['blinks-actions','compressed-nfts','solana-pay'],'Wallets & Identity':['transactions','pdas'],'Governance & DAOs':['pdas','cpis','account-constraints'],'Infrastructure & Tooling':['transactions','account-constraints'],'Other':['pdas','cpis']}
+have={L['slug']:L for L,_ in LES}
+ideas=[]
+LEVEL=collections.Counter()
 for pr in P:
-  ls=lessons_by_proj[pr['name']]
-  page(f"/explore/{pr['slug']}/",f"{pr['name']}: Solana project ({', '.join(pr['categories'])})",(pr['description'] or pr['name'])[:150]+' Category, stack, licence and links to source.',
-  f'''<h1>{E(pr['name'])}</h1><p class=lead>{E(pr['description'])}</p><dl class=facts><dt>Original</dt><dd><a href="{pr['original']}">{E(pr['original_name'])}</a></dd><dt>SuperStack fork</dt><dd><a href="{pr['fork']}">{E(pr['fork'][19:])}</a> @ <code>{pr['commit'][:7]}</code></dd><dt>Stars</dt><dd>{pr['stars']:,}</dd><dt>Last push (original)</dt><dd>{pr['pushed'][:10]}</dd><dt>Languages</dt><dd>{E(', '.join(pr['languages']) or '—')}</dd><dt>Detected stack</dt><dd>{chips(pr['frameworks'],'chip fw') or 'not detected'}</dd><dt>Categories</dt><dd>{''.join(f'<a class=chip href="/what-to-build/{re.sub("[^a-z0-9]+","-",c.lower()).strip("-")}/">{E(c)}</a>' for c in pr['categories'])}</dd><dt>Licence</dt><dd>{E(pr['license'] or 'none detected')}{'' if pr['permissive'] else ': not quoted on Sol.College'}</dd>{f'<dt>Homepage</dt><dd><a href="{E(pr["homepage"])}" rel=nofollow>{E(pr["homepage"])}</a></dd>' if pr['homepage'] else ''}</dl>
-{('<h2>Used in lessons</h2><ul>'+''.join(f'<li><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></li>' for L in ls)+'</ul>') if ls else ''}''',
-  ld=[{"@type":"SoftwareSourceCode","name":pr['name'],"codeRepository":pr['original'],"programmingLanguage":pr['language'],"license":pr['license']}],crumbs=[('/','Home'),('/explore/','Explore'),(f"/explore/{pr['slug']}/",pr['name'])])
+  ls=lessons_by_proj[pr['name']]; n,top,ext,progs=arch(pr) if pr['cloned'] else (0,[],[],[])
+  summ=readme_summary(pr) if pr['cloned'] else ''; cmds=manifest_cmds(pr) if pr['cloned'] else []
+  kx=pr['kx']
+  level='lesson' if kx else ('guide' if n>=5 else 'listing'); LEVEL[level]+=1; pr['level']=level
+  facts=f"""<dl class=facts><dt>Original</dt><dd><a href="{pr['original']}">{E(pr['original_name'])}</a></dd><dt>SuperStack fork</dt><dd><a href="{pr['fork']}">{E(pr['fork'][19:])}</a> @ <a href="{pr['fork']}/tree/{pr['commit']}"><code>{pr['commit'][:7]}</code></a></dd><dt>Stars</dt><dd>{pr['stars']:,}</dd><dt>Last push (original)</dt><dd>{pr['pushed'][:10]}</dd><dt>Languages</dt><dd>{E(', '.join(pr['languages']) or '—')}</dd><dt>Detected stack</dt><dd>{chips(pr['frameworks'],'chip fw') or 'not detected'}</dd><dt>Categories</dt><dd>{''.join(f'<a class=chip href="/what-to-build/{re.sub("[^a-z0-9]+","-",c.lower()).strip("-")}/">{E(c)}</a>' for c in pr['categories'])}</dd><dt>Licence</dt><dd>{E(pr['license'] or 'none detected')}{'' if pr['permissive'] else ': code not quoted on Sol.College'}</dd>{f'<dt>Homepage</dt><dd><a href="{E(pr["homepage"])}" rel=nofollow>{E(pr["homepage"])}</a></dd>' if pr['homepage'] else ''}</dl>"""
+  badge={'lesson':'Full lesson','guide':'Structure guide (licence does not allow quoting)','listing':'Listing only: too little code to teach from'}[level]
+  body=f"<p class=eyebrow>{badge}</p><h1>{E(pr['name'])}</h1><p class=lead>{E(pr['description'])}</p>"
+  if level=='listing':
+    body+=facts+f"<p>This fork has {n} source files we can read, which isn't enough to build a lesson from. It's listed for completeness.</p>"
+  else:
+    body+=('<h2>What it does</h2><p>From the project README:</p><blockquote>'+E(summ)+'</blockquote>' if summ else '')+facts
+    body+=f"<h2>Architecture</h2><p>{n} source files. By extension: {', '.join(f'{E(e)} ×{c}' for e,c in ext)}.</p><table class=tbl><thead><tr><th>Top-level directory</th><th>Source files</th></tr></thead><tbody>"+''.join(f'<tr><td><a href="{pr["fork"]}/tree/{pr["commit"]}/{"" if d=="(root)" else E(d)}"><code>{E(d)}</code></a></td><td>{c}</td></tr>' for d,c in top)+"</tbody></table>"
+    if progs: body+="<p>On-chain programs: "+', '.join(f'<a href="{pr["fork"]}/tree/{pr["commit"]}/{E(p)}"><code>{E(p)}</code></a>' for p in progs)+"</p>"
+    if kx: body+="<h2>Key code, explained</h2><p>Excerpts chosen automatically where the code uses the most Solana concepts, pinned to the fork's commit.</p>"+''.join(code(x) for x in kx)
+    if cmds: body+="<h2>How to run, build and test</h2><p>These commands come from the repo's own manifests (package.json scripts, Anchor.toml, Cargo, go.mod, Makefile). Check the README for prerequisites and environment variables.</p><table class=tbl><thead><tr><th>Directory</th><th>Command</th><th>Runs</th></tr></thead><tbody>"+''.join(f'<tr><td><code>{E(d)}</code></td><td><code>{E(c)}</code></td><td>{E(x) if pr["permissive"] or not x else ""}</td></tr>' for d,c,x in cmds)+"</tbody></table>"
+    else: body+="<h2>How to run</h2><p>No package.json, Anchor.toml, Cargo.toml, go.mod or Makefile was found near the root. See the project README.</p>"
+    ideas_l=[have[s] for s in lesson_for_cat.get(pr['categories'][0],[]) if s in have][:3]
+    body+="<h2>What you could build from it</h2><ul>"+f"<li>Fork <a href='{pr['fork']}'>the SuperStack copy</a> and extend it within the {E(pr['categories'][0])} gaps listed on <a href='/what-to-build/{re.sub('[^a-z0-9]+','-',pr['categories'][0].lower()).strip('-')}/'>the idea page</a>.</li>"+''.join(f'<li>Learn the pattern first: <a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></li>' for L in ideas_l)+"</ul>"
+  if ls: body+='<h2>Used in lessons</h2><ul>'+''.join(f'<li><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></li>' for L in ls)+'</ul>'
+  page(f"/explore/{pr['slug']}/",f"{pr['name']}: {'code walkthrough' if level=='lesson' else 'Solana project'} ({', '.join(pr['categories'])})",(pr['description'] or pr['name'])[:140]+' Architecture, key code, how to run it, and what to build.',body,
+  ld=[{"@type":"SoftwareSourceCode","name":pr['name'],"codeRepository":pr['original'],"programmingLanguage":pr['language'],"license":pr['license']}]+([{"@type":"LearningResource","name":pr['name']+" code walkthrough","isAccessibleForFree":True,"citation":[x['url'] for x in kx]}] if kx else []),crumbs=[('/','Home'),('/explore/','Explore'),(f"/explore/{pr['slug']}/",pr['name'])])
 # ---------- lessons
 page('/learn-by-example/','Learn Solana by example: annotated lessons from real code',f'{len(LES)} Solana lessons (PDAs, CPIs, SPL tokens, Token-2022, escrow, NFTs, oracles, Solana Pay, Blinks, AI agents) built from real code excerpts with permalinks.',
 f'<h1>Learn by example</h1><p class=lead>Each lesson explains one concept, then walks through real excerpts from projects in the stack, pinned to a commit.</p><div class=grid>'+''.join(f'<article class=card><h3><a href="/learn-by-example/{L["slug"]}/">{E(L["title"])}</a></h3><p>{E(L["intro"][:170])}…</p><p class=meta>{len(ex)} excerpts from {", ".join(E(x["project"]["name"]) for x in ex[:3])}</p></article>' for L,ex in LES)+'</div>',
@@ -162,8 +247,6 @@ for i,(L,ex) in enumerate(LES):
   ld=[{"@type":"LearningResource","name":L['title'],"description":L['intro'],"learningResourceType":"Annotated code example","educationalLevel":"Intermediate","isAccessibleForFree":True,"isPartOf":{"@type":"Course","name":"Learn Solana by example","url":SITE+"/learn-by-example/"},"citation":[x['url'] for x in ex]}],
   crumbs=[('/','Home'),('/learn-by-example/','Learn by example'),(f"/learn-by-example/{L['slug']}/",L['title'])])
 # ---------- ideas
-lesson_for_cat={'DeFi':['pdas','cpis','spl-tokens','oracles','escrow'],'Payments':['solana-pay','spl-tokens','blinks-actions','transactions'],'NFTs & Digital Assets':['nfts','compressed-nfts','token-2022'],'AI & Agents':['ai-agents','transactions','blinks-actions'],'Gaming':['pdas','compressed-nfts','transactions'],'DePIN':['oracles','compressed-nfts','spl-tokens'],'Consumer & Social':['blinks-actions','compressed-nfts','solana-pay'],'Wallets & Identity':['transactions','pdas'],'Governance & DAOs':['pdas','cpis','account-constraints'],'Infrastructure & Tooling':['transactions','account-constraints'],'Other':['pdas','cpis']}
-have={L['slug']:L for L,_ in LES}; ideas=[]
 for c,ps in sorted(cats.items(),key=lambda kv:len(kv[1])):
   slug=re.sub('[^a-z0-9]+','-',c.lower()).strip('-'); strong=[p for p in ps if p['stars']>=100]; act=[p for p in ps if p['pushed']>='2025-11']
   fw=collections.Counter(f for p in ps for f in p['frameworks']).most_common(6); lg=collections.Counter(p['language'] or 'Other' for p in ps).most_common(4)
@@ -197,6 +280,21 @@ for g in GUIDES:
   ld=[{"@type":"HowTo","name":g['title'],"step":[{"@type":"HowToStep","name":h,"text":t} for h,t,_ in g['body']]}],crumbs=[('/','Home'),('/how-to-build/','How to build'),(f"/how-to-build/{g['slug']}/",g['title'])])
 page('/how-to-build/','How to build on Solana: setup, Anchor, testing, deploy, security','Practical Solana guides: environment setup, Anchor workflow, testing, deploying to devnet and mainnet, and a security checklist.',
 '<h1>How to build</h1><div class=grid>'+''.join(f'<article class=card><h3><a href="/how-to-build/{g["slug"]}/">{E(g["title"])}</a></h3><p>{E(g["body"][0][1][:140])}…</p></article>' for g in GUIDES)+'</div>',crumbs=[('/','Home'),('/how-to-build/','How to build')])
+# ---------- changelog of published fork pages
+import urllib.request
+PUB=os.environ.get('PUBLISHED_FROM','https://blockchains.github.io/sol-college')+'/published.json'
+try: prev=json.loads(urllib.request.urlopen(PUB,timeout=20).read())
+except Exception: prev=[]
+known={x['path'] for x in prev}; now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+for pr in P:
+  pth=f"/explore/{pr['slug']}/"
+  if pth not in known: prev.append(dict(path=pth,url=SITE+pth,project=pr['name'],original=pr['original_name'],published=now))
+live={f"/explore/{p['slug']}/" for p in P}
+cur=[x for x in prev if x['path'] in live]; cur.sort(key=lambda x:x['published'],reverse=True)
+json.dump(prev,open(OUT+'/published.json','w'),indent=1)
+open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Project | URL |\n|---|---|---|\n'+''.join(f"| {x['published']} | {x['project']} | {x['url']} |\n" for x in cur))
+page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
+'<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a></td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
 # ---------- legacy home preserved at /edge-ai/
 if os.path.exists('legacy/index.html'):
   t=open('legacy/index.html').read()
@@ -215,9 +313,10 @@ for f in ('favicon.svg','og.png'):
 open(OUT+'/CNAME','w').write(os.environ.get('SITE_CNAME','')) if os.environ.get('SITE_CNAME') else None
 open(OUT+'/.nojekyll','w').write('')
 shutil.copy(OUT+'/index.html',OUT+'/404.html') if not os.path.exists(OUT+'/404.html') else None
-json.dump(dict(projects=len(P),lessons=len(LES),excerpts=sum(len(e) for _,e in LES),ideas=len(ideas),guides=len(GUIDES),pages=len(urls)),open(OUT+'/stats.json','w'))
+json.dump(dict(projects=len(P),lessons=len(LES),excerpts=sum(len(e) for _,e in LES),ideas=len(ideas),levels=dict(LEVEL),forks_total=TOTAL,excluded=dict(EXCL),guides=len(GUIDES),pages=len(urls)),open(OUT+'/stats.json','w'))
 BASE=os.environ.get('SITE_BASE','').rstrip('/')
-if BASE:  # preview under a project-pages subpath: rewrite root-relative links in generated pages
+if BASE:
+  SM=list(SM)  # preview under a project-pages subpath: rewrite root-relative links in generated pages
   for f in SM:
     fp=OUT+f+'index.html'; t=open(fp).read()
     t=re.sub(r'(href|src)="/(?!/)',lambda m:f'{m.group(1)}="{BASE}/',t).replace("fetch('/projects.json')",f"fetch('{BASE}/projects.json')").replace('href="/explore/${{','href="'+BASE+'/explore/${{').replace('href="/explore/${p.s}',f'href="{BASE}/explore/${{p.s}}')
