@@ -1,0 +1,132 @@
+{
+ "stealthfolio": {
+  "apps": [
+   "nextjs",
+   "relayer"
+  ],
+  "pre": [
+   {
+    "cmd": "cp nextjs/.env.template nextjs/.env.local && sed -i 's#^RPC=.*#RPC=https://api.devnet.solana.com#; s#^SOLANA_ENDPOINT=.*#SOLANA_ENDPOINT=https://api.devnet.solana.com#' nextjs/.env.local"
+   }
+  ],
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3101 / npx next start -p 3101",
+    "cwd": "nextjs"
+   }
+  ],
+  "needs_real_funds": "Swaps run through Jupiter on mainnet with your own wallet; Jupiter has no devnet liquidity."
+ },
+ "solstage-web": {
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3102 / npx vite preview --port 3102 --strictPort"
+   }
+  ]
+ },
+ "elyse": {
+  "apps": [
+   "elyse-app",
+   "app_page"
+  ],
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3103 / python3 -m http.server 3103 -d dist",
+    "cwd": "elyse-app"
+   },
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3104 / python3 -m http.server 3104",
+    "cwd": "app_page"
+   }
+  ]
+ },
+ "Predix": {
+  "pre": [
+   {
+    "cmd": "sed -i \"s/pub system_program: AccountInfo<'info>,/pub system_program: Program<'info, System>,/\" programs/predix/src/lib.rs",
+    "why": "anchor 0.29 safety check rejects an unchecked AccountInfo; use the typed System program"
+   },
+   {
+    "cmd": "cd app && npm pkg set devDependencies.react-refresh=^0.14.0",
+    "why": "craco build needs react-refresh, which the app never declared"
+   },
+   {
+    "cmd": "sed -i 's#/learn react/i#/select wallet/i#' app/src/App.test.tsx",
+    "why": "the Create React App placeholder test looked for 'learn react'; assert the wallet button instead"
+   }
+  ]
+ },
+ "valhalla": {
+  "apps": [],
+  "cargo": [
+   {
+    "cmd": "npx -y yarn@1 run web:build",
+    "phase": "build"
+   }
+  ],
+  "notes": "Anchor.toml clones the Metaplex token-metadata program from a public mainnet RPC into the local validator. That's read-only, and no mainnet transaction is sent."
+ },
+ "tokengator": {
+  "pre": [
+   {
+    "cmd": "npm pkg delete dependencies.@pubkey-ui/generators",
+    "why": "@pubkey-ui/generators is no longer on npm (404); only the Nx code generators use it, not the build"
+   },
+   {
+    "cmd": "sed -i 's/name={user?.username}/name={user?.username ?? undefined}/' libs/web/core/ui/src/lib/ui-header-profile.tsx libs/web/user/ui/src/lib/user-ui-avatar.tsx",
+    "why": "TS2322 under the resolved Mantine types: null is not assignable to string | undefined"
+   }
+  ],
+  "apps": [
+   "."
+  ],
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/flows/tokengator.sh",
+    "cwd": ".",
+    "validator": true
+   }
+  ],
+  "notes": "Postgres 17 runs locally on port 5433. The fee payer is a throwaway keypair generated per run."
+ },
+ "sca": {
+  "apps": [],
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/flows/sca.sh",
+    "validator": true,
+    "timeout": 1200
+   }
+  ],
+  "notes": "Native (non-Anchor) program. The repo's hardcoded program ID is swapped for a fresh local keypair, and the Pinata upload is stubbed because it needs a Pinata JWT."
+ },
+ "w3-solana": {
+  "apps": [],
+  "run": [
+   {
+    "cmd": "bash /workspace/sol-college/repo/tests/flows/w3-solana.sh",
+    "validator": true,
+    "timeout": 1500
+   }
+  ],
+  "notes": "The repo commits a sample signer private key (w3-uploader.yaml) and a keypair byte array (docker/Dockerfile). Never use or fund these; the flow generates throwaway keys. Gateway resolves <name>.w3sol.xyz Host headers; locally we send the Host header with curl."
+ },
+ "solana-pay-wordpress": {
+  "pre": [
+   {
+    "cmd": "npm pkg set devDependencies.typescript=^5",
+    "why": "the build calls tsc but typescript is not declared"
+   }
+  ],
+  "notes": "Running the plugin needs WordPress + WooCommerce + PHP; only the JS bundle is built and tested here."
+ },
+ "SnakeAI": {
+  "unpublish": "Does not compile: tsc reports 204 errors (methods called but never defined), and the Solana adapter targets a program that is not in the repo."
+ },
+ "shell-trade-functions": {
+  "unpublish": "Code missing: the build copies ../../constants/tokens.json from a parent monorepo that is not in the fork; it also needs a Moralis API key and Firestore."
+ },
+ "broker.Electrodo": {
+  "unpublish": "Cannot run without third-party credentials (i4Trust/iSHARE participant certificates, Fronius inverter API, Pinata, Chainstack); all 13 jest suites fail without them."
+ }
+}
