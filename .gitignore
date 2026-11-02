@@ -2,3 +2,7 @@ work/
 site/
 data/
 __pycache__/
+dapps/build/**/*.so
+dapps/build/**/*-keypair.json
+dapps/app/node_modules/
+dapps/app/dist/

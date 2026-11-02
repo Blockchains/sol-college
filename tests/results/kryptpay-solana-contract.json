@@ -1,0 +1,80 @@
+{
+ "name": "kryptpay-solana-contract",
+ "slug": "kryptpay-solana-contract",
+ "fork": "https://github.com/Blockchains/kryptpay-solana-contract",
+ "commit": "a528c517cd7dc23fff528a6b876297624d482b3e",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "."
+ ],
+ "apps": [],
+ "program_ids": {
+  "kryptpay": "DPJxtz3ivkan6ngpdWJdsDtigHncCYdQ8aDQr6DSVMUn"
+ },
+ "anchor_version": "0.29.0",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/kryptpay-solana-contract.git /tmp/scbuild/kryptpay-solana-contract && git -C /tmp/scbuild/kryptpay-solana-contract checkout -q a528c517cd7dc23fff528a6b876297624d482b3e",
+   "exit": 0,
+   "secs": 2,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 4,
+   "tail": "warning \"@metaplex-foundation/mpl-token-metadata > @metaplex-foundation/mpl-toolbox@0.9.4\" has unmet peer dependency \"@metaplex-foundation/umi@>= 0.8.2 < 1\".\nwarning \" > @solana/spl-token@0.4.3\" has unmet peer dependency \"@solana/web3.js@^1.91.1\".\nwarning \"@solana/spl-token > @solana/spl-token-group@0.0.2\" has unmet peer dependency \"@solana/web3.js@^1.91.1\".\nwarning \"@solana/spl-token > @solana/spl-token-metadata@0.1.2\" has unmet peer dependency \"@solana/web3.js@^1.87.6\".\nwarning \"@solana/spl-token > @solana/spl-token-metadata > @solana/codecs-strings@2.0.0-experimental.8618508\" has unmet peer dependency \"fastestsmallesttextencoderdecoder@^1.0.22\".\nwarning \"@solana/spl-token > @solana/spl-token-group > @solana/codecs > @solana/codecs-strings@2.0.0-preview.2\" has unmet peer dependency \"fastestsmallesttextencoderdecoder@^1.0.22\"."
+  },
+  {
+   "phase": "configure",
+   "cwd": ".",
+   "cmd": "anchor@0.29.0 keys sync",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/kryptpay-solana-contract/programs/kryptpay/src/lib.rs\"\nUpdated to DPJxtz3ivkan6ngpdWJdsDtigHncCYdQ8aDQr6DSVMUn\nFound incorrect program id declaration in Anchor.toml for the program `kryptpay`\nUpdated to DPJxtz3ivkan6ngpdWJdsDtigHncCYdQ8aDQr6DSVMUn\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 0,
+   "secs": 80,
+   "tail": "5 |         token::{transfer, Mint, Token, TokenAccount, Transfer as SplTransfer}\n  |                           ^^^^\n  |\n  = note: `#[warn(unused_imports)]` on by default\nwarning: `kryptpay` (lib) generated 1 warning (run `cargo fix --lib -p kryptpay` to apply 1 suggestion)\n    Finished release [optimized] target(s) in 1m 19s"
+  },
+  {
+   "phase": "test",
+   "cwd": ".",
+   "cmd": "anchor@0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 1,
+   "secs": 1,
+   "tail": "Found a 'test' script in the Anchor.toml. Running it as a test suite!\nRunning test suite: \"/tmp/scbuild/kryptpay-solana-contract/Anchor.toml\"\nFailed to run test: yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts: No such file or directory (os error 2)\nError: yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts\nCaused by:\n    No such file or directory (os error 2)"
+  },
+  {
+   "phase": "verify",
+   "cwd": ".",
+   "cmd": "solana program show DPJxtz3ivkan6ngpdWJdsDtigHncCYdQ8aDQr6DSVMUn -u localhost && solana transaction-history DPJxtz3ivkan6ngpdWJdsDtigHncCYdQ8aDQr6DSVMUn -u localhost --limit 20",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  }
+ ],
+ "build": "pass",
+ "test": "fail",
+ "deploy": "none",
+ "status": "builds",
+ "notes": ""
+}

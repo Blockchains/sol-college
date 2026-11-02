@@ -1,0 +1,114 @@
+{
+ "name": "gree",
+ "slug": "gree",
+ "fork": "https://github.com/Blockchains/gree",
+ "commit": "7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "anchor"
+ ],
+ "apps": [
+  "."
+ ],
+ "program_ids": {
+  "gree": "Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V"
+ },
+ "anchor_version": "0.29.0",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/gree.git /tmp/scbuild/gree && git -C /tmp/scbuild/gree checkout -q 7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 16,
+   "tail": "npm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
+   "cwd": "anchor",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 2,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "install",
+   "cwd": "anchor",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 0,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: node-gyp rebuild)\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp rebuild)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp rebuild)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "configure",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 keys sync",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/gree/anchor/programs/gree/src/lib.rs\"\nUpdated to Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V\nFound incorrect program id declaration in Anchor.toml for the program `gree`\nUpdated to Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 0,
+   "secs": 84,
+   "tail": "   Compiling spl-token-2022 v2.0.2\n   Compiling spl-token-2022 v0.9.0\n   Compiling spl-associated-token-account v2.3.1\n   Compiling anchor-spl v0.29.0\n   Compiling gree v0.1.0 (/tmp/scbuild/gree/anchor/programs/gree)\n    Finished release [optimized] target(s) in 1m 23s"
+  },
+  {
+   "phase": "test",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 1,
+   "secs": 3,
+   "tail": "      at processTicksAndRejections (node:internal/process/task_queues:104:5)\ninfo Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.\nwarning package.json: No license field\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nerror Command failed with exit code 1."
+  },
+  {
+   "phase": "deploy",
+   "cwd": "anchor",
+   "cmd": "solana airdrop 100 -u localhost >/dev/null; anchor@0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Upgrade authority: ~/.config/solana/id.json\nDeploying program \"gree\"...\nProgram path: /tmp/scbuild/gree/anchor/target/deploy/gree.so...\nThere was a problem deploying: Output { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"\" }.\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  },
+  {
+   "phase": "verify",
+   "cwd": "anchor",
+   "cmd": "solana program show Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V -u localhost && solana transaction-history Ai1qNQfyMTqUUNgE1onrPPYkZJzJV9Q5CryjP1CY8M9V -u localhost --limit 20",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 25,
+   "tail": "Browserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
+  }
+ ],
+ "build": "pass",
+ "test": "fail",
+ "deploy": "fail",
+ "status": "builds",
+ "notes": ""
+}

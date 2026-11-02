@@ -1,0 +1,12 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Sol.College dapp</title>
+<meta name=robots content=noindex><link rel=icon href="/favicon.svg">
+<style>body{font:15px/1.5 system-ui,sans-serif;max-width:920px;margin:0 auto;padding:16px;background:#0b0a14;color:#e8e6f3}a{color:#b7a4ff}code{font-size:.9em}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}button{background:#2a2550;color:#fff;border:1px solid #5b4fb0;border-radius:8px;padding:6px 12px;cursor:pointer}
+button[aria-pressed=true]{background:#7b61ff}.warn{background:#3a1515;border:1px solid #c44;padding:10px;border-radius:8px}.disabled{opacity:.8;border:1px dashed #777;padding:10px;border-radius:8px}
+label{display:block;margin:6px 0}input{width:100%;box-sizing:border-box;background:#15132a;color:#fff;border:1px solid #333;border-radius:6px;padding:6px}details.ix{border:1px solid #2c2850;border-radius:8px;padding:8px;margin:6px 0}
+pre{white-space:pre-wrap;background:#15132a;padding:8px;border-radius:8px;max-height:400px;overflow:auto}#log{font-size:.9em}</style></head><body>
+<p><a href="/">Sol.College</a> · live dapp</p><h1 id=title>Loading…</h1><p id=meta></p>
+<div class=bar role=group aria-label=Network><b>Network:</b><button data-net=devnet aria-pressed=true>Devnet (test tokens)</button><button data-net=mainnet aria-pressed=false>Mainnet (real tokens)</button>
+<span style="flex:1"></span><button data-wallet=phantom>Connect Phantom</button><button data-wallet=solflare>Connect Solflare</button></div>
+<p id=who>Wallet not connected. Signing happens only in your wallet; this page never sees a private key.</p><div id=netinfo></div><div id=app></div><h2>Activity</h2><ul id=log></ul>
+<script type=module src="app.js"></script></body></html>

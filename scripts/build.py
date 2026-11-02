@@ -195,6 +195,20 @@ lessons_by_proj=collections.defaultdict(list)
 for L,ex in LES:
   for x in ex: lessons_by_proj[x['project']['name']].append(L)
 json.dump([dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code']) for pr in P for x in pr['kx']]+[dict(project=x['project']['name'],fork=x['project']['fork'],commit=x['project']['commit'],file=x['file'],start=x['start'],end=x['end'],url=x['url'],code=x['code'],lesson=L['slug']) for L,ex in LES for x in ex],open(OUT+'/excerpts.json','w'))
+DAPPS={}
+def dapp(pr):
+  sl=re.sub(r'[^a-z0-9-]+','-',pr['name'].lower()); f=f'dapps/deployed/{sl}.json'
+  if not (os.path.exists(f) and os.path.exists('dapps/app/dist/app.js')): return ''
+  d=json.load(open(f)); idls=sorted(glob.glob(f'dapps/build/{sl}/*.json'))
+  idls=[x for x in idls if not x.endswith('-keypair.json') and (not d.get('idl') or x.endswith(d['idl']))]
+  if not d.get('devnet') or not idls: return ''
+  o=f'{OUT}/dapps/{sl}/'; os.makedirs(o,exist_ok=True)
+  shutil.copy('dapps/app/index.html',o); shutil.copy('dapps/app/dist/app.js',o); shutil.copy(idls[0],o+'idl.json')
+  json.dump(dict(name=pr['name'],fork=pr['fork'],commit=pr['commit'],lesson=f"/explore/{pr['slug']}/",programs=dict(devnet=d['devnet'],mainnet=d.get('mainnet'))),open(o+'config.json','w'))
+  DAPPS[pr['name']]=d
+  mn=f"Mainnet: upstream program <code>{E(d['mainnet'])}</code> (alpha, high risk, real funds)" if d.get('mainnet') else 'Mainnet: not yet deployed on mainnet (needs owner approval), so it is disabled'
+  sig=''.join(f'<li><code>{E(x["label"])}</code> <a href="https://explorer.solana.com/tx/{E(x["sig"])}?cluster=devnet">{E(x["sig"][:20])}…</a></li>' for x in d.get('sigs',[])[:8])
+  return f'''<section class=note><h2>Open the dapp</h2><p><a class=btn href="/dapps/{sl}/">Open the dapp</a> Connect Phantom or Solflare. Every transaction is signed in your own wallet.</p><ul><li>Devnet (test tokens): program <a href="https://explorer.solana.com/address/{E(d['devnet'])}?cluster=devnet"><code>{E(d['devnet'])}</code></a>. Get free devnet SOL at <a href="https://faucet.solana.com">faucet.solana.com</a>.</li><li>{mn}</li></ul>{f'<p>Devnet proof, verified {E(d.get("verified",""))}: real transactions sent through this program on devnet.</p><ul class=sigs>{sig}</ul>' if sig else ''}</section>'''
 TOPICS=['escrow','vault','oracle','swap','stake','staking','nft','mint','pda','cpi','token-2022','auction','dao','governance','prediction','payment','solana pay','blink','airdrop','lottery','amm','lending','bridge','dispute','game','agent','metadata','compressed','merkle','multisig','subscription','marketplace','reward','vesting','faucet']
 def kw(p):
   t=set()
@@ -239,6 +253,7 @@ for pr in P:
     body+=f"<h2>Architecture</h2><p>{n} source files. By extension: {', '.join(f'{E(e)} ×{c}' for e,c in ext)}.</p><table class=tbl><thead><tr><th>Top-level directory</th><th>Source files</th></tr></thead><tbody>"+''.join(f'<tr><td><a href="{pr["fork"]}/tree/{pr["commit"]}/{"" if d=="(root)" else E(d)}"><code>{E(d)}</code></a></td><td>{c}</td></tr>' for d,c in top)+"</tbody></table>"
     if progs: body+="<p>On-chain programs: "+', '.join(f'<a href="{pr["fork"]}/tree/{pr["commit"]}/{E(p)}"><code>{E(p)}</code></a>' for p in progs)+"</p>"
     if kx: body+=tested.guide(pr,'work/'+pr['name'])
+    if kx: body+=dapp(pr)
     if kx: body+="<h2>Key code, explained</h2><p>Excerpts chosen automatically where the code uses the most Solana concepts, pinned to the fork's commit.</p>"+''.join(code(x) for x in kx)
     if cmds: body+="<h2>How to run, build and test</h2><p>These commands come from the repo's own manifests (package.json scripts, Anchor.toml, Cargo, go.mod, Makefile). Check the README for prerequisites and environment variables.</p><table class=tbl><thead><tr><th>Directory</th><th>Command</th><th>Runs</th></tr></thead><tbody>"+''.join(f'<tr><td><code>{E(d)}</code></td><td><code>{E(c)}</code></td><td>{E(x) if pr["permissive"] or not x else ""}</td></tr>' for d,c,x in cmds)+"</tbody></table>"
     else: body+="<h2>How to run</h2><p>No package.json, Anchor.toml, Cargo.toml, go.mod or Makefile was found near the root. See the project README.</p>"

@@ -1,0 +1,106 @@
+{
+ "name": "seloongmun",
+ "slug": "seloongmun",
+ "fork": "https://github.com/Blockchains/seloongmun",
+ "commit": "e3144132664c173861bd8a3797eaaa34610cddad",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "anchor"
+ ],
+ "apps": [
+  "."
+ ],
+ "program_ids": {
+  "seloongmun": "HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX"
+ },
+ "anchor_version": "0.29.0",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/seloongmun.git /tmp/scbuild/seloongmun && git -C /tmp/scbuild/seloongmun checkout -q e3144132664c173861bd8a3797eaaa34610cddad",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": "anchor",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 3,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "configure",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 keys sync",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/seloongmun/anchor/programs/seloongmun/src/lib.rs\"\nUpdated to HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX\nFound incorrect program id declaration in Anchor.toml for the program `seloongmun`\nUpdated to HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 0,
+   "secs": 65,
+   "tail": "   Compiling anchor-attribute-access-control v0.29.0\n   Compiling anchor-attribute-program v0.29.0\n   Compiling anchor-derive-accounts v0.29.0\n   Compiling anchor-lang v0.29.0\n   Compiling seloongmun v0.1.0 (/tmp/scbuild/seloongmun/anchor/programs/seloongmun)\n    Finished release [optimized] target(s) in 1m 04s"
+  },
+  {
+   "phase": "test",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 1,
+   "secs": 1,
+   "tail": "Found a 'test' script in the Anchor.toml. Running it as a test suite!\nRunning test suite: \"/tmp/scbuild/seloongmun/anchor/Anchor.toml\"\nFailed to run test: ../node_modules/.bin/nx run anchor:jest: No such file or directory (os error 2)\nError: ../node_modules/.bin/nx run anchor:jest\nCaused by:\n    No such file or directory (os error 2)"
+  },
+  {
+   "phase": "deploy",
+   "cwd": "anchor",
+   "cmd": "solana airdrop 100 -u localhost >/dev/null; anchor@0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Upgrade authority: ~/.config/solana/id.json\nDeploying program \"seloongmun\"...\nProgram path: /tmp/scbuild/seloongmun/anchor/target/deploy/seloongmun.so...\nThere was a problem deploying: Output { status: ExitStatus(unix_wait_status(256)), stdout: \"\", stderr: \"\" }.\nError: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)\nError: RPC request error: cluster version query failed: error sending request for url (http://127.0.0.1:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  },
+  {
+   "phase": "verify",
+   "cwd": "anchor",
+   "cmd": "solana program show HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX -u localhost && solana transaction-history HkpPfeA1iAX22x9sUmgqSCLH43mCUwS5UboqsD58DUvX -u localhost --limit 20",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 17,
+   "tail": "npm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 18,
+   "tail": "\u001b[0m \u001b[90m   | \u001b[39m         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 4 | \u001b[39m\u001b[36mimport\u001b[39m { \u001b[33mProgram\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'@coral-xyz/anchor'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 5 | \u001b[39m\u001b[36mimport\u001b[39m { useConnection } \u001b[36mfrom\u001b[39m \u001b[32m'@solana/wallet-adapter-react'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 6 | \u001b[39m\u001b[36mimport\u001b[39m { \u001b[33mCluster\u001b[39m\u001b[33m,\u001b[39m \u001b[33mKeypair\u001b[39m\u001b[33m,\u001b[39m \u001b[33mPublicKey\u001b[39m } \u001b[36mfrom\u001b[39m \u001b[32m'@solana/web3.js'\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\nError occurred while trying to run the build command\n1"
+  }
+ ],
+ "build": "fail",
+ "test": "fail",
+ "deploy": "fail",
+ "status": "fails",
+ "notes": ""
+}

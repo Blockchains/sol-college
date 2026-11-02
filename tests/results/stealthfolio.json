@@ -1,0 +1,87 @@
+{
+ "name": "stealthfolio",
+ "slug": "stealthfolio",
+ "fork": "https://github.com/Blockchains/stealthfolio",
+ "commit": "7781de14155a013f6b66dac7d008f1750fa50fa7",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "nextjs",
+  "relayer"
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/stealthfolio.git /tmp/scbuild/stealthfolio && git -C /tmp/scbuild/stealthfolio checkout -q 7781de14155a013f6b66dac7d008f1750fa50fa7",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "configure",
+   "cwd": ".",
+   "cmd": "cp nextjs/.env.template nextjs/.env.local && sed -i 's#^RPC=.*#RPC=https://api.devnet.solana.com#; s#^SOLANA_ENDPOINT=.*#SOLANA_ENDPOINT=https://api.devnet.solana.com#' nextjs/.env.local",
+   "exit": 0,
+   "secs": 0,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": "nextjs",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 13,
+   "tail": "npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)\nnpm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo \"secp256k1 bindings compilation fail. Pure JS implementation will be used.\")\nnpm warn install-scripts   usb@2.12.1 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": "nextjs",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 20,
+   "tail": "  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)"
+  },
+  {
+   "phase": "install",
+   "cwd": "relayer",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 1,
+   "tail": "added 128 packages in 1s"
+  },
+  {
+   "phase": "build",
+   "cwd": "relayer",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 4,
+   "tail": "17 packages are looking for funding\n  run `npm fund` for details\n13 vulnerabilities (4 low, 1 moderate, 7 high, 1 critical)\nTo address all issues, run:\n  npm audit fix\nRun `npm audit` for details."
+  },
+  {
+   "phase": "run",
+   "cwd": "nextjs",
+   "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3101 / npx next start -p 3101",
+   "exit": 0,
+   "secs": 2,
+   "tail": "GET http://127.0.0.1:3101/ -> 200"
+  }
+ ],
+ "build": "pass",
+ "test": "none",
+ "deploy": "none",
+ "status": "operational",
+ "notes": ""
+}

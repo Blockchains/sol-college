@@ -1,0 +1,88 @@
+{
+ "name": "Predix",
+ "slug": "predix",
+ "fork": "https://github.com/Blockchains/Predix",
+ "commit": "6f577914bb63f29b17892d70ff465d908a46782f",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "."
+ ],
+ "apps": [
+  "app"
+ ],
+ "program_ids": {},
+ "anchor_version": "0.29.0",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/Predix.git /tmp/scbuild/predix && git -C /tmp/scbuild/predix checkout -q 6f577914bb63f29b17892d70ff465d908a46782f",
+   "exit": 0,
+   "secs": 4,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 2,
+   "tail": "yarn install v1.22.22\n[1/4] Resolving packages...\n[2/4] Fetching packages...\n[3/4] Linking dependencies...\n[4/4] Building fresh packages...\nDone in 1.09s."
+  },
+  {
+   "phase": "configure",
+   "cwd": ".",
+   "cmd": "anchor@0.29.0 keys sync",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/predix/programs/predix/src/lib.rs\"\nUpdated to 8pDpNFiuj6sn6KEoHzXGi1KszRaP18mHjkKBXoRzBbuw\nFound incorrect program id declaration in Anchor.toml for the program `predix`\nUpdated to 8pDpNFiuj6sn6KEoHzXGi1KszRaP18mHjkKBXoRzBbuw\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 1,
+   "secs": 63,
+   "tail": "    Finished release [optimized] target(s) in 1m 02s\nError: \n        /tmp/scbuild/predix/programs/predix/src/lib.rs:68:8\n        Struct field \"system_program\" is unsafe, but is not documented.\n        Please add a `/// CHECK:` doc comment explaining why no checks through types are necessary.\n        See https://www.anchor-lang.com/docs/the-accounts-struct#safety-checks for more information."
+  },
+  {
+   "phase": "install",
+   "cwd": "app",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 9,
+   "tail": "npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)\nnpm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo \"secp256k1 bindings compilation fail. Pure JS implementation will be used.\")\nnpm warn install-scripts   usb@2.12.1 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": "app",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 1,
+   "tail": "    '/tmp/scbuild/predix/app/node_modules/react-scripts/config/webpack.config.js',\n    '/tmp/scbuild/predix/app/node_modules/@craco/craco/dist/lib/cra.js',\n    '/tmp/scbuild/predix/app/node_modules/@craco/craco/dist/scripts/build.js'\n  ]\n}\nNode.js v24.22.1"
+  },
+  {
+   "phase": "test",
+   "cwd": "app",
+   "cmd": "npm run test",
+   "exit": 1,
+   "secs": 2,
+   "tail": "      at runCLI (node_modules/@jest/core/build/cli/index.js:173:3)\nTest Suites: 1 failed, 1 total\nTests:       1 failed, 1 total\nSnapshots:   0 total\nTime:        0.795 s, estimated 1 s\nRan all test suites."
+  }
+ ],
+ "build": "fail",
+ "test": "fail",
+ "deploy": "none",
+ "status": "fails",
+ "notes": ""
+}

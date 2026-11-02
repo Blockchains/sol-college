@@ -1,0 +1,54 @@
+{
+ "name": "shell-trade-functions",
+ "slug": "shell-trade-functions",
+ "fork": "https://github.com/Blockchains/shell-trade-functions",
+ "commit": "fb5d5acd7b088accfa31041fc3f5a77b0e24e09a",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 2.3.0 (src:a2e21dda; feat:3640012085, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "."
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/shell-trade-functions.git /tmp/scbuild/shell-trade-functions && git -C /tmp/scbuild/shell-trade-functions checkout -q fb5d5acd7b088accfa31041fc3f5a77b0e24e09a",
+   "exit": 0,
+   "secs": 2,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 17,
+   "tail": "npm warn install-scripts   secp256k1@4.0.5 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@6.0.6 (install: node-gyp-build)\nnpm warn install-scripts   protobufjs@7.2.4 (postinstall: node scripts/postinstall)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 0,
+   "tail": "> @functions/claims@0.0.1 build\n> cp -r ../../constants ./src/ && tsc\ncp: cannot stat '../../constants': No such file or directory"
+  }
+ ],
+ "build": "fail",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": ""
+}

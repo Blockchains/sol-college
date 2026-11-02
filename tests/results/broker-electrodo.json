@@ -1,0 +1,62 @@
+{
+ "name": "broker.Electrodo",
+ "slug": "broker-electrodo",
+ "fork": "https://github.com/Blockchains/broker.Electrodo",
+ "commit": "0e9aa73b46fe465e19fb7fc26b05216a08f81de6",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 2.3.0 (src:a2e21dda; feat:3640012085, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "."
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/broker.Electrodo.git /tmp/scbuild/broker-electrodo && git -C /tmp/scbuild/broker-electrodo checkout -q 0e9aa73b46fe465e19fb7fc26b05216a08f81de6",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 12,
+   "tail": "warning \" > @nestjs/swagger@5.2.1\" has incorrect peer dependency \"@nestjs/common@^8.0.0\".\nwarning \" > @nestjs/swagger@5.2.1\" has incorrect peer dependency \"@nestjs/core@^8.0.0\".\nwarning \"@nestjs/swagger > @nestjs/mapped-types@1.0.1\" has incorrect peer dependency \"@nestjs/common@^7.0.8 || ^8.0.0\".\nwarning \"@solana/spl-token > @solana/spl-token-group > @solana/codecs > @solana/codecs-strings@2.0.0-preview.4\" has unmet peer dependency \"fastestsmallesttextencoderdecoder@^1.0.22\".\nwarning \"@solana/spl-token > @solana/spl-token-metadata > @solana/codecs > @solana/codecs-strings@2.0.0-rc.1\" has unmet peer dependency \"fastestsmallesttextencoderdecoder@^1.0.22\".\nwarning \" > ts-loader@9.4.4\" has unmet peer dependency \"webpack@^5.0.0\"."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 run build",
+   "exit": 0,
+   "secs": 4,
+   "tail": "yarn run v1.22.22\n$ nest build\nDone in 2.80s."
+  },
+  {
+   "phase": "test",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 run test -- --watchAll=false 2>&1 || npx -y yarn@1 run test",
+   "exit": 1,
+   "secs": 15,
+   "tail": "Test Suites: 13 failed, 13 total\nTests:       12 failed, 12 total\nSnapshots:   0 total\nTime:        4.546 s, estimated 6 s\nRan all test suites.\nerror Command failed with exit code 1."
+  }
+ ],
+ "build": "pass",
+ "test": "fail",
+ "deploy": "none",
+ "status": "builds",
+ "notes": ""
+}

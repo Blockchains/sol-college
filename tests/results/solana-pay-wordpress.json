@@ -1,0 +1,54 @@
+{
+ "name": "solana-pay-wordpress",
+ "slug": "solana-pay-wordpress",
+ "fork": "https://github.com/Blockchains/solana-pay-wordpress",
+ "commit": "fd02c2ab79d2d18f82f3538ad257eae399564c66",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 2.3.0 (src:a2e21dda; feat:3640012085, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "."
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/solana-pay-wordpress.git /tmp/scbuild/solana-pay-wordpress && git -C /tmp/scbuild/solana-pay-wordpress checkout -q fd02c2ab79d2d18f82f3538ad257eae399564c66",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 5,
+   "tail": "npm warn install-scripts   protobufjs@7.2.6 (postinstall: node scripts/postinstall)\nnpm warn install-scripts   tiny-secp256k1@1.1.6 (install: npm run build || echo \"secp256k1 bindings compilation fail. Pure JS implementation will be used.\")\nnpm warn install-scripts   usb@2.12.1 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 1,
+   "tail": "ERROR in ./core/includes/assets/js/backend-scripts.tsx\nModule build failed (from ./node_modules/ts-loader/index.js):\nError: Could not load TypeScript. Try installing with `yarn add typescript` or `npm install typescript`. If TypeScript is installed globally, try using `yarn link typescript` or `npm link typescript`.\n    at Object.loader (/tmp/scbuild/solana-pay-wordpress/node_modules/ts-loader/dist/index.js:18:18)\nwebpack 5.91.0 compiled with 1 error in 173 ms\nFailed to load ./.env."
+  }
+ ],
+ "build": "fail",
+ "test": "none",
+ "deploy": "none",
+ "status": "fails",
+ "notes": ""
+}

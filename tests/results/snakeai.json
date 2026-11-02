@@ -1,0 +1,62 @@
+{
+ "name": "SnakeAI",
+ "slug": "snakeai",
+ "fork": "https://github.com/Blockchains/SnakeAI",
+ "commit": "007b40d9088318558902422ac3abcfedc39c79e4",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 2.3.0 (src:a2e21dda; feat:3640012085, client:Agave)",
+  "anchor": "",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "."
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/SnakeAI.git /tmp/scbuild/snakeai && git -C /tmp/scbuild/snakeai checkout -q 007b40d9088318558902422ac3abcfedc39c79e4",
+   "exit": 0,
+   "secs": 4,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 1,
+   "secs": 23,
+   "tail": "npm warn deprecated eslint@8.57.1: This version is no longer supported. Please see https://eslint.org/version-support for other options.\nnpm error code 1\nnpm error path /tmp/scbuild/snakeai\nnpm error command failed\nnpm error command sh -c npm run build\nnpm error A complete log of this run can be found in: ~/.npm/_logs/2026-11-02T16_57_41_008Z-debug-0.log"
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 1,
+   "secs": 3,
+   "tail": "src/index.ts(86,21): error TS4055: Return type of public method from exported class has or is using private name 'GameManager'.\nsrc/services/AgentStorageService.ts(33,5): error TS2322: Type 'AIModelConfig | null' is not assignable to type 'object'.\n  Type 'null' is not assignable to type 'object'.\nsrc/services/EventStorageService.ts(57,20): error TS2304: Cannot find name 'Between'.\nsrc/types/index.ts(24,14): error TS2304: Cannot find name 'Position'.\nsrc/types/index.ts(24,14): error TS4033: Property 'position' of exported interface has or is using private name 'Position'."
+  },
+  {
+   "phase": "test",
+   "cwd": ".",
+   "cmd": "npm run test -- --watchAll=false 2>&1 || npm run test",
+   "exit": 1,
+   "secs": 1,
+   "tail": "In /tmp/scbuild/snakeai\n  123 files checked.\n  testMatch: **/__tests__/**/*.[jt]s?(x), **/?(*.)+(spec|test).[tj]s?(x) - 0 matches\n  testPathIgnorePatterns: /node_modules/ - 123 matches\n  testRegex:  - 0 matches\nPattern:  - 0 matches"
+  }
+ ],
+ "build": "fail",
+ "test": "fail",
+ "deploy": "none",
+ "status": "fails",
+ "notes": ""
+}

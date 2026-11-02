@@ -1,0 +1,87 @@
+{
+ "name": "elyse",
+ "slug": "elyse",
+ "fork": "https://github.com/Blockchains/elyse",
+ "commit": "77b39ebe97763dc1ab86b10699e99ba616ed8e28",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "elyse-app",
+  "app_page"
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/elyse.git /tmp/scbuild/elyse && git -C /tmp/scbuild/elyse checkout -q 77b39ebe97763dc1ab86b10699e99ba616ed8e28",
+   "exit": 0,
+   "secs": 5,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": "elyse-app",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 14,
+   "tail": "npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   core-js@3.37.1 (postinstall: node -e \"try{require('./postinstall')}catch(e){}\")\nnpm warn install-scripts   core-js-pure@3.37.1 (postinstall: node -e \"try{require('./postinstall')}catch(e){}\")\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": "elyse-app",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 8,
+   "tail": "You can limit the size of your bundles by using import() or require.ensure to lazy load some parts of your application.\nFor more info visit https://webpack.js.org/guides/code-splitting/\nwebpack 5.92.1 compiled with 3 warnings in 6963 ms\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
+  },
+  {
+   "phase": "install",
+   "cwd": "app_page",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 3,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": "app_page",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 1,
+   "tail": "> app_page@1.0.0 build\n> webpack --mode production\nasset solana.js 12.4 KiB [emitted] [javascript module] [minimized] (name: main) 1 related asset\n./app.js 20.7 KiB [built] [code generated]\nwebpack 5.91.0 compiled successfully in 746 ms"
+  },
+  {
+   "phase": "run",
+   "cwd": "elyse-app",
+   "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3103 / python3 -m http.server 3103 -d dist",
+   "exit": 0,
+   "secs": 2,
+   "tail": "GET http://127.0.0.1:3103/ -> 200\n<title>React App"
+  },
+  {
+   "phase": "run",
+   "cwd": "app_page",
+   "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3104 / python3 -m http.server 3104",
+   "exit": 0,
+   "secs": 2,
+   "tail": "GET http://127.0.0.1:3104/ -> 200\n<title> ELYSE"
+  }
+ ],
+ "build": "pass",
+ "test": "none",
+ "deploy": "none",
+ "status": "operational",
+ "notes": ""
+}

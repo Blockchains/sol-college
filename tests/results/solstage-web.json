@@ -1,0 +1,62 @@
+{
+ "name": "solstage-web",
+ "slug": "solstage-web",
+ "fork": "https://github.com/Blockchains/solstage-web",
+ "commit": "28fe02dcd83a550a15552be6464abea6b5892c78",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [],
+ "apps": [
+  "."
+ ],
+ "program_ids": {},
+ "anchor_version": null,
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/solstage-web.git /tmp/scbuild/solstage-web && git -C /tmp/scbuild/solstage-web checkout -q 28fe02dcd83a550a15552be6464abea6b5892c78",
+   "exit": 0,
+   "secs": 4,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 11,
+   "tail": "npm warn install-scripts   esbuild@0.19.12 (postinstall: node install.js)\nnpm warn install-scripts   keccak@3.0.4 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   secp256k1@5.0.0 (install: node-gyp-build || exit 0)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 22,
+   "tail": "node_modules/js-sha256/src/sha256.js (83:17): Use of eval in \"node_modules/js-sha256/src/sha256.js\" is strongly discouraged as it poses security risks and may cause issues with minification.\nnode_modules/js-sha256/src/sha256.js (84:17): Use of eval in \"node_modules/js-sha256/src/sha256.js\" is strongly discouraged as it poses security risks and may cause issues with minification.\n(!) Some chunks are larger than 500 kB after minification. Consider:\n- Using dynamic import() to code-split the application\n- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks\n- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit."
+  },
+  {
+   "phase": "run",
+   "cwd": ".",
+   "cmd": "bash /workspace/sol-college/repo/tests/serve_probe.sh 3102 / npx vite preview --port 3102 --strictPort",
+   "exit": 0,
+   "secs": 2,
+   "tail": "GET http://localhost:3102/ -> 200\n<title>Solstage"
+  }
+ ],
+ "build": "pass",
+ "test": "none",
+ "deploy": "none",
+ "status": "operational",
+ "notes": ""
+}

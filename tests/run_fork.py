@@ -132,4 +132,8 @@ def run(name,extra=None):
 for n in sys.argv[1:]:
   try: run(n)
   except Exception as e: print(n,'ERROR',e,flush=True)
+  sl=re.sub(r'[^a-z0-9-]+','-',n.lower())
+  for f in glob.glob(f'{B}/{sl}/**/target/idl/*.json',recursive=True)+glob.glob(f'{B}/{sl}/**/target/deploy/*.so',recursive=True)+glob.glob(f'{B}/{sl}/**/target/deploy/*-keypair.json',recursive=True):
+    if '/node_modules/' in f: continue
+    d=f'{ROOT}/dapps/build/{sl}/'; os.makedirs(d,exist_ok=True); shutil.copy(f,d)
   if not os.environ.get('KEEP'): subprocess.run(f"find {B}/{re.sub(r'[^a-z0-9-]+','-',n.lower())} -maxdepth 6 -type d \\( -name node_modules -o -name target -o -name .next \\) -prune -exec rm -rf {{}} +",shell=True)

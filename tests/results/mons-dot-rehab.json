@@ -1,0 +1,104 @@
+{
+ "name": "mons-dot-rehab",
+ "slug": "mons-dot-rehab",
+ "fork": "https://github.com/Blockchains/mons-dot-rehab",
+ "commit": "035907012795bd356240a4e6667f63d740b9b9ab",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "anchor"
+ ],
+ "apps": [
+  "."
+ ],
+ "program_ids": {
+  "mons_dot_rehab": "6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z"
+ },
+ "anchor_version": "0.29.0",
+ "signatures": [
+  [
+   "mons_dot_rehab",
+   "6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z",
+   "3aNXT8LzTCCw72VNCwcZyxa2Fzq57oZWxPDxNr9nQzDvZk8at4eUU9mmydYus4zUAaxCMmkbhviLnFnFQ8wihVUd"
+  ]
+ ],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/mons-dot-rehab.git /tmp/scbuild/mons-dot-rehab && git -C /tmp/scbuild/mons-dot-rehab checkout -q 035907012795bd356240a4e6667f63d740b9b9ab",
+   "exit": 0,
+   "secs": 3,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": "anchor",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 2,
+   "tail": "npm warn install-scripts 3 packages have install scripts not yet covered by allowScripts:\nnpm warn install-scripts   bigint-buffer@1.1.5 (install: npm run rebuild || echo \"Couldn't build bindings. Non-native version used.\")\nnpm warn install-scripts   bufferutil@4.1.0 (install: node-gyp-build)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "configure",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 keys sync",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/mons-dot-rehab/anchor/programs/mons-dot-rehab/src/lib.rs\"\nUpdated to 6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z\nFound incorrect program id declaration in Anchor.toml for the program `mons_dot_rehab`\nUpdated to 6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": "anchor",
+   "cmd": "anchor@0.29.0 build",
+   "exit": 0,
+   "secs": 99,
+   "tail": "    = help: try referring to `Accounts` crate for guidance on how handle this unexpected cfg\n    = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration\n    = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)\nwarning: `mons-dot-rehab` (lib test) generated 18 warnings (5 duplicates)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 20.81s\n     Running unittests src/lib.rs (/tmp/scbuild/mons-dot-rehab/anchor/target/debug/deps/mons_dot_rehab-877a0d39ff2f2262)"
+  },
+  {
+   "phase": "deploy",
+   "cwd": "anchor",
+   "cmd": "solana airdrop 100 -u localhost >/dev/null; anchor@0.29.0 deploy --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 0,
+   "secs": 5,
+   "tail": "Deploying cluster: http://127.0.0.1:8899\nUpgrade authority: ~/.config/solana/id.json\nDeploying program \"mons_dot_rehab\"...\nProgram path: /tmp/scbuild/mons-dot-rehab/anchor/target/deploy/mons_dot_rehab.so...\nProgram Id: 6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z\nDeploy success"
+  },
+  {
+   "phase": "verify",
+   "cwd": "anchor",
+   "cmd": "solana program show 6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z -u localhost && solana transaction-history 6KGBp8huTs9cS63ZWme7vyWPffaGWbXnsJ5MSwkAGs3z -u localhost --limit 20",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Authority: BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv\nLast Deployed In Slot: 11\nData Length: 233648 (0x390b0) bytes\nBalance: 1.62739416 SOL\n[REDACTED-KEY]\n1 transactions found"
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npm install --no-audit --no-fund --legacy-peer-deps",
+   "exit": 0,
+   "secs": 12,
+   "tail": "npm warn install-scripts   bufferutil@4.0.8 (install: node-gyp-build)\nnpm warn install-scripts   core-js-pure@3.36.1 (postinstall: node -e \"try{require('./postinstall')}catch(e){}\")\nnpm warn install-scripts   nx@17.2.7 (postinstall: node ./bin/post-install)\nnpm warn install-scripts   utf-8-validate@5.0.10 (install: node-gyp-build)\nnpm warn install-scripts\nnpm warn install-scripts Run `npm install-scripts ls` to review, or `npm install-scripts approve <pkg>` to allow."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "npm run build",
+   "exit": 0,
+   "secs": 15,
+   "tail": "Browserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme\nBrowserslist: caniuse-lite is outdated. Please run:\n  npx update-browserslist-db@latest\n  Why you should do it regularly: https://github.com/browserslist/update-db#readme"
+  }
+ ],
+ "build": "pass",
+ "test": "none",
+ "deploy": "pass",
+ "status": "operational",
+ "notes": ""
+}

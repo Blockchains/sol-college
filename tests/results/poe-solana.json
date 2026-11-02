@@ -1,0 +1,106 @@
+{
+ "name": "poe-solana",
+ "slug": "poe-solana",
+ "fork": "https://github.com/Blockchains/poe-solana",
+ "commit": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+ "tested": "2026-11-02",
+ "versions": {
+  "rust": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+  "solana": "solana-cli 1.18.17 (src:c027cfc3; feat:4215500110, client:Agave)",
+  "anchor": "anchor-cli 0.30.1",
+  "node": "v24.22.1",
+  "npm": "11.21.1",
+  "pnpm": "10.34.6",
+  "go": "go version go1.27.3 linux/amd64"
+ },
+ "anchor_dirs": [
+  "."
+ ],
+ "apps": [
+  "app"
+ ],
+ "program_ids": {
+  "poe": "FqR9Vjfmv8REEHYZrSKkntDZJiofaSrEJygvsqGHya5S"
+ },
+ "anchor_version": "0.30.1",
+ "signatures": [],
+ "steps": [
+  {
+   "phase": "clone",
+   "cwd": "/tmp",
+   "cmd": "git clone -q --filter=blob:none https://github.com/Blockchains/poe-solana.git /tmp/scbuild/poe-solana && git -C /tmp/scbuild/poe-solana checkout -q 29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+   "exit": 0,
+   "secs": 4,
+   "tail": ""
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 3,
+   "tail": "[4/4] Building fresh packages...\nDone in 2.24s.\nwarning \" > @solana/spl-token@0.4.6\" has unmet peer dependency \"@solana/web3.js@^1.91.6\".\nwarning \"@solana/spl-token > @solana/spl-token-group@0.0.4\" has unmet peer dependency \"@solana/web3.js@^1.91.6\".\nwarning \"@solana/spl-token > @solana/spl-token-metadata@0.1.4\" has unmet peer dependency \"@solana/web3.js@^1.91.6\".\nwarning \"@solana/spl-token > @solana/spl-token-group > @solana/codecs > @solana/codecs-strings@2.0.0-preview.2\" has unmet peer dependency \"fastestsmallesttextencoderdecoder@^1.0.22\"."
+  },
+  {
+   "phase": "install",
+   "cwd": "app",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 15,
+   "tail": "openlogin-jrpc > @toruslabs/openlogin-utils@4.7.0\" has unmet peer dependency \"@babel/runtime@7.x\".\nwarning \"@solana/wallet-adapter-wallets > @solana/wallet-adapter-trezor > @trezor/connect-web > @trezor/connect > @trezor/blockchain-link > @trezor/blockchain-link-utils@1.0.11\" has unmet peer dependency \"tslib@^2.6.2\".\nwarning \"@solana/wallet-adapter-wallets > @solana/wallet-adapter-trezor > @trezor/connect-web > @trezor/connect > @trezor/connect-analytics > @trezor/analytics@1.0.12\" has unmet peer dependency \"tslib@^2.6.2\".\nwarning \"@solana/wallet-adapter-wallets > @solana/wallet-adapter-trezor > @trezor/connect-web > @trezor/connect > @trezor/connect-common > @trezor/env-utils@1.0.11\" has unmet peer dependency \"tslib@^2.6.2\".\nwarning \" > recharts@2.10.4\" has unmet peer dependency \"prop-types@^15.6.0\".\nwarning \"recharts > react-smooth@2.0.5\" has unmet peer dependency \"prop-types@^15.6.0\"."
+  },
+  {
+   "phase": "install",
+   "cwd": ".",
+   "cmd": "npx -y yarn@1 install --ignore-engines --network-timeout 600000",
+   "exit": 0,
+   "secs": 1,
+   "tail": "yarn install v1.22.22\n[1/4] Resolving packages...\nsuccess Already up-to-date.\nDone in 0.13s."
+  },
+  {
+   "phase": "configure",
+   "cwd": ".",
+   "cmd": "RUSTUP_TOOLCHAIN=nightly-2025-04-01 anchor@0.30.1 keys sync && python3 /workspace/sol-college/repo/tests/sync_all_clusters.py",
+   "exit": 0,
+   "secs": 0,
+   "tail": "Found incorrect program id declaration in \"/tmp/scbuild/poe-solana/programs/poe/src/lib.rs\"\nUpdated to FqR9Vjfmv8REEHYZrSKkntDZJiofaSrEJygvsqGHya5S\nFound incorrect program id declaration in Anchor.toml for the program `poe`\nUpdated to FqR9Vjfmv8REEHYZrSKkntDZJiofaSrEJygvsqGHya5S\nAll program id declarations are synced."
+  },
+  {
+   "phase": "build",
+   "cwd": ".",
+   "cmd": "RUSTUP_TOOLCHAIN=nightly-2025-04-01 anchor@0.30.1 build",
+   "exit": 0,
+   "secs": 131,
+   "tail": "   = help: the derive macro `Accounts` may come from an old version of the `anchor_derive_accounts` crate, try updating your dependency with `cargo update -p anchor_derive_accounts`\n   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration\n   = note: this warning originates in the derive macro `Accounts` (in Nightly builds, run with -Z macro-backtrace for more info)\nwarning: `poe` (lib test) generated 19 warnings (5 duplicates)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 35.39s\n     Running unittests src/lib.rs (/tmp/scbuild/poe-solana/target/debug/deps/poe-1107c17045fb53e4)"
+  },
+  {
+   "phase": "test",
+   "cwd": ".",
+   "cmd": "RUSTUP_TOOLCHAIN=nightly-2025-04-01 anchor@0.30.1 test --skip-build --provider.cluster localnet --provider.wallet ~/.config/solana/id.json",
+   "exit": 0,
+   "secs": 11,
+   "tail": "Done in 8.09s.\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\n(node:2620915) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///tmp/scbuild/poe-solana/tests/poe.ts is not specified and it doesn't parse as CommonJS.\nReparsing as ES module because module syntax was detected. This incurs a performance overhead.\nTo eliminate this warning, add \"type\": \"module\" to /tmp/scbuild/poe-solana/package.json.\n(Use `node --trace-warnings ...` to show where the warning was created)"
+  },
+  {
+   "phase": "verify",
+   "cwd": ".",
+   "cmd": "solana program show FqR9Vjfmv8REEHYZrSKkntDZJiofaSrEJygvsqGHya5S -u localhost && solana transaction-history FqR9Vjfmv8REEHYZrSKkntDZJiofaSrEJygvsqGHya5S -u localhost --limit 20",
+   "exit": 1,
+   "secs": 0,
+   "tail": "Error: RPC request error: cluster version query failed: error sending request for url (http://localhost:8899/): error trying to connect: tcp connect error: Connection refused (os error 111)"
+  },
+  {
+   "phase": "build",
+   "cwd": "app",
+   "cmd": "npx -y yarn@1 run build",
+   "exit": 0,
+   "secs": 43,
+   "tail": "bigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)\nbigint: Failed to load bindings, pure JS will be used (try npm run rebuild?)"
+  }
+ ],
+ "build": "pass",
+ "test": "pass",
+ "deploy": "none",
+ "status": "partial",
+ "notes": ""
+}
