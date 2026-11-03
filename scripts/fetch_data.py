@@ -49,15 +49,18 @@ def main():
       topics=[x['topic']['name'] for x in p['repositoryTopics']['nodes']],branch=r['defaultBranchRef']['name'],commit=r['defaultBranchRef']['target']['oid']))
   os.makedirs('work',exist_ok=True)
   def clone(pr):
-    d='work/'+pr['name']
-    head=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() if os.path.exists(d) else ''
-    if head and head==pr['commit']: return  # unchanged since cached clone: skip network fetch
-    if os.path.exists(d):
-      subprocess.run(['timeout','120','sh','-c',f'git -C {d} fetch -q --depth 1 origin {pr["branch"]} && git -C {d} reset -q --hard FETCH_HEAD'],stderr=subprocess.DEVNULL)
-    if not os.path.exists(d):
+    # Disk-lean clones: the CI runner ran out of disk with full checkouts of ~1300 forks (+20 GB cache).
+    # Keep only the source tree plus a .commit marker; drop .git and dirs build.py never reads.
+    d='work/'+pr['name']; mk=d+'/.commit'
+    have=open(mk).read().strip() if os.path.exists(mk) else (subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() if os.path.exists(d+'/.git') else '')
+    if not (have and have==pr['commit']):
+      subprocess.run(['rm','-rf',d])
       subprocess.run(['timeout','180','git','clone','-q','--depth','1','--filter=blob:limit=150k',pr['fork']+'.git',d],stderr=subprocess.DEVNULL)
-    if os.path.exists(d):
-      pr['commit']=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() or pr['commit']
+      if not os.path.exists(d): return
+      have=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() or pr['commit']
+    pr['commit']=have
+    open(mk,'w').write(have)
+    subprocess.run(['sh','-c',f'rm -rf {d}/.git; find {d} -type d \\( -name node_modules -o -name target -o -name .next -o -name coverage -o -name vendor \\) -prune -exec rm -rf {{}} + 2>/dev/null'])
   with cf.ThreadPoolExecutor(16) as ex: list(ex.map(clone,projects))
   json.dump(dict(source=src,generated=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),projects=projects),open(OUT+'/projects.json','w'),indent=1)
   print(len(projects),'projects')

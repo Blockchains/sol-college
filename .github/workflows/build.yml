@@ -10,11 +10,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Free runner disk (previous builds died with 'No space left on device')
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost; df -h /
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - uses: actions/cache@v4
-        with: {path: work, key: "work-${{ github.run_id }}", restore-keys: "work-"}
+        with: {path: work, key: "work-v2-${{ github.run_id }}", restore-keys: "work-v2-"}
       - name: Fetch catalog and clone projects
         env: {GH_TOKEN: "${{ secrets.CATALOG_TOKEN || github.token }}"}
         run: python3 scripts/fetch_data.py
