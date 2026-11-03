@@ -6,16 +6,21 @@
    "cmd": "solana program deploy --program-id <valhalla-keypair> valhalla.so -u devnet",
    "exit": 0,
    "tail": [
-    "Program Id: 8GWqUTMexNSAGRk455M5qBtDabP8BxxsGWkxeAjSWbCJ"
+    "Data Length: 496824 (0x794b8) bytes",
+    "Balance: 2.52474476 SOL"
    ]
   }
  ],
  "program": "valhalla",
  "idl": "valhalla.idl30.json",
  "devnet": "8GWqUTMexNSAGRk455M5qBtDabP8BxxsGWkxeAjSWbCJ",
- "sigs": [],
+ "sigs": [
+  {
+   "label": "create_config",
+   "sig": "eRwfT5FUbzjNfEogrHaWiXuZGj8TDCANYm8mYiD3zaXk3eTQueYoZRDPT1NGyRVKjKuhCW1eRJZFiZRCK42dkeB"
+  }
+ ],
  "skipped": [
-  "create_config: needs account metadata",
   "update_admin: needs account new_admin",
   "update_dao_treasury: needs account new_dao_treasury",
   "update_dev_fee: needs account config",
