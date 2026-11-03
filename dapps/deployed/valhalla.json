@@ -1,0 +1,32 @@
+{
+ "slug": "valhalla",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <valhalla-keypair> valhalla.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Program Id: 8GWqUTMexNSAGRk455M5qBtDabP8BxxsGWkxeAjSWbCJ"
+   ]
+  }
+ ],
+ "program": "valhalla",
+ "idl": "valhalla.idl30.json",
+ "devnet": "8GWqUTMexNSAGRk455M5qBtDabP8BxxsGWkxeAjSWbCJ",
+ "sigs": [],
+ "skipped": [
+  "create_config: needs account metadata",
+  "update_admin: needs account new_admin",
+  "update_dao_treasury: needs account new_dao_treasury",
+  "update_dev_fee: needs account config",
+  "update_governance_token_amount: needs account config",
+  "update_token_fee_basis_points: needs account config",
+  "mint_governance_tokens: needs account receiver",
+  "create: needs account recipient",
+  "disburse: needs account creator",
+  "close: needs account vault",
+  "cancel: needs account creator"
+ ],
+ "verified": "2026-11-03",
+ "mainnet": null
+}
