@@ -23,7 +23,7 @@ jobs:
       - name: Build lesson dapp bundle
         run: cd dapps/app && npm ci --no-audit --no-fund && npm run build
       - name: Build site
-        env: {SITE_CNAME: "${{ vars.SITE_CNAME }}", SITE_BASE: "${{ vars.SITE_BASE }}"}
+        env: {SITE_CNAME: "${{ vars.SITE_CNAME }}", SITE_BASE: "${{ vars.SITE_BASE }}", PUBLISH_BATCH: "1000", PUBLISH_MAX: "1000"}
         run: cd scripts && cd .. && PYTHONPATH=scripts python3 scripts/build.py
       - uses: actions/upload-pages-artifact@v3
         with: {path: site}

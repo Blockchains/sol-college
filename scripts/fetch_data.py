@@ -50,13 +50,15 @@ def main():
   os.makedirs('work',exist_ok=True)
   def clone(pr):
     d='work/'+pr['name']
+    head=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() if os.path.exists(d) else ''
+    if head and head==pr['commit']: return  # unchanged since cached clone: skip network fetch
     if os.path.exists(d):
       subprocess.run(['timeout','120','sh','-c',f'git -C {d} fetch -q --depth 1 origin {pr["branch"]} && git -C {d} reset -q --hard FETCH_HEAD'],stderr=subprocess.DEVNULL)
     if not os.path.exists(d):
       subprocess.run(['timeout','180','git','clone','-q','--depth','1','--filter=blob:limit=150k',pr['fork']+'.git',d],stderr=subprocess.DEVNULL)
     if os.path.exists(d):
       pr['commit']=subprocess.run(['git','-C',d,'rev-parse','HEAD'],capture_output=True,text=True).stdout.strip() or pr['commit']
-  with cf.ThreadPoolExecutor(6) as ex: list(ex.map(clone,projects))
+  with cf.ThreadPoolExecutor(16) as ex: list(ex.map(clone,projects))
   json.dump(dict(source=src,generated=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),projects=projects),open(OUT+'/projects.json','w'),indent=1)
   print(len(projects),'projects')
 main()
