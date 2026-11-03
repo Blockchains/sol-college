@@ -1,0 +1,33 @@
+{
+ "slug": "poe-solana",
+ "cluster": "devnet",
+ "steps": [
+  {
+   "cmd": "solana program deploy --program-id <poe-keypair> poe.so -u devnet",
+   "exit": 0,
+   "tail": [
+    "Program Id: 6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5"
+   ]
+  }
+ ],
+ "program": "poe",
+ "idl": "poe.json",
+ "devnet": "6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5",
+ "sigs": [
+  {
+   "label": "initialize",
+   "sig": "2sxqD4JNYvAhJAZDviH34ipFRc5d1BFDR31mUxrdaqezuKRC3peTc9QKfmpnkyLpn18MMzvdeMv5Hnz32Ldaum9U"
+  }
+ ],
+ "skipped": [
+  "collect_points: needs account forecaster",
+  "create_poll: needs account resolver",
+  "make_estimate: needs account forecaster_token_account",
+  "register_user: needs account token_account",
+  "remove_estimate: Reached maximum depth for account resolution",
+  "resolve_poll: Reached maximum depth for account resolution",
+  "update_estimate: Reached maximum depth for account resolution"
+ ],
+ "verified": "2026-11-03",
+ "mainnet": null
+}
