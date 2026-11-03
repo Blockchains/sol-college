@@ -164,14 +164,14 @@ try: prev=json.loads(urllib.request.urlopen(PUB,timeout=20).read())
 except Exception: prev=None
 if prev is None and os.path.exists('site_published.json'): prev=json.load(open('site_published.json'))
 KNOWN={x['path'] for x in (prev or []) if x.get('type')!='updated'}
-BATCH=int(os.environ.get('PUBLISH_BATCH','1000'))
+BATCH=int(os.environ.get('PUBLISH_BATCH','15'))
 # Steady pace: a CI build takes ~45 min, so publish one lesson per PUBLISH_EVERY_MIN elapsed since the last new lesson (real build-time timestamps).
 EVERY=float(os.environ.get('PUBLISH_EVERY_MIN','5'))
 try:
   import datetime as _dt
   _last=max(x['published'] for x in (prev or []) if x.get('type') in (None,'new') or 'type' not in x)
   _mins=(_dt.datetime.now(_dt.timezone.utc)-_dt.datetime.fromisoformat(_last.replace('Z','+00:00'))).total_seconds()/60
-  BATCH=max(BATCH,min(int(_mins//EVERY),int(os.environ.get('PUBLISH_MAX','1000'))))
+  BATCH=max(BATCH,min(int(_mins//EVERY),int(os.environ.get('PUBLISH_MAX','15'))))
 except Exception: pass
 def dapp_verified(p):
   f=f"dapps/deployed/{p['slug']}.json"

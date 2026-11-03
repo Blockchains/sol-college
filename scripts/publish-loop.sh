@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Box loop: one publish tick per build. Each GitHub Actions build publishes ALL queued lessons (PUBLISH_BATCH=1000).
+# Box loop: one publish tick per build. Each GitHub Actions build publishes ALL queued lessons (PUBLISH_BATCH=15).
 # Self-heals git state (detached HEAD / stale rebase) before every push. gitleaks runs before every push (abort on finding).
 cd "$(dirname "$0")/.."
 INTERVAL="${INTERVAL:-300}"
