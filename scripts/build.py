@@ -2,7 +2,8 @@ import json,os,re,html,shutil,collections,glob,datetime
 from content import LESSONS,NOTES,CATEGORIES,GUIDES
 import hubs
 GUIDES=GUIDES+[hubs.BUILD_DAPP]
-SITE='https://sol.college'; OUT='site'; E=html.escape
+SITE='https://sol.college'; OUT=os.environ.get('SITE_OUT','site'); E=html.escape
+INCR=os.environ.get('INCREMENTAL')=='1'  # render only candidate (unpublished) projects; merge_incremental.py patches the deployed site
 data=json.load(open('data/projects.json')); P=data['projects']
 shutil.rmtree(OUT,ignore_errors=True)
 if os.path.isdir('legacy'): shutil.copytree('legacy',OUT)
@@ -144,7 +145,7 @@ def sol_files(pr,k=12):
     c=collections.Counter(SOLAPI.findall(t))
     if c: out.append((sum(c.values()),rel,[a for a,_ in c.most_common(6)]))
   out.sort(key=lambda x:-x[0]); return out[:k]
-EXCL=collections.Counter(); KEEP=[]
+EXCL=collections.Counter(); KEEP=[]; EXCL_NAMES=[]
 import tested
 for pr in P:
   n=arch(pr)[0] if pr['cloned'] else 0
@@ -153,7 +154,7 @@ for pr in P:
   pr['sf']=sol_files(pr) if (n>=5 and not pr['kx']) else []
   sol=n>=5 and (pr['kx'] or tested.how_it_works(pr,'work/'+pr['name']) or len(pr['sf'])>=2)
   if sol: KEEP.append(pr)
-  else: EXCL['too little code' if n<5 else 'no Solana code found']+=1
+  else: EXCL['too little code' if n<5 else 'no Solana code found']+=1; EXCL_NAMES.append(pr['name'])
 import tested
 UNP=tested.unpublished(); REMOVED=[(p,UNP[p['name']]) for p in KEEP if p['name'] in UNP]
 KEEP=[p for p in KEEP if p['name'] not in UNP]
@@ -422,7 +423,7 @@ for pr in P:
   res=tested.result(pr) if pr['kx'] else None
   if res and not any(x.get('type')=='updated' and x['path']==pth and x.get('tested')==res['tested'] for x in prev):
     prev.append(dict(path=pth,url=SITE+pth,project=pr['name'],original=pr['original_name'],published=now,type='updated',tested=res['tested'],status=res['status']))
-live={f"/explore/{p['slug']}/" for p in P}
+live={f"/explore/{p['slug']}/" for p in P}|(KNOWN if INCR else set())
 for m in (json.load(open('dapps/mainnet-live.json')) if os.path.exists('dapps/mainnet-live.json') else []):
   pth=f"/explore/{m['slug']}/"
   if not any(x.get('type')=='live-mainnet' and x['path']==pth for x in prev): prev.append(dict(path=pth,url=SITE+pth,project=m['slug']+': Live on mainnet',original='mainnet program '+m['program'],published=m['published'],type='live-mainnet',program=m['program']))
@@ -493,4 +494,5 @@ if BASE:
     fp=OUT+f+'index.html'; t=open(fp).read()
     t=re.sub(r'(href|src)="/(?!/)',lambda m:f'{m.group(1)}="{BASE}/',t).replace("fetch('/projects.json')",f"fetch('{BASE}/projects.json')").replace('href="/explore/${{','href="'+BASE+'/explore/${{').replace('href="/explore/${p.s}',f'href="{BASE}/explore/${{p.s}}')
     open(fp,'w').write(t)
+if INCR: json.dump(dict(excluded=EXCL_NAMES+[p['name'] for p,_ in REMOVED],new=[f"/explore/{p['slug']}/" for p in P if f"/explore/{p['slug']}/" not in KNOWN]),open(OUT+'/incr.json','w'))
 print(open(OUT+'/stats.json').read())

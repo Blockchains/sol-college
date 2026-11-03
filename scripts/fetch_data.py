@@ -27,19 +27,55 @@ def forks():
     out+=d['nodes']
     if not d['pageInfo']['hasNextPage']: return out
     c=d['pageInfo']['endCursor']
+QL='''query($c:String){user(login:"Blockchains"){repositories(first:100,after:$c,isFork:true){pageInfo{hasNextPage endCursor} nodes{name url pushedAt defaultBranchRef{name target{oid}}}}}}'''
+PF='''parent{nameWithOwner url stargazerCount forkCount pushedAt description homepageUrl licenseInfo{spdxId} primaryLanguage{name} languages(first:6,orderBy:{field:SIZE,direction:DESC}){nodes{name}} repositoryTopics(first:12){nodes{topic{name}}}}'''
+def forks_light():
+  # Fast listing (no parent metadata): the full query pages 40 forks at a time and took ~8 min for ~3800 forks.
+  out=[];c=None
+  while True:
+    d=json.loads(gh(['api','graphql','-f','query='+QL]+(['-f','c='+c] if c else [])))['data']['user']['repositories']
+    out+=d['nodes']
+    if not d['pageInfo']['hasNextPage']: return out
+    c=d['pageInfo']['endCursor']
+def parents(rs):
+  for i in range(0,len(rs),25):
+    q='query{'+' '.join(f'r{j}: repository(owner:"Blockchains",name:{json.dumps(r["name"])}){{name url defaultBranchRef{{name target{{oid}}}} {PF}}}' for j,r in enumerate(rs[i:i+25]))+'}'
+    try: d=json.loads(subprocess.check_output(['gh','api','graphql','-f','query='+q],stderr=subprocess.DEVNULL))['data']
+    except subprocess.CalledProcessError as e: d=(json.loads(e.output or b'{}').get('data') or {})  # NOT_FOUND names return partial data
+    for j,r in enumerate(rs[i:i+25]):
+      x=d.get(f'r{j}') or {}; r.update(name=x.get('name',r['name']),url=x.get('url'),defaultBranchRef=x.get('defaultBranchRef'),parent=x.get('parent'))
 def colosseum():
   try:
     st=json.loads(subprocess.check_output(['gh','api','repos/Blockchains/colosseum-forker/contents/state.json','-H','Accept: application/vnd.github.raw'],stderr=subprocess.DEVNULL))
     return {v['fork'].split('/')[-1].lower() for v in st.values() if v.get('fork') and v.get('status') in ('created','exists')}
   except Exception: return None
+def slug(n): return re.sub(r'[^a-z0-9-]+','-',n.lower())
+def incremental(src,col,prev):
+  pub={x['path'] for x in json.load(open(prev+'/published.json')) if x.get('type')!='updated'}
+  st=json.load(open(prev+'/build-state.json')) if os.path.exists(prev+'/build-state.json') else {}
+  exc={x.lower() for x in st.get('excluded',[])}
+  # No fork listing (paging ~3800 forks took 3-8 min): candidates come straight from the colosseum/catalog names.
+  cand=sorted(n for n in col if f"/explore/{slug(n)}/" not in pub and n not in exc)
+  sel=[dict(name=n) for n in cand[:int(os.environ.get('CLONE_N','60'))]]; parents(sel)
+  missing=[r['name'] for r in sel if not (r.get('parent') and r.get('defaultBranchRef'))]
+  sel=[r for r in sel if r['name'] not in missing]
+  json.dump(dict(candidates=len(cand),missing=missing),open(OUT+'/incr.json','w'))
+  print('incremental: candidates',len(cand),'cloning',len(sel),'missing',len(missing))
+  finish(src,sel)
 def main():
-  src,names,items=catalog(); fs=forks()
+  src,names,items=catalog(); prev=os.environ.get('INCREMENTAL_PREV')
+  if prev:
+    col=(colosseum() or set())|{n.lower() for n in (names or [])}
+    if col: return incremental(src,col,prev)
+  fs=forks()
   # Colosseum forks: the forker's state.json when the token can read it; otherwise every Solana-looking fork.
   # The catalog only refreshes nightly, so it is a union, never the only source (it was, and froze lessons at 356 repos).
   col=colosseum()
   solana=lambda r:re.search(KW,json.dumps(r['parent']).lower()+r['name'].lower())
   sel=[r for r in fs if r.get('parent') and r.get('defaultBranchRef') and ((names and r['name'] in names) or (r['name'].lower() in col if col else solana(r)))]
   print('forks:',len(fs),'colosseum list:',len(col) if col else 'n/a (keyword fallback)','selected:',len(sel))
+  finish(src,sel)
+def finish(src,sel):
   projects=[]
   for r in sel:
     p=r['parent']; lic=(p['licenseInfo'] or {}).get('spdxId')
