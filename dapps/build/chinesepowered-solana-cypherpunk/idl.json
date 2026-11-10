@@ -1,0 +1,660 @@
+{
+ "address": "3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD",
+ "metadata": {
+  "name": "uniproof",
+  "version": "0.1.0",
+  "spec": "0.1.0",
+  "description": "UniProof - Solana-based Academic Credential Attestation System"
+ },
+ "instructions": [
+  {
+   "name": "createDisclosureProof",
+   "docs": [
+    "Selective disclosure - prove you have a degree without revealing details"
+   ],
+   "discriminator": [
+    249,
+    132,
+    66,
+    238,
+    1,
+    186,
+    57,
+    36
+   ],
+   "accounts": [
+    {
+     "name": "disclosureProof",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         100,
+         105,
+         115,
+         99,
+         108,
+         111,
+         115,
+         117,
+         114,
+         101
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "student"
+       },
+       {
+        "kind": "arg",
+        "path": "nonce"
+       }
+      ]
+     }
+    },
+    {
+     "name": "student",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "systemProgram",
+     "address": "11111111111111111111111111111111"
+    }
+   ],
+   "args": [
+    {
+     "name": "credentialKey",
+     "type": "pubkey"
+    },
+    {
+     "name": "disclosureType",
+     "type": {
+      "defined": {
+       "name": "disclosureType"
+      }
+     }
+    },
+    {
+     "name": "nonce",
+     "type": "u64"
+    }
+   ]
+  },
+  {
+   "name": "initializeUniversity",
+   "docs": [
+    "Initialize a new university account"
+   ],
+   "discriminator": [
+    2,
+    231,
+    136,
+    68,
+    252,
+    88,
+    251,
+    188
+   ],
+   "accounts": [
+    {
+     "name": "university",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         117,
+         110,
+         105,
+         118,
+         101,
+         114,
+         115,
+         105,
+         116,
+         121
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "authority"
+       }
+      ]
+     }
+    },
+    {
+     "name": "authority",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "systemProgram",
+     "address": "11111111111111111111111111111111"
+    }
+   ],
+   "args": [
+    {
+     "name": "name",
+     "type": "string"
+    },
+    {
+     "name": "authority",
+     "type": "pubkey"
+    }
+   ]
+  },
+  {
+   "name": "issueCredential",
+   "docs": [
+    "Issue a new credential (requires multi-sig from registrar and dean)"
+   ],
+   "discriminator": [
+    255,
+    193,
+    171,
+    224,
+    68,
+    171,
+    194,
+    87
+   ],
+   "accounts": [
+    {
+     "name": "credential",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         99,
+         114,
+         101,
+         100,
+         101,
+         110,
+         116,
+         105,
+         97,
+         108
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "university"
+       },
+       {
+        "kind": "account",
+        "path": "university.credentials_issued",
+        "account": "university"
+       }
+      ]
+     }
+    },
+    {
+     "name": "university",
+     "writable": true,
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         117,
+         110,
+         105,
+         118,
+         101,
+         114,
+         115,
+         105,
+         116,
+         121
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "university.authority",
+        "account": "university"
+       }
+      ]
+     }
+    },
+    {
+     "name": "authority",
+     "signer": true,
+     "relations": [
+      "university"
+     ]
+    },
+    {
+     "name": "issuer",
+     "writable": true,
+     "signer": true
+    },
+    {
+     "name": "systemProgram",
+     "address": "11111111111111111111111111111111"
+    }
+   ],
+   "args": [
+    {
+     "name": "studentWallet",
+     "type": "pubkey"
+    },
+    {
+     "name": "degreeType",
+     "type": "string"
+    },
+    {
+     "name": "fieldOfStudy",
+     "type": "string"
+    },
+    {
+     "name": "graduationDate",
+     "type": "i64"
+    },
+    {
+     "name": "metadataUri",
+     "type": "string"
+    }
+   ]
+  },
+  {
+   "name": "revokeCredential",
+   "docs": [
+    "Revoke a credential (only university authority)"
+   ],
+   "discriminator": [
+    38,
+    123,
+    95,
+    95,
+    223,
+    158,
+    169,
+    87
+   ],
+   "accounts": [
+    {
+     "name": "credential",
+     "writable": true
+    },
+    {
+     "name": "university",
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         117,
+         110,
+         105,
+         118,
+         101,
+         114,
+         115,
+         105,
+         116,
+         121
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "university.authority",
+        "account": "university"
+       }
+      ]
+     },
+     "relations": [
+      "credential"
+     ]
+    },
+    {
+     "name": "authority",
+     "signer": true,
+     "relations": [
+      "university"
+     ]
+    }
+   ],
+   "args": []
+  },
+  {
+   "name": "signAsDean",
+   "docs": [
+    "Dean signature"
+   ],
+   "discriminator": [
+    63,
+    54,
+    92,
+    39,
+    229,
+    253,
+    29,
+    202
+   ],
+   "accounts": [
+    {
+     "name": "credential",
+     "writable": true
+    },
+    {
+     "name": "university",
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         117,
+         110,
+         105,
+         118,
+         101,
+         114,
+         115,
+         105,
+         116,
+         121
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "university.authority",
+        "account": "university"
+       }
+      ]
+     }
+    },
+    {
+     "name": "signer",
+     "signer": true
+    }
+   ],
+   "args": []
+  },
+  {
+   "name": "signAsRegistrar",
+   "docs": [
+    "Registrar signature"
+   ],
+   "discriminator": [
+    160,
+    119,
+    217,
+    202,
+    7,
+    85,
+    166,
+    178
+   ],
+   "accounts": [
+    {
+     "name": "credential",
+     "writable": true
+    },
+    {
+     "name": "university",
+     "pda": {
+      "seeds": [
+       {
+        "kind": "const",
+        "value": [
+         117,
+         110,
+         105,
+         118,
+         101,
+         114,
+         115,
+         105,
+         116,
+         121
+        ]
+       },
+       {
+        "kind": "account",
+        "path": "university.authority",
+        "account": "university"
+       }
+      ]
+     }
+    },
+    {
+     "name": "signer",
+     "signer": true
+    }
+   ],
+   "args": []
+  },
+  {
+   "name": "verifyCredential",
+   "docs": [
+    "Verify credential (anyone can call this to check validity)"
+   ],
+   "discriminator": [
+    139,
+    189,
+    60,
+    127,
+    32,
+    241,
+    162,
+    134
+   ],
+   "accounts": [
+    {
+     "name": "credential"
+    }
+   ],
+   "args": [],
+   "returns": "bool"
+  }
+ ],
+ "accounts": [
+  {
+   "name": "credential",
+   "discriminator": [
+    145,
+    44,
+    68,
+    220,
+    67,
+    46,
+    100,
+    135
+   ]
+  },
+  {
+   "name": "disclosureProof",
+   "discriminator": [
+    89,
+    93,
+    51,
+    234,
+    173,
+    69,
+    49,
+    190
+   ]
+  },
+  {
+   "name": "university",
+   "discriminator": [
+    3,
+    230,
+    97,
+    22,
+    142,
+    52,
+    70,
+    180
+   ]
+  }
+ ],
+ "errors": [
+  {
+   "code": 6000,
+   "name": "credentialRevoked",
+   "msg": "Credential has been revoked"
+  },
+  {
+   "code": 6001,
+   "name": "credentialNotFullySigned",
+   "msg": "Credential not fully signed"
+  },
+  {
+   "code": 6002,
+   "name": "unauthorized",
+   "msg": "unauthorized"
+  }
+ ],
+ "types": [
+  {
+   "name": "credential",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "university",
+      "type": "pubkey"
+     },
+     {
+      "name": "student",
+      "type": "pubkey"
+     },
+     {
+      "name": "degreeType",
+      "type": "string"
+     },
+     {
+      "name": "fieldOfStudy",
+      "type": "string"
+     },
+     {
+      "name": "graduationDate",
+      "type": "i64"
+     },
+     {
+      "name": "issueDate",
+      "type": "i64"
+     },
+     {
+      "name": "metadataUri",
+      "type": "string"
+     },
+     {
+      "name": "isRevoked",
+      "type": "bool"
+     },
+     {
+      "name": "revocationDate",
+      "type": {
+       "option": "i64"
+      }
+     },
+     {
+      "name": "registrarSigned",
+      "type": "bool"
+     },
+     {
+      "name": "deanSigned",
+      "type": "bool"
+     },
+     {
+      "name": "bump",
+      "type": "u8"
+     }
+    ]
+   }
+  },
+  {
+   "name": "disclosureProof",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "credential",
+      "type": "pubkey"
+     },
+     {
+      "name": "student",
+      "type": "pubkey"
+     },
+     {
+      "name": "disclosureType",
+      "type": {
+       "defined": {
+        "name": "disclosureType"
+       }
+      }
+     },
+     {
+      "name": "timestamp",
+      "type": "i64"
+     },
+     {
+      "name": "nonce",
+      "type": "u64"
+     },
+     {
+      "name": "bump",
+      "type": "u8"
+     }
+    ]
+   }
+  },
+  {
+   "name": "disclosureType",
+   "type": {
+    "kind": "enum",
+    "variants": [
+     {
+      "name": "degreeOnly"
+     },
+     {
+      "name": "degreeAndField"
+     },
+     {
+      "name": "degreeAndDate"
+     },
+     {
+      "name": "full"
+     }
+    ]
+   }
+  },
+  {
+   "name": "university",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "name",
+      "type": "string"
+     },
+     {
+      "name": "authority",
+      "type": "pubkey"
+     },
+     {
+      "name": "isActive",
+      "type": "bool"
+     },
+     {
+      "name": "credentialsIssued",
+      "type": "u64"
+     },
+     {
+      "name": "bump",
+      "type": "u8"
+     }
+    ]
+   }
+  }
+ ]
+}

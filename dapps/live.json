@@ -1340,5 +1340,158 @@
    "One campaign per wallet: the PDA is seeded only by the admin's key.",
    "The home page lists every account the program owns via getProgramAccounts on each load."
   ]
+ },
+ {
+  "slug": "chinesepowered-solana-cypherpunk",
+  "name": "UniProof (academic credentials with registrar and dean sign-off)",
+  "lesson": "/explore/chinesepowered-solana-cypherpunk/",
+  "app": "/dapps/chinesepowered-solana-cypherpunk/",
+  "fork": "https://github.com/Blockchains/chinesepowered-solana-cypherpunk",
+  "commit": "da92087162570fa502513579c33f596bdb1edc38",
+  "program": "3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD",
+  "app_kind": "The fork's own Next.js app (UniProof) exported as static pages with this devnet program ID. The changes: static export with basePath, unoptimized images, lint skipped at build, and the src/idl/uniproof.json file the client imports (missing from the repo) written from the committed TypeScript IDL type.",
+  "learn": "A university is a PDA from [\"university\", authority]. Its authority issues credentials, PDAs from [\"credential\", university, counter], to a student wallet with degree, major, graduation date and a metadata link. A credential counts as valid only once both registrar_signed and dean_signed are set and it isn't revoked; verify_credential returns that as a bool through a view call. The authority can revoke. Students can record disclosure proofs (PDAs from [\"disclosure\", student, nonce]) saying which part of a credential they shared.",
+  "source": [
+   [
+    "lib.rs L10-L22 initialize_university",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L10-L22"
+   ],
+   [
+    "lib.rs L25-L52 issue_credential",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L25-L52"
+   ],
+   [
+    "lib.rs L54-L68 sign_as_registrar / sign_as_dean (no role check)",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L54-L68"
+   ],
+   [
+    "lib.rs L70-L79 verify_credential",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L70-L79"
+   ],
+   [
+    "lib.rs L81-L87 revoke_credential",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L81-L87"
+   ],
+   [
+    "lib.rs L89-L103 create_disclosure_proof",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L89-L103"
+   ],
+   [
+    "lib.rs L106-L120 InitializeUniversity (PDA seeded by the signer)",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L106-L120"
+   ],
+   [
+    "lib.rs L149-L159 SignCredential",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L149-L159"
+   ],
+   [
+    "lib.rs L182-L200 CreateDisclosureProof",
+    "https://github.com/Blockchains/chinesepowered-solana-cypherpunk/blob/da92087162570fa502513579c33f596bdb1edc38/programs/uniproof/src/lib.rs#L182-L200"
+   ]
+  ],
+  "flow": "tests/devnet/chinesepowered-solana-cypherpunk.mjs",
+  "log": "tests/devnet/logs/chinesepowered-solana-cypherpunk-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… on /university/: Initialize University (name 'sol.college UI University')",
+    "2dCYLFDQs3pFWVCb9YgM5w9WJijAekYtkr8JNxBePZhrUzgu4Gar966kT5xQcZM48ZJaghBefD7x6qwK7eG5Ytzt"
+   ],
+   [
+    "UI: Issue Credential to its own wallet (Bachelor of Science, Computer Science, 2026-06-30); the dialog shows credential FuuEaM9d…",
+    "2FGh1M5NJgvekvzDoGjGG9bNxHxmMFX4qyMuxvWzQjCvkKuY9iph34nVdmjSiPXpBQQ54JpvVt2eAe43asDpvnNy"
+   ],
+   [
+    "UI: paste the credential address, sign as registrar",
+    "7nLNCndCUnBj56bSDvmicLFsokQqXou61FPfDESVqJLCW1B4SyePwMvDRqTZMzzTD5FiXVi1RgckEhckDLmLm4D"
+   ],
+   [
+    "UI: sign as dean; /verify/ then shows 'Verified Credential' and /student/ lists it with both signatures",
+    "hRUFgzUWra1cahBhXbGLC7dN6NLad71ejhLwU8MBzSg4dXWR1LsuHnHFU7DJyjsy77x6aJckiMnxHsoeHy2hhaY"
+   ],
+   [
+    "Script: fund U 0.05, R 0.01, S 0.02, X 0.02 SOL",
+    "pqAbBiWu4EY87i2kcDJfSxGYYTBkkdbYR2xpaKNQuEtzRRiuSw25h1WeyxAR4dFRaHGfxm3KhcnbetqyPp7E8yL"
+   ],
+   [
+    "Script: U initializes its university (PDA [\"university\", U])",
+    "E4MNaYNH1QHUogwKFWofJgWgbh2D3rvVpYjAwWPmT7Umqv3YSmNBbpzskfVck1Jun6fZHawQTAAwtWB29h1dYM1"
+   ],
+   [
+    "Script: U issues credential #0 to student S (PDA [\"credential\", university, 0])",
+    "mukLMFVdNb6rKBkstBT76eBDrUcYgBPjAvCRkRdru8Rhd7hCFTCAXWgFLzsRj4ucg1UJNXihguJfetukKWhZE3S"
+   ],
+   [
+    "Script: R, an unrelated wallet, signs as registrar: accepted (sign_as_registrar checks no role)",
+    "3N3CnFKru81Har8doEUoBDzu6DHH9NWATGncVADuDFSt4EJtUyqHNi7G46HKyaf9143w4N2Ptrqdwkdtem9q6tVy"
+   ],
+   [
+    "Script: U signs as dean",
+    "sD9AvNdmLBFGmoBXVq9LxT9FCjMduhJ2dcXsy8DnVPe3SSXmJztnyEK3ZUodoETgZpg2TNsjvRu5MsZucwR3aqp"
+   ],
+   [
+    "Script: S creates a degree-only disclosure proof (nonce 1)",
+    "RHgGTUieiYU4jZpaEJizRbHg5ypnBt3UUYTqWCTBNZ4t57irqQQzQFagYGm8CW3dc7H65TCcBvr4dNNisJWaQPv"
+   ],
+   [
+    "Script: U revokes credential #0",
+    "36gFR1YfkF97N1moD51v8nGwxHntpJG4hsVj7PeHAbW2QnxAieUphoUHuzaS6sP9xSRFwd6fiY57XCnzX2CwfnZ2"
+   ],
+   [
+    "Script: X initializes a university naming U as its authority (the argument is stored, the PDA is seeded by X)",
+    "6y9eMYSQVehSDPVUQYZPhfdWgFQxg7TvQ6M52RPy9rxq6RRkw1XTgBSmEFbdT6vK7S63LcGUF3griVkCyQGuweP"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "DSmhFDLEu1RykpNAqKjecTSTRuKLzBNfStQvwh3ssxjNg3bzbQfK66rvjxPkujGzP1zJ3BcP8hWVxgzejKSLm1M"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "NYNcFqWrKKghRuiDYQ5efPm6BNDyTAiNjperAsXSK21A2unEGqcLdMdyqtWLDV2Cmao241wbubNaUhwYgeVyEs5"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "3W27j89BXuiuYWVsABQna2gumSs7EuesqGX5RZKfDY4pHmqnULCAcSr6yS7veDgw13fS4LHbBG1R7uV7Sx4tuV8K"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "3mJnCDTFKggjFtJrC84bNpxn7ctyR7pZdVFLvYT8wryQL8WuCvf7RHh6CZRn8oCPAXFWnQPGPdEfr6PoPbifQXMo"
+   ]
+  ],
+  "negative": [
+   [
+    "U initializes a second university (one per authority)",
+    "Allocate: account Address { address: Aj2cjPG2s4qJ58pooYQ7FowXaHM9YGLo33BfgB4KTeLn, base: None } already in use"
+   ],
+   [
+    "R tries to issue a credential from U's university (has_one authority)",
+    "ConstraintHasOne"
+   ],
+   [
+    "S reuses disclosure nonce 1",
+    "Allocate: account Address { address: 5SD2tkQC9pmyC5XEVBa7yQxDgfMftcVWuCPDj9DVs6NL, base: None } already in use"
+   ],
+   [
+    "R tries to revoke U's credential",
+    "ConstraintHasOne"
+   ],
+   [
+    "R signs as registrar after revocation",
+    "CredentialRevoked"
+   ],
+   [
+    "X tries to issue from the university it created (rejected by the seeds check: the stored authority U no longer matches the PDA seed X, so the account is unusable)",
+    "ConstraintSeeds"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py uniproof (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "BUG: sign_as_registrar and sign_as_dean accept any signer. SignCredential has a signer but never compares it to a registrar, a dean or the university authority, so any wallet can supply either signature. The script shows an unrelated wallet R setting registrar_signed. One outsider can call both and make any unrevoked credential verify as valid.",
+   "BUG: SignCredential doesn't tie the credential to the university it passes (no has_one = university), and nothing stops the same wallet signing twice in both roles. The \"multi-sig\" is two flags anyone can set.",
+   "BUG: initialize_university stores the authority argument but seeds the PDA by the signer. If they differ, the account can never be used: issue_credential re-derives the PDA from the stored authority and fails ConstraintSeeds, as the script shows with X naming U. The app always passes the connected wallet, so it is only reachable from a script.",
+   "create_disclosure_proof takes any credential_key and never checks the credential exists or belongs to the signing student (code reading; the script only exercised a student's own credential).",
+   "Revocation needs the university authority (has_one), which the script confirms. Revoked credentials reject new signatures and verify as false.",
+   "One university per wallet, because the PDA is seeded only by the authority. Credential metadata is stored as plain text on chain; there is no privacy layer despite the \"selective disclosure\" naming."
+  ]
  }
 ]

@@ -462,7 +462,7 @@ def run(pg):
         pg.get_by_placeholder('IPFS or Arweave link to additional data').fill('https://sol.college/')
         n = len(SENT); btn('Issue Credential').last.click(); pump(pg, 25000)
         m = re.search(r'Credential Address:\s*([1-9A-HJ-NP-Za-km-z]{32,44})', body(pg)); cred = m.group(1) if m else None
-        log(step='issue_credential_via_ui', sent=sigs_new(n), credential=cred); close_dialog(); pump(pg, 3000)
+        log(step='issue_credential_via_ui', sent=sigs_new(n), issued_pda=cred); close_dialog(); pump(pg, 3000)
         if cred:
             pg.get_by_placeholder('Paste credential address here').fill(cred)
             n = len(SENT); btn('Registrar').first.click(); pump(pg, 25000); log(step='sign_as_registrar_via_ui', sent=sigs_new(n)); close_dialog(); pump(pg, 3000)

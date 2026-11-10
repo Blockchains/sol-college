@@ -1,0 +1,59 @@
+{
+ "slug": "chinesepowered-solana-cypherpunk",
+ "cluster": "devnet",
+ "program": "uniproof",
+ "idl": "idl.json",
+ "devnet": "3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD",
+ "deploy_tx": "2oWsG29vgAyE6TexDwkvgockDiunwGmtbzx1JRfShCWafmeGzfH364FyAnKstCjNfq9MiZuLuDT2YYLhJYi5MDAH",
+ "built": "cargo-build-sbf (solana 2.3.13) of programs/uniproof at da92087 (anchor-lang 0.31.1), with declare_id set to this program's keypair; IDL taken from the fork's committed src/idl/uniproof.ts type (anchor idl build fails on its dev-dependencies)",
+ "sigs": [
+  {
+   "label": "fund U 0.05, R 0.01, S 0.02, X 0.02 SOL",
+   "sig": "pqAbBiWu4EY87i2kcDJfSxGYYTBkkdbYR2xpaKNQuEtzRRiuSw25h1WeyxAR4dFRaHGfxm3KhcnbetqyPp7E8yL"
+  },
+  {
+   "label": "U initializes its university (PDA [\"university\", U])",
+   "sig": "E4MNaYNH1QHUogwKFWofJgWgbh2D3rvVpYjAwWPmT7Umqv3YSmNBbpzskfVck1Jun6fZHawQTAAwtWB29h1dYM1"
+  },
+  {
+   "label": "U issues credential #0 to student S (PDA [\"credential\", university, 0])",
+   "sig": "mukLMFVdNb6rKBkstBT76eBDrUcYgBPjAvCRkRdru8Rhd7hCFTCAXWgFLzsRj4ucg1UJNXihguJfetukKWhZE3S"
+  },
+  {
+   "label": "R, an unrelated wallet, signs as registrar: accepted (sign_as_registrar checks no role)",
+   "sig": "3N3CnFKru81Har8doEUoBDzu6DHH9NWATGncVADuDFSt4EJtUyqHNi7G46HKyaf9143w4N2Ptrqdwkdtem9q6tVy"
+  },
+  {
+   "label": "U signs as dean",
+   "sig": "sD9AvNdmLBFGmoBXVq9LxT9FCjMduhJ2dcXsy8DnVPe3SSXmJztnyEK3ZUodoETgZpg2TNsjvRu5MsZucwR3aqp"
+  },
+  {
+   "label": "S creates a degree-only disclosure proof (nonce 1)",
+   "sig": "RHgGTUieiYU4jZpaEJizRbHg5ypnBt3UUYTqWCTBNZ4t57irqQQzQFagYGm8CW3dc7H65TCcBvr4dNNisJWaQPv"
+  },
+  {
+   "label": "U revokes credential #0",
+   "sig": "36gFR1YfkF97N1moD51v8nGwxHntpJG4hsVj7PeHAbW2QnxAieUphoUHuzaS6sP9xSRFwd6fiY57XCnzX2CwfnZ2"
+  },
+  {
+   "label": "X initializes a university naming U as its authority (the argument is stored, the PDA is seeded by X)",
+   "sig": "6y9eMYSQVehSDPVUQYZPhfdWgFQxg7TvQ6M52RPy9rxq6RRkw1XTgBSmEFbdT6vK7S63LcGUF3griVkCyQGuweP"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "DSmhFDLEu1RykpNAqKjecTSTRuKLzBNfStQvwh3ssxjNg3bzbQfK66rvjxPkujGzP1zJ3BcP8hWVxgzejKSLm1M"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "NYNcFqWrKKghRuiDYQ5efPm6BNDyTAiNjperAsXSK21A2unEGqcLdMdyqtWLDV2Cmao241wbubNaUhwYgeVyEs5"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "3W27j89BXuiuYWVsABQna2gumSs7EuesqGX5RZKfDY4pHmqnULCAcSr6yS7veDgw13fS4LHbBG1R7uV7Sx4tuV8K"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "3mJnCDTFKggjFtJrC84bNpxn7ctyR7pZdVFLvYT8wryQL8WuCvf7RHh6CZRn8oCPAXFWnQPGPdEfr6PoPbifQXMo"
+  }
+ ]
+}

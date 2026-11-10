@@ -42,7 +42,7 @@ const issue = (auth, issuer, uniPk, n, student) => prog(issuer).methods.issueCre
   .accountsPartial({ credential: credOf(uniPk, n), university: uniPk, authority: auth.publicKey, issuer: issuer.publicKey })
   .signers(auth === issuer ? [] : [auth]).rpc();
 const cred = credOf(uni, 0);
-log({ step: 'U issues credential #0 to student S (PDA ["credential", university, 0])', ok: true, sig: await retry(() => issue(U, U, uni, 0, S.publicKey)), credential: cred.toBase58() });
+log({ step: 'U issues credential #0 to student S (PDA ["credential", university, 0])', ok: true, sig: await retry(() => issue(U, U, uni, 0, S.publicKey)), issued_pda: cred.toBase58() });
 await expectFail('R tries to issue a credential from U\'s university (has_one authority)', () => issue(R, R, uni, 1, S.publicKey));
 const sign = (k, m) => prog(k).methods[m]().accountsPartial({ credential: cred, university: uni, signer: k.publicKey }).rpc();
 log({ step: 'R, an unrelated wallet, signs as registrar: accepted (sign_as_registrar checks no role)', ok: true, sig: await retry(() => sign(R, 'signAsRegistrar')) });
@@ -59,7 +59,7 @@ log({ step: 'U revokes credential #0', ok: true, sig: await retry(() => revoke(U
 await expectFail('R signs as registrar after revocation', () => sign(R, 'signAsRegistrar'));
 log({ step: 'verify_credential after revocation', ok: true, valid: await retry(verify) });
 log({ step: 'X initializes a university naming U as its authority (the argument is stored, the PDA is seeded by X)', ok: true, sig: await retry(() => initUni(X, 'Mismatched authority', U.publicKey)) });
-await expectFail('X tries to issue from that university (stored authority is U, so X fails has_one)', () => issue(X, X, uniOf(X.publicKey), 0, S.publicKey));
+await expectFail('X tries to issue from the university it created (rejected by the seeds check: the stored authority U no longer matches the PDA seed X, so the account is unusable)', () => issue(X, X, uniOf(X.publicKey), 0, S.publicKey));
 const c = await retry(() => P.account.credential.fetch(cred));
 log({ step: 'final credential state', registrar_signed: c.registrarSigned, dean_signed: c.deanSigned, revoked: c.isRevoked, student: c.student.toBase58() });
 for (const k of [U, R, S, X]) { const bal = await retry(() => conn.getBalance(k.publicKey)); if (bal > 10000)
