@@ -1,0 +1,295 @@
+{
+ "title": "Novengrid SOL staking: a time-locked SOL vault that pays per-second rewards",
+ "summary": "An admin opens and funds a SOL vault; players lock SOL in it for a chosen time and claim rewards that grow every second.",
+ "what": "This is a SOL staking pool with one vault per admin. The admin initialises the vault (a PDA of the admin's address), sets a rate and deposits SOL for rewards. Players stake SOL into the same vault with a lock duration and cannot unstake until it has passed. Rewards accrue every second as `staked × apy_rate × seconds / 31,536,000` and come out of the same vault. The admin can withdraw everything. It's small (seven instructions, two account types) and shows how to pay out of a program-owned PDA and how to enforce a time lock with the Clock sysvar. It's also a good code to audit for what a staking vault must not do.",
+ "app_note": "The fork's own Next.js 15 app (`ui/`) as a static export, with this devnet program ID. The app hard-codes the admin whose vault it uses; we set that to our test wallet m4Ac…, which initialised and funded this deployment's vault. The admin page is [/dapps/colosseum/admin/](/dapps/colosseum/admin/). Script: [tests/devnet/patches/colosseum.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/colosseum.py).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/colosseum/) and connect a devnet wallet with a little SOL.",
+   "see": "SOL Staking: your Balance, Staked Balance, Stake Amount, Duration buttons (7 / 14 / 30 / 90 days) and your portfolio."
+  },
+  {
+   "do": "(Admin only.) On [/admin/](/dapps/colosseum/admin/), the admin presses **Admin Initialise**, enters an amount and presses **Admin Deposit**, then sets APY and presses **Admin Config**. With your own wallet, Initialise creates a vault for *your* address that the main page doesn't use, and Config/Withdraw need the admin's signature.",
+   "see": "`initialize`, `deposit` and `config` transactions from the admin wallet; the vault now holds the deposit.",
+   "ran": [
+    [
+     "Admin Initialise (test wallet m4Ac…, this build's admin)",
+     "5JcdKBdsUx4UREEfPhyMMExbFbmvDUx9n8e5adyo6bvyWDcDdiX1LjwL3V9A9MG5YuzRkKRM7RXZs1efzhbmofzV"
+    ],
+    [
+     "Admin Deposit 0.1 SOL",
+     "2uE4fFZQQT3BUC7aDLLBRvcg6UPPNQMXYTTtCrB2iHMcAH95La9X4bK2FjknU5qHRdgxZMUWqQczpPNJZHC1CuKJ"
+    ],
+    [
+     "Admin Config with APY 150",
+     "FoYtPs4VTrLnExuuHqTk353P5ntK5zb9FcPKxHcBBnroAYRDcL9fhxykw7wJvDPGyBdtsiUBAorqFufVwvcnmXn"
+    ]
+   ]
+  },
+  {
+   "do": "On the main page enter `0.05`, keep **7 days**, press **Stake SOL** and approve.",
+   "see": "A `sol_stake` transaction; the portfolio shows 0.05 SOL / 7 days.",
+   "ran": [
+    [
+     "Stake SOL, 0.05 for 7 days; the portfolio then showed 0.05 SOL / 7 days",
+     "5WSZf9UbxJu1sJ7eKCzDig7evxT4PvWhZ4C2wbpHXTRKXgUcpDCdoX43Srn6qsxZ9rm4uFdkevt2u94Y4cqRtnm9"
+    ]
+   ]
+  },
+  {
+   "do": "Press **UnStake** straight away.",
+   "see": "Unstaking Failed. The program refuses with `InvalidUnstakeTime` until staked time + 7 days, so no transaction is sent.",
+   "ran_note": "Clicked in the app: Unstaking Failed (InvalidUnstakeTime), nothing sent."
+  },
+  {
+   "do": "Wait a minute and press **Get Reward**.",
+   "see": "A `claim_rewards` transaction; a few lamports arrive (0.05 SOL × rate × seconds / 31,536,000).",
+   "ran": [
+    [
+     "Get Reward",
+     "2Sg9JnVj2quxGdrd8TL2vP7b39G667EsPhPMAv3Vs7q9tus7yBfD1YXkBRMCbvcRbd81mfujzecNfGmXiaNczpx5"
+    ]
+   ]
+  },
+  {
+   "do": "After the 7 days, press **UnStake**.",
+   "see": "A `sol_unstake` transaction returns your 0.05 SOL. Note that the admin can withdraw the whole vault, your stake included, at any time (see `withdraw` below).",
+   "ran_note": "Not clicked yet (the app's shortest lock is 7 days); unstake after a lock was run by script with a 20 s lock (XgGEp1AX…, in Proof)."
+  }
+ ],
+ "diagram": "admin ── initialize(apy_rate) ─▶ VaultAccount PDA [\"vault\", admin]   authority | staked_amount | apy_rate   (+ all the SOL)\nadmin ── config(apy_rate)     ─▶ same PDA of the *signer* (init_if_needed)\nanyone ─ deposit(amount)      ─▶ SOL into the vault, staked_amount += amount\nplayer ─ sol_stake(amount, duration) ─▶ PlayerAccount PDA [\"player\", admin, player]  staked_time | staked_amount | reward_time | duration_time | reward_amount\nplayer ─ claim_rewards()  ─▶ staked × apy_rate × (now − reward_time) / 31,536,000 lamports from the vault\nplayer ─ sol_unstake()    ─▶ only when now ≥ staked_time + duration; returns the stake\nadmin ── withdraw()       ─▶ the vault's ENTIRE balance to the admin",
+ "accounts": [
+  [
+   "VaultAccount",
+   "PDA `[\"vault\", admin]`",
+   "Admin, total accounted SOL, rate; holds every lamport: deposits, stakes and rewards"
+  ],
+  [
+   "PlayerAccount",
+   "PDA `[\"player\", admin, player]`",
+   "Your stake, when you staked, your lock length, when rewards were last paid, rewards paid so far"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize` and `config`: the vault and its rate",
+   "refs": [
+    {
+     "path": "contract/programs/staking/src/instructions/initialize.rs",
+     "a": 8,
+     "b": 38
+    },
+    {
+     "path": "contract/programs/staking/src/instructions/config.rs",
+     "a": 8,
+     "b": 38
+    }
+   ],
+   "steps": [
+    "`init` with seeds `[\"vault\", authority]` creates the vault once per admin; a second call fails because the account is already in use (in Proof).",
+    "`config` uses `init_if_needed` with the same seeds of whoever signs. There is no admin check, but it can only create or change the *signer's own* vault. Our script's non-admin call did exactly that (in Proof)."
+   ]
+  },
+  {
+   "name": "`deposit` and `sol_stake`: SOL in",
+   "refs": [
+    {
+     "path": "contract/programs/staking/src/instructions/deposit.rs",
+     "a": 7,
+     "b": 30
+    },
+    {
+     "path": "contract/programs/staking/src/instructions/sol_stake.rs",
+     "a": 7,
+     "b": 71
+    },
+    {
+     "path": "contract/programs/staking/src/helpers.rs",
+     "a": 9,
+     "b": 24,
+     "note": "System Program transfer CPI"
+    }
+   ],
+   "steps": [
+    "Both reject 0 (`AmountMustBeGreaterThanZero`, in Proof) and move SOL with a System Program transfer CPI; the player signs, so no PDA signature is needed.",
+    "`authority` must equal `vault_data.authority` and the vault must sit at `[\"vault\", authority]`, so you always stake into the vault of the admin you name.",
+    "`sol_stake` creates your player PDA on first use and records the time, your chosen duration and a fresh reward clock. It **overwrites** `staked_time` and `reward_time` on every stake (lines 21–23)."
+   ]
+  },
+  {
+   "name": "`claim_rewards`: per-second rewards",
+   "refs": [
+    {
+     "path": "contract/programs/staking/src/instructions/claim_rewards.rs",
+     "a": 6,
+     "b": 63
+    },
+    {
+     "path": "contract/programs/staking/src/helpers.rs",
+     "a": 26,
+     "b": 37,
+     "note": "paying from a program-owned PDA"
+    }
+   ],
+   "steps": [
+    "seconds = now − `reward_time`; rewards = `staked_amount × apy_rate × seconds / 31_536_000` (line 23). `apy_rate` is a plain multiplier: 100 means 100× the stake per year.",
+    "Our script: 0.1 SOL at rate 100 earned 6,024 lamports. 100,000,000 × 100 × 19 / 31,536,000 = 6,024, so 19 seconds had passed.",
+    "The program owns the vault, so it pays by changing lamports directly (`transfer_lamports_from_owned_pda`); no CPI or seeds needed.",
+    "It also subtracts the reward from the vault's `staked_amount` (line 26); the log shows 0.299993976 SOL afterwards."
+   ]
+  },
+  {
+   "name": "`sol_unstake`: the time lock",
+   "refs": [
+    {
+     "path": "contract/programs/staking/src/instructions/sol_unstake.rs",
+     "a": 6,
+     "b": 35
+    }
+   ],
+   "steps": [
+    "`expired = staked_time + duration_time`; before that, `InvalidUnstakeTime` (in Proof, from both the app and the script).",
+    "Afterwards the whole stake goes back; the player account stays, with `staked_amount = 0`."
+   ]
+  },
+  {
+   "name": "`withdraw`: the admin takes everything",
+   "refs": [
+    {
+     "path": "contract/programs/staking/src/instructions/withdraw.rs",
+     "a": 6,
+     "b": 35
+    }
+   ],
+   "steps": [
+    "Only the vault's own admin can sign (another wallet fails with `ConstraintSeeds`, in Proof).",
+    "It sends `get_lamports()`, the vault's **entire** balance: rewards, every player's stake and the rent. With 0 lamports the runtime deletes the account; our log shows the vault no longer exists after the withdraw."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "a Clock-based lock and per-second rewards from a single PDA",
+  "text": "One PDA per admin holds all the SOL. The program reads `Clock::get()` to enforce the lock and to price rewards by the second, and pays out by editing the lamports of the account it owns. There's no token mint, no reward schedule account and no keeper.",
+  "refs": [
+   {
+    "path": "contract/programs/staking/src/instructions/claim_rewards.rs",
+    "a": 15,
+    "b": 33,
+    "note": "time since last claim → reward → lamports"
+   },
+   {
+    "path": "contract/programs/staking/src/instructions/sol_unstake.rs",
+    "a": 11,
+    "b": 16,
+    "note": "the lock"
+   }
+  ],
+  "more": [
+   "Because principal and rewards share one balance, nothing guarantees the vault can pay both. Rewards are paid out of whatever is there, so they can eat into other players' stakes, and `withdraw` can empty it. Exercises 2–4 fix that."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "The admin's vault is a constant",
+   "refs": [
+    {
+     "path": "ui/components/Body.tsx",
+     "a": 26,
+     "b": 32
+    },
+    {
+     "path": "ui/components/Body.tsx",
+     "a": 51,
+     "b": 59
+    }
+   ],
+   "steps": [
+    "`authority` is hard-coded (we changed only this address); both PDAs are derived from it in the browser.",
+    "Durations are days × 86,400 seconds, so the shortest lock the app can send is 7 days (our 20-second lock came from the script)."
+   ]
+  },
+  {
+   "title": "Stake, unstake, claim",
+   "refs": [
+    {
+     "path": "ui/components/Body.tsx",
+     "a": 162,
+     "b": 170
+    },
+    {
+     "path": "ui/components/Body.tsx",
+     "a": 187,
+     "b": 195
+    },
+    {
+     "path": "ui/components/Body.tsx",
+     "a": 210,
+     "b": 218
+    }
+   ],
+   "steps": [
+    "Each button passes only `authority` and `player`; Anchor resolves the vault and player PDAs from the seeds in the IDL.",
+    "The APY shown on the main page is a fixed `50%` label (line 312), not read from the vault."
+   ]
+  },
+  {
+   "title": "Admin page",
+   "refs": [
+    {
+     "path": "ui/components/AdminBody.tsx",
+     "a": 133,
+     "b": 143
+    },
+    {
+     "path": "ui/components/AdminBody.tsx",
+     "a": 182,
+     "b": 204
+    }
+   ],
+   "steps": [
+    "Initialise always sends `apy_rate = 100`.",
+    "The APY input goes straight to `config` as `apyInBasisPoints`, but the program treats it as a multiplier, not basis points."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Predict a reward",
+   "steps": [
+    "Stake 0.05 SOL at the vault's current rate (150 after our UI config) and note the time.",
+    "After 60 s compute 50,000,000 × 150 × 60 / 31,536,000, then press Get Reward."
+   ],
+   "expect": "About 14,269 lamports (integer division), give or take the seconds between your note and the transaction."
+  },
+  {
+   "title": "Re-staking wipes unclaimed rewards and restarts the lock",
+   "steps": [
+    "Read `sol_stake.rs` lines 20–23.",
+    "Stake, wait, then stake a second time without claiming."
+   ],
+   "expect": "`reward_time` and `staked_time` are reset: the rewards accrued so far are never paid, and the lock restarts. Fix: pay out pending rewards first and keep the later of the two unlock times."
+  },
+  {
+   "title": "Overflow at a realistic size",
+   "steps": [
+    "With `overflow-checks = true` (contract/Cargo.toml), evaluate line 23 for 10 SOL, rate 100, one year: 10,000,000,000 × 100 × 31,536,000."
+   ],
+   "expect": "3.15 × 10¹⁹, more than u64::MAX (1.8 × 10¹⁹): the claim panics and can never succeed for that position. Fix: compute in `u128` and divide before casting back."
+  },
+  {
+   "title": "Separate principal from rewards",
+   "steps": [
+    "Add `reward_pool` to `VaultAccount`; `deposit` adds to it, `claim_rewards` pays only from it, and `withdraw` may take at most `reward_pool`."
+   ],
+   "expect": "A local test where the admin withdraws and a player then unstakes: the player gets their stake back. With the original code the vault is empty (our log: the vault account no longer exists after `withdraw`)."
+  },
+  {
+   "title": "Let users see the real rate",
+   "steps": [
+    "Replace the fixed `50%` in `Body.tsx` with the vault's `apy_rate` fetched via `program.account.vaultAccount.fetch`."
+   ],
+   "expect": "The page shows 150 (×100% per year) after our Admin Config, which makes the meaning of the number obvious."
+  }
+ ],
+ "not_covered": "Initialise, deposit, config, stake, early unstake (refused) and claim were clicked through in the app. Unstake after the lock and the admin withdraw were run by script: the app's shortest lock is 7 days. Admin Withdraw was not clicked on the app's vault."
+}

@@ -1,0 +1,323 @@
+{
+ "title": "stakes.wtf: stake a token for gov tokens, grow their value with bribes, unstake into linear vesting",
+ "summary": "Stake a token into a pool and get gov tokens; bribes sent to the pool raise what each gov token is worth; unstaking burns them and releases tokens linearly over 20 days.",
+ "what": "stakes.wtf turns any SPL token into a staking pool without new reward tokens. Anyone can open a pool for a mint (2 SOL fee). Stakers deposit the token and get the pool's **gov token** at the current gov price. Anyone can **bribe** the pool by simply sending tokens to its vault; `sync_bribes` credits a share of those extra tokens to the pool each day, which lowers the gov price, so each gov token is now worth more of the underlying token. Unstaking burns all your gov tokens and moves what they're worth into a vesting position that unlocks in 20 equal daily parts. Two ideas are worth learning: value accrual through an exchange rate instead of reward payouts, and vesting as a separate escrow account.",
+ "app_note": "The fork's own React + Vite app with this devnet program ID and hash routing (`#/vesting`, `#/create`) for static hosting. The program is built with the crate's own `testing` feature, so **one program \"day\" is one second**, and with the pool-creation fee receiver constant set to our deployer. The only pool uses a test token (5AWQ…cvUb) that only our deployer can mint, so you need some of it to stake. Script: [tests/devnet/patches/stakes-main.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/stakes-main.py).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/stakes-main/) and connect a devnet wallet.",
+   "see": "The Staking list: one pool row (5AWQ…cvUb) with TVL, APR, Your Stake, Claimable."
+  },
+  {
+   "do": "Click the pool row, open the **Stake** tab, enter `100` and press **Stake**. (Needs 100 of the pool's test token.)",
+   "see": "A `stake` transaction; Your Stake shows 100 and your wallet now holds 100 gov tokens.",
+   "ran": [
+    [
+     "Pool row 5AWQ…cvUb, Stake tab, 100, Stake; the row then showed Your Stake 100",
+     "4VBjKccHD8TdBWaMyVkECPF7En8QNEfSXzCdubqP2M68QS8THZ4oyHXMNg5EUDMckPQ9np69DPYw2toRTfzhi8qj"
+    ]
+   ]
+  },
+  {
+   "do": "Open the **Bribe** tab, enter `20`, press **Bribe**.",
+   "see": "A plain SPL token transfer into the pool vault. TVL doesn't change: the bribe only counts once someone calls `sync_bribes`, which the app never does.",
+   "ran": [
+    [
+     "Bribe tab, 20, Bribe; APR then read 2 190",
+     "4HGtoLf4nVNoFTBpphKn2umUhywPdWdJqrC77m9gXXTZkECuhNN6epL6Ay3QGaPFdxdzcXotEyHNgPHDHkJMNGm7"
+    ]
+   ]
+  },
+  {
+   "do": "Open the **Claim** tab and press **Unstake**.",
+   "see": "An `unstake` transaction: your gov tokens are burned and a vesting position appears on the **Vesting** page with Claim Per Day = amount / 20.",
+   "ran": [
+    [
+     "Claim tab, Unstake; the Vesting page then listed the position at 5 per day",
+     "3cMTZibx4fdP9QKwdRcjdsJ6Duq7FaAPozNMM8RrqzwX15QppSRQawusQMjS287zQTbDErMWpxgYEJtpoBqJBoLf"
+    ]
+   ]
+  },
+  {
+   "do": "On the **Vesting** page press **Claim**.",
+   "see": "A `claim_vested` transaction. In this testing build a day is a second, so after 20 s the full amount is released and the position closes.",
+   "ran": [
+    [
+     "Vesting page, Claim; the position closed and the wallet held 480 (500 − 100 − 20 + 100)",
+     "Mq3xgVqq4GMKX9kp4DyKoQZ15KnUP26pJZheyM8jG9KuTvE6zN5NfdZBuc8BKnA4V55Ms5ZZ7dDbKsWZy4J2YaT"
+    ]
+   ]
+  },
+  {
+   "do": "Optional: open **Create Pool**, paste a mint and press **Create**.",
+   "see": "Fails in simulation with custom program error 0xbc3 (`AccountNotSystemOwned`): the app's IDL is older than the program and has no `fee_receiver` account.",
+   "ran_note": "Clicked: failed in simulation with 0xbc3, nothing sent; the pool was created by script."
+  }
+ ],
+ "diagram": "anyone ─ initialize_pool() ─▶ StakingPool PDA [\"staking_pool\", mint]   mint | gov_mint | gov_price | active_balance | last_bribe_distribution\n              2 SOL ─▶ FEE_RECEIVER     └▶ staking vault PDA [\"staking_vault\", pool]  (token account, authority = pool)\n                                        └▶ gov mint (new keypair, mint authority = pool)\nstaker ─ stake(amount) ─▶ tokens into vault; active_balance += amount; mint amount × gov_price / 1e9 gov tokens\nbriber ─ SPL transfer ─▶ vault   (vault balance − active_balance = unsynced bribes)\nanyone ─ sync_bribes() ─▶ active_balance += today's bribe share; gov_price = gov_supply × 1e9 / active_balance\nstaker ─ unstake() ─▶ burn ALL gov; amount = gov × 1e9 / gov_price ─▶ vesting vault PDA [\"vesting_vault\", position]\nstaker ─ claim_vested() ─▶ days_passed × (amount / 20) to the owner; closes when the rest is under one day's share",
+ "accounts": [
+  [
+   "StakingPool",
+   "PDA `[\"staking_pool\", mint]`",
+   "Mint, gov mint, gov price (gov per token × 10⁹), active balance, last bribe sync"
+  ],
+  [
+   "Staking vault",
+   "PDA `[\"staking_vault\", pool]` token account, owner = pool",
+   "Staked tokens plus any unsynced bribes"
+  ],
+  [
+   "Gov mint",
+   "New keypair, mint authority = pool",
+   "The receipt token"
+  ],
+  [
+   "VestingPosition",
+   "New keypair per unstake",
+   "Owner, pool, mint, claim per day, last claim day"
+  ],
+  [
+   "Vesting vault",
+   "PDA `[\"vesting_vault\", position]` token account, owner = pool",
+   "Tokens still to vest"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize_pool`: pool, vault, gov mint, fee",
+   "refs": [
+    {
+     "path": "programs/stakes-wtf/src/instructions/initialize_pool.rs",
+     "a": 16,
+     "b": 84
+    },
+    {
+     "path": "programs/stakes-wtf/src/constants.rs",
+     "a": 1,
+     "b": 27,
+     "note": "constants; the deployment sets FEE_RECEIVER_PUBKEY to our deployer and builds with `testing`"
+    }
+   ],
+   "steps": [
+    "One pool per mint: seeds `[\"staking_pool\", mint]`; a second pool for the same mint fails (account already in use, in Proof).",
+    "The vault is a token account at a PDA whose **authority is the pool PDA**, and the gov mint's mint authority is also the pool. Only the program, signing with the pool's seeds, can move staked tokens or mint gov.",
+    "`fee_receiver` must equal `FEE_RECEIVER_PUBKEY` (`InvalidFeeReceiver`, in Proof) and gets 2 SOL by System Program CPI.",
+    "`SECONDS_PER_DAY` is 1 under the `testing` feature; this deployment uses it."
+   ]
+  },
+  {
+   "name": "`stake`: tokens in, gov out",
+   "refs": [
+    {
+     "path": "programs/stakes-wtf/src/instructions/stake.rs",
+     "a": 19,
+     "b": 99
+    },
+    {
+     "path": "programs/stakes-wtf/src/state/staking_pool.rs",
+     "a": 58,
+     "b": 74,
+     "note": "gov ↔ token conversion"
+    }
+   ],
+   "steps": [
+    "`has_one = gov_mint` rejects a different gov mint (`InvalidMint`, in Proof).",
+    "The user's tokens go into the vault (the user signs); then the pool signs a `mint_to` with `new_with_signer(&[pool seeds])`.",
+    "gov minted = amount × `gov_price` / 10⁹. Gov price starts at 10⁹ (1 gov per token): B staked 100 and got 100 gov."
+   ]
+  },
+  {
+   "name": "`sync_bribes`: turn bribes into value",
+   "refs": [
+    {
+     "path": "programs/stakes-wtf/src/instructions/sync_bribes.rs",
+     "a": 38,
+     "b": 48
+    },
+    {
+     "path": "programs/stakes-wtf/src/state/staking_pool.rs",
+     "a": 76,
+     "b": 123
+    }
+   ],
+   "steps": [
+    "Unsynced bribes = vault balance − `active_balance`. Each day passed releases 5% of them (`BRIBE_SHARE_PER_DAY = 50` ‰), at least 0.1% of the vault, capped at all of them.",
+    "The released amount is added to `active_balance`, and `gov_price = gov_supply × 10⁹ / active_balance`.",
+    "In our script the pool was old enough (in one-second days) that all 50 bribed tokens were released at once: active 150, gov price 666,666,666. B's 100 gov were now worth 150 tokens."
+   ]
+  },
+  {
+   "name": "`unstake`: burn and start vesting",
+   "refs": [
+    {
+     "path": "programs/stakes-wtf/src/instructions/unstake.rs",
+     "a": 13,
+     "b": 123
+    },
+    {
+     "path": "programs/stakes-wtf/src/state/vesting_position.rs",
+     "a": 18,
+     "b": 34
+    }
+   ],
+   "steps": [
+    "Converts **all** your gov tokens: amount = gov × 10⁹ / gov_price (100 × 10⁹ / 666,666,666 = 150). There's no partial unstake.",
+    "The pool signs a transfer of that amount from the staking vault to a new vesting vault, records `claim_per_day = amount / 20` (7.5 for B), then burns your gov tokens."
+   ]
+  },
+  {
+   "name": "`claim_vested`: linear unlock",
+   "refs": [
+    {
+     "path": "programs/stakes-wtf/src/instructions/claim_vested.rs",
+     "a": 14,
+     "b": 101
+    },
+    {
+     "path": "programs/stakes-wtf/src/state/vesting_position.rs",
+     "a": 35,
+     "b": 55
+    }
+   ],
+   "steps": [
+    "`has_one = owner`: only the position's owner can claim (`InvalidOwner` when A tried B's, in Proof).",
+    "Pays `days_passed × claim_per_day`; if what would remain is less than one more day's share, pays everything and closes both accounts, returning their rent.",
+    "B's first claim paid 82.5 = 11 × 7.5 (11 one-second days had passed by the time it landed); the second paid the remaining 67.5 and closed the position. B ended with 1,050 tokens from 1,000."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "rewards as an exchange rate, and the pool PDA as the only authority",
+  "text": "Nobody is ever paid a reward directly. Bribes raise the pool's token balance, `sync_bribes` folds them in, and the gov price falls, so each gov token redeems for more. One pool PDA is the authority of the staking vault, every vesting vault and the gov mint, and signs for all of them with `[\"staking_pool\", mint, bump]`.",
+  "refs": [
+   {
+    "path": "programs/stakes-wtf/src/state/staking_pool.rs",
+    "a": 111,
+    "b": 123,
+    "note": "the exchange rate"
+   },
+   {
+    "path": "programs/stakes-wtf/src/state/staking_pool.rs",
+    "a": 36,
+    "b": 38,
+    "note": "the pool's signer seeds"
+   }
+  ],
+  "more": [
+   "Because stake and unstake use the gov price as stored, the order of calls matters. `stake` doesn't sync first, so whoever stakes just before a `sync_bribes` shares bribes that arrived before they joined. `unstake` doesn't sync either, so bribes not yet synced stay behind for the remaining stakers (Exercises 2 and 3)."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Same PDAs in the browser",
+   "refs": [
+    {
+     "path": "app/src/utils/pdas.ts",
+     "a": 23,
+     "b": 31
+    }
+   ],
+   "steps": [
+    "Pool from the mint, vault from the pool, vesting vault from the position, exactly the program's seeds."
+   ]
+  },
+  {
+   "title": "Instruction builders",
+   "refs": [
+    {
+     "path": "app/src/services/instructions.ts",
+     "a": 34,
+     "b": 83
+    },
+    {
+     "path": "app/src/services/instructions.ts",
+     "a": 109,
+     "b": 122
+    }
+   ],
+   "steps": [
+    "Unstake generates a fresh keypair for the vesting position, which must co-sign; the vesting vault is derived from it.",
+    "Bribe isn't a program instruction at all, just `createTransferInstruction` into the vault."
+   ]
+  },
+  {
+   "title": "Create Pool is out of date",
+   "refs": [
+    {
+     "path": "app/src/services/instructions.ts",
+     "a": 10,
+     "b": 32
+    }
+   ],
+   "steps": [
+    "No `feeReceiver` in the accounts: the app's IDL predates it, so the next account (the System Program) lands in that slot and the program rejects it with `AccountNotSystemOwned` (0xbc3)."
+   ]
+  },
+  {
+   "title": "Sending: extra signers, then the wallet",
+   "refs": [
+    {
+     "path": "app/src/hooks/useTransaction.ts",
+     "a": 28,
+     "b": 76
+    }
+   ],
+   "steps": [
+    "Adds a priority fee, signs with the generated keypairs, asks the wallet to sign, then sends the raw transaction and confirms it."
+   ]
+  },
+  {
+   "title": "The APR column",
+   "refs": [
+    {
+     "path": "app/src/pages/staking/components/pool/Pool.tsx",
+     "a": 121,
+     "b": 121
+    }
+   ],
+   "steps": [
+    "APR = (vault ÷ active balance) ÷ 20 × 365 × 100. With 100 staked and 20 bribed: 1.2 ÷ 20 × 36,500 = 2,190, the number the app showed after our UI bribe."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Follow the exchange rate",
+   "steps": [
+    "From Proof: B stakes 100, A bribes 50, `sync_bribes`.",
+    "Compute the new gov price and what B's 100 gov redeem for."
+   ],
+   "expect": "gov_price = 100 × 10⁹ / 150 = 666,666,666; redeem = 100 × 10⁹ / 666,666,666 = 150, the `vested: 150` in the log."
+  },
+  {
+   "title": "Join right before a sync",
+   "steps": [
+    "In a local test: stake 100 (B), bribe 100, wait several \"days\", then have C stake 100 and only then call `sync_bribes`.",
+    "Unstake both."
+   ],
+   "expect": "C gets part of a bribe that arrived before C staked, because `stake` uses the stale gov price. Fix: call the bribe sync logic at the start of `stake` and `unstake`."
+  },
+  {
+   "title": "Where did the UI bribe go?",
+   "steps": [
+    "Our UI wallet staked 100, bribed 20 and unstaked; read its balance in Try-it step 5 (480 = 500 − 100 − 20 + 100)."
+   ],
+   "expect": "It got back exactly its 100: the 20 was never synced, and with `active_balance` at 0 `get_current_bribe_amount` returns 0. The 20 stays in the vault for whoever stakes next and syncs."
+  },
+  {
+   "title": "Fix the APR",
+   "steps": [
+    "Change Pool.tsx line 121 to use `(vault.amount - activeBalance) / activeBalance`."
+   ],
+   "expect": "With 100 staked and 20 bribed it shows 365 instead of 2,190; with no bribes it shows 0 instead of 1,825."
+  },
+  {
+   "title": "Repair Create Pool",
+   "steps": [
+    "Regenerate the app's IDL from the program (`anchor build`) or add `feeReceiver` to `createCreatePoolInstruction`, set to the fee receiver constant."
+   ],
+   "expect": "Create Pool sends an `initialize_pool` that moves 2 SOL to the fee receiver and creates the pool, as our script did (2yVByakS…)."
+  }
+ ],
+ "not_covered": "Stake, bribe, unstake and vesting claim were clicked through in the app. Create Pool can't work in the app (out-of-date IDL), so the pool was created by script, and sync_bribes, which the app never calls, was only run by script. This is the testing build (1 day = 1 second), so vesting finishes in seconds. Only holders of the test token 5AWQ… can stake in the existing pool."
+}
