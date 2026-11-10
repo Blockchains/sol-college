@@ -1,0 +1,29 @@
+{
+ "slug": "ciphervault",
+ "cluster": "devnet",
+ "program": "cipher_valut",
+ "idl": "cipher_vault.json",
+ "devnet": "DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG",
+ "deploy_tx": "3tUQ6xt3VQgfuZGhAr8PSvdeEzKR74Z2QJbu7yRsZmU56P6hNWRTps15SmEaBV6DHLbnLqfZKzDXaoRy8QVvzbQH",
+ "built": "cargo build-sbf (solana 2.3.13 platform tools) of programs/cipher-valut at ee28e17 with declare_id set to this program's keypair; buffer written with tools/fill_buffer.py",
+ "sigs": [
+  {
+   "label": "create_multisig 2-of-3 (A,B,C) with 0.2 SOL",
+   "sig": "3W9sP68oPcz6MFFyWT9L7ExVQkUndyUZeLAErDGcyiHBfsqWqmzkv33eQKTE1CBsEYZyHMaNffD8kcycc5UCWnAK"
+  },
+  {
+   "label": "A proposes 0.05 SOL to recipient (A auto-approves)",
+   "sig": "BjDcG29KPcnFCdRcz5Dngj6B3ZGM1zyq5t3ibXVFgheR1ju3rSCKr8r6KHv5zkBFEqhTfpe2hqKsLZzWH1gEtbm"
+  },
+  {
+   "label": "B approves (2 of 2)",
+   "sig": "2XEVzrzCZc4KytLeRa3HoD66h5UXtzH38bfqJSN6ugiwh23Ayt4XBAnnxPAnYS5Tx1My7ZqgXnJE5Ub6JgHAik4S"
+  },
+  {
+   "label": "A executes",
+   "sig": "fDdnb6UYMrYJQsFPKxpRPW3X5NiAxjCjfQi1DtdBFBNPo9MyEU4wszL2VT5F773fXNWDF436pMsRBN6DNH8jNkK"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

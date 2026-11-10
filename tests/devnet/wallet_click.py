@@ -236,6 +236,30 @@ def run(pg):
             log(step='claim_winnings_via_ui', button=label, sent=sigs_new(n)); pg.reload(wait_until='domcontentloaded'); pump(pg, 8000)
         else: log(step='claim_winnings_via_ui', error='no Claim button', text=body(pg)[:900])
         log(step='final_page', text=body(pg)[:700])
+    elif app in ('cipher', 'cipher-approve'):  # cipher argv: owner2 recipient multisig-name; cipher-approve: none
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 5000); connect(pg, r'Connect Now'); pump(pg, 8000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        if app == 'cipher':
+            owner2, recipient, name = sys.argv[4:7]
+            pg.get_by_role('button', name=re.compile(r'^\s*Multisigs')).first.click(); pump(pg, 2000)
+            pg.get_by_role('button', name=re.compile(r'New Multisig')).first.click(); pump(pg, 1000)
+            pg.get_by_placeholder('e.g., Operations Treasury').fill(name); pg.locator('#threshold').fill('2')
+            pg.locator('#balance').fill('1')  # the dialog parses this with parseInt, so fractions of a SOL become 0
+            pg.get_by_placeholder('Owner 1 address').fill(ADDR); pg.get_by_placeholder('Owner 2 address').fill(owner2)
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Create Multisig')).click(); pump(pg, 30000)
+            log(step='create_multisig_2of2_via_ui', sent=sigs_new(n), text=body(pg)[:500])
+            pg.get_by_role('button', name=re.compile(r'^\s*Transactions')).first.click(); pump(pg, 3000)
+            pg.get_by_role('button', name=re.compile(r'New Transaction')).first.click(); pump(pg, 1000)
+            pg.locator('#multisig').click(); pump(pg, 800); pg.get_by_role('option', name=re.compile(name)).first.click(); pump(pg, 500)
+            pg.get_by_placeholder('Enter Solana address').fill(recipient); pg.get_by_placeholder('0.00').fill('0.02')
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'Create Transaction')).click(); pump(pg, 30000)
+            log(step='propose_0.02_SOL_via_ui', sent=sigs_new(n), text=body(pg)[:700])
+        else:
+            pg.get_by_role('button', name=re.compile(r'^\s*Transactions')).first.click(); pump(pg, 8000)
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Approve$')).first.click(); pump(pg, 30000)
+            log(step='approve_via_ui', sent=sigs_new(n)); pump(pg, 8000)
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Execute$')).first.click(); pump(pg, 30000)
+            log(step='execute_via_ui', sent=sigs_new(n), text=body(pg)[:900])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

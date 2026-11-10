@@ -1,0 +1,13 @@
+{"step":"fund B and D (D is not an owner)","sig":"5pgn1U4opVfrKxuifDipQb2HmkwB29xCd7o39e6DoK39iJritZjsJsymQFmvg8oxdAr7uxtC9jQ3HV52oGa6x1k4"}
+{"step":"setup","program":"DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG","A":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","B":"41Aettq5y13r8W8fh4ME8gTy1rH7b9fbuAu6MjjeH22i","C":"4mygNUNN4B5zfxQDhBQnUZLKVNgCZsq6FqUixz3xP8M4","D":"4HKCgPt76VLsPGrf5DzSrWqVbr7ARCDEgArjmMfCofrg","recipient":"6yEYwVev5DQHDefTvrAwZWJT8qU9duJp5k4MUbtyTeHB","multisig":"BXeHE5pHJAQckCohEzJrWissZLCV7YYCqWEsWQAjSdKY","vault":"Fg4DYNzsyj4QVqDPh8papp8EEwJkvzVhfp7QPDCxzsWJ","name":"solcollege-mwagaxmy"}
+{"step":"create_duplicate_owners","expectedFailure":true,"error":"DuplicateOwners"}
+{"step":"create_with_amount_None (#[instruction] declares amount: u64, the handler takes Option<u64>)","probe":true,"succeeded":false,"error":"InstructionDidNotDeserialize"}
+{"step":"create_multisig 2-of-3 (A,B,C) with 0.2 SOL","ok":true,"sig":"3W9sP68oPcz6MFFyWT9L7ExVQkUndyUZeLAErDGcyiHBfsqWqmzkv33eQKTE1CBsEYZyHMaNffD8kcycc5UCWnAK","threshold":2,"owners":3,"vaultSol":0.20065024}
+{"step":"non_owner_D_proposes","expectedFailure":true,"error":"ProposeNotinOwners"}
+{"step":"A proposes 0.05 SOL to recipient (A auto-approves)","ok":true,"sig":"BjDcG29KPcnFCdRcz5Dngj6B3ZGM1zyq5t3ibXVFgheR1ju3rSCKr8r6KHv5zkBFEqhTfpe2hqKsLZzWH1gEtbm","transaction":"8N78zUDaJezzUp2DJQYaC5pvgZ5sqKmwjrY7LrzX6uB6"}
+{"step":"execute_with_1_of_2_approvals","expectedFailure":true,"error":"NotEnoughApproval"}
+{"step":"non_owner_D_approves","expectedFailure":true,"error":"InvalidOwnerError"}
+{"step":"B approves (2 of 2)","ok":true,"sig":"2XEVzrzCZc4KytLeRa3HoD66h5UXtzH38bfqJSN6ugiwh23Ayt4XBAnnxPAnYS5Tx1My7ZqgXnJE5Ub6JgHAik4S"}
+{"step":"A executes","ok":true,"sig":"fDdnb6UYMrYJQsFPKxpRPW3X5NiAxjCjfQi1DtdBFBNPo9MyEU4wszL2VT5F773fXNWDF436pMsRBN6DNH8jNkK","executed":true,"recipientSol":0.05,"vaultSol":0.15065024}
+{"step":"execute the same transaction again (fn_execute never checks `executed`)","probe":true,"succeeded":false,"error":"Underflow"}
+{"step":"after","recipientSol":0.05,"vaultSol":0.15065024}

@@ -482,5 +482,81 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py sentient, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, bet, resolve and claim went through the app's own forms and buttons, and the market page read the result back from devnet.",
   "limits": "The question is a PDA seed, so questions over 32 bytes fail before any transaction is sent (the form allows 200 characters). The create form only accepts end dates from tomorrow, so the short market used for the claim was created by script. The fork's TypeScript does not type-check (MarketWithPrices drift), so the export is built with type errors ignored."
+ },
+ {
+  "slug": "ciphervault",
+  "name": "CipherVault (SOL multisig vault)",
+  "lesson": "/explore/ciphervault/",
+  "app": "/dapps/ciphervault/",
+  "fork": "https://github.com/Blockchains/CipherVault",
+  "commit": "ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9",
+  "program": "DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG",
+  "app_kind": "The fork's own React + Vite app, unchanged except for the RPC (the fork points at a local validator), the IDL import (the committed IDL in app/src/anchor instead of target/, with this program's address) and base path /dapps/ciphervault/.",
+  "learn": "A creator sets up a multisig with a list of owners and an approval threshold; its SOL sits in a program-owned vault PDA. Any owner can propose a SOL transfer (their own approval is recorded), other owners approve, and once approvals reach the threshold anyone can execute it, which moves lamports straight out of the vault.",
+  "source": [
+   [
+    "create_multisig.rs (duplicate-owner check, initial deposit into the vault)",
+    "https://github.com/Blockchains/CipherVault/blob/ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9/programs/cipher-valut/src/instruction_handler/create_multisig.rs"
+   ],
+   [
+    "state/multisig.rs L18-L44 (PDAs [multisig, creator, name] and [vault, multisig])",
+    "https://github.com/Blockchains/CipherVault/blob/ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9/programs/cipher-valut/src/state/multisig.rs#L18-L44"
+   ],
+   [
+    "create_transaction.rs (only owners can propose; proposer auto-approves)",
+    "https://github.com/Blockchains/CipherVault/blob/ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9/programs/cipher-valut/src/instruction_handler/create_transaction.rs"
+   ],
+   [
+    "approval_instruction.rs and fn_execute.rs (owner approval, threshold check, lamports moved from the vault)",
+    "https://github.com/Blockchains/CipherVault/blob/ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9/programs/cipher-valut/src/instruction_handler/fn_execute.rs"
+   ]
+  ],
+  "flow": "tests/devnet/ciphervault.mjs",
+  "log": "tests/devnet/logs/ciphervault-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… filled New Multisig (2 of 2: m4Ac… and GpUq…, initial balance 1 SOL); the card then showed 2 of 2, PDA 8SpG83XG… and vault balance 1 SOL",
+    "3mCJ3ZgERPNW9btSdroSaGXUWAgaWrMggQc9vWZ8wF6uQ5sKzpGGJ89fBMXwKqLENY4LTe4CjS4AJ2fNWUvnUd3c"
+   ],
+   [
+    "UI: New Transaction, 0.02 SOL to E8xrtSuz… (the proposer's approval is recorded automatically)",
+    "Font6CkBhutUPagVGqdgYiT7KEsDF4ZXU3TzzujLCDUu6keMVtX9zAmpn7RdwvZ3qh5dzzYBGQxXZ9prN4YBkXC"
+   ],
+   [
+    "UI: second test wallet GpUq… opened Transactions and clicked Approve",
+    "3fces1nr6tvdoCVUAwQ4BQacbQ7Ac9MsgoHpQCLH7druVvUoi6wwripKi44m4Nj9mWD6ASkwYeEYz3wRBGkQrXEc"
+   ],
+   [
+    "UI: same wallet clicked Execute; the table showed 2/2 and Executed, and the recipient's devnet balance read 0.02 SOL",
+    "yeputouRFaw5kEbAgUpqXH41YHXKr6BmHbp5twWpaUcccTinJZrGBTJfunpbCzBSJzaMo2J7DuNqtf4LoCzbJJD"
+   ],
+   [
+    "Script: create_multisig 2-of-3 (A,B,C) with 0.2 SOL",
+    "3W9sP68oPcz6MFFyWT9L7ExVQkUndyUZeLAErDGcyiHBfsqWqmzkv33eQKTE1CBsEYZyHMaNffD8kcycc5UCWnAK"
+   ],
+   [
+    "Script: A proposes 0.05 SOL to recipient (A auto-approves)",
+    "BjDcG29KPcnFCdRcz5Dngj6B3ZGM1zyq5t3ibXVFgheR1ju3rSCKr8r6KHv5zkBFEqhTfpe2hqKsLZzWH1gEtbm"
+   ],
+   [
+    "Script: B approves (2 of 2)",
+    "2XEVzrzCZc4KytLeRa3HoD66h5UXtzH38bfqJSN6ugiwh23Ayt4XBAnnxPAnYS5Tx1My7ZqgXnJE5Ub6JgHAik4S"
+   ],
+   [
+    "Script: A executes",
+    "fDdnb6UYMrYJQsFPKxpRPW3X5NiAxjCjfQi1DtdBFBNPo9MyEU4wszL2VT5F773fXNWDF436pMsRBN6DNH8jNkK"
+   ]
+  ],
+  "negative": [
+   "create duplicate owners: DuplicateOwners",
+   "non owner D proposes: ProposeNotinOwners",
+   "execute with 1 of 2 approvals: NotEnoughApproval",
+   "non owner D approves: InvalidOwnerError",
+   "create with no initial amount (null): InstructionDidNotDeserialize, because #[instruction] declares amount as u64 while the handler takes Option<u64>",
+   "executing the same transaction a second time: Underflow. fn_execute never checks `executed`; the call was stopped only because the pending counter was already 0"
+  ],
+  "ui_check": "Driven in headless Chromium with two injected Wallet Standard test wallets (tests/devnet/wallet_click.py cipher / cipher-approve, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, propose, approve and execute all went through the app's own dialogs and buttons.",
+  "limits": "The Initial Balance field is read with parseInt, so 0.5 SOL becomes 0; use whole SOL. The transaction table shows the amount as 0 SOL even though 0.02 SOL moved. The proposal-time NotEnoughSol check compares against the amount before it is set, so it never fires; only execute checks the vault. The token (SPL) option in the dialog is not implemented in the program. Lists are read with getProgramAccounts on the public RPC and can be slow."
  }
 ]

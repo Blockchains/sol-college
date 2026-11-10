@@ -44,6 +44,9 @@ P
      cd "$src/frontend" && python3 "$(dirname "$out")/../../tests/devnet/patches/sentient-send.py" BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv
      sed -i "s/C3LRoEztvLPioY3ruddYGTT9qxzvqBivHzgmpGJuQ9CT/22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5/g" src/lib/constants.ts src/lib/idl.ts
      npm install --no-audit --no-fund >/dev/null && npm i -D --no-audit --no-fund @types/bn.js >/dev/null && npx next build && cp -r out/. "$out/";;
+  ciphervault) # fork's own React + Vite app (app/) on the program deployed from programs/cipher-valut (see dapps/deployed/ciphervault.json)
+     cd "$src/app" && python3 "$(dirname "$out")/../../tests/devnet/patches/ciphervault.py" DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG
+     npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx vite build && cp -r dist/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"
