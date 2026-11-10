@@ -2,6 +2,7 @@
 - next.config.js: output 'export', basePath /dapps/friendstake, trailingSlash, images unoptimized.
 - The dynamic pages bet/[address], list-bets/[address] and account/[address] can't be pre-rendered for
   accounts that don't exist yet, so each moves to .../view/page.tsx and reads the address from ?a=.
+  The bet list's 'See More' link is a plain <a>, so it gets the basePath written in.
 - Removes the scaffold's app/api/hello route (not used by the app; not exportable).
 - Program id is replaced by static_build.sh (sed), not here.
 Usage: python3 friendstake.py <repo root>   (the fork root, containing app/friendstake/web)"""
@@ -30,7 +31,7 @@ for f in ('components/bet/bet-info.tsx', 'components/bet/bet-list.tsx', 'compone
     s = s.replace('}, [params]);', '}, [params.address]);')
     p.write_text(s)
 for f, a, b in (('components/account/account-list-feature.tsx', '`/account/${', '`/account/view?a=${'),
-                ('components/bet/bet-ui.tsx', '`/bet/${', '`/bet/view?a=${'),
+                ('components/bet/bet-ui.tsx', 'href={`/bet/${', 'href={`/dapps/friendstake/bet/view?a=${'),  # plain <a>, so Next's basePath isn't applied
                 ('components/bet/bet-list-connect.tsx', '`/list-bets/${', '`/list-bets/view?a=${')):
     p = root / f; p.write_text(p.read_text().replace(a, b))
 shutil.rmtree(root / 'app/api', ignore_errors=True)
