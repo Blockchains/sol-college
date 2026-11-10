@@ -1,0 +1,10 @@
+{
+ "kryptpay": "The fork has no frontend at all (program and tests only), so there is no app of its own to host.",
+ "predix": "The fork's app/ is a Create React App UI with no Anchor or web3 client; it never calls the program, so hosting it would not exercise anything on devnet.",
+ "seloongmun": "The fork's web/ is the create-solana-dapp counter scaffold (increment/decrement): it never calls draw, imports a ShootingIDL file that does not exist, and its build fails.",
+ "mons-dot-rehab": "end_game has to be signed by the mons game server, and the client is the mons game itself; neither can be hosted as a static page.",
+ "valhalla": "The app depends on server-side Next.js API routes and Clockwork/Helius services, so a static export cannot run its flow.",
+ "elyse": "A static site. Its only Solana write, the token faucet, runs server-side with a sender key fetched from the author's own server; the swap page embeds Jupiter Terminal, which is mainnet-only. Nothing here can be proven on devnet without that server.",
+ "solstage-web": "The app never calls its program's instructions: it uploads the filter file to Shadow Drive (mainnet-only, paid in SHDW) and then tags a PDA of program STAGYb3H… with a memo transaction. That program exists on devnet (deployed by the original author), but the flow cannot complete without a mainnet Shadow Drive upload.",
+ "stealthfolio": "Swaps go through Jupiter (mainnet-only) and private trades need the Light Protocol relayer server in relayer/; there is no program of its own to deploy."
+}

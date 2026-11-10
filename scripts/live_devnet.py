@@ -5,6 +5,7 @@ dapps/deployed/*.json (programs on devnet), tests/results/*.json (captured build
 import json,os,re,sys,glob,shutil,html
 S=sys.argv[1] if len(sys.argv)>1 else 'site'; E=lambda s:html.escape(str(s),quote=True)
 LIVE=json.load(open('dapps/live.json')); LV={x['slug']:x for x in LIVE}
+BLK=json.load(open('dapps/blocked.json')) if os.path.exists('dapps/blocked.json') else {}
 DEP={os.path.basename(f)[:-5]:json.load(open(f)) for f in glob.glob('dapps/deployed/*.json')}
 RES={}
 for f in glob.glob('tests/results/*.json'):
@@ -42,11 +43,11 @@ def live_section(x):
 <p><b>App:</b> {E(x["app_kind"])}</p><p><b>Program on devnet:</b> <a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a> · fork <a href="{E(x["fork"])}/tree/{E(x["commit"])}">{E(x["fork"][19:])} @ <code>{E(x["commit"][:7])}</code></a></p>
 <p><b>Devnet proof, {E(x["verified"])}</b> (run by <a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["flow"])}"><code>{E(x["flow"])}</code></a>, which mirrors the app&#39;s own transaction code; <a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["log"])}">log</a>):</p><ul class=sigs>{st}</ul><p><b>Rejected as expected:</b></p><ul>{ng}</ul><p><b>App check:</b> {E(x["ui_check"])}</p><p><b>Not covered:</b> {E(x["limits"])}</p></section>'''
 for sl in slugs:
-  t_=tier(sl); counts[t_]=counts.get(t_,0)+1; audit.append(dict(slug=sl,status=t_,lesson=f'/explore/{sl}/',app=LV[sl]['app'] if sl in LV else None,verified=(LV.get(sl) or {}).get('verified') or (RES.get(sl) or {}).get('tested')))
+  t_=tier(sl); counts[t_]=counts.get(t_,0)+1; audit.append(dict(slug=sl,status=t_,lesson=f'/explore/{sl}/',app=LV[sl]['app'] if sl in LV else None,verified=(LV.get(sl) or {}).get('verified') or (RES.get(sl) or {}).get('tested'),blocked=BLK.get(sl) if t_!='live' else None))
   fp=f'{S}/explore/{sl}/index.html'
   if not os.path.exists(fp): continue
   t=open(fp).read()
-  t=sub_marked(t,'sc-status',f'<p class=note role=status>{BANNER[t_](sl)}</p>',r'<main id=main>(?:<nav class=crumbs.*?</nav>)?')
+  t=sub_marked(t,'sc-status',f'<p class=note role=status>{BANNER[t_](sl)}'+(f' <b>Why it is not live yet:</b> {E(BLK[sl])}' if sl in BLK and t_!='live' else '')+'</p>',r'<main id=main>(?:<nav class=crumbs.*?</nav>)?')
   if t_=='live':
     x=LV[sl]; new=f'<section class=note><h2>Open the dapp</h2><p><b>✅ Live on devnet, verified {E(x["verified"])}</b>: the fork&#39;s own app.</p><p><a class=btn href="{E(x["app"])}">Open the app</a> Connect Phantom or Solflare set to devnet; every transaction is signed in your own wallet. Free devnet SOL: <a href="https://faucet.solana.com">faucet.solana.com</a>.</p><p>{E(x["app_kind"])}</p><p>Program <a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a>. Proof transactions and failure cases: <a href="/live/#{sl}">Live on devnet</a>.</p></section>'
     t=re.sub(r'<section class=note><h2>Open the dapp</h2>.*?</section>',lambda _:new,t,count=1,flags=re.S)
