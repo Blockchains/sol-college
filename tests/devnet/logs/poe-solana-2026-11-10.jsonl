@@ -1,0 +1,8 @@
+{"step":"setup","program":"6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5","tester":"AgrLFStmTgQ1Ki9k3Pe4V8bHGNZF9AVRLzm7v48Y6P4u","rpc":"https://solana-devnet.api.onfinality.io/public"}
+{"step":"register_user","ok":true,"sig":"xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"}
+{"step":"read_token_balance","ata":"AvaUdHBQRALEaq2bnCvU9E9GPhQiAvcXxtrBKQ7nij3E","uiAmount":"1000"}
+{"step":"register_user_twice","expectedFailure":true,"error":"failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0"}
+{"step":"create_poll","ok":true,"pollId":"0","poll":"9V1u4vvP4T6JZgEXdag5j49iJRViPSi8PqQfgCisLKhT","sig":"2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"}
+{"step":"make_estimate_inverted","expectedFailure":true,"error":"failed to send transaction: Transaction simulation failed: Error processing Instruction 0: Program failed to complete"}
+{"step":"make_estimate","ok":true,"sig":"2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD","collectiveEstimate":500000,"numForecasters":"1","numEstimateUpdates":"1"}
+{"step":"read_user_estimate","lower":30,"upper":70}

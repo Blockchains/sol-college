@@ -1,0 +1,5 @@
+{"step":"setup","program":"GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY","tester":"AgrLFStmTgQ1Ki9k3Pe4V8bHGNZF9AVRLzm7v48Y6P4u","x":128,"y":152,"pixel":"GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89"}
+{"step":"create_pixel_out_of_range","expectedFailure":true,"error":"InvalidXCoordinate"}
+{"step":"create_pixel","ok":true,"sig":"2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM","color":[153,69,255]}
+{"step":"create_pixel_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"update_pixel","ok":true,"sig":"37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa","color":[20,241,149]}

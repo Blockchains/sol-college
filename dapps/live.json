@@ -1,0 +1,61 @@
+[
+ {
+  "slug": "poe-solana",
+  "name": "Proof of Estimate (poe-solana)",
+  "lesson": "/explore/poe-solana/",
+  "app": "/dapps/poe-solana/",
+  "fork": "https://github.com/Blockchains/poe-solana",
+  "commit": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+  "program": "6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5",
+  "app_kind": "The fork's own Next.js 14 app (app/), static export, pointed at this devnet program. Only changes: base path, the IDL generated from the program source at the same commit (the committed app IDL is from a later program version), and /poll/?id= instead of /poll/[id] so it can be served statically.",
+  "learn": "A forecasting poll stores the crowd's collective estimate on-chain: make_estimate takes a lower and upper bound, records the midpoint (lower+upper)/2 and the uncertainty (upper-lower)/100, and each poll lives at a PDA seeded by the global poll counter, so new polls get deterministic addresses.",
+  "source": [
+   ["programs/poe/src/lib.rs L37-L44 (make_estimate: midpoint and uncertainty)", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/lib.rs#L37-L44"],
+   ["programs/poe/src/contexts/create_poll.rs L21 (poll PDA = [\"poll\", num_polls le bytes])", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/create_poll.rs#L21"],
+   ["programs/poe/src/contexts/register_user.rs L16 (user PDA = [\"user\", wallet])", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/register_user.rs#L16"]
+  ],
+  "flow": "tests/devnet/poe-solana.mjs",
+  "log": "tests/devnet/logs/poe-solana-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   ["register_user (mints 1000 POEKEN to the new user)", "xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"],
+   ["create_poll (poll #0)", "2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"],
+   ["make_estimate 30..70 → crowd estimate 50%", "2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD"]
+  ],
+  "negative": [
+   "register_user a second time for the same wallet is rejected (user PDA already in use, custom program error 0x0)",
+   "make_estimate with lower 70 > upper 30 is rejected (u16 underflow in upper-lower: program failed to complete)"
+  ],
+  "ui_check": "The hosted app was loaded headless: the home list shows the test poll with 50%, 1 forecaster, 1 estimate, and /poll/?id=0 shows the poll detail and its estimate history, read from devnet.",
+  "limits": "Resolving polls and collecting points need the poll's resolver; not exercised in this run."
+ },
+ {
+  "slug": "picassol-hackathon",
+  "name": "Picassol (on-chain pixel canvas)",
+  "lesson": "/explore/picassol-hackathon/",
+  "app": "/dapps/picassol-hackathon/",
+  "fork": "https://github.com/Blockchains/picassol-hackathon",
+  "commit": "40b6e480b3babeae8689452cfede52e946f6c617",
+  "program": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
+  "app_kind": "The fork's own Next.js 12 frontend (frontend/), static export on devnet. Only changes: base path, devnet RPC, this program ID, and a 0-SOL fee on recolouring. Its MongoDB points API (pages/api) needs the author's database and is not hosted, so the points counter stays at 0.",
+  "learn": "Each pixel of a 200×200 canvas is its own account at a PDA seeded by [\"pixel\", x, y]: create_pixel validates 0–199 coordinates and initialises it, and update_pixel re-derives the same PDA from the stored x, y and bump, so anyone can recolour a pixel but nobody can forge its address.",
+  "source": [
+   ["Picassol/programs/picassol/src/lib.rs L10-L28 (bounds check)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L10-L28"],
+   ["Picassol/programs/picassol/src/lib.rs L109 (pixel PDA seeds)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L109"],
+   ["Picassol/programs/picassol/src/lib.rs L122-L123 (update re-derives PDA with stored bump)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L122-L123"]
+  ],
+  "flow": "tests/devnet/picassol-hackathon.mjs",
+  "log": "tests/devnet/logs/picassol-hackathon-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   ["create_pixel (128,152) rgb(153,69,255)", "2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM"],
+   ["update_pixel → rgb(20,241,149), read back from the account", "37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa"]
+  ],
+  "negative": [
+   "create_pixel at x=200 is rejected with InvalidXCoordinate",
+   "create_pixel on an existing pixel is rejected (account already initialised)"
+  ],
+  "ui_check": "The hosted app was loaded headless: the canvas, colour picker and wallet button render with no page errors; the bundle is built against api.devnet.solana.com and this program ID. Drawing needs a connected wallet.",
+  "limits": "Points/leaderboard need the author's MongoDB backend (not hosted)."
+ }
+]
