@@ -1,0 +1,71 @@
+{
+ "slug": "friendstake",
+ "cluster": "devnet",
+ "program": "peer_to_peer_betting",
+ "idl": "idl.json",
+ "devnet": "s9S66SyufvxbkshHCAZZKhcaAFHrYL2s6RS85KfJsZi",
+ "deploy_tx": "4u8Rep9SQXnDVXzrnm2Mo5DYqA8E5zsMKPX79JLFT8TiM8YGYVLVqgVm1VfiujR9f3ssV1Nfa1umt97NDMrRK9kw",
+ "built": "anchor build (anchor-cli 0.29.0, solana 1.18.26) of programs/peer-to-peer-betting at 0364ee3 (anchor-lang 0.29.0), with declare_id set to this program's keypair; IDL is the fork's committed app/friendstake/web/programs/peer_to_peer_betting.ts IDL with this address",
+ "sigs": [
+  {
+   "label": "fund M 0.07, O 0.035, J 0.01, X 0.01 SOL",
+   "sig": "53euSkD7YTp7Vfmkk2EZgmZeZLsRtRS3aQYnXdbJryVWTtidpPYK5NNaHQnQJnAQz4cx9mnGY3SzTL4WybWjMgmw"
+  },
+  {
+   "label": "M makes bet \"match\" against O with J as judge, staking 0.01 SOL",
+   "sig": "4UAYWN4iG2yYffhjthLjRHXZQPhUvG8fEjsE1Aq58kaLreShw1Vp8zjTq4oNMH7kv162p8mdjeiu8hBauAWYoz7c"
+  },
+  {
+   "label": "O takes the bet, matching 0.01 SOL",
+   "sig": "3mKtbQFDyxtCeVFxq3395dbioN2dvCk7Uh2wDesDT9iGpUfomM1ErDYVejCxw1KomZ67BLpeuX2eLkbupVhLLVQy"
+  },
+  {
+   "label": "J settles the bet for the taker (winner = 2)",
+   "sig": "eTEtTAf9vkm3mSptru4YsChf2NhgH8LndmcDxxPBpZZArwrukMsezf8KBKgTa9ZjGAs8JJPey2nMeLbkNSZHHDk"
+  },
+  {
+   "label": "M makes bet \"open\" (0.01 SOL), not yet taken",
+   "sig": "34dqSanZA6AaQZ8Fia5KQKYY55wAeG5wkk21VhcDJnh8srrSY4wsUQN19NfZYUbFz5xqNVm37AVExRxD76xQH4EX"
+  },
+  {
+   "label": "BUG: X calls cancel on M's open bet, passing itself as maker (cancel never checks maker against bet.maker)",
+   "sig": "5mnT3TqJqkAN3jC4JngV68XwYkCa2CKjy53idspVSUa7CGTd3KxaaLxutpK9tA658exMyqiXXddix8Peyor8XgUj"
+  },
+  {
+   "label": "M makes bet \"decl\" (0.01 SOL)",
+   "sig": "62aCUhMSM7BMawhW67YwSVoY36rUCZTqdb4sDrDxQGR87HwpMvdH27ZStUGj6S9nXDe3km4ax9qiDS2XZ8UyJobT"
+  },
+  {
+   "label": "BUG: O declines but passes itself as maker (decline never checks maker against bet.maker)",
+   "sig": "3xadSJkKNtWz2KjSV9PGSeuULxFBea7U5bJqyrKXUnhiztUMAgC8BAzTJR3GyJ1zw5U8SjNYfMj5154fg7hLu8n"
+  },
+  {
+   "label": "M makes bet \"judge\" (0.01 SOL)",
+   "sig": "BAYuXYHJugs6tthskRC2Uw4QbAT4d56CULXUCpCWkTnYdfNsCsew2vHFsmQE1WyfN6MJm6SGy3YqfVJf8TcKKVp"
+  },
+  {
+   "label": "O takes bet \"judge\"",
+   "sig": "4hh4rA2puc5m7SMG91Wa3QGGVomKdX6gwpngyDs299KbfUwQQMXj8moDvE5zGi6fhq5PpHcbxermJv85FMvXtaws"
+  },
+  {
+   "label": "BUG: J settles \"maker wins\" but passes its own wallet as maker (settle_bet never checks maker/taker against the bet)",
+   "sig": "bdtntukmRAj1NshEeBJEWzYhCSBcectWsmhaEy3jJ5vFdfhTKNsdd7n59xpT3tdkzmLTkpfutVhyy8vrfaZ98KP"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "mY2DWysjDv954rY8tQ3vKoWyhZB9vanytm2tKgxAxEVF7Rz2QdHTkxYmjRKHCWQJ51ZCwy1wvG4ggGTBLsoFv39"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "5fjZmoENh9oqH9Zj6LFHb7b3buJZ1X9m2dK8wpa4HMZnF5hhfQqh9XrBrPxpBv7BsUTP3cBhYjao5ymLHspqXwXH"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "5ZQbnU5tbbZ9J2892XG4vYKWLefYCPHcjfittBjpLmt8z3nbtjCf5SgTr1zJVYgVcEqTc2MpkuWBfEgA6xHMJNDt"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "4f7xBbHF2Xy4aZE8aBhNNiTcZzaoxZGBTE69YDUojMmwn9XNPBx9rndVRzGBnMwYvDkjKH1frwhXjJFZXKNGrrJF"
+  }
+ ]
+}

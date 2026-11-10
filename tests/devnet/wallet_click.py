@@ -473,6 +473,29 @@ def run(pg):
             log(step='verify_page', text=body(pg)[:600])
             pg.goto(base + 'student/', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 12000)
             log(step='student_page', text=body(pg)[:600])
+    elif app == 'friendstake':  # test wallet is maker, opponent and judge: make, take, "Taker wins"; then a second bet made and cancelled
+        def btn(rx): return pg.get_by_role('button', name=re.compile(rx, re.I))
+        tag = str(int(time.time()))[-4:]
+        def make(desc):
+            pg.goto(base + 'bet/', wait_until='domcontentloaded'); pump(pg, 6000); connect(pg); pump(pg, 6000)
+            btn(r'^Create Bet$').first.click(); pump(pg, 1500)
+            pg.get_by_placeholder('Opponent').fill(ADDR); pg.get_by_placeholder('Judge').fill(ADDR)
+            pg.get_by_placeholder('Description').fill(desc); pg.get_by_placeholder('Amount').fill('0.01')
+            n = len(SENT); btn(r'^Create$').first.click(); pump(pg, 25000); log(step=f'make_via_ui ({desc}, 0.01 SOL)', sent=sigs_new(n))
+        def open_bet(desc):
+            pg.goto(base + f'list-bets/view/?a={ADDR}', wait_until='domcontentloaded'); pump(pg, 6000); connect(pg); pump(pg, 12000)
+            row = pg.locator('tr', has_text=desc).first
+            href = row.locator('a[href*="bet/view"]').first.get_attribute('href'); log(step=f'list shows {desc}', href=href)
+            row.locator('a[href*="bet/view"]').first.click(); pump(pg, 12000); connect(pg); pump(pg, 8000)
+        if len(sys.argv) > 4:  # resume: cancel an existing open bet by its address (argv[4]), e.g. after an RPC 503
+            pg.goto(base + f'bet/view/?a={sys.argv[4]}', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 10000)
+            n = len(SENT); btn(r'^Cancel Bet$').first.click(); pump(pg, 25000); log(step='cancel_via_ui (resumed)', bet=sys.argv[4], sent=sigs_new(n)); return
+        make(f'ui-{tag}'); open_bet(f'ui-{tag}')
+        n = len(SENT); btn(r'^Take Bet$').first.click(); pump(pg, 25000); log(step='take_via_ui', sent=sigs_new(n))
+        pg.reload(); pump(pg, 8000); connect(pg); pump(pg, 8000)
+        n = len(SENT); btn(r'^Taker wins$').first.click(); pump(pg, 25000); log(step='settle_taker_wins_via_ui', sent=sigs_new(n))
+        make(f'uc-{tag}'); open_bet(f'uc-{tag}')
+        n = len(SENT); btn(r'^Cancel Bet$').first.click(); pump(pg, 25000); log(step='cancel_via_ui', sent=sigs_new(n))
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

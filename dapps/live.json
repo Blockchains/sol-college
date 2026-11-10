@@ -1493,5 +1493,162 @@
    "Revocation needs the university authority (has_one), which the script confirms. Revoked credentials reject new signatures and verify as false.",
    "One university per wallet, because the PDA is seeded only by the authority. Credential metadata is stored as plain text on chain; there is no privacy layer despite the \"selective disclosure\" naming."
   ]
+ },
+ {
+  "slug": "friendstake",
+  "name": "Friendstake (peer-to-peer bets with a named judge)",
+  "lesson": "/explore/friendstake/",
+  "app": "/dapps/friendstake/",
+  "fork": "https://github.com/Blockchains/friendstake",
+  "commit": "0364ee38a136df30647abf88a35c753358cff4ce",
+  "program": "s9S66SyufvxbkshHCAZZKhcaAFHrYL2s6RS85KfJsZi",
+  "app_kind": "The fork's own Nx/Next.js app (app/friendstake/web) exported as static pages with this devnet program ID. The changes: static export with basePath; the three [address] pages moved to .../view/?a=<address> because static export can't pre-render unknown accounts; the basePath written into the plain See More link; and the unused example API route removed.",
+  "learn": "A maker opens a bet naming an opponent and a judge. The bet is a PDA from [\"bet\", maker, opponent, judge, description], and the stake goes into a separate system-owned vault PDA [\"vault\", bet]. Before the opponent matches the stake, the maker can cancel or the opponent can decline, and the stake goes back. Once both stakes are in, only the judge can settle: maker wins, taker wins, or a refund to both. The vault signs its outgoing transfers with its PDA seeds.",
+  "source": [
+   [
+    "lib.rs L19-L46 instruction entry points",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/lib.rs#L19-L46"
+   ],
+   [
+    "make.rs bet + vault PDAs and the deposit",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/instructions/make.rs#L7-L63"
+   ],
+   [
+    "take.rs has_one opponent/judge",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/instructions/take.rs#L6-L50"
+   ],
+   [
+    "cancel.rs (no maker check)",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/instructions/cancel.rs#L7-L70"
+   ],
+   [
+    "decline.rs (no maker check)",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/instructions/decline.rs#L6-L60"
+   ],
+   [
+    "settle_bet.rs (maker/taker unchecked)",
+    "https://github.com/Blockchains/friendstake/blob/0364ee38a136df30647abf88a35c753358cff4ce/programs/peer-to-peer-betting/src/instructions/settle_bet.rs#L9-L115"
+   ]
+  ],
+  "flow": "tests/devnet/friendstake.mjs",
+  "log": "tests/devnet/logs/friendstake-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… on /bet/: Create Bet with itself as opponent and judge, description 'ui-2998', 0.01 SOL (make)",
+    "45riw2R1R2CpBzUfyjPvQ7xEMBtCYrtweMzgDDjUCpt8bLrfqBfsX4tGDSs5SvRwZiNKFymQnMGUUvMQGRzVcqXZ"
+   ],
+   [
+    "UI: /list-bets/ lists it; its See More link opens /bet/view/?a=G2kHxJ96…; Take Bet",
+    "4kRJC62tCUpYVynaxGppzKxceJQFAwk7C8kZFKVawN4cMxb1EiroZWRh52Ho2RP4ksKuavMTcECMYBdfY4cJ3CXx"
+   ],
+   [
+    "UI: Taker wins (settle_bet winner = 2)",
+    "38iiGgMyuNqFdnTS3DjqKEFJD2wrcqUBuM2dgB2PQ2kE4ZUjpthZYV1XFvHS6gDKvbVhyURCsf1iubvVDov1oJuC"
+   ],
+   [
+    "UI: Create Bet 'uc-2998', 0.01 SOL",
+    "2ab61qXLvr5XZd3JuSLub5cdpGPpA3pZgrG4uYCConJQPtyKKCJ87vC5mzq3BBr3MR2pmUepG6kknGkDViqEzKst"
+   ],
+   [
+    "UI: open bet CRxxHj57… and Cancel Bet (refund to the maker)",
+    "RoeuNU34MyqFAb6eFqPENv5MpRX3h6MQt11ZnwhH25tv8AScQuk5SwyMZdAFAJavk6Qgd11YuLrDUXJgFewP9m1"
+   ],
+   [
+    "Script: fund M 0.07, O 0.035, J 0.01, X 0.01 SOL",
+    "53euSkD7YTp7Vfmkk2EZgmZeZLsRtRS3aQYnXdbJryVWTtidpPYK5NNaHQnQJnAQz4cx9mnGY3SzTL4WybWjMgmw"
+   ],
+   [
+    "Script: M makes bet \"match\" against O with J as judge, staking 0.01 SOL",
+    "4UAYWN4iG2yYffhjthLjRHXZQPhUvG8fEjsE1Aq58kaLreShw1Vp8zjTq4oNMH7kv162p8mdjeiu8hBauAWYoz7c"
+   ],
+   [
+    "Script: O takes the bet, matching 0.01 SOL",
+    "3mKtbQFDyxtCeVFxq3395dbioN2dvCk7Uh2wDesDT9iGpUfomM1ErDYVejCxw1KomZ67BLpeuX2eLkbupVhLLVQy"
+   ],
+   [
+    "Script: J settles the bet for the taker (winner = 2)",
+    "eTEtTAf9vkm3mSptru4YsChf2NhgH8LndmcDxxPBpZZArwrukMsezf8KBKgTa9ZjGAs8JJPey2nMeLbkNSZHHDk"
+   ],
+   [
+    "Script: M makes bet \"open\" (0.01 SOL), not yet taken",
+    "34dqSanZA6AaQZ8Fia5KQKYY55wAeG5wkk21VhcDJnh8srrSY4wsUQN19NfZYUbFz5xqNVm37AVExRxD76xQH4EX"
+   ],
+   [
+    "Script: BUG: X calls cancel on M's open bet, passing itself as maker (cancel never checks maker against bet.maker)",
+    "5mnT3TqJqkAN3jC4JngV68XwYkCa2CKjy53idspVSUa7CGTd3KxaaLxutpK9tA658exMyqiXXddix8Peyor8XgUj"
+   ],
+   [
+    "Script: M makes bet \"decl\" (0.01 SOL)",
+    "62aCUhMSM7BMawhW67YwSVoY36rUCZTqdb4sDrDxQGR87HwpMvdH27ZStUGj6S9nXDe3km4ax9qiDS2XZ8UyJobT"
+   ],
+   [
+    "Script: BUG: O declines but passes itself as maker (decline never checks maker against bet.maker)",
+    "3xadSJkKNtWz2KjSV9PGSeuULxFBea7U5bJqyrKXUnhiztUMAgC8BAzTJR3GyJ1zw5U8SjNYfMj5154fg7hLu8n"
+   ],
+   [
+    "Script: M makes bet \"judge\" (0.01 SOL)",
+    "BAYuXYHJugs6tthskRC2Uw4QbAT4d56CULXUCpCWkTnYdfNsCsew2vHFsmQE1WyfN6MJm6SGy3YqfVJf8TcKKVp"
+   ],
+   [
+    "Script: O takes bet \"judge\"",
+    "4hh4rA2puc5m7SMG91Wa3QGGVomKdX6gwpngyDs299KbfUwQQMXj8moDvE5zGi6fhq5PpHcbxermJv85FMvXtaws"
+   ],
+   [
+    "Script: BUG: J settles \"maker wins\" but passes its own wallet as maker (settle_bet never checks maker/taker against the bet)",
+    "bdtntukmRAj1NshEeBJEWzYhCSBcectWsmhaEy3jJ5vFdfhTKNsdd7n59xpT3tdkzmLTkpfutVhyy8vrfaZ98KP"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "mY2DWysjDv954rY8tQ3vKoWyhZB9vanytm2tKgxAxEVF7Rz2QdHTkxYmjRKHCWQJ51ZCwy1wvG4ggGTBLsoFv39"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "5fjZmoENh9oqH9Zj6LFHb7b3buJZ1X9m2dK8wpa4HMZnF5hhfQqh9XrBrPxpBv7BsUTP3cBhYjao5ymLHspqXwXH"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "5ZQbnU5tbbZ9J2892XG4vYKWLefYCPHcjfittBjpLmt8z3nbtjCf5SgTr1zJVYgVcEqTc2MpkuWBfEgA6xHMJNDt"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "4f7xBbHF2Xy4aZE8aBhNNiTcZzaoxZGBTE69YDUojMmwn9XNPBx9rndVRzGBnMwYvDkjKH1frwhXjJFZXKNGrrJF"
+   ]
+  ],
+  "negative": [
+   [
+    "M makes the same bet again (same PDA)",
+    "Allocate: account Address { address: HZtdbMGRzSxcMQMJBfE1MWP1sDj6ovpLx5SQPQRcve9L, base: None } already in use"
+   ],
+   [
+    "X takes the bet (only the named opponent can)",
+    "ConstraintHasOne"
+   ],
+   [
+    "J settles before O has taken the bet",
+    "PlayersNotDeposited"
+   ],
+   [
+    "M cancels after O has taken it",
+    "TakerAlreadyDeposited"
+   ],
+   [
+    "O declines after taking it",
+    "TakerAlreadyDeposited"
+   ],
+   [
+    "X settles the bet (only the judge can)",
+    "ConstraintHasOne"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py friendstake (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "BUG: cancel never checks that the signing maker is bet.maker; the bet PDA is re-derived from the stored fields, so any wallet passes. The script's outsider X cancelled M's open bet and received M's 0.01 SOL stake plus the bet account rent (X +0.01141232 SOL, tx 5mnT3TqJ…).",
+   "BUG: decline doesn't tie the maker account to bet.maker either, so the opponent can decline and send the maker's refund and the rent to itself (O +0.01141232 SOL, tx 3xadSJkK…).",
+   "BUG: settle_bet takes maker and taker as plain accounts with no check against the bet, so the judge can pay the whole pot and the rent to any wallet, including its own (J +0.02141232 SOL, tx bdtntukm…), instead of only choosing between the two players.",
+   "There is no deadline: a matched bet stays locked until the judge settles it, and the judge has no stake.",
+   "The description is a PDA seed and is stored in 32 bytes, so it must be at most 32 bytes. The amount has no minimum, and the vault is drained with all its lamports.",
+   "The app's cluster defaults to devnet (clusterApiUrl('devnet'), the public endpoint, which can rate-limit). The cluster picker saves the choice in localStorage."
+  ]
  }
 ]
