@@ -79,6 +79,11 @@ P
      cd "$src" && sed -i "s/CXE5bjWmUv7QAivvg6gjZTvZ246F99mCaKTNKoAuCCDc/s9S66SyufvxbkshHCAZZKhcaAFHrYL2s6RS85KfJsZi/g" app/friendstake/web/components/bet/bet-data-access.tsx
      python3 "$(dirname "$out")/../../tests/devnet/patches/friendstake.py" .
      cd app/friendstake && npm install --legacy-peer-deps >/dev/null && npx nx build web --skip-nx-cache && cp -r dist/web/.next/. "$out/";;  # lockfile lacks @coral-xyz/anchor, so npm ci refuses
+  devos-decentralized-voting) # fork's own Next.js app (devos-app) as a static export on the program deployed from backend/programs/backend
+     cd "$src" && sed -i "s/EP24aYmcChzvMHYSmi4SzEcuGLBm8xJJ6ijsXkv4Naj3/2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2/g" devos-app/utils/constants.ts
+     python3 "$(dirname "$out")/../../tests/devnet/patches/devos-decentralized-voting.py" .
+     # utils/solana.ts imports @project-serum/anchor but no package.json in the fork declares it; 0.26.0 matches its Program(idl, programId, provider) calls
+     cd devos-app && npm ci >/dev/null && npm i --no-save --legacy-peer-deps @project-serum/anchor@0.26.0 >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

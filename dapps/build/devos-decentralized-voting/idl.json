@@ -1,0 +1,444 @@
+{
+ "version": "0.1.0",
+ "name": "devos",
+ "instructions": [
+  {
+   "name": "createElection",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": true,
+     "isSigner": true
+    },
+    {
+     "name": "systemProgram",
+     "isMut": false,
+     "isSigner": false
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    },
+    {
+     "name": "maxPositions",
+     "type": "u32"
+    },
+    {
+     "name": "maxCandidatesPerPosition",
+     "type": "u32"
+    },
+    {
+     "name": "voters",
+     "type": {
+      "vec": "publicKey"
+     }
+    }
+   ]
+  },
+  {
+   "name": "addPosition",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    },
+    {
+     "name": "positionName",
+     "type": "string"
+    }
+   ]
+  },
+  {
+   "name": "addCandidate",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    },
+    {
+     "name": "positionIndex",
+     "type": "u32"
+    },
+    {
+     "name": "candidateName",
+     "type": "string"
+    }
+   ]
+  },
+  {
+   "name": "addVoter",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": true,
+     "isSigner": true
+    },
+    {
+     "name": "systemProgram",
+     "isMut": false,
+     "isSigner": false
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    },
+    {
+     "name": "voter",
+     "type": "publicKey"
+    }
+   ]
+  },
+  {
+   "name": "vote",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "voter",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    },
+    {
+     "name": "authority",
+     "type": "publicKey"
+    },
+    {
+     "name": "positionIndex",
+     "type": "u32"
+    },
+    {
+     "name": "candidateIndex",
+     "type": "u32"
+    }
+   ]
+  },
+  {
+   "name": "tallyVotes",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": false,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    }
+   ]
+  },
+  {
+   "name": "getWinner",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    }
+   ]
+  },
+  {
+   "name": "toggleElection",
+   "accounts": [
+    {
+     "name": "election",
+     "isMut": true,
+     "isSigner": false
+    },
+    {
+     "name": "authority",
+     "isMut": false,
+     "isSigner": true
+    }
+   ],
+   "args": [
+    {
+     "name": "electionName",
+     "type": "string"
+    }
+   ]
+  }
+ ],
+ "accounts": [
+  {
+   "name": "Election",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "authority",
+      "type": "publicKey"
+     },
+     {
+      "name": "electionName",
+      "type": "string"
+     },
+     {
+      "name": "positions",
+      "type": {
+       "vec": {
+        "defined": "Position"
+       }
+      }
+     },
+     {
+      "name": "maxPositions",
+      "type": "u32"
+     },
+     {
+      "name": "maxCandidatesPerPosition",
+      "type": "u32"
+     },
+     {
+      "name": "voters",
+      "type": {
+       "vec": "publicKey"
+      }
+     },
+     {
+      "name": "votes",
+      "type": {
+       "vec": {
+        "defined": "VoteRecord"
+       }
+      }
+     },
+     {
+      "name": "winners",
+      "type": {
+       "vec": {
+        "defined": "Winner"
+       }
+      }
+     },
+     {
+      "name": "isOpen",
+      "type": "bool"
+     }
+    ]
+   }
+  }
+ ],
+ "types": [
+  {
+   "name": "Position",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "name",
+      "type": "string"
+     },
+     {
+      "name": "candidates",
+      "type": {
+       "vec": {
+        "defined": "Candidate"
+       }
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "Candidate",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "name",
+      "type": "string"
+     },
+     {
+      "name": "voteCount",
+      "type": "u64"
+     }
+    ]
+   }
+  },
+  {
+   "name": "VoteRecord",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "voter",
+      "type": "publicKey"
+     },
+     {
+      "name": "positionIndex",
+      "type": "u32"
+     },
+     {
+      "name": "candidateIndex",
+      "type": "u32"
+     }
+    ]
+   }
+  },
+  {
+   "name": "Winner",
+   "type": {
+    "kind": "struct",
+    "fields": [
+     {
+      "name": "positionName",
+      "type": "string"
+     },
+     {
+      "name": "candidateNames",
+      "type": {
+       "vec": "string"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "name": "VoteError",
+   "type": {
+    "kind": "enum",
+    "variants": [
+     {
+      "name": "InvalidPosition"
+     },
+     {
+      "name": "InvalidCandidate"
+     },
+     {
+      "name": "VoterNotAllowed"
+     },
+     {
+      "name": "AlreadyVoted"
+     },
+     {
+      "name": "Unauthorized"
+     },
+     {
+      "name": "ElectionIsClosed"
+     }
+    ]
+   }
+  },
+  {
+   "name": "GetWinnerError",
+   "type": {
+    "kind": "enum",
+    "variants": [
+     {
+      "name": "ElectionIsOpen"
+     }
+    ]
+   }
+  }
+ ],
+ "errors": [
+  {
+   "code": 6000,
+   "name": "InvalidPosition",
+   "msg": "The position is invalid."
+  },
+  {
+   "code": 6001,
+   "name": "MaxCandidatesReached",
+   "msg": "The maximum number of candidates has been reached."
+  },
+  {
+   "code": 6002,
+   "name": "MaxPositionsReached",
+   "msg": "The maximum number of positions has been reached."
+  },
+  {
+   "code": 6003,
+   "name": "PositionAlreadyAdded",
+   "msg": "This position has already been added."
+  },
+  {
+   "code": 6004,
+   "name": "CandidateAlreadyAdded",
+   "msg": "This candidate has already been added."
+  },
+  {
+   "code": 6005,
+   "name": "VoterAlreadyAdded",
+   "msg": "This voter has already been added."
+  },
+  {
+   "code": 6006,
+   "name": "Unauthorized",
+   "msg": "This user is unauthorized."
+  },
+  {
+   "code": 6007,
+   "name": "ElectionIsOpen",
+   "msg": "This election is open, no candidates or positions can be added."
+  }
+ ],
+ "metadata": {
+  "address": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2"
+ }
+}
