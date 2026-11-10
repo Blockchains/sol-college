@@ -1,0 +1,286 @@
+{
+ "title": "Friendstake: peer-to-peer bets with a named judge and a PDA-signed vault",
+ "summary": "A maker opens a bet against a named opponent with a named judge and stakes SOL into a vault PDA. The opponent matches the stake or declines, and only the judge can pay out: maker wins, taker wins, or a refund to both.",
+ "what": "Friendstake is a two-party escrow with an arbiter. `make` creates a **Bet** PDA at `[\"bet\", maker, opponent, judge, description]` recording all three parties and the stake, and moves the maker's stake into a separate **vault** PDA `[\"vault\", bet]`, a plain system account that holds only lamports. The named opponent can `take`, matching the stake into the vault, or `decline` while it's still open. The maker can `cancel` until the opponent takes it. Once both stakes are in, only the named judge can `settle_bet`: winner 1 (maker) or 2 (taker) gets the whole vault, and anything else refunds both. Each payout is a System Program transfer that the vault signs with its PDA seeds, and the Bet account is closed to the maker. The `has_one` checks on opponent and judge work. The **maker and payee accounts are never checked**, and the devnet run shows three wallets taking money that wasn't theirs.",
+ "app_note": "The fork's own Nx/Next.js app (app/friendstake/web) as a static export with this devnet program ID. Per-bet pages are `/bet/view/?a=<bet address>` (static export can't pre-render unknown accounts). The bet form is at [/dapps/friendstake/bet/](/dapps/friendstake/bet/); the nav shows only **Pending Bets**. The buttons enable only for the wallet in the right role, so with one wallet, name yourself as opponent and judge too, as our click test did. Script: [tests/devnet/friendstake.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/friendstake.mjs).",
+ "try_steps": [
+  {
+   "do": "Open [the bet page](/dapps/friendstake/bet/) and connect Phantom on **devnet** (about 0.05 devnet SOL). Press **Create Bet**: Opponent and Judge = your own address (or friends' addresses), Description a short unique text (32 bytes at most, such as `ui-1`), Amount `0.01`. Press **Create**.",
+   "see": "A `make` transaction: the Bet account is created (you pay its rent) and 0.01 SOL moves into the vault PDA `[\"vault\", bet]`. Repeating the same four inputs fails with \"already in use\": they are the bet's address.",
+   "ran": [
+    [
+     "Test wallet m4Ac… (also opponent and judge): Create Bet \"ui-2998\", 0.01 SOL",
+     "45riw2R1R2CpBzUfyjPvQ7xEMBtCYrtweMzgDDjUCpt8bLrfqBfsX4tGDSs5SvRwZiNKFymQnMGUUvMQGRzVcqXZ"
+    ]
+   ]
+  },
+  {
+   "do": "Open **Pending Bets**, find your description, press **See More**, then **Take Bet** (enabled only for the opponent).",
+   "see": "A `take` transaction: another 0.01 SOL goes into the vault, which now holds 0.02 SOL, and the bet is marked `players_deposited`. Cancel and Decline now fail with TakerAlreadyDeposited.",
+   "ran": [
+    [
+     "Pending Bets → See More (/bet/view/?a=G2kHxJ96…) → Take Bet",
+     "4kRJC62tCUpYVynaxGppzKxceJQFAwk7C8kZFKVawN4cMxb1EiroZWRh52Ho2RP4ksKuavMTcECMYBdfY4cJ3CXx"
+    ]
+   ]
+  },
+  {
+   "do": "On the same page press **Taker wins** (enabled only for the judge).",
+   "see": "A `settle_bet(2)` transaction: the vault signs a transfer of its whole balance (0.02 SOL) to the opponent, and the Bet account is closed with its rent returned to the maker. **Maker wins** would pay the maker; **Refund Bet** returns 0.01 SOL to each.",
+   "ran": [
+    [
+     "Taker wins",
+     "38iiGgMyuNqFdnTS3DjqKEFJD2wrcqUBuM2dgB2PQ2kE4ZUjpthZYV1XFvHS6gDKvbVhyURCsf1iubvVDov1oJuC"
+    ]
+   ]
+  },
+  {
+   "do": "Create a second bet (new description, 0.01 SOL), open it and press **Cancel Bet** (enabled only for the maker).",
+   "see": "A `cancel` transaction: the vault returns the 0.01 SOL and the Bet account closes, with its rent back to you. (**Decline Bet**, as the opponent, does the same but is started by the opponent.)",
+   "ran": [
+    [
+     "Create Bet \"uc-2998\", 0.01 SOL",
+     "2ab61qXLvr5XZd3JuSLub5cdpGPpA3pZgrG4uYCConJQPtyKKCJ87vC5mzq3BBr3MR2pmUepG6kknGkDViqEzKst"
+    ],
+    [
+     "Cancel Bet on CRxxHj57…",
+     "RoeuNU34MyqFAb6eFqPENv5MpRX3h6MQt11ZnwhH25tv8AScQuk5SwyMZdAFAJavk6Qgd11YuLrDUXJgFewP9m1"
+    ]
+   ],
+   "ran_note": "Decline and Refund Bet were not clicked; decline was run by script."
+  }
+ ],
+ "diagram": "maker ─ make(description, amount) ─▶ Bet PDA [\"bet\", maker, opponent, judge, description]   (program-owned data)\n                                    maker ──amount──▶ Vault PDA [\"vault\", bet]                   (system-owned, lamports only)\nopponent (has_one) ─ take ─▶ opponent ──amount──▶ Vault ; players_deposited = true\n   before take:  maker ─ cancel ─▶ Vault ──amount──▶ \"maker\"   (Bet closed to \"maker\")\n                 opponent ─ decline ─▶ Vault ──amount──▶ \"maker\"\n   after take:   judge (has_one) ─ settle_bet(1 | 2 | other)\n                     1 ─▶ Vault ──all──▶ \"maker\"     2 ─▶ Vault ──all──▶ \"taker\"     other ─▶ amount each to \"maker\" and \"taker\"\n                 (vault signs with [\"vault\", bet, vault_bump]; Bet closed to \"maker\")\n\"maker\"/\"taker\" in quotes: accounts the caller passes, never compared with the Bet",
+ "accounts": [
+  [
+   "Bet",
+   "PDA `[\"bet\", maker, opponent, judge, description]`",
+   "Maker, opponent, judge, amount (lamports), description (≤32 bytes), players_deposited, bump, vault_bump"
+  ],
+  [
+   "Vault",
+   "PDA `[\"vault\", bet]`, owned by the System Program",
+   "Only lamports: the maker's stake, then both stakes. It can send SOL only through a System transfer signed with its seeds"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`make`: the bet's identity is its four inputs",
+   "refs": [
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/make.rs",
+     "a": 5,
+     "b": 39
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/make.rs",
+     "a": 41,
+     "b": 64
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/state/mod.rs",
+     "a": 3,
+     "b": 17
+    }
+   ],
+   "steps": [
+    "`init` with seeds `bet, maker, opponent, judge, description`, so the same four values can only make one live bet (our script's repeat got \"already in use\"). Each seed may be at most 32 bytes, which is also the space reserved for the description.",
+    "`vault` is a `SystemAccount` at `[\"vault\", bet]`. It's never initialized: the first transfer into it creates it as a plain system account. Anchor gives both bumps in `ctx.bumps` and they're stored for later.",
+    "`deposit` is an ordinary System transfer signed by the maker. Opponent and judge are `UncheckedAccount`s whose keys are just recorded."
+   ]
+  },
+  {
+   "name": "`take`: only the named opponent",
+   "refs": [
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/take.rs",
+     "a": 5,
+     "b": 37
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/take.rs",
+     "a": 39,
+     "b": 54
+    }
+   ],
+   "steps": [
+    "The bet is re-derived from its own stored fields (`seeds = [..., bet.maker, bet.opponent, bet.judge, bet.description]`, `bump = bet.bump`), and `has_one = opponent` + `has_one = judge` require the signer to be the stored opponent. Our script's outsider X got **ConstraintHasOne**.",
+    "It sets `players_deposited = true` and transfers `bet.amount` from the opponent to the vault. It doesn't check whether the bet was already taken (Exercise 5)."
+   ]
+  },
+  {
+   "name": "`cancel` and `decline`: refunds with the maker unchecked",
+   "refs": [
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/cancel.rs",
+     "a": 6,
+     "b": 39
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/cancel.rs",
+     "a": 41,
+     "b": 80
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/decline.rs",
+     "a": 5,
+     "b": 36
+    }
+   ],
+   "steps": [
+    "Both refuse after `take` with **TakerAlreadyDeposited** (recorded for both).",
+    "The refund is a System transfer *from the vault*, so the program signs as the vault: `CpiContext::new_with_signer` with `[\"vault\", bet, vault_bump]`. As the comment says, \"the vault needs to sign here, not the bet\".",
+    "**Bug:** `Cancel` has `has_one = opponent, judge` but no `has_one = maker`, and the seeds use the *stored* `bet.maker`, so any signer can be \"maker\". On devnet, outsider X cancelled M's open bet and received the stake plus the Bet rent: **X +0.01141232 SOL** (5mnT3TqJ…).",
+    "**Bug:** `Decline` takes `maker` as an `UncheckedAccount` with no link to `bet.maker`, so the opponent can send the refund and rent to itself: **O +0.01141232 SOL** (3xadSJkK…)."
+   ]
+  },
+  {
+   "name": "`settle_bet`: only the judge, but any payee",
+   "refs": [
+    {
+     "path": "programs/peer-to-peer-betting/src/lib.rs",
+     "a": 39,
+     "b": 45
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/settle_bet.rs",
+     "a": 8,
+     "b": 40
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/settle_bet.rs",
+     "a": 42,
+     "b": 77
+    },
+    {
+     "path": "programs/peer-to-peer-betting/src/instructions/settle_bet.rs",
+     "a": 79,
+     "b": 114
+    }
+   ],
+   "steps": [
+    "`winner` 1 or 2 → `select_winner`; anything else → `refund_bet`. Both need `players_deposited`: settling early got **PlayersNotDeposited**.",
+    "`has_one = judge` limits who can settle (X got **ConstraintHasOne**).",
+    "The winner gets `vault.lamports()`, the whole balance, and `refund_bet` sends `bet.amount` to each. `close = maker` returns the Bet rent.",
+    "**Bug:** `maker` and `taker` are any `SystemAccount`s. The judge isn't choosing between the two players but can name any payee. On devnet J settled \"maker wins\" with its own wallet as maker and received the 0.02 SOL pot plus the rent: **J +0.02141232 SOL** (bdtntukm…)."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "a data PDA plus a system-owned vault PDA",
+  "text": "The bet's state and its money live in two different accounts. The Bet PDA (owned by the program) records who may do what. The vault PDA is owned by the System Program and holds only lamports, so the only way to move them is a System transfer, which the program can authorize by signing with the vault's seeds (`invoke_signed` under `CpiContext::new_with_signer`). No private key exists for the vault, and only this program can produce its signature.",
+  "refs": [
+   {
+    "path": "programs/peer-to-peer-betting/src/instructions/cancel.rs",
+    "a": 67,
+    "b": 79,
+    "note": "the vault signs its own refund"
+   },
+   {
+    "path": "programs/peer-to-peer-betting/src/instructions/make.rs",
+    "a": 28,
+    "b": 37,
+    "note": "vault seeds"
+   }
+  ],
+  "more": [
+   "Compare PulseFund, whose campaign account *is* the vault and pays out by editing lamports directly. A system-owned vault means the payout is a normal, explorer-readable System transfer, and the vault needs no rent for data.",
+   "The pattern is only as safe as its account checks. `has_one` on the bet protects *who signs*, but each account that *receives* money needs its own check against the stored fields. Here three of them are missing."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create: the same seeds in TypeScript",
+   "refs": [
+    {
+     "path": "app/friendstake/web/components/bet/bet-data-access.tsx",
+     "a": 143,
+     "b": 187
+    }
+   ],
+   "steps": [
+    "`findProgramAddressSync` builds the bet from `[\"bet\", wallet, opponent, judge, description]` and the vault from `[\"vault\", bet]`, the same as `make.rs`. The amount is SOL × 10⁹.",
+    "The committed file hard-codes the upstream program ID `CXE5bjWm…`; the hosted build talks to the devnet deployment instead (the app's Create Bet transaction 45riw2R1… invokes s9S66Syu…)."
+   ]
+  },
+  {
+   "title": "Every other action reads the Bet first",
+   "refs": [
+    {
+     "path": "app/friendstake/web/components/bet/bet-data-access.tsx",
+     "a": 199,
+     "b": 223
+    },
+    {
+     "path": "app/friendstake/web/components/bet/bet-data-access.tsx",
+     "a": 339,
+     "b": 362
+    }
+   ],
+   "steps": [
+    "Cancel, decline, take and settle `fetch` the Bet and pass **its stored** maker, opponent and judge, so the app always sends the right payees. The bugs above are reachable only by calling the program directly, as our script did.",
+    "In `cancel` the maker must sign, so in practice only the maker's wallet can send that transaction from the app."
+   ]
+  },
+  {
+   "title": "Role buttons and lists by role",
+   "refs": [
+    {
+     "path": "app/friendstake/web/components/bet/bet-ui.tsx",
+     "a": 278,
+     "b": 300
+    },
+    {
+     "path": "app/friendstake/web/components/bet/bet-data-access.tsx",
+     "a": 52,
+     "b": 77
+    }
+   ],
+   "steps": [
+    "Each button is `disabled` unless the connected wallet equals the stored role, which is a UI courtesy, not security.",
+    "The lists filter with `memcmp` at offset 8 (maker), 40 (opponent) or 72 (judge), the field positions after the 8-byte discriminator."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Lock cancel to the real maker",
+   "steps": [
+    "In `cancel.rs` add `has_one = maker` to the `bet` constraints."
+   ],
+   "expect": "Replaying the script, X's cancel of M's open bet fails with ConstraintHasOne instead of paying X 0.01141232 SOL (5mnT3TqJ…), while M's own cancel still works, as the app's Cancel Bet (RoeuNU34…) did."
+  },
+  {
+   "title": "Send declines to the real maker",
+   "steps": [
+    "In `decline.rs` add `has_one = maker` (make `maker` a `SystemAccount` with `mut`)."
+   ],
+   "expect": "The opponent can still decline, but only with the stored maker as the refund target; O passing itself fails with ConstraintHasOne instead of receiving 0.01141232 SOL (3xadSJkK…)."
+  },
+  {
+   "title": "Make the judge pick, not pay",
+   "steps": [
+    "In `settle_bet.rs` add `constraint = maker.key() == bet.maker` and `constraint = taker.key() == bet.opponent` (or `has_one = maker` and an `address = bet.opponent` on taker).",
+    "Reject `winner` values other than 0, 1 and 2 with a custom error instead of treating them all as refund."
+   ],
+   "expect": "J's settle with its own wallet as maker fails, where on devnet it took 0.02141232 SOL (bdtntukm…). The app's Taker wins (38iiGgMy…) still works unchanged."
+  },
+  {
+   "title": "Add a deadline and a timeout refund",
+   "steps": [
+    "Add `deadline: i64` to Bet, set in `make`.",
+    "Add `refund_after_deadline`, callable by either player once `Clock::get()?.unix_timestamp > deadline` and if the judge hasn't settled, returning `amount` to each from the vault."
+   ],
+   "expect": "A taken bet whose judge disappears can still be unwound by the players after the deadline; before it, the call fails."
+  },
+  {
+   "title": "Guard take and validate inputs",
+   "steps": [
+    "In `take`, `require!(!bet.players_deposited)` so a second take can't pay into the vault twice.",
+    "In `make`, `require!(description.len() <= 32)` and `amount > 0` with clear custom errors, and require opponent ≠ maker and judge ∉ {maker, opponent} if you want three distinct parties."
+   ],
+   "expect": "A second take fails with your new error. A 33-byte description fails with a readable message instead of a seed-length error, and a 0-SOL bet is refused."
+  }
+ ],
+ "not_covered": "Make, take, taker-wins and cancel were clicked through in the app with one wallet in all three roles. The three-wallet flow (M, O, J), the three payee bugs and every rejected case were run by script. Not exercised: the judge's refund (winner 0) and maker-wins with the correct maker, and the description seed limit (read from code)."
+}
