@@ -36,6 +36,10 @@ P
      cd "$src"; sed -i "s/EbSG8YorD2N1QHoiayDba3cuDQsyUJ7ysocjHVaLb9b5/4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1/" src/lib/useWorkspace.ts src/lib/splitterprogram.json
      sed -i 's/import { createWebHistory, createRouter }/import { createWebHashHistory, createRouter }/; s/history: createWebHistory(import.meta.env.BASE_URL)/history: createWebHashHistory()/' src/main.js
      npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
+  orboracle-solana) # fork's own Next.js 15 static export on the program deployed from anchor/programs/oracle (see dapps/deployed/orboracle-solana.json)
+     cd "$src"; grep -rl 9oPLPE3PC9ok7T8UL9ZMfrNyPkhtaHh1mM9wFk2fWEVJ anchor/src | xargs sed -i "s/9oPLPE3PC9ok7T8UL9ZMfrNyPkhtaHh1mM9wFk2fWEVJ/3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx/g"
+     sed -i "s#basePath: '/solana.orb-oracle.stabulity.nexus'#basePath: '/dapps/$slug', trailingSlash: true#" next.config.ts
+     npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"
