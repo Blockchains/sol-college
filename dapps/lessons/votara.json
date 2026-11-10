@@ -1,0 +1,357 @@
+{
+ "title": "Votara: on-chain DAO proposals with one vote per wallet, quorum and an approval threshold",
+ "summary": "Register as a voter, get voting power, create a proposal, vote once, and after the voting period the DAO authority finalizes it as passed or rejected.",
+ "what": "Votara is a single on-chain DAO. One `Dao` account and one `Config` account hold the rules: voting period, timelock, quorum, approval threshold and title and description limits. Wallets become voters with a `Voter` PDA that carries their voting power. Any voter can open a proposal. Each voter can vote Yes, No or Abstain **once** per proposal, because the vote itself is a PDA of (proposal, voter) that can only be created once. When the voting period is over, the DAO authority finalizes: too few voters means rejected; otherwise Yes as a percentage of all votes must reach the approval threshold. The lesson is about the governance mechanics. The token side is unfinished in the fork: staking and buying **move no tokens and no SOL** and just add voting power, which the lesson treats as a bug to fix.",
+ "app_note": "The fork's own React + Vite app with this devnet program ID, hash routing (`#/proposals`, `#/create`, `#/treasury`, `#/profile`) and one fix: a token-balance widget read a React context that is never mounted, which blanked the whole app on the profile page. Script: [tests/devnet/patches/votara.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/votara.py). The DAO authority is our test wallet m4Ac…; we set the voting period to 150 s, timelock 0 and quorum 2 voters with `update_config` (defaults: 7 days, 2 days, 10).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/votara/) and connect a devnet wallet with a little SOL.",
+   "see": "The Votara dashboard: DAO stats, All Proposals, Create Proposal, Treasury, Voter Profile."
+  },
+  {
+   "do": "Open **Voter Profile** and press **Register Voter**.",
+   "see": "One transaction that creates your governance-token account and calls `stake_tokens(0)`, which creates your `Voter` PDA with 0 voting power.",
+   "ran_note": "Not clicked: our test wallet was already a voter (the app shows no Register button then)."
+  },
+  {
+   "do": "Open **Treasury**, enter `10`, press **Swap SOL for VTR**.",
+   "see": "A `buy_tokens` transaction. Your voting power goes up by 10, but no SOL leaves your wallet and no token arrives: the transfers are placeholders in the program.",
+   "ran": [
+    [
+     "Swap SOL for VTR, 10 (first run)",
+     "3fbvF13Q2u5BKiMkho2xTj8KDD3N6DWqi46JcGDG9AZo8ZtWXW8MXdrULtiB2ydjRjXPLT5uMgtkWpQosSjpkhnK"
+    ],
+    [
+     "Swap SOL for VTR, 10 more (second run)",
+     "5yDESsEvj3x41gkWMJwd23cAnVg9XQ69kK75MzDnd8QHgXu4cgNq5gRkqd3r5BhGRqAVoN3tMPBxziM2pjDq4u4Q"
+    ]
+   ]
+  },
+  {
+   "do": "Open **Create Proposal**, enter a title (100 characters at most) and a summary, press **Broadcast Proposal**.",
+   "see": "A `create_proposal` transaction; the proposal appears in All Proposals with a 150-second countdown.",
+   "ran": [
+    [
+     "Broadcast Proposal, \"UI proposal 06006\" (40 s voting period)",
+     "3uoB7u4oebVt8uUaiEh6VEu9mDCRrrukLe62UZvfXbE9e1bT3CedbhW7uWVQbCULxUXbcVDWPhc7aynUxWVsbqoq"
+    ],
+    [
+     "Broadcast Proposal, \"UI proposal 06230\" (150 s)",
+     "3T9bBGf7gUf6jzZGGXkRVt4WmY7Rz3bShzNzbwDU5rBQoB4kDDHM9JZPh3b6c9S2HNJ76eXP9CnPJ4a6KZ7x9rMp"
+    ]
+   ]
+  },
+  {
+   "do": "Within those 150 s: **All Proposals**, open it, choose **Yes**, press **Confirm Yes Vote**.",
+   "see": "A `cast_vote` transaction adding your voting power to Yes. Voting again fails, because your vote record already exists. The live counter on the page may stay at 0 until you reload: it listens on a websocket log feed.",
+   "ran": [
+    [
+     "Yes, Confirm Yes Vote on \"UI proposal 06230\" (on chain: yes 20, 1 voter)",
+     "5omXjaftqStpejuJAcQTXDrbxSZKdT4NrUuAfug1Rxms7SGx36pvQ6Hxjkk49b9kkJVY11reXAMNTmExnDXsdrPm"
+    ]
+   ],
+   "ran_note": "On the 40 s proposal the vote came too late: the wallet simulation returned ProposalClosed (6003) and nothing was sent."
+  },
+  {
+   "do": "(DAO authority only.) After the period, press **Finalize & Pick Winner**.",
+   "see": "A `finalize_proposal` transaction: with quorum 2, a proposal with one voter is rejected whatever the votes. Other wallets get `Unauthorized`.",
+   "ran": [
+    [
+     "Finalize & Pick Winner on the 40 s proposal: no votes → Rejected",
+     "3hCpJWU3XamYuTnMzBizL4P2Ld94B682YkY8CfBitCLYDK5FtyJaJfyKWyM3BaDDqBdcfbYAckbUQr7pvv5RvvRT"
+    ],
+    [
+     "Finalize & Pick Winner on \"UI proposal 06230\": 1 voter < quorum 2 → Rejected",
+     "3TTRcubRF6qgFrybPgca56vdhWqRdtekRa1aFzVyrUYp3zKfoC6PLLELZU6JcXo1y2ZiDQk9mgNLLvmEiCrXqXaM"
+    ]
+   ]
+  }
+ ],
+ "diagram": "authority ─ initialize_dao() ─▶ Dao PDA [\"dao\"]  +  Config PDA [\"config\"]   (one DAO per program)\nauthority ─ initialize_treasury() ─▶ Treasury PDA [\"treasury\"], gov mint PDA [\"governance_mint\"], vault PDA [\"vault\"]\nauthority ─ update_config(voting_period?, timelock?, quorum?, threshold?, …)\nwallet ──── stake_tokens(n) / buy_tokens(n) ─▶ Voter PDA [\"voter\", wallet]  voting_power = tokens_staked   (no tokens move)\nvoter ───── create_proposal(id = dao.total_proposals, title, …) ─▶ Proposal PDA [\"proposal\", id u64 LE] + Analytics PDA [\"analytics\", proposal]\nvoter ───── cast_vote(Yes|No|Abstain) ─▶ VoteRecord PDA [\"vote\", proposal, voter_pda]  (init → once only)\nauthority ─ finalize_proposal() after end ─▶ unique_voters ≥ quorum ? (yes×100 / all votes ≥ threshold ? Passed : Rejected) : Rejected",
+ "accounts": [
+  [
+   "Dao",
+   "PDA `[\"dao\"]`",
+   "Authority, counters, gov mint and treasury addresses, pause flag"
+  ],
+  [
+   "Config",
+   "PDA `[\"config\"]`",
+   "Voting period, timelock, quorum, approval threshold, limits"
+  ],
+  [
+   "Voter",
+   "PDA `[\"voter\", wallet]`",
+   "Voting power, tokens \"staked\", counters"
+  ],
+  [
+   "Proposal",
+   "PDA `[\"proposal\", id as u64 LE]`",
+   "Title, description, yes/no/abstain totals, unique voters, status, end time"
+  ],
+  [
+   "VoteRecord",
+   "PDA `[\"vote\", proposal, voter PDA]`",
+   "Which way you voted and with how much power; its existence is the one-vote rule"
+  ],
+  [
+   "Treasury / gov mint / vault",
+   "PDAs `[\"treasury\"]`, `[\"governance_mint\"]`, `[\"vault\"]`",
+   "Counters, the gov token mint and a token vault (no tokens are moved yet)"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize_dao` and `update_config`: the rules",
+   "refs": [
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 23,
+     "b": 96
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/dao/initialize_dao.rs",
+     "a": 5,
+     "b": 29,
+     "note": "accounts"
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/dao/update_config.rs",
+     "a": 8,
+     "b": 32,
+     "note": "authority-only"
+    }
+   ],
+   "steps": [
+    "Fixed seeds `[\"dao\"]` and `[\"config\"]`: there is exactly one DAO per deployed program.",
+    "Defaults: 7-day voting, 2-day timelock, `quorum_percentage = 10`, approval threshold 51, titles up to 100 bytes.",
+    "`update_config` takes every field as an `Option` and changes only the ones sent. `constraint = dao.authority == authority.key()` makes it authority-only (`Unauthorized` for anyone else, in Proof)."
+   ]
+  },
+  {
+   "name": "`stake_tokens` / `buy_tokens`: voting power",
+   "refs": [
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 608,
+     "b": 635
+    },
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 660,
+     "b": 683
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/treasury/stake_tokens.rs",
+     "a": 9,
+     "b": 58,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Both create your `Voter` PDA on first use (`init_if_needed`) and set `voting_power = tokens_staked` (1 token = 1 vote).",
+    "The token transfer is a comment (lines 615–616); `buy_tokens` has no transfer at all (line 670). So power is free: B \"staked\" 100 while holding 0 gov tokens, and the gov supply was still 0 at the end of our run.",
+    "`buy_tokens` only checks and decrements the treasury's `total_tokens` counter, which `stake_tokens` increments."
+   ]
+  },
+  {
+   "name": "`create_proposal`",
+   "refs": [
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 108,
+     "b": 199
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/proposal/create_proposal.rs",
+     "a": 8,
+     "b": 66,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "The client picks `proposal_id`; the address is `[\"proposal\", id as 8 little-endian bytes]`. The app uses `dao.total_proposals` as the next id.",
+    "Title and description lengths are checked against the config (`TitleTooLong`, in Proof).",
+    "`end_time = now + voting_period`; an Analytics PDA is created alongside for live counters."
+   ]
+  },
+  {
+   "name": "`cast_vote`: one vote per voter, enforced by an account",
+   "refs": [
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 288,
+     "b": 357
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/voting/cast_vote.rs",
+     "a": 8,
+     "b": 57,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Refuses after `end_time` (`ProposalClosed`, in Proof, from the script and from the app).",
+    "Adds your current `voting_power` to Yes, No or Abstain and increments `unique_voters`.",
+    "`vote_record` is `init` at `[\"vote\", proposal, voter]`; a second vote fails because the account already exists (B's second vote, in Proof). No \"has voted\" flag is needed."
+   ]
+  },
+  {
+   "name": "`finalize_proposal`: quorum, then threshold",
+   "refs": [
+    {
+     "path": "votara/programs/votara/src/lib.rs",
+     "a": 228,
+     "b": 282
+    },
+    {
+     "path": "votara/programs/votara/src/contexts/proposal/finalize_proposal.rs",
+     "a": 10,
+     "b": 51,
+     "note": "authority-only, Active only"
+    }
+   ],
+   "steps": [
+    "Only the DAO authority (`Unauthorized`), only after `end_time` (`VotingPeriodNotEnded`), only while Active.",
+    "Quorum: `unique_voters >= quorum_percentage`. Despite its name it is a **count of voters**, not a percentage.",
+    "Approval = yes × 100 / (yes + no + abstain), integer division, against the threshold. Script: 100 Yes and 40 No from 2 voters → 71 ≥ 51 → **Passed**. UI: 20 Yes from 1 voter → under quorum 2 → **Rejected**."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "the vote is an account: PDAs as a uniqueness constraint",
+  "text": "Votara enforces one vote per wallet per proposal without storing a list of voters: the vote record lives at a PDA of (proposal, voter) and is created with `init`, so the runtime itself refuses a second one. The same pattern gives every wallet exactly one voter profile (`[\"voter\", wallet]`) and every proposal a predictable address from its number, so the app can find everything without an index.",
+  "refs": [
+   {
+    "path": "votara/programs/votara/src/contexts/voting/cast_vote.rs",
+    "a": 47,
+    "b": 54,
+    "note": "init = can only happen once"
+   },
+   {
+    "path": "client/votara-client/src/pda.ts",
+    "a": 33,
+    "b": 57,
+    "note": "the same seeds in the app"
+   }
+  ],
+  "more": [
+   "Uniqueness of *wallets* is not uniqueness of *people*, and voting power that costs nothing makes the threshold meaningless. In a real DAO, power must come from tokens actually locked in the vault, and quorum should be measured against total power. Exercises 2–3."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "PDAs",
+   "refs": [
+    {
+     "path": "client/votara-client/src/pda.ts",
+     "a": 6,
+     "b": 57
+    }
+   ],
+   "steps": [
+    "Every account is derived in the browser; the proposal id is encoded as 8 little-endian bytes to match `proposal_id.to_le_bytes()`."
+   ]
+  },
+  {
+   "title": "Register = create the token account + stake 0",
+   "refs": [
+    {
+     "path": "client/votara-client/src/components/RegisterVoter.tsx",
+     "a": 43,
+     "b": 87
+    }
+   ],
+   "steps": [
+    "Creates the associated token account for the gov mint if it's missing, then adds `stakeTokens(0)` to the same transaction to create the Voter PDA."
+   ]
+  },
+  {
+   "title": "Buy, create, vote, finalize",
+   "refs": [
+    {
+     "path": "client/votara-client/src/components/BuyTokens.tsx",
+     "a": 33,
+     "b": 54
+    },
+    {
+     "path": "client/votara-client/src/components/CreateProposals.tsx",
+     "a": 39,
+     "b": 70
+    },
+    {
+     "path": "client/votara-client/src/App.tsx",
+     "a": 159,
+     "b": 159
+    },
+    {
+     "path": "client/votara-client/src/components/Vote.tsx",
+     "a": 41,
+     "b": 70
+    },
+    {
+     "path": "client/votara-client/src/components/PickWinner.tsx",
+     "a": 15,
+     "b": 38
+    }
+   ],
+   "steps": [
+    "The next proposal id is `dao.totalProposals`.",
+    "Vote passes the vote-record PDA that the program will create; Finalize calls `finalizeProposal`, which only works for the authority."
+   ]
+  },
+  {
+   "title": "The live feed",
+   "refs": [
+    {
+     "path": "client/votara-client/src/components/LaserStreamFeed.tsx",
+     "a": 16,
+     "b": 40
+    }
+   ],
+   "steps": [
+    "`connection.onLogs` on the program id needs a websocket RPC; on a plain HTTP endpoint the counters stay at 0 until you reload, although the votes are on chain."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Compute both outcomes from Proof",
+   "steps": [
+    "Script proposal: 100 Yes, 40 No, 2 voters. UI proposal: 20 Yes, 1 voter. Quorum 2, threshold 51."
+   ],
+   "expect": "Script: 100 × 100 / 140 = 71 ≥ 51 and 2 ≥ 2 → Passed (the log says `passed`, `quorumReached: true`). UI: 1 < 2 → Rejected before any percentage is computed."
+  },
+  {
+   "title": "Make voting power cost something",
+   "steps": [
+    "In `stake_tokens`, add the commented SPL `transfer` CPI from `user_token_account` to `vault` (and constrain `user_token_account` to the gov mint and the signer).",
+    "Test: stake 100 with 0 tokens."
+   ],
+   "expect": "It fails with an insufficient-funds token error instead of giving 100 votes, as it did for B (`3J5VmA5c…`)."
+  },
+  {
+   "title": "A real quorum",
+   "steps": [
+    "Change the quorum check to compare total votes cast with a percentage of the treasury's staked total."
+   ],
+   "expect": "With 140 staked and quorum 10%, 14 power is needed; the field name now matches what it does."
+  },
+  {
+   "title": "Block the next proposal id",
+   "steps": [
+    "Read `create_proposal.rs` line 51 and App.tsx line 159.",
+    "Locally, with `total_proposals = T`, create a proposal with id `T + 1` from a script, then try to create one through the app."
+   ],
+   "expect": "The script call raises the counter to T + 1, so the app now tries id T + 1, whose PDA already exists: it fails, and keeps failing, because the counter only grows on success. Nobody can create a proposal from the app any more. Fix: derive the id on chain from `dao.total_proposals` with `seeds = [b\"proposal\", dao.total_proposals.to_le_bytes()]`."
+  },
+  {
+   "title": "Why delegation can't succeed",
+   "steps": [
+    "Read `voter/delegate_vote.rs` lines 30–37: the delegate account must sit at `[\"voter\", delegate.key()]`, the key of the account itself."
+   ],
+   "expect": "No account can be the PDA of its own address, so `delegate_vote` always fails the seeds check. Fix: pass the delegate's wallet as an extra account and use `[\"voter\", delegate_wallet.key()]`."
+  }
+ ],
+ "not_covered": "Buy, create, vote and finalize were clicked through in the app; a passing proposal (2 voters) and every rejection case were run by script. Register Voter wasn't clicked (our wallet was already a voter). Not exercised: quadratic voting, retract, delegate (it can't succeed, see Exercise 5), cancel, withdraw and rewards; none of the token or SOL transfers exist in the program. The voting period (150 s), timelock (0) and quorum (2) were set by script; the app has no screen for update_config."
+}
