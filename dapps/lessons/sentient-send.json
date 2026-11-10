@@ -1,0 +1,307 @@
+{
+ "title": "sentient.send: a winner-takes-all sentiment market where the side with the most SOL wins",
+ "summary": "Open a market with 2–10 sides, bet SOL on a side, and after the deadline the side holding the most SOL wins the whole pool, split by stake.",
+ "what": "sentient.send is a parimutuel market on **sentiment**, not on real-world outcomes: whichever side has attracted the most SOL when the market ends is the winner. A creator opens a market with 2–10 named sides and at least 1 SOL; after a 2% fee that stake is split evenly across all sides. Anyone bets 0.01–1 SOL (2% fee) on a side until the end time. Afterwards anyone can resolve the market (or the first claim resolves it), and everyone who backed the winning side shares the **entire** pool in proportion to their stake. The creator and the protocol split the fees. The SOL sits in the market account itself.",
+ "app_note": "The fork's own Next.js app as a static export with this devnet program ID and base path. Changes: market pages are `/market/?id=<address>` instead of `/market/<address>`, and the protocol authority (a TODO placeholder in the fork) is set to the wallet that initialised this deployment's treasury. The script is [tests/devnet/patches/sentient-send.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/sentient-send.py).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/sentient-send/) and connect your devnet wallet. You need a little over 1 SOL; request devnet SOL twice if needed.",
+   "see": "The markets list; your wallet address in the top bar."
+  },
+  {
+   "do": "Click **Create Market**. Use a **short question (32 characters or fewer)**, two sides such as `Yes` and `No`, an end date (the form starts at tomorrow) and 1 SOL. Press **Create Market (1 SOL)** and approve.",
+   "see": "A `create_market` transaction, then the new market page: each side starts with 0.49 SOL (1 SOL minus the 2% fee, split in two).",
+   "ran": [
+    [
+     "Create Market form (Yes/No, ends tomorrow, 1 SOL): `create_market`; the app opened the new market page",
+     "2NZHjdhUksyU8aMd2b9DEWBfog8WyLfUXkHDd5RC6thP34gRbhEybtcYoRQ34x2S24nYVT2gPrU5G5Ap45xP3gzG"
+    ]
+   ]
+  },
+  {
+   "do": "On the market page pick a side, keep Bet Amount `0.1` and press **Bet 0.1 SOL on Yes**. Approve.",
+   "see": "A `place_bet` transaction. Yes rises to 0.588 SOL (0.49 + 0.098 after the bet fee) and its share goes above 50%.",
+   "ran": [
+    [
+     "Bet 0.1 SOL on Yes on that market",
+     "5faQLyFPd6aexpvXoZiDxz7acJ6AYZRRSNJRgU9s7WtkKb96gdu4nZJvGvrBoMNg29HDRQFfDFxquRiZRWZy52xN"
+    ],
+    [
+     "Bet 0.1 SOL on Yes on a 5-minute market made by script (the form only allows tomorrow)",
+     "drPTN1TySu7rrsQSHcFZGcX4mR9A8cSRDvbU41rtUzkFn8Q9RvN5rMVuzfTXRojDnbPUjycXqPEcL4ooALqZBRN"
+    ]
+   ]
+  },
+  {
+   "do": "After the end time, press **Resolve Market**.",
+   "see": "A `resolve_market` transaction: the side with the most SOL is marked Winner. Anyone can press it; there is no oracle or admin.",
+   "ran": [
+    [
+     "Resolve Market after the short market ended",
+     "oRsNYzqbcrX5QWLcU3NZipKt1PxWyUzguGJfGe7FopQveZwpZVggMNmyfbQbNGeFwt17QR9K9hDrNvKDnQ6Svjy"
+    ]
+   ]
+  },
+  {
+   "do": "Press **Claim … SOL**.",
+   "see": "A `claim_winnings` transaction; the page shows the winning side and Winnings Claimed. Pressing again would fail with `AlreadyClaimed`.",
+   "ran": [
+    [
+     "Claim 0.1797 SOL; the page then showed Winner: Yes and Winnings Claimed",
+     "f5DjJBV2d6y13xG42iuu69Ko1N9n1qDdCSJ39Xke4VC3gBunka94XAvgCSbtCBo6bNmUeoh2XrZrTG4vyXXMDTq"
+    ]
+   ]
+  },
+  {
+   "do": "After the end, as the creator, press the creator-fee **Claim** button on the market.",
+   "see": "A `claim_creator_fees` transaction: half the market's fees to you, half to the protocol authority, in one go.",
+   "ran_note": "Creator fees were claimed by script (4MwjLyvm…, in Proof), not clicked."
+  }
+ ],
+ "diagram": "creator ── create_market(question, description, end, sides[], amount ≥ 1 SOL) ─▶ Market PDA [\"market\", creator, question]\n            2% fee ─▶ fee_pool;  98% split evenly over sides            question, sides[10]{name,total}, total_pool, fee_pool, end, resolved\n          └▶ creator's Position PDA [\"position\", market, creator]  (a bet on EVERY side)\nbettor  ── place_bet(side, 0.01–1 SOL) ─▶ SOL into Market;  Position PDA [\"position\", market, bettor]\nanyone  ── resolve_market() after end ─▶ winning_sides = sides with the max total (ties allowed)\nwinner  ── claim_winnings() ─▶ my_stake_on_winners / winners_total × total_pool, paid from Market's lamports\ncreator ── claim_creator_fees() ─▶ fee_pool / 2 to creator, the rest to Treasury.authority\nTreasury PDA [\"treasury\"]: protocol authority + running totals (created once by initialize_treasury)",
+ "accounts": [
+  [
+   "Market",
+   "PDA `[\"market\", creator, question]`",
+   "Question, sides with their SOL totals, pool, fees, end time, winners; **and all the SOL** as lamports"
+  ],
+  [
+   "UserPosition",
+   "PDA `[\"position\", market, user]`",
+   "Your net bet per side, total invested, claimed flag"
+  ],
+  [
+   "Treasury",
+   "PDA `[\"treasury\"]`",
+   "Protocol authority and running totals"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`create_market`: validate, take the stake, seed every side",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 34,
+     "b": 101
+    },
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 122,
+     "b": 156,
+     "note": "equal split across sides; creator's position"
+    },
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 432,
+     "b": 464,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Checks: question ≤ 200, description ≤ 500, 2–10 sides (`InvalidSideCount`), at least 1 SOL (`CreationAmountTooSmall`), end in the future (`InvalidEndTimestamp`), side names 1–50 bytes and unique ignoring case (`DuplicateSideName`). All four errors we triggered are in Proof.",
+    "Fee: `amount × 200 / 10000` (2%) goes to `fee_pool`; the remaining 98% is split evenly over the sides.",
+    "The whole amount is moved into the **market account** with a System Program transfer. The market PDA is the vault.",
+    "The creator's position gets an equal bet on every side, so the creator always holds a share of whichever side wins.",
+    "Seeds `[\"market\", creator, question]`: the question text is part of the address, so one creator can't open two markets with the same question."
+   ]
+  },
+  {
+   "name": "`place_bet`: buy into a side",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 166,
+     "b": 263
+    },
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 466,
+     "b": 484,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "`init_if_needed` creates your position on your first bet in this market.",
+    "Refuses after the end (`MarketEnded`), a side index ≥ number of sides (`InvalidSideIndex`), and amounts outside 0.01–1 SOL (`BetTooSmall` / `BetTooLarge`).",
+    "Takes the 2% fee, transfers the full amount into the market, and adds the **net** amount to the side's total, the pool and your position."
+   ]
+  },
+  {
+   "name": "Resolution: the biggest side wins",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 378,
+     "b": 429
+    }
+   ],
+   "steps": [
+    "`try_resolve_market` does nothing before the end time; afterwards it finds the maximum side total and marks **every** side that equals it as a winner, so exact ties share the pool.",
+    "`resolve_market` is open to any signer; `claim_winnings` and `claim_creator_fees` also call `try_resolve_market`, so a market resolves lazily on first use."
+   ]
+  },
+  {
+   "name": "`claim_winnings`: pro-rata payout from the market's lamports",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 265,
+     "b": 317
+    }
+   ],
+   "steps": [
+    "Refuses before the end (`MarketNotEnded`), a second claim (`AlreadyClaimed`) and anyone with nothing on a winning side (`NoWinnings`).",
+    "payout = (your net stake on winning sides) × `total_pool` / (total of winning sides), computed in `u128`.",
+    "The program owns the market account, so it pays by editing lamports directly; no CPI needed."
+   ]
+  },
+  {
+   "name": "`claim_creator_fees`: one instruction, two payees",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 320,
+     "b": 376
+    },
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 502,
+     "b": 523,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Only after the market has ended and resolved (`MarketNotEnded`), only the market's creator (`UnauthorizedCreator`), only once (`FeesAlreadyClaimed`).",
+    "The protocol authority account must equal `treasury.authority` (`InvalidProtocolAuthority` in Proof); half of `fee_pool` goes to each."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "the market account is the escrow, and resolution needs no oracle",
+  "text": "There is no token mint, no vault token account and no oracle. Bets are plain SOL transfers into the market PDA, payouts are direct lamport edits by the program that owns it, and the winning side is computed on-chain from the market's own totals the moment anyone asks after the deadline. That makes a complete market fit in three account types.",
+  "refs": [
+   {
+    "path": "programs/prediction-market/src/lib.rs",
+    "a": 299,
+    "b": 312,
+    "note": "payout and lamport move"
+   },
+   {
+    "path": "programs/prediction-market/src/lib.rs",
+    "a": 402,
+    "b": 426,
+    "note": "winner = max total, ties included"
+   }
+  ],
+  "more": [
+   "Because the winner is the side with the most money, this is a game about predicting the crowd, not the world. The creator's equal seed on every side is what lets any side win from the start.",
+   "Our script market shows the arithmetic: creation 1 SOL → 0.49 + 0.49; B 0.2 on Yes (net 0.196) and C 0.05 on No (net 0.049) → Yes 0.686, No 0.539, pool 1.225. Yes wins; B is paid 0.196 × 1.225 / 0.686 = 0.35 SOL and the creator 0.49 × 1.225 / 0.686 = 0.875 SOL: together exactly the pool."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "PDAs in the browser",
+   "refs": [
+    {
+     "path": "frontend/src/lib/anchor.ts",
+     "a": 20,
+     "b": 56
+    }
+   ],
+   "steps": [
+    "`getMarketPda` uses `Buffer.from(question)` as a seed. A seed can be at most 32 bytes, so a longer question throws \"Max seed length exceeded\" here and nothing is sent, even though the form and the program allow 200 characters."
+   ]
+  },
+  {
+   "title": "Create: build the transaction, send through the wallet adapter",
+   "refs": [
+    {
+     "path": "frontend/src/app/create/page.tsx",
+     "a": 133,
+     "b": 189
+    }
+   ],
+   "steps": [
+    "The app builds the `createMarket` instruction with `.transaction()`, sets fee payer and blockhash, then calls `sendTransaction` with `skipPreflight: true`, so a failing create only shows up after it lands."
+   ]
+  },
+  {
+   "title": "Bet, resolve, claim",
+   "refs": [
+    {
+     "path": "frontend/src/app/market/[id]/page.tsx",
+     "a": 135,
+     "b": 154
+    },
+    {
+     "path": "frontend/src/app/market/[id]/page.tsx",
+     "a": 197,
+     "b": 215
+    },
+    {
+     "path": "frontend/src/app/market/[id]/page.tsx",
+     "a": 256,
+     "b": 262
+    }
+   ],
+   "steps": [
+    "Each button is one Anchor call with two or three accounts; the position PDA is derived from the market and your wallet.",
+    "`systemProgram: PublicKey.default` works because the default (all-zero) public key is `11111111111111111111111111111111`, the System Program's address."
+   ]
+  },
+  {
+   "title": "Creator fees",
+   "refs": [
+    {
+     "path": "frontend/src/app/market/[id]/page.tsx",
+     "a": 296,
+     "b": 316
+    }
+   ],
+   "steps": [
+    "The protocol authority comes from `PROTOCOL_AUTHORITY` in `lib/constants.ts`; it must match the treasury or the program rejects the claim."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Predict a payout before you claim",
+   "steps": [
+    "Note your market's side totals and pool on the market page after betting.",
+    "Compute your net stake × pool / winning side total."
+   ],
+   "expect": "The amount on the Claim button. For our UI run: creator seed 0.49/0.49, our net bet 0.098 on Yes → Yes 0.588, pool 1.078, payout 0.098 × 1.078 / 0.588 ≈ 0.1797 SOL, the button read \"Claim 0.1797 SOL\"."
+  },
+  {
+   "title": "Hit the 32-byte seed limit",
+   "steps": [
+    "On Create Market, type a 40-character question and submit."
+   ],
+   "expect": "An error before any wallet pop-up (Max seed length exceeded). Fix idea: seed with a hash of the question (`hash(question)` in the program, `sha256` in the app), which is always 32 bytes."
+  },
+  {
+   "title": "Make a tie",
+   "steps": [
+    "Create a Yes/No market and do not bet on it; after the end, resolve it.",
+    "Read the market account (or the page)."
+   ],
+   "expect": "Both sides have 0.49 SOL, so both are marked winning (`num_winners = 2`), and the creator, who holds both, can claim the whole pool."
+  },
+  {
+   "title": "Find where the fees go",
+   "steps": [
+    "Open the `claim_creator_fees` transaction `4MwjLyvm…` from Proof on Explorer and read the balance changes."
+   ],
+   "expect": "The 0.025 SOL fee pool (0.02 + 0.004 + 0.001) split into two halves of 0.0125 SOL: creator and protocol authority. What stays in the market account (0.00803148 SOL in our log) is its rent."
+  },
+  {
+   "title": "Allow end times today",
+   "steps": [
+    "In `frontend/src/app/create/page.tsx`, the date input's `min` is tomorrow (lines 36–38). Change it to today and rebuild."
+   ],
+   "expect": "You can create a market that ends in minutes, as our script did; the program only requires the end to be in the future."
+  }
+ ],
+ "not_covered": "Create, bet, resolve and claim were clicked through in the hosted app. The market used for resolve/claim was created by script because the form only allows end dates from tomorrow; creator fees were claimed by script. Questions over 32 bytes can't be created at all (PDA seed limit). The fork's TypeScript doesn't type-check, so the export is built with type errors ignored."
+}

@@ -1,0 +1,283 @@
+{
+ "title": "CipherVault: a SOL multisig vault (and the account checks it forgot)",
+ "summary": "Several owners share a vault. Any owner proposes a payment, others approve, and when the threshold is reached it can be executed. Then audit what the program fails to check.",
+ "what": "CipherVault is a multisig wallet for SOL. A creator names a group of owners and an approval threshold (for example 2 of 3) and can put SOL into the group's **vault**, a program-owned PDA with no data. Any owner can propose a transfer to a recipient; their own approval is recorded automatically. Other owners approve, and once approvals reach the threshold, execute moves the lamports straight out of the vault. It works end to end on devnet, and its code is also a compact lesson in which account relationships an Anchor program must check itself.",
+ "app_note": "The fork's own React + Vite app, unchanged apart from the RPC (the fork points at a local validator), the IDL import (the committed IDL in `app/src/anchor/` with this program's address) and the base path. Script: [tests/devnet/patches/ciphervault.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/ciphervault.py).",
+ "try_steps": [
+  {
+   "do": "Set up two Phantom accounts with devnet SOL (Account 1 needs about 1.1 SOL). Copy both addresses.",
+   "see": "Two funded devnet wallets."
+  },
+  {
+   "do": "Open [the app](/dapps/ciphervault/) with Account 1 and connect.",
+   "see": "The CipherVault dashboard: Overview, Transactions, Multisigs, Settings."
+  },
+  {
+   "do": "Create a multisig: a name, Approval Threshold `2`, owners Account 1 and Account 2 (**Add Owner**), Initial Balance `1` (whole SOL only: the field is read with `parseInt`, so 0.5 becomes 0). Confirm and approve.",
+   "see": "A `create_multisig` transaction. The card shows 2 of 2, the multisig address and a vault balance of 1 SOL.",
+   "ran": [
+    [
+     "New Multisig, 2 of 2, initial balance 1 SOL: the card showed 2 of 2 and vault balance 1 SOL",
+     "3mCJ3ZgERPNW9btSdroSaGXUWAgaWrMggQc9vWZ8wF6uQ5sKzpGGJ89fBMXwKqLENY4LTe4CjS4AJ2fNWUvnUd3c"
+    ]
+   ]
+  },
+  {
+   "do": "Open **Transactions** and create a new transaction: any recipient address, Amount `0.02`. Approve.",
+   "see": "A `create_transaction` transaction. The row shows 1/2 approvals (yours is automatic). The amount column shows 0 SOL: it divides lamports by 10⁹ with integer division.",
+   "ran": [
+    [
+     "New Transaction, 0.02 SOL (proposer's approval recorded)",
+     "Font6CkBhutUPagVGqdgYiT7KEsDF4ZXU3TzzujLCDUu6keMVtX9zAmpn7RdwvZ3qh5dzzYBGQxXZ9prN4YBkXC"
+    ]
+   ]
+  },
+  {
+   "do": "Switch Phantom to Account 2, reload, open Transactions and press **Approve**.",
+   "see": "An `approval` transaction; the row shows 2/2 and becomes ready.",
+   "ran": [
+    [
+     "Second wallet pressed Approve",
+     "3fces1nr6tvdoCVUAwQ4BQacbQ7Ac9MsgoHpQCLH7druVvUoi6wwripKi44m4Nj9mWD6ASkwYeEYz3wRBGkQrXEc"
+    ]
+   ]
+  },
+  {
+   "do": "Press **Execute**.",
+   "see": "A `fn_execute` transaction; the row says Executed and the recipient's devnet balance goes up by 0.02 SOL.",
+   "ran": [
+    [
+     "Execute; the table showed 2/2 Executed and the recipient held 0.02 SOL",
+     "yeputouRFaw5kEbAgUpqXH41YHXKr6BmHbp5twWpaUcccTinJZrGBTJfunpbCzBSJzaMo2J7DuNqtf4LoCzbJJD"
+    ]
+   ]
+  }
+ ],
+ "diagram": "creator ── create_multisig(threshold, owners[], name, amount) ─▶ Multisig PDA [\"multisig\", creator, name]\n                                                          creator | owners[] | threshold | transaction_count | name | vault | tx_pending\n                                                       └▶ Vault PDA [\"vault\", multisig]  (0 bytes of data, owned by the program, holds the SOL)\nowner   ── create_transaction(amount) ─▶ TransactionAccount PDA [\"transaction\", multisig, transaction_count (u32 LE)]\n                                         approval[i] = true for the proposer\nowner   ── approval() ─▶ approval[index of signer in owners] = true\nanyone  ── fn_execute() ─▶ if approvals ≥ threshold: vault.lamports -= amount; recipient.lamports += amount",
+ "accounts": [
+  [
+   "Multisig",
+   "PDA `[\"multisig\", creator, name]`",
+   "Owners, threshold, counters, the vault's address"
+  ],
+  [
+   "Vault",
+   "PDA `[\"vault\", multisig]`, 0 bytes, owned by the program",
+   "Only lamports: the shared SOL"
+  ],
+  [
+   "TransactionAccount",
+   "PDA `[\"transaction\", multisig, transaction_count as u32 LE]`",
+   "Amount, recipient, one approval flag per owner, executed flag"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`create_multisig`: owners, threshold, vault",
+   "refs": [
+    {
+     "path": "programs/cipher-valut/src/instruction_handler/create_multisig.rs",
+     "a": 5,
+     "b": 25
+    },
+    {
+     "path": "programs/cipher-valut/src/state/multisig.rs",
+     "a": 16,
+     "b": 44,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Rejects a repeated owner (`DuplicateOwners`, in Proof) by checking each owner against the rest of the list.",
+    "`init` with `space = 0` and seeds `[\"vault\", multisig]` creates an account that holds only lamports and is **owned by this program**. That ownership is what later lets the program subtract lamports from it.",
+    "The optional initial amount is moved from the creator into the vault with a System Program transfer.",
+    "Note line 17: `#[instruction(..., amount: u64)]` while the handler takes `Option<u64>`. Sending `null` fails with `InstructionDidNotDeserialize` before the handler runs (in Proof)."
+   ]
+  },
+  {
+   "name": "`create_transaction`: propose and self-approve",
+   "refs": [
+    {
+     "path": "programs/cipher-valut/src/instruction_handler/create_transaction.rs",
+     "a": 5,
+     "b": 38
+    },
+    {
+     "path": "programs/cipher-valut/src/state/transaction.rs",
+     "a": 25,
+     "b": 58,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "The new account's address uses the multisig's `transaction_count` (u32, little-endian), so proposals are numbered 0, 1, 2…",
+    "The approval vector has one `false` per owner; the proposer must be an owner (`ProposeNotinOwners`, in Proof) and their slot is set to `true`.",
+    "Line 12 compares the vault balance with `transaction_account.amount` **before** line 16 sets it, so it always compares with 0 and never fails. Only execute checks the balance."
+   ]
+  },
+  {
+   "name": "`approval`: flip your flag",
+   "refs": [
+    {
+     "path": "programs/cipher-valut/src/instruction_handler/approval_instruction.rs",
+     "a": 5,
+     "b": 29
+    },
+    {
+     "path": "programs/cipher-valut/src/state/approval.rs",
+     "a": 4,
+     "b": 13,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Finds the signer's index in `multisig.owners` and sets that slot; a non-owner gets `InvalidOwnerError` (in Proof).",
+    "Line 23 counts approvals and then does nothing with the result (`{}`): approving never executes."
+   ]
+  },
+  {
+   "name": "`fn_execute`: threshold check, then move lamports",
+   "refs": [
+    {
+     "path": "programs/cipher-valut/src/instruction_handler/fn_execute.rs",
+     "a": 5,
+     "b": 60
+    }
+   ],
+   "steps": [
+    "Counts `true` flags and requires `threshold <= approvals` (`NotEnoughApproval` with 1 of 2, in Proof).",
+    "Requires the vault to hold more than amount + 1 lamport.",
+    "`vault.sub_lamports(amount)` / `recipient.add_lamports(amount)`: legal because the program owns the vault; the recipient can be any account.",
+    "Sets `executed = true`, but nothing ever **reads** it. Our second execute of the same proposal failed only because `tx_pending` was already 0 (`Underflow`); with another proposal pending it would have paid twice."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "a data-less PDA as a SOL vault",
+  "text": "The vault is a zero-byte account created by the program at a PDA. It can't sign (no private key), and because the program owns it, the program can debit it with `sub_lamports` without any CPI or signer seeds. Paired with a threshold of approvals stored per proposal, that is the whole multisig.",
+  "refs": [
+   {
+    "path": "programs/cipher-valut/src/state/multisig.rs",
+    "a": 33,
+    "b": 39,
+    "note": "vault: space = 0, seeds [vault, multisig]"
+   },
+   {
+    "path": "programs/cipher-valut/src/instruction_handler/fn_execute.rs",
+    "a": 23,
+    "b": 25,
+    "note": "debit without CPI"
+   }
+  ],
+  "more": [
+   "The flip side of \"the program can move these lamports\" is that the program must prove every account belongs together. Look at `TransactionExecuteContext` (fn_execute.rs lines 42–60) and `ApprovalContext` (approval.rs): the multisig, transaction, vault and recipient accounts have no `seeds`, `has_one` or address constraints tying them to each other. Reading the code, nothing stops a caller from pairing an approved proposal with a different vault or recipient, or approving a proposal through a different multisig in which they are an owner. We did not attack the deployed program; Exercises 1–3 have you add the missing constraints and prove them in a local test."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create multisig: Anchor resolves the PDAs",
+   "refs": [
+    {
+     "path": "app/src/App.tsx",
+     "a": 104,
+     "b": 116
+    }
+   ],
+   "steps": [
+    "The app derives the multisig and vault PDAs for its own use, but passes only `creator` to `.accounts()`: Anchor 0.30 fills in `multi_sig`, `vault` and `system_program` from the seeds in the IDL."
+   ]
+  },
+  {
+   "title": "Propose: number the PDA with a 4-byte counter",
+   "refs": [
+    {
+     "path": "app/src/App.tsx",
+     "a": 152,
+     "b": 167
+    }
+   ],
+   "steps": [
+    "`transBuffer.writeUInt32LE(transactionCount)` mirrors the program's `transaction_count.to_le_bytes()` on a `u32`, so both sides compute the same address."
+   ]
+  },
+  {
+   "title": "Approve and execute",
+   "refs": [
+    {
+     "path": "app/src/App.tsx",
+     "a": 213,
+     "b": 217
+    },
+    {
+     "path": "app/src/App.tsx",
+     "a": 265,
+     "b": 270
+    }
+   ],
+   "steps": [
+    "Approve uses `accountsStrict` with three accounts; execute passes the multisig, vault, proposal and recipient taken from the app's own lists. The app passes the right ones; the program just doesn't insist on it."
+   ]
+  },
+  {
+   "title": "Two display bugs",
+   "refs": [
+    {
+     "path": "app/src/components/CreateMultisigDialog.tsx",
+     "a": 138,
+     "b": 146
+    },
+    {
+     "path": "app/src/components/TransactionTable.tsx",
+     "a": 96,
+     "b": 96
+    }
+   ],
+   "steps": [
+    "`parseInt` on the Initial Balance drops decimals.",
+    "`new BN(amount).div(LAMPORTS_PER_SOL)` is integer division: 0.02 SOL shows as 0."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Tie execute's accounts together",
+   "steps": [
+    "In `TransactionExecuteContext`, add `has_one = multisig` support: `#[account(mut, constraint = transaction_account.multisig == multisig.key())]`, `#[account(mut, address = multisig.vault)]` on `vault`, and `#[account(mut, address = transaction_account.reciepient)]` on `reciepient_account`.",
+    "`anchor build` and write a local test that calls `fn_execute` on an approved proposal with a different recipient."
+   ],
+   "expect": "The test now fails with a constraint error; with the original code the same call succeeds and pays the wrong recipient."
+  },
+  {
+   "title": "Execute only once",
+   "steps": [
+    "At the top of `transaction_execute`, add `require!(!transaction_account.executed, ...)` with a new error.",
+    "Test: two proposals pending, execute the first twice."
+   ],
+   "expect": "The second execute fails with your error. Without it, the second call pays again and decrements `tx_pending` for the other proposal."
+  },
+  {
+   "title": "Approve only through the right multisig",
+   "steps": [
+    "In `ApprovalContext`, add `constraint = transaction.multisig == multisig.key()` on `transaction`.",
+    "Test: an owner of multisig X approves a proposal of multisig Y by passing X."
+   ],
+   "expect": "Rejected after the fix; accepted before (their index in X's owner list flips a flag in Y's proposal)."
+  },
+  {
+   "title": "Fix the balance check at proposal time",
+   "steps": [
+    "In `create_transaction.rs`, move line 12 below line 16 (or compare with `amount.unwrap_or(0)`).",
+    "Propose more SOL than the vault holds."
+   ],
+   "expect": "Rejected with `NotEnoughSol` at proposal time instead of only failing at execute."
+  },
+  {
+   "title": "Show real amounts in the app",
+   "steps": [
+    "In `TransactionTable.tsx` line 96, display `tx.amount / LAMPORTS_PER_SOL` as a number (or `toFixed(4)`); in `CreateMultisigDialog.tsx` use `parseFloat`."
+   ],
+   "expect": "The 0.02 SOL proposal shows 0.02, and an initial balance of 0.5 SOL is accepted."
+  }
+ ],
+ "not_covered": "The full create → propose → approve → execute cycle was clicked through with two wallets. Not exercised: the SPL-token option in the dialog (the program does nothing with it). The missing account constraints described in section 4 come from reading the code; we did not attempt them against the deployed program. Lists use getProgramAccounts on the public RPC and can be slow."
+}
