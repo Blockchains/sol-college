@@ -1,0 +1,7 @@
+{
+  "name": "sol.college test project",
+  "description": "Devnet-only project used to check the app works.",
+  "objectives": [
+    "Get a milestone paid on devnet"
+  ]
+}
