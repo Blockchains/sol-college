@@ -32,3 +32,6 @@
 {"t":"2026-11-10T10:36:46.767Z","step":"reject_grant_milestone #2 by sponsor A","sig":"n48DeYNKQRqqbzZU4AS2HX4JQWBiK63SpTztyKBYyywjxXBRBEkb2V6wFPB11VkA8P8uTvrKENP554Tecgm96fM"}
 {"t":"2026-11-10T10:36:49.818Z","step":"revise milestone #2 after it was rejected (rejected is final)","ok":true,"rejected":"MilestoneAlreadyConfirmed"}
 {"t":"2026-11-10T10:36:51.336Z","step":"grant state","approved":0.02,"paidOut":0.015,"milestones":3}
+{"t": "2026-11-10T10:59:00Z", "step": "post-run read of milestone #0", "milestone": "EsvoCJpPv4cuSw5onhYsmYAfAxbjUq1ZPHSmo7pbwy3P", "state": "paid", "note": ""}
+{"t": "2026-11-10T10:59:00Z", "step": "post-run read of milestone #1", "milestone": "HoNXmYcNyyMP8t75V4KCSZbuGns1ffRyHYKJonnjAmvs", "state": "accepted", "note": ""}
+{"t": "2026-11-10T10:59:00Z", "step": "post-run read of milestone #2", "milestone": "Gy5XhNzwwXgq4dafotc27XtRVw6yv8MvCLeezGe6zXtk", "state": "accepted", "note": "#2 was sent reject_grant_milestone; it reads accepted because lib.rs routes reject to accept_milestone"}

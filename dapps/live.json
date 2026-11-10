@@ -892,7 +892,7 @@
   "commit": "5b7e88375c461421feb2df4d2a8aaabb12dfa0fd",
   "program": "EmyKYV3hFaFw4znLhGSTG6Eo4QGadVb6TnkvWYYm8X77",
   "app_kind": "The fork's own Next.js 14 app (app/) as a static export under /dapps/barn/ with this devnet program ID. The three per-account pages (/project/<pk>, /program/<pk>, /profile/<pk>) can't be pre-rendered for accounts made later, so they live at /project/view/?a=<pk> and so on. Profiles, programs, projects and milestones point at JSON metadata URIs; sample files are served from /dapps/barn/meta/.",
-  "learn": "Each wallet makes one profile (an authority PDA keyed by the wallet points at a profile PDA keyed by a username). Sponsor profiles create grant programs and award one grant per project, in SOL (native mint) or an SPL token. Dev profiles add projects and milestones against their grant, submit them for review, and the sponsor accepts, sends back or rejects them; settle pays an accepted milestone from the sponsor's wallet, capped at the approved amount.",
+  "learn": "Each wallet makes one profile (an authority PDA keyed by the wallet points at a profile PDA keyed by a username). Sponsor profiles create grant programs and award one grant per project, in SOL (native mint) or an SPL token. Dev profiles add projects and milestones against their grant, submit them for review, and the sponsor accepts or sends them back (a reject instruction exists but, because of a bug, accepts); settle pays an accepted milestone from the sponsor's wallet, capped at the approved amount.",
   "source": [
    [
     "contexts/approve_sponsor.rs (the admin is any signer)",
@@ -903,12 +903,16 @@
     "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/contexts/award_grant.rs"
    ],
    [
-    "state/mod.rs L172-L231 (milestone states: rejected, accepted and paid are final)",
+    "state/mod.rs L172-L231 (milestone states; rejected, accepted and paid are final)",
     "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/state/mod.rs#L172-L231"
    ],
    [
     "contexts/settle_grant_milestone.rs (SOL or token transfer from the sponsor; approved-amount cap)",
     "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/contexts/settle_grant_milestone.rs"
+   ],
+   [
+    "lib.rs L55-L57 (reject_grant_milestone calls accept_milestone: the bug)",
+    "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/lib.rs#L55-L57"
    ]
   ],
   "flow": "tests/devnet/barn.mjs",
@@ -1036,7 +1040,7 @@
     "wB5mf3Sis3Mk5m3kHifXRqujkSCdfHqm6jWscnr2ogtwVJf4raZDdpZwJA2XqCGjR98JDEfcamYvrK5udecZiE4"
    ],
    [
-    "Script: reject_grant_milestone #2 by sponsor A",
+    "Script: reject_grant_milestone #2 by sponsor A: succeeds, but lib.rs routes reject to the accept code, so milestone #2 (Gy5X…zXtk) ends up Accepted, not Rejected",
     "n48DeYNKQRqqbzZU4AS2HX4JQWBiK63SpTztyKBYyywjxXBRBEkb2V6wFPB11VkA8P8uTvrKENP554Tecgm96fM"
    ]
   ],
@@ -1078,12 +1082,13 @@
     "ApprovedAmountExceeded"
    ],
    [
-    "revise milestone #2 after it was rejected (rejected is final)",
+    "revise milestone #2 after the \"reject\" (fails because the milestone is actually Accepted, a final state)",
     "MilestoneAlreadyConfirmed"
    ]
   ],
   "ui_check": "tests/devnet/wallet_click.py barn <step> (sponsor-setup, dev-setup, award, milestone, review, settle; log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
   "limits": [
+   "Bug: the program's reject_grant_milestone entry point calls accept_milestone, so \"rejecting\" a milestone in review accepts it, and the sponsor can then be asked to pay it. Our script's milestone #2 (Gy5XhNzwwXgq4dafotc27XtRVw6yv8MvCLeezGe6zXtk) is Accepted on devnet after its reject transaction; a post-run read confirms it.",
    "approve_sponsor accepts any signer as \"admin\", so anyone can turn any fresh profile into a sponsor (the script shows an unrelated wallet doing it).",
    "Settling a paid milestone a second time fails, but with ApprovedAmountExceeded when the cap check (which runs first) trips, so the error doesn't say the milestone was already paid.",
    "Each wallet gets one profile on this program, ever (the authority PDA is keyed by the wallet).",

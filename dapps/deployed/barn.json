@@ -88,7 +88,7 @@
    "sig": "wB5mf3Sis3Mk5m3kHifXRqujkSCdfHqm6jWscnr2ogtwVJf4raZDdpZwJA2XqCGjR98JDEfcamYvrK5udecZiE4"
   },
   {
-   "label": "reject_grant_milestone #2 by sponsor A",
+   "label": "reject_grant_milestone #2 by sponsor A: succeeds, but lib.rs routes reject to the accept code, so milestone #2 (Gy5X\u2026zXtk) ends up Accepted, not Rejected",
    "sig": "n48DeYNKQRqqbzZU4AS2HX4JQWBiK63SpTztyKBYyywjxXBRBEkb2V6wFPB11VkA8P8uTvrKENP554Tecgm96fM"
   }
  ],
