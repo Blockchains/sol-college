@@ -8,5 +8,8 @@
  "solstage-web": "The app never calls its program's instructions: it uploads the filter file to Shadow Drive (mainnet-only, paid in SHDW) and then tags a PDA of program STAGYb3H… with a memo transaction. That program exists on devnet (deployed by the original author), but the flow cannot complete without a mainnet Shadow Drive upload.",
  "stealthfolio": "Swaps go through Jupiter (mainnet-only) and private trades need the Light Protocol relayer server in relayer/; there is no program of its own to deploy.",
  "gluon-solana": "Its fission/fusion instructions read a Pyth PriceUpdateV2 account no older than 60 s, and the app posts that update from Pyth Hermes; hermes.pyth.network now answers 401 without an API key, so the flow cannot run from a static page.",
- "decentralogistics": "The frontend reads and writes logistics requests through its own Express API server (api-server/, http://localhost:3000), which a static host cannot serve."
+ "decentralogistics": "The frontend reads and writes logistics requests through its own Express API server (api-server/, http://localhost:3000), which a static host cannot serve.",
+ "solassets-solanahackathon": "The app creates its Supabase client at import time from VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY (not in the repo), and the Tokens page reads the signed-in Supabase user before calling create_standard_token, so it cannot run without the author's Supabase project.",
+ "blocqfinance-colosseum": "The Next.js app logs in and loads letters of credit through its own backend (blocq-backend, NEXT_PUBLIC_API_BASE_URL); the program calls (fund, release, refund) are only reachable after that backend's auth.",
+ "tagin-solana": "The frontends call local Flask/Express APIs (localhost:5000 / 5002) for products and reports."
 }
