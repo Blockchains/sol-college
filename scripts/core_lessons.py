@@ -43,7 +43,7 @@ def auto_lesson(x):
     instructions=[dict(name=r['note'],steps=[],refs=[r]) for r in refs],
     innovation=dict(text=x['learn'],refs=refs[:1]),frontend=[],
     exercises=[dict(title='Read a proof transaction',steps=['Open the first signature under Proof on Solana Explorer (devnet).','Scroll to Instruction details and Program logs.'],expect=f'The program {x["program"]} is invoked and the transaction succeeded.')])
-CSS='<style>.lesson ol.steps>li{margin:0 0 14px}.lesson .see{color:var(--mut);display:block;margin-top:4px}.lesson .see:before{content:"You should see: ";color:var(--a);font-weight:700}.lesson .toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}.lesson pre.diagram{background:#0d0c1c;border:1px solid var(--line);border-radius:12px;padding:14px 16px;white-space:pre;overflow:auto}.lesson .instr{border-left:3px solid var(--b);padding-left:16px;margin:28px 0}.lesson .ex{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0}.lesson .ok{color:var(--a)}.lesson .bad{color:#ff7a90}.lesson .num{display:inline-block;min-width:1.8em;height:1.8em;line-height:1.8em;text-align:center;border-radius:50%;background:var(--b);color:#fff;font-weight:800;margin-right:8px}.lesson table{width:100%;border-collapse:collapse}.lesson td,.lesson th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}</style>'
+CSS='<style>.lesson ol.steps>li{margin:0 0 14px}.lesson .see{color:var(--mut);display:block;margin-top:4px}.lesson .see:before{content:"You should see: ";color:var(--a);font-weight:700}.lesson .toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}.lesson pre.diagram{background:#0d0c1c;border:1px solid var(--line);border-radius:12px;padding:14px 16px;white-space:pre;overflow:auto}.lesson .instr{border-left:3px solid var(--b);padding-left:16px;margin:28px 0}.lesson .ex{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0}.lesson .ok{color:var(--a)}.lesson .ran{font-size:14px;color:var(--a)}.lesson .notran{font-size:14px;color:var(--mut)}.lesson .bad{color:#ff7a90}.lesson .num{display:inline-block;min-width:1.8em;height:1.8em;line-height:1.8em;text-align:center;border-radius:50%;background:var(--b);color:#fff;font-weight:800;margin-right:8px}.lesson table{width:100%;border-collapse:collapse}.lesson td,.lesson th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}</style>'
 def render(x,L,i,n):
   sl=x['slug']; draft=L.get('draft')
   nav=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <span>{E(L["title"])}</span></nav>'
@@ -57,8 +57,11 @@ def render(x,L,i,n):
   # 2
   pre=[dict(do='Install [Phantom](https://phantom.com) (or Solflare). In Phantom open Settings → Developer Settings, turn on Testnet Mode and pick Solana Devnet.',see='The wallet shows a devnet badge. Devnet SOL is free and worthless.'),
        dict(do=f'Copy your wallet address and request devnet SOL at [faucet.solana.com](https://faucet.solana.com).',see='About 1 SOL arrives within a few seconds. That covers every step below.')]
-  st=''.join(f'<li>{md(s["do"])}'+(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')+'</li>' for s in pre+L['try_steps'])
-  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><ol class=steps>{st}</ol>')
+  def ev(s):
+    r=''.join(f'<br><span class=ran>✅ {md(a)}: <a href="{TX(g)}"><code>{E(g[:16])}…</code></a></span>' for a,g in s.get('ran',[]))
+    return r+(f'<br><span class=notran>◻️ {md(s["ran_note"])}</span>' if s.get('ran_note') else '')
+  st=''.join(f'<li>{md(s["do"])}'+(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')+ev(s)+'</li>' for s in pre+L['try_steps'])
+  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><ol class=steps>{st}</ol>')
   # 3
   h.append('<h2 id=how><span class=num>3</span>How it works</h2>')
   if L.get('diagram'): h.append(f'<pre class=diagram>{E(L["diagram"])}</pre>')
@@ -75,7 +78,7 @@ def render(x,L,i,n):
   # 6
   sig=''.join(f'<li class=ok>✅ {E(a)}<br><a href="{TX(s)}"><code>{E(s)}</code></a></li>' for a,s in x['steps'])
   neg=''.join(f'<li class=bad>⛔ {E(n_)}</li>' for n_ in x.get('negative',[]))
-  h.append(f'<h2 id=proof><span class=num>6</span>Proof: real devnet transactions</h2><p>Recorded on {E(x["verified"])} by <a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["flow"])}"><code>{E(x["flow"])}</code></a> (<a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["log"])}">log</a>) and by clicking through the hosted app. Click a signature to open it on Solana Explorer.</p><ul class=sigs>{sig}</ul><h3>Rejected, as the program should</h3><ul>{neg}</ul>'+(f'<p><b>App check:</b> {E(x["ui_check"])}</p>' if x.get('ui_check') else '')+(f'<p><b>Not covered yet:</b> {E(x["limits"])}</p>' if x.get('limits') else ''))
+  h.append(f'<h2 id=proof><span class=num>6</span>Proof: real devnet transactions</h2><p>Recorded on {E(x["verified"])} by <a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["flow"])}"><code>{E(x["flow"])}</code></a> (<a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["log"])}">log</a>) and by clicking through the hosted app. Click a signature to open it on Solana Explorer.</p><ul class=sigs>{sig}</ul><h3>Rejected, as the program should</h3><ul>{neg}</ul>'+(f'<p><b>App check:</b> {E(x["ui_check"])}</p>' if x.get('ui_check') else '')+(f'<p><b>Not covered yet:</b> {md(L["not_covered"])}</p>' if L.get('not_covered') else (f'<p><b>Not covered yet:</b> {E(x["limits"])}</p>' if x.get('limits') else '')))
   # 7
   ex=''.join(f'<div class=ex><h3>Exercise {j}: {md(e["title"])}</h3><ol>'+''.join(f'<li>{md(s)}</li>' for s in e['steps'])+f'</ol><p><b>Expected result:</b> {md(e["expect"])}</p></div>' for j,e in enumerate(L['exercises'],1))
   h.append(f'<h2 id=exercises><span class=num>7</span>Exercises</h2>{ex}')

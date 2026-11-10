@@ -10,11 +10,22 @@
   },
   {
    "do": "Pick a colour in the colour bar at the top, then click a **white** pixel. Approve.",
-   "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open."
+   "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open.",
+   "ran": [
+    [
+     "Clicked an empty pixel on the live sol.college page: `create_pixel`",
+     "2yj2GAqcniqCBFkL2yekqVRtJk4fjKopQNvVRgY1bGCGJjZioTd9gFwMGU7fgy8CedBt6QEwy4oaxXVqy6EUhtGb"
+    ],
+    [
+     "Same click on a local copy of the same build",
+     "oEiRugSzpXXjSNMJGoYe1JQUuPxgYVmhkLqtwUchNwDfpEeSBxVbWGc9WHfxdW6ERHgUV2DFP7ZvGWofUBNwdha"
+    ]
+   ]
   },
   {
    "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Approve.",
-   "see": "This time the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet). The pixel changes colour."
+   "see": "This time the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet). The pixel changes colour.",
+   "ran_note": "Recolouring was run from the test script (`update_pixel` 37Ri7VJH…, in Proof), not clicked in the UI yet."
   },
   {
    "do": "Click again within 33 seconds of a successful paint.",
@@ -197,5 +208,6 @@
    ],
    "expect": "Sending x = 200 now reports \"between 0-199\"."
   }
- ]
+ ],
+ "not_covered": "Painting an empty pixel was clicked through on the live page. Recolouring (`update_pixel`) was verified by script only. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected."
 }

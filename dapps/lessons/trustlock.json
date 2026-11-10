@@ -14,27 +14,52 @@
   },
   {
    "do": "Paste Account 2's address into **Beneficiary Address**, set **Amount (SOL)** to `0.1` and press **15s Escrow for testing**. Approve both wallet pop-ups.",
-   "see": "Two transactions: `initialize` (creates the escrow) then `deposit` (moves 0.1 SOL into it). The toast says \"Escrow created successfully.\" and a card shows Balance 0.10 SOL, a deadline 15 seconds away and an Active badge."
+   "see": "Two transactions: `initialize` (creates the escrow) then `deposit` (moves 0.1 SOL into it). The toast says \"Escrow created successfully.\" and a card shows Balance 0.10 SOL, a deadline 15 seconds away and an Active badge.",
+   "ran": [
+    [
+     "15s Escrow for testing: `initialize`",
+     "5WammBnEQd5JH5GQZfaWK4apG7atttMNxBjYy9m3XCdYB4sQxhHt7FHh8ydFxJ3hcZLzeodseuEhXA52bCoGe9tX"
+    ],
+    [
+     "same button, second tx: `deposit` 0.1 SOL",
+     "2hsu8xQntba6vJhGxQ6Ynhhw5M3kytRZyx1Csu73DnMzFY2Uq83M1haKbXNM3SBURXDKqsjmhKqeWT9YEoAwtxZM"
+    ]
+   ]
   },
   {
    "do": "Make a second escrow the normal way: same beneficiary, pick tomorrow in **Select Deadline Date**, press **Create Switch**, approve both pop-ups.",
-   "see": "A second card with a deadline about a day away."
+   "see": "A second card with a deadline about a day away.",
+   "ran_note": "A date-picked escrow was not created in our run (we used the 15s/30s test buttons)."
   },
   {
    "do": "On the second card enter `1` in **Days** and press **Check In**. Approve.",
-   "see": "A `checkin` transaction. The toast says \"Successfully checked in.\" and the card's Deadline moves one day further out from now; Last Check-in updates."
+   "see": "A `checkin` transaction. The toast says \"Successfully checked in.\" and the card's Deadline moves one day further out from now; Last Check-in updates.",
+   "ran_note": "A successful Check In was verified by script (`checkin` 3qXk24R4…, in Proof), not through the UI: the test escrows expired before the extension landed."
   },
   {
    "do": "Wait until the first card's badge says **Expired**. Enter `1` in its Days field and press **Check In**.",
-   "see": "It fails (\"Failed to check in\"). The program rejected it with `DeadlineExceeded` (error 6002): you can no longer extend a deadline that has passed."
+   "see": "It fails (\"Failed to check in\"). The program rejected it with `DeadlineExceeded` (error 6002): you can no longer extend a deadline that has passed.",
+   "ran_note": "Clicked in the UI: the program rejected it with DeadlineExceeded (error 6002, lib.rs:33); no transaction landed."
   },
   {
    "do": "Switch Phantom to Account 2 and reload the dashboard. Press **Claim** on the expired escrow (Account 2 needs a little devnet SOL for the fee).",
-   "see": "A `claim` transaction. \"Funds claimed successfully.\" The card disappears (the escrow account is closed) and Account 2's balance goes up by the 0.1 SOL plus the escrow's rent."
+   "see": "A `claim` transaction. \"Funds claimed successfully.\" The card disappears (the escrow account is closed) and Account 2's balance goes up by the 0.1 SOL plus the escrow's rent.",
+   "ran": [
+    [
+     "Beneficiary wallet pressed Claim after the deadline: `claim`",
+     "3EPnZs553WcpxPYH8vanWLrbysYPP3timpwnrxvd22UPbMkk4bwdchsaF6hVhKuWGYyYhSSTJRGJxVaoVocmo1Wd"
+    ]
+   ]
   },
   {
    "do": "Switch back to Account 1 and press **Cancel** on the second escrow.",
-   "see": "A `cancel` transaction. \"Escrow cancelled successfully. Funds returned.\" The 0.1 SOL and the rent come back to Account 1."
+   "see": "A `cancel` transaction. \"Escrow cancelled successfully. Funds returned.\" The 0.1 SOL and the rent come back to Account 1.",
+   "ran": [
+    [
+     "Owner pressed Cancel (on a 15s test escrow): `cancel`, funds back",
+     "3VK1uo2C9LS6C9dttm4hYTrNn9QXf4YMfQ3MT8oZjYBNauaTHgv1G9xAz9ZmLTjAWQ9HSDSwAdxg6D48QBQttCky"
+    ]
+   ]
   }
  ],
  "diagram": "Owner (Account 1)\n  │ initialize(deadline, beneficiary, seed)   creates ─▶ Escrow PDA  seeds = [\"escrow\", owner, seed]\n  │ deposit(amount)                           SOL ─────▶   owner | beneficiary | deadline | last_checkin | bump | seed\n  │ checkin(new_deadline)   only while now <  deadline       lamports = deposited SOL + rent\n  │ cancel()                any time, by the owner ──▶ all lamports back to owner, account closed\nBeneficiary (Account 2)\n    claim()                 only when now >= deadline ─▶ all lamports to beneficiary, account closed",
@@ -297,5 +322,6 @@
    ],
    "expect": "That claim now fails with a missing-signature error; a claim signed by the beneficiary still succeeds after the deadline."
   }
- ]
+ ],
+ "not_covered": "Create (initialize + deposit), Cancel, the beneficiary's Claim and the expired Check In rejection were all clicked through in the hosted app. A successful Check In and a date-picked escrow were verified by script only."
 }

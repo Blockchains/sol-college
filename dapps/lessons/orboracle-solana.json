@@ -1,0 +1,304 @@
+{
+ "title": "OrbOracle: a stake-weighted, time-decayed price oracle",
+ "summary": "Create your own on-chain price feed. Token holders stake to submit prices; the program keeps a weighted average that fades old submissions, pays submitters, and lets stakers vote out bad actors.",
+ "what": "OrbOracle lets anyone create a price oracle tied to a **weight token**. Holders lock that token in the oracle's vault; once their lock period ends, the tokens count as voting weight. Each `submit_value` replaces the submitter's previous contribution in a token-weighted average whose older weight decays with a configurable half-life, so the feed follows recent, well-staked submitters. Submitters can earn SOL from the oracle account's balance, and stakers can vote to blacklist an address that submits bad values.",
+ "app_note": "The fork's own Next.js 15 app, static export; only the program ID (in the app's IDL and types) and the base path changed. Oracle pages are served at `/o/?oracle=<address>` for static hosting.",
+ "try_steps": [
+  {
+   "do": "Make a weight token with **0 decimals** (the app's Deposit field sends whole base units): `spl-token create-token --decimals 0 --url devnet`, then `spl-token create-account <MINT> --url devnet` and `spl-token mint <MINT> 1000 --url devnet`, using the same keypair as Phantom or transferring the tokens to your Phantom address.",
+   "see": "1000 tokens of your own mint in your wallet. Copy the mint address."
+  },
+  {
+   "do": "Open [the Create page](/dapps/orboracle-solana/create/) and connect with the wallet button in the top bar.",
+   "see": "The Create Oracle form; the submit button reads \"Connect Wallet to Create Oracle\" until you connect."
+  },
+  {
+   "do": "Fill in a name and description, paste your mint as the weight token, keep Reward 1000 (1%), Half-life 3600, Quorum 2000 and Alpha 1, and set **both lock periods to 5** seconds. Press **Create Oracle** and approve.",
+   "see": "An `initialize` transaction; the toast says \"Oracle deployed\" and the page shows the new oracle account (a PDA of your wallet and the mint).",
+   "ran": [
+    [
+     "Create Oracle form (5 s locks): `initialize`; the page showed the oracle PDA CmAjgQFF…",
+     "5TEMazGZo9WwxA42gvLnv6FTthKk3Jjk6bbdzH17zabeEV9tAWbxs8Dfd1dFhoPxCsU2WtqiD2LLjtmszyHZkP48"
+    ]
+   ]
+  },
+  {
+   "do": "Open your oracle from **Explorer** (top bar). Enter `50` under Deposit and press **Deposit Tokens**; approve.",
+   "see": "A `deposit_tokens` transaction: 50 tokens move into the oracle's vault, locked for the deposit lock period.",
+   "ran": [
+    [
+     "Deposit Tokens 50",
+     "4u4FVXQakRiNtHg6hBAzVPdtdyGSzXbLFmDWoE8a2KqsxKpAi9EHYFnZf7aqbyQJj3WgR7t9NpdcaXhTpc6FJUnV"
+    ]
+   ]
+  },
+  {
+   "do": "Wait a few seconds, enter a price such as `123.45` and press **Submit Value**; approve.",
+   "see": "A `submit_value` transaction. AGGREGATED and LATEST SUBMISSION both show 123.45 (you are the only submitter, so the average is your value).",
+   "ran": [
+    [
+     "Submit Value 123.45; the page read back AGGREGATED 123.45 and LATEST 123.45",
+     "CmWoSREGbve2U336yuHm9MYBvm8c3eKCbd5ZMoxsdntRD9LpjGymLmrinjaaHNpToHgpvMPMnZ9yMxUgsLS1xyr"
+    ]
+   ]
+  },
+  {
+   "do": "After the withdrawal lock, enter `10` under Withdraw Weight Tokens and press **Withdraw Tokens**.",
+   "see": "A `withdraw_tokens` transaction: 10 tokens come back from the vault, and your weight drops to 40.",
+   "ran_note": "Withdraw was run from the script (B withdrew 40, 3WkpLLWv…), not clicked."
+  },
+  {
+   "do": "Optional, with a second wallet that also deposited: enter the first wallet's address as **Target Address** and vote blacklist.",
+   "see": "A `vote_blacklist` transaction. Once the target is blacklisted, its next Submit Value fails with `AccountBlacklisted`.",
+   "ran_note": "Voting was run from the script (B blacklisted A, 7NJHE8SK…), not clicked."
+  }
+ ],
+ "diagram": "creator ── initialize(params) ─▶ OracleState PDA [\"oracle\", authority, weight_mint]   (~8 KB: params, aggregate,\n                              └─▶ oracle vault = ATA(owner = OracleState, weight_mint)       128-entry price history, 64 vote targets)\nanyone  ── fund(lamports) ─────▶ SOL into OracleState (the reward pool)\nholder  ── deposit_tokens(n) ──▶ tokens ─▶ vault;  UserState PDA [\"user\", oracle, holder]: locked += n\n           (after deposit_locking_period: locked → unlocked = voting weight)\nholder  ── submit_value(v) ────▶ aggregate = time-decayed, token-weighted average (replaces holder's previous v)\n                                 reward lamports: OracleState ─▶ holder\nholder  ── withdraw_tokens(n) ─▶ vault ─▶ holder (PDA signs with seeds), after withdrawal_locking_period\nholder  ── vote_blacklist / vote_whitelist(target) ─▶ targets[] tally; blacklisted addresses can't submit or vote",
+ "accounts": [
+  [
+   "OracleState",
+   "PDA `[\"oracle\", authority, weight_mint]`",
+   "Parameters, aggregated / latest value, aggregated weight, history, vote targets; its SOL balance funds rewards"
+  ],
+  [
+   "Oracle vault",
+   "Associated token account of (OracleState, weight_mint)",
+   "All staked weight tokens; only the OracleState PDA can sign for it"
+  ],
+  [
+   "UserState",
+   "PDA `[\"user\", oracle, user]`",
+   "Locked / unlocked tokens, timestamps, last submitted price and weight, the user's votes"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize`: create the oracle and its vault",
+   "refs": [
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 20,
+     "b": 66
+    },
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 680,
+     "b": 705,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Validates the parameters: non-empty name of at most 64 bytes (`InvalidName`), description ≤ 256, `reward_bps <= 100_000` (`InvalidRewardRate`). Our test hit both errors.",
+    "The account is a PDA of `[\"oracle\", authority, weight_mint]`, so one wallet can run one oracle per weight token; the app checks for an existing one before sending.",
+    "`associated_token::authority = oracle_state` creates the vault owned by the oracle PDA.",
+    "Space is fixed up front for 128 price records and 64 vote targets (`OracleState::SPACE`), so the account never needs to grow."
+   ]
+  },
+  {
+   "name": "`fund` and `deposit_tokens`: SOL for rewards, tokens for weight",
+   "refs": [
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 68,
+     "b": 93
+    },
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 95,
+     "b": 145
+    }
+   ],
+   "steps": [
+    "`fund` is a System Program transfer of SOL into the oracle account (zero is rejected with `AmountMustBePositive`). The app has no Fund button; our script funded 0.05 SOL.",
+    "`deposit_tokens` creates your UserState on first use (`init_if_needed`), first unlocks anything whose lock has expired, then transfers your tokens into the vault and adds them to `locked_tokens`.",
+    "Every deposit resets `deposit_timestamp`, so new tokens wait the full `deposit_locking_period` before they count."
+   ]
+  },
+  {
+   "name": "`submit_value`: update the aggregate and pay the submitter",
+   "refs": [
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 212,
+     "b": 329
+    },
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 440,
+     "b": 453,
+     "note": "unlock_tokens_if_possible"
+    }
+   ],
+   "steps": [
+    "Refuses blacklisted addresses (`AccountBlacklisted`) and anyone with no unlocked tokens (`NoUnlockedTokens`; our submit right after depositing was rejected).",
+    "Decays the global aggregated weight by the time since the last submission, and your own previous weight by the time since **your** last submission.",
+    "Removes your previous contribution (`last_submitted_price × your decayed weight`) from the numerator and weight, then adds the new value × your current unlocked tokens. One wallet therefore never counts twice.",
+    "New aggregate = numerator / new total weight. Values are integers with 6 decimals: 150.000000 is stored as `150000000`.",
+    "Reward: `reward_pool = oracle lamports × reward_bps / 100000`, scaled by your share of the weight and by how long since you last submitted (an activity factor), then moved directly from the oracle account to you.",
+    "Appends `(time, aggregate, value)` to the 128-entry history, dropping the oldest when full."
+   ]
+  },
+  {
+   "name": "`withdraw_tokens`: get your stake back",
+   "refs": [
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 147,
+     "b": 210
+    }
+   ],
+   "steps": [
+    "Only unlocked tokens can leave (`InsufficientUnlockedTokens`; our test asked for 101 of 100), and only after `withdrawal_locking_period` since your last operation (`WithdrawalLocked`).",
+    "Your vote weights are updated to the new balance (`apply_new_weight_to_votes`) before the tokens move.",
+    "The vault is owned by the OracleState PDA, so the transfer is signed with `new_with_signer` and the seeds `[\"oracle\", authority, weight_mint, bump]`."
+   ]
+  },
+  {
+   "name": "`vote_blacklist` / `vote_whitelist`: stake-weighted moderation",
+   "refs": [
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 358,
+     "b": 438
+    },
+    {
+     "path": "anchor/programs/oracle/src/lib.rs",
+     "a": 928,
+     "b": 938,
+     "note": "refresh_blacklist_status"
+    }
+   ],
+   "steps": [
+    "Your weight is your unlocked tokens. You can vote once per target and kind (`AlreadyVoted`), for up to 64 targets.",
+    "A target is blacklisted when blacklist votes > whitelist votes **and** total votes > `quorum`.",
+    "Look at the units: the program compares the vote total (raw token base units) with `quorum` as stored. The app labels Quorum as basis points (2000 = 20%) and sends the number unchanged, so on chain the threshold is 2000 base units, not 20% of the stake. In our script B's 100 tokens (100,000,000 base units with 6 decimals) easily passed it and blacklisted A."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "an O(1) decaying weighted average without floating point",
+  "text": "The aggregate is updated in constant time per submission: the program keeps only the running numerator's result (`aggregated_value`) and the total weight (`aggregated_weight`), decays the old weight by elapsed time, swaps out the submitter's own previous contribution and adds the new one. No loops over submitters, no history needed for the math.",
+  "refs": [
+   {
+    "path": "anchor/programs/oracle/src/lib.rs",
+    "a": 228,
+    "b": 275,
+    "note": "the update"
+   },
+   {
+    "path": "anchor/programs/oracle/src/lib.rs",
+    "a": 612,
+    "b": 636,
+    "note": "decay_factor: 2^(-t/half-life) from a lookup table"
+   }
+  ],
+  "more": [
+   "Decay is `2^(-elapsed / half_life)` in 18-decimal fixed point (`WAD = 10^18`). Solana programs avoid floats, so `process_pow2_neg_int` (lines 526–591) is a table of 2^-k for k = 0…60, and fractional steps are linearly interpolated between two table entries.",
+   "Rewards use the opposite curve, `1 - decay` (the activity factor, lines 638–645): the longer since your last submission, the more your next one earns. Spamming submissions earns almost nothing.",
+   "The reward pool is computed from the oracle account's **whole** lamport balance, which includes its own rent deposit, not only what was funded."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create: derive the oracle PDA and vault, refuse duplicates, send `initialize`",
+   "refs": [
+    {
+     "path": "src/components/createOracle.tsx",
+     "a": 256,
+     "b": 299
+    }
+   ],
+   "steps": [
+    "The PDA uses the same seeds as the program; `getAssociatedTokenAddressSync(mint, oracleState, true)` (the `true` allows an off-curve PDA owner) gives the vault.",
+    "It checks that neither account exists yet, then sends all parameters as one `params` struct. Quorum goes in as typed (see the units note above)."
+   ]
+  },
+  {
+   "title": "Deposit: whole base units",
+   "refs": [
+    {
+     "path": "src/app/[oracleId]/InteractionClient.tsx",
+     "a": 345,
+     "b": 379
+    }
+   ],
+   "steps": [
+    "`new BN(depositAmount)` sends the number exactly as typed, without multiplying by the mint's decimals. That's why Try it uses a 0-decimal mint.",
+    "Before sending, the app makes sure your token account and the vault exist (`ensureAssociatedTokenAccount`)."
+   ]
+  },
+  {
+   "title": "Submit Value: decimal text to a 6-decimal integer",
+   "refs": [
+    {
+     "path": "src/app/[oracleId]/InteractionClient.tsx",
+     "a": 83,
+     "b": 118
+    },
+    {
+     "path": "src/app/[oracleId]/InteractionClient.tsx",
+     "a": 463,
+     "b": 487
+    }
+   ],
+   "steps": [
+    "`parsePriceInput` turns `123.45` into the integer `123450000` without floating point (string padding), and rejects more than 6 decimals.",
+    "`submitValue` only needs your wallet, the oracle and your UserState PDA."
+   ]
+  },
+  {
+   "title": "Votes",
+   "refs": [
+    {
+     "path": "src/app/[oracleId]/InteractionClient.tsx",
+     "a": 522,
+     "b": 538
+    }
+   ],
+   "steps": [
+    "The same three accounts; the method is `voteBlacklist` or `voteWhitelist` depending on the button."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Recompute the aggregate",
+   "steps": [
+    "From Proof: A staked 300 tokens and submitted 150; B staked 100 and submitted 160 shortly after.",
+    "Compute the token-weighted average by hand."
+   ],
+   "expect": "(300 × 150 + 100 × 160) / 400 = 152.5. The chain stored `152500778` (152.500778): slightly above, because A's weight had decayed a little in the seconds between the two submissions."
+  },
+  {
+   "title": "Find B's reward",
+   "steps": [
+    "Open B's submit transaction `63bZjLdC…` on Explorer and look at the balance changes, or compare the oracle's lamports in our log before (95,603,160 after funding) and after (95,284,351)."
+   ],
+   "expect": "The oracle account paid out 318,809 lamports, all to B. A's first submission earned 0 because the total weight before it was 0."
+  },
+  {
+   "title": "Watch a lock release",
+   "steps": [
+    "Create an oracle with a 60-second deposit lock, deposit, and press Submit Value immediately.",
+    "Try again after 60 seconds."
+   ],
+   "expect": "First attempt fails with `NoUnlockedTokens`; the second succeeds, because `unlock_tokens_if_possible` moves locked to unlocked once the lock has passed."
+  },
+  {
+   "title": "Make quorum a real percentage",
+   "steps": [
+    "In `refresh_blacklist_status` (line 928), compare against `total_deposited_tokens × quorum / 10_000` instead of `quorum`.",
+    "`anchor build` and test: total stake 400, quorum 2000 (20%), one voter with 50 tokens votes blacklist."
+   ],
+   "expect": "With the fix, 50 < 80 (20% of 400): not blacklisted. A 100-token voter then pushes the total above 80 and blacklists the target."
+  },
+  {
+   "title": "Derive your UserState",
+   "steps": [
+    "In Node: `PublicKey.findProgramAddressSync([Buffer.from('user'), oracle.toBuffer(), you.toBuffer()], new PublicKey('3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx'))`."
+   ],
+   "expect": "The account your deposit created; on Explorer its data starts (after the 8-byte discriminator) with the oracle address and then your wallet."
+  }
+ ],
+ "not_covered": "Create, deposit and submit were clicked through in the hosted app. Funding, withdraw, blacklist voting and the blacklisted-submitter rejection were run from the script. Whitelist votes and `update_user_vote_weights` were not exercised. The app has no Fund button, and the explorer list uses getProgramAccounts on the public RPC, so it can be slow."
+}

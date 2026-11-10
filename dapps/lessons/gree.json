@@ -10,7 +10,13 @@
   },
   {
    "do": "Press **Run program** and approve.",
-   "see": "One transaction. When it confirms, the page shows `Minted NFT: <address>` linking to Explorer, and a toast with the transaction."
+   "see": "One transaction. When it confirms, the page shows `Minted NFT: <address>` linking to Explorer, and a toast with the transaction.",
+   "ran": [
+    [
+     "Run program minted NFT Gp7Ncuci…",
+     "4FEMzQBpHbPKGSdhpfC21rkVDSEA43gCucL9U7kHPdDH9wGd9tv9cz66WSi7KsfvsezVB6tNUGGQvMT7rGPphMY1"
+    ]
+   ]
   },
   {
    "do": "Click the minted address.",

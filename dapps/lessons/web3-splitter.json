@@ -14,7 +14,13 @@
   },
   {
    "do": "Type a short name, paste the mint into **Token address**. In **Add Address** replace the pre-filled address with **your own** wallet address, keep `100` %, and press the **+** button. Press **Create** and approve.",
-   "see": "An `initialize` transaction. It creates the vault PDA and the vault's token account. (Make yourself the only recipient for now: see step 6 for why.)"
+   "see": "An `initialize` transaction. It creates the vault PDA and the vault's token account. (Make yourself the only recipient for now: see step 6 for why.)",
+   "ran": [
+    [
+     "Create page: splitter 'sc-ui-0808', 100% to the test wallet: `initialize`",
+     "43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"
+    ]
+   ]
   },
   {
    "do": "Open [the List page](/dapps/web3-splitter/#/list) and copy your vault's address.",
@@ -22,11 +28,24 @@
   },
   {
    "do": "Open [the Actions page](/dapps/web3-splitter/#/action), paste the vault address, press **Get it**. Enter `25` in the deposit field and press **Deposite**; approve.",
-   "see": "A `deposite` transaction: 25 tokens move from your token account into the vault's. The table lists your wallet with Share 100 %. (The balance column assumes 9 decimals and may show a wrong number or NaN.)"
+   "see": "A `deposite` transaction: 25 tokens move from your token account into the vault's. The table lists your wallet with Share 100 %. (The balance column assumes 9 decimals and may show a wrong number or NaN.)",
+   "ran": [
+    [
+     "Actions page, Get it, Deposite 25: vault token account 0 → 25",
+     "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"
+    ]
+   ]
   },
   {
    "do": "Press **Claim** on your row and approve.",
-   "see": "A `claim` transaction: the 25 tokens come back to you. Now repeat steps 3–6 with **two** recipients, 60 % you and 40 % a second wallet, and try Claim from the second wallet: it fails. Section 4 explains why."
+   "see": "A `claim` transaction: the 25 tokens come back to you. Now repeat steps 3–6 with **two** recipients, 60 % you and 40 % a second wallet, and try Claim from the second wallet: it fails. Section 4 explains why.",
+   "ran": [
+    [
+     "Claim: 25 tokens back to the wallet (975 → 1000)",
+     "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"
+    ]
+   ],
+   "ran_note": "The two-recipient case (B's failing claim) was run by script; see Proof."
   }
  ],
  "diagram": "authority ── initialize(name, percentages, recipients) ─▶ Vault PDA  [\"vault\", name[..32], authority, mint]\n                                                          name | authority | total | percentages | accounts_vault (booked) | accounts | token_id | bump\n                                                    └──▶ vault token account = ATA(owner = Vault PDA, mint)\nanyone  ── deposite(amount): tokens  your ATA ─────────▶ vault ATA;  accounts_vault[i] += amount × pct[i] / 100\nrecipient ── claim(): vault ATA ─▶ claimer's ATA, signed by the Vault PDA via seeds   (bugs: see §4)\nauthority ── update(percentages) / delete() (closes the Vault account only)",
@@ -240,5 +259,6 @@
    ],
    "expect": "Rejected with a constraint error; deposits can no longer book shares without paying the real vault."
   }
- ]
+ ],
+ "not_covered": "Create, deposit and claim were clicked through for a single-recipient splitter. Multi-recipient payouts can't work correctly because of the claim bugs (only the authority can claim, and it receives the whole balance). The app's QR deposit link points at the author's Cloud Run endpoint, which we don't use, and the balance column shows NaN."
 }
