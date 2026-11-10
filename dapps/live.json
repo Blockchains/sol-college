@@ -738,5 +738,149 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py stakes / stakes-unstake / stakes-create, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): stake, bribe, unstake and claim went through the app's own buttons; Create Pool fails in the app, so the pool was created by the script.",
   "limits": "This is the testing build (1 day = 1 second), so vesting and bribe shares that take days on mainnet finish in seconds here: the script's first claim after about 5 s paid 82.5 of 150, and the next one paid the rest. The app never calls sync_bribes, so bribes sent from the app sit in the vault until someone syncs (the script does). Create Pool in the app fails because its IDL is older than the program (no fee_receiver). Built with Solana 1.18.26 tools (platform-tools v1.41): the same source built with 2.3.13 tools failed at runtime with an access violation in initialize_pool, so the first deploy was upgraded."
+ },
+ {
+  "slug": "votara",
+  "name": "Votara (DAO proposals, voting, quorum)",
+  "lesson": "/explore/votara/",
+  "app": "/dapps/votara/",
+  "fork": "https://github.com/Blockchains/Votara",
+  "commit": "c92963d2275ddce5e854c2e0db5be83c7fcf4ca5",
+  "program": "CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt",
+  "app_kind": "The fork's own React + Vite app (client/votara-client), with this devnet program ID, hash routing (#/proposals, #/create, #/treasury, #/profile) for static hosting, and one bug fix: its TokenBalance read a connection context that is never mounted, which blanked the whole app on the profile page.",
+  "learn": "A DAO account holds the config (voting period, quorum, approval threshold). Voters get voting power from stake_tokens or buy_tokens, anyone with a voter record creates proposals, each voter votes once (a vote-record PDA per voter and proposal), and after the voting period the DAO authority finalizes: under quorum is rejected, otherwise yes/(yes+no) against the threshold decides passed or rejected.",
+  "source": [
+   [
+    "lib.rs L228-L287 finalize_proposal (quorum is a count of unique voters, then the approval threshold)",
+    "https://github.com/Blockchains/Votara/blob/c92963d2275ddce5e854c2e0db5be83c7fcf4ca5/votara/programs/votara/src/lib.rs#L228-L287"
+   ],
+   [
+    "lib.rs L288-L358 cast_vote (one vote record per voter and proposal)",
+    "https://github.com/Blockchains/Votara/blob/c92963d2275ddce5e854c2e0db5be83c7fcf4ca5/votara/programs/votara/src/lib.rs#L288-L358"
+   ],
+   [
+    "lib.rs L608-L635 stake_tokens (the token transfer is a commented-out placeholder)",
+    "https://github.com/Blockchains/Votara/blob/c92963d2275ddce5e854c2e0db5be83c7fcf4ca5/votara/programs/votara/src/lib.rs#L608-L635"
+   ],
+   [
+    "lib.rs L660-L684 buy_tokens (no SOL or token transfer either)",
+    "https://github.com/Blockchains/Votara/blob/c92963d2275ddce5e854c2e0db5be83c7fcf4ca5/votara/programs/votara/src/lib.rs#L660-L684"
+   ]
+  ],
+  "flow": "tests/devnet/votara.mjs",
+  "log": "tests/devnet/logs/votara-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… (the DAO authority) on #/treasury: 10, Swap SOL for VTR (buy_tokens; it adds 10 voting power and moves no SOL or tokens)",
+    "3fbvF13Q2u5BKiMkho2xTj8KDD3N6DWqi46JcGDG9AZo8ZtWXW8MXdrULtiB2ydjRjXPLT5uMgtkWpQosSjpkhnK"
+   ],
+   [
+    "UI: #/create, title and summary, Broadcast Proposal (proposal \"UI proposal 06006\")",
+    "3uoB7u4oebVt8uUaiEh6VEu9mDCRrrukLe62UZvfXbE9e1bT3CedbhW7uWVQbCULxUXbcVDWPhc7aynUxWVsbqoq"
+   ],
+   [
+    "UI: Finalize & Pick Winner on that proposal after its 40 s vote (nobody voted, so it was rejected for no quorum)",
+    "3hCpJWU3XamYuTnMzBizL4P2Ld94B682YkY8CfBitCLYDK5FtyJaJfyKWyM3BaDDqBdcfbYAckbUQr7pvv5RvvRT"
+   ],
+   [
+    "UI (second run, voting period 150 s): Swap SOL for VTR, 10 more",
+    "5yDESsEvj3x41gkWMJwd23cAnVg9XQ69kK75MzDnd8QHgXu4cgNq5gRkqd3r5BhGRqAVoN3tMPBxziM2pjDq4u4Q"
+   ],
+   [
+    "UI: Broadcast Proposal (\"UI proposal 06230\", HM1c…Rd8W)",
+    "3T9bBGf7gUf6jzZGGXkRVt4WmY7Rz3bShzNzbwDU5rBQoB4kDDHM9JZPh3b6c9S2HNJ76eXP9CnPJ4a6KZ7x9rMp"
+   ],
+   [
+    "UI: All Proposals, open it, Yes, Confirm Yes Vote (on chain: yes 20, 1 voter)",
+    "5omXjaftqStpejuJAcQTXDrbxSZKdT4NrUuAfug1Rxms7SGx36pvQ6Hxjkk49b9kkJVY11reXAMNTmExnDXsdrPm"
+   ],
+   [
+    "UI: Finalize & Pick Winner after the vote closed (on chain: rejected, 1 voter is under the quorum of 2)",
+    "3TTRcubRF6qgFrybPgca56vdhWqRdtekRa1aFzVyrUYp3zKfoC6PLLELZU6JcXo1y2ZiDQk9mgNLLvmEiCrXqXaM"
+   ],
+   [
+    "Script: fund B and C",
+    "3EGEq3qhqJGLtVBZUyYaLDcyqeGmwMxqcPSYrFdzZqXPjdMXV6UKc3WWZ9QBBZfgcAAMhd8s2p9BrSjFmYJ2NHqj"
+   ],
+   [
+    "Script: initialize_dao",
+    "2g84DMaXB4J1rDguN6pdHzDr5Boh6o6rxaLRdPztwFdaVqz5gCMdsoNKZ3grZqmgnA72GmQ2nCpREFun711nR9ne"
+   ],
+   [
+    "Script: initialize_treasury (gov mint + vault PDAs)",
+    "3gb1AknDfnBmzh1SH6DEB1H3FXYUkSsgiimHneQzViMzYtnaqNBJpWt6m4paNjMPXXf5xKbRvJcgKQ1ARBGvc35h"
+   ],
+   [
+    "Script: update_config: voting period 40 s, timelock 0, quorum 2 voters (defaults are 7 days and 10 voters)",
+    "5GUXq4DMi1kfzKFKw5UnxQ5iFNpuR9SMFCkjCxezjyC6N7PqRK9MpgwQW2niF6mhbUUePqs28kuGDKo2qfZijGdg"
+   ],
+   [
+    "Script: B stakes 100 while holding 0 gov tokens (stake_tokens moves no tokens)",
+    "3J5VmA5cs8FGie1dAdiAanFnCz59i58texjeVew6BCCw1S8axZfwu6Rw9GkV7DmF4nm4stDD8JWseg7VsLEXKiHE"
+   ],
+   [
+    "Script: C stakes 40",
+    "5hUy9cJQSrmd3Ax5CHbKDxoB8ZFqS6cX6aAwD2fMbawk6aqTNJAFrYVe66Bmsb6yeLTbhY44JBzBFCBpfSFhSpv6"
+   ],
+   [
+    "Script: create_proposal #0",
+    "QDutuCGpbRUU6hdHPqFuBUUjydXYQ1becfm8zvCetqBccNyatmU5U6tjdUrVVaHZno6bpMACFpA5cLvf7ShJNya"
+   ],
+   [
+    "Script: B votes Yes (power 100)",
+    "2xTRw34dstFoKP65GS1aPjxQ5vzs6h5nrggGCD5pq8PhTWshihoJVJ3V8xzxYaPqrqr2ihiXUXfy1nHEz9TmWo3Q"
+   ],
+   [
+    "Script: C votes No (power 40)",
+    "61rLjFHqRGMXRG2JiMGDLj9UuTUD6MfX4dQkp5ndydadCter8af4NLdKS2ic3RKL9v6mADi63pTrRgVpPw8fD1yv"
+   ],
+   [
+    "Script: finalize_proposal",
+    "62ybR9o71i1SsDCfZoc3izNEsda76JsbentreKTSJjEnjozLSZnGXiXJ7mcaYSp5Zb6kBcmQHnrx1v9dUC3Kn5NC"
+   ],
+   [
+    "Script: update_config: voting period 150 s (so a person clicking through the UI has time to vote); confirmed with solana confirm after the client timed out",
+    "5sWBLEZKrxGqo2au9kqxrQNwW2jXiWs48smbrsdu5QptVQFTzv5PaDDUfNYhmSy64sT9WU9w2v7zkxiMAKrQKGza"
+   ]
+  ],
+  "negative": [
+   [
+    "update_config_by_non_authority",
+    "Unauthorized"
+   ],
+   [
+    "create_proposal_title_over_100_chars",
+    "TitleTooLong"
+   ],
+   [
+    "B_votes_twice",
+    "Allocate: account Address { address: 8SoPxd7zK3UVaiE3nXjwRwi5h2dZw4iVtDGsr5MfNj92, base: None } already in use"
+   ],
+   [
+    "finalize_before_end",
+    "VotingPeriodNotEnded"
+   ],
+   [
+    "A_votes_after_end",
+    "ProposalClosed"
+   ],
+   [
+    "finalize_by_non_authority",
+    "Unauthorized"
+   ],
+   [
+    "UI: Confirm Yes Vote after a 40 s voting period had ended (the wallet simulated it and sent nothing)",
+    "ProposalClosed (6003)"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py votara (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "stake_tokens and buy_tokens move no tokens and no SOL (the transfers are commented-out placeholders), so voting power is free: anyone can give themselves any amount up to the treasury's counter.",
+   "Quorum is an absolute count of unique voters (config.quorum_percentage, default 10), not a percentage.",
+   "We set the voting period to 40 s for the script and 150 s for the UI run, timelock 0 and quorum 2 (defaults: 7 days and 10 voters) with update_config, which the app has no screen for.",
+   "The proposal page's live counts come from a websocket log feed; on a plain HTTP RPC they stay at 0 until you reload, while the chain has the votes.",
+   "Only the DAO authority can finalize; on sol.college that is the test wallet m4Ac…, so other visitors can vote but not finalize."
+  ]
  }
 ]

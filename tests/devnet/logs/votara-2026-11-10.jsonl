@@ -1,0 +1,20 @@
+{"step":"fund B and C","sig":"3EGEq3qhqJGLtVBZUyYaLDcyqeGmwMxqcPSYrFdzZqXPjdMXV6UKc3WWZ9QBBZfgcAAMhd8s2p9BrSjFmYJ2NHqj"}
+{"step":"setup","program":"CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt","authority":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr","B":"5wWT29t6unq6nQ1YKdwbnPjXDXhWHZuFYKBkgi5SFwd7","C":"BJHCDnsn91VXxsCGW8phRqPhCaHeyMvfjhPBa6VLWs8e","dao":"9fvzqe4epd4Kk7fPBAZDU5zcwD48oJisAPruH6STNKG2"}
+{"step":"initialize_dao","ok":true,"sig":"2g84DMaXB4J1rDguN6pdHzDr5Boh6o6rxaLRdPztwFdaVqz5gCMdsoNKZ3grZqmgnA72GmQ2nCpREFun711nR9ne"}
+{"step":"initialize_treasury (gov mint + vault PDAs)","ok":true,"sig":"3gb1AknDfnBmzh1SH6DEB1H3FXYUkSsgiimHneQzViMzYtnaqNBJpWt6m4paNjMPXXf5xKbRvJcgKQ1ARBGvc35h"}
+{"step":"update_config_by_non_authority","expectedFailure":true,"error":"Unauthorized"}
+{"step":"update_config: voting period 40 s, timelock 0, quorum 2 voters (defaults are 7 days and 10 voters)","ok":true,"sig":"5GUXq4DMi1kfzKFKw5UnxQ5iFNpuR9SMFCkjCxezjyC6N7PqRK9MpgwQW2niF6mhbUUePqs28kuGDKo2qfZijGdg"}
+{"step":"B stakes 100 while holding 0 gov tokens (stake_tokens moves no tokens)","ok":true,"sig":"3J5VmA5cs8FGie1dAdiAanFnCz59i58texjeVew6BCCw1S8axZfwu6Rw9GkV7DmF4nm4stDD8JWseg7VsLEXKiHE","Bpower":100}
+{"step":"C stakes 40","ok":true,"sig":"5hUy9cJQSrmd3Ax5CHbKDxoB8ZFqS6cX6aAwD2fMbawk6aqTNJAFrYVe66Bmsb6yeLTbhY44JBzBFCBpfSFhSpv6"}
+{"step":"create_proposal_title_over_100_chars","expectedFailure":true,"error":"TitleTooLong"}
+{"step":"create_proposal #0","ok":true,"sig":"QDutuCGpbRUU6hdHPqFuBUUjydXYQ1becfm8zvCetqBccNyatmU5U6tjdUrVVaHZno6bpMACFpA5cLvf7ShJNya","proposal":"W5FnGuXpjaJo5qxHdfp5yAXyoYnpWfWaJrEs4NCtZk3"}
+{"step":"B votes Yes (power 100)","ok":true,"sig":"2xTRw34dstFoKP65GS1aPjxQ5vzs6h5nrggGCD5pq8PhTWshihoJVJ3V8xzxYaPqrqr2ihiXUXfy1nHEz9TmWo3Q"}
+{"step":"C votes No (power 40)","ok":true,"sig":"61rLjFHqRGMXRG2JiMGDLj9UuTUD6MfX4dQkp5ndydadCter8af4NLdKS2ic3RKL9v6mADi63pTrRgVpPw8fD1yv"}
+{"step":"B_votes_twice","expectedFailure":true,"error":"Allocate: account Address { address: 8SoPxd7zK3UVaiE3nXjwRwi5h2dZw4iVtDGsr5MfNj92, base: None } already in use"}
+{"step":"finalize_before_end","expectedFailure":true,"error":"VotingPeriodNotEnded"}
+{"step":"A_votes_after_end","expectedFailure":true,"error":"ProposalClosed"}
+{"step":"finalize_by_non_authority","expectedFailure":true,"error":"Unauthorized"}
+{"step":"finalize_proposal","ok":true,"sig":"62ybR9o71i1SsDCfZoc3izNEsda76JsbentreKTSJjEnjozLSZnGXiXJ7mcaYSp5Zb6kBcmQHnrx1v9dUC3Kn5NC","status":"passed","yes":100,"no":40,"uniqueVoters":2,"quorumReached":true}
+{"step":"gov token supply after all of this","supply":"0"}
+{"step":"authority gov-token account (for the UI buy step)","ata":"Ea6SZP7tf4KxcfmfMAd8HQRh5Rbvt1zjE9VhLE19iyzJ"}
+{"step":"update_config: voting period 150 s (so a person clicking through the UI has time to vote); confirmed with solana confirm after the client timed out","ok":true,"sig":"5sWBLEZKrxGqo2au9kqxrQNwW2jXiWs48smbrsdu5QptVQFTzv5PaDDUfNYhmSy64sT9WU9w2v7zkxiMAKrQKGza"}

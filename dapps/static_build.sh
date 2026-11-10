@@ -54,6 +54,10 @@ P
      cd "$src/app" && sed -i "s/stkWEMeJyUyoqZu6C65z21Vzt3CezXRuix7oqJ78RwS/EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD/" src/constants/solana.ts
      python3 "$(dirname "$out")/../../tests/devnet/patches/stakes-main.py"
      npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && VITE_RPC_URL=https://api.devnet.solana.com npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
+  votara) # fork's own React + Vite app (client/votara-client) on the program deployed from votara/programs/votara (see dapps/deployed/votara.json); hash routing + TokenBalance fix
+     cd "$src/client/votara-client" && sed -i "s/CXJXjwHGo67zYveByRp2aydFgXHRcPTEQbRt8iNQEtvF/CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt/g" src/constants/constant.tsx src/idl/votara.json
+     python3 "$(dirname "$out")/../../tests/devnet/patches/votara.py"
+     npm ci --no-audit --no-fund >/dev/null && npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

@@ -322,6 +322,65 @@ def run(pg):
         pg.get_by_placeholder('Token mint address...').fill(sys.argv[4])
         n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Create$')).click(); pump(pg, 20000)
         log(step='create_pool_via_ui', sent=sigs_new(n), text=body(pg)[:300])
+    elif app == 'votara':  # the test wallet is the DAO authority (set up by votara.mjs); register, buy, propose, vote, finalize
+        pg.goto(base + '#/profile', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 6000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        b = pg.get_by_role('button', name=re.compile(r'Register Voter'))
+        if b.count():
+            n = len(SENT); b.first.click(); pump(pg, 25000); log(step='register_voter_via_ui', sent=sigs_new(n))
+        else: log(step='register_voter_via_ui', note='no Register button (voter already exists)', text=body(pg)[:300])
+        pg.goto(base + '#/treasury', wait_until='domcontentloaded'); pump(pg, 8000)
+        pg.locator('input[type=number]').first.fill('10')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'Swap SOL for VTR')).first.click(); pump(pg, 25000)
+        log(step='buy_10_tokens_via_ui', sent=sigs_new(n), text=body(pg)[:400] if not sigs_new(n) else '')
+        pg.goto(base + '#/create', wait_until='domcontentloaded'); pump(pg, 8000)
+        pg.get_by_placeholder(re.compile('e.g. Implement Quadratic')).fill('UI proposal ' + str(int(time.time()))[-5:])
+        pg.get_by_placeholder(re.compile('Provide a detailed description')).fill('Made by clicking the hosted app on sol.college')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'Broadcast Proposal|Register to Propose')).first.click(); pump(pg, 25000)
+        log(step='create_proposal_via_ui', sent=sigs_new(n), text=body(pg)[:300] if not sigs_new(n) else ''); t_created = time.time()
+        pg.goto(base + '#/proposals', wait_until='domcontentloaded'); pump(pg, 10000)
+        pg.get_by_text(re.compile(r'^UI proposal')).first.click(); pump(pg, 6000)
+        pg.get_by_role('button', name=re.compile(r'^Yes$')).first.click(); pump(pg, 500)
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'Confirm Yes Vote')).click(); pump(pg, 25000)
+        log(step='vote_yes_via_ui', sent=sigs_new(n))
+        while time.time() < t_created + 160: pump(pg, 5000)
+        f = pg.get_by_role('button', name=re.compile(r'Finalize & Pick Winner'))
+        n = len(SENT)
+        if f.count(): f.first.click(); pump(pg, 25000)
+        log(step='finalize_via_ui', buttons=f.count(), sent=sigs_new(n), text=body(pg)[:900])
+    elif app == 'barn':  # argv[4] = step; each step runs as one role (sponsor = tester, dev = tester2)
+        step = sys.argv[4]; M = 'https://sol.college/dapps/barn/meta/'
+        def popover(trigger, fills, button):
+            pg.get_by_text(trigger, exact=True).first.click(); pump(pg, 1500)
+            for ph, v in fills: pg.get_by_placeholder(ph).fill(v)
+            n = len(SENT); pg.get_by_role('button', name=button, exact=True).last.click(); pump(pg, 25000); return sigs_new(n)
+        def press(label):
+            b = pg.get_by_role('button', name=label, exact=True)
+            if not b.count(): return {'missing': label, 'text': body(pg)[:600]}
+            n = len(SENT); b.first.click(); pump(pg, 25000); return sigs_new(n)
+        def go(path): pg.goto(base + path, wait_until='domcontentloaded'); pump(pg, 9000)
+        go('profile/'); connect(pg); pump(pg, 8000); log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        if step in ('sponsor-setup', 'dev-setup'):
+            role = 'sponsor' if step == 'sponsor-setup' else 'dev'
+            log(step='create_user_profile_via_ui', sent=popover('Create User Profile', [('Enter username', 'ui-' + role + '-' + str(int(time.time()))[-6:]), ('Enter Profile URI', M + role + '.json')], 'Create'))
+            if role == 'sponsor':
+                go('admin/'); log(step='approve_sponsor_self_via_ui', sent=popover('Approve Sponsor', [('Enter Sponsor', ADDR)], 'Approve'))
+                go('profile/'); log(step='add_grant_program_via_ui', sent=popover('Add Grant Program', [('Grant Program URI', M + 'program.json')], 'Add Grant Program'))
+            else:
+                go('profile/'); log(step='add_project_via_ui', sent=popover('Add New Project', [('Project URI', M + 'project.json')], 'Add New Project'))
+            log(step='profile_page', text=body(pg)[:500])
+        elif step == 'award':
+            gp, proj = sys.argv[5:7]; go('program/view/?a=' + gp)
+            log(step='award_grant_0.01_SOL_via_ui', sent=popover('Award Grant', [('Amount in SOL', '0.01'), ('Enter Project', proj), ('Enter Grant URI', M + 'grant.json')], 'Award Grant'))
+        elif step == 'milestone':
+            proj = sys.argv[5]; go('project/view/?a=' + proj)
+            log(step='add_milestone_0.005_SOL_via_ui', sent=popover('Add New Milestone', [('Amount in SOL', '0.005'), ('Enter Grant URI', M + 'milestone.json')], 'Add New Milestone'))
+            go('project/view/?a=' + proj); log(step='review_milestone_via_ui', sent=press('Review'))
+        elif step == 'settle':
+            proj = sys.argv[5]; go('project/view/?a=' + proj)
+            log(step='accept_milestone_via_ui', sent=press('Accept'))
+            go('project/view/?a=' + proj); log(step='settle_payment_via_ui', sent=press('Settle Payment'))
+            go('project/view/?a=' + proj); log(step='project_page', text=body(pg)[:900])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

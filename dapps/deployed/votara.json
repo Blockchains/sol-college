@@ -1,0 +1,57 @@
+{
+ "slug": "votara",
+ "cluster": "devnet",
+ "program": "votara",
+ "idl": "votara.json",
+ "devnet": "CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt",
+ "deploy_tx": "3LKC2STYKYwdpHywQ1odmGwDuXgTpXUYd13cQyhLxk5ZBNCDp4F27vENELuXPKzJSTRgmoRSJTLYTQGyqtegDEP1",
+ "built": "cargo-build-sbf 2.3.13 of votara/programs/votara at c92963d, with declare_id set to this program's keypair; the lockfile was regenerated with the MSRV-aware resolver (rust-version 1.84) because the fork's lock pulls edition-2024 crates",
+ "sigs": [
+  {
+   "label": "fund B and C",
+   "sig": "3EGEq3qhqJGLtVBZUyYaLDcyqeGmwMxqcPSYrFdzZqXPjdMXV6UKc3WWZ9QBBZfgcAAMhd8s2p9BrSjFmYJ2NHqj"
+  },
+  {
+   "label": "initialize_dao",
+   "sig": "2g84DMaXB4J1rDguN6pdHzDr5Boh6o6rxaLRdPztwFdaVqz5gCMdsoNKZ3grZqmgnA72GmQ2nCpREFun711nR9ne"
+  },
+  {
+   "label": "initialize_treasury (gov mint + vault PDAs)",
+   "sig": "3gb1AknDfnBmzh1SH6DEB1H3FXYUkSsgiimHneQzViMzYtnaqNBJpWt6m4paNjMPXXf5xKbRvJcgKQ1ARBGvc35h"
+  },
+  {
+   "label": "update_config: voting period 40 s, timelock 0, quorum 2 voters (defaults are 7 days and 10 voters)",
+   "sig": "5GUXq4DMi1kfzKFKw5UnxQ5iFNpuR9SMFCkjCxezjyC6N7PqRK9MpgwQW2niF6mhbUUePqs28kuGDKo2qfZijGdg"
+  },
+  {
+   "label": "B stakes 100 while holding 0 gov tokens (stake_tokens moves no tokens)",
+   "sig": "3J5VmA5cs8FGie1dAdiAanFnCz59i58texjeVew6BCCw1S8axZfwu6Rw9GkV7DmF4nm4stDD8JWseg7VsLEXKiHE"
+  },
+  {
+   "label": "C stakes 40",
+   "sig": "5hUy9cJQSrmd3Ax5CHbKDxoB8ZFqS6cX6aAwD2fMbawk6aqTNJAFrYVe66Bmsb6yeLTbhY44JBzBFCBpfSFhSpv6"
+  },
+  {
+   "label": "create_proposal #0",
+   "sig": "QDutuCGpbRUU6hdHPqFuBUUjydXYQ1becfm8zvCetqBccNyatmU5U6tjdUrVVaHZno6bpMACFpA5cLvf7ShJNya"
+  },
+  {
+   "label": "B votes Yes (power 100)",
+   "sig": "2xTRw34dstFoKP65GS1aPjxQ5vzs6h5nrggGCD5pq8PhTWshihoJVJ3V8xzxYaPqrqr2ihiXUXfy1nHEz9TmWo3Q"
+  },
+  {
+   "label": "C votes No (power 40)",
+   "sig": "61rLjFHqRGMXRG2JiMGDLj9UuTUD6MfX4dQkp5ndydadCter8af4NLdKS2ic3RKL9v6mADi63pTrRgVpPw8fD1yv"
+  },
+  {
+   "label": "finalize_proposal",
+   "sig": "62ybR9o71i1SsDCfZoc3izNEsda76JsbentreKTSJjEnjozLSZnGXiXJ7mcaYSp5Zb6kBcmQHnrx1v9dUC3Kn5NC"
+  },
+  {
+   "label": "update_config: voting period 150 s (so a person clicking through the UI has time to vote); confirmed with solana confirm after the client timed out",
+   "sig": "5sWBLEZKrxGqo2au9kqxrQNwW2jXiWs48smbrsdu5QptVQFTzv5PaDDUfNYhmSy64sT9WU9w2v7zkxiMAKrQKGza"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}
