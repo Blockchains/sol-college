@@ -14,5 +14,11 @@
  "tagin-solana": "The frontends call local Flask/Express APIs (localhost:5000 / 5002) for products and reports.",
  "vv-solana": "The client is a MUD (Lattice) game: it boots against EVM world contracts on BSC and a gRPC indexer (VITE_WORLD_CONTRACT, VITE_GRPC_URL, ...) and Particle Network login, and it imports the program IDL from an uncommitted build artifact; the Solana program is only a side module.",
  "gifter-escrow": "Every token list and balance in the app comes from Helius DAS calls (getAssetsByOwner, getAssetBatch) to devnet.helius-rpc.com with the author's API key hard-coded in the source; we don't use someone else's key, and the public devnet RPC has no DAS methods.",
- "autohero": "The web app's story and hero flow goes through the author's backend API (VITE_API_URL via axios) before it touches the program."
+ "autohero": "The web app's story and hero flow goes through the author's backend API (VITE_API_URL via axios) before it touches the program.",
+ "tamagochi-solana-codigo": "The program can never create a pet: create_tamagotchi takes tamagotchi_state as an existing Account<TamagotchiState> with no init, so the account it is meant to create must already exist and be owned by the program.",
+ "ai-saas-portal-solana": "Agents and tasks are listed and added through the author's backend at ai-saas.deno.dev (fetch /agents, /tasks, /add_task, /add_agent).",
+ "zk-student": "Proofs are generated server-side: the app calls a prover API (NEXT_PUBLIC_PROVER_API_URL /prove, /execute) before anything reaches the program.",
+ "solana-coloseum-hackathon": "The app stores and reads its ideas through Firebase.",
+ "proof-of-anchor": "The hosted part is a verifier that fetches other sites (https://<domain>/…, the GitHub API) and Noir proofs; the web app does not call the Anchor program.",
+ "zylith-solana": "The shielded pool needs an off-chain ASP service and a relayer (VITE_ASP_URL, VITE_RELAYER_ADDRESS) plus wrapped-BTC/stablecoin mints the app is configured with."
 }
