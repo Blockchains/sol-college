@@ -1235,6 +1235,7 @@
   "limits": [
    "No claim or redeem instruction: resolution records the winner and stops trading, but winning YES/NO holders have no way to cash out, so the SOL stays in the program vault.",
    "withdraw_liquidity succeeds but moves nothing (the handler only runs checks): the script's 0.02 SOL withdrawal changed the vault by 0, so LP SOL is locked.",
+   "Bug: on a buy, the 0.2% LP fee is added to the market's SOL reserve but never taken from the buyer. In script tx S3UZG8s5… (B buys YES with 0.01 SOL), the shared vault received 9,880,000 lamports while the YES reserve grew by 9,900,000. Reserves therefore drift above the SOL actually held, and because one global vault holds every market's SOL, a market's payouts can draw on other markets' SOL.",
    "Swaps require the market creator's whitelist (the creator is its first member). The app has no screen to add members; the script adds trader B with whitelist_add_member.",
    "The repo's default minimum liquidity is 5 SOL; our devnet config sets 0.02 SOL so the test fits a faucet budget.",
    "create_market is close to the 1232-byte transaction limit: with our 73- and 74-character metadata URLs, 17-digit SteamID64s and a 23-character match code it was 1282 bytes and could not be sent, so the tests use short Steam IDs and match codes.",
