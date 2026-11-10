@@ -1,0 +1,15 @@
+{"step":"fund B","sig":"2rxVUVAFKg5UQH1do2PHq9EzmRfLwMvZmH4JNRpEQgSzQ9Fy6qrsFLhVD6z5uxmaWoEeLR7t1JP74kquKjR3qUvZ"}
+{"step":"test mint, 1000 to A and 1000 to B","mint":"5AWQHaeXPJ54j87x9BVY55BcnPtDsz9fuQULyL44cvUb","a":"rhuzVtsAktxeQbBsqdBnYSYSTa5nk3mckqzRV7p74rhrcKnRsooR1YyHnHGEz4xaAHuRAsW4cd6BHS9DtrmuXGd","b":"43QABrrZvEEXLw2ietZTtoN1XuktiHs6CP8WUmJpFZevzDhBmq6Z4H5h8BXwFNNf3ZLpoJ32eDuvxmHPXcy1Guak"}
+{"step":"mint 500 to the UI test wallet","sig":"2e5Cy9ZE9NhpZP9zWfuotV22VniD37JNViGS9YTx4vJmWT6GtoTU6Ed99WAUbrQoxhMXyPf93nsVPtZJgzTqZmbX"}
+{"step":"initialize_pool_wrong_fee_receiver","expectedFailure":true,"error":"InvalidFeeReceiver"}
+{"step":"initialize_pool (2 SOL fee to the fee receiver, here the deployer itself)","ok":true,"sig":"2yVByakSLRnWTGtwmRTqgfXv4VRdP2ya9Gd62zAhVNeuaFG8n1WXG8Py86hzULTWKsrGcijqMDHVpyNNDgTg8bSJ","pool":"7dyPtXywMoYAsUKHmscWUUUVPaLTGV69EnCV6uH9MRtw","govMint":"CDt85zasef9p87i8AonyozcNEygd4N6vaUWQjfpaZvEo"}
+{"step":"initialize_pool_twice","expectedFailure":true,"error":"Allocate: account Address { address: 7dyPtXywMoYAsUKHmscWUUUVPaLTGV69EnCV6uH9MRtw, base: None } already in use"}
+{"step":"stake_with_wrong_gov_mint","expectedFailure":true,"error":"InvalidMint"}
+{"step":"B stakes 100","ok":true,"sig":"5FKVBgcgyq8PW7ssf2B8gaVKev5kF32vY8kNwcHytWRKqpiGyPg8zzEPR8ZfzvwvJpdfY6RC1kJPzip2zPkybC8y","govB":100}
+{"step":"A bribes 50 (plain token transfer into the vault, as the app does)","ok":true,"sig":"2D7RhqHCRqtYfoSSkafc1reDRVuZUigJPxESAScUmb1hXqYu5WGSiFvhiQD8VedfDYq5HGSzFGBWt356Smr6JHCq"}
+{"step":"sync_bribes","ok":true,"sig":"kxPKyFmEUDBGM8quoc8ACySQpvVaBA2Eir48JFarx9a5BCcv6WUEhZU8xXwnroeziEZTZDGxoDqAVR5pbxjVK5q","pool":{"activeBalance":150,"govPrice":666666666}}
+{"step":"B unstakes all gov tokens (vesting position)","ok":true,"sig":"5GZv9Zu7T6jbCGwe9sjY9XNTQ5zN1LYmySmsEuFYoc1RvH2dz9VfVZLo3dGX17WMVB7aShkMRgVQdGe97V4g4BkW","vested":150,"claimPerDay":7.5}
+{"step":"A_claims_Bs_vesting","expectedFailure":true,"error":"InvalidOwner"}
+{"step":"B claims after ~5 s (5 \"days\")","ok":true,"sig":"Qsu7QGHGzXvmgHvZqnA5f5uP2PPUKCpqK2HdmCRDbiDuNFbWMeCDJm5eswuS5s4h89hR8dNsA1ZKFu6Jq9CeHpk","got":82.5}
+{"step":"B claims after 20+ \"days\"","ok":true,"sig":"ZsZbc9g81kUNzrGShVNn3ESJbhDUjBVjc4Jk9He11hXVmfnpbs4zxWCEyL2t2vvzvXUeHzymXzucAffTuxPbnjR","got":67.5,"positionClosed":true,"Btotal":1050}
+{"step":"for the UI run","mint":"5AWQHaeXPJ54j87x9BVY55BcnPtDsz9fuQULyL44cvUb","pool":"7dyPtXywMoYAsUKHmscWUUUVPaLTGV69EnCV6uH9MRtw"}

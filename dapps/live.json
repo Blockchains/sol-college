@@ -651,5 +651,92 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py colosseum, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): initialise, deposit, config, stake and claim went through the app's own buttons, and the early unstake was refused by the program.",
   "limits": "The shortest stake in the app is 7 days, so unstaking after the lock was run from the script (20 s stake). apy_rate is used as a plain multiplier: the admin page's default of 100 pays 100× the stake per year (the script's 0.1 SOL earned 6,024 lamports in about 12 s). Rewards, stakes and the admin's deposit share one vault, and withdraw sends its whole balance, rent included, to the admin, which closes the vault (seen in the script). The APY shown on the main page is a fixed '50%' label. config has no admin check, but it can only touch the caller's own vault."
+ },
+ {
+  "slug": "stakes-main",
+  "name": "stakes.wtf (stake for gov tokens, bribes, linear vesting)",
+  "lesson": "/explore/stakes-main/",
+  "app": "/dapps/stakes-main/",
+  "fork": "https://github.com/Blockchains/stakes_main",
+  "commit": "52cb0dacc45842c56994f3dc7ae53529b412474a",
+  "program": "EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD",
+  "app_kind": "The fork's own React + Vite app (app/), with this devnet program ID, hash routing (#/vesting, #/create) for static hosting, and a small sha256 shim so spl-token 0.4 bundles. The program is built with the crate's own `testing` feature, so one program \"day\" is one second, and with the pool-creation fee receiver set to our deployer.",
+  "learn": "Anyone opens a pool for a token (2 SOL fee). Stakers deposit the token and get gov tokens at the pool's gov price. Bribes are plain token transfers into the pool vault; sync_bribes credits a share of them to the pool each day, which raises what each gov token is worth. Unstaking burns the gov tokens and moves the tokens they are worth into a vesting position that unlocks linearly over 20 days.",
+  "source": [
+   [
+    "instructions/initialize_pool.rs (pool, vault and gov mint; fee to FEE_RECEIVER)",
+    "https://github.com/Blockchains/stakes_main/blob/52cb0dacc45842c56994f3dc7ae53529b412474a/programs/stakes-wtf/src/instructions/initialize_pool.rs"
+   ],
+   [
+    "instructions/stake.rs (tokens in, gov tokens minted at gov_price)",
+    "https://github.com/Blockchains/stakes_main/blob/52cb0dacc45842c56994f3dc7ae53529b412474a/programs/stakes-wtf/src/instructions/stake.rs"
+   ],
+   [
+    "state/staking_pool.rs L76-L125 (bribe share per day and the gov price)",
+    "https://github.com/Blockchains/stakes_main/blob/52cb0dacc45842c56994f3dc7ae53529b412474a/programs/stakes-wtf/src/state/staking_pool.rs#L76-L125"
+   ],
+   [
+    "instructions/unstake.rs and state/vesting_position.rs (burn, then 20-day linear unlock)",
+    "https://github.com/Blockchains/stakes_main/blob/52cb0dacc45842c56994f3dc7ae53529b412474a/programs/stakes-wtf/src/instructions/unstake.rs"
+   ]
+  ],
+  "flow": "tests/devnet/stakes-main.mjs",
+  "log": "tests/devnet/logs/stakes-main-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… opened the pool row (5AWQ…cvUb), Stake tab, 100, Stake; the row then showed Your Stake 100",
+    "4VBjKccHD8TdBWaMyVkECPF7En8QNEfSXzCdubqP2M68QS8THZ4oyHXMNg5EUDMckPQ9np69DPYw2toRTfzhi8qj"
+   ],
+   [
+    "UI: Bribe tab, 20, Bribe (a token transfer into the pool vault)",
+    "4HGtoLf4nVNoFTBpphKn2umUhywPdWdJqrC77m9gXXTZkECuhNN6epL6Ay3QGaPFdxdzcXotEyHNgPHDHkJMNGm7"
+   ],
+   [
+    "UI: Claim tab, Unstake (opens a vesting position; the Vesting page then listed it at 5 per day)",
+    "3cMTZibx4fdP9QKwdRcjdsJ6Duq7FaAPozNMM8RrqzwX15QppSRQawusQMjS287zQTbDErMWpxgYEJtpoBqJBoLf"
+   ],
+   [
+    "UI: Vesting page, Claim; the position closed and the wallet's token balance read 480 (500 − 100 − 20 + 100)",
+    "Mq3xgVqq4GMKX9kp4DyKoQZ15KnUP26pJZheyM8jG9KuTvE6zN5NfdZBuc8BKnA4V55Ms5ZZ7dDbKsWZy4J2YaT"
+   ],
+   [
+    "Script: initialize_pool (2 SOL fee to the fee receiver, here the deployer itself)",
+    "2yVByakSLRnWTGtwmRTqgfXv4VRdP2ya9Gd62zAhVNeuaFG8n1WXG8Py86hzULTWKsrGcijqMDHVpyNNDgTg8bSJ"
+   ],
+   [
+    "Script: B stakes 100",
+    "5FKVBgcgyq8PW7ssf2B8gaVKev5kF32vY8kNwcHytWRKqpiGyPg8zzEPR8ZfzvwvJpdfY6RC1kJPzip2zPkybC8y"
+   ],
+   [
+    "Script: A bribes 50 (plain token transfer into the vault, as the app does)",
+    "2D7RhqHCRqtYfoSSkafc1reDRVuZUigJPxESAScUmb1hXqYu5WGSiFvhiQD8VedfDYq5HGSzFGBWt356Smr6JHCq"
+   ],
+   [
+    "Script: sync_bribes",
+    "kxPKyFmEUDBGM8quoc8ACySQpvVaBA2Eir48JFarx9a5BCcv6WUEhZU8xXwnroeziEZTZDGxoDqAVR5pbxjVK5q"
+   ],
+   [
+    "Script: B unstakes all gov tokens (vesting position)",
+    "5GZv9Zu7T6jbCGwe9sjY9XNTQ5zN1LYmySmsEuFYoc1RvH2dz9VfVZLo3dGX17WMVB7aShkMRgVQdGe97V4g4BkW"
+   ],
+   [
+    "Script: B claims after ~5 s (5 \"days\")",
+    "Qsu7QGHGzXvmgHvZqnA5f5uP2PPUKCpqK2HdmCRDbiDuNFbWMeCDJm5eswuS5s4h89hR8dNsA1ZKFu6Jq9CeHpk"
+   ],
+   [
+    "Script: B claims after 20+ \"days\"",
+    "ZsZbc9g81kUNzrGShVNn3ESJbhDUjBVjc4Jk9He11hXVmfnpbs4zxWCEyL2t2vvzvXUeHzymXzucAffTuxPbnjR"
+   ]
+  ],
+  "negative": [
+   "UI: Create Pool from the app: custom program error 0xbc3 (AccountNotSystemOwned). The app's IDL has no fee_receiver account, so the system program lands in that slot; nothing was sent",
+   "initialize pool wrong fee receiver: InvalidFeeReceiver",
+   "initialize pool twice: Allocate: account Address { address: 7dyPtXywMoYAsUKHmscWUUUVPaLTGV69EnCV6uH9MRtw, base: None } already in use",
+   "stake with wrong gov mint: InvalidMint",
+   "A claims Bs vesting: InvalidOwner"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py stakes / stakes-unstake / stakes-create, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): stake, bribe, unstake and claim went through the app's own buttons; Create Pool fails in the app, so the pool was created by the script.",
+  "limits": "This is the testing build (1 day = 1 second), so vesting and bribe shares that take days on mainnet finish in seconds here: the script's first claim after about 5 s paid 82.5 of 150, and the next one paid the rest. The app never calls sync_bribes, so bribes sent from the app sit in the vault until someone syncs (the script does). Create Pool in the app fails because its IDL is older than the program (no fee_receiver). Built with Solana 1.18.26 tools (platform-tools v1.41): the same source built with 2.3.13 tools failed at runtime with an access violation in initialize_pool, so the first deploy was upgraded."
  }
 ]

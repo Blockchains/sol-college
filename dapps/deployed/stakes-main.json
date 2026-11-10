@@ -1,0 +1,42 @@
+{
+ "slug": "stakes-main",
+ "cluster": "devnet",
+ "program": "stakes_wtf",
+ "idl": "stakes_wtf.json",
+ "devnet": "EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD",
+ "deploy_tx": "5T3jDodZhCSCoSJ7UnuUQ45vQE7iijFB4cjrxMA28SZFS1afaMYPTA7YUAkYCwT2qxQ2jmp1NuNSXeiVWFgBjh4e",
+ "upgrade_tx": "4znnzGR4gCuhXb6k6mFc6GHDPiUN1EDarFuRb3t7ApDBHFiGzMBdQ6JncsVu6nQSBZrGoRUcha34FTN7cc2eQKMt",
+ "built": "cargo-build-sbf 1.18.26 (platform-tools v1.41) --features testing of programs/stakes-wtf at 52cb0da, with declare_id set to this program's keypair and FEE_RECEIVER_PUBKEY set to the deployer BP1uw\u2026; the first deploy (2.3.13 tools) hit an access violation in initialize_pool and was upgraded with this build",
+ "sigs": [
+  {
+   "label": "initialize_pool (2 SOL fee to the fee receiver, here the deployer itself)",
+   "sig": "2yVByakSLRnWTGtwmRTqgfXv4VRdP2ya9Gd62zAhVNeuaFG8n1WXG8Py86hzULTWKsrGcijqMDHVpyNNDgTg8bSJ"
+  },
+  {
+   "label": "B stakes 100",
+   "sig": "5FKVBgcgyq8PW7ssf2B8gaVKev5kF32vY8kNwcHytWRKqpiGyPg8zzEPR8ZfzvwvJpdfY6RC1kJPzip2zPkybC8y"
+  },
+  {
+   "label": "A bribes 50 (plain token transfer into the vault, as the app does)",
+   "sig": "2D7RhqHCRqtYfoSSkafc1reDRVuZUigJPxESAScUmb1hXqYu5WGSiFvhiQD8VedfDYq5HGSzFGBWt356Smr6JHCq"
+  },
+  {
+   "label": "sync_bribes",
+   "sig": "kxPKyFmEUDBGM8quoc8ACySQpvVaBA2Eir48JFarx9a5BCcv6WUEhZU8xXwnroeziEZTZDGxoDqAVR5pbxjVK5q"
+  },
+  {
+   "label": "B unstakes all gov tokens (vesting position)",
+   "sig": "5GZv9Zu7T6jbCGwe9sjY9XNTQ5zN1LYmySmsEuFYoc1RvH2dz9VfVZLo3dGX17WMVB7aShkMRgVQdGe97V4g4BkW"
+  },
+  {
+   "label": "B claims after ~5 s (5 \"days\")",
+   "sig": "Qsu7QGHGzXvmgHvZqnA5f5uP2PPUKCpqK2HdmCRDbiDuNFbWMeCDJm5eswuS5s4h89hR8dNsA1ZKFu6Jq9CeHpk"
+  },
+  {
+   "label": "B claims after 20+ \"days\"",
+   "sig": "ZsZbc9g81kUNzrGShVNn3ESJbhDUjBVjc4Jk9He11hXVmfnpbs4zxWCEyL2t2vvzvXUeHzymXzucAffTuxPbnjR"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

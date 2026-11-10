@@ -50,6 +50,10 @@ P
   colosseum) # fork's own Next.js 15 app (ui/) on the program deployed from contract/programs/staking (see dapps/deployed/colosseum.json); admin = test wallet m4Ac...
      cd "$src/ui" && python3 "$(dirname "$out")/../../tests/devnet/patches/colosseum.py" JxbbWRxjVcbAE98o13Yo2EFFEP1paTX8q8SvuPvSaDL m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr
      npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx next build && cp -r out/. "$out/";;
+  stakes-main) # fork's own React + Vite app (app/) on the program deployed from programs/stakes-wtf (see dapps/deployed/stakes-main.json); hash routing
+     cd "$src/app" && sed -i "s/stkWEMeJyUyoqZu6C65z21Vzt3CezXRuix7oqJ78RwS/EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD/" src/constants/solana.ts
+     python3 "$(dirname "$out")/../../tests/devnet/patches/stakes-main.py"
+     npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && VITE_RPC_URL=https://api.devnet.solana.com npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"
