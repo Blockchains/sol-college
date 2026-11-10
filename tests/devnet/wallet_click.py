@@ -13,12 +13,15 @@ def b58(b):
     n = int.from_bytes(b, 'big'); s = ''
     while n: n, r = divmod(n, 58); s = A[r] + s
     return '1' * (len(b) - len(b.lstrip(b'\0'))) + s
-app, base, kpf = sys.argv[1:4]
+app, base, kpf = sys.argv[1:4]  # trustlock also takes the beneficiary address as argv[4]
 sk = bytes(json.load(open(kpf))); priv = Ed25519PrivateKey.from_private_bytes(sk[:32]); pub = sk[32:]; ADDR = b58(pub)
 def log(**o): print(json.dumps(o), flush=True)
 def rpc(body):
     for i in range(8):
-        try: return urllib.request.urlopen(urllib.request.Request(RPC, body, {'content-type': 'application/json'}), timeout=40).read()
+        try:
+            r = urllib.request.urlopen(urllib.request.Request(RPC, body, {'content-type': 'application/json'}), timeout=40).read()
+            if b'429' in r and b'error' in r: raise RuntimeError('rate limited')  # public RPC throttle: back off and retry
+            return r
         except Exception: time.sleep(1 + i)
     raise RuntimeError('rpc failed')
 def cu16(b, i):
@@ -87,6 +90,7 @@ def ws_route(ws):
     def on_msg(m):
         for o in (lambda x: x if isinstance(x, list) else [x])(json.loads(m)):
             meth = o.get('method', '')
+            if 'id' not in o: continue  # ping / keepalive
             if meth.endswith('Unsubscribe'): ws.send(json.dumps(dict(jsonrpc='2.0', id=o['id'], result=True))); continue
             sid = nxt[0]; nxt[0] += 1; ws.send(json.dumps(dict(jsonrpc='2.0', id=o['id'], result=sid)))
             if meth == 'signatureSubscribe': threading.Thread(target=watch, args=(sid, o['params'][0]), daemon=True).start()
@@ -114,21 +118,56 @@ def connect(pg, label='Select Wallet'):
 def body(pg): return pg.inner_text('body')
 def sigs_new(before): return SENT[before:]
 def run(pg):
-    if app == 'trustlock':
-        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg)
-        pump(pg, 4000); log(step='connected', url=pg.url, has_dashboard='/dashboard' in pg.url)
-        t = body(pg); log(step='dashboard_text', text=t[:400])
-    elif app == 'gree':
+    if app == 'gree':
         pg.goto(base + '#/gree', wait_until='domcontentloaded'); pump(pg, 4000); connect(pg)
         pump(pg, 3000); n = len(SENT); log(step='connected', text=body(pg)[:200])
         pg.get_by_role('button', name=re.compile('Run program', re.I)).click(); pump(pg, 30000)
         t = body(pg); m = re.search(r'Minted NFT:\s*(\w+)', t); log(step='run_program', minted=m.group(1) if m else None, sent=sigs_new(n), toast=t[:300])
     elif app == 'poe':
-        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 5000); connect(pg, 'Connect wallet')
-        pump(pg, 5000); log(step='connected', text=body(pg)[:300])
+        q = 'Clicked through by wallet_click.py ' + time.strftime('%H:%M:%S')
+        pg.goto(base + 'create-poll/', wait_until='domcontentloaded'); pump(pg, 5000); connect(pg, 'Connect wallet'); pump(pg, 3000)
+        pg.get_by_placeholder(re.compile('Will SOL hit')).fill(q)
+        pg.get_by_placeholder(re.compile('Explain exactly')).fill('Created from the hosted app by an injected devnet test wallet.')
+        pg.get_by_role('combobox').nth(0).click(); pg.wait_for_timeout(500); pg.get_by_role('option').first.click(); pg.wait_for_timeout(300)
+        pg.get_by_role('combobox').nth(1).click(); pg.wait_for_timeout(500); pg.get_by_role('option').first.click(); pg.wait_for_timeout(300)
+        n = len(SENT); pg.get_by_role('button', name=re.compile('^Submit$', re.I)).last.click(); pump(pg, 25000)
+        log(step='create_poll_via_ui', question=q, sent=sigs_new(n))
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 8000)
+        card = pg.locator('div', has_text=q).filter(has=pg.get_by_role('button', name=re.compile('Submit Estimate'))).last
+        th = card.get_by_role('slider')
+        log(step='poll_card_found', found=q in body(pg), sliders=th.count())
+        if th.count() >= 2:
+            th.nth(0).focus(); [pg.keyboard.press('ArrowRight') for _ in range(20)]
+            th.nth(1).focus(); [pg.keyboard.press('ArrowLeft') for _ in range(20)]
+        elif th.count() == 1:
+            th.nth(0).focus(); [pg.keyboard.press('ArrowRight') for _ in range(10)]
+        n = len(SENT); card.get_by_role('button', name=re.compile('Submit Estimate')).click(); pump(pg, 25000)
+        t = body(pg); i = t.find(q); log(step='submit_estimate_via_ui', sent=sigs_new(n), card=t[i:i+200] if i >= 0 else None)
     elif app == 'picassol':
-        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg)
-        pump(pg, 8000); log(step='connected', text=body(pg)[:300])
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg); pump(pg, 10000)
+        import random; x, y = random.randint(20, 180), random.randint(20, 180)
+        log(step='canvas', cells=pg.locator('td[id^="pixel-"]').count(), target=f'pixel-{x}-{y}')
+        n = len(SENT); pg.locator(f'#pixel-{x}-{y}').click(); pump(pg, 25000)
+        log(step='click_pixel', x=x, y=y, sent=sigs_new(n), style=pg.locator(f'#pixel-{x}-{y}').get_attribute('style'))
+    elif app in ('trustlock', 'trustlock-claim'):
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg, r'\bConnect$'); pump(pg, 6000)
+        log(step='connected_dashboard', url=pg.url, text=body(pg)[:300])  # Homepage renders <Dashboard/> once connected
+        if app == 'trustlock':
+            ben = sys.argv[4]
+            pump(pg, 4000); have = pg.get_by_role('button', name=re.compile(r'^Check In')).count()
+            for k in range(max(0, 2 - have)):  # escrow 1: check-in then cancel; escrow 2: left for the beneficiary to claim
+                pg.get_by_placeholder('Enter Solana address').fill(ben); pg.get_by_placeholder('Enter amount in SOL').fill('0.1')
+                n = len(SENT); pg.get_by_role('button', name=re.compile('15s Escrow for testing')).click(); pump(pg, 30000)
+                log(step=f'create_15s_escrow_{k+1}', sent=sigs_new(n)); pump(pg, 4000)
+            cards = pg.get_by_role('button', name=re.compile(r'^Check In')).count(); log(step='owner_cards', count=cards)
+            pg.locator('input[type=number][min="0"]').first.fill('1')  # Days field of the first escrow card
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Check In')).first.click(); pump(pg, 25000)
+            log(step='check_in_plus_1_day', sent=sigs_new(n))
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Cancel')).first.click(); pump(pg, 25000)
+            log(step='cancel_refund', sent=sigs_new(n), remaining_cards=pg.get_by_role('button', name=re.compile(r'^Cancel')).count())
+        else:
+            pump(pg, 5000); btns = pg.get_by_role('button', name=re.compile(r'^Claim')); log(step='claimable', count=btns.count())
+            n = len(SENT); btns.last.click(); pump(pg, 25000); log(step='claim', sent=sigs_new(n))
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

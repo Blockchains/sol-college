@@ -28,6 +28,14 @@
   "verified": "2026-11-10",
   "steps": [
    [
+    "Clicked through the hosted app (test wallet 8WVm…): filled Create Poll and pressed Submit, which sent register_user + create_poll in one tx",
+    "5XALdMCsFcAKcCab9XzGhmDdvJtbg96jCcFPYiYLQ3zu4Dmog31ivfK12mXg2aPgKqUxm51ZufMFNDb8gwkDqPSY"
+   ],
+   [
+    "Then moved the estimate slider on the new poll card and pressed Submit Estimate: make_estimate",
+    "38ogmj22JUrW8GBno7qCAMbw2CxAcET3yChmd9bDxV9Uye1cUBs5eVcR66pUfioLQ243WQU4PxdiLj1j47awyjBU"
+   ],
+   [
     "register_user (mints 1000 POEKEN to the new user)",
     "xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"
    ],
@@ -36,7 +44,7 @@
     "2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"
    ],
    [
-    "make_estimate 30..70 \u2192 crowd estimate 50%",
+    "make_estimate 30..70 → crowd estimate 50%",
     "2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD"
    ]
   ],
@@ -44,7 +52,7 @@
    "register_user a second time for the same wallet is rejected (user PDA already in use, custom program error 0x0)",
    "make_estimate with lower 70 > upper 30 is rejected (u16 underflow in upper-lower: program failed to complete)"
   ],
-  "ui_check": "The hosted app was loaded headless: the home list shows the test poll with 50%, 1 forecaster, 1 estimate, and /poll/?id=0 shows the poll detail and its estimate history, read from devnet.",
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the new poll card then showed 'Yes 60%, 1 forecaster, 1 estimate' read back from devnet. Earlier read-only check: /poll/?id=0 shows the poll detail and estimate history.",
   "limits": "Resolving polls and collecting points need the poll's resolver; not exercised in this run."
  },
  {
@@ -56,7 +64,7 @@
   "commit": "40b6e480b3babeae8689452cfede52e946f6c617",
   "program": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
   "app_kind": "The fork's own Next.js 12 frontend (frontend/), static export on devnet. Only changes: base path, devnet RPC, this program ID, and a 0-SOL fee on recolouring. Its MongoDB points API (pages/api) needs the author's database and is not hosted, so the points counter stays at 0.",
-  "learn": "Each pixel of a 200\u00d7200 canvas is its own account at a PDA seeded by [\"pixel\", x, y]: create_pixel validates 0\u2013199 coordinates and initialises it, and update_pixel re-derives the same PDA from the stored x, y and bump, so anyone can recolour a pixel but nobody can forge its address.",
+  "learn": "Each pixel of a 200×200 canvas is its own account at a PDA seeded by [\"pixel\", x, y]: create_pixel validates 0–199 coordinates and initialises it, and update_pixel re-derives the same PDA from the stored x, y and bump, so anyone can recolour a pixel but nobody can forge its address.",
   "source": [
    [
     "Picassol/programs/picassol/src/lib.rs L10-L28 (bounds check)",
@@ -76,11 +84,19 @@
   "verified": "2026-11-10",
   "steps": [
    [
+    "Clicked an empty pixel on sol.college/dapps/picassol-hackathon/ with an injected test wallet: create_pixel",
+    "2yj2GAqcniqCBFkL2yekqVRtJk4fjKopQNvVRgY1bGCGJjZioTd9gFwMGU7fgy8CedBt6QEwy4oaxXVqy6EUhtGb"
+   ],
+   [
+    "Same click on a local copy of the same build (pixel 33,173): create_pixel",
+    "oEiRugSzpXXjSNMJGoYe1JQUuPxgYVmhkLqtwUchNwDfpEeSBxVbWGc9WHfxdW6ERHgUV2DFP7ZvGWofUBNwdha"
+   ],
+   [
     "create_pixel (128,152) rgb(153,69,255)",
     "2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM"
    ],
    [
-    "update_pixel \u2192 rgb(20,241,149), read back from the account",
+    "update_pixel → rgb(20,241,149), read back from the account",
     "37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa"
    ]
   ],
@@ -88,8 +104,8 @@
    "create_pixel at x=200 is rejected with InvalidXCoordinate",
    "create_pixel on an existing pixel is rejected (account already initialised)"
   ],
-  "ui_check": "The hosted app was loaded headless: the canvas, colour picker and wallet button render with no page errors; the bundle is built against api.devnet.solana.com and this program ID. Drawing needs a connected wallet.",
-  "limits": "Points/leaderboard need the author's MongoDB backend (not hosted)."
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the canvas renders 200x200 cells, and clicking an empty cell sent create_pixel from the app's own code, on the live sol.college page as well.",
+  "limits": "Points/leaderboard need the author's MongoDB backend and its /api/updateUserPoints route, which a static host can't serve (the app's POST gets 501; the pixel tx is unaffected)."
  },
  {
   "slug": "trustlock",
@@ -124,6 +140,30 @@
   "verified": "2026-11-10",
   "steps": [
    [
+    "UI: owner (test wallet 8WVm…) filled beneficiary + 0.1 SOL and pressed '15s Escrow for testing': initialize",
+    "5WammBnEQd5JH5GQZfaWK4apG7atttMNxBjYy9m3XCdYB4sQxhHt7FHh8ydFxJ3hcZLzeodseuEhXA52bCoGe9tX"
+   ],
+   [
+    "UI: the same button's second tx, deposit 0.1 SOL",
+    "2hsu8xQntba6vJhGxQ6Ynhhw5M3kytRZyx1Csu73DnMzFY2Uq83M1haKbXNM3SBURXDKqsjmhKqeWT9YEoAwtxZM"
+   ],
+   [
+    "UI: owner pressed Cancel on that escrow: cancel, funds back",
+    "3VK1uo2C9LS6C9dttm4hYTrNn9QXf4YMfQ3MT8oZjYBNauaTHgv1G9xAz9ZmLTjAWQ9HSDSwAdxg6D48QBQttCky"
+   ],
+   [
+    "UI: second 15s escrow, initialize",
+    "79F9SVEmcSTeoqivmp7tnUzrtJFA54HivffetxSKSeqD4JkoD3Rzsi7vRRrBFazautZQKiqAzzECXkwFVXho4dC"
+   ],
+   [
+    "UI: second escrow deposit",
+    "4E1guQkpb7aYhNmWd2K1s2Ld3nnA91TUGHrT16UhQ5PVC2vNfBdRF3S7dnKZ7i1L6edHPz8fR35c2opciDD49MkD"
+   ],
+   [
+    "UI: beneficiary (test wallet AgrL…) opened the app and pressed Claim after the deadline: claim",
+    "3EPnZs553WcpxPYH8vanWLrbysYPP3timpwnrxvd22UPbMkk4bwdchsaF6hVhKuWGYyYhSSTJRGJxVaoVocmo1Wd"
+   ],
+   [
     "initialize (deadline +45 s, new beneficiary)",
     "2wzRVyga84RiwsSSaf39aHY8de8DJG1hi4sKS7X7nvKcRbYfRjJdXzZduTEXzLUsQmAAKb3uKScw6XEqRCCTYUAZ"
    ],
@@ -136,17 +176,18 @@
     "3qXk24R4Jm2FykDJk36gPAEP5GoTcC5oxZxWgF2PnViQRdG83G6C269NKjTaVckhdHuTPhjuXM72ZYHp275ouAUa"
    ],
    [
-    "claim after the deadline \u2192 beneficiary received 0.02118872 SOL, escrow closed",
+    "claim after the deadline → beneficiary received 0.02118872 SOL, escrow closed",
     "5xVrtsfr9VW1UiYHePqMYNCxjdLtyzLxvF39zjLkzPgmbwmSJLy2inD7myaBCQ7BspGRsabCYJCBMFWobAMtx22c"
    ]
   ],
   "negative": [
    "initialize with a deadline in the past is rejected (InvalidDeadline)",
    "deposit of 0 lamports is rejected (InvalidAmount)",
-   "claim before the deadline is rejected (DeadlineNotReached)"
+   "claim before the deadline is rejected (DeadlineNotReached)",
+   "UI: Check In (+1 day) on an escrow whose 15s deadline had passed was rejected by the program: DeadlineExceeded (error 6002, lib.rs:33); no transaction landed"
   ],
-  "ui_check": "The hosted app was loaded headless: the landing page and Select Wallet button render with no page errors and the bundle contains this program ID. Creating and claiming switches needs a connected wallet.",
-  "limits": "cancel was not exercised. The app's IDL makes the beneficiary sign claim, so the beneficiary claims from their own wallet."
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the wallet connected from the Connect button, the dashboard listed the owner's escrows, and create, cancel and the beneficiary's claim all went through the app's own buttons.",
+  "limits": "A successful Check In through the UI was not captured: the 15s/30s test escrows expire before the extension lands, and a date-picked escrow was not created. The beneficiary claims from their own wallet, because the app's IDL makes the beneficiary sign claim."
  },
  {
   "slug": "gree",
@@ -173,7 +214,7 @@
   "verified": "2026-11-10",
   "steps": [
    [
-    "Clicked 'Run program' in the hosted app with an injected test wallet: NFT Gp7Ncuci\u2026 minted",
+    "Clicked 'Run program' in the hosted app with an injected test wallet: NFT Gp7Ncuci… minted",
     "4FEMzQBpHbPKGSdhpfC21rkVDSEA43gCucL9U7kHPdDH9wGd9tv9cz66WSi7KsfvsezVB6tNUGGQvMT7rGPphMY1"
    ],
    [
