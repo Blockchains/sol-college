@@ -1,0 +1,41 @@
+{
+ "slug": "sentient-send",
+ "cluster": "devnet",
+ "program": "prediction_market",
+ "idl": "prediction_market.json",
+ "devnet": "22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5",
+ "deploy_tx": "2cV7A8B9DerZocQFaJr4RAcGAjdD1Zau61Hs711iZdkmvtaC2vjcffeLLiAxkLFArpnc7NsYMJqRxvdW4hYxPSWo",
+ "built": "cargo build-sbf (solana 2.3.13 platform tools) of programs/prediction-market at a1c663d with declare_id (and the app's program ID) set to this program's keypair; edition-2024 crates held back with an MSRV-fallback lock and blake3 1.8.2; buffer written with tools/fill_buffer.py",
+ "sigs": [
+  {
+   "label": "initialize_treasury (first run, which then stopped on a >32-byte question seed)",
+   "sig": "2QSywDYRxp8fL16zAMWG7KvTno7ya6oWSeWrP7DHvDSHUoB6EttQBmGepZje5rC5A2VfRzYocc8pK4KsLrnJ5W2f"
+  },
+  {
+   "label": "create_market 1 SOL, Yes/No, ends in 75 s",
+   "sig": "prYZhNsAkap8FuWN5K3tQBr5mWE9YVsBSPSzbAeZMnwxbH7XwJzfqV9vzSMzEFRemJViYxxajefcnhAWKxwmCyi"
+  },
+  {
+   "label": "B bets 0.2 SOL on Yes",
+   "sig": "pRvzxcvkZtQofKQe7PjXJbbbjP3NZmqxDGYtQikHSqYhMD7ut8AH4MXfGK8xYP5aqVMNf7PtW5rMq9UDMf6cBr6"
+  },
+  {
+   "label": "C bets 0.05 SOL on No",
+   "sig": "2wAFkgahCQjcSiLBDd7VCgnuFFaVH53bbzshgdYQGyKfMi7L3PYChbmyUTsJ7SH1UJjQH1tuju9Qa5q1U1MDRL4n"
+  },
+  {
+   "label": "B claims (Yes had the most SOL)",
+   "sig": "NESSYWQQpp1ZCfrm9SVJ8rRtyoAneyjGf4FgizgVU4fFD1XmE2Zm52g9iUGYLx4RGaYM8E2i7xFpJLeL9LWuFyK"
+  },
+  {
+   "label": "creator claims its Yes share",
+   "sig": "3upXcFdVg5BKjXHkj5UCH3APxMjXCeS64TqWuLsP55tMijT7mMp9MNGTNWSjw9TtXSPdzxuBL5y1z1dCSrPJmkoT"
+  },
+  {
+   "label": "claim_creator_fees (creator + protocol halves)",
+   "sig": "4MwjLyvm8rL2km6niLmn9TGhPaj8P54KMZMpkJZYXMxthHqm42q5kbseAc7ZT7JGGKhQVwVcydh8Qcuqyrhh2CGh"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

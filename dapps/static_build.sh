@@ -40,6 +40,10 @@ P
      cd "$src"; grep -rl 9oPLPE3PC9ok7T8UL9ZMfrNyPkhtaHh1mM9wFk2fWEVJ anchor/src | xargs sed -i "s/9oPLPE3PC9ok7T8UL9ZMfrNyPkhtaHh1mM9wFk2fWEVJ/3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx/g"
      sed -i "s#basePath: '/solana.orb-oracle.stabulity.nexus'#basePath: '/dapps/$slug', trailingSlash: true#" next.config.ts
      npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx next build && cp -r out/. "$out/";;
+  sentient-send) # fork's own Next.js app (frontend/) as a static export on the program deployed from programs/prediction-market (see dapps/deployed/sentient-send.json)
+     cd "$src/frontend" && python3 "$(dirname "$out")/../../tests/devnet/patches/sentient-send.py" BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv
+     sed -i "s/C3LRoEztvLPioY3ruddYGTT9qxzvqBivHzgmpGJuQ9CT/22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5/g" src/lib/constants.ts src/lib/idl.ts
+     npm install --no-audit --no-fund >/dev/null && npm i -D --no-audit --no-fund @types/bn.js >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

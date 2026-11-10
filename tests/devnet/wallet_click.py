@@ -202,10 +202,44 @@ def run(pg):
         pg.get_by_placeholder(re.compile('Enter price value')).fill('123.45')
         n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Submit Value')).click(); pump(pg, 25000)
         log(step='submit_value_via_ui', sent=sigs_new(n), text=body(pg)[:900])
+    elif app == 'sentient':  # argv[4]: a short market (ends in minutes) made by sentient-short-market.mjs
+        import datetime as dt
+        short = sys.argv[4]
+        end = (dt.datetime.now() + dt.timedelta(days=1)).replace(second=0, microsecond=0)  # the form's minimum is tomorrow
+        pg.goto(base + 'create/', wait_until='domcontentloaded'); pump(pg, 5000); connect(pg); pump(pg, 4000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        q = 'UI run ' + str(int(time.time()))[-6:] + ' ok?'
+        pg.get_by_placeholder('Who will win the 2024 election?').fill(q)
+        sides = pg.get_by_placeholder(re.compile(r'^Option \d'))
+        sides.nth(0).fill('Yes'); sides.nth(1).fill('No')
+        pg.locator('input[type=date]').fill(end.strftime('%Y-%m-%d')); pg.locator('input[type=time]').fill(end.strftime('%H:%M'))
+        pg.locator('input[type=number]').last.fill('1')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Create Market')).click(); pump(pg, 30000)
+        log(step='create_market_via_ui', question=q, ends=end.isoformat(), sent=sigs_new(n), url=pg.url, text='' if sigs_new(n) else body(pg)[-400:])
+        def bet(label):
+            pump(pg, 6000)
+            pg.get_by_role('button', name=re.compile(r'^\s*Yes')).first.click(); pump(pg, 500)
+            pg.get_by_placeholder('0.1').fill('0.1')
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Bet .* SOL on Yes')).click(); pump(pg, 25000)
+            log(step=label, sent=sigs_new(n))
+        bet('bet_0.1_on_Yes_via_ui (market made in the UI)')
+        pg.goto(base + 'market/?id=' + short, wait_until='domcontentloaded'); bet('bet_0.1_on_Yes_via_ui (short market)')
+        pump(pg, 1000); t_end = int(sys.argv[5])
+        while time.time() < t_end + 20: pump(pg, 5000)
+        pg.reload(wait_until='domcontentloaded'); pump(pg, 8000)
+        if pg.get_by_role('button', name=re.compile(r'Resolve Market')).count():
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'Resolve Market')).click(); pump(pg, 25000)
+            log(step='resolve_via_ui', sent=sigs_new(n)); pg.reload(wait_until='domcontentloaded'); pump(pg, 8000)
+        btn = pg.get_by_role('button', name=re.compile(r'^Claim [0-9.]+ SOL'))
+        if btn.count():
+            label = btn.first.inner_text(); n = len(SENT); btn.first.click(); pump(pg, 25000)
+            log(step='claim_winnings_via_ui', button=label, sent=sigs_new(n)); pg.reload(wait_until='domcontentloaded'); pump(pg, 8000)
+        else: log(step='claim_winnings_via_ui', error='no Claim button', text=body(pg)[:900])
+        log(step='final_page', text=body(pg)[:700])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
-    pg.on('console', lambda m: errs.append('console:' + m.text[:200]) if m.type == 'error' else None)
+    pg.on('console', lambda m: errs.append('console:' + m.text[:200]) if m.type == 'error' or __import__('os').environ.get('SC_DEBUG') else None)
     ctx.expose_function('__scWallet', wallet_call); ctx.add_init_script(INIT)
     ctx.route(re.compile(r'https://api\.devnet\.solana\.com/?.*'), http_route)
     ctx.route_web_socket(re.compile(r'wss://api\.devnet\.solana\.com/?.*'), ws_route)

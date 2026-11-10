@@ -379,5 +379,108 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py orboracle, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, deposit and submit went through the app's own forms and buttons, and the oracle page showed the new value, the 50 unlocked tokens and the authority read from devnet.",
   "limits": "Whitelist votes, withdraw and vote-weight refresh were run from the script, not clicked. The explorer list is read with getProgramAccounts on the public RPC and can be slow."
+ },
+ {
+  "slug": "sentient-send",
+  "name": "sentient.send (winner-takes-all sentiment market)",
+  "lesson": "/explore/sentient-send/",
+  "app": "/dapps/sentient-send/",
+  "fork": "https://github.com/Blockchains/sentient.send",
+  "commit": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
+  "program": "22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5",
+  "app_kind": "The fork's own Next.js app as a static export, with this devnet program ID, the protocol authority set to our deployer, and base path /dapps/sentient-send/. Market pages are /market/?id=<address> instead of /market/<address>.",
+  "learn": "A creator opens a market with 2–10 named sides and at least 1 SOL (2% fee, the rest split evenly across the sides). Anyone bets 0.01–1 SOL on a side until the end time. After that the side holding the most SOL wins, the market resolves on the first claim (or Resolve Market), and winners split the whole pool in proportion to their bets; the creator and the protocol authority split the fees.",
+  "source": [
+   [
+    "lib.rs L34-L165 (create_market: side, amount and time checks; PDA [market, creator, question])",
+    "https://github.com/Blockchains/sentient.send/blob/a1c663da3f31a9c74343a5f172445cf30a9eafbc/programs/prediction-market/src/lib.rs#L34-L165"
+   ],
+   [
+    "lib.rs L166-L264 (place_bet: min/max bet, side index, before end)",
+    "https://github.com/Blockchains/sentient.send/blob/a1c663da3f31a9c74343a5f172445cf30a9eafbc/programs/prediction-market/src/lib.rs#L166-L264"
+   ],
+   [
+    "lib.rs L265-L319 (claim_winnings: resolve if needed, proportional payout, one claim)",
+    "https://github.com/Blockchains/sentient.send/blob/a1c663da3f31a9c74343a5f172445cf30a9eafbc/programs/prediction-market/src/lib.rs#L265-L319"
+   ],
+   [
+    "lib.rs L320-L378 (claim_creator_fees: creator and protocol halves)",
+    "https://github.com/Blockchains/sentient.send/blob/a1c663da3f31a9c74343a5f172445cf30a9eafbc/programs/prediction-market/src/lib.rs#L320-L378"
+   ]
+  ],
+  "flow": "tests/devnet/sentient-send.mjs",
+  "log": "tests/devnet/logs/sentient-send-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: filled the hosted Create Market form (question, Yes/No, end tomorrow, 1 SOL) with test wallet m4Ac…; the app redirected to the new market page",
+    "2NZHjdhUksyU8aMd2b9DEWBfog8WyLfUXkHDd5RC6thP34gRbhEybtcYoRQ34x2S24nYVT2gPrU5G5Ap45xP3gzG"
+   ],
+   [
+    "UI: on that market, picked Yes and clicked Bet 0.1 SOL on Yes",
+    "5faQLyFPd6aexpvXoZiDxz7acJ6AYZRRSNJRgU9s7WtkKb96gdu4nZJvGvrBoMNg29HDRQFfDFxquRiZRWZy52xN"
+   ],
+   [
+    "Script: a Yes/No market ending in 5 minutes, for the claim (the form only allows end dates from tomorrow)",
+    "4oz2Ac7GRiLct2eVqyChtx2T16WqxfUb5HwzBNLwSZzKf9ChDsYsoiBxfcikXeiZZoDzr7jatePDvVurR2LxyfV9"
+   ],
+   [
+    "UI: on the short market, Bet 0.1 SOL on Yes",
+    "drPTN1TySu7rrsQSHcFZGcX4mR9A8cSRDvbU41rtUzkFn8Q9RvN5rMVuzfTXRojDnbPUjycXqPEcL4ooALqZBRN"
+   ],
+   [
+    "UI: after it ended, clicked Resolve Market",
+    "oRsNYzqbcrX5QWLcU3NZipKt1PxWyUzguGJfGe7FopQveZwpZVggMNmyfbQbNGeFwt17QR9K9hDrNvKDnQ6Svjy"
+   ],
+   [
+    "UI: clicked Claim 0.1797 SOL; the page then showed Winner: Yes and Winnings Claimed",
+    "f5DjJBV2d6y13xG42iuu69Ko1N9n1qDdCSJ39Xke4VC3gBunka94XAvgCSbtCBo6bNmUeoh2XrZrTG4vyXXMDTq"
+   ],
+   [
+    "Script: initialize_treasury (first run, which then stopped on a >32-byte question seed)",
+    "2QSywDYRxp8fL16zAMWG7KvTno7ya6oWSeWrP7DHvDSHUoB6EttQBmGepZje5rC5A2VfRzYocc8pK4KsLrnJ5W2f"
+   ],
+   [
+    "Script: create_market 1 SOL, Yes/No, ends in 75 s",
+    "prYZhNsAkap8FuWN5K3tQBr5mWE9YVsBSPSzbAeZMnwxbH7XwJzfqV9vzSMzEFRemJViYxxajefcnhAWKxwmCyi"
+   ],
+   [
+    "Script: B bets 0.2 SOL on Yes",
+    "pRvzxcvkZtQofKQe7PjXJbbbjP3NZmqxDGYtQikHSqYhMD7ut8AH4MXfGK8xYP5aqVMNf7PtW5rMq9UDMf6cBr6"
+   ],
+   [
+    "Script: C bets 0.05 SOL on No",
+    "2wAFkgahCQjcSiLBDd7VCgnuFFaVH53bbzshgdYQGyKfMi7L3PYChbmyUTsJ7SH1UJjQH1tuju9Qa5q1U1MDRL4n"
+   ],
+   [
+    "Script: B claims (Yes had the most SOL)",
+    "NESSYWQQpp1ZCfrm9SVJ8rRtyoAneyjGf4FgizgVU4fFD1XmE2Zm52g9iUGYLx4RGaYM8E2i7xFpJLeL9LWuFyK"
+   ],
+   [
+    "Script: creator claims its Yes share",
+    "3upXcFdVg5BKjXHkj5UCH3APxMjXCeS64TqWuLsP55tMijT7mMp9MNGTNWSjw9TtXSPdzxuBL5y1z1dCSrPJmkoT"
+   ],
+   [
+    "Script: claim_creator_fees (creator + protocol halves)",
+    "4MwjLyvm8rL2km6niLmn9TGhPaj8P54KMZMpkJZYXMxthHqm42q5kbseAc7ZT7JGGKhQVwVcydh8Qcuqyrhh2CGh"
+   ]
+  ],
+  "negative": [
+   "create one side: InvalidSideCount",
+   "create duplicate sides: DuplicateSideName",
+   "create below 1 SOL: CreationAmountTooSmall",
+   "create end in past: InvalidEndTimestamp",
+   "bet below min 0.001: BetTooSmall",
+   "bet above max 1.5: BetTooLarge",
+   "bet invalid side 5: InvalidSideIndex",
+   "claim before end: MarketNotEnded",
+   "bet after end: MarketEnded",
+   "B claims twice: AlreadyClaimed",
+   "C claims losing side: NoWinnings",
+   "claim fees by non creator: UnauthorizedCreator",
+   "claim fees wrong protocol authority: InvalidProtocolAuthority"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py sentient, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, bet, resolve and claim went through the app's own forms and buttons, and the market page read the result back from devnet.",
+  "limits": "The question is a PDA seed, so questions over 32 bytes fail before any transaction is sent (the form allows 200 characters). The create form only accepts end dates from tomorrow, so the short market used for the claim was created by script. The fork's TypeScript does not type-check (MarketWithPrices drift), so the export is built with type errors ignored."
  }
 ]

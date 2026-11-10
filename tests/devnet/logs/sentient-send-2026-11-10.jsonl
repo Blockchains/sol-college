@@ -1,0 +1,22 @@
+{"step":"initialize_treasury (first run, which then stopped on a >32-byte question seed)","ok":true,"sig":"2QSywDYRxp8fL16zAMWG7KvTno7ya6oWSeWrP7DHvDSHUoB6EttQBmGepZje5rC5A2VfRzYocc8pK4KsLrnJ5W2f"}
+{"step":"fund B and C","sig":"3qxHeG6zWXuLvy78HGNJ64yQHA1uWFtNu74FFSbWMUUpcb9P4rFoLtqnVaXyZSTuFpoLuhpcz82zo5NoMXxJRecz"}
+{"step":"setup","program":"22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5","creator":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","B":"9PRmQWQEhXt2h6tLyS9cMVXmSQEkZ54oVrJyQ93uw5B1","C":"H9LUKmszvoPkcPwFJDkr6HnSVPPzsV6Vr6tGsAQz9EiA","treasury":"CYjv38NxeD9aRUhRHdY5xHnzpvELjmPmGWz5K47PC9mb","market":"467qiueTT7eH9yY8QKvgd7TKxipQvJYGUh6X6HqaQYQP","question":"Devnet run mwafoq4c"}
+{"step":"create_one_side","expectedFailure":true,"error":"InvalidSideCount"}
+{"step":"create_duplicate_sides","expectedFailure":true,"error":"DuplicateSideName"}
+{"step":"create_below_1_SOL","expectedFailure":true,"error":"CreationAmountTooSmall"}
+{"step":"create_end_in_past","expectedFailure":true,"error":"InvalidEndTimestamp"}
+{"step":"create_market 1 SOL, Yes/No, ends in 75 s","ok":true,"sig":"prYZhNsAkap8FuWN5K3tQBr5mWE9YVsBSPSzbAeZMnwxbH7XwJzfqV9vzSMzEFRemJViYxxajefcnhAWKxwmCyi","sides":[0.49,0.49],"feePool":0.02}
+{"step":"B bets 0.2 SOL on Yes","ok":true,"sig":"pRvzxcvkZtQofKQe7PjXJbbbjP3NZmqxDGYtQikHSqYhMD7ut8AH4MXfGK8xYP5aqVMNf7PtW5rMq9UDMf6cBr6"}
+{"step":"C bets 0.05 SOL on No","ok":true,"sig":"2wAFkgahCQjcSiLBDd7VCgnuFFaVH53bbzshgdYQGyKfMi7L3PYChbmyUTsJ7SH1UJjQH1tuju9Qa5q1U1MDRL4n"}
+{"step":"bet_below_min_0.001","expectedFailure":true,"error":"BetTooSmall"}
+{"step":"bet_above_max_1.5","expectedFailure":true,"error":"BetTooLarge"}
+{"step":"bet_invalid_side_5","expectedFailure":true,"error":"InvalidSideIndex"}
+{"step":"claim_before_end","expectedFailure":true,"error":"MarketNotEnded"}
+{"step":"bet_after_end","expectedFailure":true,"error":"MarketEnded"}
+{"step":"B claims (Yes had the most SOL)","ok":true,"sig":"NESSYWQQpp1ZCfrm9SVJ8rRtyoAneyjGf4FgizgVU4fFD1XmE2Zm52g9iUGYLx4RGaYM8E2i7xFpJLeL9LWuFyK","Bgain":0.349995,"winning":[true,false],"resolved":true}
+{"step":"B_claims_twice","expectedFailure":true,"error":"AlreadyClaimed"}
+{"step":"C_claims_losing_side","expectedFailure":true,"error":"NoWinnings"}
+{"step":"creator claims its Yes share","ok":true,"sig":"3upXcFdVg5BKjXHkj5UCH3APxMjXCeS64TqWuLsP55tMijT7mMp9MNGTNWSjw9TtXSPdzxuBL5y1z1dCSrPJmkoT","creatorGainApprox":0.874995}
+{"step":"claim_fees_by_non_creator","expectedFailure":true,"error":"UnauthorizedCreator"}
+{"step":"claim_fees_wrong_protocol_authority","expectedFailure":true,"error":"InvalidProtocolAuthority"}
+{"step":"claim_creator_fees (creator + protocol halves)","ok":true,"sig":"4MwjLyvm8rL2km6niLmn9TGhPaj8P54KMZMpkJZYXMxthHqm42q5kbseAc7ZT7JGGKhQVwVcydh8Qcuqyrhh2CGh","marketLamportsLeft":0.00803148}
