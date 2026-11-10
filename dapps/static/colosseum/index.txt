@@ -1,0 +1,21 @@
+1:"$Sreact.fragment"
+2:I[6915,["956","static/chunks/3a91511d-ac283a243b49145e.js","819","static/chunks/819-39e63eef784b0c05.js","998","static/chunks/998-124509e29aa6f10e.js","722","static/chunks/722-b7c1225cf637e5b4.js","177","static/chunks/app/layout-076ab83c30605305.js"],"SolanaProvider"]
+3:I[7555,[],""]
+4:I[1295,[],""]
+5:I[1024,["345","static/chunks/app/not-found-249b35dde1344c3a.js"],"default"]
+6:I[6671,["956","static/chunks/3a91511d-ac283a243b49145e.js","819","static/chunks/819-39e63eef784b0c05.js","998","static/chunks/998-124509e29aa6f10e.js","722","static/chunks/722-b7c1225cf637e5b4.js","177","static/chunks/app/layout-076ab83c30605305.js"],"Toaster"]
+7:I[7288,["956","static/chunks/3a91511d-ac283a243b49145e.js","919","static/chunks/97b52221-ac073c0f2b092e12.js","33","static/chunks/2f0b94e8-59c30ec1cc250f0e.js","819","static/chunks/819-39e63eef784b0c05.js","391","static/chunks/391-58593b5b9f8523ca.js","974","static/chunks/app/page-5bb49e1ada90eba2.js"],"Header"]
+8:I[4471,["956","static/chunks/3a91511d-ac283a243b49145e.js","919","static/chunks/97b52221-ac073c0f2b092e12.js","33","static/chunks/2f0b94e8-59c30ec1cc250f0e.js","819","static/chunks/819-39e63eef784b0c05.js","391","static/chunks/391-58593b5b9f8523ca.js","974","static/chunks/app/page-5bb49e1ada90eba2.js"],"Body"]
+9:I[9665,[],"OutletBoundary"]
+c:I[9665,[],"ViewportBoundary"]
+e:I[9665,[],"MetadataBoundary"]
+10:I[6614,[],""]
+:HL["/dapps/colosseum/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/dapps/colosseum/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/dapps/colosseum/_next/static/css/28bddbf5cc6c369b.css","style"]
+:HL["/dapps/colosseum/_next/static/css/5148277381f74ece.css","style"]
+0:{"P":null,"b":"M_o4QPBBREuylZBbeFRro","p":"/dapps/colosseum","c":["",""],"i":false,"f":[[["",{"children":["__PAGE__",{}]},"$undefined","$undefined",true],["",["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/dapps/colosseum/_next/static/css/28bddbf5cc6c369b.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","html",null,{"lang":"en","className":"dark","children":["$","body",null,{"className":"__variable_25d59a __variable_621104 antialiased bg-gray-950 text-white","children":["$","$L2",null,{"children":[["$","$L3",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L4",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","$L5",null,{}],[]],"forbidden":"$undefined","unauthorized":"$undefined"}],["$","$L6",null,{"position":"bottom-right","theme":"dark","closeButton":true,"richColors":false,"toastOptions":{"style":{"background":"#171717","color":"white","border":"1px solid rgba(75, 85, 99, 0.3)","borderRadius":"0.5rem","padding":"0.75rem 1rem","boxShadow":"0 10px 15px -3px rgba(0, 0, 0, 0.5)"},"className":"toast-container"}}]]}]}]}]]}],{"children":["__PAGE__",["$","$1","c",{"children":[["$","div",null,{"className":"","children":[["$","$L7",null,{}],["$","$L8",null,{}]]}],"$undefined",[["$","link","0",{"rel":"stylesheet","href":"/dapps/colosseum/_next/static/css/5148277381f74ece.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]],["$","$L9",null,{"children":["$La","$Lb",null]}]]}],{},null,false]},null,false],["$","$1","h",{"children":[null,["$","$1","YBp-_vKzUy2BL-ZilCO1e",{"children":[["$","$Lc",null,{"children":"$Ld"}],["$","meta",null,{"name":"next-size-adjust","content":""}]]}],["$","$Le",null,{"children":"$Lf"}]]}],false]],"m":"$undefined","G":["$10","$undefined"],"s":false,"S":true}
+d:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+a:null
+b:null
+f:[["$","title","0",{"children":"Solana Counter App"}],["$","meta","1",{"name":"description","content":"A minimal frontend for Anchor counter program"}],["$","link","2",{"rel":"icon","href":"/dapps/colosseum/favicon.ico","type":"image/x-icon","sizes":"16x16"}]]

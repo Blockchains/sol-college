@@ -47,6 +47,9 @@ P
   ciphervault) # fork's own React + Vite app (app/) on the program deployed from programs/cipher-valut (see dapps/deployed/ciphervault.json)
      cd "$src/app" && python3 "$(dirname "$out")/../../tests/devnet/patches/ciphervault.py" DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG
      npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx vite build && cp -r dist/. "$out/";;
+  colosseum) # fork's own Next.js 15 app (ui/) on the program deployed from contract/programs/staking (see dapps/deployed/colosseum.json); admin = test wallet m4Ac...
+     cd "$src/ui" && python3 "$(dirname "$out")/../../tests/devnet/patches/colosseum.py" JxbbWRxjVcbAE98o13Yo2EFFEP1paTX8q8SvuPvSaDL m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr
+     npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

@@ -1,0 +1,41 @@
+{
+ "slug": "colosseum",
+ "cluster": "devnet",
+ "program": "staking",
+ "idl": "staking.json",
+ "devnet": "JxbbWRxjVcbAE98o13Yo2EFFEP1paTX8q8SvuPvSaDL",
+ "deploy_tx": "3sfuEPkD9yty2AqLeTGU55Q5ZoG5xwsgtbC4ZgLB6ihidSatRcgU8N4gZDNBgJqZ816UBbu8ckkyxLjF51fPjU3Y",
+ "built": "cargo build-sbf (solana 2.3.13 platform tools) of contract/programs/staking at 783b1e1 with declare_id (and the app's IDL address) set to this program's keypair; buffer written with tools/fill_buffer.py",
+ "sigs": [
+  {
+   "label": "initialize apy_rate 100 (what the admin page sends)",
+   "sig": "t2BYiFquT5rgPeLjX8MPNv7y6DMxAfbeFTExQgsoAKs5Z6WWTHUaRM9gbbdPCf2gLeQLFkmiX1W6NmUCbtDPmWz"
+  },
+  {
+   "label": "admin deposits 0.2 SOL of rewards",
+   "sig": "3av8CXoicpYCeLHt34wpT5LPKZDbB1KVgd2nmehFFfdhYJgiSXeRpCzX3NGqkWmV47BuUoASn6KVwsV1W4RJY1kb"
+  },
+  {
+   "label": "B stakes 0.1 SOL for 20 s",
+   "sig": "3vewAp46UCCk52uurvPjW299H61iLLHDDGSSnNE4wwi7o9CVgxP8h8FvFvEqEGQZkQqkXjXd1qFpZZG7xkeNJfBN"
+  },
+  {
+   "label": "B claims rewards",
+   "sig": "3GbwMRJjKXvSwjuqsvgdsDRaVazFL2NZ4jc7EniJRCz4y56VVvcj8gSw8fH39xsrCXtViUHygdCLheDZQE4c2jKQ"
+  },
+  {
+   "label": "B unstakes after 20 s",
+   "sig": "XgGEp1AXETJ242ZRCkppJDMZdgU5NP5UA463oaU5EmFUzxBZt6NWUfhZmoKFHWBnx7SqjXa1SBAj3icxVCrPCxn"
+  },
+  {
+   "label": "B calls config (no admin check; it creates and sets B's own vault, not the admin's)",
+   "sig": "5N8xRpyGyT4kmk1KBTdwT26CXHKNCLTFB14bu2zgFSodbm4ufnkeGDnBPjbPpB8YdnWS7KLof3Dr88qAgi8A1BJM"
+  },
+  {
+   "label": "admin withdraws the whole vault balance (rent included)",
+   "sig": "3hgzx9T7o4FgyKACxFiTB9v7sevsGfU8qwt1GdaSALNbTaKPYWEELVVzJkRecLc8ncq6bvKF5hzKPo1ErcPvz7Nu"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

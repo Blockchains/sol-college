@@ -558,5 +558,98 @@
   ],
   "ui_check": "Driven in headless Chromium with two injected Wallet Standard test wallets (tests/devnet/wallet_click.py cipher / cipher-approve, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, propose, approve and execute all went through the app's own dialogs and buttons.",
   "limits": "The Initial Balance field is read with parseInt, so 0.5 SOL becomes 0; use whole SOL. The transaction table shows the amount as 0 SOL even though 0.02 SOL moved. The proposal-time NotEnoughSol check compares against the amount before it is set, so it never fires; only execute checks the vault. The token (SPL) option in the dialog is not implemented in the program. Lists are read with getProgramAccounts on the public RPC and can be slow."
+ },
+ {
+  "slug": "colosseum",
+  "name": "Novengrid SOL staking (Colosseum)",
+  "lesson": "/explore/colosseum/",
+  "app": "/dapps/colosseum/",
+  "fork": "https://github.com/Blockchains/Colosseum",
+  "commit": "783b1e1122ddcb939916fef2d108e3359b23f16a",
+  "program": "JxbbWRxjVcbAE98o13Yo2EFFEP1paTX8q8SvuPvSaDL",
+  "app_kind": "The fork's own Next.js 15 app (ui/) as a static export, with this devnet program ID and the hard-coded admin address set to our test wallet m4Ac… (the vault is a PDA of that admin). Admin page: /dapps/colosseum/admin/.",
+  "learn": "An admin initialises a SOL vault (PDA of the admin) and funds it. Players stake SOL into it for a chosen duration and can't unstake before it ends; rewards accrue per second as staked × apy_rate × seconds / 31,536,000 and are paid out of the same vault.",
+  "source": [
+   [
+    "instructions/sol_stake.rs (stake into the admin's vault PDA, player PDA [player, admin, player])",
+    "https://github.com/Blockchains/Colosseum/blob/783b1e1122ddcb939916fef2d108e3359b23f16a/contract/programs/staking/src/instructions/sol_stake.rs"
+   ],
+   [
+    "instructions/sol_unstake.rs (InvalidUnstakeTime until staked_time + duration)",
+    "https://github.com/Blockchains/Colosseum/blob/783b1e1122ddcb939916fef2d108e3359b23f16a/contract/programs/staking/src/instructions/sol_unstake.rs"
+   ],
+   [
+    "instructions/claim_rewards.rs L23 (the reward formula)",
+    "https://github.com/Blockchains/Colosseum/blob/783b1e1122ddcb939916fef2d108e3359b23f16a/contract/programs/staking/src/instructions/claim_rewards.rs#L23"
+   ],
+   [
+    "instructions/withdraw.rs (admin takes the whole vault balance)",
+    "https://github.com/Blockchains/Colosseum/blob/783b1e1122ddcb939916fef2d108e3359b23f16a/contract/programs/staking/src/instructions/withdraw.rs"
+   ]
+  ],
+  "flow": "tests/devnet/colosseum.mjs",
+  "log": "tests/devnet/logs/colosseum-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… (this build's admin) clicked Admin Initialise on /admin/",
+    "5JcdKBdsUx4UREEfPhyMMExbFbmvDUx9n8e5adyo6bvyWDcDdiX1LjwL3V9A9MG5YuzRkKRM7RXZs1efzhbmofzV"
+   ],
+   [
+    "UI: Admin Deposit 0.1 SOL into the reward vault",
+    "2uE4fFZQQT3BUC7aDLLBRvcg6UPPNQMXYTTtCrB2iHMcAH95La9X4bK2FjknU5qHRdgxZMUWqQczpPNJZHC1CuKJ"
+   ],
+   [
+    "UI: Admin Config with APY 150",
+    "FoYtPs4VTrLnExuuHqTk353P5ntK5zb9FcPKxHcBBnroAYRDcL9fhxykw7wJvDPGyBdtsiUBAorqFufVwvcnmXn"
+   ],
+   [
+    "UI: main page, 0.05 SOL for 7 days, Stake SOL; the portfolio then showed 0.05 SOL / 7 days",
+    "5WSZf9UbxJu1sJ7eKCzDig7evxT4PvWhZ4C2wbpHXTRKXgUcpDCdoX43Srn6qsxZ9rm4uFdkevt2u94Y4cqRtnm9"
+   ],
+   [
+    "UI: Get Reward",
+    "2Sg9JnVj2quxGdrd8TL2vP7b39G667EsPhPMAv3Vs7q9tus7yBfD1YXkBRMCbvcRbd81mfujzecNfGmXiaNczpx5"
+   ],
+   [
+    "Script: initialize apy_rate 100 (what the admin page sends)",
+    "t2BYiFquT5rgPeLjX8MPNv7y6DMxAfbeFTExQgsoAKs5Z6WWTHUaRM9gbbdPCf2gLeQLFkmiX1W6NmUCbtDPmWz"
+   ],
+   [
+    "Script: admin deposits 0.2 SOL of rewards",
+    "3av8CXoicpYCeLHt34wpT5LPKZDbB1KVgd2nmehFFfdhYJgiSXeRpCzX3NGqkWmV47BuUoASn6KVwsV1W4RJY1kb"
+   ],
+   [
+    "Script: B stakes 0.1 SOL for 20 s",
+    "3vewAp46UCCk52uurvPjW299H61iLLHDDGSSnNE4wwi7o9CVgxP8h8FvFvEqEGQZkQqkXjXd1qFpZZG7xkeNJfBN"
+   ],
+   [
+    "Script: B claims rewards",
+    "3GbwMRJjKXvSwjuqsvgdsDRaVazFL2NZ4jc7EniJRCz4y56VVvcj8gSw8fH39xsrCXtViUHygdCLheDZQE4c2jKQ"
+   ],
+   [
+    "Script: B unstakes after 20 s",
+    "XgGEp1AXETJ242ZRCkppJDMZdgU5NP5UA463oaU5EmFUzxBZt6NWUfhZmoKFHWBnx7SqjXa1SBAj3icxVCrPCxn"
+   ],
+   [
+    "Script: B calls config (no admin check; it creates and sets B's own vault, not the admin's)",
+    "5N8xRpyGyT4kmk1KBTdwT26CXHKNCLTFB14bu2zgFSodbm4ufnkeGDnBPjbPpB8YdnWS7KLof3Dr88qAgi8A1BJM"
+   ],
+   [
+    "Script: admin withdraws the whole vault balance (rent included)",
+    "3hgzx9T7o4FgyKACxFiTB9v7sevsGfU8qwt1GdaSALNbTaKPYWEELVVzJkRecLc8ncq6bvKF5hzKPo1ErcPvz7Nu"
+   ]
+  ],
+  "negative": [
+   "UI: UnStake right after staking: InvalidUnstakeTime (the app showed Unstaking Failed; nothing was sent)",
+   "initialize twice: Allocate: account Address { address: DhznFqUAMAQ283wLkGQfM4o7SsFwVUVWDafNHe4d7Dqf, base: None } already in use",
+   "deposit 0: AmountMustBeGreaterThanZero",
+   "stake 0: AmountMustBeGreaterThanZero",
+   "unstake before duration: InvalidUnstakeTime",
+   "B withdraws admin vault: ConstraintSeeds",
+   "claim with nothing staked: AmountMustBeGreaterThanZero"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py colosseum, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): initialise, deposit, config, stake and claim went through the app's own buttons, and the early unstake was refused by the program.",
+  "limits": "The shortest stake in the app is 7 days, so unstaking after the lock was run from the script (20 s stake). apy_rate is used as a plain multiplier: the admin page's default of 100 pays 100× the stake per year (the script's 0.1 SOL earned 6,024 lamports in about 12 s). Rewards, stakes and the admin's deposit share one vault, and withdraw sends its whole balance, rent included, to the admin, which closes the vault (seen in the script). The APY shown on the main page is a fixed '50%' label. config has no admin check, but it can only touch the caller's own vault."
  }
 ]
