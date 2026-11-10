@@ -96,7 +96,7 @@ log({ step: 'accept #1 by sponsor A', sig: await retry(() => upd(A, profA, 'acce
 await expectFail('settle milestone #1: 0.015 + 0.01 is more than the 0.02 SOL grant', () => settle(1));
 log({ step: 'add_grant_milestone #2 (0.001 SOL) by dev B', sig: await addMs(2, 0.001) });
 log({ step: 'review #2', sig: await retry(() => upd(B, profB, 'reviewGrantMilestone', 2)) });
-log({ step: 'reject_grant_milestone #2 by sponsor A', sig: await retry(() => upd(A, profA, 'rejectGrantMilestone', 2)) });
-await expectFail('revise milestone #2 after it was rejected (rejected is final)', () => upd(B, profB, 'reviseGrantMilestone', 2));
+log({ step: 'reject_grant_milestone #2 by sponsor A (lib.rs routes this to accept_milestone, so #2 ends up Accepted)', sig: await retry(() => upd(A, profA, 'rejectGrantMilestone', 2)) });
+await expectFail('revise milestone #2 after the "reject" (it is actually Accepted, a final state)', () => upd(B, profB, 'reviseGrantMilestone', 2));
 const g = await P.account.grant.fetch(grant0);
 log({ step: 'grant state', approved: g.approvedAmount.toNumber() / LAMPORTS_PER_SOL, paidOut: g.paidOut.toNumber() / LAMPORTS_PER_SOL, milestones: g.count });
