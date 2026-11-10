@@ -67,6 +67,10 @@ P
      # dependency installs as used on 2026-11-10: root yarn install (the app imports @solana/spl-token from the root), app npm install, then ajv@8 for CRA
      yarn install --frozen-lockfile >/dev/null && cd prediction-market-frontend && python3 "$(dirname "$out")/../../tests/devnet/patches/hackathon-prediction-market-solana.py"
      npm install --legacy-peer-deps --no-audit --no-fund >/dev/null && npm i --no-save --legacy-peer-deps ajv@8 >/dev/null && PUBLIC_URL=/dapps/$slug GENERATE_SOURCEMAP=false CI=false npx react-app-rewired build && cp -r build/. "$out/";;
+  pulsefund-sol) # fork's own Next.js app (frontend/) as a static export on the program deployed from anchor-project/programs/smart-contracts (see dapps/deployed/pulsefund-sol.json)
+     cd "$src/frontend" && sed -i "s/CQcG2qZooAYoeE96ZYKJd3omq2DPWHozSceSnuCxRv8U/DMZWuAaGAS8wKmdk7x6SczU5JCSrUWaYuZi7HKt6N6xe/g" src/idl/idl.json
+     python3 "$(dirname "$out")/../../tests/devnet/patches/pulsefund-sol.py"
+     npx -y yarn@1.22.22 install --frozen-lockfile >/dev/null && npx next build && npx next export -o out && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

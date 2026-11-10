@@ -429,6 +429,21 @@ def run(pg):
         log(step='resolution_markets_listed', markets=vals)
         if vals: sel.select_option(vals[-1]); pump(pg, 5000)
         log(step='resolve_team_won_via_ui', sent=click_last('Resolve Market'), text=body(pg)[-500:])
+    elif app == 'pulsefund':  # test wallet creates its campaign on /create/, then Contribute on a home card (the app donates 0.2 SOL to the CONNECTED wallet's campaign)
+        nm = 'UI campaign ' + str(int(time.time()))[-4:]
+        pg.goto(base + 'create/', wait_until='domcontentloaded'); pump(pg, 6000); connect(pg); pump(pg, 4000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        pg.locator('input[name=name]').fill(nm); pg.locator('textarea[name=description]').fill('Made through the hosted app by the sol.college click test')
+        pg.locator('input[name=projectUrl]').fill('https://sol.college/'); pg.locator('input[name=category]').fill('Education')
+        pg.locator('input[name=targetAmount]').fill('1000000000')
+        n = len(SENT); pg.locator('button[type=submit]').click(); pump(pg, 30000); log(step='create_campaign_via_ui', name=nm, sent=sigs_new(n))
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 15000); connect(pg); pump(pg, 8000)
+        card = pg.locator('div.max-w-sm', has_text=nm)
+        log(step='home_lists_campaign', found=card.count(), text=card.first.inner_text()[:200] if card.count() else body(pg)[:300])
+        if card.count():
+            n = len(SENT); card.first.get_by_role('button', name='Contribute').click(); pump(pg, 30000); log(step='contribute_via_ui (0.2 SOL)', sent=sigs_new(n))
+            pg.reload(); pump(pg, 15000); connect(pg); pump(pg, 6000)
+            log(step='card_after', text=pg.locator('div.max-w-sm', has_text=nm).first.inner_text()[:200])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
