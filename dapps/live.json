@@ -10,17 +10,35 @@
   "app_kind": "The fork's own Next.js 14 app (app/), static export, pointed at this devnet program. Only changes: base path, the IDL generated from the program source at the same commit (the committed app IDL is from a later program version), and /poll/?id= instead of /poll/[id] so it can be served statically.",
   "learn": "A forecasting poll stores the crowd's collective estimate on-chain: make_estimate takes a lower and upper bound, records the midpoint (lower+upper)/2 and the uncertainty (upper-lower)/100, and each poll lives at a PDA seeded by the global poll counter, so new polls get deterministic addresses.",
   "source": [
-   ["programs/poe/src/lib.rs L37-L44 (make_estimate: midpoint and uncertainty)", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/lib.rs#L37-L44"],
-   ["programs/poe/src/contexts/create_poll.rs L21 (poll PDA = [\"poll\", num_polls le bytes])", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/create_poll.rs#L21"],
-   ["programs/poe/src/contexts/register_user.rs L16 (user PDA = [\"user\", wallet])", "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/register_user.rs#L16"]
+   [
+    "programs/poe/src/lib.rs L37-L44 (make_estimate: midpoint and uncertainty)",
+    "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/lib.rs#L37-L44"
+   ],
+   [
+    "programs/poe/src/contexts/create_poll.rs L21 (poll PDA = [\"poll\", num_polls le bytes])",
+    "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/create_poll.rs#L21"
+   ],
+   [
+    "programs/poe/src/contexts/register_user.rs L16 (user PDA = [\"user\", wallet])",
+    "https://github.com/Blockchains/poe-solana/blob/29a7c77667bc68d4bdf2b1cc7a98056af7f8437d/programs/poe/src/contexts/register_user.rs#L16"
+   ]
   ],
   "flow": "tests/devnet/poe-solana.mjs",
   "log": "tests/devnet/logs/poe-solana-2026-11-10.jsonl",
   "verified": "2026-11-10",
   "steps": [
-   ["register_user (mints 1000 POEKEN to the new user)", "xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"],
-   ["create_poll (poll #0)", "2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"],
-   ["make_estimate 30..70 → crowd estimate 50%", "2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD"]
+   [
+    "register_user (mints 1000 POEKEN to the new user)",
+    "xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"
+   ],
+   [
+    "create_poll (poll #0)",
+    "2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"
+   ],
+   [
+    "make_estimate 30..70 \u2192 crowd estimate 50%",
+    "2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD"
+   ]
   ],
   "negative": [
    "register_user a second time for the same wallet is rejected (user PDA already in use, custom program error 0x0)",
@@ -38,18 +56,33 @@
   "commit": "40b6e480b3babeae8689452cfede52e946f6c617",
   "program": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
   "app_kind": "The fork's own Next.js 12 frontend (frontend/), static export on devnet. Only changes: base path, devnet RPC, this program ID, and a 0-SOL fee on recolouring. Its MongoDB points API (pages/api) needs the author's database and is not hosted, so the points counter stays at 0.",
-  "learn": "Each pixel of a 200×200 canvas is its own account at a PDA seeded by [\"pixel\", x, y]: create_pixel validates 0–199 coordinates and initialises it, and update_pixel re-derives the same PDA from the stored x, y and bump, so anyone can recolour a pixel but nobody can forge its address.",
+  "learn": "Each pixel of a 200\u00d7200 canvas is its own account at a PDA seeded by [\"pixel\", x, y]: create_pixel validates 0\u2013199 coordinates and initialises it, and update_pixel re-derives the same PDA from the stored x, y and bump, so anyone can recolour a pixel but nobody can forge its address.",
   "source": [
-   ["Picassol/programs/picassol/src/lib.rs L10-L28 (bounds check)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L10-L28"],
-   ["Picassol/programs/picassol/src/lib.rs L109 (pixel PDA seeds)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L109"],
-   ["Picassol/programs/picassol/src/lib.rs L122-L123 (update re-derives PDA with stored bump)", "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L122-L123"]
+   [
+    "Picassol/programs/picassol/src/lib.rs L10-L28 (bounds check)",
+    "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L10-L28"
+   ],
+   [
+    "Picassol/programs/picassol/src/lib.rs L109 (pixel PDA seeds)",
+    "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L109"
+   ],
+   [
+    "Picassol/programs/picassol/src/lib.rs L122-L123 (update re-derives PDA with stored bump)",
+    "https://github.com/Blockchains/picassol-hackathon/blob/40b6e480b3babeae8689452cfede52e946f6c617/Picassol/programs/picassol/src/lib.rs#L122-L123"
+   ]
   ],
   "flow": "tests/devnet/picassol-hackathon.mjs",
   "log": "tests/devnet/logs/picassol-hackathon-2026-11-10.jsonl",
   "verified": "2026-11-10",
   "steps": [
-   ["create_pixel (128,152) rgb(153,69,255)", "2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM"],
-   ["update_pixel → rgb(20,241,149), read back from the account", "37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa"]
+   [
+    "create_pixel (128,152) rgb(153,69,255)",
+    "2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM"
+   ],
+   [
+    "update_pixel \u2192 rgb(20,241,149), read back from the account",
+    "37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa"
+   ]
   ],
   "negative": [
    "create_pixel at x=200 is rejected with InvalidXCoordinate",
@@ -57,5 +90,62 @@
   ],
   "ui_check": "The hosted app was loaded headless: the canvas, colour picker and wallet button render with no page errors; the bundle is built against api.devnet.solana.com and this program ID. Drawing needs a connected wallet.",
   "limits": "Points/leaderboard need the author's MongoDB backend (not hosted)."
+ },
+ {
+  "slug": "trustlock",
+  "name": "TrustLock (dead man's switch)",
+  "lesson": "/explore/trustlock/",
+  "app": "/dapps/trustlock/",
+  "fork": "https://github.com/Blockchains/TrustLock",
+  "commit": "18155f4de32e6a15afef5de57d1d8715b81c7604",
+  "program": "6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP",
+  "app_kind": "The fork's own Next.js 14 app, static export, pointed at a program we built from switch/ at this commit and deployed fresh to devnet on 2026-11-10. Only changes: base path, output: 'export' and the program ID.",
+  "learn": "A dead man's switch is an escrow PDA seeded by [\"escrow\", owner, seed] that holds SOL until a deadline: the owner must check in before the deadline to push it back, and once the clock passes it, claim lets the beneficiary drain and close the account. The program reads the Clock sysvar, so the rule is enforced on-chain, not by the app.",
+  "source": [
+   [
+    "switch/programs/switch/src/lib.rs L10-L20 (initialize: deadline must be in the future)",
+    "https://github.com/Blockchains/TrustLock/blob/18155f4de32e6a15afef5de57d1d8715b81c7604/switch/programs/switch/src/lib.rs#L10-L20"
+   ],
+   [
+    "lib.rs L30-L38 (checkin: only before the deadline)",
+    "https://github.com/Blockchains/TrustLock/blob/18155f4de32e6a15afef5de57d1d8715b81c7604/switch/programs/switch/src/lib.rs#L30-L38"
+   ],
+   [
+    "lib.rs L40-L46 (claim: only after the deadline)",
+    "https://github.com/Blockchains/TrustLock/blob/18155f4de32e6a15afef5de57d1d8715b81c7604/switch/programs/switch/src/lib.rs#L40-L46"
+   ],
+   [
+    "lib.rs L61 (escrow PDA seeds)",
+    "https://github.com/Blockchains/TrustLock/blob/18155f4de32e6a15afef5de57d1d8715b81c7604/switch/programs/switch/src/lib.rs#L61"
+   ]
+  ],
+  "flow": "tests/devnet/trustlock.mjs",
+  "log": "tests/devnet/logs/trustlock-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "initialize (deadline +45 s, new beneficiary)",
+    "2wzRVyga84RiwsSSaf39aHY8de8DJG1hi4sKS7X7nvKcRbYfRjJdXzZduTEXzLUsQmAAKb3uKScw6XEqRCCTYUAZ"
+   ],
+   [
+    "deposit 0.02 SOL into the escrow PDA",
+    "4WiWRBHaXLsKmYkcUGP23EWg1ukpBwN3wqFRQdSSYnhYMjPmzfT19WN2e52ZsYoPUuQB4ppBaNLP1RVQ6CiSnaNf"
+   ],
+   [
+    "checkin (deadline extended)",
+    "3qXk24R4Jm2FykDJk36gPAEP5GoTcC5oxZxWgF2PnViQRdG83G6C269NKjTaVckhdHuTPhjuXM72ZYHp275ouAUa"
+   ],
+   [
+    "claim after the deadline \u2192 beneficiary received 0.02118872 SOL, escrow closed",
+    "5xVrtsfr9VW1UiYHePqMYNCxjdLtyzLxvF39zjLkzPgmbwmSJLy2inD7myaBCQ7BspGRsabCYJCBMFWobAMtx22c"
+   ]
+  ],
+  "negative": [
+   "initialize with a deadline in the past is rejected (InvalidDeadline)",
+   "deposit of 0 lamports is rejected (InvalidAmount)",
+   "claim before the deadline is rejected (DeadlineNotReached)"
+  ],
+  "ui_check": "The hosted app was loaded headless: the landing page and Select Wallet button render with no page errors and the bundle contains this program ID. Creating and claiming switches needs a connected wallet.",
+  "limits": "cancel was not exercised. The app's IDL makes the beneficiary sign claim, so the beneficiary claims from their own wallet."
  }
 ]

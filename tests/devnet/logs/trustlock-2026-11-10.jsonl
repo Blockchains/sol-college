@@ -1,0 +1,7 @@
+{"step":"setup","program":"6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP","owner":"AgrLFStmTgQ1Ki9k3Pe4V8bHGNZF9AVRLzm7v48Y6P4u","beneficiary":"CXbzRHBiGWxXLdtPztg3GgqFxjJceozrae8NkaNBu14q","escrow":"8iQeg3ig7NvQX5FuKt4M1hgzFpjuWdbds1HWpTtpT5HQ"}
+{"step":"initialize_past_deadline","expectedFailure":true,"error":"InvalidDeadline"}
+{"step":"initialize","ok":true,"sig":"2wzRVyga84RiwsSSaf39aHY8de8DJG1hi4sKS7X7nvKcRbYfRjJdXzZduTEXzLUsQmAAKb3uKScw6XEqRCCTYUAZ"}
+{"step":"deposit 0.02 SOL","ok":true,"sig":"4WiWRBHaXLsKmYkcUGP23EWg1ukpBwN3wqFRQdSSYnhYMjPmzfT19WN2e52ZsYoPUuQB4ppBaNLP1RVQ6CiSnaNf","escrowLamports":21188720}
+{"step":"deposit_zero","expectedFailure":true,"error":"InvalidAmount"}
+{"step":"claim_before_deadline","expectedFailure":true,"error":"DeadlineNotReached"}
+{"step":"claim after deadline","ok":true,"sig":"5xVrtsfr9VW1UiYHePqMYNCxjdLtyzLxvF39zjLkzPgmbwmSJLy2inD7myaBCQ7BspGRsabCYJCBMFWobAMtx22c","beneficiaryLamports":21188720,"escrowClosed":true}

@@ -26,6 +26,10 @@ P
      printf "module.exports = { basePath: '/dapps/%s', trailingSlash: true, images: { unoptimized: true }, eslint: { ignoreDuringBuilds: true }, typescript: { ignoreBuildErrors: true } }\n" "$slug" > next.config.js
      npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null
      NEXT_PUBLIC_SOLANA_RPC_ENDPOINT=https://api.devnet.solana.com NEXT_PUBLIC_FEE_RECIPIENT_ADDRESS=BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv NEXT_PUBLIC_FEE_AMOUNT_SOL=0 sh -c 'npx next build && npx next export -o out' && cp -r out/. "$out/";;
+  trustlock) # fork's own Next.js 14 app on the program deployed from switch/ (see dapps/deployed/trustlock.json)
+     cd "$src"; sed -i "s/8hK7vGkWap7CwfWnZG8igqz5uxevUDTbhoeuCcwgvpYq/6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP/" components/DeadManSwitch.tsx
+     printf "module.exports = { output: 'export', basePath: '/dapps/%s', trailingSlash: true, images: { unoptimized: true }, eslint: { ignoreDuringBuilds: true }, webpack: (c) => { c.resolve.fallback = { fs: false }; return c; } }\n" "$slug" > next.config.js
+     npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

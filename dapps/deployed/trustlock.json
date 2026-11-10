@@ -1,0 +1,17 @@
+{
+ "slug": "trustlock",
+ "cluster": "devnet",
+ "program": "dead_man_switch",
+ "idl": "dead_man_switch.json",
+ "devnet": "6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP",
+ "deploy_tx": "5buY7GRLq62mZ89tsudzagK62X3SCHqo2GiqpAzZPBDFEyWyKktFSHHrVnRu1M97nzKbSpT8uWP3j2Xkf5PJGavs",
+ "built": "anchor-cli 0.30.1 build of switch/ at 18155f4 with declare_id set to this program's keypair",
+ "sigs": [
+  {"label": "initialize", "sig": "2wzRVyga84RiwsSSaf39aHY8de8DJG1hi4sKS7X7nvKcRbYfRjJdXzZduTEXzLUsQmAAKb3uKScw6XEqRCCTYUAZ"},
+  {"label": "deposit", "sig": "4WiWRBHaXLsKmYkcUGP23EWg1ukpBwN3wqFRQdSSYnhYMjPmzfT19WN2e52ZsYoPUuQB4ppBaNLP1RVQ6CiSnaNf"},
+  {"label": "checkin", "sig": "3qXk24R4Jm2FykDJk36gPAEP5GoTcC5oxZxWgF2PnViQRdG83G6C269NKjTaVckhdHuTPhjuXM72ZYHp275ouAUa"},
+  {"label": "claim", "sig": "5xVrtsfr9VW1UiYHePqMYNCxjdLtyzLxvF39zjLkzPgmbwmSJLy2inD7myaBCQ7BspGRsabCYJCBMFWobAMtx22c"}
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}
