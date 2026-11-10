@@ -22,5 +22,11 @@
  "proof-of-anchor": "The hosted part is a verifier that fetches other sites (https://<domain>/…, the GitHub API) and Noir proofs; the web app does not call the Anchor program.",
  "zylith-solana": "The shielded pool needs an off-chain ASP service and a relayer (VITE_ASP_URL, VITE_RELAYER_ADDRESS) plus wrapped-BTC/stablecoin mints the app is configured with.",
  "demage": "The app/ folder is a leftover todo template: it imports the IDL from an uncommitted target/ build and calls createProfile, which the token-2022 staking program doesn't have, so no page in it can stake, unstake or create a pool.",
- "momimarket": "The main page only wires up creating an event and listing events; joining an option is never called from it, and its 'test transaction' button sends 0 SOL to yourself. The hand-written IDL in src/lib/anchor.ts is in the pre-0.30 format with no account types and is passed to the old Program(idl, programId, provider) constructor, while the app depends on @coral-xyz/anchor 0.32."
+ "momimarket": "The main page only wires up creating an event and listing events; joining an option is never called from it, and its 'test transaction' button sends 0 SOL to yourself. The hand-written IDL in src/lib/anchor.ts is in the pre-0.30 format with no account types and is passed to the old Program(idl, programId, provider) constructor, while the app depends on @coral-xyz/anchor 0.32.",
+ "sol-pot-turbo": "The web app never calls join_game, allocate_points or claim_prize; games are started and settled by a keeper bot script (src/scripts/keeperBot.ts) that has to run somewhere on a schedule.",
+ "miner-war": "Built on MagicBlock BOLT: the app needs about a dozen ECS component and system programs (programs-ecs/) deployed next to the main program, and routes play through MagicBlock's devnet router. Deferred: deploying all of them would take most of our devnet SOL budget.",
+ "toy-dfba": "Auction state, orders and results are read from the author's backend (axios to localhost:3001/api/...), and the program runs through a MagicBlock ephemeral rollup.",
+ "ursusai-monorepo": "The frontend reads agents and trades from its own backend and websocket (VITE_BACKEND_URL, VITE_WS_URL; ursus-backend/).",
+ "zefe-solana-breakout-submission": "A Telegram Mini App that signs in and refreshes tokens through its own backend API (NEXT_PUBLIC_API_BASE_URL /api/v1/token/refresh).",
+ "solsafe": "Case lookups and stats come from the author's backend (REACT_APP_BACKEND_URL /api/trace, /api/stats) and evidence is fetched from IPFS."
 }
