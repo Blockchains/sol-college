@@ -1,0 +1,326 @@
+{
+ "title": "UniProof: university credentials as PDAs, with registrar and dean sign-off",
+ "summary": "A university account issues numbered credential PDAs to student wallets. A credential counts as valid once a registrar flag and a dean flag are both set and it isn't revoked, but the program never checks who sets those flags.",
+ "what": "UniProof puts degrees on chain. A wallet creates one **University** PDA at `[\"university\", wallet]`. Its authority issues **Credentials** at `[\"credential\", university, n]` (n = the university's running counter) to any student wallet, with degree, field, graduation date and a metadata link. Each credential starts with `registrar_signed = false` and `dean_signed = false`. `sign_as_registrar` and `sign_as_dean` set those flags. `verify_credential` returns `registrar && dean && !revoked` as a bool. The authority can revoke. Students can record a **DisclosureProof** PDA saying they shared part of a credential. The access control is the lesson here: `issue` and `revoke` are properly locked with `has_one`, but the two signature instructions accept **anyone**, and our devnet run proves it.",
+ "app_note": "The fork's own Next.js app (UniProof) as a static export with this devnet program ID. The fork imports `src/idl/uniproof.json` but doesn't commit it, so it was written from the committed TypeScript IDL type. The other changes are basePath, unoptimized images, and skipping lint at build. Pages: **/university/** (initialize, issue, sign), **/verify/** and **/student/**. There is no screen for revoking or for disclosure proofs. Script: [tests/devnet/chinesepowered-solana-cypherpunk.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/chinesepowered-solana-cypherpunk.mjs).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/chinesepowered-solana-cypherpunk/), connect Phantom on **devnet** (0.05 devnet SOL is enough) and go to **University Portal** (/university/). Enter a University Name and press **Initialize University**.",
+   "see": "An `initialize_university` transaction. The page then shows University Information: your name, Credentials Issued 0, and the University Address, which is the PDA `[\"university\", your wallet]`.",
+   "ran": [
+    [
+     "Test wallet m4Ac…: Initialize University (\"sol.college UI University\")",
+     "2dCYLFDQs3pFWVCb9YgM5w9WJijAekYtkr8JNxBePZhrUzgu4Gar966kT5xQcZM48ZJaghBefD7x6qwK7eG5Ytzt"
+    ]
+   ]
+  },
+  {
+   "do": "Issue a credential: Student Wallet Address = your own wallet (or a second one), Degree Type `Bachelor of Science`, Field of Study `Computer Science`, a Graduation Date, and an optional Metadata URI. Press **Issue Credential**.",
+   "see": "An `issue_credential` transaction. The dialog shows the new credential's address, `[\"credential\", university, 0]`, and Credentials Issued becomes 1. On **/verify/** that address now reads **Unverified Credential**: no signatures yet.",
+   "ran": [
+    [
+     "Issue Credential to its own wallet; the dialog showed credential FuuEaM9d…",
+     "2FGh1M5NJgvekvzDoGjGG9bNxHxmMFX4qyMuxvWzQjCvkKuY9iph34nVdmjSiPXpBQQ54JpvVt2eAe43asDpvnNy"
+    ]
+   ]
+  },
+  {
+   "do": "Under **Sign Credential (Multi-Sig)**, paste the credential address and press **Sign as Registrar**.",
+   "see": "A `sign_as_registrar` transaction. The program only checks that the credential isn't revoked; it doesn't care who you are.",
+   "ran": [
+    [
+     "Sign as Registrar",
+     "7nLNCndCUnBj56bSDvmicLFsokQqXou61FPfDESVqJLCW1B4SyePwMvDRqTZMzzTD5FiXVi1RgckEhckDLmLm4D"
+    ]
+   ]
+  },
+  {
+   "do": "Press **Sign as Dean**, then open **/verify/** and **/student/**.",
+   "see": "A `sign_as_dean` transaction. /verify/ shows **Verified Credential**, and /student/ (when the credential is yours) lists it with ✓ Signed for both. The same wallet supplied both \"independent\" signatures.",
+   "ran": [
+    [
+     "Sign as Dean; /verify/ showed Verified Credential and /student/ ✓ Signed twice",
+     "hRUFgzUWra1cahBhXbGLC7dN6NLad71ejhLwU8MBzSg4dXWR1LsuHnHFU7DJyjsy77x6aJckiMnxHsoeHy2hhaY"
+    ]
+   ]
+  },
+  {
+   "do": "Optional, with a second wallet: initialize its own university, then paste wallet 1's credential address into its **Sign as Registrar** box.",
+   "see": "It is accepted: `SignCredential` never links the credential to the university you pass, nor the signer to any role. We read this from the code; the script did the same with an unrelated wallet R and it was accepted (3N3CnFKr…).",
+   "ran": [
+    [
+     "Script: unrelated wallet R signs as registrar on U's credential, accepted",
+     "3N3CnFKru81Har8doEUoBDzu6DHH9NWATGncVADuDFSt4EJtUyqHNi7G46HKyaf9143w4N2Ptrqdwkdtem9q6tVy"
+    ]
+   ],
+   "ran_note": "Not clicked in the app with a second wallet; the program-level behaviour is what the script recorded."
+  }
+ ],
+ "diagram": "wallet U ─ initialize_university(name, authority) ─▶ University PDA [\"university\", U]   (name, authority, credentials_issued = n, bump)\nU (has_one authority) ─ issue_credential(student, degree, field, date, uri) ─▶ Credential PDA [\"credential\", university, n]   n += 1\n                                                                              registrar_signed = false, dean_signed = false\nANY signer ─ sign_as_registrar ─▶ registrar_signed = true     (only checks: not revoked)\nANY signer ─ sign_as_dean      ─▶ dean_signed = true\nanyone ─ verify_credential (view) ─▶ registrar_signed && dean_signed && !is_revoked\nU (has_one university + authority) ─ revoke_credential ─▶ is_revoked = true, revocation_date\nstudent ─ create_disclosure_proof(credential_key, type, nonce) ─▶ DisclosureProof PDA [\"disclosure\", student, nonce]",
+ "accounts": [
+  [
+   "University",
+   "PDA `[\"university\", signer]`",
+   "Name (≤100), authority, is_active, credentials_issued (the counter used in credential seeds), bump"
+  ],
+  [
+   "Credential",
+   "PDA `[\"credential\", university, n]`",
+   "University, student, degree (≤50), field (≤100), graduation and issue dates, metadata URI (≤200), is_revoked, revocation_date, registrar_signed, dean_signed, bump"
+  ],
+  [
+   "DisclosureProof",
+   "PDA `[\"disclosure\", student, nonce]`",
+   "Credential key, student, disclosure type (DegreeOnly, DegreeAndField, DegreeAndDate, Full), timestamp, nonce"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize_university`: one per wallet, and a seed mismatch",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 106,
+     "b": 120
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 10,
+     "b": 22
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 202,
+     "b": 211,
+     "note": "InitSpace with max_len"
+    }
+   ],
+   "steps": [
+    "`init` with `seeds = [b\"university\", authority]`, where `authority` is the **Signer**, so a wallet can only have one; U's second attempt failed with \"already in use\".",
+    "The handler then stores the *argument* `authority`, which may be a different key. Every later instruction finds the university at `[\"university\", university.authority]`, so if the two differ the account is unusable. Our script's X created a university naming U, and X's issue then failed with **ConstraintSeeds** (Exercise 3).",
+    "`#[derive(InitSpace)]` + `#[max_len]` sizes the account exactly, so the rent is small and fixed."
+   ]
+  },
+  {
+   "name": "`issue_credential`: authority-gated, counter-numbered",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 122,
+     "b": 147
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 25,
+     "b": 51
+    }
+   ],
+   "steps": [
+    "The credential's seeds include `university.credentials_issued` *before* the increment, so credentials are numbered 0, 1, 2… and each address is predictable.",
+    "`university` is re-derived from its stored authority (`seeds` + `bump = university.bump`) and `has_one = authority` requires that authority to sign. Our script's unrelated wallet R got **ConstraintHasOne**.",
+    "`issuer` (who pays) is a separate signer from `authority`; the app passes the same wallet for both. `is_active` is never checked."
+   ]
+  },
+  {
+   "name": "`sign_as_registrar` / `sign_as_dean`: the missing check",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 149,
+     "b": 159
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 53,
+     "b": 67
+    }
+   ],
+   "steps": [
+    "`SignCredential` asks for a credential, *a* university (checked only to be a real university PDA), and a `signer`. Nothing compares the signer with a registrar, a dean or the authority, and nothing says `credential.university == university`.",
+    "The only rule is `require!(!credential.is_revoked)`: after U revoked, R's signature got **CredentialRevoked**.",
+    "So the \"multi-sig\" is two booleans anyone can set. On devnet, R (unrelated) set `registrar_signed` on U's credential (3N3CnFKr…). After U's dean signature, `verify_credential` returned **true**."
+   ]
+  },
+  {
+   "name": "`verify_credential`: a view function",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 69,
+     "b": 78
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 161,
+     "b": 164
+    }
+   ],
+   "steps": [
+    "It returns `Result<bool>`, which Anchor writes as return data. A client can `simulate`/`.view()` it with no fee and no signature.",
+    "The script read **false** after the registrar only, **true** after both, and **false** after revocation."
+   ]
+  },
+  {
+   "name": "`revoke_credential`: done right",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 166,
+     "b": 180
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 80,
+     "b": 86
+    }
+   ],
+   "steps": [
+    "Two `has_one`s chain the checks: the credential's `university` field must be this university, and the university's `authority` must sign. R got **ConstraintHasOne**; U's revoke (36gFR1Yf…) succeeded.",
+    "This is the pattern the sign instructions should have used."
+   ]
+  },
+  {
+   "name": "`create_disclosure_proof`: a record, not a proof",
+   "refs": [
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 182,
+     "b": 200
+    },
+    {
+     "path": "programs/uniproof/src/lib.rs",
+     "a": 88,
+     "b": 103
+    }
+   ],
+   "steps": [
+    "The PDA `[\"disclosure\", student, nonce]` makes each nonce single-use per student: reusing nonce 1 failed with \"already in use\".",
+    "`credential_key` is a plain argument, so it isn't checked to exist or to belong to the student (code reading). The credential data is public on chain anyway, so nothing is hidden. There's no zero-knowledge proof despite the \"selective disclosure\" name."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "access control through account constraints",
+  "text": "Everything this program gets right, it gets right in `#[derive(Accounts)]`: PDAs rebuilt from stored fields (`seeds = [\"university\", university.authority]`, `bump = university.bump`) and `has_one` links between accounts stop anyone issuing or revoking for a university they don't control. Everything it gets wrong is a constraint that's missing. Comparing `IssueCredential`/`RevokeCredential` with `SignCredential` side by side is the clearest lesson on Anchor authorization you'll find.",
+  "refs": [
+   {
+    "path": "programs/uniproof/src/lib.rs",
+    "a": 166,
+    "b": 180,
+    "note": "locked"
+   },
+   {
+    "path": "programs/uniproof/src/lib.rs",
+    "a": 149,
+    "b": 159,
+    "note": "open"
+   }
+  ],
+  "more": [
+   "Fix it with roles: store `registrar` and `dean` keys on the University, then add `has_one = university` on the credential and a `constraint = signer.key() == university.registrar` (and dean) on `SignCredential`. Exercise 1 does exactly this.",
+   "Counter-numbered PDAs (`credentials_issued` in the seeds) let the app list a university's credentials without a list account. The app uses `memcmp` filters on the `university` (offset 8) or `student` (offset 40) field instead."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "One client class for all instructions",
+   "refs": [
+    {
+     "path": "src/lib/solana/uniproof-client.ts",
+     "a": 30,
+     "b": 48,
+     "note": "PDA helpers"
+    },
+    {
+     "path": "src/lib/solana/uniproof-client.ts",
+     "a": 79,
+     "b": 129,
+     "note": "issueCredential reads the counter first"
+    }
+   ],
+   "steps": [
+    "`getCredentialPDA` encodes the index as 8 little-endian bytes, matching `to_le_bytes()` in the seeds.",
+    "Before issuing it fetches the university's `credentialsIssued` to derive the next credential address, and refuses if that address already exists."
+   ]
+  },
+  {
+   "title": "Signing passes *your* university",
+   "refs": [
+    {
+     "path": "src/lib/solana/uniproof-client.ts",
+     "a": 131,
+     "b": 157
+    },
+    {
+     "path": "app/university/page.tsx",
+     "a": 202,
+     "b": 215
+    }
+   ],
+   "steps": [
+    "`signAsRegistrar(credential, universityPDA)` uses the connected wallet's own university and the pasted credential address. The program doesn't check they belong together, which is why step 5 works."
+   ]
+  },
+  {
+   "title": "Verify reads the account, not the view",
+   "refs": [
+    {
+     "path": "src/lib/solana/uniproof-client.ts",
+     "a": 159,
+     "b": 172
+    },
+    {
+     "path": "src/lib/solana/uniproof-client.ts",
+     "a": 198,
+     "b": 220
+    }
+   ],
+   "steps": [
+    "The app recomputes `registrarSigned && deanSigned && !isRevoked` from a plain account fetch instead of calling `verify_credential`. It gets the same answer for free.",
+    "/student/ lists your credentials with `credential.all([{memcmp: {offset: 40, bytes: wallet}}])`."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Give the signatures real roles",
+   "steps": [
+    "Add `registrar: Pubkey` and `dean: Pubkey` to University (set in `initialize_university`).",
+    "In `SignCredential`: `#[account(mut, has_one = university)] credential`, and split it into `SignAsRegistrar` with `constraint = signer.key() == university.registrar` and `SignAsDean` with the dean.",
+    "Optionally require registrar ≠ dean."
+   ],
+   "expect": "Replaying the script, R's registrar signature fails with a constraint error instead of succeeding as 3N3CnFKr… did, and a credential only verifies after both named people sign."
+  },
+  {
+   "title": "Stop cross-university signing",
+   "steps": [
+    "With only `has_one = university` added (no roles yet), try step 5 again: wallet 2 signs wallet 1's credential while passing wallet 2's university."
+   ],
+   "expect": "ConstraintHasOne: the credential's university field doesn't match the university passed."
+  },
+  {
+   "title": "Fix initialize_university's authority",
+   "steps": [
+    "Drop the `authority: Pubkey` argument and store `ctx.accounts.authority.key()`, or seed the PDA from the argument and require that key to sign."
+   ],
+   "expect": "The script's X → U case can no longer create an unusable university. X's issue no longer fails with ConstraintSeeds, because X's university now names X."
+  },
+  {
+   "title": "Make disclosure proofs check the credential",
+   "steps": [
+    "Replace `credential_key: Pubkey` with a `credential: Account<Credential>` with `constraint = credential.student == student.key()` and `!credential.is_revoked`.",
+    "Add a Disclosure screen on /student/."
+   ],
+   "expect": "A student can only record a disclosure for their own, unrevoked credential. Using someone else's credential (or a random key) is rejected."
+  },
+  {
+   "title": "Add revoke and status to the app",
+   "steps": [
+    "On /university/, list the university's credentials with `getUniversityCredentials` and add a **Revoke** button calling `revokeCredential`.",
+    "Check `is_active` in `issue_credential` and add an instruction for the authority to deactivate the university."
+   ],
+   "expect": "Revoking from the app turns /verify/ to Credential Revoked, as U's scripted revoke (36gFR1Yf…) did, and a deactivated university can't issue."
+  }
+ ],
+ "not_covered": "Initialize, issue, both signatures, verify and the student list were clicked through in the app. Outsider signing, revocation, disclosure proofs, the authority-mismatch university and every rejected case were run by script. Not exercised: issuing to a different student wallet from the app, create_disclosure_proof with someone else's credential key (read from code)."
+}
