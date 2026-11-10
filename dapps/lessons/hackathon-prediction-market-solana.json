@@ -1,0 +1,415 @@
+{
+ "title": "CS2 Prediction Market: YES/NO tokens on constant-product curves, resolved by an admin",
+ "summary": "A creator opens a market on a CS2 match with YES and NO tokens; a liquidity provider puts SOL behind both sides; whitelisted friends buy and sell YES or NO along a constant-product curve; the admin (or a Steam oracle key) declares the winner, which stops trading.",
+ "what": "Each market is a pair of SPL mints, YES (team A wins) and NO (team A loses), whose mint authority is the program's **global vault** PDA. `create_market` mints 1,000,000 of each into the vault, but only the configured **initial reserves** (1,000 tokens per side here) are put on sale. The first `add_liquidity` splits its SOL in half: one half backs the YES curve, the other the NO curve. A buy of YES pays SOL into the vault and takes tokens out along `token_out = token_reserves × sol_in / (sol_reserves + sol_in)`; a sell runs the same curve backwards. Each trade pays 1% to the team wallet and 0.2% to the pool (in our config). Only wallets on the **market creator's whitelist** may add liquidity or trade. `resolution`, signed by the config authority or the Steam oracle key, records the winner and sets `is_completed`, after which every swap fails. There is **no claim instruction** and `withdraw_liquidity` **moves no SOL**: both are exercises below.",
+ "app_note": "The fork's own React app (Create React App) built with this devnet program ID. The only additions are two token-metadata files, [meta/yes.json](/dapps/hackathon-prediction-market-solana/meta/yes.json) and [meta/no.json](/dapps/hackathon-prediction-market-solana/meta/no.json). Devnet config: 1% platform + 0.2% LP fee each way, 1M tokens minted per side, 1,000-token initial reserves, 6 decimals, minimum liquidity **0.02 SOL** (the repo default is 5 SOL). Script: [tests/devnet/patches/hackathon-prediction-market-solana.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/hackathon-prediction-market-solana.py). Use your own market: you can only trade on markets whose creator whitelisted you, and creating one puts you on your own whitelist.",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/hackathon-prediction-market-solana/), connect Phantom on **devnet** (about 0.1 devnet SOL is plenty). Go to **➕ Create Market**: YES symbol `YES1`, YES URI `https://sol.college/dapps/hackathon-prediction-market-solana/meta/yes.json`, NO symbol `NO1`, NO URI `https://sol.college/dapps/hackathon-prediction-market-solana/meta/no.json`, a **short** match code such as `M1`, and **5** team members (any valid wallet addresses, your own is fine) with short Steam IDs such as `1`…`5`. Press **🚀 Create Market**.",
+   "see": "Two or three wallet prompts: one transaction creating the YES and NO mints (authority = the global vault PDA), a `whitelist_init` the first time you ever create a market (you become its first member), and `create_market`. Your market appears in the list. Long Steam IDs or URLs can push `create_market` over the 1232-byte transaction limit (Exercise 4).",
+   "ran": [
+    [
+     "Config authority m4Ac…: 🚀 Create Market, tx 1: the YES/NO mints",
+     "3hoV7Ze6Eu9eH8BELtyXnsorVYX1uyBnJ4cN5Yo5Qf4KRyT4bnkAUcru21j5KZ71G721JSrAUQKjQRweN5wQau9P"
+    ],
+    [
+     "tx 2: create_market (market ARzCfbpQ…; its whitelist already existed)",
+     "64Psm5E5HQGpSF3PhBFvadD2N2Mc4x8ZmqManbjFDCjxBjqmvggbfpVS65KeU5ecZCgKA81ZvVxVSM67GaT7XXHU"
+    ]
+   ]
+  },
+  {
+   "do": "**💧 Liquidity**: select your market, amount `0.02`, **➕ Add Liquidity**.",
+   "see": "An `add_liquidity` transaction: 0.02 SOL goes into the global vault, and each side now has 0.01 SOL and 1,000 tokens on its curve. A YES token now costs about 0.01 / 1000 = 0.00001 SOL. Less than 0.02 fails with InvalidArgument. The console logs \"Error loading user liquidity\"; ignore it.",
+   "ran": [
+    [
+     "💧 Liquidity, 0.02, ➕ Add Liquidity",
+     "4DLz5Vs6BKhi6wuM5kmheYCDvyx5A6fV263p2sAsENJ5REgjkhUWjcTXepF7mXLoWWiPugR39UpVc9xqY1yk6kEL"
+    ]
+   ]
+  },
+  {
+   "do": "**💱 Trade**: your market, **🔼 Buy**, **✅ YES Token**, `0.005` SOL. Check the preview, then **⚡ Buy YES Tokens**.",
+   "see": "The preview and the result are 1000 × 0.005 / (0.01 + 0.005) = **333.33 YES** (the recorded click received 333.333333). Your wallet pays 0.00495 SOL to the vault and 0.00005 SOL (1%) to the team wallet. It also pays rent for your YES token account and your UserInfo PDA the first time.",
+   "ran": [
+    [
+     "🔼 Buy, ✅ YES, 0.005 SOL",
+     "4WgxEHeqnwUtvNqUzs7ukK7v1gfrC31jSz48mSwkPmoLFNzrGiwBQZCY3HKrBjMA8qeNa9T2DaDkKA3hmj9XZibk"
+    ]
+   ]
+  },
+  {
+   "do": "Still on **💱 Trade**: **🔽 Sell**, **✅ YES Token**, `1`, **⚡ Sell YES Tokens**.",
+   "see": "The curve now holds 666.67 YES and 0.01495 SOL, so 1 YES returns 0.01495 × 1 / 667.67 ≈ 0.0000224 SOL, minus 1.2% in fees. In the recorded run the wallet received exactly 22,124 lamports (0.000022124 SOL) on top of the 5,000-lamport network fee. Buy again and you'll see each further token costs more: that's the curve.",
+   "ran": [
+    [
+     "🔽 Sell, 1 YES",
+     "5orE6Ao4kdKDJ4MfTN356kVQriW53tsbq3mDLj8ChPmzCbKLaxaSqZU7vbNfKdzdscLjVw4NYMmeLdJo7e1YKp7F"
+    ]
+   ]
+  },
+  {
+   "do": "**⚖️ Resolution**: pick your market, **Team Won (YES Token Holders Win)**, **⚖️ Resolve Market**.",
+   "see": "With your wallet this fails with **InvalidMigrationAuthority**: only the config authority (m4Ac…) or the Steam oracle key may resolve. The recorded run below used the config authority's wallet, and after it every swap on that market fails with CurveAlreadyCompleted.",
+   "ran": [
+    [
+     "Config authority's wallet: Team Won, ⚖️ Resolve Market",
+     "2RbLcZK1wacf8P6Hu44A95sYk6ePAvvsWftWc3VJu3G2vaFGvHseQNHrsDisHsBeaHoz79gPTAjJFypHvvkmgxye"
+    ]
+   ],
+   "ran_note": "Non-authority resolution was run by script (InvalidMigrationAuthority), as was the swap after completion (CurveAlreadyCompleted)."
+  },
+  {
+   "do": "**💧 Liquidity** → **➖ Remove Liquidity**, `0.01`, confirm.",
+   "see": "The transaction **succeeds**, but your SOL balance drops only by the network fee: `withdraw_liquidity` runs its checks and returns without a transfer (Exercise 2).",
+   "ran_note": "Run by script, not clicked: withdraw_liquidity 0.02 SOL (4sMHjyhz…) succeeded and moved 0 lamports out of the vault."
+  }
+ ],
+ "diagram": "admin ─ configure(fees, supply, initial reserves, min liquidity) ─▶ Config PDA [\"config\"]\ncreator ─ whitelist_init ─▶ Whitelist PDA [\"wl-seed\", creator]  members = [creator]   (+ whitelist_add_member, script only)\ncreator ─ create mints (authority = Global vault PDA [\"global\"])\n        ─ create_market ─▶ Market PDA [\"market\", yes_mint, no_mint] + Cs2Match PDA [\"cs2-match\", yes, no]\n                           1,000,000 YES + 1,000,000 NO minted into the vault's token accounts\n\nwhitelisted LP ─ add_liquidity(S) ─▶ S SOL ─▶ Global vault     YES curve: 1000 tokens / S/2 SOL\n                                                              NO  curve: 1000 tokens / S/2 SOL\nwhitelisted trader ─ swap(buy YES, s SOL) ─▶ vault  ⇄  YES out = R_yes × s / (R_sol + s)\n                   ─ swap(sell YES, t)    ─▶ SOL out = R_sol × t / (R_yes + t)      (1% → team wallet)\n\nadmin / oracle ─ resolution(winner, true) ─▶ Cs2Match.status = 2, winner;  Market.is_completed = true\n                                             ─▶ every later swap: CurveAlreadyCompleted\n(no claim instruction; withdraw_liquidity transfers nothing)",
+ "accounts": [
+  [
+   "Config",
+   "PDA `[\"config\"]`",
+   "Authority, pending authority, team wallet, Steam oracle key, buy/sell fees for platform and LPs, token supply, decimals, initial reserves, minimum liquidity"
+  ],
+  [
+   "Global vault",
+   "PDA `[\"global\"]` (no data)",
+   "The SOL of **every** market, and the mint authority and token-account owner for every YES/NO mint"
+  ],
+  [
+   "Whitelist",
+   "PDA `[\"wl-seed\", creator]`",
+   "The creator and up to 64 member wallets allowed to add liquidity and trade on that creator's markets"
+  ],
+  [
+   "Market",
+   "PDA `[\"market\", yes_mint, no_mint]`",
+   "Per-side token and SOL reserves, supplies, is_completed, optional start/end slots, list of LPs, total LP amount, volume"
+  ],
+  [
+   "Cs2Match",
+   "PDA `[\"cs2-match\", yes_mint, no_mint]`",
+   "5 team wallets with Steam IDs, match code, status (0 open, 1 live, 2 completed), winner token type, resolved slot"
+  ],
+  [
+   "UserInfo",
+   "PDA `[\"userinfo\", user, market]` (init_if_needed)",
+   "The wallet's YES and NO balance in this market, and whether it is an LP"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`configure`: one authority sets the economics",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/state/config.rs",
+     "a": 5,
+     "b": 33
+    },
+    {
+     "path": "programs/prediction-market/src/lib.rs",
+     "a": 34,
+     "b": 37
+    }
+   ],
+   "steps": [
+    "Every market reads the same Config: fees in basis points (we used 100 platform + 20 LP each way), how many tokens to mint per side, how many go on the curve, and the minimum first liquidity.",
+    "Our script also tried `configure` with another wallet and got **IncorrectAuthority**."
+   ]
+  },
+  {
+   "name": "The whitelist: friends-only markets",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/state/whitelist.rs",
+     "a": 3,
+     "b": 13
+    },
+    {
+     "path": "programs/prediction-market/src/instructions/admin/whitelist_add_member.rs",
+     "a": 5,
+     "b": 23
+    }
+   ],
+   "steps": [
+    "`whitelist_init` creates `[\"wl-seed\", creator]` with the creator as its first member (the app sends it the first time you create a market).",
+    "Only the whitelist's creator can add members (`constraint = whitelist.creator == authority`). The app has **no screen** for this; our script added trader B with `whitelist_add_member`."
+   ]
+  },
+  {
+   "name": "`create_market`: two mints, one market, one match",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/instructions/market/create_market.rs",
+     "a": 40,
+     "b": 47,
+     "note": "Market PDA from the two mints"
+    },
+    {
+     "path": "programs/prediction-market/src/instructions/market/create_market.rs",
+     "a": 135,
+     "b": 157,
+     "note": "exactly 5 team members, non-empty Steam IDs and match code"
+    },
+    {
+     "path": "programs/prediction-market/src/instructions/market/create_market.rs",
+     "a": 246,
+     "b": 272,
+     "note": "1M of each minted to the vault, signed by the vault PDA"
+    }
+   ],
+   "steps": [
+    "The market's address is derived from its two mints, so one pair of mints can only ever back one market (`init`).",
+    "It checks there are exactly `TEAM_SIZE` (5) members: our script's 4-member attempt got **InvalidArgument**.",
+    "Reserves start at 0; nothing can be traded until the first liquidity arrives.",
+    "The vault PDA signs `mint_to` with seeds `[\"global\", bump]` because it is the mint authority. Metadata accounts are created for both mints in the same instruction, which is why the transaction is so large."
+   ]
+  },
+  {
+   "name": "`add_liquidity`: SOL behind both sides",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/instructions/market/add_liquidity.rs",
+     "a": 74,
+     "b": 123,
+     "note": "first LP: minimum, whitelist, set both curves"
+    },
+    {
+     "path": "programs/prediction-market/src/instructions/market/add_liquidity.rs",
+     "a": 168,
+     "b": 193,
+     "note": "later LPs: SOL added, no tokens"
+    }
+   ],
+   "steps": [
+    "`amount ≥ min_sol_liquidity` (0.02 SOL here; 0.01 got **InvalidArgument**) and the user must be on the market's whitelist.",
+    "**First LP**: the SOL moves to the global vault and is split in half. Each side gets `initial_real_token_reserves_config` tokens (1,000) and `amount / 2` SOL. Our script's 0.04 SOL gave each side 0.02 SOL: a starting price of 0.00002 SOL per token.",
+    "**Later LPs** add SOL to both SOL reserves but **no tokens**, so they raise the price of both YES and NO. That isn't how a real AMM deposit behaves (Exercise 5).",
+    "Each new LP grows the Market account with `realloc`, and the LP pays the extra rent."
+   ]
+  },
+  {
+   "name": "`swap` (buy): SOL in, tokens out along the curve",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/instructions/market/swap.rs",
+     "a": 128,
+     "b": 172,
+     "note": "end slot, completed, UserInfo, whitelist"
+    },
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 421,
+     "b": 438,
+     "note": "token_out = R_tok × sol_in / (R_sol + sol_in)"
+    },
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 207,
+     "b": 284,
+     "note": "slippage check, fees, transfers, reserves"
+    }
+   ],
+   "steps": [
+    "Guards in order: the optional `ending_slot` has not passed; the market is not completed (**CurveAlreadyCompleted**); the user is on the market's whitelist (C got **NotWhiteList**).",
+    "`direction` 0 = buy, 1 = sell; `token_type` 1 = YES, 0 = NO.",
+    "The curve is constant product: keeping `R_tok × R_sol` fixed, adding `s` SOL leaves `R_tok × R_sol / (R_sol + s)` tokens, so `R_tok × s / (R_sol + s)` come out. **Worked example from the log:** YES curve 1000 tokens / 0.02 SOL; B buys with 0.01 SOL → 1000 × 0.01 / 0.03 = **333.333333 YES**, exactly what the script recorded.",
+    "`minimum_receive_amount` protects against the price moving: our impossibly high minimum got **ReturnAmountTooSmall**. The app sets it to 95% of its preview.",
+    "The vault then sends the tokens, signing with `[\"global\", bump]`. NO is a separate curve: B's 0.005 SOL on a fresh NO side gave 1000 × 0.005 / 0.025 = **200 NO**."
+   ]
+  },
+  {
+   "name": "`swap` (sell): tokens in, SOL out",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 498,
+     "b": 515
+    },
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 312,
+     "b": 401
+    }
+   ],
+   "steps": [
+    "`sol_out = R_sol × t / (R_tok + t)`, the same curve backwards. The minimum is checked against `sol_out` **before** fees.",
+    "**Worked example:** after B's buy, the YES side holds 666.666667 tokens and 0.0299 SOL. Selling 166.666667 gives 0.0299 × 166.67 / 833.33 = 0.00598 SOL; less 1% platform and 0.2% LP that's 0.00590824 SOL. B's balance went up 0.005903241 SOL, which is that minus the 5,000-lamport network fee. The final YES SOL reserve, 0.02393196, matches to the lamport.",
+    "The user's tokens go back to the vault, and the vault pays SOL to the user and the platform fee to the team wallet."
+   ]
+  },
+  {
+   "name": "`resolution`: the winner is typed in",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/instructions/market/resolution.rs",
+     "a": 71,
+     "b": 118
+    },
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 561,
+     "b": 575,
+     "note": "Market::resolution is an empty stub"
+    }
+   ],
+   "steps": [
+    "The signer must be `config.authority` or `config.steam_oracle`; B got **InvalidMigrationAuthority**.",
+    "With `is_completed = true` it sets the match to status 2 with the winner and the resolved slot, sets `market.is_completed`, and emits `MatchResolutionEvent`. Resolving again gives **MarketIsCompleted**.",
+    "Nothing is paid out. The `yes_amount`/`no_amount` arguments are ignored, and the market's own `resolution` helper is empty."
+   ]
+  },
+  {
+   "name": "`withdraw_liquidity`: checks, then nothing",
+   "refs": [
+    {
+     "path": "programs/prediction-market/src/instructions/market/withdraw_liquidity.rs",
+     "a": 71,
+     "b": 87
+    },
+    {
+     "path": "programs/prediction-market/src/state/market.rs",
+     "a": 592,
+     "b": 605
+    }
+   ],
+   "steps": [
+    "It requires `is_lp` and whitelist membership, then returns `Ok(())` with no transfer; `_amount` isn't even read.",
+    "Our script's 0.02 SOL withdrawal (4sMHjyhz…) changed the vault by **0** lamports and the LP's balance by −5,000 (the fee). We checked this on devnet."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "two constant-product curves per match, pooled in one vault",
+  "text": "Instead of an order book, each outcome token is sold by its own bonding curve: price = SOL reserve / token reserve, rising with every buy, so anyone can always trade against the pool and the price tells you what the crowd thinks. All SOL lives in one global vault PDA that also signs for every mint and token account, so a market needs no per-market vault and no keypairs beyond its two mints.",
+  "refs": [
+   {
+    "path": "programs/prediction-market/src/state/market.rs",
+    "a": 421,
+    "b": 482
+   },
+   {
+    "path": "programs/prediction-market/src/instructions/market/swap.rs",
+    "a": 40,
+    "b": 46,
+    "note": "one vault for all markets"
+   }
+  ],
+  "more": [
+   "The two curves are **independent**. Buying YES doesn't make NO cheaper, so YES price + NO price doesn't add up to anything meaningful. In a real binary market they would sum to 1 (one SOL pays out to the winner).",
+   "Each market tracks its own `real_*_sol_reserves`, but the lamports are shared. **The bookkeeping doesn't match the vault:** a buy transfers `amount − platform − LP fee` to the vault, then credits the reserve with `amount − platform` (\"LP fee stays in the pool\"), even though the LP fee was never taken from the buyer. We checked on devnet: B's 0.01 SOL buy (S3UZG8s5…) moved the vault +9,880,000 lamports while the YES reserve grew by 9,900,000. After the script's two buys the market's reserves add up to 0.04888196 SOL, but only 0.04885196 SOL came in for it. Because the vault is shared, a market can pay out of other markets' SOL (Exercise 3)."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create Market: mints first, then the market",
+   "refs": [
+    {
+     "path": "prediction-market-frontend/src/components/CreateMarket.tsx",
+     "a": 130,
+     "b": 198
+    },
+    {
+     "path": "prediction-market-frontend/src/components/CreateMarket.tsx",
+     "a": 200,
+     "b": 233
+    },
+    {
+     "path": "prediction-market-frontend/src/components/CreateMarket.tsx",
+     "a": 248,
+     "b": 273
+    }
+   ],
+   "steps": [
+    "Transaction 1 creates two fresh mint keypairs with 6 decimals and the **global vault PDA** as the mint and freeze authority, partially signed by the mint keypairs before Phantom signs.",
+    "If `[\"wl-seed\", you]` doesn't exist yet, transaction 2 is `whitelistInit`.",
+    "Then `createMarket` with the form data, a zero `steamMatchIdHash` and no start or end slot. It is simulated first so errors show in the console."
+   ]
+  },
+  {
+   "title": "Trade: the preview uses the program's formula",
+   "refs": [
+    {
+     "path": "prediction-market-frontend/src/components/SwapInterface.tsx",
+     "a": 117,
+     "b": 146
+    },
+    {
+     "path": "prediction-market-frontend/src/components/SwapInterface.tsx",
+     "a": 186,
+     "b": 213
+    }
+   ],
+   "steps": [
+    "The preview recomputes `R_tok × in / (R_sol + in)` from the fetched Market, so it matches the chain exactly (before fees).",
+    "Buy amounts are SOL × 10⁹ and sell amounts are tokens × 10⁶; `minOutput = preview × 0.95` is the 5% slippage guard passed as `minimum_receive_amount`.",
+    "It passes the market's own `whitelist`, and Anchor derives the vault, the token accounts and UserInfo."
+   ]
+  },
+  {
+   "title": "Liquidity and Resolution",
+   "refs": [
+    {
+     "path": "prediction-market-frontend/src/components/LiquidityManagement.tsx",
+     "a": 95,
+     "b": 107
+    },
+    {
+     "path": "prediction-market-frontend/src/components/ManualResolution.tsx",
+     "a": 186,
+     "b": 209
+    }
+   ],
+   "steps": [
+    "`addLiquidity(SOL × 10⁹)`; **Remove Liquidity** calls `withdrawLiquidity` the same way and shows a success toast even though nothing moves.",
+    "Resolution sends `resolution(0, 0, winner, true)` from whoever is connected. Only the admin's or oracle's signature passes on chain."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Add a claim instruction",
+   "steps": [
+    "Add `claim(ctx)` with the market, its Cs2Match, the user's UserInfo, the winning mint and the user's token account.",
+    "Require `cs2_match.status == 2` and that the user holds the winning token. Burn their tokens and pay a pro-rata share: `user_tokens / tokens_sold_on_winning_side × (yes_sol + no_sol)`, then zero their balance.",
+    "Test it on a local validator using the same sequence as our script."
+   ],
+   "expect": "After resolution a YES holder receives SOL and their YES balance is 0; a NO holder (and a second claim) is rejected. Today our devnet market T5Qfq7iY… is resolved and B's 166.67 YES can't be redeemed at all."
+  },
+  {
+   "title": "Make withdraw_liquidity pay out",
+   "steps": [
+    "In `withdraw_liquidity.rs`, find the LP in `market.lps` and require `amount ≤ lp.sol_amount`.",
+    "Take `amount / 2` off each SOL reserve, reduce `lp.sol_amount` and `total_lp_amount`, and move `amount` lamports from the vault with `sol_transfer_with_signer` and `[\"global\", bump]`.",
+    "Decide whether to allow it after resolution."
+   ],
+   "expect": "Withdrawing 0.02 SOL raises the LP's balance by 0.02 SOL (minus the fee) and the vault falls by the same amount. The recorded withdrawal 4sMHjyhz… shows a vault change of 0 today."
+  },
+  {
+   "title": "Fix the LP-fee bookkeeping and per-market accounting",
+   "steps": [
+    "In the buy branch of `Market::swap`, either transfer `sol_after_fees + lp_fee` to the vault or credit the reserve with only `sol_after_fees`.",
+    "Add a check that a market can never pay out more SOL than it has been credited (for example, a per-market vault PDA `[\"vault\", market]`)."
+   ],
+   "expect": "Replaying B's 0.01 SOL buy, the vault delta equals the YES reserve delta (9,900,000 lamports each), and the reserves of the script market add up to the SOL that came in for it (no 0.00003 SOL gap)."
+  },
+  {
+   "title": "Fit create_market under 1232 bytes",
+   "steps": [
+    "Try a market in the app with 17-digit SteamID64s and full-length metadata URLs: our script's version was 1282 bytes and couldn't be sent.",
+    "Move metadata creation to a separate instruction (`create_market_metadata`), or store a hash of the five Steam IDs instead of the strings."
+   ],
+   "expect": "The same long inputs send successfully as two smaller transactions; 4 team members still fail with InvalidArgument."
+  },
+  {
+   "title": "Link YES and NO prices, and a whitelist screen",
+   "steps": [
+    "Change the curve so the two sides share one reserve, for example LMSR or `price_yes = R_no_tok / (R_yes_tok + R_no_tok)`, so buying YES makes NO cheaper.",
+    "In the app, add a **Members** panel that calls `whitelistAddMember` / `whitelistRemoveMember` for the connected creator."
+   ],
+   "expect": "After a YES buy, the NO price falls and YES + NO stays close to 1 SOL per pair. A second wallet you add can trade on your market instead of getting NotWhiteList."
+  }
+ ],
+ "not_covered": "Create market, add liquidity, buy, sell and resolve were clicked through in the app with the config authority's wallet. Whitelisting a second trader, the NO side, the withdrawal and every rejected case were run by script. Not exercised: the Steam oracle key (unset), nominate/accept authority, whitelist_remove_member, mint_no_token, start/end slots, additional (second) LPs."
+}
