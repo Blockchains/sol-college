@@ -882,5 +882,213 @@
    "The proposal page's live counts come from a websocket log feed; on a plain HTTP RPC they stay at 0 until you reload, while the chain has the votes.",
    "Only the DAO authority can finalize; on sol.college that is the test wallet m4Ac…, so other visitors can vote but not finalize."
   ]
+ },
+ {
+  "slug": "barn",
+  "name": "Barn / OpenGrants (grant programs, milestones, payouts)",
+  "lesson": "/explore/barn/",
+  "app": "/dapps/barn/",
+  "fork": "https://github.com/Blockchains/barn",
+  "commit": "5b7e88375c461421feb2df4d2a8aaabb12dfa0fd",
+  "program": "EmyKYV3hFaFw4znLhGSTG6Eo4QGadVb6TnkvWYYm8X77",
+  "app_kind": "The fork's own Next.js 14 app (app/) as a static export under /dapps/barn/ with this devnet program ID. The three per-account pages (/project/<pk>, /program/<pk>, /profile/<pk>) can't be pre-rendered for accounts made later, so they live at /project/view/?a=<pk> and so on. Profiles, programs, projects and milestones point at JSON metadata URIs; sample files are served from /dapps/barn/meta/.",
+  "learn": "Each wallet makes one profile (an authority PDA keyed by the wallet points at a profile PDA keyed by a username). Sponsor profiles create grant programs and award one grant per project, in SOL (native mint) or an SPL token. Dev profiles add projects and milestones against their grant, submit them for review, and the sponsor accepts, sends back or rejects them; settle pays an accepted milestone from the sponsor's wallet, capped at the approved amount.",
+  "source": [
+   [
+    "contexts/approve_sponsor.rs (the admin is any signer)",
+    "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/contexts/approve_sponsor.rs"
+   ],
+   [
+    "contexts/award_grant.rs (grant PDA per grant program; one grant per project)",
+    "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/contexts/award_grant.rs"
+   ],
+   [
+    "state/mod.rs L172-L231 (milestone states: rejected, accepted and paid are final)",
+    "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/state/mod.rs#L172-L231"
+   ],
+   [
+    "contexts/settle_grant_milestone.rs (SOL or token transfer from the sponsor; approved-amount cap)",
+    "https://github.com/Blockchains/barn/blob/5b7e88375c461421feb2df4d2a8aaabb12dfa0fd/protocol/programs/barn/src/contexts/settle_grant_milestone.rs"
+   ]
+  ],
+  "flow": "tests/devnet/barn.mjs",
+  "log": "tests/devnet/logs/barn-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI as sponsor (test wallet m4Ac…): My Profile, Create User Profile (username + URI)",
+    "38pUDtLrctRASVq3AWAGSYNRh6tQFWuXXFMmkgcGr1asg6xx4ygySnX6gwXwQN4oyiHngqb9gPZj2UDhAryPWMxQ"
+   ],
+   [
+    "UI: Admin, Approve Sponsor with its own address (any wallet can approve any profile)",
+    "2ttqxSt2Dvz7iuF9eKZHUHM6wSJ12jJsB9LJBA5HdxAWyQkrCF1RKVf9SrEfiwNL1nxaTiV6cTJ7o3D5pvCBmK2b"
+   ],
+   [
+    "UI: My Profile, Add Grant Program (3rZt…eAPP)",
+    "3GY4YArUhenJ2zvP5a6aNmto5JDGZ1DvdHiiNKFZMcGZQWEwtg1FTv92WfxXetC5DY2S6HCtAzodZKocVS9mgefV"
+   ],
+   [
+    "UI as dev (test wallet GpUq…): Create User Profile",
+    "3pvMU4v6PES4xxkWtrzYrA6L1JU457izxS9T9FdQJQJ2e6We7uLW3e4p7AwkibzdGA5uCiwNRjysomrRat8x14sz"
+   ],
+   [
+    "UI as dev: Add New Project (HUAC…18kK1)",
+    "5vFocxjhBzSHDPkXevNZevrNDzCymYkY7nFnq8DTWUYAMK9kuJ29AnyZWvayLieenaNeBs2WLb2uLcg2DJrBGsAb"
+   ],
+   [
+    "UI as sponsor: grant program page, Award Grant, 0.01 SOL to that project",
+    "4SCi6F7dcUDSoWVnR1wi6rybFyiPXzRrdkLnxCcj2ELKEuS4PTs3ZToWFNKrPnMpf6oUmEHpxPJ6tKemAK2aZpe"
+   ],
+   [
+    "UI as dev: project page, Add New Milestone, 0.005 SOL",
+    "2dPcyzQTa8mzFUnt69bUU2hK7wBHQn1PUzeinMaUGTBnwvxRqe95WpSNP3PY3dvbShyv7beuex4bQZephJtnbXj9"
+   ],
+   [
+    "UI as dev: Review (submit the milestone)",
+    "2j1BemJEbjZaAh3smTmQxSMbCEZFYcfzmFS5NTrihAMaA8nDc1TWE6oKKZU3nWUkjrNKvXvfovzqP5XhpDKJP6h6"
+   ],
+   [
+    "UI as sponsor: Accept",
+    "Kswm44F4J1tQxr7wTuQmMA9ChFLMTqKvyn82dL3URUXv5HEnoCfmAPxGHWGvJ6v2sEJuayNJA6skkRVrwNSANum"
+   ],
+   [
+    "UI as sponsor: Settle Payment; the page then read the grant at 0.005 / 0.01 SOL and the milestone as paid",
+    "3PUJ7ZJmMGpRfzCE4wZgLzWP3zXo4WbANsFNHJA1b8Dw7h64SQNu4pEenvyTxtjT3PGewAFYqzbd3CWDS2e22A45"
+   ],
+   [
+    "Script: fund 267d",
+    "67TMu6gnENv8EXXZKJUm5ScKBExvrcoBc4nTP558vmWDF1WSHNy87R8237SQoY73kE85EHQFuGDAN8r5xyn51cw7"
+   ],
+   [
+    "Script: fund EAxs",
+    "2YVbP7XsT8dtEp1pnietXegZ3B2CFM7xGCDLeTpqbEYzVYqrhZNJbUQVUu9yxxgLb6tNzCC8X1gZnnxfADLH8os"
+   ],
+   [
+    "Script: fund 273A",
+    "5z5yhPE7PDcC8Jb3b6LBZjFzGYccMMHKYHAWffSSrYZrX5G3hoDbkHmKcYsNvGiHYDFBJ2MnpdXcYCaSAVCsMqH9"
+   ],
+   [
+    "Script: create_user sponsor A",
+    "4WBAP6Rpgfy2uVeWGknR66Xp8MK8PcwCgUYu2d9kdKFRgBHnxUW7ycKSCttvfn1Qurhj1F6FUs5CvJ5VL95F2jh"
+   ],
+   [
+    "Script: create_user dev B",
+    "5Xr2jc5Q2Si6e5kj8iwwSHcp3Uu1k8rGahXLSxUDpMNSi7jzhuq5i4uAxhrMcXFJzWZaUxvbEVo6MKha4BLDBDKF"
+   ],
+   [
+    "Script: approve_sponsor A, signed by unrelated wallet C as admin",
+    "4jemNXkWWgB8A71RDtkSkCoPMVrUYyUWQL3quiyBpyXenufXcpy9iMZCbimP5xVgWRDFBEVu86MsKuLzhRk7MD5C"
+   ],
+   [
+    "Script: add_grant_program by sponsor A",
+    "5WWcRFHR3RNonD7JmyRuvJCM1DZSwtp8uhNXQSS98ehjLwANUekQaUT5Z7oS1SFaCqKNZBWQghNL3qnFRwtfPtCh"
+   ],
+   [
+    "Script: add_project by dev B",
+    "bgYTbKHy5bysGiH7g7CHJHD3VHjQA29RmrYXSmHs8bKC9hHHHs59CLNpDF4PRXoHsWMXMnCAMzULHNyYhotQu49"
+   ],
+   [
+    "Script: award_grant 0.02 SOL (native mint) by sponsor A",
+    "VAwrdKHDSY9toaNYiQSE3P7TZTjA128gLCgWqhgkeGEVPT3MXM3hHEizTcNm1h8rumhmcsxZtTozzQ5a9Rah4DD"
+   ],
+   [
+    "Script: add_grant_milestone #0 (0.015 SOL) by dev B",
+    "3fhLtKQSyi1XGrQi939dZzfbhfJVjjRxwcWEdB6HJUNbzRNAWqNbggFz84aLczheCJvBZFbQhDNuNX7HocENZ8yr"
+   ],
+   [
+    "Script: add_grant_milestone #1 (0.01 SOL, over what is left of the grant) by dev B",
+    "oXjRecVzAGajtsmug1dqvovBwQYQQZQdQ4rpKovQVBdHuta8r9cD5PreNEPhaPeqW2AJTsCxfGK61NNUPPXmvqu"
+   ],
+   [
+    "Script: review_grant_milestone #0 (dev submits it)",
+    "5zHjKkkDJPGeCLepGb1SEuJy11SsLYPT9HXdjcQrkgghcrbkWs6q2HxQSGW8LiQhRcZbB2ekkoNUK2kfZz5h3S9Z"
+   ],
+   [
+    "Script: accept_grant_milestone #0 by sponsor A",
+    "2EHjbRBq1sBWj5W9BzD3meciQQVcQTUPBFRcNaNrM33ruhLvBAGnXivgpsSXLkYV5e9mPjfBdDAJuJcWAVQcfvCG"
+   ],
+   [
+    "Script: settle_grant_milestone #0: sponsor A pays dev B 0.015 SOL",
+    "5hKxFA5McQuALiMehw5SWoJZbMsYTkYz23ynCVDVap3VN54gULB2dfgMd7ujtaGohx79TqheJxXXM8StjxtnA1KR"
+   ],
+   [
+    "Script: review_grant_milestone #1 (dev submits it)",
+    "5a2Gr2YhNVaSnQwTSUJDNAFdGzii6KHhx9eHFzqXqS4PktZPznUkV6LcMXAzfXW7vsz7n9Ue2wHS1SZCN97X3msH"
+   ],
+   [
+    "Script: revise_grant_milestone #1 by sponsor A (sends it back to in-progress)",
+    "z5kjoGrJVYjaog3AAV1HvKdRYzZUUdvzmSJpdWgbKgA7ivuh7oyWoe6fwBWMkmV3viDRViWSYrvHZeu5gDE3GxU"
+   ],
+   [
+    "Script: review #1 again",
+    "5B8B1Pn2eD5ddU9PWcMHLAQ8Ztp1HkDy9wXWKt1zF8KLZ9pFUfH5ipwyqh1XMVRrLtVEgTergWknpTRBHz2DHwB8"
+   ],
+   [
+    "Script: accept #1 by sponsor A",
+    "5cusmeTNsSWKMvNsBZDaDB8UYAyzAmbQRraRHxsRrQckpLMCEzoRYYxxDxHhNMAiX4xpk8BML88c6QTM1UyLDzAg"
+   ],
+   [
+    "Script: add_grant_milestone #2 (0.001 SOL) by dev B",
+    "3XH71TfhbMFguEHGJx4oGGAx1sLCfw6z2CMGKpzdfhXZA6GvHRRhzVvX2R7thS63rNMTfx4PeMwcMctV6Gx4FdE5"
+   ],
+   [
+    "Script: review #2",
+    "wB5mf3Sis3Mk5m3kHifXRqujkSCdfHqm6jWscnr2ogtwVJf4raZDdpZwJA2XqCGjR98JDEfcamYvrK5udecZiE4"
+   ],
+   [
+    "Script: reject_grant_milestone #2 by sponsor A",
+    "n48DeYNKQRqqbzZU4AS2HX4JQWBiK63SpTztyKBYyywjxXBRBEkb2V6wFPB11VkA8P8uTvrKENP554Tecgm96fM"
+   ]
+  ],
+  "negative": [
+   [
+    "create_user with a seed that is already taken",
+    "Allocate: account Address { address: 9Cj4CTHxAkAEPKPeL3Tu2QfPmwXSZVVcGMTxEoyf81Cq, base: None } already in use"
+   ],
+   [
+    "add_grant_program before the profile is a sponsor",
+    "NotASponsor"
+   ],
+   [
+    "add_project by the sponsor (devs only)",
+    "NotADev"
+   ],
+   [
+    "award_grant by the dev",
+    "NotASponsor"
+   ],
+   [
+    "award a second grant to the same project",
+    "GrantAlreadyAwarded"
+   ],
+   [
+    "accept milestone #0 by the dev",
+    "NotASponsor"
+   ],
+   [
+    "settle milestone #0 before it is accepted",
+    "MilestoneNotAccepted"
+   ],
+   [
+    "settle milestone #0 a second time",
+    "ApprovedAmountExceeded"
+   ],
+   [
+    "settle milestone #1: 0.015 + 0.01 is more than the 0.02 SOL grant",
+    "ApprovedAmountExceeded"
+   ],
+   [
+    "revise milestone #2 after it was rejected (rejected is final)",
+    "MilestoneAlreadyConfirmed"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py barn <step> (sponsor-setup, dev-setup, award, milestone, review, settle; log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "approve_sponsor accepts any signer as \"admin\", so anyone can turn any fresh profile into a sponsor (the script shows an unrelated wallet doing it).",
+   "Settling a paid milestone a second time fails, but with ApprovedAmountExceeded when the cap check (which runs first) trips, so the error doesn't say the milestone was already paid.",
+   "Each wallet gets one profile on this program, ever (the authority PDA is keyed by the wallet).",
+   "The app shows names from each account's metadata URI; without one (or while the URI 404s) it shows \"Untitled\". It also shows Add New Milestone to sponsors, which the program rejects (NotADev).",
+   "Lists in the app (\"Grant Programs: 0\" right after creating one) can lag until you reload."
+  ]
  }
 ]

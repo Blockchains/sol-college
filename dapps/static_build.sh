@@ -58,6 +58,10 @@ P
      cd "$src/client/votara-client" && sed -i "s/CXJXjwHGo67zYveByRp2aydFgXHRcPTEQbRt8iNQEtvF/CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt/g" src/constants/constant.tsx src/idl/votara.json
      python3 "$(dirname "$out")/../../tests/devnet/patches/votara.py"
      npm ci --no-audit --no-fund >/dev/null && npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
+  barn) # fork's own Next.js app (app/) as a static export on the program deployed from protocol/programs/barn (see dapps/deployed/barn.json); per-account pages read ?a=<pk>
+     cd "$src" && sed -i "s/Aoofv5iGzdDeyySpT9QsiFaK7Db7SKyycb7nTEU1oTYE/EmyKYV3hFaFw4znLhGSTG6Eo4QGadVb6TnkvWYYm8X77/g" protocol/ts/src/idl/barn.json protocol/ts/src/idl/barn.ts
+     python3 "$(dirname "$out")/../../tests/devnet/patches/barn.py"
+     npx -y pnpm@9.4.0 install --frozen-lockfile >/dev/null && (cd protocol/ts && npx -y pnpm@9.4.0 build) && cd app && NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com NEXT_PUBLIC_RPC_CLUSTER=devnet npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

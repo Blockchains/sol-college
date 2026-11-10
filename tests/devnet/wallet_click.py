@@ -356,6 +356,7 @@ def run(pg):
             n = len(SENT); pg.get_by_role('button', name=button, exact=True).last.click(); pump(pg, 25000); return sigs_new(n)
         def press(label):
             b = pg.get_by_role('button', name=label, exact=True)
+            if not b.count(): b = pg.get_by_text(label, exact=True)
             if not b.count(): return {'missing': label, 'text': body(pg)[:600]}
             n = len(SENT); b.first.click(); pump(pg, 25000); return sigs_new(n)
         def go(path): pg.goto(base + path, wait_until='domcontentloaded'); pump(pg, 9000)
@@ -376,6 +377,8 @@ def run(pg):
             proj = sys.argv[5]; go('project/view/?a=' + proj)
             log(step='add_milestone_0.005_SOL_via_ui', sent=popover('Add New Milestone', [('Amount in SOL', '0.005'), ('Enter Grant URI', M + 'milestone.json')], 'Add New Milestone'))
             go('project/view/?a=' + proj); log(step='review_milestone_via_ui', sent=press('Review'))
+        elif step == 'review':
+            proj = sys.argv[5]; go('project/view/?a=' + proj); log(step='review_milestone_via_ui', sent=press('Review'))
         elif step == 'settle':
             proj = sys.argv[5]; go('project/view/?a=' + proj)
             log(step='accept_milestone_via_ui', sent=press('Accept'))
