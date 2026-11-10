@@ -115,6 +115,10 @@ H=re.sub(r'<!--sc-live-->.*?<!--/sc-live-->','',H,flags=re.S)
 core=f'<!--sc-core--><section id=lessons><h2>Core lessons: live on devnet</h2>{intro}{grid}<p><a class=btn href="/lessons/">All lessons</a> <a class="btn ghost" href="/live/">Proof for every live app</a></p></section><!--/sc-core-->'
 H=re.sub(r'<!--sc-core-->.*?<!--/sc-core-->','',H,flags=re.S).replace('</section>','</section>'+core,1)
 H=H.replace('<section><h2>Lessons</h2>','<section><h2>Source library: concept walkthroughs</h2><p class=note>Annotated excerpts from source code, not live apps. Start with the <a href="/lessons/">core lessons</a>.</p>',1)
+HD=f'Step-by-step Solana lessons built on {n} apps that are live on devnet with working frontends: use each app, read its real code, see the transactions that prove it.'
+for k in ('name=description','property=og:description','name=twitter:description'): H=re.sub(f'(<meta {k} content=")[^"]*',lambda m:m.group(1)+E(HD),H,count=1)
+H=re.sub(r'<title>.*?</title>','<title>Sol.College: learn Solana step by step from live devnet apps</title>',H,count=1)
+for k in ('property=og:title','name=twitter:title'): H=re.sub(f'(<meta {k} content=")[^"]*',lambda m:m.group(1)+'Sol.College: learn Solana step by step from live devnet apps',H,count=1)
 open(f'{S}/index.html','w').write(H)
 # ---- nav, footer and source-library labels on every page
 NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/live/">Live apps</a><a href="/learn-solana/">Learn Solana</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
