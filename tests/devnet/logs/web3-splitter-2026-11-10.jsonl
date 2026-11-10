@@ -1,0 +1,13 @@
+{"step":"fund B and C (fees)","sig":"ZFYvs3f2N8jomzzixNHiUhmpRUMGruAcvuGWFTZAhVmKiswZxUU1aBkwfoquT5d42gbdWpE8Anf14dWpSYaWHvL"}
+{"step":"setup","program":"4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","B":"HvKxg73Fzx8G13Eo1zD5JFFqmEJNrDmGfCZcEUiiqYfw","outsider":"CVFMedeZ9fcVRApWCyTAhrseHVcfSKY3F77tJppJyes7","mint":"6AeaHg4UqDgN78TNdbtw5siwkJ556qQtWgzfQN4FedDa","name":"sc-mwaepy83","vault":"7eicDWhu8QZ9FQyAceVYeAU4NkVjrVjNp8WZ6gNhpNcV","vaultTokenAccount":"8erUhLknK6khv9b4DYebFW3WGSoeX7o11crUB4dZo4nC"}
+{"step":"initialize_percent_sum_90","expectedFailure":true,"error":"Unauthorized"}
+{"step":"initialize_length_mismatch","expectedFailure":true,"error":"Unauthorized"}
+{"step":"initialize 60% A / 40% B","ok":true,"sig":"5p7JxYbAmBmp3SgfU3MqeSLhEorNbH5zPWCWpmc6mUHzWQ6fH81Mw3xyxbyvFmw8zBYUZ2pBQ117jrncHgWzfpTi"}
+{"step":"deposite 100 tokens","ok":true,"sig":"5dXgTMTh3iMJpFNZtpwEGFDgGYrYebSh4jQLYGcziRRPzGAP6VisnSeu4HdkdXgR5Fu5HT9YVZczX7r4rdkauYmV","vaultTokens":100,"total":100,"accountsVault":[60,40]}
+{"step":"update_by_non_authority","expectedFailure":true,"error":"WrongOwner"}
+{"step":"update to 70/30 by authority","ok":true,"sig":"wbMGgoN383V4G8xXgUE2sqfwNv49ozY1pRbYzbchCdVcKAUy2RQBbCrQ6SyjNfM59FbZqqMoDXGMzWwyTv7XMj3","percentages":[70,30],"accountsVaultUnchanged":[60,40]}
+{"step":"claim_by_outsider","expectedFailure":true,"error":"Unauthorized"}
+{"step":"claim_by_B (40% recipient)","failed":true,"error":"Program 4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1 failed: Could not create program address with signer seeds: Provided seeds do not result in a valid address","note":"claim signs for the vault PDA with seeds [vault, name, CLAIMER, mint]; they only match the PDA when the claimer is the authority"}
+{"step":"claim_by_A (authority, 60% recipient)","ok":true,"sig":"2QzW2MB6PLAqCSykqF7Zxb4dSBnxJyTRr2Jkj2ACmLpo6Ae74EoPLcoZZab3tAep2f3aqHrub2NN3ms2RDv3CK7e","Areceived":100,"vaultTokens":0,"total":40,"accountsVault":[0,40]}
+{"step":"delete_by_non_authority","expectedFailure":true,"error":"WrongOwner"}
+{"step":"delete by authority","ok":true,"sig":"1KVJ5AEsw9mQR4oydVmyLJfPYY7JgsXtiDuZfDgNjCHWMNWDBXJ4wkM6WLF5ub6hjxxZrfLMmkkVwM693jpDjCK","vaultClosed":true,"vaultTokensLeft":0}

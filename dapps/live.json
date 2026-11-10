@@ -227,5 +227,77 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py): the app auto-connected, 'Run program' sent the transaction, and the page showed 'Minted NFT: Gp7Ncuci1Mb4FbuXjDtfLW9Penz6R5iLEhBYECYAkBEQ'.",
   "limits": "The metadata URI is the author's IPFS link; the Inventory page fetches it through Metaplex JS, which we did not check."
+ },
+ {
+  "slug": "web3-splitter",
+  "name": "Web3 Splitter (split SPL-token payments by percentage)",
+  "lesson": "/explore/web3-splitter/",
+  "app": "/dapps/web3-splitter/#/create",
+  "fork": "https://github.com/Blockchains/Web3-Splitter",
+  "commit": "ced1cca04389833d27b6bd47cdc07c956a744759",
+  "program": "4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1",
+  "app_kind": "The fork's own Vue 3 + Vite app (src/), unchanged except: this devnet program ID in src/lib/useWorkspace.ts and its IDL, base path /dapps/web3-splitter/, and hash routing so the static host can serve /create, /action and /list.",
+  "learn": "A vault PDA per (name, authority, mint) owns an associated token account; initialize checks that the percentages add up to 100, deposite moves tokens in and books each recipient's share, claim signs for the vault with PDA seeds. Running it on devnet also shows two real bugs worth studying: claim derives the signer seeds from the CLAIMER instead of the authority, and it transfers the whole vault balance instead of the claimer's share.",
+  "source": [
+   [
+    "lib.rs L12-L60 (initialize: percentages must sum to 100 and match the recipients)",
+    "https://github.com/Blockchains/Web3-Splitter/blob/ced1cca04389833d27b6bd47cdc07c956a744759/splitterprogram/programs/splitterprogram/src/lib.rs#L12-L60"
+   ],
+   [
+    "lib.rs L112-L150 (deposite: books each share, then a token transfer)",
+    "https://github.com/Blockchains/Web3-Splitter/blob/ced1cca04389833d27b6bd47cdc07c956a744759/splitterprogram/programs/splitterprogram/src/lib.rs#L112-L150"
+   ],
+   [
+    "lib.rs L152-L200 (claim: seeds built from the claimer, transfers vault_balance)",
+    "https://github.com/Blockchains/Web3-Splitter/blob/ced1cca04389833d27b6bd47cdc07c956a744759/splitterprogram/programs/splitterprogram/src/lib.rs#L152-L200"
+   ]
+  ],
+  "flow": "tests/devnet/web3-splitter.mjs",
+  "log": "tests/devnet/logs/web3-splitter-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: created splitter 'sc-ui-0808' (100% to the test wallet m4Ac…) on the hosted Create page: initialize",
+    "43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"
+   ],
+   [
+    "UI: Actions page, 'Get it' loaded the vault, Deposite 25 tokens: vault token account 0 → 25",
+    "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"
+   ],
+   [
+    "UI: Claim: 25 tokens back to the wallet (975 → 1000), vault total 0",
+    "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"
+   ],
+   [
+    "Script: initialize 60% authority / 40% B",
+    "5p7JxYbAmBmp3SgfU3MqeSLhEorNbH5zPWCWpmc6mUHzWQ6fH81Mw3xyxbyvFmw8zBYUZ2pBQ117jrncHgWzfpTi"
+   ],
+   [
+    "Script: deposite 100 tokens, shares booked as [60, 40]",
+    "5dXgTMTh3iMJpFNZtpwEGFDgGYrYebSh4jQLYGcziRRPzGAP6VisnSeu4HdkdXgR5Fu5HT9YVZczX7r4rdkauYmV"
+   ],
+   [
+    "Script: update to 70/30 by the authority (booked shares stay [60, 40])",
+    "wbMGgoN383V4G8xXgUE2sqfwNv49ozY1pRbYzbchCdVcKAUy2RQBbCrQ6SyjNfM59FbZqqMoDXGMzWwyTv7XMj3"
+   ],
+   [
+    "Script: claim by the authority received all 100 tokens, not its 60 (bug: transfers vault_balance); B's 40 is still booked but the vault is empty",
+    "2QzW2MB6PLAqCSykqF7Zxb4dSBnxJyTRr2Jkj2ACmLpo6Ae74EoPLcoZZab3tAep2f3aqHrub2NN3ms2RDv3CK7e"
+   ],
+   [
+    "Script: delete by the authority closes the vault account",
+    "1KVJ5AEsw9mQR4oydVmyLJfPYY7JgsXtiDuZfDgNjCHWMNWDBXJ4wkM6WLF5ub6hjxxZrfLMmkkVwM693jpDjCK"
+   ]
+  ],
+  "negative": [
+   "initialize with percentages summing to 90: Unauthorized",
+   "initialize with 1 percentage for 2 recipients: Unauthorized",
+   "update by a non-authority: WrongOwner",
+   "claim by a wallet that is not a recipient: Unauthorized",
+   "claim by recipient B (not the authority): fails with 'Could not create program address with signer seeds' — the program signs with seeds built from the claimer, so only the authority can ever claim (bug in the fork)",
+   "delete by a non-authority: WrongOwner"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py splitter, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the wallet connected from Select Wallet, and create, deposit and claim all went through the app's own buttons; the Actions page showed the vault 'sc-ui-0808', the mint and '100 % Claim' read from devnet.",
+  "limits": "Because of the claim bug, a multi-recipient split cannot be paid out correctly: only the authority can claim, and it receives the whole balance. The app's QR deposit link points at the author's Cloud Run endpoint, which is not used here. The balance column shows NaN in the app."
  }
 ]

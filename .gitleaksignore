@@ -3,3 +3,5 @@ legacy/assets/index-Cu0OVyPN.js:generic-api-key:22
 14316d0432c8ac6deb27b377aad3d6d7af8e34ed:tests/logs/seloongmun.log:generic-api-key:194
 8d1c4f41e05f296ecb29c01e2d9f9d77ffef56b8:dapps/static/gree/471.e8d75007cb2c998a.js:generic-api-key:1
 8d1c4f41e05f296ecb29c01e2d9f9d77ffef56b8:dapps/static/gree/437.4599d69a480be0f1.js:generic-api-key:1
+# Public devnet token-account address (vaultTokenAccount 8erUhLkn…) in a flow log; matched only because of the key name
+tests/devnet/logs/web3-splitter-2026-11-10.jsonl:generic-api-key:2

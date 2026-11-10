@@ -1,0 +1,25 @@
+{
+ "slug": "web3-splitter",
+ "cluster": "devnet",
+ "program": "splitterprogram",
+ "idl": "splitterprogram.json",
+ "devnet": "4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1",
+ "deploy_tx": "24LTXyUYwoJpvcqTTH65jPP54thVPzpgn8jM45qjXH2sFeZoAzmfRZQKiAKgT8YcLpgTmiN3fcQANNJ1QVfFSUAq",
+ "built": "cargo build-sbf (solana 2.3.13 platform tools) of splitterprogram/ at ced1cca with declare_id set to this program's keypair; buffer written with tools/fill_buffer.py, deployed with solana program deploy --buffer",
+ "sigs": [
+  {
+   "label": "initialize",
+   "sig": "5p7JxYbAmBmp3SgfU3MqeSLhEorNbH5zPWCWpmc6mUHzWQ6fH81Mw3xyxbyvFmw8zBYUZ2pBQ117jrncHgWzfpTi"
+  },
+  {
+   "label": "deposite",
+   "sig": "5dXgTMTh3iMJpFNZtpwEGFDgGYrYebSh4jQLYGcziRRPzGAP6VisnSeu4HdkdXgR5Fu5HT9YVZczX7r4rdkauYmV"
+  },
+  {
+   "label": "claim",
+   "sig": "2QzW2MB6PLAqCSykqF7Zxb4dSBnxJyTRr2Jkj2ACmLpo6Ae74EoPLcoZZab3tAep2f3aqHrub2NN3ms2RDv3CK7e"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

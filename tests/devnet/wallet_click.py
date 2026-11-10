@@ -168,6 +168,24 @@ def run(pg):
         else:
             pump(pg, 5000); btns = pg.get_by_role('button', name=re.compile(r'^Claim')); log(step='claimable', count=btns.count())
             n = len(SENT); btns.last.click(); pump(pg, 25000); log(step='claim', sent=sigs_new(n))
+    elif app == 'splitter':  # argv: name mint pda
+        name, mint, pda = sys.argv[4:7]
+        pg.goto(base + '#/create', wait_until='domcontentloaded'); pump(pg, 4000); connect(pg); pump(pg, 4000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        pg.get_by_placeholder('Splitter Name').fill(name); pg.get_by_placeholder('Token address').fill(mint)
+        pg.get_by_placeholder('Address', exact=True).fill(ADDR); pg.get_by_placeholder('%').fill('100')
+        pg.locator('button.btn-square').first.click(); pump(pg, 800)
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Create$')).click(); pump(pg, 25000)
+        log(step='create_splitter_via_ui', sent=sigs_new(n))
+        pg.goto(base + '#/action', wait_until='domcontentloaded'); pump(pg, 5000); connect(pg); pump(pg, 3000)
+        pg.get_by_placeholder('Your Splitter PDA').fill(pda); pg.get_by_text('Get it').click(); pump(pg, 6000)
+        log(step='get_splitter', text=body(pg)[:600])
+        pg.get_by_placeholder(re.compile('Deposite Amount')).fill('25')
+        n = len(SENT); pg.locator('a.btn', has_text=re.compile(r'^\s*Deposite\s*$')).click(); pump(pg, 25000)
+        log(step='deposit_25_via_ui', sent=sigs_new(n))
+        pg.get_by_text('Get it').click(); pump(pg, 5000)
+        n = len(SENT); pg.get_by_text(re.compile(r'^\s*Claim\s*$')).first.click(); pump(pg, 25000)
+        log(step='claim_via_ui', sent=sigs_new(n))
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

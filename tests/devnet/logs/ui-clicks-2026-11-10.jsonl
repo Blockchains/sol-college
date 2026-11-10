@@ -9,3 +9,10 @@
 {"app": "trustlock", "page": "local build", "wallet_prefix": "8WVm", "sig": "3VK1uo2C9LS6C9dttm4hYTrNn9QXf4YMfQ3MT8oZjYBNauaTHgv1G9xAz9ZmLTjAWQ9HSDSwAdxg6D48QBQttCky", "slot": 520662039, "err": null, "instructions": ["Cancel"], "signer": "8WVmfKQ3D5QAzbg9cZvJtzPivLWtXqaKvHwJMTWRiNsa"}
 {"app": "trustlock-claim", "page": "local build", "wallet_prefix": "AgrL", "sig": "3EPnZs553WcpxPYH8vanWLrbysYPP3timpwnrxvd22UPbMkk4bwdchsaF6hVhKuWGYyYhSSTJRGJxVaoVocmo1Wd", "slot": 520662246, "err": null, "instructions": ["Claim"], "signer": "AgrLFStmTgQ1Ki9k3Pe4V8bHGNZF9AVRLzm7v48Y6P4u"}
 {"app": "trustlock", "page": "local build", "negative": "Check In on an expired escrow", "console": "AnchorError thrown in programs/switch/src/lib.rs:33. Error Code: DeadlineExceeded. Error Number: 6002."}
+{"step": "setup", "app": "splitter", "wallet": "m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr", "url": "http://127.0.0.1:8765/dapps/web3-splitter/"}
+{"step": "connected", "wallet_shown": true}
+{"step": "create_splitter_via_ui", "sent": ["43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"]}
+{"step": "get_splitter", "text": "Splitter Wallet\nHome\nCreate\nActions\nList\n\nm4Ac..oJpr\n\nSplitter Actions\nGet it\nsc-ui-0808\nHy7um7fyTdkQ1nCwzHawUMPUAyppNSAuU1A5Sn9UUyXP\nWallet\tbalance\tShare\tAction\nm4AcR...CoJpr\tNaN\t100 %\tClaim\n\nYou can close splitter and get all found inside that all accounts. Delete splitter\n\nDeposite 0 SOL\n\nPress ESC key or click outside to close\n\nDownload\nclose\nDeposite\nQR"}
+{"step": "deposit_25_via_ui", "sent": ["5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"]}
+{"step": "claim_via_ui", "sent": ["3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"]}
+{"step": "done", "sent": ["43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ", "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh", "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"], "errors": []}
