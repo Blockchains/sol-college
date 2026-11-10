@@ -1,0 +1,246 @@
+{
+ "title": "PulseFund: one-PDA-per-wallet SOL crowdfunding with an admin-only withdraw",
+ "summary": "Each wallet opens one campaign account at [\"CROWDFUND\", wallet]. Anyone can donate SOL straight into that account, and only the campaign's admin can take it back out, never below the rent-exempt floor.",
+ "what": "PulseFund is the smallest useful crowdfunding program: four instructions and one account type. `create` makes a 9,000-byte Campaign PDA at `[\"CROWDFUND\", your wallet]` holding the name, description, links, category, a target and two running totals. `donate` moves SOL from the donor into **that same account** with a System Program transfer and adds to `amount_donated`. `withdraw` lets the admin pull lamports out by editing balances directly (the program owns the account), refusing anything that would dip below the rent-exempt minimum. `get_campaign` is an admin-only check that changes nothing. There are no deadlines, no refunds, and the target is only a number on the card.",
+ "app_note": "The fork's own Next.js app exported as static pages with this devnet program ID; the only changes are basePath, unoptimized images and removing an unused example API route. **Goal Amount is in lamports** (1 SOL = `1000000000`). The app has **no withdraw screen**, and **Contribute always donates 0.2 SOL to your own campaign** (Exercise 1). Script: [tests/devnet/pulsefund-sol.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/pulsefund-sol.mjs).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/pulsefund-sol/) and connect Phantom on **devnet** with about 0.3 devnet SOL. Press **Create Campaign** and fill in Project Name, Description, Project Url, Category and **Goal Amount** `1000000000` (that's 1 SOL in lamports). Press **Publish Campaign**.",
+   "see": "One `create` transaction. Your wallet pays the rent for a 9,000-byte account, which was 0.04637024 SOL in our run. The account lives at `[\"CROWDFUND\", your wallet]`, so a second Publish from the same wallet fails with \"account … already in use\".",
+   "ran": [
+    [
+     "Test wallet m4Ac…: Publish Campaign (\"UI campaign 0856\", goal 1000000000)",
+     "25E6fSL7hWTQHczPjzLzJjaAvoQQ7Lag42TGXAZD1N1UQ69tQWMAZxkeYKF1EWtMnReaRTxVGZbw7Efr1ugxJmLR"
+    ]
+   ]
+  },
+  {
+   "do": "Go back to the home page.",
+   "see": "Your card shows something like **Raised $0 of $60475904** and **Remaining Days 30**. These numbers are wrong: the card prints the low 26 bits of the lamport value (1,000,000,000 mod 2²⁶ = 60,475,904), and the 30 days is hard-coded (Exercise 2). The list comes from `getProgramAccounts`, so it shows every campaign.",
+   "ran_note": "Seen in the click test: the card read \"Raised $0 of $60475904 Remaining Days 30\"."
+  },
+  {
+   "do": "Press **Contribute** on your card.",
+   "see": "A `donate` transaction for **0.2 SOL** into **your own** campaign PDA, whichever card you press. The card then reads **Raised $65782272** (200,000,000 mod 2²⁶). If you haven't created a campaign, Contribute fails with AccountNotInitialized.",
+   "ran": [
+    [
+     "Contribute (0.2 SOL into m4Ac…'s own campaign); the card then read Raised $65782272",
+     "44CvBfHqhiDtKtdxRAr23aKLTKzsW3RUQoyBam16jntJEGN6EbnKqhwC5R4p3vDbjTwLaqz94AcCYPzpa8XwiXEG"
+    ]
+   ]
+  },
+  {
+   "do": "Withdraw: the app has no button for it. Read the `withdraw` walkthrough below. Our script called `withdraw(200000000)` from the same wallet.",
+   "see": "The admin gets the 0.2 SOL back, and the campaign keeps only its rent. Another wallet gets IncorrectProgramId, and asking for more than the balance above rent gets InsufficientFunds.",
+   "ran": [
+    [
+     "Script, same wallet: withdraw 0.2 SOL from campaign ExRZi5PZ…",
+     "34P4TJH16erE9TjmEH27XQmTRHYtckEuxNeNfY1w88JroNSEt1kb9xHLd5HTdCFU1tE4NZBeeuiXkmESrvtyuP43"
+    ]
+   ],
+   "ran_note": "No withdraw screen exists, so this step ran by script."
+  }
+ ],
+ "diagram": "admin wallet ─ create(name, description, target, urls, category) ─▶ Campaign PDA [\"CROWDFUND\", admin]   (9,000 bytes, rent paid by admin)\n                                                                     admin, strings, target_amount, amount_donated, amount_withdrawn\nany wallet  ─ donate(amount) ─▶ System transfer: donor ──amount──▶ Campaign PDA      amount_donated += amount\nadmin       ─ withdraw(amount) ─▶ if signer ≠ admin → IncorrectProgramId\n                                  if lamports − rent_minimum < amount → InsufficientFunds\n                                  Campaign.lamports −= amount; admin.lamports += amount; amount_withdrawn += amount\nadmin       ─ get_campaign() ─▶ admin check only (no state change)\nreads       ─ getProgramAccounts(program) + fetch each Campaign (the home page)",
+ "accounts": [
+  [
+   "Campaign",
+   "PDA `[\"CROWDFUND\", admin]`, 9,000 bytes",
+   "Admin, name, description, target_amount (lamports), project/progress/image URLs, category, amount_donated, amount_withdrawn. The donated SOL is held **in this account's own lamports**"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`create`: one campaign per wallet",
+   "refs": [
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 91,
+     "b": 104,
+     "note": "PDA seeds and fixed size"
+    },
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 11,
+     "b": 33
+    }
+   ],
+   "steps": [
+    "`init` with `seeds = [b\"CROWDFUND\", user]` makes the address depend only on the creator, so each wallet can have exactly one campaign. A second `create` fails at the System Program's `Allocate` (\"already in use\"), as our script recorded.",
+    "`space = 9000` is fixed. The creator pays rent for all 9,000 bytes up front (0.04637024 SOL in our run), and the strings are unbounded: if they add up to more than about 9,000 bytes, Anchor can't serialize the account and `create` fails (we read this from the code; it wasn't tested).",
+    "The handler copies the arguments in, zeroes both totals and records `admin = user`."
+   ]
+  },
+  {
+   "name": "`donate`: SOL goes into the campaign account itself",
+   "refs": [
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 117,
+     "b": 124
+    },
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 58,
+     "b": 76
+    }
+   ],
+   "steps": [
+    "`campaign: Account<Campaign>` makes Anchor check the account is owned by this program and has the Campaign discriminator. A PDA that was never created fails with **AccountNotInitialized**.",
+    "The program builds `system_instruction::transfer(donor → campaign, amount)` and `invoke`s it. The donor's signature carries over into the CPI, and any account may *receive* lamports, including one owned by a program.",
+    "Then `amount_donated += amount` (the workspace builds with `overflow-checks = true`). Anyone can also send SOL to the PDA with a plain transfer. That SOL bypasses the counter but can still be withdrawn, because withdraw looks at lamports, not `amount_donated`."
+   ]
+  },
+  {
+   "name": "`withdraw`: admin only, rent floor protected",
+   "refs": [
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 107,
+     "b": 113
+    },
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 38,
+     "b": 53
+    }
+   ],
+   "steps": [
+    "The accounts carry no `has_one`. The handler compares `campaign.admin` with the signer itself and returns the generic **IncorrectProgramId** for a stranger (our script's wallet B).",
+    "`rent_balance = Rent::minimum_balance(data_len)`, and the check `lamports − rent_balance < amount` → **InsufficientFunds**. With 0.02 SOL donated, asking for 0.03 failed and 0.015 succeeded; the account was left at 0.05137024 SOL (rent + 0.005), which matches the log.",
+    "There's no CPI here. Because the program **owns** the campaign account, it can lower its lamports directly (`try_borrow_mut_lamports() -= amount`) and raise the admin's, as long as the transaction's total doesn't change. System `transfer` can't be used *from* a program-owned account with data."
+   ]
+  },
+  {
+   "name": "`get_campaign`: a check, not a read",
+   "refs": [
+    {
+     "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+     "a": 79,
+     "b": 86
+    }
+   ],
+   "steps": [
+    "It only verifies that the signer is the admin (B got **IncorrectProgramId**) and returns. Calling it costs a transaction fee, and the app never calls it.",
+    "Real reads don't need an instruction: the home page fetches the accounts over RPC."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "the campaign account is the vault",
+  "text": "There is no separate escrow or vault PDA. The Campaign account's own lamports hold the donations: deposits come in through a System Program CPI, and withdrawals leave by direct lamport edits, which only the owning program may make. Rent-exemption is the one safety floor, so the account can never be drained to the point of being garbage-collected.",
+  "refs": [
+   {
+    "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+    "a": 45,
+    "b": 50,
+    "note": "rent floor + direct lamport move"
+   },
+   {
+    "path": "anchor-project/programs/smart-contracts/src/lib.rs",
+    "a": 59,
+    "b": 68,
+    "note": "System transfer into the PDA"
+   }
+  ],
+  "more": [
+   "The trade-off: `amount_donated` is only bookkeeping. The real balance is `lamports − rent`, and that's what `withdraw` checks.",
+   "Nothing here enforces the *crowdfunding* rules: no deadline, no all-or-nothing target, no refund, and the admin can withdraw at any time. Those are Exercises 3 and 4."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Publish Campaign: PDA from your wallet",
+   "refs": [
+    {
+     "path": "frontend/src/views/create/index.tsx",
+     "a": 41,
+     "b": 79
+    }
+   ],
+   "steps": [
+    "It derives `[\"CROWDFUND\", wallet]` with `findProgramAddress` and calls `program.rpc.create(...)` with the seven form fields.",
+    "`new BN(formState.targetAmount)` passes the number as typed, so the Goal Amount field is in **lamports**. Errors only go to the console."
+   ]
+  },
+  {
+   "title": "Contribute: always your own campaign",
+   "refs": [
+    {
+     "path": "frontend/src/views/home/CampaignCard.tsx",
+     "a": 43,
+     "b": 69
+    }
+   ],
+   "steps": [
+    "The card's PDA comes from `provider.wallet.publicKey`, the **connected** wallet, not the campaign shown on the card (the card isn't even given its pubkey). So every Contribute button funds the viewer's own campaign.",
+    "The amount is fixed at `0.2 * LAMPORTS_PER_SOL`."
+   ]
+  },
+  {
+   "title": "Home: listing and amounts",
+   "refs": [
+    {
+     "path": "frontend/src/views/home/index.tsx",
+     "a": 46,
+     "b": 75
+    },
+    {
+     "path": "frontend/src/views/home/index.tsx",
+     "a": 84,
+     "b": 109,
+     "note": "getCampaign: defined, never called"
+    }
+   ],
+   "steps": [
+    "`getProgramAccounts(programId)` then `fetch` for each, on every load.",
+    "`targetAmount.words[0]` reads the first 26-bit limb of a BN, not the value. That's why 1 SOL shows as 60475904; `toNumber() / 1e9` would show 1.",
+    "`remainingDays: 30` and the \"3 Active Campaigns\" title are placeholders."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Make Contribute fund the card's campaign",
+   "steps": [
+    "In `home/index.tsx`, pass `pubkey` through `convertToCampaign` into each card.",
+    "In `CampaignCard.tsx`, use that pubkey as `campaign` instead of deriving it from the connected wallet, and add an amount input in SOL."
+   ],
+   "expect": "Wallet 2 pressing Contribute on wallet 1's card sends a `donate` whose campaign account is wallet 1's PDA, and wallet 1's raised amount goes up. This is what our script's B → A donation (czso1Hs3…) does at the program level."
+  },
+  {
+   "title": "Show real amounts",
+   "steps": [
+    "Replace `.words[0]` with `.toNumber() / LAMPORTS_PER_SOL` (or `toString()` for safety) and label it SOL.",
+    "Accept Goal Amount in SOL on the form and multiply by 10⁹ before `new BN`."
+   ],
+   "expect": "A 1 SOL goal shows **0 / 1 SOL**, not $0 of $60475904; after one Contribute it shows **0.2 / 1 SOL**, not $65782272."
+  },
+  {
+   "title": "Add a withdraw screen",
+   "steps": [
+    "On the home page, if the connected wallet has a campaign, show its `lamports − rent` and a Withdraw button.",
+    "Call `program.rpc.withdraw(new BN(lamports), { accounts: { campaign, user } })`."
+   ],
+   "expect": "Withdrawing everything above rent from your campaign works, as our script's 0.2 SOL withdrawal (34P4TJH1…) did. One lamport more gives InsufficientFunds."
+  },
+  {
+   "title": "Real crowdfunding rules",
+   "steps": [
+    "Add `deadline: i64` to Campaign (and to `create`), and a `Donation` PDA `[\"donation\", campaign, donor]` that records each donor's total.",
+    "`withdraw`: require `Clock.unix_timestamp ≥ deadline` and `amount_donated ≥ target_amount`.",
+    "Add `refund`: after the deadline, if the target was missed, pay the donor back their recorded amount and close their Donation PDA."
+   ],
+   "expect": "Before the deadline the admin's withdraw fails. After a missed target, each donor gets exactly what they gave and the admin gets nothing."
+  },
+  {
+   "title": "Proper errors, size and close",
+   "steps": [
+    "Replace the manual admin checks with `has_one = admin @ CrowdfundError::NotAdmin` and define custom errors instead of `IncorrectProgramId`/`InsufficientFunds`.",
+    "Add `#[max_len]` to the strings with `InitSpace` instead of `space = 9000`, and add a `close` instruction (`close = admin`) once the funds are withdrawn."
+   ],
+   "expect": "B's withdraw fails with NotAdmin. A campaign with short strings costs well under the 0.04637024 SOL rent our run paid, and closing it returns the rent to the admin."
+  }
+ ],
+ "not_covered": "Create and Contribute were clicked through in the app. Donating to another wallet's campaign, the withdrawals and every rejected case were run by script (run 1 was aborted by an RPC 503 outage; all results come from run 2). Not exercised: over-long strings in create (the 9,000-byte limit), and plain transfers that bypass donate."
+}
