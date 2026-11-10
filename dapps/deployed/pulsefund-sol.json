@@ -1,0 +1,35 @@
+{
+ "slug": "pulsefund-sol",
+ "cluster": "devnet",
+ "program": "smart_contracts",
+ "idl": "idl.json",
+ "devnet": "DMZWuAaGAS8wKmdk7x6SczU5JCSrUWaYuZi7HKt6N6xe",
+ "deploy_tx": "4pFaP82ZFLyRvzFNEtLsgysb4rUNzjBVtehhaRQ1nLL1VEHsmmrUYXsN3tWf7J19ghjV5iFUHjitiMopSP2bDDy7",
+ "built": "cargo-build-sbf (solana 1.18.26) of anchor-project/programs/smart-contracts at 50e0873 (anchor-lang 0.29.0), with declare_id set to this program's keypair",
+ "sigs": [
+  {
+   "label": "fund A 0.08 and B 0.04 SOL",
+   "sig": "5UPW8ez2N9591WXTmL59gBs1EvESfjjKe5J6f2J5SnNHNmfCCGi3KdKLWYKBjQLuX4kpUrmBbdsWpPu6NStk9vcL"
+  },
+  {
+   "label": "A creates its campaign (target 1 SOL; the PDA is [\"CROWDFUND\", admin], 9000 bytes)",
+   "sig": "2mptxSrdYvhrm7qqJMPNNLXGqN1PSEfUV7FKC3w2sCS6g2JAwXWvJG9mrEpkBSPnx7yaaKoYpYxJP5p15Y1xxYuX"
+  },
+  {
+   "label": "B donates 0.02 SOL to A's campaign",
+   "sig": "czso1Hs33VG7hyP9LohHv8GVRm6Ye4MZydhvqBYu5SfC8rDWU4WPsrQQHAvP6aP8iVDoHaY6rTxqxPvU18RErpN"
+  },
+  {
+   "label": "A withdraws 0.015 SOL",
+   "sig": "3gLpWyxcADNvc3iQXRvK1yCNdtBx6jRTziD8oofP7iH5Vjuj2Bkakf3Gg838qKNBznXDc3pXL2SRomhDSG8VrwQv"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "61FkJJznUPyJvsxVzBA1uyAcJwMEQ2b6ZxGonwR5k4U4moJzdGEYCSAgWU11oRhnSBDJHAhUUsXm31wPoXHd8cnM"
+  },
+  {
+   "label": "withdraw-own: admin withdraws 0.2 SOL (everything above the rent floor) from its campaign",
+   "sig": "34P4TJH16erE9TjmEH27XQmTRHYtckEuxNeNfY1w88JroNSEt1kb9xHLd5HTdCFU1tE4NZBeeuiXkmESrvtyuP43"
+  }
+ ]
+}

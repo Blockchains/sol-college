@@ -1243,5 +1243,102 @@
    "The app logs 'Error loading user liquidity' in the console on the Liquidity tab; adding liquidity still works.",
    "The first UI run stopped after Create Market because the market detail view stayed open over the tabs (a test-harness issue); the rest of the clicks were run on the same market in a second and third run."
   ]
+ },
+ {
+  "slug": "pulsefund-sol",
+  "name": "PulseFund (SOL crowdfunding campaigns)",
+  "lesson": "/explore/pulsefund-sol/",
+  "app": "/dapps/pulsefund-sol/",
+  "fork": "https://github.com/Blockchains/pulsefund-sol",
+  "commit": "50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1",
+  "program": "DMZWuAaGAS8wKmdk7x6SczU5JCSrUWaYuZi7HKt6N6xe",
+  "app_kind": "The fork's own Next.js app (frontend/) exported as static pages with this devnet program ID. The only changes are basePath, unoptimized images and removing an unused example API route.",
+  "learn": "Each wallet can open one campaign: a PDA from [\"CROWDFUND\", admin] holding its name, description, links, target and running totals. Anyone can donate SOL, which a system transfer moves straight into the campaign account. Only the campaign's admin can withdraw, and never below the account's rent-exempt minimum.",
+  "source": [
+   [
+    "lib.rs L11-L34 create",
+    "https://github.com/Blockchains/pulsefund-sol/blob/50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1/anchor-project/programs/smart-contracts/src/lib.rs#L11-L34"
+   ],
+   [
+    "lib.rs L38-L55 withdraw (admin check, rent floor)",
+    "https://github.com/Blockchains/pulsefund-sol/blob/50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1/anchor-project/programs/smart-contracts/src/lib.rs#L38-L55"
+   ],
+   [
+    "lib.rs L58-L76 donate (system transfer into the campaign PDA)",
+    "https://github.com/Blockchains/pulsefund-sol/blob/50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1/anchor-project/programs/smart-contracts/src/lib.rs#L58-L76"
+   ],
+   [
+    "lib.rs L79-L86 get_campaign",
+    "https://github.com/Blockchains/pulsefund-sol/blob/50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1/anchor-project/programs/smart-contracts/src/lib.rs#L79-L86"
+   ]
+  ],
+  "flow": "tests/devnet/pulsefund-sol.mjs",
+  "log": "tests/devnet/logs/pulsefund-sol-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… on /create/: name, description, project URL, category, goal 1000000000 (lamports), submit (create)",
+    "25E6fSL7hWTQHczPjzLzJjaAvoQQ7Lag42TGXAZD1N1UQ69tQWMAZxkeYKF1EWtMnReaRTxVGZbw7Efr1ugxJmLR"
+   ],
+   [
+    "UI: home page lists the campaign; Contribute on its card (donate 0.2 SOL; the app sends it to the connected wallet's own campaign)",
+    "44CvBfHqhiDtKtdxRAr23aKLTKzsW3RUQoyBam16jntJEGN6EbnKqhwC5R4p3vDbjTwLaqz94AcCYPzpa8XwiXEG"
+   ],
+   [
+    "Script: test wallet withdraws the 0.2 SOL back from its campaign (the app has no withdraw screen)",
+    "34P4TJH16erE9TjmEH27XQmTRHYtckEuxNeNfY1w88JroNSEt1kb9xHLd5HTdCFU1tE4NZBeeuiXkmESrvtyuP43"
+   ],
+   [
+    "Script: fund A 0.08 and B 0.04 SOL",
+    "5UPW8ez2N9591WXTmL59gBs1EvESfjjKe5J6f2J5SnNHNmfCCGi3KdKLWYKBjQLuX4kpUrmBbdsWpPu6NStk9vcL"
+   ],
+   [
+    "Script: A creates its campaign (target 1 SOL; the PDA is [\"CROWDFUND\", admin], 9000 bytes)",
+    "2mptxSrdYvhrm7qqJMPNNLXGqN1PSEfUV7FKC3w2sCS6g2JAwXWvJG9mrEpkBSPnx7yaaKoYpYxJP5p15Y1xxYuX"
+   ],
+   [
+    "Script: B donates 0.02 SOL to A's campaign",
+    "czso1Hs33VG7hyP9LohHv8GVRm6Ye4MZydhvqBYu5SfC8rDWU4WPsrQQHAvP6aP8iVDoHaY6rTxqxPvU18RErpN"
+   ],
+   [
+    "Script: A withdraws 0.015 SOL",
+    "3gLpWyxcADNvc3iQXRvK1yCNdtBx6jRTziD8oofP7iH5Vjuj2Bkakf3Gg838qKNBznXDc3pXL2SRomhDSG8VrwQv"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "61FkJJznUPyJvsxVzBA1uyAcJwMEQ2b6ZxGonwR5k4U4moJzdGEYCSAgWU11oRhnSBDJHAhUUsXm31wPoXHd8cnM"
+   ]
+  ],
+  "negative": [
+   [
+    "A creates a second campaign (one campaign PDA per wallet)",
+    "Allocate: account Address { address: 4D3puBwir9RTuc6J5K2danfw2QDGurnu2UcR2YPDRn6j, base: None } already in use"
+   ],
+   [
+    "B withdraws from A's campaign (admin only)",
+    "Program log: ProgramError occurred. Error Code: IncorrectProgramId. Error Number: 30064771072. Error Message: The account did not have the expected program id."
+   ],
+   [
+    "A withdraws 0.03 SOL, more than the 0.02 donated (cannot dip into the rent floor)",
+    "Program log: ProgramError occurred. Error Code: InsufficientFunds. Error Number: 25769803776. Error Message: An account's balance was too small to complete the "
+   ],
+   [
+    "B calls get_campaign on A's campaign (admin-only check)",
+    "Program log: ProgramError occurred. Error Code: IncorrectProgramId. Error Number: 30064771072. Error Message: The account did not have the expected program id."
+   ],
+   [
+    "B donates to a campaign PDA that was never created",
+    "AccountNotInitialized"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py pulsefund (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "Contribute always donates a fixed 0.2 SOL to the connected wallet's own campaign (CampaignCard.tsx derives the PDA from the wallet, not from the card), so in the app you can only fund yourself, and only once you have created a campaign. The program itself accepts donations to any campaign, as the script shows.",
+   "The app has no withdraw screen; withdrawal works only from a script.",
+   "Amounts on the cards are wrong: the app shows BN.words[0], the low 26 bits of the lamport value, so a 1 SOL goal shows as $60475904 and 0.2 SOL raised as $65782272. 'Remaining Days 30' is a fixed placeholder and the section title always says '3 Active Campaigns'.",
+   "Admin errors reuse generic ProgramError codes (IncorrectProgramId for 'not the admin'), and there is no deadline and no refund. The target is informational only.",
+   "One campaign per wallet: the PDA is seeded only by the admin's key.",
+   "The home page lists every account the program owns via getProgramAccounts on each load."
+  ]
  }
 ]

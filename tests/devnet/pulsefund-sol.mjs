@@ -8,7 +8,7 @@ import anchor from '@coral-xyz/anchor';
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 const { AnchorProvider, Program, Wallet, BN } = anchor;
 const [idlPath, rpc, payerPath, mode, ownPath] = process.argv.slice(2);
-const rlFetch = async (url, opts) => { for (let i = 0; ; i++) { const r = await fetch(url, opts); if (r.status !== 429 || i >= 12) return r; await new Promise(z => setTimeout(z, 1500 * (i + 1))); } };
+const rlFetch = async (url, opts) => { for (let i = 0; ; i++) { const r = await fetch(url, opts); if ((r.status !== 429 && r.status < 500) || i >= 12) return r; await new Promise(z => setTimeout(z, 1500 * (i + 1))); } };
 const conn = new Connection(rpc, { commitment: 'confirmed', fetch: rlFetch, disableRetryOnRateLimit: true });
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 conn.confirmTransaction = async (arg) => { const sig = typeof arg === 'string' ? arg : arg.signature;
@@ -21,7 +21,9 @@ const idl = JSON.parse(fs.readFileSync(idlPath, 'utf8')); const pid = new Public
 const prog = (k) => new Program(idl, pid, new AnchorProvider(conn, new Wallet(k), { commitment: 'confirmed' }));
 const log = (o) => console.log(JSON.stringify(o));
 const err = (e) => String(e.error?.errorCode?.code || e.logs?.find(l => /Error|failed|already in use|insufficient/i.test(l)) || e.message).split('\n')[0].slice(0, 200);
-const expectFail = async (label, fn) => { try { const s = await fn(); log({ step: label, ok: false, error: 'UNEXPECTED SUCCESS', sig: s }); } catch (e) { log({ step: label, expectedFailure: true, error: err(e) }); } };
+const transient = (e) => /Backend error|StatusCode: 5|fetch failed|ECONNRESET|blockhash/i.test(String(e?.message || e));
+const retry = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (!transient(e) || i >= 6) throw e; await sleep(4000 * (i + 1)); } } };
+const expectFail = async (label, fn0) => { const fn = () => retry(fn0); try { const s = await fn(); log({ step: label, ok: false, error: 'UNEXPECTED SUCCESS', sig: s }); } catch (e) { log({ step: label, expectedFailure: true, error: err(e) }); } };
 const campaignOf = (pk) => PublicKey.findProgramAddressSync([Buffer.from('CROWDFUND'), pk.toBuffer()], pid)[0];
 const SOL = LAMPORTS_PER_SOL; const payer = kp(payerPath);
 const floor = async (c) => conn.getMinimumBalanceForRentExemption((await conn.getAccountInfo(c)).data.length);
@@ -31,24 +33,26 @@ if (mode === 'withdraw-own') {
     sig: await prog(O).methods.withdraw(new BN(amt)).accounts({ campaign: c, user: O.publicKey }).rpc() });
   process.exit(0);
 }
-const A = Keypair.generate(), B = Keypair.generate(); const cA = campaignOf(A.publicKey);
+// role keys are saved next to the payer keypair (on the box, never committed) so SOL can be recovered after an interrupted run
+const A = Keypair.generate(), B = Keypair.generate(); const keyDir = payerPath.replace(/[^/]*$/, '');
+for (const [n, k] of [['A', A], ['B', B]]) try { fs.writeFileSync(`${process.env.ROLE_KEY_DIR || keyDir}pulsefund-${n}-${A.publicKey.toBase58().slice(0, 6)}.json`, JSON.stringify(Array.from(k.secretKey)), { mode: 0o600 }); } catch {} const cA = campaignOf(A.publicKey);
 log({ step: 'setup', program: pid.toBase58(), A: A.publicKey.toBase58(), B: B.publicKey.toBase58(), campaignA: cA.toBase58() });
 log({ step: 'fund A 0.08 and B 0.04 SOL', sig: await sendAndConfirmTransaction(conn, new Transaction().add(
   SystemProgram.transfer({ fromPubkey: payer.publicKey, toPubkey: A.publicKey, lamports: 0.08 * SOL }),
   SystemProgram.transfer({ fromPubkey: payer.publicKey, toPubkey: B.publicKey, lamports: 0.04 * SOL })), [payer], { commitment: 'confirmed' }) });
 const create = (k, c) => prog(k).methods.create('sol.college devnet test', 'Campaign made by the sol.college test script', new BN(SOL),
   'https://sol.college/', '', '', 'Education').accounts({ campaign: c, user: k.publicKey, systemProgram: SystemProgram.programId }).rpc();
-log({ step: 'A creates its campaign (target 1 SOL; the PDA is ["CROWDFUND", admin], 9000 bytes)', ok: true, sig: await create(A, cA), rent_sol: (await conn.getBalance(cA)) / SOL });
+log({ step: 'A creates its campaign (target 1 SOL; the PDA is ["CROWDFUND", admin], 9000 bytes)', ok: true, sig: await retry(() => create(A, cA)), rent_sol: (await conn.getBalance(cA)) / SOL });
 await expectFail('A creates a second campaign (one campaign PDA per wallet)', () => create(A, cA));
 const donate = (k, c, amt) => prog(k).methods.donate(new BN(amt)).accounts({ campaign: c, user: k.publicKey, systemProgram: SystemProgram.programId }).rpc();
-log({ step: 'B donates 0.02 SOL to A\'s campaign', ok: true, sig: await donate(B, cA, 0.02 * SOL) });
+log({ step: 'B donates 0.02 SOL to A\'s campaign', ok: true, sig: await retry(() => donate(B, cA, 0.02 * SOL)) });
 const withdraw = (k, c, amt) => prog(k).methods.withdraw(new BN(amt)).accounts({ campaign: c, user: k.publicKey }).rpc();
 await expectFail('B withdraws from A\'s campaign (admin only)', () => withdraw(B, cA, 0.01 * SOL));
 await expectFail('A withdraws 0.03 SOL, more than the 0.02 donated (cannot dip into the rent floor)', () => withdraw(A, cA, 0.03 * SOL));
-log({ step: 'A withdraws 0.015 SOL', ok: true, sig: await withdraw(A, cA, 0.015 * SOL) });
+log({ step: 'A withdraws 0.015 SOL', ok: true, sig: await retry(() => withdraw(A, cA, 0.015 * SOL)) });
 await expectFail('B calls get_campaign on A\'s campaign (admin-only check)', () => prog(B).methods.getCampaign().accounts({ campaign: cA, user: B.publicKey }).rpc());
 await expectFail('B donates to a campaign PDA that was never created', () => donate(B, campaignOf(B.publicKey), 0.001 * SOL));
-const c = await prog(A).account.campaign.fetch(cA);
+const c = await retry(() => prog(A).account.campaign.fetch(cA));
 log({ step: 'final state', amount_donated_sol: c.amountDonated.toNumber() / SOL, amount_withdrawn_sol: c.amountWithdrawn.toNumber() / SOL,
   campaign_balance_sol: (await conn.getBalance(cA)) / SOL, target_sol: c.targetAmount.toNumber() / SOL });
 for (const k of [A, B]) { const bal = await conn.getBalance(k.publicKey); if (bal > 10000)
