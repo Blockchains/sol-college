@@ -71,6 +71,10 @@ P
      cd "$src/frontend" && sed -i "s/CQcG2qZooAYoeE96ZYKJd3omq2DPWHozSceSnuCxRv8U/DMZWuAaGAS8wKmdk7x6SczU5JCSrUWaYuZi7HKt6N6xe/g" src/idl/idl.json
      python3 "$(dirname "$out")/../../tests/devnet/patches/pulsefund-sol.py"
      npx -y yarn@1.22.22 install --frozen-lockfile >/dev/null && npx next build && npx next export -o out && cp -r out/. "$out/";;
+  chinesepowered-solana-cypherpunk) # fork's own Next.js app (UniProof) as a static export on the program deployed from programs/uniproof (see dapps/deployed/chinesepowered-solana-cypherpunk.json)
+     cd "$src" && sed -i "s/EZJvyE9P18XuEX1JsEpGcyoRkEz9c9dvYui6364K86cy/3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD/g" src/idl/uniproof.ts src/lib/solana/uniproof-client.ts
+     python3 "$(dirname "$out")/../../tests/devnet/patches/chinesepowered-solana-cypherpunk.py"
+     npx -y pnpm@9 install --frozen-lockfile >/dev/null && npx next build && cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

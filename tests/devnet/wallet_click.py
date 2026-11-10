@@ -444,6 +444,35 @@ def run(pg):
             n = len(SENT); card.first.get_by_role('button', name='Contribute').click(); pump(pg, 30000); log(step='contribute_via_ui (0.2 SOL)', sent=sigs_new(n))
             pg.reload(); pump(pg, 15000); connect(pg); pump(pg, 6000)
             log(step='card_after', text=pg.locator('div.max-w-sm', has_text=nm).first.inner_text()[:200])
+    elif app == 'uniproof':  # test wallet = university authority, issues a credential to itself, signs as registrar and dean, then checks /student/ and /verify/
+        def btn(rx): return pg.get_by_role('button', name=re.compile(rx, re.I))
+        def close_dialog():
+            for b in btn(r'^(OK|Close|Got it|Done)$').all():
+                try: b.click(timeout=2000)
+                except Exception: pass
+        pg.goto(base + 'university/', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 8000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        if btn('Initialize University').count():
+            pg.get_by_placeholder('e.g., Stanford University').fill('sol.college UI University')
+            n = len(SENT); btn('Initialize University').first.click(); pump(pg, 25000); log(step='initialize_university_via_ui', sent=sigs_new(n)); close_dialog(); pump(pg, 5000)
+        pg.get_by_placeholder("Student's Solana wallet address").fill(ADDR)
+        pg.get_by_placeholder('e.g., Bachelor of Science').fill('Bachelor of Science')
+        pg.get_by_placeholder('e.g., Computer Science').fill('Computer Science')
+        pg.locator('input[type=date]').first.fill('2026-06-30')
+        pg.get_by_placeholder('IPFS or Arweave link to additional data').fill('https://sol.college/')
+        n = len(SENT); btn('Issue Credential').last.click(); pump(pg, 25000)
+        m = re.search(r'Credential Address:\s*([1-9A-HJ-NP-Za-km-z]{32,44})', body(pg)); cred = m.group(1) if m else None
+        log(step='issue_credential_via_ui', sent=sigs_new(n), credential=cred); close_dialog(); pump(pg, 3000)
+        if cred:
+            pg.get_by_placeholder('Paste credential address here').fill(cred)
+            n = len(SENT); btn('Registrar').first.click(); pump(pg, 25000); log(step='sign_as_registrar_via_ui', sent=sigs_new(n)); close_dialog(); pump(pg, 3000)
+            pg.get_by_placeholder('Paste credential address here').fill(cred)
+            n = len(SENT); btn('Dean').first.click(); pump(pg, 25000); log(step='sign_as_dean_via_ui', sent=sigs_new(n)); close_dialog(); pump(pg, 3000)
+            pg.goto(base + 'verify/', wait_until='domcontentloaded'); pump(pg, 6000)
+            pg.get_by_placeholder('e.g., 7xKX...').fill(cred); btn('Verify').last.click(); pump(pg, 15000)
+            log(step='verify_page', text=body(pg)[:600])
+            pg.goto(base + 'student/', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 12000)
+            log(step='student_page', text=body(pg)[:600])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
