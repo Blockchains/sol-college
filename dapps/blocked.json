@@ -21,5 +21,6 @@
  "solana-coloseum-hackathon": "The app stores and reads its ideas through Firebase.",
  "proof-of-anchor": "The hosted part is a verifier that fetches other sites (https://<domain>/…, the GitHub API) and Noir proofs; the web app does not call the Anchor program.",
  "zylith-solana": "The shielded pool needs an off-chain ASP service and a relayer (VITE_ASP_URL, VITE_RELAYER_ADDRESS) plus wrapped-BTC/stablecoin mints the app is configured with.",
- "demage": "The app/ folder is a leftover todo template: it imports the IDL from an uncommitted target/ build and calls createProfile, which the token-2022 staking program doesn't have, so no page in it can stake, unstake or create a pool."
+ "demage": "The app/ folder is a leftover todo template: it imports the IDL from an uncommitted target/ build and calls createProfile, which the token-2022 staking program doesn't have, so no page in it can stake, unstake or create a pool.",
+ "momimarket": "The main page only wires up creating an event and listing events; joining an option is never called from it, and its 'test transaction' button sends 0 SOL to yourself. The hand-written IDL in src/lib/anchor.ts is in the pre-0.30 format with no account types and is passed to the old Program(idl, programId, provider) constructor, while the app depends on @coral-xyz/anchor 0.32."
 }
