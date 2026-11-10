@@ -75,6 +75,10 @@ P
      cd "$src" && sed -i "s/EZJvyE9P18XuEX1JsEpGcyoRkEz9c9dvYui6364K86cy/3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD/g" src/idl/uniproof.ts src/lib/solana/uniproof-client.ts
      python3 "$(dirname "$out")/../../tests/devnet/patches/chinesepowered-solana-cypherpunk.py"
      npx -y pnpm@9 install --frozen-lockfile >/dev/null && npx next build && cp -r out/. "$out/";;
+  friendstake) # fork's own Nx/Next.js app (app/friendstake/web) as a static export on the program deployed from programs/peer-to-peer-betting
+     cd "$src" && sed -i "s/CXE5bjWmUv7QAivvg6gjZTvZ246F99mCaKTNKoAuCCDc/s9S66SyufvxbkshHCAZZKhcaAFHrYL2s6RS85KfJsZi/g" app/friendstake/web/components/bet/bet-data-access.tsx
+     python3 "$(dirname "$out")/../../tests/devnet/patches/friendstake.py" .
+     cd app/friendstake && npm install --legacy-peer-deps >/dev/null && npx nx build web --skip-nx-cache && cp -r dist/web/.next/. "$out/";;  # lockfile lacks @coral-xyz/anchor, so npm ci refuses
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"
