@@ -62,6 +62,11 @@ P
      cd "$src" && sed -i "s/Aoofv5iGzdDeyySpT9QsiFaK7Db7SKyycb7nTEU1oTYE/EmyKYV3hFaFw4znLhGSTG6Eo4QGadVb6TnkvWYYm8X77/g" protocol/ts/src/idl/barn.json protocol/ts/src/idl/barn.ts
      python3 "$(dirname "$out")/../../tests/devnet/patches/barn.py"
      npx -y pnpm@9.4.0 install --frozen-lockfile >/dev/null && (cd protocol/ts && npx -y pnpm@9.4.0 build) && cd app && NEXT_PUBLIC_RPC_ENDPOINT=https://api.devnet.solana.com NEXT_PUBLIC_RPC_CLUSTER=devnet npx next build && cp -r out/. "$out/";;
+  hackathon-prediction-market-solana) # fork's own CRA app (prediction-market-frontend) on the program deployed from programs/prediction-market (see dapps/deployed/hackathon-prediction-market-solana.json)
+     cd "$src" && sed -i "s/ACZKSY2dWcYHLF3ZPeUwcLVi3h6n2rsyTqXTLe42gxG3/8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH/g" prediction-market-frontend/src/contexts/PredictionMarketContext.tsx prediction-market-frontend/src/prediction_market.json prediction-market-frontend/src/prediction_market.ts prediction-market-frontend/src/prediction_market_idl.ts
+     # dependency installs as used on 2026-11-10: root yarn install (the app imports @solana/spl-token from the root), app npm install, then ajv@8 for CRA
+     yarn install --frozen-lockfile >/dev/null && cd prediction-market-frontend && python3 "$(dirname "$out")/../../tests/devnet/patches/hackathon-prediction-market-solana.py"
+     npm install --legacy-peer-deps --no-audit --no-fund >/dev/null && npm i --no-save --legacy-peer-deps ajv@8 >/dev/null && PUBLIC_URL=/dapps/$slug GENERATE_SOURCEMAP=false CI=false npx react-app-rewired build && cp -r build/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

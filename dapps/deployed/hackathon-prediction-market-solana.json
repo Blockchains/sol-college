@@ -1,0 +1,55 @@
+{
+ "slug": "hackathon-prediction-market-solana",
+ "cluster": "devnet",
+ "program": "prediction_market",
+ "idl": "prediction_market.json",
+ "devnet": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH",
+ "deploy_tx": "5ASWRQoJhv3z1DPBrHB4kxbjDD5u2Pryk7XaMVW9BuxaB2gydPAnbMDuGGSBeAjfpA2MG4y6s2WM12j5MrDQpUWT",
+ "built": "cargo-build-sbf (solana 2.3.13) of programs/prediction-market at 33bc5dd (anchor-lang 0.31.1), with declare_id set to this program's keypair (ours, not the keys/ folder committed in the fork)",
+ "sigs": [
+  {
+   "label": "fund B (whitelisted trader) and C (not whitelisted)",
+   "sig": "gNB54ER2VqGpiRS4qrjHw3z1eF6YZRxiQCYeiBfRQYHFhi67Vz4Bgfi784Ed6Gso78mLfzFkGuUgFHQ9yWXDEiH"
+  },
+  {
+   "label": "configure: fees 1% platform + 0.2% LP each way, 1M-token supply per side, 1000-token initial reserves, min liquidity 0.02 SOL (the repo default is 5 SOL)",
+   "sig": "2ESDhFRGBYdt8KERYJegi8j15KKB94227L7Si1xCEojzEh7W8by5Myvp1M9gch3uH4pH8rj3yEBnMCQTVtbf3nXt"
+  },
+  {
+   "label": "create YES and NO mints (authority = global vault PDA)",
+   "sig": "2Z3idn6ozTBMYBgZRt7qoZizWjAMCmrvc79EZSRcEsgKWkH1Jzy5yHLjRxVpKtMi1SATknnAEHPQaXmkQjTqWBbg"
+  },
+  {
+   "label": "create_market (5 team members, metadata for both mints, 1M of each minted to the vault)",
+   "sig": "5caSfwFxNXy9Zyrr12p5WALe2K8XzQPsHzuw6sNGe2NG91MkY8eSYh5Dohh33U8Fb9g6K7FkpXh69w8Wp7EheyyE"
+  },
+  {
+   "label": "add_liquidity 0.04 SOL (first LP: 0.02 SOL backs each side)",
+   "sig": "2Usuqd4nEtwBu7ZzEYXsq9yiD71MsksF83SjaD1bWnps69UqUdBuaoAbx1c7aZwzJH3WzMCx79MUHzvjSXyoapZh"
+  },
+  {
+   "label": "whitelist_add_member B",
+   "sig": "FuLtPmCzGbWe2qzvQQiNUG7b3oyCNQe1FWKbXn8Wex1b7xdvY7fq9E54dtTSNrdUTn9xDKrGAW8VwXuojwAYw4W"
+  },
+  {
+   "label": "B buys YES with 0.01 SOL",
+   "sig": "S3UZG8s5363eDfw7CKpGr7TkKPU3bksQea2fDMk38YSrKzpr9JgDVUfZLvZJ15qkkxGCYyYLYKqQo9C9FsZUgM7"
+  },
+  {
+   "label": "B buys NO with 0.005 SOL",
+   "sig": "2GQzCTE4bnoRnggdDBhrjfCAQrHPCvBz3jxu3QZqEZzewveADbwhZAReoNj8GqAq72zSCuNUFT9g7qBLTtfsf1ir"
+  },
+  {
+   "label": "B sells half its YES",
+   "sig": "4usTWGHh4o2RMESQtYV7bCLpdPnx53pf1nzdVqDWgWXwJFbFAHK5vqdA4iXkw5AkBYpsPTP7NAQ97cxRq5EnbnoE"
+  },
+  {
+   "label": "resolution by admin: match completed, YES (team A) wins",
+   "sig": "T5Qfq7iYpnWLPu56vUjzfwLS6uTH3yo1JhXd6ux7iBgAeemoXEVgsPeZZzkmNZN1HdC2Rn175nKmcPbGBnr4EaP"
+  },
+  {
+   "label": "withdraw_liquidity 0.02 SOL by the LP",
+   "sig": "4sMHjyhzGZE1RdJiCWZBEiyE7y2ywQAwpzmXcjNSyC62aGMzv7xMJYc97X1a5G9EU4tNYf77fnRGGENUZu6Bo7Ys"
+  }
+ ]
+}

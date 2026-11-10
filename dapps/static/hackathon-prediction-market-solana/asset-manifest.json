@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/dapps/hackathon-prediction-market-solana/static/css/main.ee513e44.css",
+    "main.js": "/dapps/hackathon-prediction-market-solana/static/js/main.7a8623e9.js",
+    "static/js/667.5cedaef4.chunk.js": "/dapps/hackathon-prediction-market-solana/static/js/667.5cedaef4.chunk.js",
+    "static/js/540.3e2305dc.chunk.js": "/dapps/hackathon-prediction-market-solana/static/js/540.3e2305dc.chunk.js",
+    "index.html": "/dapps/hackathon-prediction-market-solana/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.ee513e44.css",
+    "static/js/main.7a8623e9.js"
+  ]
+}
