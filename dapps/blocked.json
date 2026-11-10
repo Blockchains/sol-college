@@ -11,5 +11,8 @@
  "decentralogistics": "The frontend reads and writes logistics requests through its own Express API server (api-server/, http://localhost:3000), which a static host cannot serve.",
  "solassets-solanahackathon": "The app creates its Supabase client at import time from VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY (not in the repo), and the Tokens page reads the signed-in Supabase user before calling create_standard_token, so it cannot run without the author's Supabase project.",
  "blocqfinance-colosseum": "The Next.js app logs in and loads letters of credit through its own backend (blocq-backend, NEXT_PUBLIC_API_BASE_URL); the program calls (fund, release, refund) are only reachable after that backend's auth.",
- "tagin-solana": "The frontends call local Flask/Express APIs (localhost:5000 / 5002) for products and reports."
+ "tagin-solana": "The frontends call local Flask/Express APIs (localhost:5000 / 5002) for products and reports.",
+ "vv-solana": "The client is a MUD (Lattice) game: it boots against EVM world contracts on BSC and a gRPC indexer (VITE_WORLD_CONTRACT, VITE_GRPC_URL, ...) and Particle Network login, and it imports the program IDL from an uncommitted build artifact; the Solana program is only a side module.",
+ "gifter-escrow": "Every token list and balance in the app comes from Helius DAS calls (getAssetsByOwner, getAssetBatch) to devnet.helius-rpc.com with the author's API key hard-coded in the source; we don't use someone else's key, and the public devnet RPC has no DAS methods.",
+ "autohero": "The web app's story and hero flow goes through the author's backend API (VITE_API_URL via axios) before it touches the program."
 }
