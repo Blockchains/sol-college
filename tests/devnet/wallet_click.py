@@ -186,6 +186,22 @@ def run(pg):
         pg.get_by_text('Get it').click(); pump(pg, 5000)
         n = len(SENT); pg.get_by_text(re.compile(r'^\s*Claim\s*$')).first.click(); pump(pg, 25000)
         log(step='claim_via_ui', sent=sigs_new(n))
+    elif app == 'orboracle':  # argv: weight mint, oracle PDA (["oracle", wallet, mint])
+        mint, oracle = sys.argv[4:6]
+        pg.goto(base + 'create/', wait_until='domcontentloaded'); pump(pg, 5000); connect(pg); pump(pg, 4000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        pg.get_by_placeholder('SOL / USD Oracle').fill('UI test feed'); pg.get_by_placeholder(re.compile("Describe your oracle")).fill('Created by clicking the hosted app')
+        pg.get_by_placeholder('Token mint address').fill(mint)
+        locks = pg.get_by_placeholder('3600'); locks.nth(1).fill('5'); locks.nth(2).fill('5')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'Create Oracle')).click(); pump(pg, 25000)
+        log(step='create_oracle_via_ui', sent=sigs_new(n), text=body(pg)[body(pg).find('deployed'):][:200])
+        pg.goto(base + 'o/?oracle=' + oracle, wait_until='domcontentloaded'); pump(pg, 8000)
+        pg.get_by_placeholder('Enter amount to deposit').fill('50')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Deposit Tokens')).click(); pump(pg, 25000)
+        log(step='deposit_50_via_ui', sent=sigs_new(n)); pump(pg, 8000)
+        pg.get_by_placeholder(re.compile('Enter price value')).fill('123.45')
+        n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Submit Value')).click(); pump(pg, 25000)
+        log(step='submit_value_via_ui', sent=sigs_new(n), text=body(pg)[:900])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

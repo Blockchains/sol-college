@@ -1,0 +1,21 @@
+{
+ "slug": "orboracle-solana",
+ "cluster": "devnet",
+ "program": "oracle",
+ "idl": "oracle.json",
+ "devnet": "3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx",
+ "deploy_tx": "VfoiQDuuiLcwWjxA2WdNg1FHAyyUN5oe92Y63cMKEXU7MabLE52HTQbrxMLqA514GjEMhpkqPcKhdxgYcj1KNpX",
+ "built": "cargo build-sbf (solana 2.3.13 platform tools) of anchor/programs/oracle at 3581bf8 with declare_id (and the app's IDL address) set to this program's keypair; buffer written with tools/fill_buffer.py",
+ "sigs": [
+  {
+   "label": "initialize",
+   "sig": "3xwANbfFofreRCpN2tHiXegkTX7GSECSzUeWGXb3nyXz7ksj7NHe5MiBwnNcTBwL5BT6ebjQ5u117JKmjEWh1x2j"
+  },
+  {
+   "label": "submit_value",
+   "sig": "5xq3yEiL1gjCYm7nvgx6DkPZjJrzWwASJfxy1XTfp5EYbBEFwcKkir5a7yRuD3okGvSP9V2cdnUNzbhrEAaHNBgb"
+  }
+ ],
+ "verified": "2026-11-10",
+ "mainnet": null
+}

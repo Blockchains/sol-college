@@ -56,3 +56,4 @@ const before = Number((await getAccount(conn, bAta.address)).amount);
 const s8 = await prog(B).methods.withdrawTokens(new BN(40e6)).accounts({ user: B.publicKey, weightMint: mint, oracleState: oracle }).rpc();
 log({ step: 'withdraw_tokens B 40', ok: true, sig: s8, Breceived: (Number((await getAccount(conn, bAta.address)).amount) - before) / 1e6 });
 st = await P.account.oracleState.fetch(oracle); log({ step: 'final state', totalDeposited: st.totalDepositedTokens.toNumber() / 1e6, aggregated: st.aggregatedValue.toString(), history: st.priceHistory.length });
+await expectFail('submit_value_by_blacklisted_A', () => P.methods.submitValue(new BN(999_000_000)).accounts({ user: A.publicKey, oracleState: oracle }).rpc());

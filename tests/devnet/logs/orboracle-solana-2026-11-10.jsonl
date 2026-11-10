@@ -1,0 +1,17 @@
+{"step":"fund B (fees)","sig":"wxQDUbPzLDpztqhnPLe6Vv8CXsYSnV5y59ncsp5ZWcoRu3rSAWnYfai3f2ApPx2cxCNp7n77eySYWRLyeUnEV1S"}
+{"step":"setup","program":"3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","B":"31kGvspRGG4HpwRxrc7PxC58XC6kLn5usqdxq48QDzLA","weightMint":"BzevimDa7YjJ2LZFKVpFSBse8Swr3DtVhRTv8vsRuTnZ","oracle":"DnRv1ZXDimzgaxDbJsDkg2LGc4RHAtUEMGxqF2Es8vZd"}
+{"step":"initialize_empty_name","expectedFailure":true,"error":"InvalidName"}
+{"step":"initialize_reward_over_100pct","expectedFailure":true,"error":"InvalidRewardRate"}
+{"step":"initialize (8s deposit/withdraw locks)","ok":true,"sig":"3xwANbfFofreRCpN2tHiXegkTX7GSECSzUeWGXb3nyXz7ksj7NHe5MiBwnNcTBwL5BT6ebjQ5u117JKmjEWh1x2j"}
+{"step":"fund reward pool 0.05 SOL","ok":true,"sig":"KbkMxek7D9c6ziGKjVMHGtXhXkXscEZwcfV8txYrsAJZ7TzTYTwWNCnW6o155PhwwBcJ6dXoURfbAXpzDxXRQKz","oracleLamports":95603160}
+{"step":"fund_zero","expectedFailure":true,"error":"AmountMustBePositive"}
+{"step":"deposit_tokens A 300","ok":true,"sig":"q6aNYDWQbvxrt23VdJYP2ZFrnsaQoxD38uaSLy4pSNzvk9NXDkRy99kuA7duaT6nVJWgKDYzBR4iwau82jEGeoy"}
+{"step":"deposit_tokens B 100","ok":true,"sig":"22T7YzjH21Vm8PXcoLoYXUHpBfyLcv67bi4m1U3jLHN6MftVudJBUZU4SEDQ7sv5vHN6R7FQtfVAptCUko6d8qHw"}
+{"step":"submit_value_while_tokens_locked","expectedFailure":true,"error":"NoUnlockedTokens"}
+{"step":"submit_value A 150.000000","ok":true,"sig":"5xq3yEiL1gjCYm7nvgx6DkPZjJrzWwASJfxy1XTfp5EYbBEFwcKkir5a7yRuD3okGvSP9V2cdnUNzbhrEAaHNBgb","aggregated":"150000000","latest":"150000000"}
+{"step":"submit_value B 160.000000","ok":true,"sig":"63bZjLdCt4iY2fpKF1Hwfihe5a2PiuTa5TrFU8LWCSx27kuuc2V5jsDgbAGWdPrAqvSNY8fFtKTcT7eFH3VTxLvW","aggregated":"152500778","latest":"160000000","history":2,"oracleLamports":95284351}
+{"step":"vote_blacklist A by B","ok":true,"sig":"7NJHE8SK3crtZGPn6MiCjfriHHgPJKdR5McZYgZ4ahx6LgUJrhWkg23U42DQHwrwVGyFyiWkFbBH27zNwHAHPDe","targets":[{"target":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","blacklistVotes":"05f5e100","whitelistVotes":"00","isBlacklisted":true}]}
+{"step":"withdraw_more_than_unlocked","expectedFailure":true,"error":"InsufficientUnlockedTokens"}
+{"step":"withdraw_tokens B 40","ok":true,"sig":"3WkpLLWv77Kk8n1woYRQm3CxV3UDdokeFNQrjfgjoN5idjYTtteWEV15SCmpgBPoDA3iUhTK7Z9B8r46YAyxkzK5","Breceived":40}
+{"step":"final state","totalDeposited":360,"aggregated":"152500778","history":2}
+{"step":"submit_value_by_blacklisted_A","expectedFailure":true,"error":"AccountBlacklisted"}

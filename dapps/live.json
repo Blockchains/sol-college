@@ -299,5 +299,85 @@
   ],
   "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py splitter, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the wallet connected from Select Wallet, and create, deposit and claim all went through the app's own buttons; the Actions page showed the vault 'sc-ui-0808', the mint and '100 % Claim' read from devnet.",
   "limits": "Because of the claim bug, a multi-recipient split cannot be paid out correctly: only the authority can claim, and it receives the whole balance. The app's QR deposit link points at the author's Cloud Run endpoint, which is not used here. The balance column shows NaN in the app."
+ },
+ {
+  "slug": "orboracle-solana",
+  "name": "OrbOracle (stake-weighted price oracle)",
+  "lesson": "/explore/orboracle-solana/",
+  "app": "/dapps/orboracle-solana/",
+  "fork": "https://github.com/Blockchains/OrbOracle-Solana",
+  "commit": "3581bf852fc1028990b179c24ba6f33adfb94a6f",
+  "program": "3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx",
+  "app_kind": "The fork's own Next.js 15 static-export app, unchanged except for this devnet program ID (in the app's IDL and types) and base path /dapps/orboracle-solana/. Oracle pages are /o/?oracle=<address>.",
+  "learn": "Anyone can create an oracle tied to a weight token. Holders lock tokens in the oracle's vault (they unlock after the deposit lock), submit prices, and the program keeps a time-decayed, token-weighted average; rewards come from SOL funded into the oracle account, and holders can vote to blacklist a submitter once votes reach the quorum.",
+  "source": [
+   [
+    "lib.rs L20-L66 (initialize: validated params, PDA [oracle, authority, mint])",
+    "https://github.com/Blockchains/OrbOracle-Solana/blob/3581bf852fc1028990b179c24ba6f33adfb94a6f/anchor/programs/oracle/src/lib.rs#L20-L66"
+   ],
+   [
+    "lib.rs L95-L145 (deposit_tokens: tokens locked into the vault)",
+    "https://github.com/Blockchains/OrbOracle-Solana/blob/3581bf852fc1028990b179c24ba6f33adfb94a6f/anchor/programs/oracle/src/lib.rs#L95-L145"
+   ],
+   [
+    "lib.rs L212-L330 (submit_value: decayed weighted average and reward)",
+    "https://github.com/Blockchains/OrbOracle-Solana/blob/3581bf852fc1028990b179c24ba6f33adfb94a6f/anchor/programs/oracle/src/lib.rs#L212-L330"
+   ]
+  ],
+  "flow": "tests/devnet/orboracle-solana.mjs",
+  "log": "tests/devnet/logs/orboracle-solana-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: filled the hosted Create Oracle form (5 s locks) with test wallet m4Ac…: initialize; the page showed the oracle PDA CmAjgQFF…",
+    "5TEMazGZo9WwxA42gvLnv6FTthKk3Jjk6bbdzH17zabeEV9tAWbxs8Dfd1dFhoPxCsU2WtqiD2LLjtmszyHZkP48"
+   ],
+   [
+    "UI: oracle page, Deposit Tokens 50",
+    "4u4FVXQakRiNtHg6hBAzVPdtdyGSzXbLFmDWoE8a2KqsxKpAi9EHYFnZf7aqbyQJj3WgR7t9NpdcaXhTpc6FJUnV"
+   ],
+   [
+    "UI: Submit Value 123.45; the page then read back AGGREGATED 123.45 and LATEST 123.45 from devnet",
+    "CmWoSREGbve2U336yuHm9MYBvm8c3eKCbd5ZMoxsdntRD9LpjGymLmrinjaaHNpToHgpvMPMnZ9yMxUgsLS1xyr"
+   ],
+   [
+    "Script: initialize",
+    "3xwANbfFofreRCpN2tHiXegkTX7GSECSzUeWGXb3nyXz7ksj7NHe5MiBwnNcTBwL5BT6ebjQ5u117JKmjEWh1x2j"
+   ],
+   [
+    "Script: fund reward pool 0.05 SOL",
+    "KbkMxek7D9c6ziGKjVMHGtXhXkXscEZwcfV8txYrsAJZ7TzTYTwWNCnW6o155PhwwBcJ6dXoURfbAXpzDxXRQKz"
+   ],
+   [
+    "Script: deposit 300 (A) and 100 (B) weight tokens; this is A's",
+    "q6aNYDWQbvxrt23VdJYP2ZFrnsaQoxD38uaSLy4pSNzvk9NXDkRy99kuA7duaT6nVJWgKDYzBR4iwau82jEGeoy"
+   ],
+   [
+    "Script: A submits 150.000000",
+    "5xq3yEiL1gjCYm7nvgx6DkPZjJrzWwASJfxy1XTfp5EYbBEFwcKkir5a7yRuD3okGvSP9V2cdnUNzbhrEAaHNBgb"
+   ],
+   [
+    "Script: B submits 160.000000; aggregate becomes 152.500778 (weighted 3:1 with decay) and B is paid a reward from the pool",
+    "63bZjLdCt4iY2fpKF1Hwfihe5a2PiuTa5TrFU8LWCSx27kuuc2V5jsDgbAGWdPrAqvSNY8fFtKTcT7eFH3VTxLvW"
+   ],
+   [
+    "Script: B (100 of 400 tokens, above the 20% quorum) votes to blacklist A: A is blacklisted",
+    "7NJHE8SK3crtZGPn6MiCjfriHHgPJKdR5McZYgZ4ahx6LgUJrhWkg23U42DQHwrwVGyFyiWkFbBH27zNwHAHPDe"
+   ],
+   [
+    "Script: B withdraws 40 tokens after the lock",
+    "3WkpLLWv77Kk8n1woYRQm3CxV3UDdokeFNQrjfgjoN5idjYTtteWEV15SCmpgBPoDA3iUhTK7Z9B8r46YAyxkzK5"
+   ]
+  ],
+  "negative": [
+   "initialize with an empty name: InvalidName",
+   "initialize with reward_bps above 100%: InvalidRewardRate",
+   "fund 0: AmountMustBePositive",
+   "submit_value while the deposit is still locked: NoUnlockedTokens",
+   "withdraw more than unlocked: InsufficientUnlockedTokens",
+   "submit_value by the blacklisted account: AccountBlacklisted"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py orboracle, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, deposit and submit went through the app's own forms and buttons, and the oracle page showed the new value, the 50 unlocked tokens and the authority read from devnet.",
+  "limits": "Whitelist votes, withdraw and vote-weight refresh were run from the script, not clicked. The explorer list is read with getProgramAccounts on the public RPC and can be slow."
  }
 ]
