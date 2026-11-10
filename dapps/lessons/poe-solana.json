@@ -1,0 +1,247 @@
+{
+ "title": "Proof of Estimate: an on-chain crowd forecast",
+ "summary": "Create a yes/no poll, give your estimate as a range, and watch the program fold it into a weighted crowd estimate stored on-chain.",
+ "what": "Proof of Estimate (POE) is a forecasting app. Anyone creates a yes/no question. Forecasters answer with a **range** (for example 30–70% likely). The program turns each range into a point estimate (the midpoint) and an uncertainty (the width), stakes 100 POEKEN from the forecaster, and updates the poll's **collective estimate**, a weighted running average, inside the same transaction. Every new user gets 1,000 POEKEN from a mint the program itself controls.",
+ "app_note": "The fork's own Next.js 14 app (`app/`), static export. Changes: base path, the IDL generated from the program at this commit (the committed app IDL was from a later version), and `/poll/?id=` instead of `/poll/[id]` so it works on static hosting.",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/poe-solana/) and connect Phantom with the button in the top bar.",
+   "see": "The POE home page with the poll list; the sidebar has Home, My Polls, Create Polls, and a **Mint Poeken** button while your wallet is not registered."
+  },
+  {
+   "do": "Click **Create Polls**. Type a Question and a Description, pick a Category and a Duration, press **Submit** and approve.",
+   "see": "One transaction holding **two** instructions, `register_user` then `create_poll` (the app adds `register_user` because you are new). The toast says \"Poll created.\" You now hold 1,000 POEKEN."
+  },
+  {
+   "do": "Go back to **Home** and find your poll card. Drag the estimate slider to set a range, then press **Submit Estimate** and approve.",
+   "see": "A `make_estimate` transaction. 100 POEKEN leave your wallet for the program's escrow, and the card shows the crowd estimate and \"1 forecaster\" read back from the poll account."
+  },
+  {
+   "do": "Switch Phantom to a second account, open the same poll and submit a different range.",
+   "see": "The second transaction again starts with `register_user` (new wallet). The crowd estimate moves toward your number, but by less than a plain average if your range is wide: wide ranges carry less weight."
+  },
+  {
+   "do": "Open the poll's detail page (the card links to `/poll/?id=<n>`).",
+   "see": "The poll with its estimate history, one entry per `make_estimate`."
+  }
+ ],
+ "diagram": "                         program-owned, created once by initialize\n poe_state PDA [\"poe_state\"]           num_polls (next poll id)\n poeken_mint PDA [\"poeken_mint\"]       mint authority = itself (PDA signs with seeds)\n escrow PDA [\"escrow\"]                 token account holding everyone's stakes\n\n register_user  ─▶ user PDA [\"user\", wallet]  score, participation_count\n                    + 1,000 POEKEN minted to the wallet's token account\n create_poll    ─▶ poll PDA [\"poll\", num_polls as 8 LE bytes]   collective_estimate, variance, weights...\n                    scoring_list PDA [\"scoring_list\", poll]\n                    poe_state.num_polls += 1\n make_estimate  ─▶ user_estimate PDA [\"user_estimate\", poll, wallet]\n                    user_score PDA [\"user_score\", poll, wallet]\n                    poll_estimate_update PDA [\"poll_estimate_update\", poll, n]  (history entry)\n                    100 POEKEN: wallet ─▶ escrow;  poll.collective_estimate updated",
+ "accounts": [
+  [
+   "PoeState",
+   "`[\"poe_state\"]`",
+   "Global counter `num_polls`"
+  ],
+  [
+   "Poll",
+   "`[\"poll\", num_polls (u64 little-endian)]`",
+   "Question, collective estimate (×10⁴), variance, weights, number of forecasters"
+  ],
+  [
+   "User",
+   "`[\"user\", wallet]`",
+   "Score (starts at 0.0001), participation count"
+  ],
+  [
+   "UserEstimate",
+   "`[\"user_estimate\", poll, wallet]`",
+   "Your lower/upper bound and your weights for this poll"
+  ],
+  [
+   "PollEstimateUpdate",
+   "`[\"poll_estimate_update\", poll, num_estimate_updates]`",
+   "One history point per estimate"
+  ],
+  [
+   "POEKEN mint",
+   "`[\"poeken_mint\"]`",
+   "9-decimal token; its mint authority is the PDA itself"
+  ],
+  [
+   "Escrow",
+   "`[\"escrow\"]`",
+   "Token account holding stakes, authority = the mint PDA"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`register_user`: account + 1,000 POEKEN",
+   "refs": [
+    {
+     "path": "programs/poe/src/contexts/register_user.rs",
+     "a": 9,
+     "b": 37,
+     "note": "accounts"
+    },
+    {
+     "path": "programs/poe/src/contexts/register_user.rs",
+     "a": 46,
+     "b": 63
+    }
+   ],
+   "steps": [
+    "`init` at `[\"user\", payer]`: one user account per wallet. A second `register_user` from the same wallet fails because the address is already in use (custom program error 0x0, see Proof).",
+    "`init_if_needed` creates the wallet's associated token account for POEKEN.",
+    "`mint_to` is called with `new_with_signer` and the seeds `[\"poeken_mint\", bump]`: the mint's authority is the mint PDA itself, so only this program can mint, and it mints 1000 × 10⁹ base units = 1,000 POEKEN."
+   ]
+  },
+  {
+   "name": "`create_poll`: a poll at a counter-derived address",
+   "refs": [
+    {
+     "path": "programs/poe/src/contexts/create_poll.rs",
+     "a": 12,
+     "b": 33,
+     "note": "accounts"
+    },
+    {
+     "path": "programs/poe/src/contexts/create_poll.rs",
+     "a": 37,
+     "b": 62
+    }
+   ],
+   "steps": [
+    "The poll's seeds are `[\"poll\", state.num_polls.to_le_bytes()]`: poll 0, poll 1, poll 2… each get a predictable address that any client can compute without an index.",
+    "`space = Poll::len(&question, &description)` sizes the account to the exact text you typed.",
+    "It records the creator, the resolver, the start slot and the decay rate you chose under Duration, then increments `num_polls`, so the next poll gets the next address."
+   ]
+  },
+  {
+   "name": "`make_estimate`: stake, record, and update the crowd number",
+   "refs": [
+    {
+     "path": "programs/poe/src/lib.rs",
+     "a": 37,
+     "b": 55
+    },
+    {
+     "path": "programs/poe/src/contexts/make_estimate.rs",
+     "a": 94,
+     "b": 147,
+     "note": "init_estimate_account"
+    }
+   ],
+   "steps": [
+    "Midpoint and uncertainty: `estimate = (lower + upper) / 2`, `uncertainty = (upper - lower) / 100`. A 30–70 range gives estimate 50 and uncertainty 0.4.",
+    "`init_estimate_account` checks both bounds are ≤ 100 and lower ≤ upper, refuses if the poll has ended, then transfers `betting_amount` (100 POEKEN) from you to the escrow with a token CPI that you authorise as signer.",
+    "It computes your `recency_weight` from how many slots have passed since the poll started, saves your bounds and weights in `user_estimate`, and bumps your participation count.",
+    "Then `update_collective_estimate` (next section) folds your number into the poll.",
+    "Order matters: the subtraction `upper - lower` on line 44 runs **before** the `lower <= upper` assert. With lower 70 and upper 30 the `u16` subtraction underflows, and because the workspace enables `overflow-checks` the program aborts: \"Program failed to complete\" in the Proof section."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "an O(1) weighted crowd estimate, updated on-chain",
+  "text": "The program never loops over past estimates. It keeps running totals in the poll account (`accumulated_weights`, `accumulated_weights_squared`, the mean and the variance) and updates them with one formula per estimate, so the cost of an estimate is the same for the first forecaster and the thousandth. Each forecast's weight is `(1 - uncertainty) × your score × recency weight`: confident, reputable and later forecasts count more.",
+  "refs": [
+   {
+    "path": "programs/poe/src/contexts/make_estimate.rs",
+    "a": 158,
+    "b": 180,
+    "note": "weighted incremental mean"
+   },
+   {
+    "path": "programs/poe/src/contexts/make_estimate.rs",
+    "a": 224,
+    "b": 241,
+    "note": "first estimate"
+   },
+   {
+    "path": "programs/poe/src/utils.rs",
+    "a": 13,
+    "b": 17,
+    "note": "recency weight"
+   }
+  ],
+  "more": [
+   "The mean update is `new = old + weight × (x - old) / total_weight`, the standard incremental weighted mean. The first forecaster simply sets it (lines 224–241).",
+   "Estimates are stored as integers with 4 decimal places (`ESTIMATE_PRECISION = 4`): our 30–70 test estimate was read back as `collective_estimate = 500000`, i.e. 50.0000%.",
+   "`recency_weight = exp(decay × slots_since_start / 100000)`, capped at 1,000,000. The Duration you pick when creating a poll is the decay rate (from 11.111 for Minutes down to 0.0029173 for Years, in `app/src/types/options.ts`).",
+   "Geometric means for scoring use a lookup table of natural logs, `LOGS[0..=100]` in `constants.rs`, instead of computing `ln` on-chain."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create Poll: derive every PDA in the browser, prepend `register_user` if needed",
+   "refs": [
+    {
+     "path": "app/src/hooks/mutations/useCreatePoll.ts",
+     "a": 38,
+     "b": 101
+    }
+   ],
+   "steps": [
+    "The app fetches `poe_state`, reads `numPolls`, and derives the new poll's address with the same seeds as the program: `[\"poll\", numPolls as 8 little-endian bytes]`.",
+    "If your `user` account does not exist yet (`getAccountInfo` returns null), it builds a `registerUser` instruction too and sends both in **one** transaction."
+   ]
+  },
+  {
+   "title": "Submit Estimate: the same pattern for `make_estimate`",
+   "refs": [
+    {
+     "path": "app/src/hooks/mutations/useMakeEstimate.tsx",
+     "a": 109,
+     "b": 143
+    }
+   ],
+   "steps": [
+    "All ten accounts (user, poll, user_estimate, poll_estimate_update, scoring_list, user_score, your token account, mint, escrow) are derived client-side and passed with `accountsPartial`."
+   ]
+  },
+  {
+   "title": "Sending: a v0 versioned transaction through the wallet",
+   "refs": [
+    {
+     "path": "app/utils/sendVersionedTransaction.ts",
+     "a": 12,
+     "b": 48
+    }
+   ],
+   "steps": [
+    "The instructions are compiled into a `TransactionMessage` v0, wrapped in a `VersionedTransaction` and handed to `wallet.sendTransaction`, so Phantom signs and sends. It sends with `skipPreflight: true`, so a failing transaction is only reported after confirmation."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Compute a poll address",
+   "steps": [
+    "In Node with `@solana/web3.js` and `bn.js`, derive `PublicKey.findProgramAddressSync([Buffer.from('poll'), new BN(0).toArrayLike(Buffer,'le',8)], new PublicKey('6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5'))`."
+   ],
+   "expect": "`9V1u4vvP4T6JZgEXdag5j49iJRViPSi8PqQfgCisLKhT`, the poll #0 our test created (recorded in the devnet log)."
+  },
+  {
+   "title": "Predict the first collective estimate",
+   "steps": [
+    "Create a new poll and submit a range of 20–40 as the first forecaster.",
+    "Open the poll account on Explorer, or read it in the app."
+   ],
+   "expect": "Estimate 30, stored as `collective_estimate = 300000`, with 1 forecaster and 1 estimate update."
+  },
+  {
+   "title": "Watch the stake move",
+   "steps": [
+    "Before submitting an estimate, note your POEKEN balance in Phantom.",
+    "Submit an estimate on any poll."
+   ],
+   "expect": "Exactly 100 POEKEN less (the poll's `betting_amount`), now in the program's escrow token account."
+  },
+  {
+   "title": "Reproduce the underflow and fix it",
+   "steps": [
+    "In `programs/poe/src/lib.rs`, add `require!(lower_estimate <= upper_estimate, ...)` (with a new error code) as the first line of `make_estimate`, before the subtraction.",
+    "`anchor build` and call `make_estimate(70, 30)` from a test."
+   ],
+   "expect": "Before the fix: \"Program failed to complete\" (the u16 underflow). After: your named error, raised before any arithmetic."
+  },
+  {
+   "title": "See the weight of a wide range",
+   "steps": [
+    "Create two new polls, A and B. With wallet 1, submit 50–50 (one point on the slider) on both.",
+    "With wallet 2, submit 90–90 on poll A and 80–100 on poll B (both midpoints are 90).",
+    "Compare the two collective estimates."
+   ],
+   "expect": "Poll A moves further toward 90 than poll B, because weight = (1 − uncertainty) × score × recency and the uncertainty is 0 for 90–90 but 0.2 for 80–100 (recency differs only slightly)."
+  }
+ ]
+}

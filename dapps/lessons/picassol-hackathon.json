@@ -1,0 +1,201 @@
+{
+ "title": "Picassol: a 200×200 pixel canvas where every pixel is an account",
+ "summary": "Click a pixel to paint it on-chain. Each pixel is its own tiny account at an address derived from its x and y, so anyone can find and recolour it.",
+ "what": "Picassol is a shared pixel canvas, 200 × 200, stored on Solana. Clicking an empty pixel creates an account for that pixel with your colour; clicking a painted pixel recolours it. Every pixel is a separate 14-byte account at an address computed from `\"pixel\"` and its x, y coordinates, so the app can load the whole canvas with one query and keep it live by listening to the program's `PixelChanged` events.",
+ "app_note": "The fork's own Next.js 12 frontend (`frontend/`), static export. Changes: base path, devnet RPC, this program ID, and the recolour fee set to 0 SOL. The author's MongoDB points API is not hosted, so the points counter stays at 0; pixels are unaffected.",
+ "try_steps": [
+  {
+   "do": "Open [the canvas](/dapps/picassol-hackathon/) and connect Phantom with **Select Wallet** in the top bar.",
+   "see": "A 200 × 200 grid. Painted pixels load from devnet; empty ones are white."
+  },
+  {
+   "do": "Pick a colour in the colour bar at the top, then click a **white** pixel. Approve.",
+   "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open."
+  },
+  {
+   "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Approve.",
+   "see": "This time the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet). The pixel changes colour."
+  },
+  {
+   "do": "Click again within 33 seconds of a successful paint.",
+   "see": "Nothing happens and no wallet pop-up appears: the app's client-side cooldown (stored in your browser) blocks it. The program itself has no cooldown."
+  },
+  {
+   "do": "Open the transaction in Phantom's activity or on Explorer and expand the program logs.",
+   "see": "`Program data: …` lines: that is the `PixelChanged` event the canvas listens for."
+  }
+ ],
+ "diagram": "wallet ─ create_pixel(x, y, r, g, b) ─▶ Pixel PDA  seeds = [\"pixel\", [x, y]]   (14 bytes)\n                                          pos_x | pos_y | col_r | col_g | col_b | bump\nanyone ─ update_pixel(r, g, b) ─────────▶ same PDA, re-derived from its stored x, y, bump\nboth   ─ emit!(PixelChanged{x, y, r, g, b}) ─▶ program logs ─▶ every open canvas updates that cell\n\n40,000 possible pixels = 40,000 possible accounts; only painted ones exist.",
+ "accounts": [
+  [
+   "Pixel",
+   "PDA of the program, seeds `[\"pixel\", [x, y]]` (two single bytes)",
+   "x, y, r, g, b and the bump: 8-byte discriminator + 6 bytes = 14 bytes"
+  ],
+  [
+   "User",
+   "Your wallet (signer, payer)",
+   "Pays the pixel account's rent on create"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`create_pixel`: claim an empty pixel",
+   "refs": [
+    {
+     "path": "Picassol/programs/picassol/src/lib.rs",
+     "a": 14,
+     "b": 62
+    },
+    {
+     "path": "Picassol/programs/picassol/src/lib.rs",
+     "a": 102,
+     "b": 116,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Bounds: `pos_x` and `pos_y` must be 0–199, otherwise `InvalidXCoordinate` / `InvalidYCoordinate`. Our test sent x = 200 and got `InvalidXCoordinate`.",
+    "The colour checks compare a `u8` with 0 and 255, which a `u8` always satisfies, so they can never fail. Worth noticing: the type already enforces them.",
+    "`init` with `seeds = [b\"pixel\", [pos_x, pos_y]]` creates the account at the one address that belongs to that coordinate, paid by `user`. Painting the same empty pixel twice is impossible: the second `init` fails because the account exists (see Proof).",
+    "It stores coordinates, colour and the bump, then `emit!`s `PixelChanged`."
+   ]
+  },
+  {
+   "name": "`update_pixel`: recolour an existing pixel",
+   "refs": [
+    {
+     "path": "Picassol/programs/picassol/src/lib.rs",
+     "a": 64,
+     "b": 99
+    },
+    {
+     "path": "Picassol/programs/picassol/src/lib.rs",
+     "a": 118,
+     "b": 126,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "The only account is the pixel. Its address is checked by re-deriving `[\"pixel\", [pixel.pos_x, pixel.pos_y]]` with the stored `bump`, so a fake account can't be passed in.",
+    "There is **no signer** in `UpdatePixel`: anyone can recolour any pixel. That is the game. The fee payer of the transaction is the only signature needed.",
+    "It writes the new colour and emits `PixelChanged` again."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "coordinates are the address",
+  "text": "Instead of one big canvas account that everyone writes to, every pixel is its own account at a PDA seeded by its coordinates. Nobody has to store or look up an index: given (x, y) the app computes the address, and the program refuses any account that is not at that address. Separate accounts also mean two people painting different pixels never touch the same account, so their transactions can run in parallel.",
+  "refs": [
+   {
+    "path": "Picassol/programs/picassol/src/lib.rs",
+    "a": 105,
+    "b": 112,
+    "note": "seeds on create"
+   },
+   {
+    "path": "Picassol/programs/picassol/src/lib.rs",
+    "a": 120,
+    "b": 125,
+    "note": "same seeds, stored bump, on update"
+   }
+  ],
+  "more": [
+   "A coordinate fits in one byte (0–199 < 256), so the seed is just two bytes, `[x, y]`.",
+   "Events (`emit!`) make the canvas real-time without polling: they are written to the transaction logs, and Anchor's `addEventListener` decodes them on the client."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Load the canvas: one `all()` query",
+   "refs": [
+    {
+     "path": "frontend/components/Canvas.tsx",
+     "a": 28,
+     "b": 47
+    }
+   ],
+   "steps": [
+    "`program.account.pixel.all()` fetches every account of type `Pixel` owned by the program. The app keys them by `posY * 200 + posX` to paint the grid."
+   ]
+  },
+  {
+   "title": "Stay live: listen for `PixelChanged`",
+   "refs": [
+    {
+     "path": "frontend/components/Canvas.tsx",
+     "a": 57,
+     "b": 88
+    }
+   ],
+   "steps": [
+    "On each event the app re-derives that pixel's PDA, fetches the account, and replaces it in state, so every visitor sees new paint without reloading."
+   ]
+  },
+  {
+   "title": "Click an empty pixel: `createPixel(...).rpc()`",
+   "refs": [
+    {
+     "path": "frontend/components/Pixel.tsx",
+     "a": 26,
+     "b": 55
+    }
+   ],
+   "steps": [
+    "The PDA is derived with `Buffer.from([posX, posY])`, the same bytes as the program's seed.",
+    "The 33-second cooldown is checked against `localStorage` before sending: a client-side rule only."
+   ]
+  },
+  {
+   "title": "Click a painted pixel: `updatePixel` + fee transfer in one transaction",
+   "refs": [
+    {
+     "path": "frontend/components/Pixel.tsx",
+     "a": 80,
+     "b": 106
+    }
+   ],
+   "steps": [
+    "The app builds a `Transaction`, adds the `updatePixel` instruction and a `SystemProgram.transfer` of `NEXT_PUBLIC_FEE_AMOUNT_SOL` to a fee recipient, and sends both with `sendAndConfirm`. On Sol.College the fee is 0."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Compute a pixel's address",
+   "steps": [
+    "In Node: `PublicKey.findProgramAddressSync([Buffer.from('pixel'), Buffer.from([128,152])], new PublicKey('GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY'))`."
+   ],
+   "expect": "`GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89`, the pixel our test painted (see the devnet log)."
+  },
+  {
+   "title": "Read a pixel's bytes",
+   "steps": [
+    "Open that address on Solana Explorer (devnet) and look at the account data."
+   ],
+   "expect": "14 bytes: an 8-byte discriminator, then 128, 152, then the colour 20, 241, 149 set by the recorded `update_pixel`, then the bump (unless someone has repainted it since)."
+  },
+  {
+   "title": "Count the canvas",
+   "steps": [
+    "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter)."
+   ],
+   "expect": "One account per painted pixel; the number matches the coloured cells on the live canvas."
+  },
+  {
+   "title": "Make painting owner-only",
+   "steps": [
+    "Add `owner: Pubkey` to `Pixel` (and 32 bytes to `LEN`), set it in `create_pixel`, and add a `pub user: Signer<'info>` to `UpdatePixel` with `constraint = pixel.owner == user.key()`.",
+    "`anchor build` and test `update_pixel` from a different wallet."
+   ],
+   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour."
+  },
+  {
+   "title": "Fix the error messages",
+   "steps": [
+    "The `#[msg]` strings say \"between 0-99\" but `MAX_POS` is 199. Correct them and rebuild."
+   ],
+   "expect": "Sending x = 200 now reports \"between 0-199\"."
+  }
+ ]
+}

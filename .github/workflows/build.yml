@@ -48,6 +48,8 @@ jobs:
           else PYTHONPATH=scripts python3 scripts/build.py; fi
       - name: Lesson status, live devnet apps and homepage section
         run: python3 scripts/live_devnet.py site
+      - name: Core lessons (one step-by-step lesson per live devnet app; homepage, nav, source library labels)
+        run: python3 scripts/core_lessons.py site
       - uses: actions/upload-pages-artifact@v3
         with: {path: site}
   deploy:

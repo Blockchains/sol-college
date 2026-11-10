@@ -1,0 +1,301 @@
+{
+ "title": "TrustLock: a dead man's switch for SOL",
+ "summary": "Lock SOL for a beneficiary. Check in to keep it; miss the deadline and they can claim it. The program enforces the deadline with the on-chain clock.",
+ "what": "TrustLock locks SOL in an escrow account for a beneficiary you choose, with a deadline. While the deadline is in the future you can **check in** to push it later, or **cancel** and take your SOL back. If you stop checking in and the deadline passes, the beneficiary can **claim** everything. The website never decides who gets paid: the program reads the Solana clock on every call and refuses anything that breaks the rules.",
+ "app_note": "The fork's own Next.js 14 app, unchanged apart from the base path, static export and the program ID. The program was built from `switch/` at this commit and deployed fresh to devnet.",
+ "try_steps": [
+  {
+   "do": "In Phantom, add a second account (Account 2). It will be your beneficiary. Copy its address.",
+   "see": "Two accounts in Phantom. Only Account 1 needs devnet SOL."
+  },
+  {
+   "do": "Open [the app's dashboard](/dapps/trustlock/dashboard/) with Account 1 selected and press the connect button.",
+   "see": "The \"Time-Locked Succession\" panel with a \"Create New Escrow\" form."
+  },
+  {
+   "do": "Paste Account 2's address into **Beneficiary Address**, set **Amount (SOL)** to `0.1` and press **15s Escrow for testing**. Approve both wallet pop-ups.",
+   "see": "Two transactions: `initialize` (creates the escrow) then `deposit` (moves 0.1 SOL into it). The toast says \"Escrow created successfully.\" and a card shows Balance 0.10 SOL, a deadline 15 seconds away and an Active badge."
+  },
+  {
+   "do": "Make a second escrow the normal way: same beneficiary, pick tomorrow in **Select Deadline Date**, press **Create Switch**, approve both pop-ups.",
+   "see": "A second card with a deadline about a day away."
+  },
+  {
+   "do": "On the second card enter `1` in **Days** and press **Check In**. Approve.",
+   "see": "A `checkin` transaction. The toast says \"Successfully checked in.\" and the card's Deadline moves one day further out from now; Last Check-in updates."
+  },
+  {
+   "do": "Wait until the first card's badge says **Expired**. Enter `1` in its Days field and press **Check In**.",
+   "see": "It fails (\"Failed to check in\"). The program rejected it with `DeadlineExceeded` (error 6002): you can no longer extend a deadline that has passed."
+  },
+  {
+   "do": "Switch Phantom to Account 2 and reload the dashboard. Press **Claim** on the expired escrow (Account 2 needs a little devnet SOL for the fee).",
+   "see": "A `claim` transaction. \"Funds claimed successfully.\" The card disappears (the escrow account is closed) and Account 2's balance goes up by the 0.1 SOL plus the escrow's rent."
+  },
+  {
+   "do": "Switch back to Account 1 and press **Cancel** on the second escrow.",
+   "see": "A `cancel` transaction. \"Escrow cancelled successfully. Funds returned.\" The 0.1 SOL and the rent come back to Account 1."
+  }
+ ],
+ "diagram": "Owner (Account 1)\n  │ initialize(deadline, beneficiary, seed)   creates ─▶ Escrow PDA  seeds = [\"escrow\", owner, seed]\n  │ deposit(amount)                           SOL ─────▶   owner | beneficiary | deadline | last_checkin | bump | seed\n  │ checkin(new_deadline)   only while now <  deadline       lamports = deposited SOL + rent\n  │ cancel()                any time, by the owner ──▶ all lamports back to owner, account closed\nBeneficiary (Account 2)\n    claim()                 only when now >= deadline ─▶ all lamports to beneficiary, account closed",
+ "accounts": [
+  [
+   "Escrow",
+   "PDA of this program, seeds `[\"escrow\", owner, seed]`",
+   "owner, beneficiary, deadline, last_checkin, bump, seed, **and the locked SOL itself** as the account's lamports"
+  ],
+  [
+   "Owner",
+   "Your wallet (signer)",
+   "Pays rent and the deposit; the only one who can deposit, check in or cancel"
+  ],
+  [
+   "Beneficiary",
+   "Any address, stored in the escrow",
+   "Receives everything on claim"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`initialize`: create the escrow",
+   "refs": [
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 10,
+     "b": 20
+    },
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 56,
+     "b": 64,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "`init, payer = owner` creates a new account owned by the program at the PDA `[\"escrow\", owner, seed]`. The owner pays its rent.",
+    "`space = 93 + seed.len()`: 8 (Anchor discriminator) + 32 (owner) + 32 (beneficiary) + 8 (deadline) + 8 (last_checkin) + 1 (bump) + 4 (string length prefix) = 93, plus the seed bytes.",
+    "`require!(deadline > Clock::get()?.unix_timestamp, ...)` rejects a deadline in the past with `InvalidDeadline`.",
+    "It stores owner, beneficiary, deadline, the current time as `last_checkin`, the PDA bump and the seed, so later instructions can re-derive the address."
+   ]
+  },
+  {
+   "name": "`deposit`: put SOL into the escrow",
+   "refs": [
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 22,
+     "b": 28
+    },
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 66,
+     "b": 73,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "`require!(amount > 0, ...)` rejects an empty deposit with `InvalidAmount`.",
+    "It calls the System Program's `transfer` from the owner's wallet to the escrow PDA. The owner signs the transaction, so the transfer is authorised.",
+    "The account constraints re-derive the PDA from the stored seed and bump and check `escrow.owner == owner`, so you can only fund your own escrow through this instruction."
+   ]
+  },
+  {
+   "name": "`checkin`: prove you are alive and move the deadline",
+   "refs": [
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 30,
+     "b": 38
+    },
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 75,
+     "b": 81,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "`now < escrow.deadline` or it fails with `DeadlineExceeded`: once the deadline passes, the money belongs to the beneficiary's claim.",
+    "`new_deadline > now` or `InvalidDeadline`.",
+    "It writes the new deadline and sets `last_checkin = now`. The constraint `escrow.owner == owner.key()` means only the owner can check in."
+   ]
+  },
+  {
+   "name": "`claim`: the beneficiary takes everything after the deadline",
+   "refs": [
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 40,
+     "b": 46
+    },
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 83,
+     "b": 91,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "`Clock::get()?.unix_timestamp >= deadline` or it fails with `DeadlineNotReached`.",
+    "It reads the escrow's full lamport balance, sets it to 0 and adds it to the beneficiary. The program can do this directly because it owns the escrow account.",
+    "`constraint = escrow.beneficiary == beneficiary.key()` means the money can only go to the stored beneficiary, and `close = beneficiary` closes the account."
+   ]
+  },
+  {
+   "name": "`cancel`: the owner takes everything back",
+   "refs": [
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 48,
+     "b": 53
+    },
+    {
+     "path": "switch/programs/switch/src/lib.rs",
+     "a": 93,
+     "b": 100,
+     "note": "accounts"
+    }
+   ],
+   "steps": [
+    "Same lamport move as `claim`, but to the owner, with no time check: the owner can cancel at any time, even after the deadline if the beneficiary has not claimed yet.",
+    "`escrow.owner == owner.key()` plus the owner's signature mean nobody else can cancel."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "the clock is the referee, and the PDA is the vault",
+  "text": "There is no off-chain timer and no keeper. Each instruction asks the runtime for the current time with `Clock::get()` and compares it with the stored deadline, so the same transaction is allowed or refused depending only on when it lands. And the SOL is not held in a separate token account or a wallet with a private key: it sits in the escrow PDA's own lamports, so the program can pay it out by editing lamports directly.",
+  "refs": [
+   {
+    "path": "switch/programs/switch/src/lib.rs",
+    "a": 30,
+    "b": 46,
+    "note": "checkin and claim are mirror images around the same deadline"
+   }
+  ],
+  "more": [
+   "The `seed` is chosen by the client (the app uses the current time in milliseconds), so one owner can run many switches, each at its own address.",
+   "Read the `Claim` accounts closely: in the program, `beneficiary` is an `AccountInfo`, not a `Signer`. After the deadline, anyone could send `claim`, but the money can still only go to the stored beneficiary. The app's bundled IDL marks the beneficiary as a signer, so in the app the beneficiary claims from their own wallet. Exercise 5 asks you to make the program enforce that too."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Connect: an Anchor `Program` from the wallet",
+   "refs": [
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 80,
+     "b": 92
+    }
+   ],
+   "steps": [
+    "When the wallet connects, the app wraps it in an `AnchorProvider` and builds `new Program(IDL, PROGRAM_ID, provider)`. Every button below calls `program.methods.<instruction>(...)` on it."
+   ]
+  },
+  {
+   "title": "Create: derive the PDA, then send `initialize` and `deposit`",
+   "refs": [
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 212,
+     "b": 246
+    }
+   ],
+   "steps": [
+    "The deadline is computed from the **chain's** block time (`getBlockTime`), not the browser clock, so it matches what `Clock::get()` will see.",
+    "`seed = new Date().getTime().toString()`, then `findProgramAddressSync([\"escrow\", publicKey, seed])` gives the same address the program derives.",
+    "Two separate `.rpc()` calls: that is why the app asks you to approve two transactions."
+   ]
+  },
+  {
+   "title": "List: find your escrows with `memcmp` filters",
+   "refs": [
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 125,
+     "b": 147
+    }
+   ],
+   "steps": [
+    "`program.account.escrow.all([...memcmp...])` asks the RPC for every escrow account whose bytes match at an offset.",
+    "Offset 8 is right after the 8-byte discriminator, where `owner` is stored; offset 8 + 32 = 40 is `beneficiary`. That is how the beneficiary sees escrows they did not create."
+   ]
+  },
+  {
+   "title": "Check in, cancel, claim",
+   "refs": [
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 305,
+     "b": 318
+    },
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 339,
+     "b": 366
+    }
+   ],
+   "steps": [
+    "`checkin` sends `currentTime + extension` as the new deadline, again using chain time.",
+    "`cancel` and `claim` pass just the escrow (and the beneficiary for claim); Anchor checks the rest against the account constraints you saw above."
+   ]
+  },
+  {
+   "title": "The UI guard in front of the program guard",
+   "refs": [
+    {
+     "path": "components/DeadManSwitch.tsx",
+     "a": 565,
+     "b": 573
+    }
+   ],
+   "steps": [
+    "The Claim button refuses to send before the deadline (\"Cannot claim yet\"). That is a convenience only: the real rule is `DeadlineNotReached` in the program, which our test script hit directly (see Proof)."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Find the PDA yourself",
+   "steps": [
+    "Create a 15s escrow in the app.",
+    "In a Node script with `@solana/web3.js`, call `PublicKey.findProgramAddressSync` with seeds `[\"escrow\", <your address>, <seed>]` and program `6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP`. Get the seed from the escrow account on Explorer (it is the last field) or from the `initialize` instruction data.",
+    "Compare with the escrow address in the `initialize` transaction on Explorer."
+   ],
+   "expect": "The derived address is exactly the escrow account the app created."
+  },
+  {
+   "title": "Check the account size",
+   "steps": [
+    "Open your escrow address on Solana Explorer (devnet).",
+    "Read its data size."
+   ],
+   "expect": "93 + the length of the seed. The app's seed is a 13-digit millisecond timestamp, so 106 bytes."
+  },
+  {
+   "title": "See the two guards",
+   "steps": [
+    "Create a **30s** escrow to Account 2.",
+    "Immediately switch to Account 2 and press Claim."
+   ],
+   "expect": "The app shows \"Cannot claim yet\" and sends nothing (the UI guard). The program-level refusal, `DeadlineNotReached`, is in the Proof section from the script that bypasses the UI."
+  },
+  {
+   "title": "Follow the money in a claim",
+   "steps": [
+    "Open the claim transaction `5xVrtsfr…` from the Proof section.",
+    "Look at the balance changes."
+   ],
+   "expect": "The beneficiary gains 0.02118872 SOL: the 0.02 SOL deposit plus the escrow's rent, because `claim` moves every lamport and closes the account."
+  },
+  {
+   "title": "Make the beneficiary sign",
+   "steps": [
+    "Clone the fork at the pinned commit and open `switch/programs/switch/src/lib.rs`.",
+    "In `Claim`, change `pub beneficiary: AccountInfo<'info>` to `pub beneficiary: Signer<'info>` (and drop the `/// CHECK` comment).",
+    "Run `anchor build` and `anchor test` with a test that sends `claim` signed only by a third wallet."
+   ],
+   "expect": "That claim now fails with a missing-signature error; a claim signed by the beneficiary still succeeds after the deadline."
+  }
+ ]
+}
