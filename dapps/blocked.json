@@ -6,5 +6,7 @@
  "valhalla": "The app depends on server-side Next.js API routes and Clockwork/Helius services, so a static export cannot run its flow.",
  "elyse": "A static site. Its only Solana write, the token faucet, runs server-side with a sender key fetched from the author's own server; the swap page embeds Jupiter Terminal, which is mainnet-only. Nothing here can be proven on devnet without that server.",
  "solstage-web": "The app never calls its program's instructions: it uploads the filter file to Shadow Drive (mainnet-only, paid in SHDW) and then tags a PDA of program STAGYb3H… with a memo transaction. That program exists on devnet (deployed by the original author), but the flow cannot complete without a mainnet Shadow Drive upload.",
- "stealthfolio": "Swaps go through Jupiter (mainnet-only) and private trades need the Light Protocol relayer server in relayer/; there is no program of its own to deploy."
+ "stealthfolio": "Swaps go through Jupiter (mainnet-only) and private trades need the Light Protocol relayer server in relayer/; there is no program of its own to deploy.",
+ "gluon-solana": "Its fission/fusion instructions read a Pyth PriceUpdateV2 account no older than 60 s, and the app posts that update from Pyth Hermes; hermes.pyth.network now answers 401 without an API key, so the flow cannot run from a static page.",
+ "decentralogistics": "The frontend reads and writes logistics requests through its own Express API server (api-server/, http://localhost:3000), which a static host cannot serve."
 }

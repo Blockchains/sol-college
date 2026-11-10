@@ -32,6 +32,10 @@ P
      npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx next build && cp -r out/. "$out/";;
   gree) # fork's own create-solana-dapp app; author's commented initNft re-enabled (tests/devnet/patches/gree.patch)
      cd "$src" && git apply "$(dirname "$out")/../../tests/devnet/patches/gree.patch" && npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx nx build web --baseHref=/dapps/$slug/ --skip-nx-cache && cp -r dist/web/. "$out/";;
+  web3-splitter) # fork's own Vue 3 + Vite app on the program deployed from splitterprogram/ (see dapps/deployed/web3-splitter.json); hash routing for static hosting
+     cd "$src"; sed -i "s/EbSG8YorD2N1QHoiayDba3cuDQsyUJ7ysocjHVaLb9b5/4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1/" src/lib/useWorkspace.ts src/lib/splitterprogram.json
+     sed -i 's/import { createWebHistory, createRouter }/import { createWebHashHistory, createRouter }/; s/history: createWebHistory(import.meta.env.BASE_URL)/history: createWebHashHistory()/' src/main.js
+     npx -y yarn@1.22.22 install --frozen-lockfile --ignore-engines >/dev/null && npx vite build --base=/dapps/$slug/ && cp -r dist/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"
