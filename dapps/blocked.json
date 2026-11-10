@@ -30,5 +30,15 @@
   "zefe-solana-breakout-submission": "A Telegram Mini App that signs in and refreshes tokens through its own backend API (NEXT_PUBLIC_API_BASE_URL /api/v1/token/refresh).",
   "solsafe": "Case lookups and stats come from the author's backend (REACT_APP_BACKEND_URL /api/trace, /api/stats) and evidence is fetched from IPFS.",
   "yaycazz": "The frontend's IDL (yaycazz-frontend/src/libs/idl.ts) is for a different program, \"registration_program\"; the fork's program has initialize / init_amm / deposite, so the app can't drive it.",
-  "solana-avatars": "The app is a server-rendered Remix app: it needs its Node server, including the /api/ipfs proxy route that fetches avatar files from an IPFS gateway (local by default)."
+  "solana-avatars": "The app is a server-rendered Remix app: it needs its Node server, including the /api/ipfs proxy route that fetches avatar files from an IPFS gateway (local by default).",
+  "dash": "The fork has only the Anchor program and its tests (the root package.json is the Anchor scaffold's lint scripts); there is no frontend to host.",
+  "fairswap": "The fork has only the Anchor program and its tests (the root package.json is the Anchor scaffold's lint scripts); there is no frontend to host.",
+  "solana-program": "The fork has only the Anchor program and its tests (the root package.json is the Anchor scaffold's lint scripts); there is no frontend to host.",
+  "xutasc": "The fork has only the Anchor program and its tests (the root package.json is the Anchor scaffold's lint scripts); there is no frontend to host.",
+  "surge-contract": "The fork has only the Anchor program and its tests (the root package.json is the Anchor scaffold's lint scripts); there is no frontend to host.",
+  "terra-ledger": "The web app reads parcels, credit profiles and agent decisions from the author's backend API (/api/v1/...).",
+  "assetcli-init": "It is a CLI and MCP server (src/commands, mcp-server.ts) with no web frontend.",
+  "swarmhaul": "The dashboard reads from the author's API (VITE_API_URL, default api.swarmhaul.defited.com) and the repo ships agent and API services (Dockerfile.api, Dockerfile.agent).",
+  "wrapsynth": "The frontend is a multi-chain (EVM/Monero) static site that talks to the fork's LP server (/api/...); it doesn't drive the Solana programs on its own.",
+  "solignition": "Its core flow (request a deployment loan, repay) goes through the author's deployer service (VITE_DEPLOYER_API_URL); only deposit/withdraw would work without it."
 }
