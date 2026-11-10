@@ -384,6 +384,51 @@ def run(pg):
             log(step='accept_milestone_via_ui', sent=press('Accept'))
             go('project/view/?a=' + proj); log(step='settle_payment_via_ui', sent=press('Settle Payment'))
             go('project/view/?a=' + proj); log(step='project_page', text=body(pg)[:900])
+    elif app == 'hpm':  # test wallet = config authority + market creator (set up by hackathon-prediction-market-solana.mjs)
+        M = 'https://sol.college/dapps/hackathon-prediction-market-solana/meta/'
+        def tab(t):
+            pg.keyboard.press('Escape'); pump(pg, 800)
+            for b in pg.get_by_role('button', name=re.compile(r'^(✕|×|Close)$')).all():
+                try: b.click(timeout=2000)
+                except Exception: pass
+            pg.get_by_role('button', name=re.compile(t)).first.click(); pump(pg, 6000)
+        step = sys.argv[4] if len(sys.argv) > 4 else 'all'  # 'rest' skips Create Market (already done in an earlier run)
+        def click_last(t):
+            n = len(SENT); pg.get_by_role('button', name=re.compile(t)).last.click(); pump(pg, 30000); return sigs_new(n)
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 6000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        if step == 'all':
+          tab('Create Market')
+          pg.get_by_placeholder('YES', exact=True).fill('UIYES'); pg.get_by_placeholder('https://example.com/yes-token.json').fill(M + 'yes.json')
+          pg.get_by_placeholder('NO', exact=True).fill('UINO'); pg.get_by_placeholder('https://example.com/no-token.json').fill(M + 'no.json')
+          pg.get_by_placeholder('MATCH_2024_001').fill('UI' + str(int(time.time()))[-3:])
+          ws = pg.get_by_placeholder('Solana Wallet Address'); ids = pg.get_by_placeholder(re.compile('^Steam ID'))
+          team = [ADDR, 'SysvarC1ock11111111111111111111111111111111', 'BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv', '11111111111111111111111111111111', 'SysvarRent111111111111111111111111111111111']
+          for i in range(5): ws.nth(i).fill(team[i]); ids.nth(i).fill('U' + str(i))
+          log(step='create_market_via_ui', sent=click_last('Create Market$'), text=body(pg)[-400:])
+          pump(pg, 15000)
+        def pick_ui_market():  # choose the market whose option mentions UIYES (the one made through the app), else log the options
+            for sel in pg.locator('select').all():
+                opts = [(o.get_attribute('value'), o.inner_text()) for o in sel.locator('option').all()]
+                hit = [v for v, t in opts if v and 'UIYES' in t]
+                log(step='select_options', options=[t[:60] for v, t in opts][:8], picked=hit[-1:] )
+                if hit: sel.select_option(hit[-1]); pump(pg, 3000); return True
+            return False
+        if step != 'resolve':
+          tab('Liquidity'); pick_ui_market()
+          pg.locator('input[type=number]').first.fill('0.02')
+          log(step='add_liquidity_0.02_via_ui', sent=click_last('Add Liquidity'))
+          tab('Trade'); pump(pg, 4000); pick_ui_market()
+          pg.locator('input[type=number]').first.fill('0.005')
+          log(step='buy_yes_0.005_SOL_via_ui', sent=click_last('Buy YES Tokens'))
+          pg.get_by_role('button', name=re.compile('Sell')).first.click(); pump(pg, 1500)
+          pg.locator('input[type=number]').first.fill('1')
+          log(step='sell_1_yes_via_ui', sent=click_last('Sell YES Tokens'), text=body(pg)[-300:])
+        tab('Resolution'); pump(pg, 6000)
+        sel = pg.locator('select').first; vals = [o.get_attribute('value') for o in sel.locator('option').all()]; vals = [v for v in vals if v]
+        log(step='resolution_markets_listed', markets=vals)
+        if vals: sel.select_option(vals[-1]); pump(pg, 5000)
+        log(step='resolve_team_won_via_ui', sent=click_last('Resolve Market'), text=body(pg)[-500:])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))

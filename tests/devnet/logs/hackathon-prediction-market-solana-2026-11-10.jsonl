@@ -1,0 +1,30 @@
+{"step": "deploy", "program": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH", "deploy_tx": "5ASWRQoJhv3z1DPBrHB4kxbjDD5u2Pryk7XaMVW9BuxaB2gydPAnbMDuGGSBeAjfpA2MG4y6s2WM12j5MrDQpUWT"}
+{"step": "setup", "program": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH", "admin": "m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr", "team_wallet": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv", "B": "4hK97scUWBRM3oTjpVc4nY1qU4FgSSu7UrfJDHjYcDoj", "C": "5dLDzKrCy8M2saxRdsiXnAPJN3ZaNE9EehaCywakPxYr", "run": 1}
+{"step": "fund B (whitelisted trader) and C (not whitelisted)", "sig": "2TvofLCZdPW5yrB3eDxKpdMYunfLsrX3Wuvwiba6k2S2WTZcoxhbb2taFVbYR8b3bvpQaZULdDdbUkoESibyYLTd", "run": 1}
+{"step": "configure: fees 1% platform + 0.2% LP each way, 1M-token supply per side, 1000-token initial reserves, min liquidity 0.02 SOL (the repo default is 5 SOL)", "ok": true, "sig": "3q2Z186HzT1msdZcfhLfja3xxKngbFRy4N7P6CUFHspLjB4rpsWS8iT1TMekSWGRoAAQ8zVpXidsEUtuPMJYwKRN", "run": 1}
+{"step": "configure by a wallet that is not the config authority", "expectedFailure": true, "error": "IncorrectAuthority", "run": 1}
+{"step": "whitelist_init (creator is the first member)", "ok": true, "sig": "3eVTxcfoeYj2PdNgNhyrbWRbTDzrAg3dWQAE7qYa8QbSQYidoCtmGQdN2poMzuRR4MB4Qg23ytcM856gXCs5jBHh", "run": 1}
+{"step": "create YES and NO mints (authority = global vault PDA)", "ok": true, "sig": "2gezNajspgHBU5ZbqAXESFpg7ocHJsB98ircUaTBefEUcmBT4aCtrgKovKdJ8CQ58exgVMn4GhD9UZ2CF2j5KwuK", "yes": "4TrYLhfCV5CKSBtYFhxHEazN3rX65H7nuwY6aCUfEyQB", "no": "EcLBjTcKZn4ekihumeRa1nfE46njp2KScTrw22GichyZ", "run": 1}
+{"step": "create_market with 4 team members (needs exactly 5)", "expectedFailure": true, "error": "InvalidArgument", "run": 1}
+{"run": 1, "step": "create_market (5 members, 17-digit steam IDs, 23-char match code)", "ok": false, "error": "client: Transaction too large: 1282 > 1232 (not sent)"}
+{"step": "setup", "program": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH", "admin": "m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr", "team_wallet": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv", "B": "E8PG8oYhJHhPQ2yv5GPYBeKgJKxdx9WuWc85gwXyzN8p", "C": "89KqnurbEwxcaD9A2Zsuj7GbfFdTgN3fmfExFi7KGHSu", "run": 2}
+{"step": "fund B (whitelisted trader) and C (not whitelisted)", "sig": "gNB54ER2VqGpiRS4qrjHw3z1eF6YZRxiQCYeiBfRQYHFhi67Vz4Bgfi784Ed6Gso78mLfzFkGuUgFHQ9yWXDEiH", "run": 2}
+{"step": "configure: fees 1% platform + 0.2% LP each way, 1M-token supply per side, 1000-token initial reserves, min liquidity 0.02 SOL (the repo default is 5 SOL)", "ok": true, "sig": "2ESDhFRGBYdt8KERYJegi8j15KKB94227L7Si1xCEojzEh7W8by5Myvp1M9gch3uH4pH8rj3yEBnMCQTVtbf3nXt", "run": 2}
+{"step": "configure by a wallet that is not the config authority", "expectedFailure": true, "error": "IncorrectAuthority", "run": 2}
+{"step": "create YES and NO mints (authority = global vault PDA)", "ok": true, "sig": "2Z3idn6ozTBMYBgZRt7qoZizWjAMCmrvc79EZSRcEsgKWkH1Jzy5yHLjRxVpKtMi1SATknnAEHPQaXmkQjTqWBbg", "yes": "FLMfnPg6sFqMLpdBEUK55qjRipsMkRNqUGjY7W23di4L", "no": "DZMkCEwJ4JXK4DjfmNH331Mv8sdBB2nQNq3DJLcsCtZu", "run": 2}
+{"step": "create_market with 4 team members (needs exactly 5)", "expectedFailure": true, "error": "InvalidArgument", "run": 2}
+{"step": "create_market (5 team members, metadata for both mints, 1M of each minted to the vault)", "ok": true, "sig": "5caSfwFxNXy9Zyrr12p5WALe2K8XzQPsHzuw6sNGe2NG91MkY8eSYh5Dohh33U8Fb9g6K7FkpXh69w8Wp7EheyyE", "market": "HrKsZmjvmAVor6xnNo2xbsLxmRiaSRiHYaF51HYAQkF7", "run": 2}
+{"step": "add_liquidity below the 0.02 SOL minimum", "expectedFailure": true, "error": "InvalidArgument", "run": 2}
+{"step": "add_liquidity 0.04 SOL (first LP: 0.02 SOL backs each side)", "ok": true, "sig": "2Usuqd4nEtwBu7ZzEYXsq9yiD71MsksF83SjaD1bWnps69UqUdBuaoAbx1c7aZwzJH3WzMCx79MUHzvjSXyoapZh", "run": 2}
+{"step": "swap by C, who is not on the market creator's whitelist", "expectedFailure": true, "error": "NotWhiteList", "run": 2}
+{"step": "whitelist_add_member B", "ok": true, "sig": "FuLtPmCzGbWe2qzvQQiNUG7b3oyCNQe1FWKbXn8Wex1b7xdvY7fq9E54dtTSNrdUTn9xDKrGAW8VwXuojwAYw4W", "run": 2}
+{"step": "B buys YES with 0.01 SOL", "ok": true, "sig": "S3UZG8s5363eDfw7CKpGr7TkKPU3bksQea2fDMk38YSrKzpr9JgDVUfZLvZJ15qkkxGCYyYLYKqQo9C9FsZUgM7", "yes": 333.333333, "run": 2}
+{"step": "B buys NO with 0.005 SOL", "ok": true, "sig": "2GQzCTE4bnoRnggdDBhrjfCAQrHPCvBz3jxu3QZqEZzewveADbwhZAReoNj8GqAq72zSCuNUFT9g7qBLTtfsf1ir", "no": 200, "run": 2}
+{"step": "B buys YES with minimum_receive set impossibly high", "expectedFailure": true, "error": "ReturnAmountTooSmall", "run": 2}
+{"step": "B sells half its YES", "ok": true, "sig": "4usTWGHh4o2RMESQtYV7bCLpdPnx53pf1nzdVqDWgWXwJFbFAHK5vqdA4iXkw5AkBYpsPTP7NAQ97cxRq5EnbnoE", "yes": 166.666667, "sol_back": 0.005903241, "run": 2}
+{"step": "resolution by B (not admin or oracle)", "expectedFailure": true, "error": "InvalidMigrationAuthority", "run": 2}
+{"step": "resolution by admin: match completed, YES (team A) wins", "ok": true, "sig": "T5Qfq7iYpnWLPu56vUjzfwLS6uTH3yo1JhXd6ux7iBgAeemoXEVgsPeZZzkmNZN1HdC2Rn175nKmcPbGBnr4EaP", "run": 2}
+{"step": "B swaps after the market is completed", "expectedFailure": true, "error": "CurveAlreadyCompleted", "run": 2}
+{"step": "resolve again", "expectedFailure": true, "error": "MarketIsCompleted", "run": 2}
+{"step": "withdraw_liquidity 0.02 SOL by the LP", "ok": true, "sig": "4sMHjyhzGZE1RdJiCWZBEiyE7y2ywQAwpzmXcjNSyC62aGMzv7xMJYc97X1a5G9EU4tNYf77fnRGGENUZu6Bo7Ys", "vault_change_sol": 0, "run": 2}
+{"step": "final state", "completed": true, "winner": 1, "status": 2, "yes_sol_reserves": 0.02393196, "no_sol_reserves": 0.02495, "volume_sol": 0.020979999, "B_yes": 166.666667, "B_no": 200, "vault_sol": 0.04985196, "run": 2}

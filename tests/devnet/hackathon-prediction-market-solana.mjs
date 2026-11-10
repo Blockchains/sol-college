@@ -51,10 +51,10 @@ const tx1 = new Transaction().add(
   createInitializeMintInstruction(yes.publicKey, 6, globalVault, globalVault, TOKEN_PROGRAM_ID));
 log({ step: 'create YES and NO mints (authority = global vault PDA)', ok: true, sig: await sendAndConfirmTransaction(conn, tx1, [A, no, yes], { commitment: 'confirmed' }), yes: yes.publicKey.toBase58(), no: no.publicKey.toBase58() });
 const market = pda('market', yes.publicKey.toBuffer(), no.publicKey.toBuffer()), cs2 = pda('cs2-match', yes.publicKey.toBuffer(), no.publicKey.toBuffer());
-const team = (n) => Array.from({ length: n }, (_, i) => ({ wallet: Keypair.generate().publicKey, steamid: '7656119800000000' + i }));
+const team = (n) => Array.from({ length: n }, (_, i) => ({ wallet: Keypair.generate().publicKey, steamid: 'S' + i }));  // short IDs: with 17-digit SteamID64s the create_market tx exceeds the 1232-byte limit (see limits)
 const META = 'https://sol.college/dapps/hackathon-prediction-market-solana/meta/';
 const params = (n) => ({ yesSymbol: 'SCYES', yesUri: META + 'yes.json', noSymbol: 'SCNO', noUri: META + 'no.json',
-  startSlot: null, endingSlot: null, steamMatchIdHash: Array(32).fill(0), nextMatchCode: 'CSGO-sol-college-devnet', teamMembers: team(n) });
+  startSlot: null, endingSlot: null, steamMatchIdHash: Array(32).fill(0), nextMatchCode: 'SC-1', teamMembers: team(n) });
 const create = (n) => P.methods.createMarket(params(n)).accountsPartial({ creator: A.publicKey, yesToken: yes.publicKey, noToken: no.publicKey, market, whitelist, cs2Match: cs2, teamWallet: TEAM, globalVault })
   .preInstructions([ComputeBudgetProgram.setComputeUnitLimit({ units: 400_000 })]).rpc();
 await expectFail('create_market with 4 team members (needs exactly 5)', () => create(4));

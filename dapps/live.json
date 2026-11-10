@@ -1095,5 +1095,152 @@
    "The app shows names from each account's metadata URI; without one (or while the URI 404s) it shows \"Untitled\". It also shows Add New Milestone to sponsors, which the program rejects (NotADev).",
    "Lists in the app (\"Grant Programs: 0\" right after creating one) can lag until you reload."
   ]
+ },
+ {
+  "slug": "hackathon-prediction-market-solana",
+  "name": "CS2 Prediction Market (YES/NO tokens on a bonding curve, admin resolution)",
+  "lesson": "/explore/hackathon-prediction-market-solana/",
+  "app": "/dapps/hackathon-prediction-market-solana/",
+  "fork": "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana",
+  "commit": "33bc5ddffd7342720ff2aa1742fee7937c151641",
+  "program": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH",
+  "app_kind": "The fork's own React app (prediction-market-frontend, Create React App) built with this devnet program ID and served under /dapps/hackathon-prediction-market-solana/; the only additions are two token-metadata JSON files (meta/yes.json, meta/no.json) for the test markets.",
+  "learn": "A global config (fees, token supply, minimum liquidity) is set by one authority. A market creator makes YES and NO mints owned by a program PDA and a market with exactly 5 team wallets and Steam IDs; liquidity providers add SOL that backs both sides; whitelisted traders swap SOL for YES or NO tokens along a constant-product curve (minimum_receive protects against slippage); the config authority or a Steam oracle key then marks the match completed with a winner, which stops trading.",
+  "source": [
+   [
+    "lib.rs (all instructions)",
+    "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana/blob/33bc5ddffd7342720ff2aa1742fee7937c151641/programs/prediction-market/src/lib.rs#L34-L119"
+   ],
+   [
+    "swap.rs L167-L172 (traders must be on the market creator's whitelist)",
+    "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana/blob/33bc5ddffd7342720ff2aa1742fee7937c151641/programs/prediction-market/src/instructions/market/swap.rs#L167-L172"
+   ],
+   [
+    "resolution.rs L71-L109 (admin or Steam oracle sets the winner and completes the market)",
+    "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana/blob/33bc5ddffd7342720ff2aa1742fee7937c151641/programs/prediction-market/src/instructions/market/resolution.rs#L71-L109"
+   ],
+   [
+    "withdraw_liquidity.rs L71-L86 (checks only; no transfer)",
+    "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana/blob/33bc5ddffd7342720ff2aa1742fee7937c151641/programs/prediction-market/src/instructions/market/withdraw_liquidity.rs#L71-L86"
+   ]
+  ],
+  "flow": "tests/devnet/hackathon-prediction-market-solana.mjs",
+  "log": "tests/devnet/logs/hackathon-prediction-market-solana-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… (config authority) on ➕ Create Market: UIYES/UINO with sol.college metadata URLs, 5 team wallets with short Steam IDs, 🚀 Create Market; tx 1 makes the YES/NO mints",
+    "3hoV7Ze6Eu9eH8BELtyXnsorVYX1uyBnJ4cN5Yo5Qf4KRyT4bnkAUcru21j5KZ71G721JSrAUQKjQRweN5wQau9P"
+   ],
+   [
+    "UI: same click, tx 2 create_market (market ARzCfbpQs8mRXiaFRbHT8q2nhrAfQwAmGfoLoNB6az3z)",
+    "64Psm5E5HQGpSF3PhBFvadD2N2Mc4x8ZmqManbjFDCjxBjqmvggbfpVS65KeU5ecZCgKA81ZvVxVSM67GaT7XXHU"
+   ],
+   [
+    "UI: 💧 Liquidity, 0.02, ➕ Add Liquidity",
+    "4DLz5Vs6BKhi6wuM5kmheYCDvyx5A6fV263p2sAsENJ5REgjkhUWjcTXepF7mXLoWWiPugR39UpVc9xqY1yk6kEL"
+   ],
+   [
+    "UI: 💱 Trade, 🔼 Buy, ✅ YES Token, 0.005 SOL, ⚡ Buy YES Tokens",
+    "4WgxEHeqnwUtvNqUzs7ukK7v1gfrC31jSz48mSwkPmoLFNzrGiwBQZCY3HKrBjMA8qeNa9T2DaDkKA3hmj9XZibk"
+   ],
+   [
+    "UI: 💱 Trade, Sell, 1 YES token",
+    "5orE6Ao4kdKDJ4MfTN356kVQriW53tsbq3mDLj8ChPmzCbKLaxaSqZU7vbNfKdzdscLjVw4NYMmeLdJo7e1YKp7F"
+   ],
+   [
+    "UI: ⚖️ Resolution, pick the market, Team Won (YES holders win), ⚖️ Resolve Market",
+    "2RbLcZK1wacf8P6Hu44A95sYk6ePAvvsWftWc3VJu3G2vaFGvHseQNHrsDisHsBeaHoz79gPTAjJFypHvvkmgxye"
+   ],
+   [
+    "Script: fund B (whitelisted trader) and C (not whitelisted)",
+    "gNB54ER2VqGpiRS4qrjHw3z1eF6YZRxiQCYeiBfRQYHFhi67Vz4Bgfi784Ed6Gso78mLfzFkGuUgFHQ9yWXDEiH"
+   ],
+   [
+    "Script: configure: fees 1% platform + 0.2% LP each way, 1M-token supply per side, 1000-token initial reserves, min liquidity 0.02 SOL (the repo default is 5 SOL)",
+    "2ESDhFRGBYdt8KERYJegi8j15KKB94227L7Si1xCEojzEh7W8by5Myvp1M9gch3uH4pH8rj3yEBnMCQTVtbf3nXt"
+   ],
+   [
+    "Script: create YES and NO mints (authority = global vault PDA)",
+    "2Z3idn6ozTBMYBgZRt7qoZizWjAMCmrvc79EZSRcEsgKWkH1Jzy5yHLjRxVpKtMi1SATknnAEHPQaXmkQjTqWBbg"
+   ],
+   [
+    "Script: create_market (5 team members, metadata for both mints, 1M of each minted to the vault)",
+    "5caSfwFxNXy9Zyrr12p5WALe2K8XzQPsHzuw6sNGe2NG91MkY8eSYh5Dohh33U8Fb9g6K7FkpXh69w8Wp7EheyyE"
+   ],
+   [
+    "Script: add_liquidity 0.04 SOL (first LP: 0.02 SOL backs each side)",
+    "2Usuqd4nEtwBu7ZzEYXsq9yiD71MsksF83SjaD1bWnps69UqUdBuaoAbx1c7aZwzJH3WzMCx79MUHzvjSXyoapZh"
+   ],
+   [
+    "Script: whitelist_add_member B",
+    "FuLtPmCzGbWe2qzvQQiNUG7b3oyCNQe1FWKbXn8Wex1b7xdvY7fq9E54dtTSNrdUTn9xDKrGAW8VwXuojwAYw4W"
+   ],
+   [
+    "Script: B buys YES with 0.01 SOL",
+    "S3UZG8s5363eDfw7CKpGr7TkKPU3bksQea2fDMk38YSrKzpr9JgDVUfZLvZJ15qkkxGCYyYLYKqQo9C9FsZUgM7"
+   ],
+   [
+    "Script: B buys NO with 0.005 SOL",
+    "2GQzCTE4bnoRnggdDBhrjfCAQrHPCvBz3jxu3QZqEZzewveADbwhZAReoNj8GqAq72zSCuNUFT9g7qBLTtfsf1ir"
+   ],
+   [
+    "Script: B sells half its YES",
+    "4usTWGHh4o2RMESQtYV7bCLpdPnx53pf1nzdVqDWgWXwJFbFAHK5vqdA4iXkw5AkBYpsPTP7NAQ97cxRq5EnbnoE"
+   ],
+   [
+    "Script: resolution by admin: match completed, YES (team A) wins",
+    "T5Qfq7iYpnWLPu56vUjzfwLS6uTH3yo1JhXd6ux7iBgAeemoXEVgsPeZZzkmNZN1HdC2Rn175nKmcPbGBnr4EaP"
+   ],
+   [
+    "Script: withdraw_liquidity 0.02 SOL by the LP",
+    "4sMHjyhzGZE1RdJiCWZBEiyE7y2ywQAwpzmXcjNSyC62aGMzv7xMJYc97X1a5G9EU4tNYf77fnRGGENUZu6Bo7Ys"
+   ]
+  ],
+  "negative": [
+   [
+    "configure by a wallet that is not the config authority",
+    "IncorrectAuthority"
+   ],
+   [
+    "create_market with 4 team members (needs exactly 5)",
+    "InvalidArgument"
+   ],
+   [
+    "add_liquidity below the 0.02 SOL minimum",
+    "InvalidArgument"
+   ],
+   [
+    "swap by C, who is not on the market creator's whitelist",
+    "NotWhiteList"
+   ],
+   [
+    "B buys YES with minimum_receive set impossibly high",
+    "ReturnAmountTooSmall"
+   ],
+   [
+    "resolution by B (not admin or oracle)",
+    "InvalidMigrationAuthority"
+   ],
+   [
+    "B swaps after the market is completed",
+    "CurveAlreadyCompleted"
+   ],
+   [
+    "resolve again",
+    "MarketIsCompleted"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py hpm (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+  "limits": [
+   "No claim or redeem instruction: resolution records the winner and stops trading, but winning YES/NO holders have no way to cash out, so the SOL stays in the program vault.",
+   "withdraw_liquidity succeeds but moves nothing (the handler only runs checks): the script's 0.02 SOL withdrawal changed the vault by 0, so LP SOL is locked.",
+   "Swaps require the market creator's whitelist (the creator is its first member). The app has no screen to add members; the script adds trader B with whitelist_add_member.",
+   "The repo's default minimum liquidity is 5 SOL; our devnet config sets 0.02 SOL so the test fits a faucet budget.",
+   "create_market is close to the 1232-byte transaction limit: with our 73- and 74-character metadata URLs, 17-digit SteamID64s and a 23-character match code it was 1282 bytes and could not be sent, so the tests use short Steam IDs and match codes.",
+   "Outcomes are entered by hand: the config authority (or a Steam oracle key, unset here) resolves; others get InvalidMigrationAuthority.",
+   "The app logs 'Error loading user liquidity' in the console on the Liquidity tab; adding liquidity still works.",
+   "The first UI run stopped after Create Market because the market detail view stayed open over the tabs (a test-harness issue); the rest of the clicks were run on the same market in a second and third run."
+  ]
  }
 ]
