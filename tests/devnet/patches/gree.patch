@@ -1,0 +1,224 @@
+diff --git a/anchor/src/gree-exports.ts b/anchor/src/gree-exports.ts
+index 1775e17..637d9b3 100644
+--- a/anchor/src/gree-exports.ts
++++ b/anchor/src/gree-exports.ts
+@@ -8,5 +8,5 @@ export { Gree, GreeIDL };
+ 
+ // After updating your program ID (e.g. after running `anchor keys sync`) update the value below.
+ export const programId = new PublicKey(
+-  'Hx1mCvAWL7PfTTFdkCHmyEAycLWMyybAe4eQLvWZJKDr'
++  'CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK'
+ );
+diff --git a/web/src/app/gree/gree-data-access.tsx b/web/src/app/gree/gree-data-access.tsx
+index 501f783..f111a9b 100644
+--- a/web/src/app/gree/gree-data-access.tsx
++++ b/web/src/app/gree/gree-data-access.tsx
+@@ -1,35 +1,23 @@
++// Sol.College devnet build: the author's commented-out initNft code (same accounts, seeds and metadata values),
++// re-enabled inside an async mutationFn so the "Run program" button can call it. Nothing else changed.
+ import { programId, GreeIDL } from '@gree/anchor';
+ import * as anchor from "@coral-xyz/anchor";
+ import { useConnection } from '@solana/wallet-adapter-react';
+-import { Keypair } from '@solana/web3.js';
+ import { useMutation, useQuery } from '@tanstack/react-query';
++import toast from 'react-hot-toast';
+ import { useCluster } from '../cluster/cluster-data-access';
+ import { useAnchorProvider } from '../solana/solana-provider';
+-
+-
+-// import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
+-// import { getAssociatedTokenAddress } from "@solana/spl-token";
+-// import {
+-// 	findMasterEditionPda,
+-// 	findMetadataPda,
+-// 	mplTokenMetadata,
+-// 	MPL_TOKEN_METADATA_PROGRAM_ID,
+-// } from "@metaplex-foundation/mpl-token-metadata";
+-// import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
+-// import { publicKey } from "@metaplex-foundation/umi";
+-
+-// import {
+-// 	TOKEN_PROGRAM_ID,
+-// 	ASSOCIATED_TOKEN_PROGRAM_ID,
+-// } from "@solana/spl-token";
+-
+-
+-
++import { useTransactionToast } from '../ui/ui-layout';
++import { getAssociatedTokenAddress, TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from "@solana/spl-token";
++import { findMasterEditionPda, findMetadataPda, MPL_TOKEN_METADATA_PROGRAM_ID } from "@metaplex-foundation/mpl-token-metadata";
++import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
++import { publicKey } from "@metaplex-foundation/umi";
+ 
+ export function useGreeProgram() {
+   const { connection } = useConnection();
+   const { cluster } = useCluster();
+   const provider = useAnchorProvider();
++  const transactionToast = useTransactionToast();
+   const program = new anchor.Program(GreeIDL, programId, provider);
+ 
+   const getProgramAccount = useQuery({
+@@ -37,74 +25,44 @@ export function useGreeProgram() {
+     queryFn: () => connection.getParsedAccountInfo(programId),
+   });
+ 
++  const metadata = {
++    name: "GLC-20240317",
++    symbol: "GRLC",
++    uri: "ipfs://bafkreidsv7qyevjbnsncrn7peogr6rp6bfclz3exx2vkunsd5egx7bd5wq",
++  };
++
++  const initNft = useMutation({
++    mutationKey: ['gree', 'initNft', { cluster }],
++    mutationFn: async () => {
++      const signer = provider.wallet;
++      const umi = createUmi(connection.rpcEndpoint);
++      const mint = anchor.web3.Keypair.generate();
++      const associatedTokenAccount = await getAssociatedTokenAddress(mint.publicKey, signer.publicKey);
++      const metadataAccount = findMetadataPda(umi, { mint: publicKey(mint.publicKey) })[0];
++      const masterEditionAccount = findMasterEditionPda(umi, { mint: publicKey(mint.publicKey) })[0];
++      const tx = await program.methods
++        .initNft(metadata.name, metadata.symbol, metadata.uri)
++        .accounts({
++          signer: provider.publicKey,
++          mint: mint.publicKey,
++          associatedTokenAccount,
++          metadataAccount,
++          masterEditionAccount,
++          tokenProgram: TOKEN_PROGRAM_ID,
++          associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
++          tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
++          systemProgram: anchor.web3.SystemProgram.programId,
++          rent: anchor.web3.SYSVAR_RENT_PUBKEY,
++        })
++        .signers([mint])
++        .rpc();
++      console.log(`mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`);
++      console.log(`minted nft: https://explorer.solana.com/address/${mint.publicKey}?cluster=devnet`);
++      return { tx, mint: mint.publicKey.toBase58() };
++    },
++    onSuccess: ({ tx, mint }) => { transactionToast(tx); toast.success('Minted NFT ' + mint); },
++    onError: (e) => toast.error('Failed to run program: ' + (e as Error).message),
++  });
+ 
+-	// anchor.setProvider(provider);
+-	// const signer = provider.wallet;
+-
+-	// const umi = createUmi("https://api.devnet.solana.com")
+-	// 	.use(walletAdapterIdentity(signer))
+-	// 	.use(mplTokenMetadata());
+-
+-	// const mint = anchor.web3.Keypair.generate();
+-
+-	// // Derive the associated token address account for the mint
+-	// const associatedTokenAccount = await getAssociatedTokenAddress(
+-	// 	mint.publicKey,
+-	// 	signer.publicKey
+-	// );
+-
+-	// // derive the metadata account
+-	// const metadataAccount = findMetadataPda(umi, {
+-	// 	mint: publicKey(mint.publicKey),
+-	// })[0];
+-
+-	// //derive the master edition pda
+-	// const masterEditionAccount = findMasterEditionPda(umi, {
+-	// 	mint: publicKey(mint.publicKey),
+-	// })[0];
+-
+-	// const metadata = {
+-	// 	name: "GLC-20240317",
+-	// 	symbol: "GRLC",
+-	// 	uri: "ipfs://bafkreidsv7qyevjbnsncrn7peogr6rp6bfclz3exx2vkunsd5egx7bd5wq",
+-	// };
+-
+-	// const initNft = useMutation({
+-  //   mutationKey: ['gree', 'initNft', { cluster }],
+-  //   mutationFn: (keypair: Keypair) => program.methods.initNft(
+-  //     metadata.name, 
+-  //     metadata.symbol, 
+-  //     metadata.uri,
+-	// 		)
+-	// 		.accounts({
+-  //       signer: provider.publicKey,
+-	// 			mint: mint.publicKey,
+-	// 			associatedTokenAccount,
+-	// 			metadataAccount,
+-	// 			masterEditionAccount,
+-	// 			tokenProgram: TOKEN_PROGRAM_ID,
+-	// 			associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+-	// 			tokenMetadataProgram: MPL_TOKEN_METADATA_PROGRAM_ID,
+-	// 			systemProgram: anchor.web3.SystemProgram.programId,
+-	// 			rent: anchor.web3.SYSVAR_RENT_PUBKEY,
+-	// 		})
+-	// 		.signers([mint])
+-	// 		.rpc(),
+-      
+-  //   onSuccess: (tx) => {
+-  //     console.log(
+-  //       `mint nft tx: https://explorer.solana.com/tx/${tx}?cluster=devnet`
+-  //       );
+-  //     console.log(
+-  //       `minted nft: https://explorer.solana.com/address/${mint.publicKey}?cluster=devnet`
+-  //       );
+-  //   },
+-  //   onError: () => toast.error('Failed to run program')
+-  // });
+-        
+-    return {
+-      program,
+-      programId,
+-      getProgramAccount,
+-    };
++  return { program, programId, getProgramAccount, initNft };
+ }
+diff --git a/web/src/app/gree/gree-ui.tsx b/web/src/app/gree/gree-ui.tsx
+index e157d12..d8f7558 100644
+--- a/web/src/app/gree/gree-ui.tsx
++++ b/web/src/app/gree/gree-ui.tsx
+@@ -1,18 +1,23 @@
+-import { Keypair } from '@solana/web3.js';
+ import { useGreeProgram } from './gree-data-access';
+ 
+ export function GreeCreate() {
+-  // const { greet } = useGreeProgram();
++  const { initNft } = useGreeProgram();
+ 
+   return (
+-    <button
+-      className="btn btn-xs lg:btn-md btn-primary"
+-      // onClick={() => greet.mutateAsync(Keypair.generate())}
+-      // disabled={greet.isPending}
+-    >
+-      {/* Run program{greet.isPending && '...'} */}
+-      Run program
+-    </button>
++    <div className="space-y-2">
++      <button
++        className="btn btn-xs lg:btn-md btn-primary"
++        onClick={() => initNft.mutateAsync()}
++        disabled={initNft.isPending}
++      >
++        Run program{initNft.isPending && '...'}
++      </button>
++      {initNft.data && (
++        <p id="gree-minted">
++          Minted NFT: <a className="link" href={`https://explorer.solana.com/address/${initNft.data.mint}?cluster=devnet`}>{initNft.data.mint}</a>
++        </p>
++      )}
++    </div>
+   );
+ }
+ 
+diff --git a/web/src/main.tsx b/web/src/main.tsx
+index c7329f9..28a7d81 100644
+--- a/web/src/main.tsx
++++ b/web/src/main.tsx
+@@ -1,6 +1,6 @@
+ import { StrictMode } from 'react';
+ import * as ReactDOM from 'react-dom/client';
+-import { BrowserRouter } from 'react-router-dom';
++import { HashRouter as BrowserRouter } from 'react-router-dom';
+ import './polyfills';
+ 
+ import { App } from './app/app';

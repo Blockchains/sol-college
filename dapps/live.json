@@ -147,5 +147,44 @@
   ],
   "ui_check": "The hosted app was loaded headless: the landing page and Select Wallet button render with no page errors and the bundle contains this program ID. Creating and claiming switches needs a connected wallet.",
   "limits": "cancel was not exercised. The app's IDL makes the beneficiary sign claim, so the beneficiary claims from their own wallet."
+ },
+ {
+  "slug": "gree",
+  "name": "gree (mint an NFT with Metaplex metadata)",
+  "lesson": "/explore/gree/",
+  "app": "/dapps/gree/#/gree",
+  "fork": "https://github.com/Blockchains/gree",
+  "commit": "7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+  "program": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+  "app_kind": "The fork's own create-solana-dapp React app (web/). The author's initNft code was commented out, so the 'Run program' button did nothing; we re-enabled that same code (same accounts, seeds and metadata values) inside an async mutation and wired the button to it. Also: base path /dapps/gree/, hash routing for static hosting, and this devnet program ID. The diff is in tests/devnet/patches/gree.patch.",
+  "learn": "One instruction mints a 1-of-1 NFT: init_nft mints 1 token to the signer's associated token account, then CPIs into Metaplex Token Metadata to create the metadata and master-edition accounts, both PDAs of the Metaplex program (seeds [\"metadata\", metadata program, mint] and the same plus \"edition\"), checked with seeds::program.",
+  "source": [
+   [
+    "anchor/programs/gree/src/lib.rs L19-L80 (init_nft: mint_to, then create_metadata_accounts_v3 and the master-edition CPI)",
+    "https://github.com/Blockchains/gree/blob/7ef8c89e9b317f2f7f664588b1c58aaac7b816dd/anchor/programs/gree/src/lib.rs#L19-L80"
+   ],
+   [
+    "lib.rs L107-L131 (metadata and master-edition PDAs with seeds::program)",
+    "https://github.com/Blockchains/gree/blob/7ef8c89e9b317f2f7f664588b1c58aaac7b816dd/anchor/programs/gree/src/lib.rs#L107-L131"
+   ]
+  ],
+  "flow": "tests/devnet/gree.mjs",
+  "log": "tests/devnet/logs/gree-2026-11-10.jsonl",
+  "verified": "2026-11-10",
+  "steps": [
+   [
+    "Clicked 'Run program' in the hosted app with an injected test wallet: NFT Gp7Ncuci\u2026 minted",
+    "4FEMzQBpHbPKGSdhpfC21rkVDSEA43gCucL9U7kHPdDH9wGd9tv9cz66WSi7KsfvsezVB6tNUGGQvMT7rGPphMY1"
+   ],
+   [
+    "init_nft from the flow script: supply 1, decimals 0, metadata owned by Metaplex with name GLC-20240317",
+    "neBi5ox4KkDhLL5bevKygpDfm2oi2Thtc2A3XHNBVLXNJnhw7Eg3QfZBHtu3LBQERqEXDmBgcY1fQ14iixR3UUp"
+   ]
+  ],
+  "negative": [
+   "init_nft again with the same mint is rejected (mint account already in use, custom program error 0x0)"
+  ],
+  "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py): the app auto-connected, 'Run program' sent the transaction, and the page showed 'Minted NFT: Gp7Ncuci1Mb4FbuXjDtfLW9Penz6R5iLEhBYECYAkBEQ'.",
+  "limits": "The metadata URI is the author's IPFS link; the Inventory page fetches it through Metaplex JS, which we did not check."
  }
 ]

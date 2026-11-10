@@ -30,6 +30,8 @@ P
      cd "$src"; sed -i "s/8hK7vGkWap7CwfWnZG8igqz5uxevUDTbhoeuCcwgvpYq/6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP/" components/DeadManSwitch.tsx
      printf "module.exports = { output: 'export', basePath: '/dapps/%s', trailingSlash: true, images: { unoptimized: true }, eslint: { ignoreDuringBuilds: true }, webpack: (c) => { c.resolve.fallback = { fs: false }; return c; } }\n" "$slug" > next.config.js
      npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx next build && cp -r out/. "$out/";;
+  gree) # fork's own create-solana-dapp app; author's commented initNft re-enabled (tests/devnet/patches/gree.patch)
+     cd "$src" && git apply "$(dirname "$out")/../../tests/devnet/patches/gree.patch" && npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null && npx nx build web --baseHref=/dapps/$slug/ --skip-nx-cache && cp -r dist/web/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

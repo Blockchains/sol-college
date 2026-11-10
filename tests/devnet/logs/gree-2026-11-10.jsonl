@@ -1,0 +1,2 @@
+{"step":"init_nft","ok":true,"sig":"neBi5ox4KkDhLL5bevKygpDfm2oi2Thtc2A3XHNBVLXNJnhw7Eg3QfZBHtu3LBQERqEXDmBgcY1fQ14iixR3UUp","mint":"9Shg8nhKPC86hFC4wpn2a5SFFP7t4iJfPCEvD72cxHzB","supply":"1","decimals":0,"metadataOwner":"metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s","nameInMetadata":true}
+{"step":"init_nft_same_mint","expectedFailure":true,"error":"failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0"}
