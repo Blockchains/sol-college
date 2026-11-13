@@ -300,5 +300,6 @@
   "anchor": "0.30.0",
   "test": "anchor test",
   "note": "`anchor-lang` 0.30.0; Anchor CLI 0.30.1 is the closest match. The Next.js app lives in `app/`."
- }
+ },
+ "functional": "full"
 }

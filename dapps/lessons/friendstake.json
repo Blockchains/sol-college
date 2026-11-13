@@ -324,5 +324,6 @@
   "anchor": "0.29.0",
   "test": "anchor test",
   "note": "The program is `programs/peer-to-peer-betting`. Tests: `tests/peer-to-peer-betting.ts`."
- }
+ },
+ "functional": "full"
 }

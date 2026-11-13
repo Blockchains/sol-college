@@ -399,5 +399,6 @@
   "anchor": "0.30.1",
   "test": "anchor test",
   "note": "The program is in `protocol/programs/barn`. The Next.js app is in `app/`."
- }
+ },
+ "functional": "full"
 }

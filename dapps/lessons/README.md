@@ -2,7 +2,7 @@
 
 `scripts/core_lessons.py` runs after `scripts/live_devnet.py` on every build. For every entry in `dapps/live.json` it writes
 `/lessons/<slug>/` (canonical) and the same page at `/explore/<slug>/`, the `/lessons/` index, the `/lessons/path/` learning
-path (beginner to advanced, by concept), the `/lessons/glossary/`, the homepage hero and path, the main nav, and the
+path (beginner to advanced, by concept), the `/lessons/glossary/`, the main nav, and the
 "Source library (not yet live)" labels on every walkthrough that is not live.
 
 Every full lesson has the same structure:
@@ -36,7 +36,9 @@ Every full lesson has the same structure:
  "innovation": {"title": "…", "text": "…", "refs": [ … ], "more": ["…"]},
  "frontend": [{"title": "…", "refs": [ … ], "steps": ["…"]}],
  "exercises": [{"title": "…", "steps": ["…"], "expect": "…", "hint": "…", "approach": "…"}],
- "build": {"dir": "programs/…", "anchor": "0.30.1", "test": "anchor test", "note": "…", "ran": "what we actually ran"}
+ "build": {"dir": "programs/…", "anchor": "0.30.1", "test": "anchor test", "note": "…", "ran": "what we actually ran"},
+ "functional": "full",
+ "commit_suggestion": {"finding": "…", "patch": "…", "refs": [{"path": "…", "a": 1, "b": 10, "repo": "optional other repo", "ref": "fix commit"}], "test": "…", "retest": [["take now succeeds", "SIG"]], "fork_commit": "…", "upstream_pr": "https://github.com/…/pull/N"}
 }
 ```
 
@@ -46,3 +48,9 @@ Concept ids must exist in `dapps/lessons/glossary.json`.
 Code is never typed into the JSON: a ref is a path and line range at the fork commit pinned in `live.json` (or `"repo"`/`"ref"` for
 another repo at a pinned commit, e.g. our own patch). The lines are fetched from GitHub and cached in `excerpts.json`.
 Text supports `` `code` ``, `**bold**` and `[text](url)`. Proof is never written here: it comes from the recorded runs in `live.json`.
+
+`functional` is `"full"` when the advertised core flow completes on devnet, or `"partial"` when it does not (a swap that crashes, a claim that cannot pay out, a market with no redeem). `dapps/live.json` may set the same field; that value wins. Fully working apps are listed as live environments on `/lessons/path/`. Partial apps appear in a **Debug challenges** section there, not in the staged path, until the fork is fully working.
+
+When a fix has been committed to our fork (and, where opened, as a pull request on the original project), set `commit_suggestion` so the lesson shows the worked loop: finding → patch → regression test → retest on devnet.
+
+The homepage (`/`) is owned by a separate landing-page worker. `scripts/core_lessons.py` must not rewrite `site/index.html`.

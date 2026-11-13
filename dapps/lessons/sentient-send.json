@@ -344,5 +344,6 @@
   "anchor": "0.32.1",
   "test": "anchor test",
   "note": "`anchor-lang` 0.32.1. The program is `programs/prediction-market`. Tests: `tests/prediction-market.test.ts`."
- }
+ },
+ "functional": "full"
 }

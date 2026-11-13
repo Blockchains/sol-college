@@ -250,5 +250,6 @@
   "anchor": "0.26.0",
   "test": "anchor test",
   "note": "Written for Anchor 0.26.0, which is older than the CLIs on this machine (0.29–0.32). `anchor build` against 0.26 may need that exact CLI. The program itself is small: one `lib.rs` with `create_pixel` and `update_pixel`."
- }
+ },
+ "functional": "full"
 }

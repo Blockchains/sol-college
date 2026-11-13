@@ -320,5 +320,6 @@
   "anchor": "0.31.1",
   "test": "anchor test",
   "note": "The program crate is named `cipher-valut` (the typo is in the repo). Tests: `tests/cipher-valut.ts`."
- }
+ },
+ "functional": "full"
 }

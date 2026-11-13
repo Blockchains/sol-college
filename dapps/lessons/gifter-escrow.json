@@ -274,5 +274,6 @@
   "test": "anchor test",
   "note": "The Anchor workspace is `contract/` (`Cargo.toml` is Anchor 0.30.1). The fork's `declare_id!` is `9HP45DvS…`; the Sol.College deployment is `6Z5cvVUc…`.",
   "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout a9c3a417d2d78294f58975b1461859ffb20df05a` and `/home/box/.avm/bin/anchor-0.30.1 build` in `contract/` with `RUSTUP_TOOLCHAIN=1.89.0`. Cargo finished a release build in 1 m 13 s and wrote `target/deploy/gifter_escrow.so` (311,808 bytes, a valid ELF). Anchor then failed at 'Building IDL failed' with a `proc-macro-error` Span trait error — the same host-toolchain issue as DeVos, not a problem in this program. The default host rustc (1.99) is too new; use 1.89 (or another 1.8x). We did not run `anchor test`."
- }
+ },
+ "functional": "partial"
 }

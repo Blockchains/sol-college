@@ -341,5 +341,6 @@
   "anchor": "0.31.1",
   "test": "anchor test",
   "note": "The program is in `anchor/programs/oracle`. Tests: `anchor/tests/oracle.test.ts`."
- }
+ },
+ "functional": "full"
 }

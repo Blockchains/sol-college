@@ -246,5 +246,6 @@
   "anchor": "0.29.0",
   "test": "anchor test",
   "note": "The program lives under `anchor/`. It depends on `anchor-spl` with the `metadata` feature (Metaplex)."
- }
+ },
+ "functional": "full"
 }

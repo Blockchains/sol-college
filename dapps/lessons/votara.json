@@ -395,5 +395,6 @@
   "anchor": "0.32.1",
   "test": "anchor test",
   "note": "The program is in `votara/`. Anchor 0.32.1 matches `Cargo.toml`."
- }
+ },
+ "functional": "full"
 }

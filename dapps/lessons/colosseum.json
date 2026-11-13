@@ -331,5 +331,6 @@
   "anchor": "0.30.1",
   "test": "anchor test",
   "note": "The program is in `contract/programs/staking`. Some frontends live next to it."
- }
+ },
+ "functional": "full"
 }

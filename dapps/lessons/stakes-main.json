@@ -361,5 +361,6 @@
   "anchor": "0.29.0",
   "test": "anchor test",
   "note": "The program is `programs/stakes-wtf`. Tests: `tests/stakes-wtf.ts`."
- }
+ },
+ "functional": "full"
 }

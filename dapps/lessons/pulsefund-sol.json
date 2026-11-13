@@ -285,5 +285,6 @@
   "test": "anchor test",
   "note": "The program is a single `lib.rs`. Tests are Rust (`tests/smart-contracts.test.rs`). Goal amounts in the app are lamports, not SOL.",
   "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout 50e0873` and `/home/box/.avm/bin/anchor-0.29.0 build` with `RUSTUP_TOOLCHAIN=1.89.0`. It wrote `target/deploy/smart_contracts.so` (219,912 bytes, a valid ELF). The default host rustc (1.99) failed first, with a `bytemuck_derive` compile error — use 1.89 (or another 1.8x) as the host toolchain. We did not run `anchor test`: the bundled `tests/smart-contracts.test.rs` is a mock sketch (`MockContext`) and is not an Anchor test suite."
- }
+ },
+ "functional": "full"
 }

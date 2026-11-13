@@ -454,5 +454,6 @@
   "anchor": "0.31.1",
   "test": "anchor test",
   "note": "The program is `programs/prediction-market`. The React app is `prediction-market-frontend/`. `create_market` is close to the 1232-byte transaction limit — keep metadata URLs and Steam IDs short."
- }
+ },
+ "functional": "partial"
 }

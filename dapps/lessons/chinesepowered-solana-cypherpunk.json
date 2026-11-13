@@ -364,5 +364,6 @@
   "anchor": "0.31.1",
   "test": "anchor test",
   "note": "`Cargo.toml` pins `anchor-lang` 0.31.1 (the `Anchor.toml` comment says 0.30.1; use the Cargo version). Tests: `tests/uniproof.ts`."
- }
+ },
+ "functional": "full"
 }
