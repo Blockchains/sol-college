@@ -92,6 +92,7 @@ LEGACY = r'''(() => {
     if (!tx.feePayer || String(tx.feePayer) === addr) tx.feePayer = me;
     const sig = ub64(await window.__scWallet('signMsg', b64(tx.serializeMessage()))); tx.addSignature(me, sig); return tx; };
   const p = { isPhantom: true, isConnected: true, publicKey: shim, connect: async () => ({ publicKey: shim }), disconnect: async () => {}, on: () => {}, off: () => {},
+    request: async (a) => { if ((a && a.method) === 'connect') return { publicKey: shim }; throw new Error('unsupported ' + (a && a.method)); },
     signTransaction: sign, signAllTransactions: async (txs) => { for (const t of txs) await sign(t); return txs; } };
   window.solana = p; window.phantom = { solana: p };
 })();''' % dict(addr=json.dumps(ADDR), pub=json.dumps(list(pub)))
@@ -524,8 +525,12 @@ def run(pg):
         make(f'uc-{tag}'); open_bet(f'uc-{tag}')
         n = len(SENT); btn(r'^Cancel Bet$').first.click(); pump(pg, 25000); log(step='cancel_via_ui', sent=sigs_new(n))
     elif app == 'devos':  # Create Election page: election name, one position, two candidates, Submit (create_election, add_position, add_candidate x2)
-        pg.goto(base + 'CreateElection/', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 5000)
-        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 6000); connect(pg, 'Select Wallet'); pump(pg, 4000)
+        log(step='connected_on_home', wallet_shown=ADDR[:4] in body(pg), text=body(pg)[:200])
+        pg.goto(base + 'CreateElection/', wait_until='domcontentloaded'); pump(pg, 6000)
+        if ADDR[:4] not in body(pg):
+            connect(pg); pump(pg, 4000)
+        log(step='on_create_election', wallet_shown=ADDR[:4] in body(pg), text=body(pg)[:250])
         name = 'ui-' + str(int(time.time()))[-5:]
         pg.locator('input[type=text]').first.fill(name)
         pg.get_by_role('button', name='Add Position').click(); pump(pg, 800)

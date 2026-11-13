@@ -1,0 +1,87 @@
+{
+ "slug": "devos-decentralized-voting",
+ "cluster": "devnet",
+ "program": "backend",
+ "idl": "idl.json",
+ "devnet": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2",
+ "deploy_tx": "4GmxwiANvo5fodGrm7NeCyyEUdrcRp3XoKeuaNHTVNXsdvePQaY3uhMouSLFKFK8Zh1YDZomojjFXDmZxb1nvhZQ",
+ "built": "cargo-build-sbf (solana 2.3.13) of backend/programs/backend at 1e890ac (anchor-lang 0.30.1), with declare_id set to this program's keypair; IDL is the fork's committed devos-app/utils/idl.json with this address",
+ "sigs": [
+  {
+   "label": "fund A 0.03, V 0.005, W 0.005, X 0.005 SOL",
+   "sig": "291Ha8keNJ7jmusMemELfGsLSvV3jBJrn7oQR7AcDrCVX7iNEPjkkQpSAA5XUtr5695PMmq4HQXX5un8GpFAgobv"
+  },
+  {
+   "label": "A creates the election (max 2 positions, 1 candidate each plus Abstain, voters [V]; PDA [name, authority])",
+   "sig": "4jRBAdcTHc7XEPqncw5pcusZapeRwr4fYwgdPf5m9zHXAqauoyaWDhehUNeHYGcaLcPa5bUTKHt5vWa4EAtbcjgD"
+  },
+  {
+   "label": "A adds position President",
+   "sig": "3G6jNm32xBWhJ6TWcCgMgaK2q5ovJnTvVm6q4zdtptz2igFGaX8dxii3Fv1GFxBnEXGRQ6U6ojrURB7J4BqyAjdL"
+  },
+  {
+   "label": "A adds position Treasurer",
+   "sig": "Qw2ntTKRzyozcQuvDsuDivScJ1RiC6ieLMeiDweXahg1snS7niKVmyWi2gXgUYmP97drw7DBqsy1txCwn4BoTBo"
+  },
+  {
+   "label": "A adds candidate Alice to President",
+   "sig": "5J2Xz4edompcomb4DYhfE7p1LXSD2TdWGbAfU5QfWFYM8UVja4ZTynbfhSaGocsHtXpfWUvjZ55vNcrCWezs8Mf4"
+  },
+  {
+   "label": "A adds candidate Bob to Treasurer",
+   "sig": "3ZD51qcujYPJsXNWuBSDrm3bA3fequ4BLUSZtPgubsb26Aab6fCPkVcG6N2bDSNbaqWXpKohhnn9RYKqW4YjdByA"
+  },
+  {
+   "label": "A opens the election (toggle_election)",
+   "sig": "SeNkCmiZ3tCpVveWvovvNmHXkJWzF1u4fmcL9ybEY8VuVTrSWjrcgaS6CYnvZGHevSAC4Q6KTz6eAkaFSAbGJdc"
+  },
+  {
+   "label": "V votes Alice for President",
+   "sig": "2SvTJVHNxNxdaHGCaGqXgq6pYuUgdtMrK6qvSbtEboksR5fq29MT9u96jeVL5RnX4d9aKhYzQRzQb873vodtAuCY"
+  },
+  {
+   "label": "V votes Abstain for Treasurer",
+   "sig": "67MPvvt9HSvkZb6GZ9TdWrvHTL5hup4huDnXpJoQPcfyCyxF6yrDkSkEsGETScbQvxKPtE8pmJRCUAYohiD5fB8V"
+  },
+  {
+   "label": "A calls tally_votes (it only writes the counts to the program log)",
+   "sig": "63P1G1o4925jEBaZooAzx8Kndgf9V9LhjZ4yNsDGJH82D6hzZjCakocKA5ftuY5WaX4LTVSZZ1VLMV6n3LkvgASD"
+  },
+  {
+   "label": "A closes the election",
+   "sig": "5cSSHSUfdT7EVDNJtToeHCGPqT1nfHM58efSDdJUfb7Nt36kXjeZmfsBjxdePdofKCur5NfUV3VovBBZXwnC6wiJ"
+  },
+  {
+   "label": "A calls get_winner",
+   "sig": "2S8KttSRWzHF7nkFsbMvGHE91cJfL7uU9RgQyHxQgxviWGL3GsgKfQZtstE7h4E3PhtD53dFAW9iu3rg6qBJ4JZT"
+  },
+  {
+   "label": "A adds voter W after the result (add_voter reallocs the account)",
+   "sig": "5noKC6QpZXZJgHH9YgxwnLFi9aiG3Swv5sziLDzy2YYEDvF4MobrTmFdrt9d2RJwhegXVZ8CrW4MicFmJgXtvgqv"
+  },
+  {
+   "label": "A reopens the closed election (toggle has no finished state)",
+   "sig": "jgDXfAkyAB3vixfge5g2Y42TDjUGfeGaTzS6GErAfqJZipHjdi4G5Uxd49iCZURjDBAu7ouCoqi275MGhpFwTUD"
+  },
+  {
+   "label": "W votes Abstain for President after the winners were stored",
+   "sig": "5ySN2epWEErXcyLpufZ5aFkwRhWsrRmTASZmGtE1KQusnDgq5sA4fL4vpESpBLTJRtMQzHf1JAfAutDGVHLzG7iU"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "59dmu6oCxszPL63kuh5PPQSqqP34FyKv1f3sD7X6n3ePXjR1QrcJAcsyrWGDTKyqam29SMoiWm34GR9D1C73hgy4"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "4q7E1EZoNBJ6N6B5Rd71C5Jnoqejewg8LTvEuVRQnd1KU2kACLVMohZUeEV4Nq6ozNv9UKQ3ob75TfXLEhFApNbx"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "5ZSbbcsqECLMT6phB223saRkvUQ3WBrx8Zje9A17kpiwrb1gAGoBA87Fq4LVuySLih6RCTeZLmqeRCm9NFhgazsT"
+  },
+  {
+   "label": "return unspent SOL to the payer",
+   "sig": "2T65bn23wfop89F7csqi5EcXhBxVLeoasrSDs9B9tdoEb8fTjQc4W4uEEBq1ChQgDABp9577ahFuhuYczXrdh7ca"
+  }
+ ]
+}

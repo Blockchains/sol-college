@@ -1650,5 +1650,215 @@
    "The description is a PDA seed and is stored in 32 bytes, so it must be at most 32 bytes. The amount has no minimum, and the vault is drained with all its lamports.",
    "The app's cluster defaults to devnet (clusterApiUrl('devnet'), the public endpoint, which can rate-limit). The cluster picker saves the choice in localStorage."
   ]
+ },
+ {
+  "slug": "devos-decentralized-voting",
+  "name": "DeVos (on-chain elections with an allow-list and a close-to-tally step)",
+  "lesson": "/explore/devos-decentralized-voting/",
+  "app": "/dapps/devos-decentralized-voting/",
+  "fork": "https://github.com/Blockchains/devos-decentralized-voting",
+  "commit": "1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49",
+  "program": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2",
+  "app_kind": "The fork's own Next.js app (devos-app) exported as static pages with this devnet program ID. The changes: static export with basePath; the two [electionName] pages moved to .../view/?n= because a static export can't pre-render unknown names; eslint and TypeScript errors ignored at build (the fork has implicit-any params); and @project-serum/anchor 0.26.0 installed at build time — utils/solana.ts imports it, but no package.json in the fork declares it.",
+  "learn": "An election is a PDA from [election_name, authority]. The authority sets max positions and max candidates, a starting voter allow-list, then adds named positions (each starts with an automatic Abstain candidate) and candidates. The election is created closed. The authority toggles it open for voting: an allow-listed wallet can vote once per position. tally_votes only writes the counts to the program log; get_winner, which requires the election to be closed, stores the top candidate(s) per position (ties are kept). Space for the account is computed up front from those maxima and the initial voter list, and add_voter reallocates.",
+  "source": [
+   [
+    "lib.rs L19-L38 create_election (starts closed)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L19-L38"
+   ],
+   [
+    "lib.rs L40-L82 add_position (inserts Abstain)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L40-L82"
+   ],
+   [
+    "lib.rs L84-L141 add_candidate",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L84-L141"
+   ],
+   [
+    "lib.rs L143-L166 add_voter",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L143-L166"
+   ],
+   [
+    "lib.rs L168-L220 vote (allow-list, one vote per position)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L168-L220"
+   ],
+   [
+    "lib.rs L222-L247 tally_votes (log only)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L222-L247"
+   ],
+   [
+    "lib.rs L249-L292 get_winner (must be closed)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L249-L292"
+   ],
+   [
+    "lib.rs L294-L306 toggle_election (no finished state)",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L294-L306"
+   ],
+   [
+    "lib.rs L315-L329 CreateElection PDA and space",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/lib.rs#L315-L329"
+   ],
+   [
+    "states.rs L17-L36 calculate_size",
+    "https://github.com/Blockchains/devos-decentralized-voting/blob/1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49/backend/programs/backend/src/states.rs#L17-L36"
+   ]
+  ],
+  "flow": "tests/devnet/devos-decentralized-voting.mjs",
+  "log": "tests/devnet/logs/devos-decentralized-voting-2026-11-13.jsonl",
+  "verified": "2026-11-13",
+  "steps": [
+   [
+    "UI: test wallet m4Ac… on /: Connect Wallet (Phantom); then /CreateElection/, name 'ui-71028', one position President, candidates Alice and Bob, Submit — CreateElection",
+    "5uxVp1MP7BDdGG3Ke5wfKo9pwpAQAykmtkLbpy1dfDF64MfahHfDMMmpDmeCX1P7tLsNYhqwseEkQSz97JzthT1H"
+   ],
+   [
+    "UI: AddPosition President",
+    "4yZWKGQ1daVsWY7cLrNdwzJ6FmxV2VCtRwojdMxD6RnZfTnjuimzyd9TCynZrk3YDiXiLwwPBxvyWniM5DTyifxQ"
+   ],
+   [
+    "UI: AddCandidate Alice (index 0)",
+    "5JSiJfw8QmCkdhzD5DNgXChFCQ47p1jbVpdMpaUhzXi1bhhcvKpruQWFtBeB3CY42ZdF7cskoQL5yn5iryK8TP45"
+   ],
+   [
+    "UI: AddCandidate Bob (index 0 — the form always adds both candidates to position 0; Treasurer was never created through the UI)",
+    "2RExNDGYyEWeJV1wAz7A2w3As1YBMYCNvFJnATb7uecDJLtJSGLyTK4Pf5zZAQfPDPLRJTQFHcTCwcvPQPov31jV"
+   ],
+   [
+    "Script: fund A 0.03, V 0.005, W 0.005, X 0.005 SOL",
+    "291Ha8keNJ7jmusMemELfGsLSvV3jBJrn7oQR7AcDrCVX7iNEPjkkQpSAA5XUtr5695PMmq4HQXX5un8GpFAgobv"
+   ],
+   [
+    "Script: A creates the election (max 2 positions, 1 candidate each plus Abstain, voters [V]; PDA [name, authority])",
+    "4jRBAdcTHc7XEPqncw5pcusZapeRwr4fYwgdPf5m9zHXAqauoyaWDhehUNeHYGcaLcPa5bUTKHt5vWa4EAtbcjgD"
+   ],
+   [
+    "Script: A adds position President",
+    "3G6jNm32xBWhJ6TWcCgMgaK2q5ovJnTvVm6q4zdtptz2igFGaX8dxii3Fv1GFxBnEXGRQ6U6ojrURB7J4BqyAjdL"
+   ],
+   [
+    "Script: A adds position Treasurer",
+    "Qw2ntTKRzyozcQuvDsuDivScJ1RiC6ieLMeiDweXahg1snS7niKVmyWi2gXgUYmP97drw7DBqsy1txCwn4BoTBo"
+   ],
+   [
+    "Script: A adds candidate Alice to President",
+    "5J2Xz4edompcomb4DYhfE7p1LXSD2TdWGbAfU5QfWFYM8UVja4ZTynbfhSaGocsHtXpfWUvjZ55vNcrCWezs8Mf4"
+   ],
+   [
+    "Script: A adds candidate Bob to Treasurer",
+    "3ZD51qcujYPJsXNWuBSDrm3bA3fequ4BLUSZtPgubsb26Aab6fCPkVcG6N2bDSNbaqWXpKohhnn9RYKqW4YjdByA"
+   ],
+   [
+    "Script: A opens the election (toggle_election)",
+    "SeNkCmiZ3tCpVveWvovvNmHXkJWzF1u4fmcL9ybEY8VuVTrSWjrcgaS6CYnvZGHevSAC4Q6KTz6eAkaFSAbGJdc"
+   ],
+   [
+    "Script: V votes Alice for President",
+    "2SvTJVHNxNxdaHGCaGqXgq6pYuUgdtMrK6qvSbtEboksR5fq29MT9u96jeVL5RnX4d9aKhYzQRzQb873vodtAuCY"
+   ],
+   [
+    "Script: V votes Abstain for Treasurer",
+    "67MPvvt9HSvkZb6GZ9TdWrvHTL5hup4huDnXpJoQPcfyCyxF6yrDkSkEsGETScbQvxKPtE8pmJRCUAYohiD5fB8V"
+   ],
+   [
+    "Script: A calls tally_votes (it only writes the counts to the program log)",
+    "63P1G1o4925jEBaZooAzx8Kndgf9V9LhjZ4yNsDGJH82D6hzZjCakocKA5ftuY5WaX4LTVSZZ1VLMV6n3LkvgASD"
+   ],
+   [
+    "Script: A closes the election",
+    "5cSSHSUfdT7EVDNJtToeHCGPqT1nfHM58efSDdJUfb7Nt36kXjeZmfsBjxdePdofKCur5NfUV3VovBBZXwnC6wiJ"
+   ],
+   [
+    "Script: A calls get_winner",
+    "2S8KttSRWzHF7nkFsbMvGHE91cJfL7uU9RgQyHxQgxviWGL3GsgKfQZtstE7h4E3PhtD53dFAW9iu3rg6qBJ4JZT"
+   ],
+   [
+    "Script: A adds voter W after the result (add_voter reallocs the account)",
+    "5noKC6QpZXZJgHH9YgxwnLFi9aiG3Swv5sziLDzy2YYEDvF4MobrTmFdrt9d2RJwhegXVZ8CrW4MicFmJgXtvgqv"
+   ],
+   [
+    "Script: A reopens the closed election (toggle has no finished state)",
+    "jgDXfAkyAB3vixfge5g2Y42TDjUGfeGaTzS6GErAfqJZipHjdi4G5Uxd49iCZURjDBAu7ouCoqi275MGhpFwTUD"
+   ],
+   [
+    "Script: W votes Abstain for President after the winners were stored",
+    "5ySN2epWEErXcyLpufZ5aFkwRhWsrRmTASZmGtE1KQusnDgq5sA4fL4vpESpBLTJRtMQzHf1JAfAutDGVHLzG7iU"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "59dmu6oCxszPL63kuh5PPQSqqP34FyKv1f3sD7X6n3ePXjR1QrcJAcsyrWGDTKyqam29SMoiWm34GR9D1C73hgy4"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "4q7E1EZoNBJ6N6B5Rd71C5Jnoqejewg8LTvEuVRQnd1KU2kACLVMohZUeEV4Nq6ozNv9UKQ3ob75TfXLEhFApNbx"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "5ZSbbcsqECLMT6phB223saRkvUQ3WBrx8Zje9A17kpiwrb1gAGoBA87Fq4LVuySLih6RCTeZLmqeRCm9NFhgazsT"
+   ],
+   [
+    "Script: return unspent SOL to the payer",
+    "2T65bn23wfop89F7csqi5EcXhBxVLeoasrSDs9B9tdoEb8fTjQc4W4uEEBq1ChQgDABp9577ahFuhuYczXrdh7ca"
+   ]
+  ],
+  "negative": [
+   [
+    "A creates the same election again",
+    "Allocate: account Address { address: GpDah5qVaWBxpkVMEZpPahY2C9XTbyZQdTiXVDj7e6Y2, base: None } already in use"
+   ],
+   [
+    "X adds a position to A's election (seeds use the signer, so the PDA does not match)",
+    "ConstraintSeeds"
+   ],
+   [
+    "A adds a third position (max 2)",
+    "MaxPositionsReached"
+   ],
+   [
+    "A adds President again",
+    "PositionAlreadyAdded"
+   ],
+   [
+    "A adds a second candidate to President (max 1 plus Abstain)",
+    "MaxCandidatesReached"
+   ],
+   [
+    "A adds a candidate to position 5 (does not exist)",
+    "InvalidPosition"
+   ],
+   [
+    "V votes before the election is opened",
+    "ElectionIsClosed"
+   ],
+   [
+    "A adds a candidate while the election is open",
+    "ElectionIsOpen"
+   ],
+   [
+    "V votes for President again",
+    "AlreadyVoted"
+   ],
+   [
+    "X (not on the voter list) votes",
+    "VoterNotAllowed"
+   ],
+   [
+    "V votes for candidate 7 of Treasurer (does not exist)",
+    "InvalidCandidate"
+   ],
+   [
+    "A calls get_winner while the election is open",
+    "ElectionIsOpen"
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py devos (log: tests/devnet/logs/ui-clicks-2026-11-13.jsonl)",
+  "limits": [
+   "The Create Election page is the only page that talks to the program. Owned Elections and Enrolled Elections are static mock UIs (hard-coded 'President' / 'Secretary' and '42' voters; the Get Winners button has no handler). There is no UI for add_voter, toggle_election, vote, tally_votes or get_winner, even though the Create Election copy says you will add voters on Owned Elections. Those instructions are covered by the script.",
+   "The app's createElection always passes maxPositions=10, maxCandidatesPerPosition=10 and an empty voter list (utils/solana.ts). An election created through the app therefore has no allowed voters until add_voter is called, which the UI never does.",
+   "Elections start closed (is_open = false). Voting is rejected with ElectionIsClosed until the authority calls toggle_election, which the app never does.",
+   "toggle_election has no finished state: after get_winner, the authority can reopen, add voters (add_voter is only blocked while the election is open) and accept new votes. The stored winners stay stale until get_winner is called again. The script reopened, added W, and W voted Abstain for President: the counts became Alice:1 Abstain:1, but winners still read President=Alice (tx 5ySN2epW…).",
+   "tally_votes only writes the counts to the program log; it does not store winners. Abstain is a real candidate and can win — in the script, Treasurer=Abstain because V voted Abstain and Bob had 0.",
+   "The form's submit loop calls addCandidate(electionName, i, name) with i equal to the position's index in the form, so two candidates under one position both go to that position (the UI run added Alice and Bob to President, which the program accepts because the app's max is 10). Sending uses window.solana directly (not the wallet-adapter provider) against a hardcoded Connection to api.devnet.solana.com.",
+   "The static export shows React hydration warnings (#418, #423) on first load; they are cosmetic and did not block the four program transactions."
+  ]
  }
 ]

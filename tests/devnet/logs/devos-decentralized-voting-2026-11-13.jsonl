@@ -1,0 +1,35 @@
+{"step": "deploy", "program": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2", "deploy_tx": "4GmxwiANvo5fodGrm7NeCyyEUdrcRp3XoKeuaNHTVNXsdvePQaY3uhMouSLFKFK8Zh1YDZomojjFXDmZxb1nvhZQ"}
+{"step": "setup", "program": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2", "A": "DNy7cz1CY22zfDNg1Y7Gm8YWo6Dy1DfNJV3p1Z4mGMc6", "V": "G1dWRqhiEt6LLPZVfw7PQcX3UopVg43PGvreToibzgFf", "W": "5KumuWZowv7M77cLc4Mwvo3ytvA8aqQqjCbRHgwtYzt1", "X": "2j8SsTr2HiPmfUDdkdGyct6o9PxDQmUTYneGjAUX1Edm", "election": "GpDah5qVaWBxpkVMEZpPahY2C9XTbyZQdTiXVDj7e6Y2", "name": "sc-DNy7cz", "run": 1}
+{"step": "fund A 0.03, V 0.005, W 0.005, X 0.005 SOL", "sig": "291Ha8keNJ7jmusMemELfGsLSvV3jBJrn7oQR7AcDrCVX7iNEPjkkQpSAA5XUtr5695PMmq4HQXX5un8GpFAgobv", "run": 1}
+{"step": "A creates the election (max 2 positions, 1 candidate each plus Abstain, voters [V]; PDA [name, authority])", "ok": true, "sig": "4jRBAdcTHc7XEPqncw5pcusZapeRwr4fYwgdPf5m9zHXAqauoyaWDhehUNeHYGcaLcPa5bUTKHt5vWa4EAtbcjgD", "rent_sol": 0.00364744, "bytes": 590, "run": 1}
+{"step": "A creates the same election again", "expectedFailure": true, "error": "Allocate: account Address { address: GpDah5qVaWBxpkVMEZpPahY2C9XTbyZQdTiXVDj7e6Y2, base: None } already in use", "run": 1}
+{"step": "X adds a position to A's election (seeds use the signer, so the PDA does not match)", "expectedFailure": true, "error": "ConstraintSeeds", "run": 1}
+{"step": "A adds position President", "ok": true, "sig": "3G6jNm32xBWhJ6TWcCgMgaK2q5ovJnTvVm6q4zdtptz2igFGaX8dxii3Fv1GFxBnEXGRQ6U6ojrURB7J4BqyAjdL", "run": 1}
+{"step": "A adds position Treasurer", "ok": true, "sig": "Qw2ntTKRzyozcQuvDsuDivScJ1RiC6ieLMeiDweXahg1snS7niKVmyWi2gXgUYmP97drw7DBqsy1txCwn4BoTBo", "run": 1}
+{"step": "A adds a third position (max 2)", "expectedFailure": true, "error": "MaxPositionsReached", "run": 1}
+{"step": "A adds President again", "expectedFailure": true, "error": "PositionAlreadyAdded", "run": 1}
+{"step": "A adds candidate Alice to President", "ok": true, "sig": "5J2Xz4edompcomb4DYhfE7p1LXSD2TdWGbAfU5QfWFYM8UVja4ZTynbfhSaGocsHtXpfWUvjZ55vNcrCWezs8Mf4", "run": 1}
+{"step": "A adds candidate Bob to Treasurer", "ok": true, "sig": "3ZD51qcujYPJsXNWuBSDrm3bA3fequ4BLUSZtPgubsb26Aab6fCPkVcG6N2bDSNbaqWXpKohhnn9RYKqW4YjdByA", "run": 1}
+{"step": "A adds a second candidate to President (max 1 plus Abstain)", "expectedFailure": true, "error": "MaxCandidatesReached", "run": 1}
+{"step": "A adds a candidate to position 5 (does not exist)", "expectedFailure": true, "error": "InvalidPosition", "run": 1}
+{"step": "V votes before the election is opened", "expectedFailure": true, "error": "ElectionIsClosed", "run": 1}
+{"step": "A opens the election (toggle_election)", "ok": true, "sig": "SeNkCmiZ3tCpVveWvovvNmHXkJWzF1u4fmcL9ybEY8VuVTrSWjrcgaS6CYnvZGHevSAC4Q6KTz6eAkaFSAbGJdc", "run": 1}
+{"step": "A adds a candidate while the election is open", "expectedFailure": true, "error": "ElectionIsOpen", "run": 1}
+{"step": "V votes Alice for President", "ok": true, "sig": "2SvTJVHNxNxdaHGCaGqXgq6pYuUgdtMrK6qvSbtEboksR5fq29MT9u96jeVL5RnX4d9aKhYzQRzQb873vodtAuCY", "run": 1}
+{"step": "V votes for President again", "expectedFailure": true, "error": "AlreadyVoted", "run": 1}
+{"step": "X (not on the voter list) votes", "expectedFailure": true, "error": "VoterNotAllowed", "run": 1}
+{"step": "V votes for candidate 7 of Treasurer (does not exist)", "expectedFailure": true, "error": "InvalidCandidate", "run": 1}
+{"step": "V votes Abstain for Treasurer", "ok": true, "sig": "67MPvvt9HSvkZb6GZ9TdWrvHTL5hup4huDnXpJoQPcfyCyxF6yrDkSkEsGETScbQvxKPtE8pmJRCUAYohiD5fB8V", "run": 1}
+{"step": "A calls tally_votes (it only writes the counts to the program log)", "ok": true, "sig": "63P1G1o4925jEBaZooAzx8Kndgf9V9LhjZ4yNsDGJH82D6hzZjCakocKA5ftuY5WaX4LTVSZZ1VLMV6n3LkvgASD", "run": 1}
+{"step": "A calls get_winner while the election is open", "expectedFailure": true, "error": "ElectionIsOpen", "run": 1}
+{"step": "A closes the election", "ok": true, "sig": "5cSSHSUfdT7EVDNJtToeHCGPqT1nfHM58efSDdJUfb7Nt36kXjeZmfsBjxdePdofKCur5NfUV3VovBBZXwnC6wiJ", "run": 1}
+{"step": "A calls get_winner", "ok": true, "sig": "2S8KttSRWzHF7nkFsbMvGHE91cJfL7uU9RgQyHxQgxviWGL3GsgKfQZtstE7h4E3PhtD53dFAW9iu3rg6qBJ4JZT", "run": 1}
+{"step": "state after get_winner", "is_open": false, "positions": [{"name": "President", "candidates": ["Alice:1", "Abstain:0"]}, {"name": "Treasurer", "candidates": ["Bob:0", "Abstain:1"]}], "voters": 1, "votes": 2, "winners": ["President=Alice", "Treasurer=Abstain"], "run": 1}
+{"step": "A adds voter W after the result (add_voter reallocs the account)", "ok": true, "sig": "5noKC6QpZXZJgHH9YgxwnLFi9aiG3Swv5sziLDzy2YYEDvF4MobrTmFdrt9d2RJwhegXVZ8CrW4MicFmJgXtvgqv", "run": 1}
+{"step": "A reopens the closed election (toggle has no finished state)", "ok": true, "sig": "jgDXfAkyAB3vixfge5g2Y42TDjUGfeGaTzS6GErAfqJZipHjdi4G5Uxd49iCZURjDBAu7ouCoqi275MGhpFwTUD", "run": 1}
+{"step": "W votes Abstain for President after the winners were stored", "ok": true, "sig": "5ySN2epWEErXcyLpufZ5aFkwRhWsrRmTASZmGtE1KQusnDgq5sA4fL4vpESpBLTJRtMQzHf1JAfAutDGVHLzG7iU", "run": 1}
+{"step": "state: the stored winners were not updated", "is_open": true, "positions": [{"name": "President", "candidates": ["Alice:1", "Abstain:1"]}, {"name": "Treasurer", "candidates": ["Bob:0", "Abstain:1"]}], "voters": 2, "votes": 3, "winners": ["President=Alice", "Treasurer=Abstain"], "run": 1}
+{"step": "return unspent SOL to the payer", "from": "DNy7cz1CY22zfDNg1Y7Gm8YWo6Dy1DfNJV3p1Z4mGMc6", "sol": 0.02584552, "sig": "59dmu6oCxszPL63kuh5PPQSqqP34FyKv1f3sD7X6n3ePXjR1QrcJAcsyrWGDTKyqam29SMoiWm34GR9D1C73hgy4", "run": 1}
+{"step": "return unspent SOL to the payer", "from": "G1dWRqhiEt6LLPZVfw7PQcX3UopVg43PGvreToibzgFf", "sol": 0.004985, "sig": "4q7E1EZoNBJ6N6B5Rd71C5Jnoqejewg8LTvEuVRQnd1KU2kACLVMohZUeEV4Nq6ozNv9UKQ3ob75TfXLEhFApNbx", "run": 1}
+{"step": "return unspent SOL to the payer", "from": "5KumuWZowv7M77cLc4Mwvo3ytvA8aqQqjCbRHgwtYzt1", "sol": 0.00499, "sig": "5ZSbbcsqECLMT6phB223saRkvUQ3WBrx8Zje9A17kpiwrb1gAGoBA87Fq4LVuySLih6RCTeZLmqeRCm9NFhgazsT", "run": 1}
+{"step": "return unspent SOL to the payer", "from": "2j8SsTr2HiPmfUDdkdGyct6o9PxDQmUTYneGjAUX1Edm", "sol": 0.004995, "sig": "2T65bn23wfop89F7csqi5EcXhBxVLeoasrSDs9B9tdoEb8fTjQc4W4uEEBq1ChQgDABp9577ahFuhuYczXrdh7ca", "run": 1}
