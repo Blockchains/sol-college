@@ -1,0 +1,21 @@
+.lesson ol.steps>li{margin:0 0 14px}.lesson .see{color:var(--mut);display:block;margin-top:4px}.lesson .see:before{content:"You should see: ";color:var(--a);font-weight:700}
+.lesson .toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+.lesson pre.diagram{background:#0d0c1c;border:1px solid var(--line);border-radius:12px;padding:14px 16px;white-space:pre;overflow:auto}
+.lesson .instr{border-left:3px solid var(--b);padding-left:16px;margin:28px 0}
+.lesson .ex{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0}
+.lesson .ok{color:var(--a)}.lesson .ran{font-size:14px;color:var(--a)}.lesson .notran{font-size:14px;color:var(--mut)}.lesson .bad{color:#ff7a90}
+.lesson .num{display:inline-block;min-width:1.8em;height:1.8em;line-height:1.8em;text-align:center;border-radius:50%;background:var(--b);color:#fff;font-weight:800;margin-right:8px}
+.lesson table{width:100%;border-collapse:collapse}.lesson td,.lesson th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.lesson .meta-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0 18px;font-size:14px;color:var(--mut)}
+.lesson .goals{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:18px 0 8px}
+.lesson .goals h2,.lesson .goals h3{margin:12px 0 6px;font-size:1.05em}
+.lesson .goals h2:first-child{margin-top:0}
+.lesson .goals ul{margin:.2em 0 .6em;padding-left:1.2em}
+.lesson .hint{margin:8px 0;color:var(--mut)}.lesson .hint:before{content:"Hint: ";color:var(--a);font-weight:700}
+.lesson details.sol{margin:10px 0 0;border:1px dashed var(--line);border-radius:10px;padding:8px 14px;color:var(--mut)}
+.lesson details.sol>summary{cursor:pointer;font-weight:700;color:var(--ink);list-style:none}
+.lesson details.sol>summary::-webkit-details-marker{display:none}
+.lesson details.sol>summary:before{content:"▸ ";color:var(--a)}
+.lesson details.sol[open]>summary:before{content:"▾ "}
+.chip.beg{background:#0f3a2c;color:#9ff5d0}.chip.int{background:#2a2460;color:#d9d6ff}.chip.adv{background:#3a1a2a;color:#ffc2d0}
+.path-stage{margin:28px 0 8px}.path-stage>ol{padding-left:1.3em}.path-stage>ol>li{margin:0 0 10px}

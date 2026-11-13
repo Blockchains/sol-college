@@ -177,21 +177,27 @@
    "steps": [
     "In Node: `PublicKey.findProgramAddressSync([Buffer.from('pixel'), Buffer.from([128,152])], new PublicKey('GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY'))`."
    ],
-   "expect": "`GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89`, the pixel our test painted (see the devnet log)."
+   "expect": "`GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89`, the pixel our test painted (see the devnet log).",
+   "hint": "The second seed is two raw bytes, `Buffer.from([128, 152])`, not the strings `\"128\"` and `\"152\"`.",
+   "approach": "Call `PublicKey.findProgramAddressSync` with exactly those seeds and the lesson's program ID. The first element of the result is the address; it must equal the recorded pixel `GLR36DP6…` from the devnet log. If it doesn't, your seeds are a different length or encoding."
   },
   {
    "title": "Read a pixel's bytes",
    "steps": [
     "Open that address on Solana Explorer (devnet) and look at the account data."
    ],
-   "expect": "14 bytes: an 8-byte discriminator, then 128, 152, then the colour 20, 241, 149 set by the recorded `update_pixel`, then the bump (unless someone has repainted it since)."
+   "expect": "14 bytes: an 8-byte discriminator, then 128, 152, then the colour 20, 241, 149 set by the recorded `update_pixel`, then the bump (unless someone has repainted it since).",
+   "hint": "On Explorer, open the account and look at the raw hex, not the parsed Anchor fields: the first 8 bytes are the discriminator.",
+   "approach": "Skip 8 bytes, then read unsigned bytes: x, y, r, g, b, bump. After our `update_pixel` they were 128, 152, 20, 241, 149, and the bump. If someone has painted that pixel since, the colour will have changed — the address will not."
   },
   {
    "title": "Count the canvas",
    "steps": [
     "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter)."
    ],
-   "expect": "One account per painted pixel; the number matches the coloured cells on the live canvas."
+   "expect": "One account per painted pixel; the number matches the coloured cells on the live canvas.",
+   "hint": "Filter by `dataSize: 14` so you don't pick up any other account the program might own.",
+   "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Compare the length to the coloured cells on the live canvas: empty cells have no account yet."
   },
   {
    "title": "Make painting owner-only",
@@ -199,15 +205,50 @@
     "Add `owner: Pubkey` to `Pixel` (and 32 bytes to `LEN`), set it in `create_pixel`, and add a `pub user: Signer<'info>` to `UpdatePixel` with `constraint = pixel.owner == user.key()`.",
     "`anchor build` and test `update_pixel` from a different wallet."
    ],
-   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour."
+   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour.",
+   "hint": "`UpdatePixel` currently takes no user account at all. You need a `Signer` and a constraint that compares it to a new `owner` field.",
+   "approach": "Add `owner: Pubkey` to `Pixel`, increase `LEN` by 32, set `owner = user.key()` in `create_pixel`, and on `UpdatePixel` add `pub user: Signer` with `constraint = pixel.owner == user.key()`. Build, then from a second wallet call `update_pixel` on a pixel the first wallet created: it should fail the constraint, while the creator can still recolour."
   },
   {
    "title": "Fix the error messages",
    "steps": [
     "The `#[msg]` strings say \"between 0-99\" but `MAX_POS` is 199. Correct them and rebuild."
    ],
-   "expect": "Sending x = 200 now reports \"between 0-199\"."
+   "expect": "Sending x = 200 now reports \"between 0-199\".",
+   "hint": "Search the source for `0-99` — the constant `MAX_POS` is already 199.",
+   "approach": "Edit the `#[msg]` strings (and any client-side copy) so they say `0-199`, rebuild, and send `x = 200`. The error text should now match the actual limit. This is a documentation fix only; the program already rejects 200."
   }
  ],
- "not_covered": "Painting an empty pixel was clicked through on the live page. Recolouring (`update_pixel`) was verified by script only. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected."
+ "not_covered": "Painting an empty pixel was clicked through on the live page. Recolouring (`update_pixel`) was verified by script only. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected.",
+ "path_order": 1,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "30 min",
+ "objectives": [
+  "Derive a Program Derived Address from seeds you choose — here, a pixel's x and y as single bytes.",
+  "Explain why each pixel is its own 14-byte account, and what those 14 bytes hold (discriminator, position, colour, bump).",
+  "Tell create (`init`) from update (re-derive the same PDA from stored fields), and find the `PixelChanged` event in the logs."
+ ],
+ "prereqs": [
+  "A Phantom (or Solflare) wallet set to Solana Devnet, and about 0.05 devnet SOL from [faucet.solana.com](https://faucet.solana.com).",
+  "No earlier Sol.College lesson is required. This is the first step on the [learning path](/lessons/path/)."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "bump",
+  "init",
+  "account",
+  "discriminator",
+  "event",
+  "rent",
+  "signer",
+  "payer"
+ ],
+ "build": {
+  "dir": "Picassol",
+  "anchor": "0.26.0",
+  "test": "anchor test",
+  "note": "Written for Anchor 0.26.0, which is older than the CLIs on this machine (0.29–0.32). `anchor build` against 0.26 may need that exact CLI. The program itself is small: one `lib.rs` with `create_pixel` and `update_pixel`."
+ }
 }

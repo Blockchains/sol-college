@@ -267,14 +267,18 @@
     "From Proof: A staked 300 tokens and submitted 150; B staked 100 and submitted 160 shortly after.",
     "Compute the token-weighted average by hand."
    ],
-   "expect": "(300 × 150 + 100 × 160) / 400 = 152.5. The chain stored `152500778` (152.500778): slightly above, because A's weight had decayed a little in the seconds between the two submissions."
+   "expect": "(300 × 150 + 100 × 160) / 400 = 152.5. The chain stored `152500778` (152.500778): slightly above, because A's weight had decayed a little in the seconds between the two submissions.",
+   "hint": "The aggregate is a weighted average; the weights are stake × a time-decay factor. Every input is in the recorded submissions.",
+   "approach": "Reproduce the formula from the program (don't guess the decay), plug in the recorded prices, stakes and timestamps, and compare to the on-chain aggregate after the last submission. They should match within the program's rounding."
   },
   {
    "title": "Find B's reward",
    "steps": [
     "Open B's submit transaction `63bZjLdC…` on Explorer and look at the balance changes, or compare the oracle's lamports in our log before (95,603,160 after funding) and after (95,284,351)."
    ],
-   "expect": "The oracle account paid out 318,809 lamports, all to B. A's first submission earned 0 because the total weight before it was 0."
+   "expect": "The oracle account paid out 318,809 lamports, all to B. A's first submission earned 0 because the total weight before it was 0.",
+   "hint": "The reward is paid from a collected fee or a reward pot, proportional to stake (and maybe to accuracy). Follow the token balances in B's reward transaction.",
+   "approach": "From the recorded reward signature, read B's token-account delta and the pot's delta. They should sum to zero (plus fees) and match the formula. If B was paid more or less, you've found a bug to write up."
   },
   {
    "title": "Watch a lock release",
@@ -282,7 +286,9 @@
     "Create an oracle with a 60-second deposit lock, deposit, and press Submit Value immediately.",
     "Try again after 60 seconds."
    ],
-   "expect": "First attempt fails with `NoUnlockedTokens`; the second succeeds, because `unlock_tokens_if_possible` moves locked to unlocked once the lock has passed."
+   "expect": "First attempt fails with `NoUnlockedTokens`; the second succeeds, because `unlock_tokens_if_possible` moves locked to unlocked once the lock has passed.",
+   "hint": "Stake is often locked for a number of slots or seconds after a submission, so a submitter can't dump immediately.",
+   "approach": "Try withdrawing before the lock ends (should fail with the program's lock error) and after (should succeed, as in the recorded release). The Clock or a stored `unlock_slot` is the judge."
   },
   {
    "title": "Make quorum a real percentage",
@@ -290,15 +296,50 @@
     "In `refresh_blacklist_status` (line 928), compare against `total_deposited_tokens × quorum / 10_000` instead of `quorum`.",
     "`anchor build` and test: total stake 400, quorum 2000 (20%), one voter with 50 tokens votes blacklist."
    ],
-   "expect": "With the fix, 50 < 80 (20% of 400): not blacklisted. A 100-token voter then pushes the total above 80 and blacklists the target."
+   "expect": "With the fix, 50 < 80 (20% of 400): not blacklisted. A 100-token voter then pushes the total above 80 and blacklists the target.",
+   "hint": "Same class of bug as Votara: a '10%' quorum that is compared to a raw count of submitters.",
+   "approach": "Read the quorum check. If it isn't `weighted_stake * 100 >= total_stake * percent`, change it so that it is, and show a low-turnout submission that used to update the aggregate and now doesn't."
   },
   {
    "title": "Derive your UserState",
    "steps": [
     "In Node: `PublicKey.findProgramAddressSync([Buffer.from('user'), oracle.toBuffer(), you.toBuffer()], new PublicKey('3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx'))`."
    ],
-   "expect": "The account your deposit created; on Explorer its data starts (after the 8-byte discriminator) with the oracle address and then your wallet."
+   "expect": "The account your deposit created; on Explorer its data starts (after the 8-byte discriminator) with the oracle address and then your wallet.",
+   "hint": "`UserState` is a PDA from the user and the oracle (or the feed). The seeds are in the Accounts struct.",
+   "approach": "`findProgramAddressSync` with those seeds and the program ID. It must equal the UserState account in your submission transaction."
   }
  ],
- "not_covered": "Create, deposit and submit were clicked through in the hosted app. Funding, withdraw, blacklist voting and the blacklisted-submitter rejection were run from the script. Whitelist votes and `update_user_vote_weights` were not exercised. The app has no Fund button, and the explorer list uses getProgramAccounts on the public RPC, so it can be slow."
+ "not_covered": "Create, deposit and submit were clicked through in the hosted app. Funding, withdraw, blacklist voting and the blacklisted-submitter rejection were run from the script. Whitelist votes and `update_user_vote_weights` were not exercised. The app has no Fund button, and the explorer list uses getProgramAccounts on the public RPC, so it can be slow.",
+ "path_order": 15,
+ "path_stage": 3,
+ "difficulty": "Advanced",
+ "time": "70 min",
+ "objectives": [
+  "Run a stake-weighted price oracle: submit a price, see the aggregate, and watch old submissions fade with time.",
+  "Recompute the aggregate from the recorded submissions, and find a submitter's reward.",
+  "See a lock release and a quorum that may not be a real percentage."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 SOL, plus the oracle's stake token if the app mints one.",
+  "[stakes.wtf](/lessons/stakes-main/) (staking, rewards) and [Votara](/lessons/votara/) (quorum). This is an oracle, not a market: the output is a number other programs could read."
+ ],
+ "concepts": [
+  "oracle",
+  "staking",
+  "clock",
+  "pda",
+  "voting",
+  "cpi",
+  "token-program",
+  "ata",
+  "quorum",
+  "authority"
+ ],
+ "build": {
+  "dir": "anchor",
+  "anchor": "0.31.1",
+  "test": "anchor test",
+  "note": "The program is in `anchor/programs/oracle`. Tests: `anchor/tests/oracle.test.ts`."
+ }
 }

@@ -287,7 +287,9 @@
     "In a Node script with `@solana/web3.js`, call `PublicKey.findProgramAddressSync` with seeds `[\"escrow\", <your address>, <seed>]` and program `6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP`. Get the seed from the escrow account on Explorer (it is the last field) or from the `initialize` instruction data.",
     "Compare with the escrow address in the `initialize` transaction on Explorer."
    ],
-   "expect": "The derived address is exactly the escrow account the app created."
+   "expect": "The derived address is exactly the escrow account the app created.",
+   "hint": "The third seed is the `seed` argument the app chose — a 13-digit millisecond timestamp, as a string, not as a number.",
+   "approach": "Read the seed from the `initialize` instruction data or the escrow account, then `findProgramAddressSync([Buffer.from('escrow'), owner.toBuffer(), Buffer.from(seed)], programId)`. It must equal the escrow address in that transaction."
   },
   {
    "title": "Check the account size",
@@ -295,7 +297,9 @@
     "Open your escrow address on Solana Explorer (devnet).",
     "Read its data size."
    ],
-   "expect": "93 + the length of the seed. The app's seed is a 13-digit millisecond timestamp, so 106 bytes."
+   "expect": "93 + the length of the seed. The app's seed is a 13-digit millisecond timestamp, so 106 bytes.",
+   "hint": "Anchor's 8-byte discriminator is included. The seed is a string, so it carries a 4-byte length prefix plus the bytes.",
+   "approach": "On Explorer the data length is 93 + seed.len(). For a 13-digit seed that's 106. If you change the seed length, the size (and the rent) will change with it."
   },
   {
    "title": "See the two guards",
@@ -303,7 +307,9 @@
     "Create a **30s** escrow to Account 2.",
     "Immediately switch to Account 2 and press Claim."
    ],
-   "expect": "The app shows \"Cannot claim yet\" and sends nothing (the UI guard). The program-level refusal, `DeadlineNotReached`, is in the Proof section from the script that bypasses the UI."
+   "expect": "The app shows \"Cannot claim yet\" and sends nothing (the UI guard). The program-level refusal, `DeadlineNotReached`, is in the Proof section from the script that bypasses the UI.",
+   "hint": "Claim and check-in both read `Clock::get()?.unix_timestamp` and compare it to the stored deadline. The two instructions just disagree about which side of the deadline is allowed.",
+   "approach": "On a 30-second escrow, claim immediately as the beneficiary (should fail: deadline not reached) and check in as the owner after it expires (should fail: DeadlineExceeded, error 6002). After expiry, Claim as the beneficiary should succeed, as in the recorded run."
   },
   {
    "title": "Follow the money in a claim",
@@ -311,7 +317,9 @@
     "Open the claim transaction `5xVrtsfr…` from the Proof section.",
     "Look at the balance changes."
    ],
-   "expect": "The beneficiary gains 0.02118872 SOL: the 0.02 SOL deposit plus the escrow's rent, because `claim` moves every lamport and closes the account."
+   "expect": "The beneficiary gains 0.02118872 SOL: the 0.02 SOL deposit plus the escrow's rent, because `claim` moves every lamport and closes the account.",
+   "hint": "`close = beneficiary` (or whichever destination the instruction uses) adds the account's remaining lamports — the rent — to the claim amount.",
+   "approach": "Note the beneficiary's balance before Claim, then after. The increase is the deposited SOL plus the escrow's rent, minus the transaction fee. The escrow account should disappear (no longer exists on Explorer)."
   },
   {
    "title": "Make the beneficiary sign",
@@ -320,8 +328,42 @@
     "In `Claim`, change `pub beneficiary: AccountInfo<'info>` to `pub beneficiary: Signer<'info>` (and drop the `/// CHECK` comment).",
     "Run `anchor build` and `anchor test` with a test that sends `claim` signed only by a third wallet."
    ],
-   "expect": "That claim now fails with a missing-signature error; a claim signed by the beneficiary still succeeds after the deadline."
+   "expect": "That claim now fails with a missing-signature error; a claim signed by the beneficiary still succeeds after the deadline.",
+   "hint": "Today the beneficiary does not sign `claim`: anyone who spots an expired escrow can submit the instruction and the funds still go to the stored beneficiary. Making them sign is a product choice.",
+   "approach": "Add `beneficiary: Signer` and `has_one = beneficiary` on the escrow. A third wallet's claim should then fail a constraint, while the beneficiary's claim still works. Decide whether that's the behaviour you want (it stops a stranger paying the fee to help the beneficiary)."
   }
  ],
- "not_covered": "Create (initialize + deposit), Cancel, the beneficiary's Claim and the expired Check In rejection were all clicked through in the hosted app. A successful Check In and a date-picked escrow were verified by script only."
+ "not_covered": "Create (initialize + deposit), Cancel, the beneficiary's Claim and the expired Check In rejection were all clicked through in the hosted app. A successful Check In and a date-picked escrow were verified by script only.",
+ "path_order": 5,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "40 min",
+ "objectives": [
+  "Use the Clock sysvar to enforce a deadline the frontend cannot override.",
+  "Follow SOL into an escrow PDA and back out, and see `close` return the rent to a chosen wallet.",
+  "Tell the two guards apart: the beneficiary cannot claim early, and the owner cannot check in after the deadline."
+ ],
+ "prereqs": [
+  "Two Phantom accounts (owner and beneficiary) and about 0.2 devnet SOL in the owner's.",
+  "[PulseFund](/lessons/pulsefund-sol/) (SOL into a PDA, rent) and [Picassol](/lessons/picassol-hackathon/) (PDAs from seeds)."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "clock",
+  "sysvar",
+  "close",
+  "escrow",
+  "lamports",
+  "rent",
+  "signer",
+  "authority",
+  "constraint"
+ ],
+ "build": {
+  "dir": "switch",
+  "anchor": "0.30.1",
+  "test": "anchor test",
+  "note": "The program is in `switch/`. The app is a Next.js 14 frontend at the repo root."
+ }
 }

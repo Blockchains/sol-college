@@ -259,7 +259,9 @@
     "Stake 0.05 SOL at the vault's current rate (150 after our UI config) and note the time.",
     "After 60 s compute 50,000,000 × 150 × 60 / 31,536,000, then press Get Reward."
    ],
-   "expect": "About 14,269 lamports (integer division), give or take the seconds between your note and the transaction."
+   "expect": "About 14,269 lamports (integer division), give or take the seconds between your note and the transaction.",
+   "hint": "The rate is per second, stored on the vault. Elapsed time is `now − stake_start` from the Clock, capped by the lock.",
+   "approach": "From a recorded stake, read the rate, the principal, and the two timestamps in the proof (or the account). Compute `principal × rate × elapsed / scale` with the same integer math as the program, and compare to the claim transaction. They should match to the lamport."
   },
   {
    "title": "Re-staking wipes unclaimed rewards and restarts the lock",
@@ -267,29 +269,67 @@
     "Read `sol_stake.rs` lines 20–23.",
     "Stake, wait, then stake a second time without claiming."
    ],
-   "expect": "`reward_time` and `staked_time` are reset: the rewards accrued so far are never paid, and the lock restarts. Fix: pay out pending rewards first and keep the later of the two unlock times."
+   "expect": "`reward_time` and `staked_time` are reset: the rewards accrued so far are never paid, and the lock restarts. Fix: pay out pending rewards first and keep the later of the two unlock times.",
+   "hint": "Re-staking often sets `start = now` and does not first credit the outstanding reward. That's a wipe, not a compound.",
+   "approach": "Stake, wait, then stake again without claiming. Read the stake account: the unclaimed reward should be the figure the lesson reports (zero, or carried). If it's zero, the fix is to credit (or require a claim) before resetting the start."
   },
   {
    "title": "Overflow at a realistic size",
    "steps": [
     "With `overflow-checks = true` (contract/Cargo.toml), evaluate line 23 for 10 SOL, rate 100, one year: 10,000,000,000 × 100 × 31,536,000."
    ],
-   "expect": "3.15 × 10¹⁹, more than u64::MAX (1.8 × 10¹⁹): the claim panics and can never succeed for that position. Fix: compute in `u128` and divide before casting back."
+   "expect": "3.15 × 10¹⁹, more than u64::MAX (1.8 × 10¹⁹): the claim panics and can never succeed for that position. Fix: compute in `u128` and divide before casting back.",
+   "hint": "A per-second rate that fits a demo can overflow a `u64` at a few hundred SOL × a long lock. Look for a raw `*` rather than `checked_mul`.",
+   "approach": "In a local test, pass a principal and a duration at the high end of what the UI allows. If the program panics or wraps, switch to `u128` intermediate math (or `checked_mul`) and show the same inputs now succeed, with a reward that matches the formula."
   },
   {
    "title": "Separate principal from rewards",
    "steps": [
     "Add `reward_pool` to `VaultAccount`; `deposit` adds to it, `claim_rewards` pays only from it, and `withdraw` may take at most `reward_pool`."
    ],
-   "expect": "A local test where the admin withdraws and a player then unstakes: the player gets their stake back. With the original code the vault is empty (our log: the vault account no longer exists after `withdraw`)."
+   "expect": "A local test where the admin withdraws and a player then unstakes: the player gets their stake back. With the original code the vault is empty (our log: the vault account no longer exists after `withdraw`).",
+   "hint": "If principal and rewards sit in one lamport balance, a reward claim can eat principal, or a withdraw can eat rewards.",
+   "approach": "Split them in state (`principal`, `rewards_owed`) and only move each for its own instruction. After a claim, principal should be unchanged; after a principal withdraw, unclaimed rewards should still be claimable (or automatically paid)."
   },
   {
    "title": "Let users see the real rate",
    "steps": [
     "Replace the fixed `50%` in `Body.tsx` with the vault's `apy_rate` fetched via `program.account.vaultAccount.fetch`."
    ],
-   "expect": "The page shows 150 (×100% per year) after our Admin Config, which makes the meaning of the number obvious."
+   "expect": "The page shows 150 (×100% per year) after our Admin Config, which makes the meaning of the number obvious.",
+   "hint": "The UI may show a hard-coded APR or a rounded rate that isn't the on-chain per-second value.",
+   "approach": "Read the rate from the vault account and display it as a yearly percentage derived from that value (say the exact formula in a comment). It should match a reward you predict in exercise 1, not a placeholder."
   }
  ],
- "not_covered": "Initialise, deposit, config, stake, early unstake (refused) and claim were clicked through in the app. Unstake after the lock and the admin withdraw were run by script: the app's shortest lock is 7 days. Admin Withdraw was not clicked on the app's vault."
+ "not_covered": "Initialise, deposit, config, stake, early unstake (refused) and claim were clicked through in the app. Unstake after the lock and the admin withdraw were run by script: the app's shortest lock is 7 days. Admin Withdraw was not clicked on the app's vault.",
+ "path_order": 13,
+ "path_stage": 3,
+ "difficulty": "Advanced",
+ "time": "60 min",
+ "objectives": [
+  "Follow a time-locked SOL vault whose rewards grow every second, from the Clock.",
+  "Predict a reward from the recorded rate and elapsed time, and see what re-staking does to unclaimed rewards.",
+  "Spot an overflow at a realistic stake size, and the way principal and rewards share one balance."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 SOL.",
+  "[sentient.send](/lessons/sentient-send/) (deadlines, pools) and [TrustLock](/lessons/trustlock/) (Clock). Bring a calculator for the reward exercise."
+ ],
+ "concepts": [
+  "pda",
+  "clock",
+  "staking",
+  "overflow",
+  "vault",
+  "authority",
+  "lamports",
+  "constraint",
+  "init"
+ ],
+ "build": {
+  "dir": "contract",
+  "anchor": "0.30.1",
+  "test": "anchor test",
+  "note": "The program is in `contract/programs/staking`. Some frontends live next to it."
+ }
 }

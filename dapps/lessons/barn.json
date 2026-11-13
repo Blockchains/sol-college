@@ -327,14 +327,18 @@
     "Look at `lib.rs` lines 55–57 and `update_grant_milestone.rs` line 67.",
     "Change `reject_grant_milestone` to call `ctx.accounts.reject_milestone()`, rebuild, and reject a milestone in a local test."
    ],
-   "expect": "Its state becomes Rejected (2). Before the fix, our devnet milestone Gy5XhNzw… reads 3 (Accepted) after \"reject\", and a sponsor could settle it."
+   "expect": "Its state becomes Rejected (2). Before the fix, our devnet milestone Gy5XhNzw… reads 3 (Accepted) after \"reject\", and a sponsor could settle it.",
+   "hint": "Look at `lib.rs` around the `reject_grant_milestone` entry point, and at the handler it actually calls.",
+   "approach": "Change it to call `ctx.accounts.reject_milestone()` (the handler that sets state 2), rebuild, and reject a milestone on a local validator. Its state should become Rejected (2). Before the fix, our devnet milestone Gy5XhNzw… reads 3 (Accepted) after 'reject', and a sponsor could settle it."
   },
   {
    "title": "Gate Approve Sponsor",
    "steps": [
     "Add a constant `ADMIN` and `address = ADMIN` on `admin` in `approve_sponsor.rs`."
    ],
-   "expect": "Our script's approval by an unrelated wallet (4jemNXkW…) would fail with a constraint error; only the admin can create sponsors."
+   "expect": "Our script's approval by an unrelated wallet (4jemNXkW…) would fail with a constraint error; only the admin can create sponsors.",
+   "hint": "`approve_sponsor` has an `admin: Signer` that nothing constrains — any wallet can approve any eligible profile.",
+   "approach": "Add a constant `ADMIN` and `address = ADMIN` on that signer (or a PDA config). The script's approval by an unrelated wallet should then fail; only the admin should be able to create sponsors."
   },
   {
    "title": "Tie settle to the right grant and payee",
@@ -342,22 +346,58 @@
     "In `SettleGrantMilestone`, load the grant program and project and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, `project.key() == grant.project`, and require `to` to be the project owner's wallet.",
     "Locally: a second sponsor settles the first sponsor's accepted milestone with `to` = itself."
    ],
-   "expect": "Rejected after the fix. Before it, the call succeeds: the second sponsor pays itself, the milestone is marked Paid and the developer can never be paid for it."
+   "expect": "Rejected after the fix. Before it, the call succeeds: the second sponsor pays itself, the milestone is marked Paid and the developer can never be paid for it.",
+   "hint": "`settle` pays `to`, which is an account the client passes. The program should require it to be the project's owner, and the grant to belong to that program.",
+   "approach": "Load the grant program and the project, and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, and `to.key() == project.owner` (or whatever the field is called). A settle that names a different payee should fail; the recorded 0.005 SOL settle to the developer should still pass."
   },
   {
    "title": "Check milestone amounts when they're added",
    "steps": [
     "In `add_milestone`, sum existing milestone amounts (or keep a `committed` total on the grant) and refuse when it would exceed `approved_amount`."
    ],
-   "expect": "Our milestone #1 (0.01 SOL with 0.005 left) is refused at creation instead of failing only at settle."
+   "expect": "Our milestone #1 (0.01 SOL with 0.005 left) is refused at creation instead of failing only at settle.",
+   "hint": "A milestone can be added for more than the remaining grant. The cap is only checked at settle.",
+   "approach": "At `add_grant_milestone`, `require!(granted.paid_out + existing_milestones + new_amount <= approved_amount)`. Adding a milestone that would overflow the grant should then fail early, before anyone reviews it."
   },
   {
    "title": "Clearer double-settle error",
    "steps": [
     "In `settle_milestone`, call `self.grant_milestone.settle()` before `self.grant.settle_milestone(..)`, and in `settle()` return `MilestoneAlreadyPaid` when the state is Paid."
    ],
-   "expect": "Settling #0 twice now fails with `MilestoneAlreadyPaid` instead of `ApprovedAmountExceeded`."
+   "expect": "Settling #0 twice now fails with `MilestoneAlreadyPaid` instead of `ApprovedAmountExceeded`.",
+   "hint": "A second settle of a paid milestone may fail for a generic reason (already closed, wrong state) rather than a named error.",
+   "approach": "Add `require!(milestone.state == Accepted)` (not Paid) and a `MilestoneAlreadyPaid` error. A second settle should return that error; the first remains the recorded 3PUJ7ZJm…."
   }
  ],
- "not_covered": "The whole sponsor → developer → milestone → payment flow was clicked through in the app with two wallets. Revise, reject, the cap and every rejection case were run by script. Note: \"reject\" actually accepts in this program (Exercise 1; checked on devnet: milestone Gy5XhNzw… is Accepted after reject). Not exercised: SPL-token grants (the app only awards SOL), edit_grant_milestone."
+ "not_covered": "The whole sponsor → developer → milestone → payment flow was clicked through in the app with two wallets. Revise, reject, the cap and every rejection case were run by script. Note: \"reject\" actually accepts in this program (Exercise 1; checked on devnet: milestone Gy5XhNzw… is Accepted after reject). Not exercised: SPL-token grants (the app only awards SOL), edit_grant_milestone.",
+ "path_order": 11,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "55 min",
+ "objectives": [
+  "Walk a tree of counter-numbered PDAs: profile → program/project → grant → milestone, each derived from its parent and a count.",
+  "See a payout cap enforced in one line: `paid_out + amount ≤ approved_amount`.",
+  "Find, and fix, `reject_grant_milestone` calling `accept_milestone()` — proven on devnet, where the 'rejected' milestone is Accepted."
+ ],
+ "prereqs": [
+  "Two wallets (sponsor and developer) and about 0.05 SOL in the sponsor's.",
+  "Stage 2 up through [Votara](/lessons/votara/) (counters, roles). This is the most structured state machine so far."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "has-one",
+  "constraint",
+  "authority",
+  "lamports",
+  "system-transfer",
+  "signer"
+ ],
+ "build": {
+  "dir": "protocol",
+  "anchor": "0.30.1",
+  "test": "anchor test",
+  "note": "The program is in `protocol/programs/barn`. The Next.js app is in `app/`."
+ }
 }

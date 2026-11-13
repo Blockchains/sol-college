@@ -289,21 +289,27 @@
     "In `SignCredential`: `#[account(mut, has_one = university)] credential`, and split it into `SignAsRegistrar` with `constraint = signer.key() == university.registrar` and `SignAsDean` with the dean.",
     "Optionally require registrar ≠ dean."
    ],
-   "expect": "Replaying the script, R's registrar signature fails with a constraint error instead of succeeding as 3N3CnFKr… did, and a credential only verifies after both named people sign."
+   "expect": "Replaying the script, R's registrar signature fails with a constraint error instead of succeeding as 3N3CnFKr… did, and a credential only verifies after both named people sign.",
+   "hint": "The University account is the natural place to store `registrar` and `dean` pubkeys, set at `initialize_university`.",
+   "approach": "Add those two fields, then split `SignCredential` into two structs with `has_one = university` on the credential and `constraint = signer.key() == university.registrar` (and dean). Replaying the script, R's registrar signature should fail a constraint instead of succeeding as 3N3CnFKr… did, and a credential should only verify after both named people sign."
   },
   {
    "title": "Stop cross-university signing",
    "steps": [
     "With only `has_one = university` added (no roles yet), try step 5 again: wallet 2 signs wallet 1's credential while passing wallet 2's university."
    ],
-   "expect": "ConstraintHasOne: the credential's university field doesn't match the university passed."
+   "expect": "ConstraintHasOne: the credential's university field doesn't match the university passed.",
+   "hint": "You can do this without roles: `has_one = university` alone stops a signer from passing a different university.",
+   "approach": "Add `has_one = university` on the credential in `SignCredential`. Wallet 2 signing wallet 1's credential while passing wallet 2's university should then fail ConstraintHasOne."
   },
   {
    "title": "Fix initialize_university's authority",
    "steps": [
     "Drop the `authority: Pubkey` argument and store `ctx.accounts.authority.key()`, or seed the PDA from the argument and require that key to sign."
    ],
-   "expect": "The script's X → U case can no longer create an unusable university. X's issue no longer fails with ConstraintSeeds, because X's university now names X."
+   "expect": "The script's X → U case can no longer create an unusable university. X's issue no longer fails with ConstraintSeeds, because X's university now names X.",
+   "hint": "The PDA is seeded by the *signer*, then the handler stores the *argument*. Those must be the same key.",
+   "approach": "Drop the `authority: Pubkey` argument and store `ctx.accounts.authority.key()`, or seed the PDA from the argument and require that key to sign. The script's X→U case should no longer create an unusable university, and X's issue should no longer fail ConstraintSeeds."
   },
   {
    "title": "Make disclosure proofs check the credential",
@@ -311,7 +317,9 @@
     "Replace `credential_key: Pubkey` with a `credential: Account<Credential>` with `constraint = credential.student == student.key()` and `!credential.is_revoked`.",
     "Add a Disclosure screen on /student/."
    ],
-   "expect": "A student can only record a disclosure for their own, unrevoked credential. Using someone else's credential (or a random key) is rejected."
+   "expect": "A student can only record a disclosure for their own, unrevoked credential. Using someone else's credential (or a random key) is rejected.",
+   "hint": "`credential_key` is a raw `Pubkey` argument, so the program never loads the credential. Make it an account instead.",
+   "approach": "Replace the argument with `credential: Account<Credential>` and `constraint = credential.student == student.key()` plus `!credential.is_revoked`. A student recording a disclosure for someone else's credential (or a random key) should be rejected. Then add a Disclosure screen on /student/."
   },
   {
    "title": "Add revoke and status to the app",
@@ -319,8 +327,42 @@
     "On /university/, list the university's credentials with `getUniversityCredentials` and add a **Revoke** button calling `revokeCredential`.",
     "Check `is_active` in `issue_credential` and add an instruction for the authority to deactivate the university."
    ],
-   "expect": "Revoking from the app turns /verify/ to Credential Revoked, as U's scripted revoke (36gFR1Yf…) did, and a deactivated university can't issue."
+   "expect": "Revoking from the app turns /verify/ to Credential Revoked, as U's scripted revoke (36gFR1Yf…) did, and a deactivated university can't issue.",
+   "hint": "The client already has `revokeCredential` and `getUniversityCredentials`. The university page just doesn't call them.",
+   "approach": "List the university's credentials and add a Revoke button. After a revoke, /verify/ should show Credential Revoked, as U's scripted revoke (36gFR1Yf…) did. Optionally check `is_active` in `issue_credential` and add a deactivate instruction."
   }
  ],
- "not_covered": "Initialize, issue, both signatures, verify and the student list were clicked through in the app. Outsider signing, revocation, disclosure proofs, the authority-mismatch university and every rejected case were run by script. Not exercised: issuing to a different student wallet from the app, create_disclosure_proof with someone else's credential key (read from code)."
+ "not_covered": "Initialize, issue, both signatures, verify and the student list were clicked through in the app. Outsider signing, revocation, disclosure proofs, the authority-mismatch university and every rejected case were run by script. Not exercised: issuing to a different student wallet from the app, create_disclosure_proof with someone else's credential key (read from code).",
+ "path_order": 8,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "50 min",
+ "objectives": [
+  "Compare two instruction structs side by side: `issue` and `revoke` locked with `has_one`, and `SignCredential` with a signer that is never compared to a role.",
+  "Use a counter-numbered PDA (`[\"credential\", university, n]`) and walk a university's credentials.",
+  "Explain a seed mismatch: a university stored a different authority than the key it was derived from, and became unusable."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.05 SOL.",
+  "[Friendstake](/lessons/friendstake/) immediately before this: you have just seen a missing `has_one` on a payee. Here the same idea is about *who may set a flag*."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "has-one",
+  "constraint",
+  "signer",
+  "authority",
+  "discriminator",
+  "view",
+  "memcmp",
+  "unchecked"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.31.1",
+  "test": "anchor test",
+  "note": "`Cargo.toml` pins `anchor-lang` 0.31.1 (the `Anchor.toml` comment says 0.30.1; use the Cargo version). Tests: `tests/uniproof.ts`."
+ }
 }

@@ -271,14 +271,18 @@
     "Note your market's side totals and pool on the market page after betting.",
     "Compute your net stake × pool / winning side total."
    ],
-   "expect": "The amount on the Claim button. For our UI run: creator seed 0.49/0.49, our net bet 0.098 on Yes → Yes 0.588, pool 1.078, payout 0.098 × 1.078 / 0.588 ≈ 0.1797 SOL, the button read \"Claim 0.1797 SOL\"."
+   "expect": "The amount on the Claim button. For our UI run: creator seed 0.49/0.49, our net bet 0.098 on Yes → Yes 0.588, pool 1.078, payout 0.098 × 1.078 / 0.588 ≈ 0.1797 SOL, the button read \"Claim 0.1797 SOL\".",
+   "hint": "The payout formula is in the claim instruction: winning side's pot, your stake, the fee. All three numbers are in the Proof section for the recorded market.",
+   "approach": "Compute `your_stake / winning_side_total × (pool − fees)` from the recorded figures, then compare to the claim transaction's lamport delta (minus the network fee). They should agree to the lamport. If they don't, you are mixing sides or including the fee twice."
   },
   {
    "title": "Hit the 32-byte seed limit",
    "steps": [
     "On Create Market, type a 40-character question and submit."
    ],
-   "expect": "An error before any wallet pop-up (Max seed length exceeded). Fix idea: seed with a hash of the question (`hash(question)` in the program, `sha256` in the app), which is always 32 bytes."
+   "expect": "An error before any wallet pop-up (Max seed length exceeded). Fix idea: seed with a hash of the question (`hash(question)` in the program, `sha256` in the app), which is always 32 bytes.",
+   "hint": "The market's identifier is a seed, so it has the 32-byte PDA seed limit.",
+   "approach": "Try creating a market with a 33-byte name (or whatever field is used as the seed). It should fail at seed construction. Add a named error and a client-side check, as in the Friendstake description exercise."
   },
   {
    "title": "Make a tie",
@@ -286,22 +290,59 @@
     "Create a Yes/No market and do not bet on it; after the end, resolve it.",
     "Read the market account (or the page)."
    ],
-   "expect": "Both sides have 0.49 SOL, so both are marked winning (`num_winners = 2`), and the creator, who holds both, can claim the whole pool."
+   "expect": "Both sides have 0.49 SOL, so both are marked winning (`num_winners = 2`), and the creator, who holds both, can claim the whole pool.",
+   "hint": "A tie is a real outcome: two sides with the same SOL. The program has to decide whether to refund, split, or refuse `end`.",
+   "approach": "On a local validator, put equal SOL on two sides, wait out the deadline, and call the end/claim path. Record what the program actually does (don't guess). If it errors or pays one side arbitrarily, that's the behaviour to document or fix."
   },
   {
    "title": "Find where the fees go",
    "steps": [
     "Open the `claim_creator_fees` transaction `4MwjLyvm…` from Proof on Explorer and read the balance changes."
    ],
-   "expect": "The 0.025 SOL fee pool (0.02 + 0.004 + 0.001) split into two halves of 0.0125 SOL: creator and protocol authority. What stays in the market account (0.00803148 SOL in our log) is its rent."
+   "expect": "The 0.025 SOL fee pool (0.02 + 0.004 + 0.001) split into two halves of 0.0125 SOL: creator and protocol authority. What stays in the market account (0.00803148 SOL in our log) is its rent.",
+   "hint": "Fees are a basis-point cut of the pool, sent to a stored treasury or team wallet. Follow the transfer, not the comment.",
+   "approach": "From a recorded claim or end transaction, look at the lamport deltas of the treasury account. They should equal `pool × fee_bps / 10_000`. If a fee is credited in state but not transferred, you've found a bookkeeping bug like the one in the CS2 prediction market."
   },
   {
    "title": "Allow end times today",
    "steps": [
     "In `frontend/src/app/create/page.tsx`, the date input's `min` is tomorrow (lines 36–38). Change it to today and rebuild."
    ],
-   "expect": "You can create a market that ends in minutes, as our script did; the program only requires the end to be in the future."
+   "expect": "You can create a market that ends in minutes, as our script did; the program only requires the end to be in the future.",
+   "hint": "If the app (or the program) rejects an end time of 'today' because it compares calendar dates in the client, that's a frontend check, not an on-chain one.",
+   "approach": "Find the comparison (`end_time > now`, or a date picker that starts at tomorrow). Allow an end a few minutes in the future so a test market can close in one sitting, and confirm the program still rejects `end` before the deadline."
   }
  ],
- "not_covered": "Create, bet, resolve and claim were clicked through in the hosted app. The market used for resolve/claim was created by script because the form only allows end dates from tomorrow; creator fees were claimed by script. Questions over 32 bytes can't be created at all (PDA seed limit). The fork's TypeScript doesn't type-check, so the export is built with type errors ignored."
+ "not_covered": "Create, bet, resolve and claim were clicked through in the hosted app. The market used for resolve/claim was created by script because the form only allows end dates from tomorrow; creator fees were claimed by script. Questions over 32 bytes can't be created at all (PDA seed limit). The fork's TypeScript doesn't type-check, so the export is built with type errors ignored.",
+ "path_order": 12,
+ "path_stage": 3,
+ "difficulty": "Advanced",
+ "time": "60 min",
+ "objectives": [
+  "Open a winner-takes-all market with a deadline, several sides, and a pool that the winning side splits by stake.",
+  "Compute a payout from the recorded amounts before you claim it, and see where fees go.",
+  "Hit a 32-byte seed limit, and a tie, on purpose."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 SOL.",
+  "Stages 1–2, especially [TrustLock](/lessons/trustlock/) (Clock, close) and [Friendstake](/lessons/friendstake/) (vaults). This is the first lesson in [stage 3](/lessons/path/#stage-3)."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "clock",
+  "vault",
+  "close",
+  "fee",
+  "constraint",
+  "system-transfer",
+  "invoke-signed",
+  "transaction-size"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.32.1",
+  "test": "anchor test",
+  "note": "`anchor-lang` 0.32.1. The program is `programs/prediction-market`. Tests: `tests/prediction-market.test.ts`."
+ }
 }

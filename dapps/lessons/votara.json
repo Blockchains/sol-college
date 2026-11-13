@@ -320,7 +320,9 @@
    "steps": [
     "Script proposal: 100 Yes, 40 No, 2 voters. UI proposal: 20 Yes, 1 voter. Quorum 2, threshold 51."
    ],
-   "expect": "Script: 100 × 100 / 140 = 71 ≥ 51 and 2 ≥ 2 → Passed (the log says `passed`, `quorumReached: true`). UI: 1 < 2 → Rejected before any percentage is computed."
+   "expect": "Script: 100 × 100 / 140 = 71 ≥ 51 and 2 ≥ 2 → Passed (the log says `passed`, `quorumReached: true`). UI: 1 < 2 → Rejected before any percentage is computed.",
+   "hint": "The recorded votes and the approval threshold are all in the Proof section. You only need the counts and the configured percentages.",
+   "approach": "From the proof transactions, write down yes/no and the threshold. Compute both outcomes (passed and rejected) against those numbers; they should match what `finalize` recorded. If they don't, you are looking at a different proposal."
   },
   {
    "title": "Make voting power cost something",
@@ -328,14 +330,18 @@
     "In `stake_tokens`, add the commented SPL `transfer` CPI from `user_token_account` to `vault` (and constrain `user_token_account` to the gov mint and the signer).",
     "Test: stake 100 with 0 tokens."
    ],
-   "expect": "It fails with an insufficient-funds token error instead of giving 100 votes, as it did for B (`3J5VmA5c…`)."
+   "expect": "It fails with an insufficient-funds token error instead of giving 100 votes, as it did for B (`3J5VmA5c…`).",
+   "hint": "Registration is free and grants voting power. A token or SOL stake would make that power costly.",
+   "approach": "Add a stake amount to `register`, transfer it into a vault PDA, and refuse `vote` unless the voter still has that stake. On a local test, a wallet that never registered (or that withdrew) should be unable to vote."
   },
   {
    "title": "A real quorum",
    "steps": [
     "Change the quorum check to compare total votes cast with a percentage of the treasury's staked total."
    ],
-   "expect": "With 140 staked and quorum 10%, 14 power is needed; the field name now matches what it does."
+   "expect": "With 140 staked and quorum 10%, 14 power is needed; the field name now matches what it does.",
+   "hint": "If the code compares `votes >= quorum` and quorum was set to `10`, ten votes pass, regardless of how many voters exist.",
+   "approach": "Change the check to `votes * 100 >= registered_voters * quorum_percent` (checked math), rebuild, and replay a vote with fewer voters than the percentage requires: finalize should then reject for missing quorum."
   },
   {
    "title": "Block the next proposal id",
@@ -343,15 +349,51 @@
     "Read `create_proposal.rs` line 51 and App.tsx line 159.",
     "Locally, with `total_proposals = T`, create a proposal with id `T + 1` from a script, then try to create one through the app."
    ],
-   "expect": "The script call raises the counter to T + 1, so the app now tries id T + 1, whose PDA already exists: it fails, and keeps failing, because the counter only grows on success. Nobody can create a proposal from the app any more. Fix: derive the id on chain from `dao.total_proposals` with `seeds = [b\"proposal\", dao.total_proposals.to_le_bytes()]`."
+   "expect": "The script call raises the counter to T + 1, so the app now tries id T + 1, whose PDA already exists: it fails, and keeps failing, because the counter only grows on success. Nobody can create a proposal from the app any more. Fix: derive the id on chain from `dao.total_proposals` with `seeds = [b\"proposal\", dao.total_proposals.to_le_bytes()]`.",
+   "hint": "The next proposal PDA is `[\"proposal\", next_id]`. If you create that account yourself, the program's `init` fails with 'already in use'. The exercise in the lesson tells you which id is next.",
+   "approach": "Derive the next proposal address from the DAO's counter, create a dummy account there (System Program), then try `create_proposal`. It should fail as the lesson describes. This is a griefing vector; a fix is to have the program own a narrower seed or to retry with the following id."
   },
   {
    "title": "Why delegation can't succeed",
    "steps": [
     "Read `voter/delegate_vote.rs` lines 30–37: the delegate account must sit at `[\"voter\", delegate.key()]`, the key of the account itself."
    ],
-   "expect": "No account can be the PDA of its own address, so `delegate_vote` always fails the seeds check. Fix: pass the delegate's wallet as an extra account and use `[\"voter\", delegate_wallet.key()]`."
+   "expect": "No account can be the PDA of its own address, so `delegate_vote` always fails the seeds check. Fix: pass the delegate's wallet as an extra account and use `[\"voter\", delegate_wallet.key()]`.",
+   "hint": "Read the delegation instruction's account constraints and the handler. One of them makes a successful delegation impossible in this deployment.",
+   "approach": "Compare the seeds and the required signers with what the client sends. The point is to explain, from the code, why a call cannot succeed — not to invent a transaction. Quote the constraint that fails."
   }
  ],
- "not_covered": "Buy, create, vote and finalize were clicked through in the app; a passing proposal (2 voters) and every rejection case were run by script. Register Voter wasn't clicked (our wallet was already a voter). Not exercised: quadratic voting, retract, delegate (it can't succeed, see Exercise 5), cancel, withdraw and rewards; none of the token or SOL transfers exist in the program. The voting period (150 s), timelock (0) and quorum (2) were set by script; the app has no screen for update_config."
+ "not_covered": "Buy, create, vote and finalize were clicked through in the app; a passing proposal (2 voters) and every rejection case were run by script. Register Voter wasn't clicked (our wallet was already a voter). Not exercised: quadratic voting, retract, delegate (it can't succeed, see Exercise 5), cancel, withdraw and rewards; none of the token or SOL transfers exist in the program. The voting period (150 s), timelock (0) and quorum (2) were set by script; the app has no screen for update_config.",
+ "path_order": 6,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "45 min",
+ "objectives": [
+  "Read a DAO flow: register, create a proposal (counter-numbered PDA), vote once, finalize after the period.",
+  "See a `has_one`-style authority check at finalization, and a 'one vote per wallet' rule enforced by a PDA.",
+  "Spot a quorum that is compared to a raw count instead of a percentage, and a proposal id you can block."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 devnet SOL.",
+  "Stage 1, especially [TrustLock](/lessons/trustlock/) (Clock) and [PulseFund](/lessons/pulsefund-sol/) (one PDA per wallet). This is the first lesson in [stage 2](/lessons/path/#stage-2)."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "has-one",
+  "constraint",
+  "voting",
+  "quorum",
+  "clock",
+  "authority",
+  "signer",
+  "memcmp"
+ ],
+ "build": {
+  "dir": "votara",
+  "anchor": "0.32.1",
+  "test": "anchor test",
+  "note": "The program is in `votara/`. Anchor 0.32.1 matches `Cargo.toml`."
+ }
 }

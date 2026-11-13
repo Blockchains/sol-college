@@ -1,0 +1,22 @@
+{
+ "stages": [
+  {
+   "id": 1,
+   "name": "Accounts, PDAs and moving SOL",
+   "level": "Beginner",
+   "blurb": "How programs store state, how addresses are derived from seeds, and how SOL and tokens move. Start here if you are new to Solana programs."
+  },
+  {
+   "id": 2,
+   "name": "Authorization and the checks that go missing",
+   "level": "Intermediate",
+   "blurb": "has_one, PDA signing, multisig and roles — and how to read a program for the account check that isn't there. Several of these apps have real, proven bugs."
+  },
+  {
+   "id": 3,
+   "name": "Markets, staking and oracles",
+   "level": "Advanced",
+   "blurb": "The building blocks put to work: deadlines, curves, fees, rewards that grow with time, and who is allowed to publish a result."
+  }
+ ]
+}

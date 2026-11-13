@@ -222,7 +222,9 @@
    "steps": [
     "In Node with `@solana/web3.js` and `bn.js`, derive `PublicKey.findProgramAddressSync([Buffer.from('poll'), new BN(0).toArrayLike(Buffer,'le',8)], new PublicKey('6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5'))`."
    ],
-   "expect": "`9V1u4vvP4T6JZgEXdag5j49iJRViPSi8PqQfgCisLKhT`, the poll #0 our test created (recorded in the devnet log)."
+   "expect": "`9V1u4vvP4T6JZgEXdag5j49iJRViPSi8PqQfgCisLKhT`, the poll #0 our test created (recorded in the devnet log).",
+   "hint": "The poll id is a `u64` stored as 8 little-endian bytes. `new BN(0).toArrayLike(Buffer, 'le', 8)` is eight zero bytes, not the ASCII character `0`.",
+   "approach": "`findProgramAddressSync([Buffer.from('poll'), <8-byte id>], programId)`. For id 0 the result must be the recorded poll `9V1u4vvP…`. A different encoding (big-endian, or a 4-byte int) will produce a different address."
   },
   {
    "title": "Predict the first collective estimate",
@@ -230,7 +232,9 @@
     "Create a new poll and submit a range of 20–40 as the first forecaster.",
     "Open the poll account on Explorer, or read it in the app."
    ],
-   "expect": "Estimate 30, stored as `collective_estimate = 300000`, with 1 forecaster and 1 estimate update."
+   "expect": "Estimate 30, stored as `collective_estimate = 300000`, with 1 forecaster and 1 estimate update.",
+   "hint": "The first forecaster's midpoint becomes the collective estimate with no one to average against. Midpoint is `(lower + upper) / 2`; the on-chain field is stored × 10,000.",
+   "approach": "Submit 20–40 on a fresh poll and read `collective_estimate`. It should be 300000 (30.0000). If you submit a second estimate, the value will move, so do this as the first forecaster."
   },
   {
    "title": "Watch the stake move",
@@ -238,7 +242,9 @@
     "Before submitting an estimate, note your POEKEN balance in Phantom.",
     "Submit an estimate on any poll."
    ],
-   "expect": "Exactly 100 POEKEN less (the poll's `betting_amount`), now in the program's escrow token account."
+   "expect": "Exactly 100 POEKEN less (the poll's `betting_amount`), now in the program's escrow token account.",
+   "hint": "The stake is a token transfer, not a SOL transfer. Watch the POEKEN mint, not your SOL balance.",
+   "approach": "Note the POEKEN balance, submit any estimate, and compare: it falls by `betting_amount` (100 in our deploy). The escrow token account, a PDA, rises by the same amount — you can see both sides in the transaction's token balances."
   },
   {
    "title": "Reproduce the underflow and fix it",
@@ -246,7 +252,9 @@
     "In `programs/poe/src/lib.rs`, add `require!(lower_estimate <= upper_estimate, ...)` (with a new error code) as the first line of `make_estimate`, before the subtraction.",
     "`anchor build` and call `make_estimate(70, 30)` from a test."
    ],
-   "expect": "Before the fix: \"Program failed to complete\" (the u16 underflow). After: your named error, raised before any arithmetic."
+   "expect": "Before the fix: \"Program failed to complete\" (the u16 underflow). After: your named error, raised before any arithmetic.",
+   "hint": "The crash is a wrapping `u16` subtraction when `lower > upper`. Guard before the arithmetic, not after.",
+   "approach": "Add `require!(lower_estimate <= upper_estimate, PoEError::YourNewError)` at the top of `make_estimate`, rebuild, and call `make_estimate(70, 30)` from a local test. Before the fix the program aborts with a generic overflow; after, you get your named error and no state changes."
   },
   {
    "title": "See the weight of a wide range",
@@ -255,8 +263,42 @@
     "With wallet 2, submit 90–90 on poll A and 80–100 on poll B (both midpoints are 90).",
     "Compare the two collective estimates."
    ],
-   "expect": "Poll A moves further toward 90 than poll B, because weight = (1 − uncertainty) × score × recency and the uncertainty is 0 for 90–90 but 0.2 for 80–100 (recency differs only slightly)."
+   "expect": "Poll A moves further toward 90 than poll B, because weight = (1 − uncertainty) × score × recency and the uncertainty is 0 for 90–90 but 0.2 for 80–100 (recency differs only slightly).",
+   "hint": "Weight falls as the range gets wider: uncertainty is `(upper − lower) / 100` on a 0–100 slider, and the weight multiplies by `(1 − uncertainty)`.",
+   "approach": "On two fresh polls, have wallet 1 submit 50–50 on both, then wallet 2 submit 90–90 on A and 80–100 on B. A's collective estimate should move further toward 90 than B's, matching the formula in the program. Recency is almost the same if you submit them back to back."
   }
  ],
- "not_covered": "Both core actions were clicked through in the hosted app (create poll with registration, submit estimate). Not exercised yet: a second forecaster through the UI, `update_estimate`, `remove_estimate`, and resolving a poll / collecting points (these need the poll's resolver)."
+ "not_covered": "Both core actions were clicked through in the hosted app (create poll with registration, submit estimate). Not exercised yet: a second forecaster through the UI, `update_estimate`, `remove_estimate`, and resolving a poll / collecting points (these need the poll's resolver).",
+ "path_order": 3,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "40 min",
+ "objectives": [
+  "Follow a program-owned mint whose authority is a PDA, and a user account that is created on the first instruction.",
+  "See a stake move from a user's token account into an escrow, as a CPI to the Token Program.",
+  "Recompute a weighted running average, and fix an underflow when a range is reversed."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 devnet SOL.",
+  "[PulseFund](/lessons/pulsefund-sol/) (PDAs, rent) or equivalent. Some comfort reading Rust `u16`/`u64` arithmetic helps for the underflow exercise."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "cpi",
+  "mint",
+  "token-account",
+  "ata",
+  "token-program",
+  "overflow",
+  "invoke-signed",
+  "event"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.30.0",
+  "test": "anchor test",
+  "note": "`anchor-lang` 0.30.0; Anchor CLI 0.30.1 is the closest match. The Next.js app lives in `app/`."
+ }
 }

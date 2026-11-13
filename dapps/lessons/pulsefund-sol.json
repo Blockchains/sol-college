@@ -206,7 +206,9 @@
     "In `home/index.tsx`, pass `pubkey` through `convertToCampaign` into each card.",
     "In `CampaignCard.tsx`, use that pubkey as `campaign` instead of deriving it from the connected wallet, and add an amount input in SOL."
    ],
-   "expect": "Wallet 2 pressing Contribute on wallet 1's card sends a `donate` whose campaign account is wallet 1's PDA, and wallet 1's raised amount goes up. This is what our script's B → A donation (czso1Hs3…) does at the program level."
+   "expect": "Wallet 2 pressing Contribute on wallet 1's card sends a `donate` whose campaign account is wallet 1's PDA, and wallet 1's raised amount goes up. This is what our script's B → A donation (czso1Hs3…) does at the program level.",
+   "hint": "The card's props don't include the campaign's pubkey today. The list already fetches it (`pubkey: campaign.pubkey`) and then drops it in `convertToCampaign`.",
+   "approach": "Thread `pubkey` through the list into `CampaignCard`, and use that as the `campaign` account in `donate` instead of deriving `[\"CROWDFUND\", connectedWallet]`. A second wallet pressing Contribute on the first wallet's card should then match the scripted B→A donation (czso1Hs3…)."
   },
   {
    "title": "Show real amounts",
@@ -214,7 +216,9 @@
     "Replace `.words[0]` with `.toNumber() / LAMPORTS_PER_SOL` (or `toString()` for safety) and label it SOL.",
     "Accept Goal Amount in SOL on the form and multiply by 10⁹ before `new BN`."
    ],
-   "expect": "A 1 SOL goal shows **0 / 1 SOL**, not $0 of $60475904; after one Contribute it shows **0.2 / 1 SOL**, not $65782272."
+   "expect": "A 1 SOL goal shows **0 / 1 SOL**, not $0 of $60475904; after one Contribute it shows **0.2 / 1 SOL**, not $65782272.",
+   "hint": "`BN.words[0]` is a 26-bit limb, not the number. 1,000,000,000 mod 2²⁶ is 60,475,904 — the figure on the card.",
+   "approach": "Replace `.words[0]` with `.toNumber() / LAMPORTS_PER_SOL` (or `toString()` if the value might exceed 2⁵³), and on the form multiply a SOL input by 10⁹ before `new BN`. After one Contribute the card should read 0.2 / 1 SOL."
   },
   {
    "title": "Add a withdraw screen",
@@ -222,7 +226,9 @@
     "On the home page, if the connected wallet has a campaign, show its `lamports − rent` and a Withdraw button.",
     "Call `program.rpc.withdraw(new BN(lamports), { accounts: { campaign, user } })`."
    ],
-   "expect": "Withdrawing everything above rent from your campaign works, as our script's 0.2 SOL withdrawal (34P4TJH1…) did. One lamport more gives InsufficientFunds."
+   "expect": "Withdrawing everything above rent from your campaign works, as our script's 0.2 SOL withdrawal (34P4TJH1…) did. One lamport more gives InsufficientFunds.",
+   "hint": "`withdraw` is already on the program. The app just never calls it. The accounts are `campaign` and `user` (the admin).",
+   "approach": "If the connected wallet is the campaign's `admin`, show `lamports − rent` and a Withdraw button that calls `program.rpc.withdraw(new BN(lamports), { accounts: { campaign, user } })`. Withdrawing everything above rent should match the scripted 0.2 SOL withdrawal (34P4TJH1…); one lamport more should return InsufficientFunds."
   },
   {
    "title": "Real crowdfunding rules",
@@ -231,7 +237,9 @@
     "`withdraw`: require `Clock.unix_timestamp ≥ deadline` and `amount_donated ≥ target_amount`.",
     "Add `refund`: after the deadline, if the target was missed, pay the donor back their recorded amount and close their Donation PDA."
    ],
-   "expect": "Before the deadline the admin's withdraw fails. After a missed target, each donor gets exactly what they gave and the admin gets nothing."
+   "expect": "Before the deadline the admin's withdraw fails. After a missed target, each donor gets exactly what they gave and the admin gets nothing.",
+   "hint": "You will need a new account type to remember each donor's total, because `amount_donated` is a single counter and a plain System transfer can bypass it.",
+   "approach": "Add `deadline` to Campaign, a Donation PDA `[\"donation\", campaign, donor]`, refuse `withdraw` until after the deadline and only if the target was met, and add `refund` that pays each donor their recorded amount if it was missed. Test on a local validator with one campaign that meets the target and one that doesn't."
   },
   {
    "title": "Proper errors, size and close",
@@ -239,8 +247,43 @@
     "Replace the manual admin checks with `has_one = admin @ CrowdfundError::NotAdmin` and define custom errors instead of `IncorrectProgramId`/`InsufficientFunds`.",
     "Add `#[max_len]` to the strings with `InitSpace` instead of `space = 9000`, and add a `close` instruction (`close = admin`) once the funds are withdrawn."
    ],
-   "expect": "B's withdraw fails with NotAdmin. A campaign with short strings costs well under the 0.04637024 SOL rent our run paid, and closing it returns the rent to the admin."
+   "expect": "B's withdraw fails with NotAdmin. A campaign with short strings costs well under the 0.04637024 SOL rent our run paid, and closing it returns the rent to the admin.",
+   "hint": "`has_one = admin` replaces the manual `if campaign.admin != user` that today returns the misleading IncorrectProgramId.",
+   "approach": "Define a custom `NotAdmin` error, add `#[max_len]` + `InitSpace` instead of `space = 9000`, and a `close = admin` instruction once the balance is at the rent floor. A campaign with short strings should cost well under the 0.04637024 SOL our run paid, and B's withdraw should fail with NotAdmin."
   }
  ],
- "not_covered": "Create and Contribute were clicked through in the app. Donating to another wallet's campaign, the withdrawals and every rejected case were run by script (run 1 was aborted by an RPC 503 outage; all results come from run 2). Not exercised: over-long strings in create (the 9,000-byte limit), and plain transfers that bypass donate."
+ "not_covered": "Create and Contribute were clicked through in the app. Donating to another wallet's campaign, the withdrawals and every rejected case were run by script (run 1 was aborted by an RPC 503 outage; all results come from run 2). Not exercised: over-long strings in create (the 9,000-byte limit), and plain transfers that bypass donate.",
+ "path_order": 2,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "30 min",
+ "objectives": [
+  "Create a PDA seeded only by a wallet, so each wallet can have exactly one campaign.",
+  "Move SOL into a program-owned account with a System Program transfer, and take it back out by editing lamports directly.",
+  "Use the rent-exempt minimum as a withdrawal floor, and spot a frontend that talks to the wrong account."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.3 devnet SOL (the 9,000-byte campaign costs about 0.046 SOL of rent, and Contribute sends 0.2 SOL).",
+  "Lesson 1, [Picassol](/lessons/picassol-hackathon/), or the same idea: you know what a PDA is and how seeds make an address unique."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "rent",
+  "lamports",
+  "system-transfer",
+  "cpi",
+  "signer",
+  "authority",
+  "unchecked",
+  "close"
+ ],
+ "build": {
+  "dir": "anchor-project",
+  "anchor": "0.29.0",
+  "test": "anchor test",
+  "note": "The program is a single `lib.rs`. Tests are Rust (`tests/smart-contracts.test.rs`). Goal amounts in the app are lamports, not SOL.",
+  "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout 50e0873` and `/home/box/.avm/bin/anchor-0.29.0 build` with `RUSTUP_TOOLCHAIN=1.89.0`. It wrote `target/deploy/smart_contracts.so` (219,912 bytes, a valid ELF). The default host rustc (1.99) failed first, with a `bytemuck_derive` compile error — use 1.89 (or another 1.8x) as the host toolchain. We did not run `anchor test`: the bundled `tests/smart-contracts.test.rs` is a mock sketch (`MockContext`) and is not an Anchor test suite."
+ }
 }

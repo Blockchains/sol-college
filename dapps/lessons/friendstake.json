@@ -248,14 +248,18 @@
    "steps": [
     "In `cancel.rs` add `has_one = maker` to the `bet` constraints."
    ],
-   "expect": "Replaying the script, X's cancel of M's open bet fails with ConstraintHasOne instead of paying X 0.01141232 SOL (5mnT3TqJ…), while M's own cancel still works, as the app's Cancel Bet (RoeuNU34…) did."
+   "expect": "Replaying the script, X's cancel of M's open bet fails with ConstraintHasOne instead of paying X 0.01141232 SOL (5mnT3TqJ…), while M's own cancel still works, as the app's Cancel Bet (RoeuNU34…) did.",
+   "hint": "Look at `Take`, which already uses `has_one = opponent`. `Cancel` is one constraint away from the same pattern.",
+   "approach": "Add `has_one = maker` on the bet in `cancel.rs`. The context already has a `maker: Signer`. On a local validator, open a bet as M, then call `cancel` from X passing X as maker: it should fail with ConstraintHasOne, instead of paying X 0.01141232 SOL as 5mnT3TqJ… did. M's own cancel should still work, as RoeuNU34… did in the app."
   },
   {
    "title": "Send declines to the real maker",
    "steps": [
     "In `decline.rs` add `has_one = maker` (make `maker` a `SystemAccount` with `mut`)."
    ],
-   "expect": "The opponent can still decline, but only with the stored maker as the refund target; O passing itself fails with ConstraintHasOne instead of receiving 0.01141232 SOL (3xadSJkK…)."
+   "expect": "The opponent can still decline, but only with the stored maker as the refund target; O passing itself fails with ConstraintHasOne instead of receiving 0.01141232 SOL (3xadSJkK…).",
+   "hint": "`Decline` already requires the opponent to sign. The refund destination is a separate `maker` account that is never compared to `bet.maker`.",
+   "approach": "Make `maker` a `SystemAccount` with `mut` and add `has_one = maker`. The opponent can still decline, but only with the stored maker as the destination. O passing itself should fail ConstraintHasOne, instead of receiving 0.01141232 SOL as 3xadSJkK… did."
   },
   {
    "title": "Make the judge pick, not pay",
@@ -263,7 +267,9 @@
     "In `settle_bet.rs` add `constraint = maker.key() == bet.maker` and `constraint = taker.key() == bet.opponent` (or `has_one = maker` and an `address = bet.opponent` on taker).",
     "Reject `winner` values other than 0, 1 and 2 with a custom error instead of treating them all as refund."
    ],
-   "expect": "J's settle with its own wallet as maker fails, where on devnet it took 0.02141232 SOL (bdtntukm…). The app's Taker wins (38iiGgMy…) still works unchanged."
+   "expect": "J's settle with its own wallet as maker fails, where on devnet it took 0.02141232 SOL (bdtntukm…). The app's Taker wins (38iiGgMy…) still works unchanged.",
+   "hint": "The judge is already locked with `has_one = judge`. The gap is the two payee accounts, `maker` and `taker`.",
+   "approach": "Add `constraint = maker.key() == bet.maker` and `constraint = taker.key() == bet.opponent` (or `has_one = maker` and `address = bet.opponent` on taker). Optionally reject `winner` values other than 0, 1 and 2 with a custom error. J settling with its own wallet as maker should now fail, where bdtntukm… paid J 0.02141232 SOL. The app's Taker wins (38iiGgMy…) already passes the stored keys, so it keeps working."
   },
   {
    "title": "Add a deadline and a timeout refund",
@@ -271,7 +277,9 @@
     "Add `deadline: i64` to Bet, set in `make`.",
     "Add `refund_after_deadline`, callable by either player once `Clock::get()?.unix_timestamp > deadline` and if the judge hasn't settled, returning `amount` to each from the vault."
    ],
-   "expect": "A taken bet whose judge disappears can still be unwound by the players after the deadline; before it, the call fails."
+   "expect": "A taken bet whose judge disappears can still be unwound by the players after the deadline; before it, the call fails.",
+   "hint": "This is new behaviour, not a one-line fix. You need a timestamp on the Bet and a new instruction, because `settle_bet` is still only callable by the judge.",
+   "approach": "Add `deadline: i64` set in `make`. Add `refund_after_deadline` that either player may call once `Clock::get()?.unix_timestamp > deadline` if the judge has not settled, sending `amount` to each from the vault (PDA-signed, same as `refund_bet`). Before the deadline the call should fail; after, a taken bet whose judge disappeared can be unwound."
   },
   {
    "title": "Guard take and validate inputs",
@@ -279,8 +287,42 @@
     "In `take`, `require!(!bet.players_deposited)` so a second take can't pay into the vault twice.",
     "In `make`, `require!(description.len() <= 32)` and `amount > 0` with clear custom errors, and require opponent ≠ maker and judge ∉ {maker, opponent} if you want three distinct parties."
    ],
-   "expect": "A second take fails with your new error. A 33-byte description fails with a readable message instead of a seed-length error, and a 0-SOL bet is refused."
+   "expect": "A second take fails with your new error. A 33-byte description fails with a readable message instead of a seed-length error, and a 0-SOL bet is refused.",
+   "hint": "`take` sets `players_deposited = true` but never checks it was false, so a second take would deposit again.",
+   "approach": "`require!(!bet.players_deposited, …)` at the top of `take`. In `make`, `require!(description.len() <= 32)` and `amount > 0`, plus optional distinct-party checks. A second take, a 33-byte description, and a 0-SOL bet should each fail with a named error."
   }
  ],
- "not_covered": "Make, take, taker-wins and cancel were clicked through in the app with one wallet in all three roles. The three-wallet flow (M, O, J), the three payee bugs and every rejected case were run by script. Not exercised: the judge's refund (winner 0) and maker-wins with the correct maker, and the description seed limit (read from code)."
+ "not_covered": "Make, take, taker-wins and cancel were clicked through in the app with one wallet in all three roles. The three-wallet flow (M, O, J), the three payee bugs and every rejected case were run by script. Not exercised: the judge's refund (winner 0) and maker-wins with the correct maker, and the description seed limit (read from code).",
+ "path_order": 7,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "50 min",
+ "objectives": [
+  "Follow a two-account design: a program-owned Bet PDA for state, and a system-owned vault PDA that holds only SOL and signs transfers with its seeds.",
+  "See `has_one` correctly lock `take` and `settle` to the named opponent and judge.",
+  "Find the three missing payee checks, each proven on devnet with a measured SOL amount."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.05 SOL. With one wallet, name yourself as opponent and judge, as the click test did.",
+  "[TrustLock](/lessons/trustlock/) (escrow, close) and [PulseFund](/lessons/pulsefund-sol/) (SOL in and out). This lesson is about *who the program pays*."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "bump",
+  "vault",
+  "invoke-signed",
+  "has-one",
+  "close",
+  "system-transfer",
+  "signer",
+  "unchecked",
+  "constraint"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.29.0",
+  "test": "anchor test",
+  "note": "The program is `programs/peer-to-peer-betting`. Tests: `tests/peer-to-peer-betting.ts`."
+ }
 }

@@ -375,7 +375,9 @@
     "Require `cs2_match.status == 2` and that the user holds the winning token. Burn their tokens and pay a pro-rata share: `user_tokens / tokens_sold_on_winning_side × (yes_sol + no_sol)`, then zero their balance.",
     "Test it on a local validator using the same sequence as our script."
    ],
-   "expect": "After resolution a YES holder receives SOL and their YES balance is 0; a NO holder (and a second claim) is rejected. Today our devnet market T5Qfq7iY… is resolved and B's 166.67 YES can't be redeemed at all."
+   "expect": "After resolution a YES holder receives SOL and their YES balance is 0; a NO holder (and a second claim) is rejected. Today our devnet market T5Qfq7iY… is resolved and B's 166.67 YES can't be redeemed at all.",
+   "hint": "Resolution only sets `is_completed` and a winner. There is no instruction that burns winning tokens or pays SOL. That's the gap.",
+   "approach": "Add `claim` that requires `cs2_match.status == 2`, burns the user's winning tokens, and pays `user_tokens / tokens_sold_on_winning_side × (yes_sol + no_sol)` from the vault (PDA-signed). After resolution, a YES holder should receive SOL and a zero YES balance; a NO holder, and a second claim, should be rejected. Today's market T5Qfq7iY… is resolved and B's 166.67 YES cannot be redeemed."
   },
   {
    "title": "Make withdraw_liquidity pay out",
@@ -384,7 +386,9 @@
     "Take `amount / 2` off each SOL reserve, reduce `lp.sol_amount` and `total_lp_amount`, and move `amount` lamports from the vault with `sol_transfer_with_signer` and `[\"global\", bump]`.",
     "Decide whether to allow it after resolution."
    ],
-   "expect": "Withdrawing 0.02 SOL raises the LP's balance by 0.02 SOL (minus the fee) and the vault falls by the same amount. The recorded withdrawal 4sMHjyhz… shows a vault change of 0 today."
+   "expect": "Withdrawing 0.02 SOL raises the LP's balance by 0.02 SOL (minus the fee) and the vault falls by the same amount. The recorded withdrawal 4sMHjyhz… shows a vault change of 0 today.",
+   "hint": "`withdraw_liquidity` already has the accounts and the vault bump; the handler returns `Ok(())` without a transfer. `_amount` is unused.",
+   "approach": "Find the LP in `market.lps`, require `amount ≤ lp.sol_amount`, reduce both SOL reserves by `amount / 2`, update the LP record, and `sol_transfer_with_signer` `amount` from the vault. The recorded withdrawal 4sMHjyhz… shows a vault change of 0 today; after the fix, the vault should fall by 0.02 SOL and the LP's balance should rise by the same (minus the fee)."
   },
   {
    "title": "Fix the LP-fee bookkeeping and per-market accounting",
@@ -392,7 +396,9 @@
     "In the buy branch of `Market::swap`, either transfer `sol_after_fees + lp_fee` to the vault or credit the reserve with only `sol_after_fees`.",
     "Add a check that a market can never pay out more SOL than it has been credited (for example, a per-market vault PDA `[\"vault\", market]`)."
    ],
-   "expect": "Replaying B's 0.01 SOL buy, the vault delta equals the YES reserve delta (9,900,000 lamports each), and the reserves of the script market add up to the SOL that came in for it (no 0.00003 SOL gap)."
+   "expect": "Replaying B's 0.01 SOL buy, the vault delta equals the YES reserve delta (9,900,000 lamports each), and the reserves of the script market add up to the SOL that came in for it (no 0.00003 SOL gap).",
+   "hint": "On B's 0.01 SOL buy (S3UZG8s5…) the vault rose 9,880,000 lamports and the YES reserve was credited 9,900,000. The 0.2% LP fee is the gap.",
+   "approach": "In the buy branch, either transfer `sol_after_fees + lp_fee` to the vault or credit the reserve with only `sol_after_fees`. Then give each market its own vault PDA `[\"vault\", market]` so one market cannot pay out of another's SOL. Replaying the 0.01 SOL buy, the vault delta should equal the YES reserve delta (9,900,000 each), and that market's reserves should add up to the SOL that came in for it."
   },
   {
    "title": "Fit create_market under 1232 bytes",
@@ -400,7 +406,9 @@
     "Try a market in the app with 17-digit SteamID64s and full-length metadata URLs: our script's version was 1282 bytes and couldn't be sent.",
     "Move metadata creation to a separate instruction (`create_market_metadata`), or store a hash of the five Steam IDs instead of the strings."
    ],
-   "expect": "The same long inputs send successfully as two smaller transactions; 4 team members still fail with InvalidArgument."
+   "expect": "The same long inputs send successfully as two smaller transactions; 4 team members still fail with InvalidArgument.",
+   "hint": "The instruction creates two metadata accounts and two mints' worth of state in one transaction. Long strings push it over 1232 bytes (our 1282-byte attempt was not sent).",
+   "approach": "Move metadata creation to a second instruction, or hash the Steam IDs. The same long inputs should then send as two smaller transactions. Four team members should still fail with InvalidArgument."
   },
   {
    "title": "Link YES and NO prices, and a whitelist screen",
@@ -408,8 +416,43 @@
     "Change the curve so the two sides share one reserve, for example LMSR or `price_yes = R_no_tok / (R_yes_tok + R_no_tok)`, so buying YES makes NO cheaper.",
     "In the app, add a **Members** panel that calls `whitelistAddMember` / `whitelistRemoveMember` for the connected creator."
    ],
-   "expect": "After a YES buy, the NO price falls and YES + NO stays close to 1 SOL per pair. A second wallet you add can trade on your market instead of getting NotWhiteList."
+   "expect": "After a YES buy, the NO price falls and YES + NO stays close to 1 SOL per pair. A second wallet you add can trade on your market instead of getting NotWhiteList.",
+   "hint": "The two curves are independent, so YES + NO does not equal 1. A shared reserve (or LMSR) would link them. The whitelist already has `whitelist_add_member`; the app has no button for it.",
+   "approach": "Change the pricing so buying YES makes NO cheaper and YES + NO stays close to 1 SOL per pair, and add a Members panel that calls `whitelistAddMember`. A second wallet you add should then be able to trade, instead of getting NotWhiteList."
   }
  ],
- "not_covered": "Create market, add liquidity, buy, sell and resolve were clicked through in the app with the config authority's wallet. Whitelisting a second trader, the NO side, the withdrawal and every rejected case were run by script. Not exercised: the Steam oracle key (unset), nominate/accept authority, whitelist_remove_member, mint_no_token, start/end slots, additional (second) LPs."
+ "not_covered": "Create market, add liquidity, buy, sell and resolve were clicked through in the app with the config authority's wallet. Whitelisting a second trader, the NO side, the withdrawal and every rejected case were run by script. Not exercised: the Steam oracle key (unset), nominate/accept authority, whitelist_remove_member, mint_no_token, start/end slots, additional (second) LPs.",
+ "path_order": 16,
+ "path_stage": 3,
+ "difficulty": "Advanced",
+ "time": "80 min",
+ "objectives": [
+  "Trade YES and NO tokens on two constant-product curves, and recompute a recorded buy and sell from the reserves.",
+  "See a single global vault holding every market's SOL, and a 0.2% LP fee that is credited to reserves but never taken from the buyer (proven on devnet).",
+  "Name the two missing instructions — claim, and a withdraw that actually transfers — and the 1232-byte `create_market` limit."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 SOL. You will create your own market (trading is whitelist-gated to the creator by default).",
+  "The rest of the path, especially [sentient.send](/lessons/sentient-send/) (markets) and [Friendstake](/lessons/friendstake/) (vault PDAs). This is the last lesson: curves, fees and a shared vault."
+ ],
+ "concepts": [
+  "bonding-curve",
+  "constant-product",
+  "slippage",
+  "fee",
+  "vault",
+  "whitelist",
+  "cpi",
+  "ata",
+  "mint",
+  "transaction-size",
+  "invoke-signed",
+  "pda"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.31.1",
+  "test": "anchor test",
+  "note": "The program is `programs/prediction-market`. The React app is `prediction-market-frontend/`. `create_market` is close to the 1232-byte transaction limit — keep metadata URLs and Steam IDs short."
+ }
 }

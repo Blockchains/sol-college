@@ -245,7 +245,9 @@
     "In `TransactionExecuteContext`, add `has_one = multisig` support: `#[account(mut, constraint = transaction_account.multisig == multisig.key())]`, `#[account(mut, address = multisig.vault)]` on `vault`, and `#[account(mut, address = transaction_account.reciepient)]` on `reciepient_account`.",
     "`anchor build` and write a local test that calls `fn_execute` on an approved proposal with a different recipient."
    ],
-   "expect": "The test now fails with a constraint error; with the original code the same call succeeds and pays the wrong recipient."
+   "expect": "The test now fails with a constraint error; with the original code the same call succeeds and pays the wrong recipient.",
+   "hint": "`execute` takes the vault and the proposal as accounts (or remaining accounts) and does not require `proposal.vault == vault.key()`.",
+   "approach": "Add that constraint (and any other stored-field links: destination, amount). A proposal created against vault A must then fail if executed against vault B. The recorded successful execute, against its own vault, should still pass."
   },
   {
    "title": "Execute only once",
@@ -253,7 +255,9 @@
     "At the top of `transaction_execute`, add `require!(!transaction_account.executed, ...)` with a new error.",
     "Test: two proposals pending, execute the first twice."
    ],
-   "expect": "The second execute fails with your error. Without it, the second call pays again and decrements `tx_pending` for the other proposal."
+   "expect": "The second execute fails with your error. Without it, the second call pays again and decrements `tx_pending` for the other proposal.",
+   "hint": "Nothing marks a proposal as executed, so the same proposal can be paid more than once while the vault has balance.",
+   "approach": "Add `executed: bool` (or close the proposal), set it before the transfer, and `require!(!executed)`. A second execute should fail; the first should still move the amount exactly once, matching the recorded payment."
   },
   {
    "title": "Approve only through the right multisig",
@@ -261,7 +265,9 @@
     "In `ApprovalContext`, add `constraint = transaction.multisig == multisig.key()` on `transaction`.",
     "Test: an owner of multisig X approves a proposal of multisig Y by passing X."
    ],
-   "expect": "Rejected after the fix; accepted before (their index in X's owner list flips a flag in Y's proposal)."
+   "expect": "Rejected after the fix; accepted before (their index in X's owner list flips a flag in Y's proposal).",
+   "hint": "`approve` must be sure the proposal belongs to the multisig whose owners you're checking, not 'any proposal plus any multisig'.",
+   "approach": "Add `has_one = multisig` (or `constraint = proposal.multisig == multisig.key()`) and that the signer is in that multisig's owner list. Approving with a different multisig's owner set should fail, as the lesson's bug report describes."
   },
   {
    "title": "Fix the balance check at proposal time",
@@ -269,15 +275,50 @@
     "In `create_transaction.rs`, move line 12 below line 16 (or compare with `amount.unwrap_or(0)`).",
     "Propose more SOL than the vault holds."
    ],
-   "expect": "Rejected with `NotEnoughSol` at proposal time instead of only failing at execute."
+   "expect": "Rejected with `NotEnoughSol` at proposal time instead of only failing at execute.",
+   "hint": "The vault's balance can change between propose and execute. Checking only at execute (or only at propose) is not enough if you want to reject unaffordable proposals early *and* still be safe at send time.",
+   "approach": "Check `vault.lamports() >= amount + rent` at propose (so the UI can fail fast) and again at execute (so a drained vault can't pay). The recorded proposal that was affordable at propose but is no longer should fail at execute after the fix."
   },
   {
    "title": "Show real amounts in the app",
    "steps": [
     "In `TransactionTable.tsx` line 96, display `tx.amount / LAMPORTS_PER_SOL` as a number (or `toFixed(4)`); in `CreateMultisigDialog.tsx` use `parseFloat`."
    ],
-   "expect": "The 0.02 SOL proposal shows 0.02, and an initial balance of 0.5 SOL is accepted."
+   "expect": "The 0.02 SOL proposal shows 0.02, and an initial balance of 0.5 SOL is accepted.",
+   "hint": "The app has the same class of display bug PulseFund has: a BN shown from the wrong field, or in lamports without a label.",
+   "approach": "Find where the UI formats the threshold, the amount and the vault balance. Show SOL with a clear unit, from the full BN value, and compare against the amounts in the Proof transactions."
   }
  ],
- "not_covered": "The full create → propose → approve → execute cycle was clicked through with two wallets. Not exercised: the SPL-token option in the dialog (the program does nothing with it). The missing account constraints described in section 4 come from reading the code; we did not attempt them against the deployed program. Lists use getProgramAccounts on the public RPC and can be slow."
+ "not_covered": "The full create → propose → approve → execute cycle was clicked through with two wallets. Not exercised: the SPL-token option in the dialog (the program does nothing with it). The missing account constraints described in section 4 come from reading the code; we did not attempt them against the deployed program. Lists use getProgramAccounts on the public RPC and can be slow.",
+ "path_order": 10,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "55 min",
+ "objectives": [
+  "Walk a multisig: propose, approve, execute when the threshold is reached.",
+  "Find the account checks that are missing at `execute` and at `approve`, each proven on devnet.",
+  "Fix the leftover-accounts path so a proposal can only move funds from its own vault, and only once."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 SOL. A second wallet is useful for the 'other owner' steps.",
+  "[Friendstake](/lessons/friendstake/) and [UniProof](/lessons/chinesepowered-solana-cypherpunk/): you have practised spotting a missing `has_one`. This lesson is that idea at execute time."
+ ],
+ "concepts": [
+  "pda",
+  "multisig",
+  "threshold",
+  "leftover-accounts",
+  "has-one",
+  "constraint",
+  "lamports",
+  "authority",
+  "signer",
+  "vault"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.31.1",
+  "test": "anchor test",
+  "note": "The program crate is named `cipher-valut` (the typo is in the repo). Tests: `tests/cipher-valut.ts`."
+ }
 }

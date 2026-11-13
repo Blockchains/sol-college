@@ -176,35 +176,75 @@
    "steps": [
     "Open the mint `9Shg8nhKPC86hFC4wpn2a5SFFP7t4iJfPCEvD72cxHzB` from our recorded run on Solana Explorer (devnet)."
    ],
-   "expect": "Supply 1, decimals 0, metadata name GLC-20240317 and symbol GRLC, metadata owned by `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s` (the Metaplex program)."
+   "expect": "Supply 1, decimals 0, metadata name GLC-20240317 and symbol GRLC, metadata owned by `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s` (the Metaplex program).",
+   "hint": "The mint address is in the transaction that the app shows you, and on Explorer under Token → Mint.",
+   "approach": "Open the mint on Explorer (devnet): supply 1, decimals 0, and no mint authority (it was set to `None` after minting, which is what locks the supply). The metadata account is a PDA you will derive in the next exercise."
   },
   {
    "title": "Derive the metadata address yourself",
    "steps": [
     "In Node: `PublicKey.findProgramAddressSync([Buffer.from('metadata'), META.toBuffer(), mint.toBuffer()], META)` with `META = metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s` and your mint."
    ],
-   "expect": "The same metadata address Explorer shows for your NFT. Add `Buffer.from('edition')` as a 4th seed to get the master edition."
+   "expect": "The same metadata address Explorer shows for your NFT. Add `Buffer.from('edition')` as a 4th seed to get the master edition.",
+   "hint": "Metaplex's seeds are `\"metadata\"`, the metadata program id, and the mint — and the PDA is derived *under the metadata program*, not under this program.",
+   "approach": "`findProgramAddressSync([Buffer.from('metadata'), METADATA_PROGRAM.toBuffer(), mint.toBuffer()], METADATA_PROGRAM)` with `metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s`. It must equal the metadata account in the mint transaction."
   },
   {
    "title": "See that the supply is locked",
    "steps": [
     "On Explorer, open your mint and read its mint authority."
    ],
-   "expect": "It is no longer your wallet: Metaplex moved it to the master edition account, so no one can mint a second copy."
+   "expect": "It is no longer your wallet: Metaplex moved it to the master edition account, so no one can mint a second copy.",
+   "hint": "A mint with a leftover mint authority can still mint more, so '1 of 1' would be a promise, not a fact.",
+   "approach": "On Explorer, confirm Mint authority is empty. In the program, find the CPI that sets the mint authority to `None` after minting one token. That, not the metadata, is what makes the NFT non-fungible."
   },
   {
    "title": "Your own name and symbol",
    "steps": [
     "Change `metadata.name` and `metadata.symbol` in the app's mutation (lines 65–69 of the patched file) and rebuild the app (`dapps/static_build.sh gree <clone>`), or call `initNft('MyNFT','MINE', uri)` from a script."
    ],
-   "expect": "Explorer shows your name and symbol on the new mint; the program needs no change, because name, symbol and URI are instruction arguments."
+   "expect": "Explorer shows your name and symbol on the new mint; the program needs no change, because name, symbol and URI are instruction arguments.",
+   "hint": "The name and symbol the instruction takes are just arguments; the app can pass anything within the program's length limits.",
+   "approach": "Call the instruction (or use the app, if it exposes the fields) with your own name and symbol, then read the metadata account: it should show exactly what you passed, at the same mint."
   },
   {
    "title": "Break it on purpose",
    "steps": [
     "From a script, call `init_nft` twice with the same mint keypair."
    ],
-   "expect": "The second call fails with `custom program error: 0x0` (account already in use), as in Proof."
+   "expect": "The second call fails with `custom program error: 0x0` (account already in use), as in Proof.",
+   "hint": "The program has length and emptiness checks on the metadata fields. Sending an empty name is the cheapest way to see a custom error.",
+   "approach": "From a local test, send an empty name or a string over the max length. You should get the program's own error, not a generic transaction failure, and no mint should be created."
   }
- ]
+ ],
+ "path_order": 4,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "35 min",
+ "objectives": [
+  "Follow a single instruction that mints one token and, in the same transaction, makes a CPI to Metaplex to attach name, symbol and URI.",
+  "Derive the metadata PDA the same way Metaplex does, and confirm the mint's supply is 1 and its mint authority is empty.",
+  "See why a program signs a CPI as a PDA (`invoke_signed`) when it is the mint authority."
+ ],
+ "prereqs": [
+  "Phantom on devnet and about 0.1 devnet SOL (minting creates several accounts).",
+  "[Proof of Estimate](/lessons/poe-solana/) or equivalent: you have seen a PDA-signed CPI to the Token Program."
+ ],
+ "concepts": [
+  "cpi",
+  "invoke-signed",
+  "mint",
+  "nft",
+  "metaplex",
+  "ata",
+  "token-program",
+  "pda",
+  "seeds"
+ ],
+ "build": {
+  "dir": "anchor",
+  "anchor": "0.29.0",
+  "test": "anchor test",
+  "note": "The program lives under `anchor/`. It depends on `anchor-spl` with the `metadata` feature (Metaplex)."
+ }
 }

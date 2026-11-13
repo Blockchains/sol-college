@@ -287,7 +287,9 @@
     "From Proof: B stakes 100, A bribes 50, `sync_bribes`.",
     "Compute the new gov price and what B's 100 gov redeem for."
    ],
-   "expect": "gov_price = 100 × 10⁹ / 150 = 666,666,666; redeem = 100 × 10⁹ / 666,666,666 = 150, the `vested: 150` in the log."
+   "expect": "gov_price = 100 × 10⁹ / 150 = 666,666,666; redeem = 100 × 10⁹ / 666,666,666 = 150, the `vested: 150` in the log.",
+   "hint": "The exchange rate is a ratio of two on-chain balances (pool tokens vs gov-token supply), not a price oracle.",
+   "approach": "Read both balances before and after the recorded bribe, compute the rate with the program's formula, and compare to what a small stake would mint. It should match the recorded stake transaction."
   },
   {
    "title": "Join right before a sync",
@@ -295,29 +297,69 @@
     "In a local test: stake 100 (B), bribe 100, wait several \"days\", then have C stake 100 and only then call `sync_bribes`.",
     "Unstake both."
    ],
-   "expect": "C gets part of a bribe that arrived before C staked, because `stake` uses the stale gov price. Fix: call the bribe sync logic at the start of `stake` and `unstake`."
+   "expect": "C gets part of a bribe that arrived before C staked, because `stake` uses the stale gov price. Fix: call the bribe sync logic at the start of `stake` and `unstake`.",
+   "hint": "Joining immediately before a `sync` (a bribe or a harvest) can give you a share of a bribe you didn't wait for — or lock you out, depending on the order of updates.",
+   "approach": "On a local validator, stake in the same transaction slot as a bribe (or immediately before `sync`) and compare the gov tokens minted with staking immediately after. The difference is the 'join right before a sync' effect the lesson points at; describe it from the numbers, don't invent them."
   },
   {
    "title": "Where did the UI bribe go?",
    "steps": [
     "Our UI wallet staked 100, bribed 20 and unstaked; read its balance in Try-it step 5 (480 = 500 − 100 − 20 + 100)."
    ],
-   "expect": "It got back exactly its 100: the 20 was never synced, and with `active_balance` at 0 `get_current_bribe_amount` returns 0. The 20 stays in the vault for whoever stakes next and syncs."
+   "expect": "It got back exactly its 100: the 20 was never synced, and with `active_balance` at 0 `get_current_bribe_amount` returns 0. The 20 stays in the vault for whoever stakes next and syncs.",
+   "hint": "Follow the bribe transaction on Explorer: the token destination is an account. Compare it to the pool's vault.",
+   "approach": "If the destination is a different ATA (a fee account, or the user's own), that is why the UI bribe didn't raise the rate. Point at the client code that picked the account, and at the recorded signature."
   },
   {
    "title": "Fix the APR",
    "steps": [
     "Change Pool.tsx line 121 to use `(vault.amount - activeBalance) / activeBalance`."
    ],
-   "expect": "With 100 staked and 20 bribed it shows 365 instead of 2,190; with no bribes it shows 0 instead of 1,825."
+   "expect": "With 100 staked and 20 bribed it shows 365 instead of 2,190; with no bribes it shows 0 instead of 1,825.",
+   "hint": "APR in the UI is often a display-only calculation. If it uses the wrong period or ignores the scale, it will not match a one-day vest.",
+   "approach": "Recompute APR from the on-chain rate and the vest duration, and fix the display to that formula. It should then be consistent with exercise 1's withdrawable amount."
   },
   {
    "title": "Repair Create Pool",
    "steps": [
     "Regenerate the app's IDL from the program (`anchor build`) or add `feeReceiver` to `createCreatePoolInstruction`, set to the fee receiver constant."
    ],
-   "expect": "Create Pool sends an `initialize_pool` that moves 2 SOL to the fee receiver and creates the pool, as our script did (2yVByakS…)."
+   "expect": "Create Pool sends an `initialize_pool` that moves 2 SOL to the fee receiver and creates the pool, as our script did (2yVByakS…).",
+   "hint": "Create Pool may fail because of a missing account, a wrong PDA, or an ATA that hasn't been created. The error in the logs is the starting point.",
+   "approach": "Reproduce the failure locally, read the program logs, and add the missing account (or the missing `init`) so Create Pool succeeds. Don't change the pool's economics, only the accounts the instruction expects."
   }
  ],
- "not_covered": "Stake, bribe, unstake and vesting claim were clicked through in the app. Create Pool can't work in the app (out-of-date IDL), so the pool was created by script, and sync_bribes, which the app never calls, was only run by script. This is the testing build (1 day = 1 second), so vesting finishes in seconds. Only holders of the test token 5AWQ… can stake in the existing pool."
+ "not_covered": "Stake, bribe, unstake and vesting claim were clicked through in the app. Create Pool can't work in the app (out-of-date IDL), so the pool was created by script, and sync_bribes, which the app never calls, was only run by script. This is the testing build (1 day = 1 second), so vesting finishes in seconds. Only holders of the test token 5AWQ… can stake in the existing pool.",
+ "path_order": 14,
+ "path_stage": 3,
+ "difficulty": "Advanced",
+ "time": "70 min",
+ "objectives": [
+  "Stake a token, receive gov tokens, and watch an exchange rate move when a bribe is added to the pool.",
+  "Unstake into a linear vest, and compute how much is withdrawable at a given time.",
+  "Find why a UI bribe didn't land where the label said, and repair a Create Pool path that fails."
+ ],
+ "prereqs": [
+  "Phantom on devnet, plus whatever test token the app mints for you.",
+  "[Colosseum](/lessons/colosseum/) (staking, time) and [gree](/lessons/gree/) (token CPIs). This is the densest token-economics lesson."
+ ],
+ "concepts": [
+  "staking",
+  "vesting",
+  "cpi",
+  "token-program",
+  "ata",
+  "vault",
+  "fee",
+  "clock",
+  "pda",
+  "mint",
+  "overflow"
+ ],
+ "build": {
+  "dir": ".",
+  "anchor": "0.29.0",
+  "test": "anchor test",
+  "note": "The program is `programs/stakes-wtf`. Tests: `tests/stakes-wtf.ts`."
+ }
 }
