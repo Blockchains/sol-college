@@ -311,7 +311,7 @@
   }
  ],
  "not_covered": "Create, deposit and submit were clicked through in the hosted app. Funding, withdraw, blacklist voting and the blacklisted-submitter rejection were run from the script. Whitelist votes and `update_user_vote_weights` were not exercised. The app has no Fund button, and the explorer list uses getProgramAccounts on the public RPC, so it can be slow.",
- "path_order": 15,
+ "path_order": 16,
  "path_stage": 3,
  "difficulty": "Advanced",
  "time": "70 min",

@@ -302,7 +302,7 @@
   }
  ],
  "not_covered": "Initialise, deposit, config, stake, early unstake (refused) and claim were clicked through in the app. Unstake after the lock and the admin withdraw were run by script: the app's shortest lock is 7 days. Admin Withdraw was not clicked on the app's vault.",
- "path_order": 13,
+ "path_order": 14,
  "path_stage": 3,
  "difficulty": "Advanced",
  "time": "60 min",

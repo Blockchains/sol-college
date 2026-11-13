@@ -1,0 +1,351 @@
+{
+ "title": "DeVos: on-chain elections with an allow-list, named positions and a close-to-tally step",
+ "summary": "The authority creates a named election PDA, adds positions (each starts with an Abstain candidate) and an allow-list of voters, then opens it. A listed wallet votes once per position. Closing and calling get_winner stores the top candidate(s), including ties — but toggle has no finished state, so the authority can reopen and the stored winners go stale.",
+ "what": "DeVos is a single-account election. `create_election` opens a PDA at `[election_name, authority]`, with space computed up front from the maximum positions, the maximum candidates per position and the starting voter list. The election **starts closed**. The authority adds named positions (each is created with an automatic **Abstain** candidate) and named candidates, then `toggle_election` opens it. An allow-listed wallet can `vote` once per position. `tally_votes` only writes the counts to the program log; `get_winner`, which requires the election to be closed, is what **stores** the top candidate(s) per position (ties are kept). `add_voter` is allowed only while closed, and **reallocates** the account. The interesting bugs are all about what happens after that: `toggle_election` has no finished state, so after winners are stored the authority can add voters, reopen, and accept new votes — the stored winners stay stale until `get_winner` is called again. The hosted app only talks to the program on the Create Election page, so the vote path in this lesson is from the recorded script.",
+ "app_note": "The fork's own Next.js app (`devos-app`) exported as static pages with this devnet program ID. The two `[electionName]` pages are served at `.../view/?n=` because a static export can't pre-render unknown names; eslint and TypeScript errors are ignored at build (the fork has implicit-any params); and `@project-serum/anchor` 0.26.0 is installed at build time — `utils/solana.ts` imports it, but no `package.json` in the fork declares it. The committed `constants.ts` still has the author's program ID `EP24aYmc…`; the hosted build talks to `2gLQPUtW…`. Script: [tests/devnet/devos-decentralized-voting.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/devos-decentralized-voting.mjs).",
+ "try_steps": [
+  {
+   "do": "Open [the app](/dapps/devos-decentralized-voting/) and connect a Phantom wallet on **devnet** (a little SOL is enough).",
+   "see": "Your wallet address appears on the Create Election page. Owned Elections and Enrolled Elections are static mock lists (hard-coded 'Election 1' / 'Election 2'); they do not read the chain."
+  },
+  {
+   "do": "Open **Create Election**, enter a unique name (32 bytes at most — it is a PDA seed), one position such as `President`, two candidates such as `Alice` and `Bob`, and press **Submit**.",
+   "see": "Four transactions: `create_election`, `add_position` for President, then `add_candidate` for Alice and for Bob. Both candidates are added to position 0 (the form always uses the position's index in the form). The election is created **closed**, with `maxPositions=10`, `maxCandidatesPerPosition=10` and an **empty** voter list — those three values are hard-coded in `createElection` and the form has no inputs for them. The 'Success!' popup appears even if a later transaction in the loop failed.",
+   "ran": [
+    [
+     "Create Election, name 'ui-71028', position President, candidates Alice and Bob: `create_election`",
+     "5uxVp1MP7BDdGG3Ke5wfKo9pwpAQAykmtkLbpy1dfDF64MfahHfDMMmpDmeCX1P7tLsNYhqwseEkQSz97JzthT1H"
+    ],
+    [
+     "`add_position` President",
+     "4yZWKGQ1daVsWY7cLrNdwzJ6FmxV2VCtRwojdMxD6RnZfTnjuimzyd9TCynZrk3YDiXiLwwPBxvyWniM5DTyifxQ"
+    ],
+    [
+     "`add_candidate` Alice (index 0)",
+     "5JSiJfw8QmCkdhzD5DNgXChFCQ47p1jbVpdMpaUhzXi1bhhcvKpruQWFtBeB3CY42ZdF7cskoQL5yn5iryK8TP45"
+    ],
+    [
+     "`add_candidate` Bob (index 0 — both candidates went to President; Treasurer was never created through the UI)",
+     "2RExNDGYyEWeJV1wAz7A2w3As1YBMYCNvFJnATb7uecDJLtJSGLyTK4Pf5zZAQfPDPLRJTQFHcTCwcvPQPov31jV"
+    ]
+   ]
+  },
+  {
+   "do": "Open **Owned Elections**. The page copy says you will add voters here.",
+   "see": "There is no `add_voter`, `toggle_election`, `vote`, `tally_votes` or `get_winner` in the app. 'Election 1' and 'Election 2' are hard-coded; the Get Winners button (on the per-election view) has no handler. The rest of this lesson's proof is from the script.",
+   "ran_note": "Opened Owned Elections: it is a mock list (hard-coded 'Election 1' / 'Election 2'). No program transaction is sent from this page."
+  }
+ ],
+ "diagram": "authority ─ create_election(name, max_positions, max_candidates, voters)\n              ─▶ Election PDA [name, authority]   is_open = false\n                 space = Election::calculate_size(maxima, starting voters)\nauthority ─ add_position(name)     ─▶ Position { name, candidates: [Abstain] }   (only while closed)\nauthority ─ add_candidate(i, name) ─▶ inserted just before Abstain               (only while closed)\nauthority ─ add_voter(pubkey)      ─▶ voters.push; realloc                       (only while closed)\nauthority ─ toggle_election        ─▶ is_open = !is_open                         (no finished state)\nallow-listed voter ─ vote(position, candidate) ─▶ vote_count += 1; VoteRecord    (once per position, only while open)\nauthority ─ tally_votes            ─▶ program log only (does not store winners)\nauthority ─ get_winner             ─▶ election.winners = top candidate(s)        (only while closed; ties kept)\n",
+ "accounts": [
+  [
+   "Election",
+   "PDA `[election_name.as_bytes(), authority]`",
+   "`authority`, `election_name`, `positions` (each a name plus a `Vec<Candidate>` with `vote_count`), `max_positions`, `max_candidates_per_position` (the create argument **plus one** for Abstain), `voters`, `votes` (`VoteRecord`: voter, position index, candidate index), `winners`, `is_open`. One account holds the whole election."
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`create_election`: a named PDA, sized up front, starting closed",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 19,
+     "b": 38
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 315,
+     "b": 329
+    },
+    {
+     "path": "backend/programs/backend/src/states.rs",
+     "a": 4,
+     "b": 36
+    }
+   ],
+   "steps": [
+    "Seeds are `[election_name.as_bytes(), authority.key()]`, so the same authority can only create a given name once. Recreating `sc-DNy7cz` failed with **Allocate: account … GpDah5qV… already in use**.",
+    "`space = Election::calculate_size(max_positions, max_candidates_per_position, voters)` using the **instruction arguments** (the stored `max_candidates_per_position` is then the argument **plus one**, 'to account for abstain'). For the script's election (max 2 positions, 1 candidate each, voters `[V]`) this was **590 bytes**, rent **0.00364744 SOL**, PDA `GpDah5qV…` (4jRBAdcT…).",
+    "`is_open` is set to `false`. Voting before `toggle_election` failed with **ElectionIsClosed**.",
+    "The fork's `declare_id!` and `Anchor.toml` still say `EP24aYmc…` (the author's deployment). The Sol.College program is `2gLQPUtW…`. Local builds will target the declared id unless you change it."
+   ]
+  },
+  {
+   "name": "`add_position` and `add_candidate`: Abstain is a real candidate",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 40,
+     "b": 82
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 84,
+     "b": 141
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 331,
+     "b": 353
+    }
+   ],
+   "steps": [
+    "Both require the election to be closed (**ElectionIsOpen** if it isn't — recorded when A tried to add a candidate after opening) and the signer to be the authority. `AddPosition` and `AddCandidate` use `seeds = [name, authority.key()]` plus `has_one = authority`. Outsider X adding a position got **ConstraintSeeds**: the PDA is derived from the *signer's* key, so it doesn't match A's election.",
+    "`add_position` pushes a `Position` whose `candidates` starts as `[Abstain]` with `vote_count: 0`. A second 'President' got **PositionAlreadyAdded**; a third position on a max-2 election got **MaxPositionsReached**.",
+    "`add_candidate` inserts the new candidate **just before Abstain** (so Abstain stays last). A second candidate on a 'max 1 plus Abstain' position got **MaxCandidatesReached**; position index 5 got **InvalidPosition**.",
+    "The script added President and Treasurer, then Alice to President and Bob to Treasurer (3G6jNm32…, Qw2ntTKR…, 5J2Xz4ed…, 3ZD51qcu…). The UI run added Alice and Bob **both** to President, which the program accepts when the app's max is 10."
+   ]
+  },
+  {
+   "name": "`add_voter`: the allow-list, grown with `realloc`",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 143,
+     "b": 166
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 367,
+     "b": 385
+    }
+   ],
+   "steps": [
+    "Only the authority, only while closed. A duplicate gets **VoterAlreadyAdded**. There is no cap other than the account's space.",
+    "`AddVoter` sets `realloc = Election::calculate_size(election.max_positions, election.max_candidates_per_position, election.voters.clone())` with `realloc::payer = authority` and `realloc::zero = true`. Anchor evaluates that **before** the handler runs, so the size is computed from the voter list **without** the new pubkey, and with the *stored* max candidates (already +1 versus create). The script's `add_voter` for W after `get_winner` succeeded (5noKC6Qp…).",
+    "The formula itself is an estimate: `vote_size` assumes one `VoteRecord` per voter, but a voter may vote once **per position**; the two `u32` maxima are not in the `base_size` comment. Create's 590-byte account held the script's two votes; we did not see a realloc failure. Exercise 3 is to make the formula match the structs."
+   ]
+  },
+  {
+   "name": "`vote`: allow-listed, once per position, only while open",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 168,
+     "b": 220
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 355,
+     "b": 365
+    }
+   ],
+   "steps": [
+    "The Vote accounts take `authority` as an **instruction argument** (not a signer): seeds are `[name, authority]` and `has_one = authority` checks that pubkey against `election.authority`. The signer is the `voter`.",
+    "Checks, in order: the election is open (**ElectionIsClosed** otherwise), the position exists, `election.voters.contains(&voter)` (**VoterNotAllowed** for X), this voter has no `VoteRecord` for this position (**AlreadyVoted** on V's second President vote), and the candidate index is in range (**InvalidCandidate** for candidate 7).",
+    "On success it increments `vote_count` and pushes a `VoteRecord`. V voted Alice for President (2SvTJVHN…) and Abstain for Treasurer (67MPvvt9…). Abstain is a real candidate and can win."
+   ]
+  },
+  {
+   "name": "`tally_votes` only logs; `get_winner` stores, and only while closed",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 222,
+     "b": 247
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 249,
+     "b": 292
+    }
+   ],
+   "steps": [
+    "Both require the authority. `tally_votes` does **not** take `&mut` and does **not** write `winners`. On 63P1G1o4… the program log was exactly:",
+    "`Position 0: President` / `Candidate 0: Alice has 1 votes` / `Candidate 1: Abstain has 0 votes` / `Position 1: Treasurer` / `Candidate 0: Bob has 0 votes` / `Candidate 1: Abstain has 1 votes`.",
+    "`get_winner` while open got **ElectionIsOpen**. After A closed (5cSSHSUF…), `get_winner` (2S8KttSR…) stored `President=Alice`, `Treasurer=Abstain`. Ties would be kept as several names on one `Winner`. `get_winner` itself writes no program log of those names — the script read them back from the account."
+   ]
+  },
+  {
+   "name": "`toggle_election` has no finished state",
+   "refs": [
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 294,
+     "b": 306
+    },
+    {
+     "path": "backend/programs/backend/src/lib.rs",
+     "a": 408,
+     "b": 417
+    }
+   ],
+   "steps": [
+    "The handler is `election.is_open = !election.is_open`, with an `Unauthorized` check on the signer. There is no 'finalized' flag, and `get_winner` does not set one.",
+    "After winners were stored, A added W (5noKC6Qp…), reopened (jgDXfAky…), and W voted Abstain for President (5ySN2epW…). The counts became President `Alice:1 Abstain:1` and Treasurer `Bob:0 Abstain:1`, but `winners` still read `President=Alice`, `Treasurer=Abstain` until `get_winner` is called again. That is the recorded bug this lesson is built around."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "one account, sized from maxima, grown with realloc",
+  "text": "The whole election — positions, candidates, the voter allow-list, every vote and the stored winners — lives in a single PDA, with rent paid up front from `calculate_size`. That is a deliberate trade: you decide the maxima at create time (and pay for them), then `add_voter` uses Anchor's `realloc` to grow the allow-list. Abstain is not a special case in `vote` or `get_winner`; it is an ordinary `Candidate` inserted automatically, which is why Treasurer's recorded winner is Abstain. The matching lesson on the other side is the missing finished state: a toggle that only flips a bool cannot protect a result once it has been written.",
+  "refs": [
+   {
+    "path": "backend/programs/backend/src/states.rs",
+    "a": 16,
+    "b": 35,
+    "note": "calculate_size"
+   },
+   {
+    "path": "backend/programs/backend/src/lib.rs",
+    "a": 367,
+    "b": 380,
+    "note": "add_voter realloc"
+   }
+  ],
+  "more": [
+   "Compare Votara, where each vote is its own PDA (`[\"vote\", proposal, voter]`) and 'once only' is enforced by `init`. Here 'once per position' is a scan of a `Vec<VoteRecord>` on the same account, and space for those records has to be part of the size formula.",
+   "A close-and-tally step is a good pattern (`get_winner` already refuses while open). It needs a state the authority cannot toggle back, or the stored winners are a snapshot, not a result."
+  ]
+ },
+ "frontend": [
+  {
+   "title": "Create Election is the only page that talks to the program",
+   "refs": [
+    {
+     "path": "devos-app/utils/solana.ts",
+     "a": 26,
+     "b": 54
+    },
+    {
+     "path": "devos-app/utils/pdautils.ts",
+     "a": 4,
+     "b": 13
+    }
+   ],
+   "steps": [
+    "`createElection` always sends `maxPositions=10`, `maxCandidatesPerPosition=10` and `voters=[]`. An election created in the app therefore has no allowed voters until `add_voter` is called, which the UI never does, and it starts closed, which the UI never toggles — so **ElectionIsClosed** and **VoterNotAllowed** would greet any vote, if the app had a vote button.",
+    "`deriveElectionPDA` uses `[Buffer.from(electionName), authority.toBuffer()]`, the same seeds as `CreateElection`. The connection is a hard-coded `Connection(\"https://api.devnet.solana.com\")`, and the provider is built from `window.solana` directly, not from the wallet-adapter context."
+   ]
+  },
+  {
+   "title": "The submit loop, and a program ID that the hosted build replaces",
+   "refs": [
+    {
+     "path": "devos-app/app/components/Position.tsx",
+     "a": 20,
+     "b": 70
+    },
+    {
+     "path": "devos-app/utils/constants.ts",
+     "a": 4,
+     "b": 8
+    }
+   ],
+   "steps": [
+    "`handleSubmit` calls `createElection`, then `addPosition` for each form row, then `addCandidate(electionName, i, name)` with `i` equal to the position's index in the form — so two candidates under one position both go to that position (the UI run added Alice and Bob to President: 5JSiJfw8…, 2RExNDGY…). It then sets `showSuccess` unconditionally.",
+    "The committed `programId` is `EP24aYmc…`. The hosted static export is built against `2gLQPUtW…` (the Create Election transaction 5uxVp1MP… invokes that program)."
+   ]
+  },
+  {
+   "title": "Owned Elections and Enrolled Elections are mock UIs",
+   "refs": [
+    {
+     "path": "devos-app/app/OwnedElections/page.tsx",
+     "a": 12,
+     "b": 44
+    },
+    {
+     "path": "devos-app/app/CreateElection/page.tsx",
+     "a": 8,
+     "b": 16
+    }
+   ],
+   "steps": [
+    "Owned Elections renders two hard-coded divs, 'Election 1' and 'Election 2'. The Create Election copy promises you will add voters there. The per-election view's Get Winners button has no handler. There is no UI for `add_voter`, `toggle_election`, `vote`, `tally_votes` or `get_winner`.",
+    "The static export shows React hydration warnings (#418, #423) on first load; they are cosmetic and did not block the four program transactions from the click test."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Give the election a finished state",
+   "steps": [
+    "Add a `finalized` (or `is_finished`) flag on `Election`, set it in `get_winner` (or in a dedicated `close_and_tally`).",
+    "Make `toggle_election` and `vote` refuse when that flag is set, and keep `add_voter` / `add_position` / `add_candidate` refused too."
+   ],
+   "expect": "Replaying the script, A's reopen after `get_winner` (jgDXfAky…) fails, and W cannot vote Abstain on a decided President (5ySN2epW…). Closing and `get_winner` still work as they did on 5cSSHSUF… and 2S8KttSR….",
+   "hint": "`toggle_election` is one line: `is_open = !is_open`. `get_winner` writes `winners` and does not set any other flag.",
+   "approach": "Add a `finalized` bool, set it in `get_winner`, and `require!(!election.finalized)` in `toggle_election`, `vote` and `add_voter`. Replaying the recorded reopen (jgDXfAky…) and W's late vote (5ySN2epW…) should then fail, while the original close (5cSSHSUF…) and `get_winner` (2S8KttSR…) still succeed."
+  },
+  {
+   "title": "Stop stored winners going stale",
+   "steps": [
+    "Either clear `election.winners` whenever a vote is accepted or the election is reopened, or — cleaner with exercise 1 — refuse those actions after `get_winner`.",
+    "Optionally have `tally_votes` write the same `winners` vector that `get_winner` writes, so a log-only instruction is not the only 'tally' in the UI copy."
+   ],
+   "expect": "After W's late Abstain, you should not still read `President=Alice` while the counts are `Alice:1 Abstain:1`. If you store on `tally_votes`, the log on 63P1G1o4… (Alice 1, Treasurer Abstain 1) would match the account.",
+   "hint": "After W voted Abstain, the script read counts President Alice:1 Abstain:1 but winners still President=Alice. `tally_votes` on 63P1G1o4… only logged those earlier counts.",
+   "approach": "Clear `winners` on any new vote or reopen, or refuse those once `get_winner` has run (the finished-state exercise). If you also write `winners` inside `tally_votes`, the account should match the program log (Alice 1, Treasurer Abstain 1) without a separate `get_winner`."
+  },
+  {
+   "title": "Make `calculate_size` and `realloc` match the structs",
+   "steps": [
+    "Include the two `u32` maxima in the base size.",
+    "Size `votes` as `num_voters * max_positions` `VoteRecord`s (40 bytes each: pubkey + two `u32`s), not one record per voter.",
+    "On `AddVoter`, compute space from `voters.len() + 1` (the pubkey about to be pushed), and use the same max-candidates convention (before or after the +1 for Abstain) as `create_election`."
+   ],
+   "expect": "A new election with the script's maxima still initializes (we recorded 590 bytes / 0.00364744 SOL on 4jRBAdcT… for the current formula). Adding W (5noKC6Qp…) still succeeds, and a second or third voter plus a vote on every position should fit without relying on leftover slack from `winner_size`.",
+   "hint": "`AddVoter`'s `realloc` uses `election.voters` before the handler pushes, and `vote_size` is one record per voter. Create measured 590 bytes / 0.00364744 SOL (4jRBAdcT…); adding W still succeeded (5noKC6Qp…).",
+   "approach": "Count the two `u32` maxima in the base, size votes as `num_voters * max_positions` 40-byte `VoteRecord`s, and realloc from `voters.len() + 1` with the same max-candidates convention as create. A third voter who then votes on every position should fit because of the formula, not leftover `winner_size` slack."
+  },
+  {
+   "title": "Wire the app so a voter can actually vote",
+   "steps": [
+    "Let the form pass a real voter list and real maxima into `createElection`.",
+    "Add pages (or buttons on Owned Elections) that call `add_voter`, `toggle_election`, `vote` and `get_winner`. List real election PDAs, not 'Election 1' / 'Election 2'.",
+    "Point `constants.ts` and the `Connection` at the program and RPC you actually intend; use the wallet-adapter provider instead of `window.solana`."
+   ],
+   "expect": "An election created in the app can be opened, voted on by a wallet you added, closed and tallied, without leaving the UI. The Create Election copy about adding voters on Owned Elections would then be true.",
+   "hint": "`createElection` hard-codes `10, 10, []` (solana.ts L41). Owned Elections renders 'Election 1' and 'Election 2' as divs. There is no call to `toggle_election` or `vote` in the app.",
+   "approach": "Pass the form's voters and maxima into `createElection`, and add Owned Elections actions that call `add_voter`, `toggle_election`, `vote` and `get_winner` on a real PDA. An election created in the app should then be openable and votable without the script."
+  },
+  {
+   "title": "Decide what Abstain means for a winner",
+   "steps": [
+    "`get_winner` today treats Abstain like any other candidate. Treasurer's recorded winner is Abstain, because V voted Abstain and Bob had 0.",
+    "Pick a rule: exclude Abstain from the top-candidate list, treat 'only Abstain has votes' as no winner, or keep the current rule and show it clearly in the app."
+   ],
+   "expect": "For the script's tallies (President Alice 1 / Abstain 0, Treasurer Bob 0 / Abstain 1), the stored winners follow the rule you chose, and a reader can see it without re-reading `get_winner`.",
+   "hint": "Treasurer's recorded winner is Abstain (Bob 0, Abstain 1), because `get_winner` treats Abstain like any other candidate.",
+   "approach": "Exclude Abstain from the top-candidate list, or treat 'only Abstain has the max' as no winner, or keep the current rule and display it. For the script's tallies, the stored winners should then follow the rule you chose."
+  }
+ ],
+ "not_covered": "Create Election (create + add position + two candidates, both on position 0) was clicked through in the hosted app. Opening, voting, tallying, closing, get_winner, add_voter and the reopen-after-result path were run from the script (election `sc-DNy7cz`, PDA GpDah5qV…). There is no UI for those instructions. Owned Elections and Enrolled Elections are static mocks.",
+ "path_order": 7,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "50 min",
+ "objectives": [
+  "Create a named election PDA, with space computed from maxima, that starts closed and holds positions, candidates, the allow-list and every vote in one account.",
+  "Walk the recorded path: add positions (each starts with Abstain), add candidates, open, vote once per position, close, and store winners with get_winner.",
+  "Spot that tally_votes only writes the program log, that toggle_election has no finished state, and that the hosted UI never opens the election or adds voters."
+ ],
+ "prereqs": [
+  "Phantom on devnet and a little devnet SOL.",
+  "[Votara](/lessons/votara/) immediately before this: you have just seen on-chain voting with a VoteRecord PDA per (proposal, voter). Here one Election account holds the allow-list, the positions and the votes, and grows with realloc. This is still [stage 2](/lessons/path/#stage-2)."
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "init",
+  "bump",
+  "realloc",
+  "rent",
+  "has-one",
+  "constraint",
+  "voting",
+  "whitelist",
+  "authority",
+  "signer",
+  "payer"
+ ],
+ "build": {
+  "dir": "backend",
+  "anchor": "0.30.1",
+  "test": "anchor test",
+  "note": "The Anchor workspace is `backend/` (`Cargo.toml` is Anchor 0.30.1). The fork's `declare_id!` is `EP24aYmc…`; the Sol.College deployment is `2gLQPUtW…`.",
+  "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout 1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49` and `/home/box/.avm/bin/anchor-0.30.1 build` in `backend/` with `RUSTUP_TOOLCHAIN=1.89.0`. Cargo finished a release build in 1 m 09 s and wrote `target/deploy/backend.so` (297,624 bytes, a valid ELF). Anchor then failed at 'Building IDL failed' with a `proc-macro-error` Span trait error — a host-toolchain issue, not a problem in this program. The default host rustc (1.99) is too new; use 1.89 (or another 1.8x). We did not run `anchor test`: the bundled `tests/backend.ts` is the default Anchor skeleton (`program.methods.initialize()`), and this program has no `initialize` instruction."
+ }
+}

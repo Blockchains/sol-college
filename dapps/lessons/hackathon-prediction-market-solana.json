@@ -422,7 +422,7 @@
   }
  ],
  "not_covered": "Create market, add liquidity, buy, sell and resolve were clicked through in the app with the config authority's wallet. Whitelisting a second trader, the NO side, the withdrawal and every rejected case were run by script. Not exercised: the Steam oracle key (unset), nominate/accept authority, whitelist_remove_member, mint_no_token, start/end slots, additional (second) LPs.",
- "path_order": 16,
+ "path_order": 17,
  "path_stage": 3,
  "difficulty": "Advanced",
  "time": "80 min",

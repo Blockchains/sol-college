@@ -330,7 +330,7 @@
   }
  ],
  "not_covered": "Stake, bribe, unstake and vesting claim were clicked through in the app. Create Pool can't work in the app (out-of-date IDL), so the pool was created by script, and sync_bribes, which the app never calls, was only run by script. This is the testing build (1 day = 1 second), so vesting finishes in seconds. Only holders of the test token 5AWQ… can stake in the existing pool.",
- "path_order": 14,
+ "path_order": 15,
  "path_stage": 3,
  "difficulty": "Advanced",
  "time": "70 min",
