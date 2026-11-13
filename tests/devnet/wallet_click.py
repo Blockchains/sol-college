@@ -4,10 +4,23 @@ PhantomWalletAdapter pick it up) and signs with a devnet test keypair held only 
 Devnet HTTP RPC and websocket subscriptions from the page are served through a reachable devnet RPC
 (the box cannot reach api.devnet.solana.com). Prints one JSON line per step.
 Usage: python3 wallet_click.py <app> <base url> <tester keypair.json>   (app: poe | picassol | trustlock | gree)"""
-import sys, json, time, base64, threading, urllib.request, re
+import sys, json, time, base64, threading, urllib.request, re, os, pathlib
 from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
 from playwright.sync_api import sync_playwright
-RPC = 'https://solana-devnet.api.onfinality.io/public'
+def _box_rpc():
+    """Box-side RPC for the harness (the page still talks to api.devnet.solana.com, which we intercept).
+    Prefers SOLANA_RPC, then HELIUS_API_KEY (or /workspace/sol-college/keys/helius.env). Never prints the URL."""
+    if os.environ.get('SOLANA_RPC'): return os.environ['SOLANA_RPC']
+    k = os.environ.get('HELIUS_API_KEY', '')
+    if not k:
+        envp = pathlib.Path('/workspace/sol-college/keys/helius.env')
+        if envp.exists():
+            for line in envp.read_text().splitlines():
+                if line.startswith('HELIUS_API_KEY='):
+                    k = line.split('=', 1)[1].strip().strip('"').strip("'"); break
+    if k: return 'https://devnet.helius-rpc.com/?api-key=' + k
+    return 'https://solana-devnet.api.onfinality.io/public'
+RPC = _box_rpc()
 A = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
 def b58(b):
     n = int.from_bytes(b, 'big'); s = ''
@@ -67,6 +80,20 @@ INIT = r'''(() => {
   try { window.dispatchEvent(new CustomEvent('wallet-standard:register-wallet', { detail: cb })); } catch (e) {}
   window.addEventListener('wallet-standard:app-ready', ({ detail }) => cb(detail));
   localStorage.setItem('walletName', JSON.stringify('Phantom'));
+})();''' % dict(addr=json.dumps(ADDR), pub=json.dumps(list(pub)))
+# Legacy injected provider (window.solana / window.phantom.solana, the pre-Wallet-Standard Phantom API) for apps that call it directly
+# instead of the wallet adapter (devos: utils/solana.ts passes window.solana to AnchorProvider). It signs web3.js Transaction objects
+# by signing serializeMessage() with the same test key; the PublicKey class is taken from the transaction's own instructions.
+LEGACY = r'''(() => {
+  const addr = %(addr)s, pk = new Uint8Array(%(pub)s);
+  const b64 = u => btoa(String.fromCharCode(...u)), ub64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  const shim = { toBase58: () => addr, toString: () => addr, toBuffer: () => pk, toBytes: () => pk, toJSON: () => addr, equals: o => String(o) === addr };
+  const sign = async (tx) => { const PK = tx.instructions[0].programId.constructor; const me = new PK(addr);
+    if (!tx.feePayer || String(tx.feePayer) === addr) tx.feePayer = me;
+    const sig = ub64(await window.__scWallet('signMsg', b64(tx.serializeMessage()))); tx.addSignature(me, sig); return tx; };
+  const p = { isPhantom: true, isConnected: true, publicKey: shim, connect: async () => ({ publicKey: shim }), disconnect: async () => {}, on: () => {}, off: () => {},
+    signTransaction: sign, signAllTransactions: async (txs) => { for (const t of txs) await sign(t); return txs; } };
+  window.solana = p; window.phantom = { solana: p };
 })();''' % dict(addr=json.dumps(ADDR), pub=json.dumps(list(pub)))
 def http_route(route, req):
     if req.method == 'OPTIONS': return route.fulfill(status=204, headers={'access-control-allow-origin': '*', 'access-control-allow-headers': '*', 'access-control-allow-methods': 'POST'})
@@ -496,11 +523,23 @@ def run(pg):
         n = len(SENT); btn(r'^Taker wins$').first.click(); pump(pg, 25000); log(step='settle_taker_wins_via_ui', sent=sigs_new(n))
         make(f'uc-{tag}'); open_bet(f'uc-{tag}')
         n = len(SENT); btn(r'^Cancel Bet$').first.click(); pump(pg, 25000); log(step='cancel_via_ui', sent=sigs_new(n))
+    elif app == 'devos':  # Create Election page: election name, one position, two candidates, Submit (create_election, add_position, add_candidate x2)
+        pg.goto(base + 'CreateElection/', wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 5000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg))
+        name = 'ui-' + str(int(time.time()))[-5:]
+        pg.locator('input[type=text]').first.fill(name)
+        pg.get_by_role('button', name='Add Position').click(); pump(pg, 800)
+        pg.get_by_placeholder('Position Name').first.fill('President')
+        pg.get_by_role('button', name='Add Candidate').first.click(); pump(pg, 800)
+        c = pg.get_by_placeholder('Candidate Name'); c.nth(0).fill('Alice'); c.nth(1).fill('Bob')
+        n = len(SENT); pg.get_by_role('button', name='Submit').click(); pump(pg, 60000)
+        log(step=f'submit_election_via_ui ({name}: President = Alice, Bob)', sent=sigs_new(n), success_shown='created successfully' in body(pg))
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
     pg.on('console', lambda m: errs.append('console:' + m.text[:200]) if m.type == 'error' or __import__('os').environ.get('SC_DEBUG') else None)
     ctx.expose_function('__scWallet', wallet_call); ctx.add_init_script(INIT)
+    if app == 'devos': ctx.add_init_script(LEGACY)
     ctx.route(re.compile(r'https://api\.devnet\.solana\.com/?.*'), http_route)
     ctx.route_web_socket(re.compile(r'wss://api\.devnet\.solana\.com/?.*'), ws_route)
     log(step='setup', app=app, wallet=ADDR, url=base)
