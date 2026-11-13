@@ -10,7 +10,7 @@ body:
 
         Include a regression test and a devnet transaction that demonstrates the behaviour.
 
-        For a participating project, commit suggestions are delivered to the team's repository for review. Upstream pull requests are prepared; they are not opened without the project's approval.
+        Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.
 
         This form opens a public GitHub issue. Do not include secrets, private keys or mainnet user data.
   - type: input

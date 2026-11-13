@@ -79,6 +79,7 @@
         <div class="proof-strip" aria-label="Evidence from our own work">
           <a class="glass proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working practice environments on devnet</span><small>Core flows completed in our evidence.</small></a>
           <a class="glass proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>documented bugs found in the forks</span><small>Explicit bug records in our evidence, not a formal audit.</small></a>
+          {{FIX_CARD}}
           <a class="glass proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons on live deployments</span><small>Each lesson is built to end in a commit suggestion.</small></a>
         </div>
       </div>
@@ -88,8 +89,8 @@
       <div>
         <p class="eyebrow">For Solana teams</p>
         <h1>A flywheel that turns testing into <em>improvements</em>.</h1>
-        <p class="lead">Put an isolated devnet fork of your dApp in front of developers, testers and researchers. They learn on a live application. You receive reproducible findings and commit suggestions — patches and regression tests delivered to your repo for review.</p>
-        <p class="kicker">Upstream pull requests are prepared; they are not opened without your approval. The loop is designed so authorised testing continuously feeds improvements you can merge — without anyone experimenting on your production system.</p>
+        <p class="lead">Put an isolated devnet fork of your dApp in front of developers, testers and researchers. They learn on a live application. You receive reproducible findings and commit suggestions — patches and regression tests. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for your team to accept or decline.</p>
+        <p class="kicker">The loop is designed so authorised testing continuously feeds improvements you can merge — without anyone experimenting on your production system.</p>
         <p class="cta-row">
           <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
           <a class="btn ghost" href="#loop">See the loop</a>
@@ -101,7 +102,7 @@
           <li><strong>Isolated devnet fork</strong> <span>A practice environment, not production.</span></li>
           <li><strong>Learners test and debug</strong> <span>Developers, testers and researchers, inside an agreed scope.</span></li>
           <li><strong>Reproducible findings</strong> <span>Evidence another person can evaluate.</span></li>
-          <li><strong>Suggested commits</strong> <span>Patches and regression tests, delivered to your repo for review.</span></li>
+          <li><strong>Suggested commits, opened as PRs</strong> <span>Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</span></li>
           <li><strong>Your team reviews and merges</strong> <span>You decide what lands.</span></li>
           <li><strong>Retest on devnet</strong> <span>Prove the fix, then go around again.</span></li>
         </ol>
@@ -115,7 +116,7 @@
     <div class="loop-head">
       <p class="eyebrow">The improvement loop</p>
       <h2>Learn. Test. Debug. Improve. Suggest a commit. Retest.</h2>
-      <p class="lead">Sol.College is a flywheel for how fast a Solana dApp can improve. A lesson or a finding is meant to end in something a repository can take: a patch or pull request against the working practice fork, with a regression test, then a retest on devnet. For a participating project, those commit suggestions are delivered to your repo for review. Upstream pull requests are prepared; they are not opened without your approval.</p>
+      <p class="lead">Sol.College is a flywheel for how fast a Solana dApp can improve. A lesson or a finding is meant to end in something a repository can take: a patch or pull request against the working practice fork, with a regression test, then a retest on devnet. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</p>
     </div>
     <div class="flywheel-wrap">
       <div class="flywheel" role="img" aria-label="The Sol.College improvement flywheel, in seven steps from your dApp through an isolated fork, testing, findings, suggested commits, review, and retest.">
@@ -126,7 +127,7 @@
           <li><span class="fw-step"><span class="n">2</span> Isolated devnet fork</span></li>
           <li><span class="fw-step"><span class="n">3</span> Learners test and debug</span></li>
           <li><span class="fw-step"><span class="n">4</span> Reproducible findings</span></li>
-          <li><span class="fw-step"><span class="n">5</span> Suggested commits, for review</span></li>
+          <li><span class="fw-step"><span class="n">5</span> Suggested commits, opened as PRs</span></li>
           <li><span class="fw-step"><span class="n">6</span> Your team reviews and merges</span></li>
           <li><span class="fw-step"><span class="n">7</span> Retest on devnet</span></li>
         </ol>
@@ -136,7 +137,7 @@
         <li><strong>Isolated devnet fork</strong> <span>A practice environment: an open-source dApp redeployed on devnet, with a defined brief and scope.</span></li>
         <li><strong>Learners test and debug</strong> <span>Developers, security researchers and bug bounty hunters work through guided challenges and approved research questions.</span></li>
         <li><strong>Reproducible findings</strong> <span>A test case, a reproduced issue, a technical explanation or a structured review — evidence someone else can evaluate.</span></li>
-        <li><strong>Suggested commits, delivered for review</strong> <span>A patch or pull request against the working practice fork, with a regression test. For a participating project, the suggestion is delivered to your repository for review. Upstream pull requests are prepared, and are not opened without your approval.</span></li>
+        <li><strong>Suggested commits, opened as pull requests</strong> <span>A patch, with a regression test, is pushed to the working practice fork and opened as a pull request to the original project, for the team to accept or decline.</span></li>
         <li><strong>Your team reviews and merges</strong> <span>You assess the change against your roadmap and engineering requirements.</span></li>
         <li><strong>Retest on devnet</strong> <span>The fix is exercised again on the isolated environment, and the loop turns.</span></li>
       </ol>
@@ -367,7 +368,7 @@
       <article class="glass feature">
         <div class="ico" aria-hidden="true">{{ICO_COMMIT}}</div>
         <h3>Commit suggestions for review</h3>
-        <p>Findings come back as patches and regression tests, delivered to your repository for review. Upstream pull requests are prepared; they are not opened without your approval.</p>
+        <p>Findings come back as patches and regression tests. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for your team to accept or decline.</p>
       </article>
       <article class="glass feature">
         <div class="ico" aria-hidden="true">{{ICO_LOOP}}</div>
@@ -432,7 +433,7 @@
             <td>A professional report of agreed scope.</td>
             <td>Vulnerability reports. Payment only where that programme’s terms say so.</td>
             <td>Results from your own process.</td>
-            <td>Structured findings and commit suggestions — patches and regression tests — delivered to your repo for review.</td>
+            <td>Structured findings and commit suggestions — patches and regression tests. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for your team to accept or decline.</td>
           </tr>
           <tr>
             <th scope="row">What it is not</th>
@@ -574,7 +575,7 @@
       <a href="https://github.com/Blockchains/sol-college">GitHub</a>
     </nav>
     <p>Sol.College practice environments are open-source Solana dApps redeployed on devnet. They are not, by themselves, evidence that the original teams are participating partners. Access to a fork is not permission to test the original application, its users or any connected third-party service. Code excerpts elsewhere on this site are quoted under their original permissive licences, with attribution and permalinks.</p>
-    <p>Commit suggestions are delivered to a repository for review. Upstream pull requests are prepared; they are not opened without the project’s approval.</p>
+    <p>Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</p>
   </div>
 </footer>
 <script src="/assets/landing.js" defer></script>

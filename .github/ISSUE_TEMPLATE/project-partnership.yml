@@ -10,7 +10,7 @@ body:
 
         Together we would define the isolated devnet environment, learning objectives, testing scope, deliverables and review process before opening it to participants.
 
-        Commit suggestions (patches and regression tests) are delivered to your repository for review. Upstream pull requests are prepared; they are not opened without your approval.
+        Verified fixes are pushed to the working fork and opened as pull requests to the original project, for your team to accept or decline.
 
         This form opens a public GitHub issue on the Sol.College repository. Do not include secrets, production credentials or private user data.
   - type: input

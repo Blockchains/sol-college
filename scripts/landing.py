@@ -297,20 +297,101 @@ def json_ld():
     return json.dumps(data, ensure_ascii=False, separators=(',', ':'))
 
 
+PR_URL_RE = re.compile(
+    r'https?://(?:www\.)?github\.com/([^/\s)#]+)/([^/\s)#]+)/pull/(\d+)',
+    re.I,
+)
+
+def _normalise_pr(url):
+    m = PR_URL_RE.search(url or '')
+    if not m:
+        return None
+    owner, repo, num = m.group(1), m.group(2).rstrip('.git'), m.group(3)
+    return f'https://github.com/{owner}/{repo}/pull/{num}', (owner.lower(), repo.lower(), num)
+
+
+def _walk_pr_urls(val, into, src):
+    """Collect every GitHub pull-request URL in a string, list or dict."""
+    if isinstance(val, str):
+        for m in PR_URL_RE.finditer(val):
+            n = _normalise_pr(m.group(0))
+            if n:
+                into.append((n[0], n[1], src))
+    elif isinstance(val, (list, tuple)):
+        for i in val:
+            _walk_pr_urls(i, into, src)
+    elif isinstance(val, dict):
+        for v in val.values():
+            _walk_pr_urls(v, into, src)
+
+
+def opened_fix_prs(apps=None, root=None):
+    """Unique opened upstream PR URLs, computed — never invented.
+
+    Sources (the only ones this count uses):
+    - GitHub pull-request URLs inside dapps/patches/*/UPSTREAM_PR.md
+    - GitHub pull-request URLs in live.json (dedicated fields, or any /pull/N URL)
+
+    A draft UPSTREAM_PR.md with no opened PR URL does not count. Hidden when 0.
+    """
+    root = Path(root) if root else ROOT
+    found = []
+    for fp in sorted((root / 'dapps' / 'patches').glob('*/UPSTREAM_PR.md')):
+        try:
+            text = fp.read_text(encoding='utf-8', errors='replace')
+        except OSError:
+            continue
+        rel = str(fp.relative_to(root)) if root in fp.parents or fp.is_relative_to(root) else str(fp)
+        _walk_pr_urls(text, found, rel)
+    for x in (apps if apps is not None else load_live()):
+        _walk_pr_urls(x, found, 'live.json:' + str(x.get('slug') or ''))
+    seen = set()
+    out = []
+    for url, key, src in found:
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append({'url': url, 'source': src})
+    return out
+
+
+def fix_card_html(prs):
+    if not prs:
+        return ''
+    n = len(prs)
+    href = prs[0]['url'] if n == 1 else '#loop'
+    label = 'verified fix opened as an upstream pull request' if n == 1 else 'verified fixes opened as upstream pull requests'
+    return (
+        f'<a class="glass proof-card" href="{E(href)}"><b>{n}</b>'
+        f'<span>{E(label)}</span>'
+        f'<small>Counted from recorded GitHub PR URLs in our evidence. The original team accepts or declines.</small></a>'
+    )
+
+
 def write_home(site='site'):
     site = Path(site)
     site.mkdir(parents=True, exist_ok=True)
     apps = load_live()
     functional = [x for x in apps if is_fully_functional(x)]
     bugs = explicit_bugs(apps)
+    fix_prs = opened_fix_prs(apps)
     tpl = (HERE / 'landing.html').read_text(encoding='utf-8')
     bug_note = (
         f'{len(bugs)} issues are labelled as bugs in our devnet evidence for the practice forks '
         f'(explicit “Bug:” / “BUG:” records in the deployment notes, counted uniquely). '
         f'This is not a formal audit and not a claim about any project’s production system. '
-        f'We do not yet publish a count of accepted fix commits: static-host build patches are not counted, '
-        f'and suggested-commit patches will be listed here when they exist.'
     )
+    if fix_prs:
+        bug_note += (
+            f'{len(fix_prs)} verified fix{"es" if len(fix_prs) != 1 else ""} '
+            f'{"have" if len(fix_prs) != 1 else "has"} been opened as upstream pull requests, '
+            f'counted from recorded GitHub PR URLs.'
+        )
+    else:
+        bug_note += (
+            'A count of verified fixes opened as upstream pull requests appears when recorded '
+            'GitHub PR URLs exist. Static-host build patches are not counted.'
+        )
     tokens = {
         'TITLE': E(TITLE),
         'DESCRIPTION': E(DESCRIPTION),
@@ -318,6 +399,7 @@ def write_home(site='site'):
         'LIVE_COUNT': str(len(functional)),
         'LESSON_COUNT': str(len(apps)),
         'BUG_COUNT': str(len(bugs)),
+        'FIX_CARD': fix_card_html(fix_prs),
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
         'LIVE_CARDS': live_cards(functional),
         'FINDINGS': findings_html(apps),
@@ -357,6 +439,7 @@ def write_home(site='site'):
         'functional=', len(functional),
         'deployed=', len(apps),
         'bugs=', len(bugs),
+        'fix_prs=', len(fix_prs),
         'excluded=', [x['slug'] for x in apps if not is_fully_functional(x)],
     )
     return site / 'index.html'
@@ -365,7 +448,7 @@ def write_home(site='site'):
 COMMIT_BLOCK = '''<!--sc-commit-->
 <section class="note" id="commit-suggestion">
 <h2>Turn a finding into a commit suggestion</h2>
-<p>Lessons and findings on this practice fork are meant to end in something the repository can take: a patch or pull request against the <a href="{fork}">practice fork</a>, with a regression test and the devnet transaction that proves it. For a participating project, commit suggestions are delivered to the team’s repo for review. Upstream pull requests are prepared; they are not opened without the project’s approval.</p>
+<p>Lessons and findings on this practice fork are meant to end in something the repository can take: a patch or pull request against the <a href="{fork}">practice fork</a>, with a regression test and the devnet transaction that proves it. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</p>
 <p><a class="btn" href="{url}">Submit a commit suggestion</a></p>
 </section>
 <!--/sc-commit-->'''
