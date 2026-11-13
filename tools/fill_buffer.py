@@ -29,8 +29,8 @@ data = open(so, 'rb').read(); HDR = 37; CH = 950
 def current():
     v = rpc('getAccountInfo', [buf_s, {'encoding': 'base64'}])['value']; return base64.b64decode(v['data'][0])[HDR:]
 def write_tx(off, chunk, bh):
-    ix = struct.pack('<IIQ', 1, off, len(chunk)) + chunk
-    msg = bytes([1, 0, 1]) + bytes([3]) + auth + buf + loader + bh + bytes([1, 2, 2, 1, 0]) + bytes([len(ix) & 0x7f | 0x80, len(ix) >> 7]) + ix
+    ix = struct.pack('<IIQ', 1, off, len(chunk)) + chunk  # compact-u16 length below: 1 byte under 128 (a 2-byte form is rejected as non-canonical)
+    msg = bytes([1, 0, 1]) + bytes([3]) + auth + buf + loader + bh + bytes([1, 2, 2, 1, 0]) + (bytes([len(ix)]) if len(ix) < 128 else bytes([len(ix) & 0x7f | 0x80, len(ix) >> 7])) + ix
     return bytes([1]) + priv.sign(msg) + msg
 for rnd in range(6):
     cur = current(); todo = [o for o in range(0, len(data), CH) if cur[o:o + CH] != data[o:o + CH]]
