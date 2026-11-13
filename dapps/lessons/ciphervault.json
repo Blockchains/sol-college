@@ -290,7 +290,7 @@
   }
  ],
  "not_covered": "The full create → propose → approve → execute cycle was clicked through with two wallets. Not exercised: the SPL-token option in the dialog (the program does nothing with it). The missing account constraints described in section 4 come from reading the code; we did not attempt them against the deployed program. Lists use getProgramAccounts on the public RPC and can be slow.",
- "path_order": 11,
+ "path_order": 12,
  "path_stage": 2,
  "difficulty": "Intermediate",
  "time": "55 min",

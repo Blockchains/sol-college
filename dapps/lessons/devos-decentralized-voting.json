@@ -313,7 +313,7 @@
   }
  ],
  "not_covered": "Create Election (create + add position + two candidates, both on position 0) was clicked through in the hosted app. Opening, voting, tallying, closing, get_winner, add_voter and the reopen-after-result path were run from the script (election `sc-DNy7cz`, PDA GpDah5qV…). There is no UI for those instructions. Owned Elections and Enrolled Elections are static mocks.",
- "path_order": 7,
+ "path_order": 8,
  "path_stage": 2,
  "difficulty": "Intermediate",
  "time": "50 min",

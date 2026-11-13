@@ -314,7 +314,7 @@
   }
  ],
  "not_covered": "Create, bet, resolve and claim were clicked through in the hosted app. The market used for resolve/claim was created by script because the form only allows end dates from tomorrow; creator fees were claimed by script. Questions over 32 bytes can't be created at all (PDA seed limit). The fork's TypeScript doesn't type-check, so the export is built with type errors ignored.",
- "path_order": 13,
+ "path_order": 14,
  "path_stage": 3,
  "difficulty": "Advanced",
  "time": "60 min",

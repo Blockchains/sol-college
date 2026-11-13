@@ -333,7 +333,7 @@
   }
  ],
  "not_covered": "Initialize, issue, both signatures, verify and the student list were clicked through in the app. Outsider signing, revocation, disclosure proofs, the authority-mismatch university and every rejected case were run by script. Not exercised: issuing to a different student wallet from the app, create_disclosure_proof with someone else's credential key (read from code).",
- "path_order": 9,
+ "path_order": 10,
  "path_stage": 2,
  "difficulty": "Intermediate",
  "time": "50 min",
