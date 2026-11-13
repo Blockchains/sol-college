@@ -1,91 +1,42 @@
 {
- "slug": "gifter-escrow",
- "cluster": "devnet",
- "program": "gifter_escrow",
- "idl": "idl.json",
- "devnet": "6Z5cvVUcJVFvkhmtJ4dYwgVqNn7jqN6TSisoYSihBA1r",
- "deploy_tx": "5qmb7WyfuDRuVDDVioYc1QjTztNFs5Le3jSbyYqg8bneoqjDQYXoirkKBXdaVgnAZr4ThSA83ieNzCXDrnyf5RJL",
- "built": "cargo-build-sbf (solana 2.3.13) of contract/programs/gifter-escrow at a9c3a41 (anchor-lang 0.30.1), with declare_id set to this program's keypair; IDL is the fork's committed gifter-escrow-frontend/contract/idl/gifter_escrow.ts with this address. The static app inlines a Helius DAS URL at build time from HELIUS_API_KEY (not in source).",
- "sigs": [
-  {
-   "label": "fund M 0.12, T 0.12, X 0.03 SOL (enough for mint ATAs and escrow rent)",
-   "sig": "24QDfCZ7KgsoYyFLTe5JbfBmS8Vv34x3WoprMovCizsLpB26A5XFMpgVJcgyXdyrUnmH33JrU1YyhLrGZehiiX3c"
-  },
-  {
-   "label": "create mint A (the deposited token) (6 decimals, payer is mint authority)",
-   "sig": "2nYnGDfuuRfgY1qyWx844BgxyMvwgNGdo35WunbAWKxnfLGNnt7jxdFQ5WHZAW5Wa7PQyT2k29F95pq2WrF6fD3f"
-  },
-  {
-   "label": "create mint B (what the maker wants in return) (6 decimals, payer is mint authority)",
-   "sig": "4xnCfshG9rA9DFCrRZp4umwpZn1Edn955BCCFypiaacEnobBCSJ3YcKbaV38qHts89AKMhDUSabrpv5bG7w1v19r"
-  },
-  {
-   "label": "create ATA M / mint A",
-   "sig": "2k17baGuLSFPNJ3KiEc7ockqVTnnzMeWherKXYRHz9CT49jz3qb3xG8uJiHQtgd2Ygxy2UoXmY5HBvDyRb5RkRVM"
-  },
-  {
-   "label": "create ATA M / mint B",
-   "sig": "28DD7Rnoya6P21jzUnjQ8iHgAiYM2Dwc38s2KcKyTMcQ9BMeywQ5xLR12GQrCHLQjDMr4oY2Kwn1zbh1fttyVfAg"
-  },
-  {
-   "label": "create ATA T / mint A",
-   "sig": "3goHv9dHVVBEsYuaHkXBfGWsTvAqeboLLq9bNNVvSLokHYNVHW575yk49JoWaBHwzMLHXRPG3YapQ2nSEapFzY8h"
-  },
-  {
-   "label": "create ATA T / mint B",
-   "sig": "3W8yU11ZQQBuNmrTD13mXZqDGmkNx61ecJ3c4gUTGpXZPsu7CroXxUXERwDj2xaRigNE6o7eHKbxPkj4xwQqwLt4"
-  },
-  {
-   "label": "create ATA X / mint A",
-   "sig": "4DM65G34tZqGmrQrYJ5ydrR1zDMsx63Q3S7yDF2gsBdD5cWCnZ2Ds3FDqwi628x5UQaF6VrwRD8cdnTJYNwrC46w"
-  },
-  {
-   "label": "mint 1000 of mint A to M",
-   "sig": "4YcsL54vLaXxF9uRzZ62xKG5zK6aufQQQjHasWpMLNArBSXaqY1X7FLZz9zMmzuvEJSVcCSzyKH4N1MsxT7LiGer"
-  },
-  {
-   "label": "mint 1000 of mint B to T",
-   "sig": "K2QV58M9DaJUEsYvj16iKcfdwHJRQExbA5ng7NGSH1gqnhjuzoq2GLpZ98oStKUEjnobU1hWWS4zxX3ZxEzxkE7"
-  },
-  {
-   "label": "M creates escrow #1: deposits 10 of mint A, wants 5 of mint B",
-   "sig": "2WyGKCWoULopQ2Pm9kmn2W4EpjtrJMCxMygxemtyMbmB7hA2L2Sndg5cLbAUDKZcYwyeifBVCwEeoLU4kAXVL7Nt"
-  },
-  {
-   "label": "M refunds escrow #1 (the take never ran, so the 10 of mint A is still in the vault)",
-   "sig": "5tpaLaShJTDReAdARs1Ac1QeTSEX25txerRf11rEpVs1qmHrvrRcfzHKMruyNrLSgAC6BGTepXw34KhVZcDT9rTT"
-  },
-  {
-   "label": "M creates escrow #2 asking for 10_000 of mint B (more than T holds) \u2014 take is the same crashing instruction, so this is about create with a large want",
-   "sig": "4M4aWcN7TL5ak2a6qtWmRms1HTrczQXJAiiqej9NDo5AJsbrERpiwah7tNzWdcWgt5DRFsCPkfcXYbSweaKLeU28"
-  },
-  {
-   "label": "M refunds escrow #2",
-   "sig": "3qaTSfv2ZJ69A7NdNtdXd4tkLNgN4F4RLoPaaqRq3ApAWxpgZNWu9beteTybwRKMiCNfa6P1oZFRuGFLXzR1VJ9v"
-  },
-  {
-   "label": "mint 50 of mint A to the UI test wallet for the DAS token list",
-   "sig": "4T1tDkM6FggksVbZsYHpgDhkiUu1yDQaXdwXCCDuzPUEpxE7ebJVSjaePk6nDYi2hvjxPhCdSokd5PTXuwnWXxvk"
-  },
-  {
-   "label": "mint 50 of mint B to the UI test wallet for the DAS token list",
-   "sig": "mfhwXqwy2GbcyUBKJjcphv5j1F88xtx1MarNLYBwjup48cP9PuL4CnetH8LqBqjNixVCbwYcB894Z9FPWRfQAGh"
-  },
-  {
-   "label": "return unspent SOL to the payer",
-   "sig": "3coXnSVtkVyCefjTJnYcNexjvR2PTFZBGgGYHbPk3hSuZzWzSWTMgRf1ij2mWhxA8eGfcbgktDHf9FDJmQA4sBKo"
-  },
-  {
-   "label": "return unspent SOL to the payer",
-   "sig": "3K1XmT9EQAg8tscSZNKUv54YBHomcWaJu3e9GK9KidqLTz8LPHRECbRibuDNPUwdhVMVgGpkg1mDVsgyK7k2AgfL"
-  },
-  {
-   "label": "return unspent SOL to the payer",
-   "sig": "5xHDKQAef6RDkQCU4bsAtgM3biS5xKMbg35uic2Bt1iQrQZFtMaV7u19CbgRvNLbau9rRYfDW8UGt7kBqMPoRcHX"
-  },
-  {
-   "label": "BUG: T takes escrow #1 \u2014 take_and_close aborts with an access violation (the handler starts with println(\"Hello\") in take.rs)",
-   "sig": "ck53TqoU8UfpBav2V3bE1oy4Wm2qvxeU6bgibkXqzCsbP4YbBxDGK98bJxoowGpKNwkkPotBtCxVfUQMEm2zZu7"
-  }
- ]
+  "slug": "gifter-escrow",
+  "cluster": "devnet",
+  "program": "gifter_escrow",
+  "idl": "idl.json",
+  "devnet": "45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x",
+  "deploy_tx": "4mJGamgWdgzgvx4vmweJUHmrDqwczKXiZwVDy5as5HMTkjNvJV7YrgW2TMh327SY9Qb1T2ebJFANvqm1LeGMuYhX",
+  "upgrade_tx": "4HaARQTeA2dbGcQ73QuD3GDyrtd5xvZJHcDKZRKARioDdHNEjnYziDauM8d2Pi3tVZSZVhEunxkHvC872aafvs9n",
+  "built": "cargo-build-sbf (solana 2.3.13) of contract/programs/gifter-escrow at Blockchains/gifter-escrow@fb2bbfd (anchor-lang 0.30.1). Fixes vs upstream a9c3a41: remove println! in take.rs; bind PDA seed bytes in Take/Refund (to_le_bytes().as_ref() in seeds was a dangling pointer, access violation 0x10008); frontend token-dropdown query key and DAS URL from NEXT_PUBLIC_HELIUS_DAS_URL. declare_id is this program. Replaced earlier college program 6Z5cvVUc\u2026 whose take_and_close aborted.",
+  "previous_broken_program": "6Z5cvVUcJVFvkhmtJ4dYwgVqNn7jqN6TSisoYSihBA1r",
+  "previous_broken_take_tx": "ck53TqoU8UfpBav2V3bE1oy4Wm2qvxeU6bgibkXqzCsbP4YbBxDGK98bJxoowGpKNwkkPotBtCxVfUQMEm2zZu7",
+  "sigs": [
+    {
+      "label": "initial deploy of 45C1\u2026 (println removed; take still failed on dangling seeds)",
+      "sig": "4mJGamgWdgzgvx4vmweJUHmrDqwczKXiZwVDy5as5HMTkjNvJV7YrgW2TMh327SY9Qb1T2ebJFANvqm1LeGMuYhX"
+    },
+    {
+      "label": "upgrade after binding PDA seed bytes in Take/Refund",
+      "sig": "4HaARQTeA2dbGcQ73QuD3GDyrtd5xvZJHcDKZRKARioDdHNEjnYziDauM8d2Pi3tVZSZVhEunxkHvC872aafvs9n"
+    },
+    {
+      "label": "T takes escrow #1: pays 5 mint B, receives 10 mint A, vault and state close",
+      "sig": "33yMgZzAaH3mMcHgSmQBRVb4FeRmu5gX6nkAMfJU2T8F8sAwqMDTVfgsVcg7MXPM28GoAo7RPC7E35NhkNSrLXZd"
+    },
+    {
+      "label": "M refunds escrow #2 after an insufficient-funds take",
+      "sig": "3qwx8QBC6Ai7a6ANH4PoaCqJS6DszHDXfPBFaVbN2wKZEtW9Rtu2PVmG3jChfZi4sffywm5npuJhir6RYgCiHjqJ"
+    },
+    {
+      "label": "UI create escrow (give 1 mint A, want 1 mint B)",
+      "sig": "2c6QNtYzCDr2McZcXG9dsyD6e951w8EvA5QBAgwxCYG9uDjYD2a3B4xf9UV7QGk3rdJ7oDNNfex9bBHZTiMzujCk"
+    },
+    {
+      "label": "UI refund leftover escrow #535",
+      "sig": "3GUdvNGQr6BWp28q4KLwjHVS4AU8y4wHCouiN26kpa4nwN3LkfbC3BBSB61mAFdEtjbfE1sgh2HrB9uevLsDL193"
+    },
+    {
+      "label": "UI refund new escrow #772",
+      "sig": "2GsfGiPtjNWfe32hunPNwEX7tLqVzP6v5zUmXe8j1XmbNWJzwzYnE84QbZKnGm5EHJNHrk4TXKgYM3RgX9rPPTTD"
+    }
+  ]
 }

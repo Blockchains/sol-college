@@ -1,13 +1,13 @@
-// Gifter escrow on devnet: create an A-for-B escrow, take it, refund a second one, and the program's rejections.
+// Gifter escrow on devnet: create an A-for-B escrow, take it (fixed take_and_close), refund a second one, and the program's rejections.
 // Mirrors the app's calls (gifter-escrow-frontend/contract/methods/{create,refund,take}.ts). The app lists tokens
 // through Helius DAS (getAssetsByOwner); this script talks to the program directly and also mints two 6-decimal
 // tokens (the app multiplies amounts by 1e6).
-// Usage (from gifter-escrow-frontend/, @coral-xyz/anchor 0.30): node gifter-escrow.mjs <idl.json> <rpc> <payer.json>
+// Usage (from a tree with @coral-xyz/anchor 0.30): node gifter-escrow.mjs <idl.json> <rpc> <payer.json>
 // The payer funds two fresh keys (M = maker, T = taker, X = outsider) and gets the unspent SOL back at the end.
 import fs from 'fs';
 import anchor from '@coral-xyz/anchor';
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
-import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, createMint, getOrCreateAssociatedTokenAccount, mintTo, getAccount, getAssociatedTokenAddressSync, createAssociatedTokenAccountInstruction, createMintToInstruction, createInitializeMint2Instruction, MINT_SIZE, getMinimumBalanceForRentExemptMint } from '@solana/spl-token';
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, getAccount, getAssociatedTokenAddressSync, createAssociatedTokenAccountInstruction, createMintToInstruction, createInitializeMint2Instruction, MINT_SIZE, getMinimumBalanceForRentExemptMint } from '@solana/spl-token';
 const { AnchorProvider, Program, Wallet, BN } = anchor;
 const [idlPath, rpc, payerPath] = process.argv.slice(2);
 const rlFetch = async (url, opts) => { for (let i = 0; ; i++) { const r = await fetch(url, opts); if ((r.status !== 429 && r.status < 500) || i >= 12) return r; await new Promise(z => setTimeout(z, 1500 * (i + 1))); } };
@@ -19,21 +19,22 @@ conn.confirmTransaction = async (arg) => { const sig = typeof arg === 'string' ?
       if (st.err) throw new Error('tx failed ' + JSON.stringify(st.err)); return { context: { slot: st.slot }, value: { err: st.err } }; }
     await sleep(1000); } throw new Error('confirm timeout ' + sig); };
 const kp = (p) => Keypair.fromSecretKey(Uint8Array.from(JSON.parse(fs.readFileSync(p, 'utf8'))));
-const idl = JSON.parse(fs.readFileSync(idlPath, 'utf8')); const pid = new PublicKey(idl.address || idl.metadata.address);
+const idl = JSON.parse(fs.readFileSync(idlPath, 'utf8'));
 const prog = (k) => new Program(idl, new AnchorProvider(conn, new Wallet(k), { commitment: 'confirmed' }));
 const log = (o) => console.log(JSON.stringify(o));
-const err = (e) => String(e.error?.errorCode?.code || e.logs?.find(l => /Error|failed|already in use|insufficient/i.test(l)) || e.message).split('\n')[0].slice(0, 240);
-const transient = (e) => /Backend error|StatusCode: 5|fetch failed|ECONNRESET|blockhash|timed out|429/i.test(String(e?.message || e));
+const err = (e) => String(e.error?.errorCode?.code || e.logs?.find(l => /Error|failed|already in use|insufficient|0x/i.test(l)) || e.message).split('\n')[0].slice(0, 220);
+const transient = (e) => /Backend error|StatusCode: 5|fetch failed|ECONNRESET|blockhash/i.test(String(e?.message || e));
 const retry = async (fn) => { for (let i = 0; ; i++) { try { return await fn(); } catch (e) { if (!transient(e) || i >= 6) throw e; await sleep(4000 * (i + 1)); } } };
-const expectFail = async (label, fn0) => { try { const s = await retry(fn0); log({ step: label, ok: false, error: 'UNEXPECTED SUCCESS', sig: s }); } catch (e) { log({ step: label, expectedFailure: true, error: err(e), sig: e.signature || undefined }); } };
+const expectFail = async (label, fn0) => { const fn = () => retry(fn0); try { const s = await fn(); log({ step: label, ok: false, error: 'UNEXPECTED SUCCESS', sig: s }); } catch (e) { log({ step: label, expectedFailure: true, error: err(e) }); } };
 const SOL = LAMPORTS_PER_SOL; const payer = kp(payerPath);
 const M = Keypair.generate(), T = Keypair.generate(), X = Keypair.generate(); const keyDir = payerPath.replace(/[^/]*$/, '');
 const tag = M.publicKey.toBase58().slice(0, 6);
 for (const [n, k] of [['M', M], ['T', T], ['X', X]]) try { fs.writeFileSync(`${process.env.ROLE_KEY_DIR || keyDir}gifter-${n}-${tag}.json`, JSON.stringify(Array.from(k.secretKey)), { mode: 0o600 }); } catch {}
 const DEC = 6, UNIT = 10 ** DEC;
-const escrowOf = (maker, id) => PublicKey.findProgramAddressSync([Buffer.from('gifter_escrow'), maker.toBuffer(), new BN(id).toArrayLike(Buffer, 'le', 8)], pid)[0];
+const escrowOf = (maker, id) => PublicKey.findProgramAddressSync([Buffer.from('gifter_escrow'), maker.toBuffer(), new BN(id).toArrayLike(Buffer, 'le', 8)], new PublicKey(idl.address))[0];
 const vaultOf = (state, mint) => getAssociatedTokenAddressSync(mint, state, true, TOKEN_PROGRAM_ID);
 const ata = (owner, mint) => getAssociatedTokenAddressSync(mint, owner, false, TOKEN_PROGRAM_ID);
+const pid = new PublicKey(idl.address);
 log({ step: 'setup', program: pid.toBase58(), M: M.publicKey.toBase58(), T: T.publicKey.toBase58(), X: X.publicKey.toBase58() });
 log({ step: 'fund M 0.12, T 0.12, X 0.03 SOL (enough for mint ATAs and escrow rent)', sig: await sendAndConfirmTransaction(conn, new Transaction().add(
   SystemProgram.transfer({ fromPubkey: payer.publicKey, toPubkey: M.publicKey, lamports: 0.12 * SOL }),
@@ -73,7 +74,7 @@ const ataTB = await ensureAta(T, mintB, 'T / mint B');
 const ataXA = await ensureAta(X, mintA, 'X / mint A');
 await mintUnits(ataMA, mintA, 1000 * UNIT, 'mint A to M');
 await mintUnits(ataTB, mintB, 1000 * UNIT, 'mint B to T');
-const tok = async (a) => Number((await getAccount(conn, a)).amount);
+const tok = async (a) => { try { return Number((await getAccount(conn, a)).amount); } catch { return 0; } };
 const create = (k, id, dep, want) => {
   const state = escrowOf(k.publicKey, id);
   return prog(k).methods.createEscrow(new BN(id), new BN(dep * UNIT), new BN(want * UNIT)).accounts({
@@ -97,16 +98,18 @@ const take = (taker, maker, id) => {
     makerTokenAccountB: ata(maker, mintB), takerTokenAccountA: ata(taker.publicKey, mintA), takerTokenAccountB: ata(taker.publicKey, mintB),
     gifterEscrowState: state, escrowVault: vaultOf(state, mintA),
     systemProgram: SystemProgram.programId, associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID, tokenProgram: TOKEN_PROGRAM_ID,
-  }) .rpc({ skipPreflight: true });
+  }).rpc();
 };
 log({ step: 'M creates escrow #1: deposits 10 of mint A, wants 5 of mint B', ok: true, sig: await retry(() => create(M, 1, 10, 5)), escrow: escrowOf(M.publicKey, 1).toBase58(), M_A: (await tok(ataMA)) / UNIT });
 await expectFail('M creates escrow #1 again (same PDA)', () => create(M, 1, 10, 5));
 await expectFail("X refunds M's open escrow (PDA is seeded by the signer, so X's seeds miss)", () => refund(X, 1));
-await expectFail("BUG: T takes escrow #1 — take_and_close aborts with an access violation (the handler starts with println(\"Hello\") in take.rs)", () => take(T, M.publicKey, 1));
+const tA0 = await tok(ataTA), mB0 = await tok(ataMB);
+log({ step: 'T takes escrow #1 — take_and_close now completes: T pays 5 of mint B, receives 10 of mint A, vault and state close', ok: true, sig: await retry(() => take(T, M.publicKey, 1)), T_A_gain: ((await tok(ataTA)) - tA0) / UNIT, M_B_gain: ((await tok(ataMB)) - mB0) / UNIT, vault_closed: !(await conn.getAccountInfo(vaultOf(escrowOf(M.publicKey, 1), mintA))), state_closed: !(await conn.getAccountInfo(escrowOf(M.publicKey, 1))) });
+await expectFail('T takes escrow #1 again (state and vault are already closed)', () => take(T, M.publicKey, 1));
+log({ step: 'M creates escrow #2 asking for 10_000 of mint B (more than T holds)', ok: true, sig: await retry(() => create(M, 2, 1, 10000)) });
+await expectFail('T takes escrow #2 wanting 10_000 of mint B (T only has 995 left)', () => take(T, M.publicKey, 2));
 const mA0 = await tok(ataMA);
-log({ step: 'M refunds escrow #1 (the take never ran, so the 10 of mint A is still in the vault)', ok: true, sig: await retry(() => refund(M, 1)), M_A_gain: ((await tok(ataMA)) - mA0) / UNIT });
-log({ step: 'M creates escrow #2 asking for 10_000 of mint B (more than T holds) — take is the same crashing instruction, so this is about create with a large want', ok: true, sig: await retry(() => create(M, 2, 1, 10000)) });
-log({ step: 'M refunds escrow #2', ok: true, sig: await retry(() => refund(M, 2)) });
+log({ step: 'M refunds escrow #2 (take was rejected, so the 1 of mint A is still in the vault)', ok: true, sig: await retry(() => refund(M, 2)), M_A_gain: ((await tok(ataMA)) - mA0) / UNIT });
 // fund the hosted-app test wallet so the DAS-backed token dropdown can see the two mints
 const testerPk = new PublicKey('m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr');
 for (const [mint, label] of [[mintA, 'A'], [mintB, 'B']]) {

@@ -1,0 +1,27 @@
+{"step":"setup","program":"45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x","M":"ExCmfnp2GQVRHb82wiZduqwdFgGbGxeJfXuypYk6pEJQ","T":"7v8vW5U5NWaRBAuS3ApFAQFHKKr176yjBcms4ZngSeY2","X":"68YHMux4YKvaee8JwgRnhwVXGHRm2NnSQSaZvptPGqfK"}
+{"step":"fund M 0.12, T 0.12, X 0.03 SOL (enough for mint ATAs and escrow rent)","sig":"2MW9wB2HSUBQebXq7PUCRpGSkfZ4hV95CfKsi6um3bVFCe5gzsTXeK2TXvASkgGeBtFGr5DJyXEtjeeAY1dF7pH1"}
+{"step":"setup","program":"45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x","M":"ExCmfnp2GQVRHb82wiZduqwdFgGbGxeJfXuypYk6pEJQ","T":"7v8vW5U5NWaRBAuS3ApFAQFHKKr176yjBcms4ZngSeY2","X":"68YHMux4YKvaee8JwgRnhwVXGHRm2NnSQSaZvptPGqfK"}
+{"step":"reuse already-funded M/T/X (fund tx already confirmed; not resent)","M":0.12,"T":0.12,"X":0.03}
+{"step":"create mint A (the deposited token) (6 decimals, payer is mint authority)","mint":"6yHzRTmukfp7DVAHNAb7hC5NxN6JDnPUSHWm22Exswpu","sig":"mPajP3Y2k8CBqtnMCSdBA5G53ztgMrjiKgKvz2EAEB7crHubgXnPufBdnuvDv1Z68AvCYmfdBVzTmPTangzTRgE"}
+{"step":"create mint B (what the maker wants in return) (6 decimals, payer is mint authority)","mint":"13WYoT3wv15uao4pu7kWffJZgbvLyKf8SkEivuLowwJ1","sig":"5thvYTzotCMvwGu1qnGQHSW3mvSFbo2bCmfF6Wm8rML14x2xG8MEgcW8THaPGsYMhxNvdcdHNjJn99UiPcuLkH3k"}
+{"step":"create ATA M / mint A","account":"6Yf4zh1WHRv2yWJEBKuAXehcoq12Ftr5LG3mxjfypjpK","sig":"4UfRYXaiFBKpY2zLgeKdC5B5JFdRw2jAHUjeUThNnv9DeZqN2b2zuwwxWWUbJ6Qc1V82btuxgnpYqVh5GPsEZQSQ"}
+{"step":"create ATA M / mint B","account":"4aR3CewF1ZY2utnNxaifACknfifzihEEURaNTDB3PXcf","sig":"2dTjkP6CPQ24SjNwLY36StKLZx49vZjH1QJVkd3yqrwtxJACPo87MhUrNyojC27Zr7M7qDJ7rnJJUfULoicSmEp2"}
+{"step":"create ATA T / mint A","account":"368GPddGvhhbzwPRx5dwY78bVbHForatZvoCtovg2jGy","sig":"3VhLEPZtQF1GzTLTao2Gte8WM91upopMebmrWJ7QwfmjteAvLYZh1N1AQ7H7YwfwQX2PUHpZswydY68VgijbiDSm"}
+{"step":"create ATA T / mint B","account":"4RY5u7eRj1N1fVEyNWZF8wJP1YfsqDDNVL46dGXRCfbs","sig":"3JP6AxaqAryDFBhbU2KcbbtJzfw3hF3TcUeyJzcEpa11N3zKZG1py2G1cRGYGfrbHXcFkt6TGXfAAjwqsk8u6EXy"}
+{"step":"create ATA X / mint A","account":"HLyVCGKLTPQWckcu4ANU3cc1vom3TmTuPBmzXToVV6k6","sig":"4GshvgSuXtrBWvkzcu7ZhCyQyrs8tg7FPc8qsAVEpF3vjr6n6iAD8oWrEXE4VNsq5pbRFabwzZuULLpxtWBVBsCp"}
+{"step":"mint 1000 of mint A to M","to":"6Yf4zh1WHRv2yWJEBKuAXehcoq12Ftr5LG3mxjfypjpK","sig":"MRp7UJx8PXg6zcQMhD6qjfk719bSho2Dk6Rn3Vw84stA5yemzaZrpxbhaVQAcJmtPNa34E5jdB1EGfku2PJBze3"}
+{"step":"mint 1000 of mint B to T","to":"4RY5u7eRj1N1fVEyNWZF8wJP1YfsqDDNVL46dGXRCfbs","sig":"j8JD6ThLgvW6tXuG2kTTaohvgW9foEMxaEywe7icSNoJVjexAeD839jJMwoXhGxYXad4bKpUp4QtWDGnLJUJ42i"}
+{"step":"M creates escrow #1: deposits 10 of mint A, wants 5 of mint B","ok":true,"sig":"5RDyzRVttAn6hPFeYjBaT7Wtbhugj7m6TvqbFhfGer7VgxwbdzF8jdxqznwWMNDSZJdxch9WswPQnm1HFuBwfsVP","escrow":"v54wkHyoKHrJVzYFahztCScYhxz9BdypLvsJtvPC2G4","M_A":990}
+{"step":"M creates escrow #1 again (same PDA)","expectedFailure":true,"error":"Allocate: account Address { address: v54wkHyoKHrJVzYFahztCScYhxz9BdypLvsJtvPC2G4, base: None } already in use"}
+{"step":"X refunds M's open escrow (PDA is seeded by the signer, so X's seeds miss)","expectedFailure":true,"error":"AccountNotInitialized"}
+{"step":"setup-cont","program":"45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x","escrow1":"v54wkHyoKHrJVzYFahztCScYhxz9BdypLvsJtvPC2G4","M_A":990,"T_B":1000,"vault1":10}
+{"step":"T takes escrow #1 — take_and_close completes after the dangling-seed fix","ok":true,"sig":"33yMgZzAaH3mMcHgSmQBRVb4FeRmu5gX6nkAMfJU2T8F8sAwqMDTVfgsVcg7MXPM28GoAo7RPC7E35NhkNSrLXZd","T_A_gain":10,"M_B_gain":5,"vault_closed":true,"state_closed":true}
+{"step":"T takes escrow #1 again (state and vault are already closed)","expectedFailure":true,"error":"AccountNotInitialized"}
+{"step":"M creates escrow #2 asking for 10_000 of mint B (more than T holds)","ok":true,"sig":"jJPixCQg6zuKBfimt6fRZkvi9sg1m755EgbUSFLwatqLVkGbhXZx7tq9Tbi75VK6DRyXpuLQrQrkrrZQKRzbgxx"}
+{"step":"T takes escrow #2 wanting 10_000 of mint B (T only has 995 left)","expectedFailure":true,"error":"Program log: Error: insufficient funds"}
+{"step":"M refunds escrow #2 (take was rejected, so the 1 of mint A is still in the vault)","ok":true,"sig":"3qwx8QBC6Ai7a6ANH4PoaCqJS6DszHDXfPBFaVbN2wKZEtW9Rtu2PVmG3jChfZi4sffywm5npuJhir6RYgCiHjqJ","M_A_gain":1}
+{"step":"mint 50 of mint A to the UI test wallet for the DAS token list","mint":"6yHzRTmukfp7DVAHNAb7hC5NxN6JDnPUSHWm22Exswpu","ata":"37tJ2DwMXeD8NfTBhyExZfYMUd2FdX11EcanS6evGf9Y","sig":"4zVtHhNqMxrRMEkGN1GwcZpzVNvj8ksYU7v5WxHBtKXGQsFsENDdE2JqTjaV8ReTUJDzvTNRaRDdc1J8Tx7JyavJ"}
+{"step":"mint 50 of mint B to the UI test wallet for the DAS token list","mint":"13WYoT3wv15uao4pu7kWffJZgbvLyKf8SkEivuLowwJ1","ata":"B3FyuWoeJZxKMQCSRSQKLzxtaqXnUN6pGHMnE4dLQH8s","sig":"4bocVpNLdXBKUWvvjog1xkrUBrPwzz6Nw5iQKC3QeaLbH1KcwSrZTVmoGXnkD7W9vs61Ej9KS6UP9swCx3mz4auS"}
+{"step":"return unspent SOL to the payer","from":"ExCmfnp2GQVRHb82wiZduqwdFgGbGxeJfXuypYk6pEJQ","sol":0.117186,"sig":"2RQxVp3ALft5kQgbtHFiJfZBMyN3EYM19S2dVnfvLnUHeCACKd1wCMNbyZZYtSWG5tqLXwuqHhZH5dn5w2Jtyfbo"}
+{"step":"return unspent SOL to the payer","from":"7v8vW5U5NWaRBAuS3ApFAQFHKKr176yjBcms4ZngSeY2","sol":0.122784,"sig":"3dzd8HGEDSz5KfNvt65tht5TwMLTTPwFGZRacqJfYtYQEuNALGoEaW5zBAxiE8hRoQ8zfhH8gaUxFq2bqAciKtFk"}
+{"step":"return unspent SOL to the payer","from":"68YHMux4YKvaee8JwgRnhwVXGHRm2NnSQSaZvptPGqfK","sol":0.029995,"sig":"3LGELuT9rF5hzoWpbzKZUrCNxqX9kFfj5Mhft19oi32yBf6umbkJJaEYmKtWG9QofGPWsT1CjAffwyyT5niAyZFt"}

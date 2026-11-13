@@ -539,21 +539,43 @@ def run(pg):
         c = pg.get_by_placeholder('Candidate Name'); c.nth(0).fill('Alice'); c.nth(1).fill('Bob')
         n = len(SENT); pg.get_by_role('button', name='Submit').click(); pump(pg, 60000)
         log(step=f'submit_election_via_ui ({name}: President = Alice, Bob)', sent=sigs_new(n), success_shown='created successfully' in body(pg))
-    elif app == 'gifter':  # DAS-backed token dropdown (mints A,B were funded to the test wallet); Create then Cancel (refund). take_and_close crashes, so Accept is not clicked.
+    elif app == 'gifter':  # DAS-backed token dropdown (mints A,B were funded to the test wallet); Create then Cancel (refund). take is proven by the script.
         pg.goto(base, wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 8000)
         log(step='connected', wallet_shown=ADDR[:4] in body(pg), text=body(pg)[:400])
-        # The Create form's token <select> stays empty: useWalletTokens puts walletAddress?.toBase58 (the function, not the string) in the
-        # react-query key, so a first fetch with a null wallet is never retried. Documented as a limit; create is proven by the script.
-        opts = pg.locator('select option').all(); vals = [o.get_attribute('value') for o in opts]
-        log(step='token_dropdown', option_count=len(opts), nonempty_values=[v for v in vals if v][:8])
-        # An open escrow from the script is listed (we are not the maker), with Accept. Clicking it sends take_and_close, which crashes.
+        # The escrow list is fetched once on connect and does not auto-refresh; leftover cards (from a prior run) are refunded first.
         n = len(SENT)
-        acc = pg.get_by_role('button', name=re.compile(r'^Accept$', re.I))
-        if acc.count():
-            acc.first.click(); pump(pg, 25000)
-            log(step='accept_via_ui (take_and_close; expected to fail with an access violation)', sent=sigs_new(n), text=body(pg)[:400])
+        can = pg.get_by_role('button', name=re.compile(r'^Cancel$', re.I))
+        if can.count():
+            can.first.click(); pump(pg, 30000)
+            log(step='cancel_leftover_escrow_via_ui (refund)', sent=sigs_new(n), text=body(pg)[:400])
+            pg.reload(wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 8000)
+        # The token form lives in a Dialog behind the Create Escrow trigger.
+        pg.get_by_role('button', name=re.compile(r'^Create Escrow$', re.I)).click(); pump(pg, 8000)
+        opts = pg.locator('select option').all(); vals = [o.get_attribute('value') for o in opts]
+        nonempty = [v for v in vals if v]
+        log(step='token_dropdown', option_count=len(opts), nonempty_values=nonempty[:8])
+        if len(nonempty) >= 2:
+            prefer = ['6yHzRTmukfp7DVAHNAb7hC5NxN6JDnPUSHWm22Exswpu', '13WYoT3wv15uao4pu7kWffJZgbvLyKf8SkEivuLowwJ1']
+            give = next((m for m in prefer if m in nonempty), nonempty[0])
+            want = next((m for m in prefer if m in nonempty and m != give), next((m for m in nonempty if m != give), nonempty[0]))
+            pg.locator('select').nth(0).select_option(give)
+            pg.locator('select').nth(1).select_option(want)
+            amts = pg.get_by_placeholder('Enter amount')
+            amts.nth(0).fill('1'); amts.nth(1).fill('1')
+            n = len(SENT); pg.get_by_role('button', name=re.compile(r'^Create$', re.I)).click(); pump(pg, 40000)
+            log(step='create_escrow_via_ui (give 1 of token 1, want 1 of token 2)', sent=sigs_new(n), give=give, want=want, text=body(pg)[:400])
+            # Close the dialog and reload so the new card is fetched.
+            pg.keyboard.press('Escape'); pump(pg, 1000)
+            pg.reload(wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 8000)
+            n = len(SENT)
+            can = pg.get_by_role('button', name=re.compile(r'^Cancel$', re.I))
+            if can.count():
+                can.first.click(); pump(pg, 30000)
+                log(step='cancel_escrow_via_ui (refund)', sent=sigs_new(n), text=body(pg)[:400])
+            else:
+                log(step='cancel_escrow_via_ui', sent=[], error='no Cancel button')
         else:
-            log(step='accept_via_ui', sent=[], error='no Accept button')
+            log(step='create_escrow_via_ui', sent=[], error='token dropdown still empty')
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
@@ -561,6 +583,7 @@ with sync_playwright() as p:
     ctx.expose_function('__scWallet', wallet_call); ctx.add_init_script(INIT)
     if app == 'devos': ctx.add_init_script(LEGACY)
     ctx.route(re.compile(r'https://api\.devnet\.solana\.com/?.*'), http_route)
+    ctx.route(re.compile(r'https://[^/]*helius-rpc\.com/.*'), http_route)  # proxy DAS (key is domain-restricted; box RPC is already Helius)
     ctx.route_web_socket(re.compile(r'wss://api\.devnet\.solana\.com/?.*'), ws_route)
     log(step='setup', app=app, wallet=ADDR, url=base)
     try: run(pg)

@@ -1,9 +1,10 @@
 """Static-export patch for gifter-escrow (gifter-escrow-frontend, Next 14.2).
 - next.config.mjs: output 'export', basePath /dapps/gifter-escrow, trailingSlash, images unoptimized.
 - The four Helius DAS call sites (hooks/useWalletTokens, hooks/useRewardTokenBalance,
-  actions/getWalletTokens, actions/getTokens) had the author's API key hard-coded. They now
-  read process.env.NEXT_PUBLIC_HELIUS_DAS_URL, which static_build.sh sets at build time from
-  HELIUS_API_KEY (the value is inlined only into the built JS, never into source or the recipe).
+  actions/getWalletTokens, actions/getTokens) read process.env.NEXT_PUBLIC_HELIUS_DAS_URL,
+  which static_build.sh sets at build time from HELIUS_API_KEY (inlined only into the built JS).
+- useWalletTokens: query key and ownerAddress use the wallet's base58 string (the fork
+  used walletAddress?.toBase58, the function, so the token dropdown stayed empty).
 - Program id is replaced by static_build.sh (sed), not here.
 Usage: python3 gifter-escrow.py <fork root>   (the repo root, containing gifter-escrow-frontend/)
 """
@@ -24,7 +25,7 @@ const nextConfig = {
 
 export default nextConfig;
 """)
-# shared helper — the URL is supplied at build time
+(root / 'lib').mkdir(exist_ok=True)
 (root / 'lib' / 'helius.ts').write_text(
     "/** DAS / enhanced RPC URL, filled at build time from NEXT_PUBLIC_HELIUS_DAS_URL. */\n"
     "export const HELIUS_DAS_URL = process.env.NEXT_PUBLIC_HELIUS_DAS_URL as string;\n"
@@ -38,10 +39,30 @@ for p in [
     root / 'actions/getTokens.ts',
 ]:
     s = p.read_text()
-    if "from '@/lib/helius'" not in s:
-        s = "import { HELIUS_DAS_URL } from '@/lib/helius';\n" + s
+    if "from '@/lib/helius'" not in s and 'from "@/lib/helius"' not in s:
+        if 'HELIUS_DAS_URL' not in s.split('process.env')[0] if False else True:
+            if "from '@/lib/helius'" not in s:
+                s = "import { HELIUS_DAS_URL } from '@/lib/helius';\n" + s
     s, c = pat.subn('HELIUS_DAS_URL', s)
-    if c == 0:
-        raise SystemExit(f'no helius url in {p}')
-    p.write_text(s); n += c
-print('patched', root, 'helius sites', n)
+    n += c
+    # already-env form used on the working fork
+    s = s.replace('process.env.NEXT_PUBLIC_HELIUS_DAS_URL as string', 'HELIUS_DAS_URL')
+    s = s.replace('process.env.NEXT_PUBLIC_HELIUS_DAS_URL', 'HELIUS_DAS_URL')
+    if "from '@/lib/helius'" not in s and 'HELIUS_DAS_URL' in s:
+        s = "import { HELIUS_DAS_URL } from '@/lib/helius';\n" + s
+    p.write_text(s)
+
+# Token dropdown: use the base58 string as the query key and as ownerAddress
+hook = root / 'hooks/useWalletTokens.tsx'
+hs = hook.read_text()
+hs = hs.replace("queryKey: ['walletTokens', walletAddress?.toBase58],", "queryKey: ['walletTokens', walletAddress?.toBase58()],")
+# If the hook still posts walletAddress (the PublicKey) as ownerAddress, use the string.
+if re.search(r"ownerAddress:\s*walletAddress,", hs) and 'ownerAddress = walletAddress?.toBase58()' not in hs:
+    hs = hs.replace('const { publicKey: walletAddress } = useWallet();',
+                    "const { publicKey: walletAddress } = useWallet();\n  const ownerAddress = walletAddress?.toBase58();")
+    hs = hs.replace('ownerAddress: walletAddress,', 'ownerAddress,')
+    if 'enabled:' not in hs:
+        hs = hs.replace("queryFn: fetchWalletTokens,\n  });",
+                        "queryFn: fetchWalletTokens,\n    enabled: !!ownerAddress,\n  });")
+hook.write_text(hs)
+print('patched', root, 'helius sites replaced', n)

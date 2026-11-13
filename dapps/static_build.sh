@@ -86,7 +86,7 @@ P
      cd devos-app && npm ci >/dev/null && npm i --no-save --legacy-peer-deps @project-serum/anchor@0.26.0 >/dev/null && npx next build && cp -r out/. "$out/";;
   gifter-escrow) # fork's own Next.js app; DAS calls need Helius, inlined at build from $HELIUS_API_KEY (never committed)
      : "${HELIUS_API_KEY:?HELIUS_API_KEY is required to build gifter-escrow (DAS token lists)}"
-     cd "$src" && sed -i "s/9HP45DvSvMRNmb7KQTDnujtv49oDVNEEH8VCFTmdb5yf/6Z5cvVUcJVFvkhmtJ4dYwgVqNn7jqN6TSisoYSihBA1r/g" gifter-escrow-frontend/contract/config/index.ts gifter-escrow-frontend/contract/idl/gifter_escrow.ts
+     cd "$src" && sed -i "s/9HP45DvSvMRNmb7KQTDnujtv49oDVNEEH8VCFTmdb5yf/45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x/g; s/6Z5cvVUcJVFvkhmtJ4dYwgVqNn7jqN6TSisoYSihBA1r/45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x/g" gifter-escrow-frontend/contract/config/index.ts gifter-escrow-frontend/contract/idl/gifter_escrow.ts
      python3 "$(dirname "$out")/../../tests/devnet/patches/gifter-escrow.py" .
      cd gifter-escrow-frontend && npx -y yarn@1.22.22 install --frozen-lockfile >/dev/null \
        && NEXT_PUBLIC_HELIUS_DAS_URL="https://devnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}" npx next build \
