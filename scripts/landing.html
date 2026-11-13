@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-landing="sol-college-v2">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<meta name="description" content="{{DESCRIPTION}}">
+<link rel="canonical" href="https://sol.college/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{TITLE}}">
+<meta property="og:description" content="{{DESCRIPTION}}">
+<meta property="og:url" content="https://sol.college/">
+<meta property="og:site_name" content="Sol.College">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://sol.college/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{TITLE}}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{TITLE}}">
+<meta name="twitter:description" content="{{DESCRIPTION}}">
+<meta name="twitter:image" content="https://sol.college/og.png">
+<meta name="theme-color" content="#07060f">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Instrument+Serif:ital@0;1&amp;display=swap">
+<link rel="stylesheet" href="/assets/landing.css">
+<script type="application/ld+json">{{JSON_LD}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>Sol.College</a>
+  <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+  <nav id="site-nav" aria-label="Main">
+    <a href="#pathways">Pathways</a>
+    <a href="#loop">The loop</a>
+    <a href="#for-teams">For teams</a>
+    <a href="#faq">FAQ</a>
+    <a href="/lessons/">Lessons</a>
+    <a href="/lessons/path/">Learning path</a>
+    <a href="/lessons/glossary/">Glossary</a>
+    <a href="/live/">Live apps</a>
+    <a href="/explore/">Source library (not yet live)</a>
+    <a class="btn nav-cta" href="{{PROJECT}}">Bring your dApp</a>
+  </nav>
+  <div class="top-cta">
+    <a class="btn" href="{{PROJECT}}">Bring your dApp</a>
+  </div>
+</header>
+<main id="main">
+
+<section class="band hero" id="learn">
+  <div class="inner">
+    <div class="audience" role="tablist" aria-label="Choose your starting point">
+      <button type="button" role="tab" id="tab-learn" aria-controls="hero-learn" aria-selected="true" tabindex="0">I want to learn</button>
+      <button type="button" role="tab" id="tab-teams" aria-controls="hero-teams" aria-selected="false" tabindex="-1">I build a dApp</button>
+    </div>
+
+    <div id="hero-learn" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-learn">
+      <div>
+        <h1>Learn on real Solana dApps. Help make them better.</h1>
+        <p class="lead">Build your development and security skills inside live, hands-on environments based on participating Solana projects. Explore how real applications work, test their limits, discover issues and turn your findings into useful improvements.</p>
+        <p class="kicker">Sol.College brings developers, security researchers and bug bounty hunters together with the teams building on Solana.</p>
+        <p class="kicker">Learn by doing meaningful work. Give projects feedback they can act on.</p>
+        <p class="cta-row">
+          <a class="btn" href="{{WAITLIST}}">Join the learner waitlist</a>
+          <a class="btn ghost" href="{{PROJECT}}">Bring your project</a>
+        </p>
+        <p class="tagline">Practical learning. Authorised testing. Real project feedback.</p>
+      </div>
+      <div>
+        <div class="proof-strip" aria-label="Evidence from our own work">
+          <a class="glass proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working practice environments on devnet</span><small>Core flows completed in our evidence.</small></a>
+          <a class="glass proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>documented bugs found in the forks</span><small>Explicit bug records in our evidence, not a formal audit.</small></a>
+          <a class="glass proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons on live deployments</span><small>Each lesson is built to end in a commit suggestion.</small></a>
+        </div>
+      </div>
+    </div>
+
+    <div id="hero-teams" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
+      <div>
+        <p class="eyebrow">For Solana teams</p>
+        <h1>A flywheel that turns testing into <em>improvements</em>.</h1>
+        <p class="lead">Put an isolated devnet fork of your dApp in front of developers, testers and researchers. They learn on a live application. You receive reproducible findings and commit suggestions — patches and regression tests delivered to your repo for review.</p>
+        <p class="kicker">Upstream pull requests are prepared; they are not opened without your approval. The loop is designed so authorised testing continuously feeds improvements you can merge — without anyone experimenting on your production system.</p>
+        <p class="cta-row">
+          <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
+          <a class="btn ghost" href="#loop">See the loop</a>
+        </p>
+      </div>
+      <div>
+        <ol class="pipeline" style="display:block">
+          <li><strong>Your dApp</strong> <span>The application you already built.</span></li>
+          <li><strong>Isolated devnet fork</strong> <span>A practice environment, not production.</span></li>
+          <li><strong>Learners test and debug</strong> <span>Developers, testers and researchers, inside an agreed scope.</span></li>
+          <li><strong>Reproducible findings</strong> <span>Evidence another person can evaluate.</span></li>
+          <li><strong>Suggested commits</strong> <span>Patches and regression tests, delivered to your repo for review.</span></li>
+          <li><strong>Your team reviews and merges</strong> <span>You decide what lands.</span></li>
+          <li><strong>Retest on devnet</strong> <span>Prove the fix, then go around again.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="loop">
+  <div class="inner">
+    <div class="loop-head">
+      <p class="eyebrow">The improvement loop</p>
+      <h2>Learn. Test. Debug. Improve. Suggest a commit. Retest.</h2>
+      <p class="lead">Sol.College is a flywheel for how fast a Solana dApp can improve. A lesson or a finding is meant to end in something a repository can take: a patch or pull request against the working practice fork, with a regression test, then a retest on devnet. For a participating project, those commit suggestions are delivered to your repo for review. Upstream pull requests are prepared; they are not opened without your approval.</p>
+    </div>
+    <div class="flywheel-wrap">
+      <div class="flywheel" role="img" aria-label="The Sol.College improvement flywheel, in seven steps from your dApp through an isolated fork, testing, findings, suggested commits, review, and retest.">
+        <div class="flywheel-ring" aria-hidden="true"></div>
+        <div class="flywheel-hub">The<br>loop</div>
+        <ol class="flywheel-steps">
+          <li><span class="fw-step"><span class="n">1</span> Your dApp</span></li>
+          <li><span class="fw-step"><span class="n">2</span> Isolated devnet fork</span></li>
+          <li><span class="fw-step"><span class="n">3</span> Learners test and debug</span></li>
+          <li><span class="fw-step"><span class="n">4</span> Reproducible findings</span></li>
+          <li><span class="fw-step"><span class="n">5</span> Suggested commits, for review</span></li>
+          <li><span class="fw-step"><span class="n">6</span> Your team reviews and merges</span></li>
+          <li><span class="fw-step"><span class="n">7</span> Retest on devnet</span></li>
+        </ol>
+      </div>
+      <ol class="pipeline">
+        <li><strong>Your dApp</strong> <span>Start from a real Solana application.</span></li>
+        <li><strong>Isolated devnet fork</strong> <span>A practice environment: an open-source dApp redeployed on devnet, with a defined brief and scope.</span></li>
+        <li><strong>Learners test and debug</strong> <span>Developers, security researchers and bug bounty hunters work through guided challenges and approved research questions.</span></li>
+        <li><strong>Reproducible findings</strong> <span>A test case, a reproduced issue, a technical explanation or a structured review — evidence someone else can evaluate.</span></li>
+        <li><strong>Suggested commits, delivered for review</strong> <span>A patch or pull request against the working practice fork, with a regression test. For a participating project, the suggestion is delivered to your repository for review. Upstream pull requests are prepared, and are not opened without your approval.</span></li>
+        <li><strong>Your team reviews and merges</strong> <span>You assess the change against your roadmap and engineering requirements.</span></li>
+        <li><strong>Retest on devnet</strong> <span>The fix is exercised again on the isolated environment, and the loop turns.</span></li>
+      </ol>
+      <div class="loop-copy">
+        <h3>Every lesson feeds the loop</h3>
+        <p>Lessons stay grounded in real, live practice environments. When you find something — a broken flow, a confusing interface, a failed assumption — the next step is a commit suggestion: the diff, a regression test, and the devnet transaction that proves it.</p>
+        <p class="cta-row">
+          <a class="btn" href="{{COMMIT}}">Submit a commit suggestion</a>
+          <a class="btn ghost" href="/lessons/path/">Open the learning path</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="environments">
+  <div class="inner">
+    <div class="env-head">
+      <div>
+        <p class="eyebrow">Live environments now</p>
+        <h2>{{LIVE_COUNT}} fully working practice environments</h2>
+        <p class="lead honest">Practice environments: open-source Solana dApps redeployed on devnet. This list includes only environments whose core flows we ran to completion. Access to a practice fork is not permission to test the original application, its users or any connected third-party service, and it is not evidence that the original team is a participating partner.</p>
+      </div>
+    </div>
+    <div class="grid">
+      {{LIVE_CARDS}}
+    </div>
+    <p class="path-extras">
+      <a href="/live/">Evidence for every deployment</a>
+      <a href="/lessons/">All lessons</a>
+      <a href="/lessons/path/">The learning path</a>
+    </p>
+  </div>
+</section>
+
+<section class="band" id="findings">
+  <div class="inner">
+    <p class="eyebrow">Found in the forks</p>
+    <h2>Real bugs, found while running the practice environments</h2>
+    <p class="lead">These are issues we reproduced on devnet in the isolated forks — not claims about any project’s production system. Findings like these are exactly what the loop is for: a reproducible report, then a suggested commit with a regression test.</p>
+    <div class="findings">
+      {{FINDINGS}}
+    </div>
+    <p class="honest">{{BUG_NOTE}}</p>
+  </div>
+</section>
+
+<section class="band" id="beyond">
+  <div class="inner">
+    <p class="eyebrow">Beyond tutorials</p>
+    <h2>Beyond tutorials. Inside real applications.</h2>
+    <p class="lead">Tutorials teach you how something should work.</p>
+    <p class="kicker">Real applications teach you what happens when users, code and assumptions collide.</p>
+    <p>At Sol.College, you learn through live, isolated forks of participating Solana dApps. Work through guided challenges, investigate how features behave and explore the engineering decisions behind an actual product.</p>
+    <p>You are not just following instructions to recreate another demo. You are learning to understand, test and improve the applications people build.</p>
+    <div class="principles">
+      <article class="glass principle">
+        <div class="ico" aria-hidden="true">{{ICO_CONTEXT}}</div>
+        <h3>Build with context</h3>
+        <p>Trace the journey from a user action to a transaction. Understand how the frontend, wallet, application logic and on-chain programs fit together.</p>
+      </article>
+      <article class="glass principle">
+        <div class="ico" aria-hidden="true">{{ICO_TEST}}</div>
+        <h3>Test beyond the happy path</h3>
+        <p>Explore failed transactions, confusing interfaces, unexpected inputs and edge cases. Learn to turn “something went wrong” into a reproducible finding.</p>
+      </article>
+      <article class="glass principle">
+        <div class="ico" aria-hidden="true">{{ICO_INVESTIGATE}}</div>
+        <h3>Investigate with permission</h3>
+        <p>Develop security research skills inside an explicitly authorised environment, with clear scope, testing rules and a responsible disclosure process.</p>
+      </article>
+      <article class="glass principle">
+        <div class="ico" aria-hidden="true">{{ICO_CONTRIBUTE}}</div>
+        <h3>Contribute something useful</h3>
+        <p>Deliver structured feedback, test cases, issue reports and proposed improvements that participating teams can review.</p>
+      </article>
+    </div>
+    <p class="cta-row"><a class="btn ghost" href="#pathways">Explore the learning pathways</a></p>
+  </div>
+</section>
+
+<section class="band" id="pathways">
+  <div class="inner">
+    <p class="eyebrow">Pathways</p>
+    <h2>One environment. Different ways to go deeper.</h2>
+    <div class="pathways">
+      <article class="glass path-card">
+        <p class="who">For developers</p>
+        <div class="ico" aria-hidden="true">{{ICO_DEV}}</div>
+        <h3>Understand the application. Then improve it.</h3>
+        <p>Move beyond disconnected code examples. Explore a working dApp, understand its architecture and practise making changes within a real codebase.</p>
+        <ul>
+          <li>Follow complete user and transaction flows.</li>
+          <li>Investigate integration and application errors.</li>
+          <li>Write tests for expected and unexpected behaviour.</li>
+          <li>Propose fixes and feature improvements.</li>
+          <li>Build an understanding of performance and scaling constraints.</li>
+        </ul>
+        <a class="btn" href="{{WAITLIST_DEV}}">Join as a developer</a>
+      </article>
+      <article class="glass path-card sec">
+        <p class="who">For security researchers</p>
+        <div class="ico" aria-hidden="true">{{ICO_SEC}}</div>
+        <h3>Turn curiosity into rigorous investigation.</h3>
+        <p>Develop a systematic approach to examining Solana applications. Learn to identify assumptions, investigate potential weaknesses and document what the evidence actually supports.</p>
+        <ul>
+          <li>Map application behaviour and trust boundaries.</li>
+          <li>Examine permissions and sensitive operations.</li>
+          <li>Test hypotheses in the authorised fork.</li>
+          <li>Produce reproducible proofs of concept within scope.</li>
+          <li>Explain impact, limitations and remediation options.</li>
+        </ul>
+        <a class="btn" href="{{WAITLIST_SEC}}">Join as a security researcher</a>
+      </article>
+      <article class="glass path-card hunt">
+        <p class="who">For bug bounty hunters</p>
+        <div class="ico" aria-hidden="true">{{ICO_HUNT}}</div>
+        <h3>Practise the work behind a credible report.</h3>
+        <p>A useful finding needs more than an interesting observation. Learn to connect discovery with clear reproduction steps, defensible impact and responsible reporting.</p>
+        <ul>
+          <li>Read and apply the testing scope.</li>
+          <li>Distinguish expected behaviour from a potential vulnerability.</li>
+          <li>Reduce findings to a reproducible example.</li>
+          <li>Write concise, evidence-led reports.</li>
+          <li>Respond to triage questions and retest proposed fixes.</li>
+        </ul>
+        <a class="btn" href="{{WAITLIST_HUNT}}">Join as a bug bounty hunter</a>
+      </article>
+    </div>
+    <p class="disclaimer"><em>Learning challenges do not automatically carry a bounty. Any rewards, eligibility requirements and payment terms are stated separately for each participating programme.</em></p>
+    <p class="path-extras">
+      <a href="/lessons/path/">Open the learning path</a>
+      <a href="/lessons/glossary/">Glossary</a>
+      <a href="/lessons/">All lessons</a>
+    </p>
+  </div>
+</section>
+
+<section class="band" id="how">
+  <div class="inner">
+    <p class="eyebrow">How it works</p>
+    <h2>How Sol.College works</h2>
+    <ol class="steps-how">
+      <li>
+        <span class="num" aria-hidden="true">01</span>
+        <div>
+          <h3>Choose your pathway</h3>
+          <p>Start with dApp development, product testing and QA, or security research. Choose challenges appropriate to your experience and the skills you want to develop.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true">02</span>
+        <div>
+          <h3>Enter the project environment</h3>
+          <p>Access an isolated fork of a participating Solana application, together with its learning brief, documentation and permitted testing scope.</p>
+          <p>Understand what you can test, what you cannot test and what a useful contribution looks like.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true">03</span>
+        <div>
+          <h3>Learn, investigate and test</h3>
+          <p>Work through guided tasks or explore approved research questions. Inspect the code, follow user journeys, reproduce errors and test your assumptions.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true">04</span>
+        <div>
+          <h3>Submit the evidence</h3>
+          <p>Turn your work into something another person can evaluate: a test case, reproducible issue, technical explanation, proposed patch or structured product review.</p>
+        </div>
+      </li>
+      <li>
+        <span class="num" aria-hidden="true">05</span>
+        <div>
+          <h3>Improve through feedback</h3>
+          <p>Use review and triage feedback to refine your reasoning, strengthen your report and understand what happens next.</p>
+        </div>
+      </li>
+    </ol>
+    <p class="cta-row"><a class="btn" href="/lessons/path/">Find your starting point</a></p>
+  </div>
+</section>
+
+<section class="band" id="work">
+  <div class="inner">
+    <h2>Your learning becomes a body of work.</h2>
+    <p class="lead">A completed lesson shows that you reached the end.</p>
+    <p class="kicker">A well-documented investigation shows how you think.</p>
+    <p>Build a record of the work you have actually done: the application flows you understand, the tests you designed, the issues you reproduced and the improvements you proposed.</p>
+    <p>Your work can include:</p>
+    <ul>
+      <li>Technical walkthroughs.</li>
+      <li>QA test plans and results.</li>
+      <li>Reproducible bug reports.</li>
+      <li>Security findings shared through the appropriate disclosure process.</li>
+      <li>Proposed fixes and regression tests.</li>
+      <li>Product and usability feedback.</li>
+    </ul>
+    <p>Keep sensitive research private where required. Publish only what the project’s permissions and disclosure rules allow.</p>
+    <p class="kicker">When a finding is ready, turn it into a commit suggestion against the practice fork — a patch, a regression test, and the devnet proof — so the work can be reviewed.</p>
+    <p class="cta-row"><a class="btn" href="{{COMMIT}}">Submit a commit suggestion</a></p>
+  </div>
+</section>
+
+<section class="band" id="for-teams">
+  <div class="inner">
+    <p class="eyebrow">For Solana teams</p>
+    <h2>For Solana teams: turn hands-on learning into actionable feedback.</h2>
+    <h3>Let builders learn from your product—and help you see it more clearly.</h3>
+    <p class="lead">Your team knows the application you intended to build.</p>
+    <p>A fresh set of developers, testers and researchers can help reveal where the experience is confusing, where assumptions break and where further investigation is needed.</p>
+    <p>Sol.College gives participating projects a structured way to connect practical education with product feedback, QA and authorised security research.</p>
+    <p class="cta-row"><a class="btn purple" href="{{PROJECT}}">Bring your dApp</a> <a class="btn ghost" href="{{PROJECT}}">Discuss a project partnership</a></p>
+
+    <h3>What your team gets</h3>
+    <div class="gets">
+      <article class="glass feature">
+        <div class="ico" aria-hidden="true">{{ICO_FORK}}</div>
+        <h3>An isolated fork, not production</h3>
+        <p>Learners work in a devnet practice environment. Access to that fork is not permission to test your production application, your users or connected third-party services.</p>
+      </article>
+      <article class="glass feature">
+        <div class="ico" aria-hidden="true">{{ICO_SCOPE}}</div>
+        <h3>A brief you define</h3>
+        <p>The environment, scope, boundaries, deliverables, review process and disclosure rules are agreed before participants begin.</p>
+      </article>
+      <article class="glass feature">
+        <div class="ico" aria-hidden="true">{{ICO_COMMIT}}</div>
+        <h3>Commit suggestions for review</h3>
+        <p>Findings come back as patches and regression tests, delivered to your repository for review. Upstream pull requests are prepared; they are not opened without your approval.</p>
+      </article>
+      <article class="glass feature">
+        <div class="ico" aria-hidden="true">{{ICO_LOOP}}</div>
+        <h3>A loop, not a one-off</h3>
+        <p>After you merge, the fix can be retested on the isolated environment. The flywheel turns again.</p>
+      </article>
+    </div>
+
+    <div class="principles">
+      <article class="glass feature">
+        <h3>Product feedback with context</h3>
+        <p>See where participants struggle to understand a feature, complete a journey or recover from an error. Receive feedback tied to specific tasks and observable behaviour.</p>
+      </article>
+      <article class="glass feature">
+        <h3>QA that goes beyond “it works for me”</h3>
+        <p>Invite structured testing of application flows, failure states and edge cases. Receive reproduction steps and supporting evidence rather than vague reports.</p>
+      </article>
+      <article class="glass feature">
+        <h3>Security research within clear boundaries</h3>
+        <p>Define the environment, scope and rules before testing begins. Give researchers a responsible route to submit potential vulnerabilities.</p>
+      </article>
+      <article class="glass feature">
+        <h3>Improvements your team can assess</h3>
+        <p>Receive proposed changes, test cases and technical observations that your team can evaluate against its roadmap and engineering requirements.</p>
+      </article>
+      <article class="glass feature">
+        <h3>Performance and scaling investigations</h3>
+        <p>Create focused challenges around workload behaviour, transaction flows and application bottlenecks. Explore where deeper measurement or engineering work is needed.</p>
+      </article>
+    </div>
+
+    <h3>How the loop sits next to the work you already do</h3>
+    <p class="honest">Sol.College is a continuous educational loop, not a replacement for a professional audit, a paid bounty programme, or your own QA. The comparison below is a framing of the model, not a claim about results we have already delivered to partner teams.</p>
+    <div class="compare-wrap glass">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th scope="col"> </th>
+            <th scope="col">Professional audit</th>
+            <th scope="col">Bug bounty programme</th>
+            <th scope="col">Internal QA</th>
+            <th scope="col">Sol.College loop</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Cadence</th>
+            <td>A point-in-time engagement.</td>
+            <td>While a programme is open, on its published terms.</td>
+            <td>When your team can run it.</td>
+            <td>Continuous, while a practice environment is open to participants.</td>
+          </tr>
+          <tr>
+            <th scope="row">Where</th>
+            <td>The scope you agree with the auditor, often production or a staging system.</td>
+            <td>Usually production, under a published programme.</td>
+            <td>Your own environments and test suites.</td>
+            <td>An isolated devnet fork, with an explicit brief and testing rules.</td>
+          </tr>
+          <tr>
+            <th scope="row">What you receive</th>
+            <td>A professional report of agreed scope.</td>
+            <td>Vulnerability reports. Payment only where that programme’s terms say so.</td>
+            <td>Results from your own process.</td>
+            <td>Structured findings and commit suggestions — patches and regression tests — delivered to your repo for review.</td>
+          </tr>
+          <tr>
+            <th scope="row">What it is not</th>
+            <td>Not a guarantee that every issue has been found.</td>
+            <td>Learning challenges on Sol.College do not automatically carry a bounty.</td>
+            <td>Varies with your team’s capacity.</td>
+            <td>Not a substitute for professional review, and not a guarantee of vulnerability discovery, production readiness or performance improvements.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="disclaimer"><em>Participation does not guarantee vulnerability discovery, production readiness or performance improvements. Sol.College complements your internal engineering, QA and professional security work; it does not replace them.</em></p>
+  </div>
+</section>
+
+<section class="band" id="brief">
+  <div class="inner">
+    <h2>More useful feedback starts with a better brief.</h2>
+    <p class="lead">For participating projects, we define the work before participants begin.</p>
+    <div class="briefs">
+      <article class="glass brief-item">
+        <h3>The environment</h3>
+        <p>Which fork, version, components and dependencies are included?</p>
+      </article>
+      <article class="glass brief-item">
+        <h3>The scope</h3>
+        <p>Which features, behaviours and research questions may participants explore?</p>
+      </article>
+      <article class="glass brief-item">
+        <h3>The boundaries</h3>
+        <p>Which actions are prohibited? What data, systems and third-party services are excluded?</p>
+      </article>
+      <article class="glass brief-item">
+        <h3>The deliverables</h3>
+        <p>What should a participant submit—and what evidence makes it useful?</p>
+      </article>
+      <article class="glass brief-item">
+        <h3>The review process</h3>
+        <p>How will findings be assessed, questions answered and outcomes communicated?</p>
+      </article>
+      <article class="glass brief-item">
+        <h3>The disclosure rules</h3>
+        <p>What must remain private, and when may work be shared?</p>
+      </article>
+    </div>
+    <p>Clear expectations help learners do better work and help your team evaluate it.</p>
+    <p class="cta-row"><a class="btn purple" href="{{PROJECT}}">Bring a challenge to Sol.College</a></p>
+  </div>
+</section>
+
+<section class="band" id="controlled">
+  <div class="inner">
+    <h2>Real applications. Controlled environments.</h2>
+    <p class="lead">Learning on real software should not mean experimenting on someone else’s production system.</p>
+    <p>Sol.College’s model centres on participating projects and isolated testing environments. Access to a fork is not permission to test the original application, its users or any connected third-party service.</p>
+    <p>Every project environment needs explicit scope and testing rules.</p>
+    <div class="rules">
+      <p class="glass rule">{{ICO_X}} No unauthorised production testing.</p>
+      <p class="glass rule">{{ICO_X}} No access to real user funds.</p>
+      <p class="glass rule">{{ICO_X}} No public disclosure outside the agreed process.</p>
+    </div>
+    <p class="kicker">The goal is to build capability through responsible practice.</p>
+  </div>
+</section>
+
+<section class="band" id="faq">
+  <div class="inner faq">
+    <h2>Frequently asked questions</h2>
+    <details>
+      <summary>What do you mean by a live fork?</summary>
+      <p>An interactive, isolated environment based on a participating project’s application or codebase—not simply a screenshot, video or static code example.</p>
+      <p>The exact components, network, dependencies and available features are specified for each environment. A fork may differ from the production application, and findings may need further validation by the project team.</p>
+    </details>
+    <details>
+      <summary>Do I need to be an experienced Solana developer?</summary>
+      <p>The pathway should match your starting point. Some challenges focus on understanding application flows and testing user journeys; others require programming knowledge or security research experience.</p>
+      <p>Each challenge states its prerequisites so you can choose work that is appropriate for you.</p>
+    </details>
+    <details>
+      <summary>Am I testing the project’s production application?</summary>
+      <p>Not unless a separate programme explicitly authorises it.</p>
+      <p>The default learning environment is the provided fork. Permission to use that environment does not extend to production systems, real user accounts or third-party infrastructure.</p>
+    </details>
+    <details>
+      <summary>Will I earn a bug bounty?</summary>
+      <p>Only where a participating programme explicitly offers one and your submission meets its published terms.</p>
+      <p>Course participation, challenge completion and submission of a potential issue do not automatically qualify for payment.</p>
+    </details>
+    <details>
+      <summary>What happens to a finding?</summary>
+      <p>You submit it through the designated process with the evidence needed to assess it. The project can then determine whether it is reproducible, relevant to its production system, already known or in need of further investigation.</p>
+      <p>A submission is not a confirmed vulnerability until it has been appropriately validated.</p>
+    </details>
+    <details>
+      <summary>Can I share my work publicly?</summary>
+      <p>Only within the relevant permissions and disclosure rules. Some learning outputs may be suitable for a public portfolio; security findings and confidential project information may need to remain private.</p>
+    </details>
+    <details>
+      <summary>Does this replace a security audit?</summary>
+      <p>No. Educational testing and community research can contribute useful findings, but they are not a guarantee of security or a substitute for appropriately scoped professional review.</p>
+    </details>
+    <details>
+      <summary>How can my project participate?</summary>
+      <p>Start by proposing an application, feature or challenge. Together, we define the environment, learning objectives, testing scope, deliverables and review process before opening it to participants.</p>
+    </details>
+  </div>
+</section>
+
+<section class="band close" id="close">
+  <div class="close-bg" aria-hidden="true"></div>
+  <div class="inner">
+    <h2>Build the skills. Do the work. Make a contribution.</h2>
+    <p>For developers who want to understand real Solana applications.</p>
+    <p>For researchers who want to investigate responsibly.</p>
+    <p>For teams who want clearer feedback and better-tested products.</p>
+    <h3>Welcome to Sol.College.</h3>
+    <p class="cta-row">
+      <a class="btn" href="{{WAITLIST}}">Join the learner waitlist</a>
+      <a class="btn purple" href="{{PROJECT}}">Become a project partner</a>
+    </p>
+    <p class="tagline">Learn on real applications. Leave something better behind.</p>
+  </div>
+</section>
+
+</main>
+<footer>
+  <div class="foot">
+    <nav aria-label="Footer">
+      <a href="/lessons/">Lessons</a>
+      <a href="/lessons/path/">Learning path</a>
+      <a href="/lessons/glossary/">Glossary</a>
+      <a href="/live/">Live apps</a>
+      <a href="/explore/">Source library (not yet live)</a>
+      <a href="/how-to-build/">How to build</a>
+      <a href="#for-teams">For teams</a>
+      <a href="#faq">FAQ</a>
+      <a href="/legal/terms/">Terms</a>
+      <a href="/legal/privacy/">Privacy</a>
+      <a href="https://github.com/Blockchains/sol-college">GitHub</a>
+    </nav>
+    <p>Sol.College practice environments are open-source Solana dApps redeployed on devnet. They are not, by themselves, evidence that the original teams are participating partners. Access to a fork is not permission to test the original application, its users or any connected third-party service. Code excerpts elsewhere on this site are quoted under their original permissive licences, with attribution and permalinks.</p>
+    <p>Commit suggestions are delivered to a repository for review. Upstream pull requests are prepared; they are not opened without the project’s approval.</p>
+  </div>
+</footer>
+<script src="/assets/landing.js" defer></script>
+</body>
+</html>

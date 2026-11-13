@@ -8,7 +8,7 @@ Usage: python3 scripts/core_lessons.py [site_dir]   (runs after scripts/live_dev
 * An app that goes live without a dapps/lessons/<slug>.json still gets a lesson in the same format, built automatically
   from its live.json entry (summary, source refs, proof); it is marked as a draft until a full lesson file is written.
 * Site changes: /lessons/ and /lessons/<slug>/ (canonical), the same lesson at /explore/<slug>/, /lessons/path/ (beginner
-  to advanced), /lessons/glossary/, homepage hero + learning path + "Core lessons" first, main nav leads with Lessons.
+  to advanced), /lessons/glossary/, the pivoted landing (scripts/landing.py) is written last; main nav on inner pages leads with Lessons, the learning path and the glossary.
 """
 import json,os,re,sys,glob,html,urllib.request
 S=sys.argv[1] if len(sys.argv)>1 else 'site'; E=lambda s:html.escape(str(s),quote=True)
@@ -187,7 +187,13 @@ def render(x,L,n):
   navb+='<a class="btn ghost" href="/lessons/path/">The learning path</a> <a class="btn ghost" href="/lessons/">All lessons</a></p></article>'
   h.append(navb)
   return ''.join(h)
-home=open(f'{S}/index.html').read()
+# Lesson/inner pages must not use the pivoted landing as their chrome.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import landing as _landing
+_raw=open(f'{S}/index.html').read() if os.path.exists(f'{S}/index.html') else ''
+home=_landing.page_shell(S) or _raw
+if not home or _landing.is_landing(home):
+  raise SystemExit('core_lessons: no non-landing HTML shell found; cannot wrap lesson pages')
 def page(main,title,desc,path):
   t=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{main}</main>',home,count=1,flags=re.S)
   t=re.sub(r'<title>.*?</title>',lambda _:f'<title>{E(title)}</title>',t,count=1)
@@ -306,3 +312,5 @@ if os.path.exists(sm):
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])
+_landing.write_home(S)
+_landing.enrich_lessons(S)

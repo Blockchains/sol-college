@@ -58,19 +58,24 @@ for x in LIVE:
   d=f'{S}/dapps/{x["slug"]}'; shutil.rmtree(d,ignore_errors=True); shutil.copytree(f'dapps/static/{x["slug"]}',d)
 json.dump(dict(counts=counts,total=len(slugs),lessons=audit),open(f'{S}/lesson-audit.json','w'),indent=0)
 summary=f'<p>Of {len(slugs)} published walkthroughs: <b>{counts.get("live",0)}</b> live and verified on devnet with the fork&#39;s own app, {counts.get("program_only",0)} with a program on devnet but no verified app, {counts.get("client_app",0)} with the fork&#39;s own client-only frontend hosted but no verified wallet flow, {counts.get("run_captured",0)} with captured build output only, {counts.get("run_failed",0)} whose build/run failed, and <b>{counts.get("source_only",0)}</b> source-only walkthroughs that have not been run yet. Every lesson page now shows its status. <a href="/lesson-audit.json">Full list (JSON)</a>.</p>'
-home=open(f'{S}/index.html').read()
-cards=''.join(f'<article class=card><h3><a href="{E(x["app"])}">{E(x["name"])}</a></h3><p>{E(x["learn"][:170])}…</p><p class=meta>Devnet · program <code>{E(x["program"][:8])}…</code> · verified {E(x["verified"])}</p><p><a href="{E(x["app"])}">Open the app</a> · <a href="{TX(x["steps"][-1][1])}">proof tx</a> · <a href="{E(x["lesson"])}">lesson</a></p></article>' for x in LIVE)
-sec=f'<section id=live-devnet><h2>Live on devnet</h2><p>Forks running as their own apps on Solana devnet, connect your own wallet (Phantom or Solflare on devnet). Each was exercised with real devnet transactions, including inputs the program must reject.</p><div class=grid>{cards}</div>{summary}<p><a class=btn href="/live/">All live apps and evidence</a></p></section>'
-home=sub_marked(home,'sc-live',sec,r'<section class=hero>.*?</section>')
-open(f'{S}/index.html','w').write(home)
-# /live/ page in the homepage's shell
+# The pivoted homepage is owned by scripts/landing.py (written at the end of core_lessons.py).
+# Do not inject the old "Live on devnet" section into index.html. Use a non-landing shell for /live/.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import landing as _landing
+_home=open(f'{S}/index.html').read() if os.path.exists(f'{S}/index.html') else ''
+home=_landing.page_shell(S) or _home
+if home and not _landing.is_landing(home) and 'data-landing=' not in (_home or ''):
+    # First-run / rollback only: leave a pre-landing index alone for the lesson-page shell.
+    pass
+# /live/ page in a non-landing shell
 body=f'<h1>Live on devnet</h1><p class=lead>Solana forks from the SuperStack running as their own apps on devnet, each with its program deployed and its core flow exercised with real devnet transactions. Use a wallet set to devnet; devnet SOL is free at <a href="https://faucet.solana.com">faucet.solana.com</a> and has no value.</p>'+''.join(live_section(x) for x in LIVE)+'<h2>Status of every lesson</h2>'+summary
-lp=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{body}</main>',re.sub(r'<!--sc-live-->.*?<!--/sc-live-->','',home,flags=re.S),count=1,flags=re.S)
-lp=re.sub(r'<title>.*?</title>','<title>Live on devnet: verified Solana apps | Sol.College</title>',lp,count=1)
-lp=re.sub(r'<script type="application/ld\+json">.*?</script>','',lp,flags=re.S)
-for a,b in [('href="https://sol.college/"','href="https://sol.college/live/"'),('content="https://sol.college/"','content="https://sol.college/live/"')]: lp=lp.replace(a,b)
-lp=re.sub(r'(<meta name=description content=")[^"]*','\\1Solana forks running as their own apps on devnet, with program IDs, real proof transactions and failure cases.',lp,count=1)
-os.makedirs(f'{S}/live',exist_ok=True); open(f'{S}/live/index.html','w').write(lp)
+lp=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{body}</main>',re.sub(r'<!--sc-live-->.*?<!--/sc-live-->','',home,flags=re.S),count=1,flags=re.S) if home and '<main id=main>' in home else None
+if lp:
+  lp=re.sub(r'<title>.*?</title>','<title>Live on devnet: verified Solana apps | Sol.College</title>',lp,count=1)
+  lp=re.sub(r'<script type="application/ld\+json">.*?</script>','',lp,flags=re.S)
+  for a,b in [('href="https://sol.college/"','href="https://sol.college/live/"'),('content="https://sol.college/"','content="https://sol.college/live/"')]: lp=lp.replace(a,b)
+  lp=re.sub(r'(<meta name=description content=")[^"]*','\\1Solana forks running as their own apps on devnet, with program IDs, real proof transactions and failure cases.',lp,count=1)
+  os.makedirs(f'{S}/live',exist_ok=True); open(f'{S}/live/index.html','w').write(lp)
 sm=f'{S}/sitemap.xml'
 if os.path.exists(sm) and '/live/</loc>' not in open(sm).read():
   t=open(sm).read(); open(sm,'w').write(t.replace('</urlset>','<url><loc>https://sol.college/live/</loc></url>\n</urlset>'))
