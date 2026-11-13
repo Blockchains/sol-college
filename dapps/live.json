@@ -2023,6 +2023,7 @@
     "fixes": [
       "take_and_close: remove println!(\"Hello\"); bind PDA seed bytes in Take/Refund instead of to_le_bytes().as_ref() in the seeds attribute (dangling pointer, access violation 0x10008).",
       "Frontend: token dropdown query key and ownerAddress use the wallet base58 string; DAS URL from NEXT_PUBLIC_HELIUS_DAS_URL."
-    ]
+    ],
+    "upstream_pr": "https://github.com/berkaycirak/gifter-escrow/pull/1"
   }
 ]

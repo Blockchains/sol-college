@@ -1,6 +1,7 @@
 # Upstream PR: gifter-escrow take_and_close and token dropdown
 
 - Upstream repo: https://github.com/berkaycirak/gifter-escrow
+- Upstream PR: https://github.com/berkaycirak/gifter-escrow/pull/1
 - Upstream default branch: `main`
 - Fork branch (based on upstream main, no Sol.College program id): `fix/take-and-close-pda-seeds`
   https://github.com/Blockchains/gifter-escrow/tree/fix/take-and-close-pda-seeds
@@ -42,4 +43,4 @@ Explorer (devnet): https://explorer.solana.com/tx/33yMgZzAaH3mMcHgSmQBRVb4FeRmu5
 
 ## Status
 
-Click-through recorded. Opening the PR against berkaycirak/gifter-escrow from Blockchains:fix/take-and-close-pda-seeds.
+Opened: https://github.com/berkaycirak/gifter-escrow/pull/1
