@@ -1,0 +1,45 @@
+name: Bring your dApp
+description: Propose your Solana project as a Sol.College practice environment and improvement loop.
+title: "[Partnership] Project"
+labels: ["partnership", "project"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Propose a Solana application, feature or challenge for Sol.College.
+
+        Together we would define the isolated devnet environment, learning objectives, testing scope, deliverables and review process before opening it to participants.
+
+        Commit suggestions (patches and regression tests) are delivered to your repository for review. Upstream pull requests are prepared; they are not opened without your approval.
+
+        This form opens a public GitHub issue on the Sol.College repository. Do not include secrets, production credentials or private user data.
+  - type: input
+    id: project
+    attributes:
+      label: Project
+      description: The name of your application or team.
+      placeholder: Example Protocol
+    validations:
+      required: true
+  - type: input
+    id: repo
+    attributes:
+      label: Repository
+      description: A public repository URL, if you have one. A private repo can be discussed after first contact.
+      placeholder: https://github.com/example/example-dapp
+    validations:
+      required: false
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope you would like
+      description: Which features, behaviours or research questions should participants explore? What should stay out of scope? What would a useful contribution look like?
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact
+      description: A way to reach the right person on your team. This issue will be public, so use an address you are comfortable sharing, or say that you prefer a private follow-up.
+    validations:
+      required: true

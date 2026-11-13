@@ -1,0 +1,38 @@
+name: Join the learner waitlist
+description: Join Sol.College as a developer, security researcher or bug bounty hunter.
+title: "[Waitlist] Learner"
+labels: ["waitlist", "learner"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tell us how you want to learn on live Solana practice environments. This form opens a public GitHub issue on the Sol.College repository.
+
+        Practice environments are open-source Solana dApps redeployed on devnet. Access to a fork is not permission to test the original application, its users or any connected third-party service.
+  - type: dropdown
+    id: role
+    attributes:
+      label: Role
+      description: Which pathway are you joining?
+      options:
+        - Developer
+        - Security researcher
+        - Bug bounty hunter
+    validations:
+      required: true
+  - type: textarea
+    id: experience
+    attributes:
+      label: Experience
+      description: Your starting point and what you want to get better at. For example, whether you have written Solana programs, tested dApps, or filed security reports.
+      placeholder: I have built a few Anchor programs and want to practise systematic testing of real applications.
+    validations:
+      required: true
+  - type: input
+    id: contact
+    attributes:
+      label: Contact (optional)
+      description: An email or other contact if you are willing to hear from us. You can leave this blank. This issue will be public.
+      placeholder: you@example.com
+    validations:
+      required: false

@@ -1,0 +1,51 @@
+name: Submit a commit suggestion
+description: Propose a patch or pull request against a practice fork, with a regression test and devnet proof.
+title: "[Commit suggestion] "
+labels: ["commit-suggestion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Suggest a commit against the **practice fork** of a Sol.College environment (the Blockchains fork listed on the lesson), not the original project's production repository, unless a separate programme explicitly authorises that.
+
+        Include a regression test and a devnet transaction that demonstrates the behaviour.
+
+        For a participating project, commit suggestions are delivered to the team's repository for review. Upstream pull requests are prepared; they are not opened without the project's approval.
+
+        This form opens a public GitHub issue. Do not include secrets, private keys or mainnet user data.
+  - type: input
+    id: slug
+    attributes:
+      label: App slug
+      description: The practice environment slug, for example poe-solana, barn or gifter-escrow. See https://sol.college/live/ and the lesson page.
+      placeholder: poe-solana
+    validations:
+      required: true
+  - type: textarea
+    id: finding
+    attributes:
+      label: Finding
+      description: What did you observe? What did you expect? Link the lesson or the live app if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: patch
+    attributes:
+      label: Diff, patch or pull request
+      description: Paste a unified diff, a patch, or a link to a pull request against the practice fork. The suggestion should be something the repository can review.
+    validations:
+      required: true
+  - type: textarea
+    id: test
+    attributes:
+      label: Regression test
+      description: How can someone else re-run your test? Paste a test, a command, or a clear procedure, including any setup.
+    validations:
+      required: true
+  - type: textarea
+    id: proof
+    attributes:
+      label: Devnet transaction proof
+      description: Solana Explorer links (cluster=devnet) for the transactions that demonstrate the issue and, if you have them, the transactions that show the fix.
+    validations:
+      required: true
