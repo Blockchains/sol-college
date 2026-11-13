@@ -1,0 +1,13 @@
+# Narrow allowlist: the Helius DAS API key is inlined at build time into the gifter-escrow
+# static JS only (restricted to sol.college domains in the Helius dashboard). The key must
+# never appear in source, recipes, logs, or docs — those paths are still scanned.
+title = "sol.college"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Helius DAS key inlined into the gifter-escrow static bundle at build time"
+paths = [
+  '''(?:^|/)dapps/static/gifter-escrow/''',
+]
