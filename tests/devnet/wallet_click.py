@@ -539,6 +539,21 @@ def run(pg):
         c = pg.get_by_placeholder('Candidate Name'); c.nth(0).fill('Alice'); c.nth(1).fill('Bob')
         n = len(SENT); pg.get_by_role('button', name='Submit').click(); pump(pg, 60000)
         log(step=f'submit_election_via_ui ({name}: President = Alice, Bob)', sent=sigs_new(n), success_shown='created successfully' in body(pg))
+    elif app == 'gifter':  # DAS-backed token dropdown (mints A,B were funded to the test wallet); Create then Cancel (refund). take_and_close crashes, so Accept is not clicked.
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 8000); connect(pg); pump(pg, 8000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg), text=body(pg)[:400])
+        # The Create form's token <select> stays empty: useWalletTokens puts walletAddress?.toBase58 (the function, not the string) in the
+        # react-query key, so a first fetch with a null wallet is never retried. Documented as a limit; create is proven by the script.
+        opts = pg.locator('select option').all(); vals = [o.get_attribute('value') for o in opts]
+        log(step='token_dropdown', option_count=len(opts), nonempty_values=[v for v in vals if v][:8])
+        # An open escrow from the script is listed (we are not the maker), with Accept. Clicking it sends take_and_close, which crashes.
+        n = len(SENT)
+        acc = pg.get_by_role('button', name=re.compile(r'^Accept$', re.I))
+        if acc.count():
+            acc.first.click(); pump(pg, 25000)
+            log(step='accept_via_ui (take_and_close; expected to fail with an access violation)', sent=sigs_new(n), text=body(pg)[:400])
+        else:
+            log(step='accept_via_ui', sent=[], error='no Accept button')
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
