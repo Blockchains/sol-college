@@ -1,0 +1,15 @@
+{"step":"A already has 0.0500 SOL (need 0.05)","ok":true,"pubkey":"FaDE1zqa\u2026xCz2"}
+{"step":"B already has 0.0300 SOL (need 0.03)","ok":true,"pubkey":"7WL12eas\u2026Kwqj"}
+{"step":"pdas","A":"FaDE1zqa\u2026xCz2","pdaA":"G3qTnDqB\u2026XS7p","B":"7WL12eas\u2026Kwqj","pdaB":"7f49fecB\u2026J42k","program":"ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG"}
+{"step":"A inits user PDA","ok":true,"sig":"v1BNqC7KEmKTqqYkU7HR4c3XsT18taPRfb8dwifsMW2PsErCeUKxki8UqY5KQxXSuQr3UFRi68tvU5KJVUVh6JN"}
+{"step":"A inits a second time (one PDA per wallet)","expectedFailure":true,"error":"Allocate: account Address { address: G3qTnDqBEPTmCud9tRh1QzbA8KFqGCN68jZWkP7zXS7p, base: None } already in use"}
+{"step":"A sets a name before the PDA exists \u2014 using B's uninitialised PDA with A as authority (seeds will not match, or account missing)","expectedFailure":true,"error":"Program log: AnchorError caused by account: user_data. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."}
+{"step":"A saves name \"shadow-college\"","ok":true,"sig":"551MiW7rKYHsAhwcbLWT4GD7uZfX43cqAgJ4i6GHXH5TKGn3EDqW5dBYNJpiVjVd47mskQbXXLURxisH9dxT6FdV"}
+{"step":"A reads on-chain name","ok":true,"name":"shadow-college"}
+{"step":"A clears the name","ok":true,"sig":"4yYwwtWFRX4oUbvgVPfmNDGaawK9MsoS6A8TNWq1YuXDQPy1wxCrR63QJ9Fwru2yKaqYtJj2cD9LzfzxJsyZCWKj"}
+{"step":"A reads after clear (must be empty)","ok":true,"name":""}
+{"step":"A saves a second name \"nova-2026\"","ok":true,"sig":"5VeHKd7vnSBbbkZb2Nw9bBhYkVauXmc88Cb4C7Yz5sdrFNo34GTdxKJhZTq27nJTwHF3aSUztJzmnQmEWg8XG3T1"}
+{"step":"A reads second name","ok":true,"name":"nova-2026"}
+{"step":"B sets a name on A's PDA (B is not the authority; seeds are [user, authority])","expectedFailure":true,"error":"Program log: AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."}
+{"step":"B clears A's name","expectedFailure":true,"error":"Program log: AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."}
+{"step":"done","ok":true}

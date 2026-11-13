@@ -2025,5 +2025,115 @@
       "Frontend: token dropdown query key and ownerAddress use the wallet base58 string; DAS URL from NEXT_PUBLIC_HELIUS_DAS_URL."
     ],
     "upstream_pr": "https://github.com/berkaycirak/gifter-escrow/pull/1"
-  }
+  },
+ {
+  "slug": "c4-comets-todor-edward-andrei",
+  "name": "NameGen (on-chain display names)",
+  "lesson": "/explore/c4-comets-todor-edward-andrei/",
+  "app": "/dapps/c4-comets-todor-edward-andrei/",
+  "fork": "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei",
+  "commit": "a435085b50be34ab3c7cc29e01570625bef499fa",
+  "program": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG",
+  "app_kind": "The fork's own Next.js 14 app (web/) exported as static pages with this devnet program ID. Changes: static export with basePath; getPda/getProgram read the program id from the IDL; Read decodes the name from the 8+32+64 account layout (BorshCoder.accounts.decode(\"UserData\") did not return .name in this IDL).",
+  "learn": "Each wallet has one NameGen PDA, seeded [\"user\", authority]. Init creates it, set_name writes a 64-byte UTF-8 name, clear_name zeros it, and a second wallet cannot change someone else's PDA because the seeds include the signer.",
+  "source": [
+   [
+    "lib.rs L12-L17 init_user",
+    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L12-L17"
+   ],
+   [
+    "lib.rs L19-L24 set_name ([u8; 64])",
+    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L19-L24"
+   ],
+   [
+    "lib.rs L26-L31 clear_name",
+    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L26-L31"
+   ],
+   [
+    "InitUser PDA seeds [\"user\", authority]",
+    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L35-L49"
+   ],
+   [
+    "UserData (owner + name)",
+    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L62-L70"
+   ]
+  ],
+  "flow": "tests/devnet/c4-comets-todor-edward-andrei.mjs",
+  "log": "tests/devnet/logs/c4-comets-todor-edward-andrei-2026-11-13.jsonl",
+  "verified": "2026-11-13",
+  "steps": [
+   [
+    "Script: A already funded 0.05 SOL (no transfer resent)",
+    "(no tx; already funded)"
+   ],
+   [
+    "Script: B already funded 0.03 SOL (no transfer resent)",
+    "(no tx; already funded)"
+   ],
+   [
+    "Script: A inits user PDA [\"user\", A]",
+    "v1BNqC7KEmKTqqYkU7HR4c3XsT18taPRfb8dwifsMW2PsErCeUKxki8UqY5KQxXSuQr3UFRi68tvU5KJVUVh6JN"
+   ],
+   [
+    "Script: A saves name \"shadow-college\"",
+    "551MiW7rKYHsAhwcbLWT4GD7uZfX43cqAgJ4i6GHXH5TKGn3EDqW5dBYNJpiVjVd47mskQbXXLURxisH9dxT6FdV"
+   ],
+   [
+    "Script: A reads on-chain name (shadow-college)",
+    "(no tx; read-only)"
+   ],
+   [
+    "Script: A clears the name",
+    "4yYwwtWFRX4oUbvgVPfmNDGaawK9MsoS6A8TNWq1YuXDQPy1wxCrR63QJ9Fwru2yKaqYtJj2cD9LzfzxJsyZCWKj"
+   ],
+   [
+    "Script: A saves a second name \"nova-2026\"",
+    "5VeHKd7vnSBbbkZb2Nw9bBhYkVauXmc88Cb4C7Yz5sdrFNo34GTdxKJhZTq27nJTwHF3aSUztJzmnQmEWg8XG3T1"
+   ],
+   [
+    "UI: Connect Phantom — test wallet GNSx…mKoF appears",
+    "(no tx; read-only)"
+   ],
+   [
+    "UI: Init creates the wallet's NameGen PDA (first click; later clicks are rejected as already in use)",
+    "36dVtusJFBxkPVynMvCgDLHXHcWA5LeEwjo363ViCM1iEmYKJEMpCTPCLPRmsPMNidsmnDp8L7qJt9cdfZGEBEBn"
+   ],
+   [
+    "UI: Generate then Save writes \"shadow-4662\"",
+    "3s4RYRrnccmwsd8x1FkETRjtmvyHfbYjBtbj4hiJhEZixaDVGEL2tTuSFYaAn3u4fRwKD36DfMiWYrorSha26ojE"
+   ],
+   [
+    "UI: Read shows On-chain: shadow-4662 (Read OK)",
+    "(no tx; read-only)"
+   ],
+   [
+    "UI: Clear zeros the name",
+    "47iD4eHRuy5qAowQTJtXMCrPiVd9SbvYkrDZRTSESdikq9zzVZM9yKLJdCNiUbLxD6qmwBaSXjCEEsuWHnrzWPE4"
+   ]
+  ],
+  "negative": [
+   [
+    "A inits a second time (one PDA per wallet)",
+    "Allocate: account Address { address: G3qTnDqBEPTmCud9tRh1QzbA8KFqGCN68jZWkP7zXS7p, base: None } already in use"
+   ],
+   [
+    "A sets a name on B's uninitialised PDA",
+    "AnchorError caused by account: user_data. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
+   ],
+   [
+    "B sets a name on A's PDA (seeds include the signer)",
+    "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
+   ],
+   [
+    "B clears A's name",
+    "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
+   ]
+  ],
+  "ui_check": "tests/devnet/wallet_click.py c4 (log: tests/devnet/logs/ui-c4-comets-todor-edward-andrei-2026-11-13.jsonl). Init, Generate, Save, Read and Clear all succeed; a second Init is rejected as already in use.",
+  "limits": [
+   "The NotOwner error in set_name/clear_name is redundant: the PDA seeds already bind user_data to the signer, so a different wallet hits ConstraintSeeds first.",
+   "The unused NameGen.tsx component still passes setName a string; the hosted page (app/page.tsx) encodes [u8; 64] via toFixedU8_64 and reads the name from the 8+32+64 account layout."
+  ],
+  "functional": "full"
+ }
 ]

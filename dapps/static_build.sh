@@ -91,6 +91,26 @@ P
      cd gifter-escrow-frontend && npx -y yarn@1.22.22 install --frozen-lockfile >/dev/null \
        && NEXT_PUBLIC_HELIUS_DAS_URL="https://devnet.helius-rpc.com/?api-key=${HELIUS_API_KEY}" npx next build \
        && cp -r out/. "$out/";;
+  c4-comets-todor-edward-andrei) # fork's own Next.js 14 app (web/) as a static export on the program deployed from programs/namegen
+     cd "$src/web"
+     python3 - <<'P'
+import json, pathlib
+pid="ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG"
+p=pathlib.Path("src/idl/namegen.json")
+d=json.loads(p.read_text()); d["address"]=pid
+if "metadata" in d: d["metadata"]["address"]=pid
+p.write_text(json.dumps(d, indent=2)+"\n")
+t=pathlib.Path("src/anchorClient.ts").read_text()
+t=t.replace('new PublicKey("njCkgAPdDfewLAZmWZE1ckRDGAiPTwvWMouGGNCJkiR")','new PublicKey((idl as any).address)')
+pathlib.Path("src/anchorClient.ts").write_text(t)
+pathlib.Path("next.config.js").write_text("""/** @type {import('next').NextConfig} */
+const nextConfig = { output: "export", basePath: "/dapps/c4-comets-todor-edward-andrei", trailingSlash: true, images: { unoptimized: true }, eslint: { ignoreDuringBuilds: true }, typescript: { ignoreBuildErrors: true }, reactStrictMode: true };
+export default nextConfig;
+""")
+P
+     npm ci --no-audit --no-fund --legacy-peer-deps >/dev/null
+     NEXT_PUBLIC_PROGRAM_ID=ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG NEXT_PUBLIC_CLUSTER=devnet npx next build
+     cp -r out/. "$out/";;
   *) echo "no static recipe for $slug"; exit 2;;
 esac
 du -sh "$out"

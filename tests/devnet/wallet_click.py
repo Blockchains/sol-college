@@ -576,12 +576,27 @@ def run(pg):
                 log(step='cancel_escrow_via_ui', sent=[], error='no Cancel button')
         else:
             log(step='create_escrow_via_ui', sent=[], error='token dropdown still empty')
+    elif app == 'c4':  # NameGen: Connect Phantom, Init PDA, Generate, Save, Read, Clear
+        pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg, 'Connect Phantom'); pump(pg, 3000)
+        log(step='connected', wallet_shown=ADDR[:4] in body(pg), text=body(pg)[:300])
+        n = len(SENT)
+        pg.get_by_role('button', name='Init').click(); pump(pg, 25000)
+        log(step='init_via_ui', sent=sigs_new(n), text=body(pg)[:300])
+        pg.get_by_role('button', name='Generate').click(); pump(pg, 1000)
+        n = len(SENT)
+        pg.get_by_role('button', name='Save').click(); pump(pg, 25000)
+        log(step='save_via_ui', sent=sigs_new(n), text=body(pg)[:400])
+        pg.get_by_role('button', name='Read').click(); pump(pg, 8000)
+        log(step='read_via_ui', text=body(pg)[:400])
+        n = len(SENT)
+        pg.get_by_role('button', name='Clear').click(); pump(pg, 25000)
+        log(step='clear_via_ui', sent=sigs_new(n), text=body(pg)[:400])
 with sync_playwright() as p:
     b = p.chromium.launch(); ctx = b.new_context(viewport={'width': 1280, 'height': 900}); pg = ctx.new_page(); errs = []
     pg.on('pageerror', lambda e: errs.append(str(e)[:200]))
     pg.on('console', lambda m: errs.append('console:' + m.text[:200]) if m.type == 'error' or __import__('os').environ.get('SC_DEBUG') else None)
     ctx.expose_function('__scWallet', wallet_call); ctx.add_init_script(INIT)
-    if app == 'devos': ctx.add_init_script(LEGACY)
+    if app in ('devos', 'c4'): ctx.add_init_script(LEGACY)
     ctx.route(re.compile(r'https://api\.devnet\.solana\.com/?.*'), http_route)
     ctx.route(re.compile(r'https://[^/]*helius-rpc\.com/.*'), http_route)  # proxy DAS (key is domain-restricted; box RPC is already Helius)
     ctx.route_web_socket(re.compile(r'wss://api\.devnet\.solana\.com/?.*'), ws_route)

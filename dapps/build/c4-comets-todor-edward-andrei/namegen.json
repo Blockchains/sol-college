@@ -1,0 +1,202 @@
+{
+  "accounts": [
+    {
+      "name": "UserData",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "address": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG",
+  "errors": [
+    {
+      "code": 6000,
+      "msg": "Only the owner can modify this account.",
+      "name": "NotOwner"
+    }
+  ],
+  "instructions": [
+    {
+      "accounts": [
+        {
+          "name": "user_data",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        191,
+        67,
+        14,
+        67,
+        134,
+        199,
+        187,
+        128
+      ],
+      "name": "clear_name"
+    },
+    {
+      "accounts": [
+        {
+          "name": "user_data",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "writable": true
+        },
+        {
+          "address": "11111111111111111111111111111111",
+          "name": "system_program"
+        }
+      ],
+      "args": [],
+      "discriminator": [
+        14,
+        51,
+        68,
+        159,
+        237,
+        78,
+        158,
+        102
+      ],
+      "name": "init_user"
+    },
+    {
+      "accounts": [
+        {
+          "name": "user_data",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          },
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        }
+      ],
+      "discriminator": [
+        78,
+        194,
+        111,
+        229,
+        198,
+        169,
+        162,
+        106
+      ],
+      "name": "set_name"
+    }
+  ],
+  "metadata": {
+    "name": "namegen",
+    "spec": "0.1.0",
+    "version": "0.1.0",
+    "address": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG"
+  },
+  "types": [
+    {
+      "name": "UserData",
+      "type": {
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ],
+        "kind": "struct"
+      }
+    }
+  ]
+}
