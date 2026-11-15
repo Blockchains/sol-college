@@ -1,0 +1,23 @@
+{
+ "slug": "hydra",
+ "cluster": "devnet",
+ "program": "hydra",
+ "idl": "hydra.json",
+ "devnet": "EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "ytTtxFv5w1Vw1Emqhw1dUVH4emCh4C221p21S7Gf3396pu2bYL1yC5BDvXwDEMBzTGGFvCNC9uyZmmb9fd96pKK"
+  },
+  {
+   "label": "initialize",
+   "sig": "5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS"
+  },
+  {
+   "label": "register_root_agent",
+   "sig": "Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH"
+  }
+ ],
+ "verified": "2026-11-15"
+}

@@ -1,0 +1,6 @@
+{"step":"setup","program":"EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8","registry":"7x3F2GgYEw8j3DipGPkRQAN5G5FV2PoG6VDqJkVtuUeS","agent":"8E5gYQxrvuPhsYKFDTLAwKNbhx7tseLbfVUjChG52rhQ"}
+{"step":"initialize","ok":true,"sig":"5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS"}
+{"step":"fetch_registry","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","totalAgents":"0"}
+{"step":"register_root_name_too_long","expectedFailure":true,"error":"NameTooLong"}
+{"step":"register_root_agent","ok":true,"sig":"Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH"}
+{"step":"fetch_agent","ok":true,"name":"campus-scout","specialization":"sol-college-lab","isActive":true,"depth":0,"wallet":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}

@@ -2793,5 +2793,58 @@
     "limits": "create_bounty, claim_bounty, submit_completion, approve_completion and reject_completion were not exercised: create_bounty needs an SPL mint and escrow token accounts. The hosted IDL is a hand-derived initialize-only subset confirmed by the verifying transaction.",
     "functional": "full",
     "functional_evidence": "initialize landed and marketplace 4yWx7jjP14U5mx9rsfg8uK4d6ToVfiXo4XUEQ1T58Cte was read back with authority = lab wallet and total_bounties=0; a second initialize was rejected."
+  },
+  {
+    "slug": "hydra",
+    "name": "Hydra",
+    "lesson": "/explore/hydra/",
+    "app": "/dapps/hydra/",
+    "fork": "https://github.com/Blockchains/hydra",
+    "commit": "b7d2acc798c80caee44a1cbdba16dd86338d001b",
+    "program": "EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified initialize and register_root_agent instructions; discriminators were confirmed by live transactions. spawn_child and earnings distribution were not exercised.",
+    "learn": "initialize writes a registry PDA (seeds [\"registry\"]). The registry authority then register_root_agent with a name (max 32 bytes) and specialization (max 64), writing an agent PDA (seeds [\"agent\", wallet]) at depth 0 with no parent.",
+    "source": [
+      [
+        "programs/hydra/src/lib.rs L18-L26 (initialize)",
+        "https://github.com/Blockchains/hydra/blob/b7d2acc798c80caee44a1cbdba16dd86338d001b/programs/hydra/src/lib.rs#L18-L26"
+      ],
+      [
+        "programs/hydra/src/lib.rs L228-L240 (registry PDA seeds [\"registry\"])",
+        "https://github.com/Blockchains/hydra/blob/b7d2acc798c80caee44a1cbdba16dd86338d001b/programs/hydra/src/lib.rs#L228-L240"
+      ],
+      [
+        "programs/hydra/src/lib.rs L29-L35 and L244-L265 (register_root_agent, agent PDA)",
+        "https://github.com/Blockchains/hydra/blob/b7d2acc798c80caee44a1cbdba16dd86338d001b/programs/hydra/src/lib.rs#L244-L265"
+      ]
+    ],
+    "flow": "tests/devnet/hydra.mjs",
+    "log": "tests/devnet/logs/hydra-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "ytTtxFv5w1Vw1Emqhw1dUVH4emCh4C221p21S7Gf3396pu2bYL1yC5BDvXwDEMBzTGGFvCNC9uyZmmb9fd96pKK"
+      ],
+      [
+        "initialize registry 7x3F2GgY\u2026 with authority = lab wallet",
+        "5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS"
+      ],
+      [
+        "Fetched registry: authority is the lab wallet, total_agents=0",
+        "(no tx; read-only)"
+      ],
+      [
+        "register_root_agent campus-scout / sol-college-lab (agent 8E5gYQxr\u2026, depth=0, active=true)",
+        "Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH"
+      ]
+    ],
+    "negative": [
+      "register_root_agent with a 33-byte name is rejected (NameTooLong)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/hydra.mjs.",
+    "limits": "spawn_child, record_earning, distribute_to_parent and deactivate_agent were not exercised. The hosted IDL is a hand-derived subset of initialize and register_root_agent, confirmed by the verifying transactions.",
+    "functional": "full",
+    "functional_evidence": "initialize landed and registry 7x3F2GgYEw8j3DipGPkRQAN5G5FV2PoG6VDqJkVtuUeS was read back; register_root_agent wrote agent 8E5gYQxrvuPhsYKFDTLAwKNbhx7tseLbfVUjChG52rhQ for campus-scout (depth=0, active=true); NameTooLong rejected a 33-byte name."
   }
 ]

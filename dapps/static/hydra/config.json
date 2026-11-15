@@ -1,0 +1,10 @@
+{
+ "name": "Hydra",
+ "fork": "https://github.com/Blockchains/hydra",
+ "commit": "b7d2acc798c80caee44a1cbdba16dd86338d001b",
+ "lesson": "/explore/hydra/",
+ "programs": {
+  "devnet": "EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8",
+  "mainnet": null
+ }
+}
