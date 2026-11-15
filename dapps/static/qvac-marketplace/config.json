@@ -1,0 +1,10 @@
+{
+ "name": "QVAC Marketplace",
+ "fork": "https://github.com/Blockchains/qvac-marketplace",
+ "commit": "fdadfd06ab95c544038133afb7bc7de7f3f5e871",
+ "lesson": "/explore/qvac-marketplace/",
+ "programs": {
+  "devnet": "2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix",
+  "mainnet": null
+ }
+}

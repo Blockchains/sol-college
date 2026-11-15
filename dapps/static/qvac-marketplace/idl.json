@@ -1,0 +1,1108 @@
+{
+  "address": "2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix",
+  "metadata": {
+    "name": "qvac_marketplace",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "consumer_confirm",
+      "docs": [
+        "Release escrow to the provider authority. Callable by the consumer",
+        "any time after ProviderDone, or by anyone after CONFIRM_WINDOW.",
+        "Closes the Job PDA; rent returns to consumer."
+      ],
+      "discriminator": [
+        209,
+        98,
+        123,
+        63,
+        85,
+        202,
+        94,
+        236
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "docs": [
+            "Job being settled. Closed after settlement; rent → consumer."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.consumer",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.nonce",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "docs": [
+            "Provider whose counters get incremented (`jobs_completed`, `total_earned`).",
+            "PDA re-derivation guarantees `provider.authority` matches the seed,",
+            "and the constraint binds it to the original Job."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider.authority",
+                "account": "Provider"
+              }
+            ]
+          }
+        },
+        {
+          "name": "consumer",
+          "docs": [
+            "Rent recipient on close. Must equal `job.consumer`. May or may",
+            "not be the signer — when the signer is someone else (auto-release),",
+            "the consumer still gets the rent back."
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_authority",
+          "docs": [
+            "Payment recipient. Must equal `job.provider_authority` (snapshotted",
+            "at `create_job` so a Provider authority change after the fact does",
+            "not redirect funds)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "Either the consumer (any time) or anyone (after CONFIRM_WINDOW).",
+            "The window check lives in the handler body."
+          ],
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_job",
+      "docs": [
+        "Create an escrowed inference job after verifying the provider's",
+        "Ed25519-signed quote (carried in a sibling instruction)."
+      ],
+      "discriminator": [
+        178,
+        130,
+        217,
+        110,
+        100,
+        27,
+        82,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "docs": [
+            "New Job PDA. Seeded by `(consumer, nonce)` so the same consumer",
+            "can have multiple concurrent jobs without collision."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "consumer"
+              },
+              {
+                "kind": "arg",
+                "path": "nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "docs": [
+            "Provider being engaged. The seed constraint re-derives the PDA",
+            "from `provider.authority` and rejects any account that wasn't",
+            "genuinely created by `register_provider`."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider.authority",
+                "account": "Provider"
+              }
+            ]
+          }
+        },
+        {
+          "name": "consumer",
+          "docs": [
+            "Consumer paying for the job. Funds the escrow and the Job PDA rent."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "instructions",
+          "docs": [
+            "Instructions sysvar — used to read the Ed25519Program sibling",
+            "instruction that carries the provider's signed quote."
+          ],
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "request_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "payment_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "quote_signature",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "task_type",
+          "type": "u8"
+        },
+        {
+          "name": "valid_until",
+          "type": "i64"
+        },
+        {
+          "name": "quote_nonce",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "provider_complete",
+      "docs": [
+        "Provider submits the response_hash, transitioning Job from",
+        "Pending to ProviderDone and starting the auto-release window."
+      ],
+      "discriminator": [
+        98,
+        191,
+        214,
+        128,
+        186,
+        30,
+        8,
+        120
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "docs": [
+            "Job to mark as ProviderDone. Must be in Pending state and bound",
+            "to the Provider account passed in. The seed constraint",
+            "re-derives the Job PDA from its stored consumer + nonce so a",
+            "caller cannot pass an arbitrary look-alike account."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.consumer",
+                "account": "Job"
+              },
+              {
+                "kind": "account",
+                "path": "job.nonce",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "docs": [
+            "Provider PDA, re-derived from `authority` so we know the signer",
+            "is the legitimate authority for THIS Provider record."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Provider authority — must sign and must match `job.provider_authority`."
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "response_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "refund_job",
+      "docs": [
+        "Refund escrow to the consumer once JOB_TIMEOUT has elapsed and",
+        "the provider has not delivered. Closes the Job PDA."
+      ],
+      "discriminator": [
+        194,
+        186,
+        15,
+        90,
+        246,
+        119,
+        89,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "docs": [
+            "Job to refund. `has_one = consumer` enforces the signer is the",
+            "original consumer; only the original consumer can refund.",
+            "State and timeout checks live in the handler body to provide",
+            "granular error variants."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "consumer"
+              },
+              {
+                "kind": "account",
+                "path": "job.nonce",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "consumer",
+          "docs": [
+            "Original consumer. Receives both the escrowed `amount` (drained",
+            "manually below) and the rent-exempt minimum (via Anchor close)."
+          ],
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "job"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_provider",
+      "docs": [
+        "Register a new AI inference provider.",
+        "One provider per authority wallet (PDA seeded by authority)."
+      ],
+      "discriminator": [
+        254,
+        209,
+        54,
+        184,
+        46,
+        197,
+        109,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "docs": [
+            "New Provider PDA, seeded by the authority pubkey. Anchor's `init`",
+            "constraint enforces single-registration per authority — a second",
+            "call with the same authority will fail with `AccountAlreadyInUse`."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Wallet registering the provider. Pays for account creation and",
+            "becomes the provider's controlling identity."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "task_types",
+          "type": "u16"
+        },
+        {
+          "name": "qvac_peer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "rotate_peer_id",
+      "docs": [
+        "Rotate the provider's QVAC DHT peer ID.",
+        "Called when the provider restarts with a new Hyperswarm seed."
+      ],
+      "discriminator": [
+        223,
+        49,
+        43,
+        16,
+        130,
+        63,
+        145,
+        126
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "qvac_peer_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_provider",
+      "docs": [
+        "Update a provider's mutable fields (name, task_types)."
+      ],
+      "discriminator": [
+        52,
+        208,
+        141,
+        191,
+        164,
+        54,
+        108,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "docs": [
+            "Existing Provider PDA. `has_one` enforces that the signer matches",
+            "`provider.authority`. Version check rejects accounts created by a",
+            "future incompatible build."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "task_types",
+          "type": "u16"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Job",
+      "discriminator": [
+        75,
+        124,
+        80,
+        203,
+        161,
+        180,
+        202,
+        80
+      ]
+    },
+    {
+      "name": "Provider",
+      "discriminator": [
+        164,
+        180,
+        71,
+        17,
+        75,
+        216,
+        80,
+        195
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooShort",
+      "msg": "Provider name must be at least 3 characters"
+    },
+    {
+      "code": 6001,
+      "name": "NameTooLong",
+      "msg": "Provider name must not exceed 50 characters"
+    },
+    {
+      "code": 6002,
+      "name": "NoTaskTypesSpecified",
+      "msg": "task_types bitmask must specify at least one supported task"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedProvider",
+      "msg": "Signer is not the registered authority for this provider"
+    },
+    {
+      "code": 6004,
+      "name": "QuoteExpired",
+      "msg": "Quote has expired (valid_until < current time)"
+    },
+    {
+      "code": 6005,
+      "name": "TaskTypeNotSupported",
+      "msg": "Provider does not support the requested task_type"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidTaskType",
+      "msg": "task_type value is outside the TaskType enum range"
+    },
+    {
+      "code": 6007,
+      "name": "AmountBelowMinimum",
+      "msg": "Job amount is below the minimum allowed"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidQuoteSignature",
+      "msg": "Quote signature did not verify against provider authority"
+    },
+    {
+      "code": 6009,
+      "name": "QuoteSignatureMissing",
+      "msg": "Ed25519 sibling instruction not found or malformed"
+    },
+    {
+      "code": 6010,
+      "name": "QuotePayloadMalformed",
+      "msg": "Quote signature payload could not be reconstructed"
+    },
+    {
+      "code": 6011,
+      "name": "PaymentMintMismatch",
+      "msg": "payment_mint does not match a supported payment route"
+    },
+    {
+      "code": 6012,
+      "name": "JobNotPending",
+      "msg": "Job is not in Pending state"
+    },
+    {
+      "code": 6013,
+      "name": "ProviderMismatch",
+      "msg": "Job is not associated with the provider account passed in"
+    },
+    {
+      "code": 6014,
+      "name": "ProviderAuthorityMismatch",
+      "msg": "Job's provider_authority does not match the signer"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidResponseHash",
+      "msg": "response_hash cannot be all zeros"
+    },
+    {
+      "code": 6016,
+      "name": "JobNotProviderDone",
+      "msg": "Job is not in ProviderDone state"
+    },
+    {
+      "code": 6017,
+      "name": "ConfirmWindowNotElapsed",
+      "msg": "Auto-release window has not elapsed; only the consumer may confirm now"
+    },
+    {
+      "code": 6018,
+      "name": "ProviderAuthorityAccountMismatch",
+      "msg": "provider_authority account does not match job.provider_authority"
+    },
+    {
+      "code": 6019,
+      "name": "ConsumerAccountMismatch",
+      "msg": "consumer account does not match job.consumer"
+    },
+    {
+      "code": 6020,
+      "name": "UnauthorizedRefund",
+      "msg": "Only the consumer who created this job may refund it"
+    },
+    {
+      "code": 6021,
+      "name": "RefundBlockedProviderDelivered",
+      "msg": "Job cannot be refunded once provider has delivered (ProviderDone)"
+    },
+    {
+      "code": 6022,
+      "name": "JobNotRefundable",
+      "msg": "Job is not in a refundable state"
+    },
+    {
+      "code": 6023,
+      "name": "RefundTimeoutNotElapsed",
+      "msg": "Refund timeout has not yet elapsed"
+    },
+    {
+      "code": 6024,
+      "name": "UnsupportedAccountVersion",
+      "msg": "Account version is unsupported by this program build"
+    },
+    {
+      "code": 6025,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6026,
+      "name": "InsufficientEscrow",
+      "msg": "Insufficient lamports in escrow for this operation"
+    },
+    {
+      "code": 6027,
+      "name": "InvalidQvacPeerId",
+      "msg": "qvac_peer_id cannot be all zeros"
+    },
+    {
+      "code": 6028,
+      "name": "InvalidRequestHash",
+      "msg": "request_hash cannot be all zeros"
+    }
+  ],
+  "types": [
+    {
+      "name": "Job",
+      "docs": [
+        "Escrowed inference job.",
+        "",
+        "Holds the consumer's payment in its own lamports balance until",
+        "`consumer_confirm` (releases to provider) or `refund_job` (returns",
+        "to consumer). Closed in either terminal path; rent returns to consumer."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Layout version. Must equal `JOB_VERSION`; otherwise reject."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "task_type",
+            "docs": [
+              "`TaskType` discriminant (0..=`TaskType::MAX`). Validated against",
+              "`provider.task_types` bitmask at create time."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "consumer",
+            "docs": [
+              "Consumer who funded the escrow. Sole valid refund destination",
+              "and rent recipient on close. PDA seed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "docs": [
+              "Provider PDA bound to this job. Verified against the Provider",
+              "account passed to `provider_complete` and `consumer_confirm`."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "provider_authority",
+            "docs": [
+              "Provider's payout wallet (= `provider.authority` at create time).",
+              "Snapshotted so that even if Provider is updated mid-job, payment",
+              "still goes to the originally agreed authority."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "request_hash",
+            "docs": [
+              "SHA256(input_bytes || nonce.to_le_bytes()). Binds the job to a",
+              "specific off-chain payload. Provider verifies via bridge.js",
+              "before serving inference."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "response_hash",
+            "docs": [
+              "SHA256 of the response. Zeros until `provider_complete` sets it."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Lamports escrowed. Snapshot of the price agreed in the signed",
+              "quote — protects consumer from price changes mid-flight."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "payment_mint",
+            "docs": [
+              "`Pubkey::default()` = native SOL (MVP).",
+              "Any other value = SPL mint (returns `PaymentMintMismatch` in MVP;",
+              "reserved field for V2 SPL implementation)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "Consumer-supplied uniqueness seed. PDA seed; allows multiple",
+              "concurrent jobs from the same consumer."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Unix timestamp at `create_job`. Refund eligible once",
+              "`now >= created_at + JOB_TIMEOUT`."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "provider_done_at",
+            "docs": [
+              "Unix timestamp at `provider_complete`. Auto-release eligible once",
+              "`now >= provider_done_at + CONFIRM_WINDOW`. Zero until set."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "state",
+            "docs": [
+              "Lifecycle state. See `JobState`."
+            ],
+            "type": {
+              "defined": {
+                "name": "JobState"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Cached PDA bump."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved bytes for forward compatibility. Planned use:",
+              "token_count (4) | consumer_rating (1) | dispute_reason (1) |",
+              "response_ms (4) | spare (21)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                31
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobState",
+      "docs": [
+        "Job lifecycle. Stored as a single byte on-chain."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "ProviderDone"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Refunded"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Provider",
+      "docs": [
+        "Registered AI inference provider.",
+        "",
+        "One Provider per wallet (authority). The PDA is derived from the",
+        "authority pubkey, which doubles as the provider's identity in the",
+        "marketplace. `qvac_peer_id` is the Hyperdht public key consumers",
+        "connect to via `dht.connect(publicKey)` — required because the QVAC",
+        "SDK is key-based, not topic-based."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "docs": [
+              "Layout version. Must equal `PROVIDER_VERSION`; otherwise reject."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "task_types",
+            "docs": [
+              "Bitmask of supported `TaskType` values: `1u16 << (TaskType as u8)`.",
+              "Must be non-zero. Bit N set means task_type N is supported."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Wallet that registered and controls this provider. Also the",
+              "destination for completed-job payouts. PDA seed."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "qvac_peer_id",
+            "docs": [
+              "Hyperdht public key (Ed25519, 32 bytes). Consumers use this with",
+              "the QVAC SDK as `loadModel({ delegate: { providerPublicKey } })`.",
+              "Updatable via the V2 `update_provider_peer_id` ix when the",
+              "provider's `QVAC_HYPERSWARM_SEED` rotates."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "docs": [
+              "Display name. Validated to 3..=50 UTF-8 bytes at write time."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "jobs_completed",
+            "docs": [
+              "Lifetime count of jobs successfully completed and paid out."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "jobs_disputed",
+            "docs": [
+              "Lifetime count of jobs that ended in dispute (V2; unused in MVP)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_earned",
+            "docs": [
+              "Lifetime lamports earned across all completed jobs. `checked_add` only."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "registered_at",
+            "docs": [
+              "Unix timestamp at `register_provider`."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Cached PDA bump for cheap re-derivation in subsequent ixs."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "docs": [
+              "Reserved bytes for forward compatibility. Planned use:",
+              "stake_amount (8) | reputation_score (8) | last_active_at (8) |",
+              "tier (1) | is_verified (1) | spare (4)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                30
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

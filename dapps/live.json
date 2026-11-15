@@ -2582,5 +2582,63 @@
     "limits": "post_job, claim_job, submit_work, review_job, cancel_job and top_up_bond were not exercised in this run. stake_mint is recorded on config but the registration bond is SOL lamports, not an SPL transfer.",
     "functional": "full",
     "functional_evidence": "initialize landed and config was read back with min_bond=1000000 and fee_bps=250; register_agent wrote agent 27FKpZrzqNxoZefCbHmVF9kgLGV6P8jhzV8irNjzsnjh for campus-scout with bond=1000000 and trust=probation; FeeTooHigh and BondTooLow were rejected."
+  },
+  {
+    "slug": "qvac-marketplace",
+    "name": "QVAC Marketplace",
+    "lesson": "/explore/qvac-marketplace/",
+    "app": "/dapps/qvac-marketplace/",
+    "fork": "https://github.com/Blockchains/qvac-marketplace",
+    "commit": "fdadfd06ab95c544038133afb7bc7de7f3f5e871",
+    "program": "2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an inference marketplace program (plus off-chain QVAC/Hyperswarm provider tooling); we host the generic console against the lab deploy.",
+    "learn": "A provider registers a PDA (seeds [\"provider\", authority]) with a name (3\u201350 bytes), a non-zero task-type bitmask and a non-zero QVAC DHT peer id, then can update those fields or rotate the peer id. create_job escrows payment after verifying a sibling Ed25519-signed quote; that job flow was not exercised in this run.",
+    "source": [
+      [
+        "programs/qvac_marketplace/src/lib.rs L21-L29 (register_provider)",
+        "https://github.com/Blockchains/qvac-marketplace/blob/fdadfd06ab95c544038133afb7bc7de7f3f5e871/programs/qvac_marketplace/src/lib.rs#L21-L29"
+      ],
+      [
+        "programs/qvac_marketplace/src/instructions/register_provider.rs L8-L73 (provider PDA, name and peer-id checks)",
+        "https://github.com/Blockchains/qvac-marketplace/blob/fdadfd06ab95c544038133afb7bc7de7f3f5e871/programs/qvac_marketplace/src/instructions/register_provider.rs#L8-L73"
+      ],
+      [
+        "programs/qvac_marketplace/src/lib.rs L31-L38 (update_provider)",
+        "https://github.com/Blockchains/qvac-marketplace/blob/fdadfd06ab95c544038133afb7bc7de7f3f5e871/programs/qvac_marketplace/src/lib.rs#L31-L38"
+      ]
+    ],
+    "flow": "tests/devnet/qvac-marketplace.mjs",
+    "log": "tests/devnet/logs/qvac-marketplace-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "2e9PUPNg1hQyHutrF3TqcoF7xvhbvdNQBoc8LpwqPvVN9tHUEJgUJWcR343vwhxaqT98svzzGmNXznJif3rCMMB8"
+      ],
+      [
+        "register_provider campus-scout, task_types=1, non-zero peer id (provider GrRvaYzN\u2026)",
+        "5N7gh5NAsnRQU3xwmKhWxZwPPg16mmxrH9ixBBerLurtpSds7cg5yf2pidBDeJ86BqYpDrcCue5XB2g9dSY1JvQK"
+      ],
+      [
+        "Fetched provider: authority is the lab wallet, name=campus-scout, task_types=1, jobs_completed=0",
+        "(no tx; read-only)"
+      ],
+      [
+        "update_provider name=campus-scout-v2, task_types=3",
+        "4PSatmoiXgn3FhwF38Eq1DDfQPT5YdwbDuRfu9Vy7aGComvhCRGa8jVqBkuBrFbn4qxggA5jCXxs83VMxVaSJ2ss"
+      ],
+      [
+        "Fetched provider after update: name=campus-scout-v2, task_types=3",
+        "(no tx; read-only)"
+      ]
+    ],
+    "negative": [
+      "register_provider with name \"x\" is rejected (NameTooShort; min 3 bytes)",
+      "A second register_provider for the same authority is rejected (provider PDA already exists)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same register_provider and update_provider instructions were sent with the lab wallet through the IDL client in tests/devnet/qvac-marketplace.mjs.",
+    "limits": "create_job, provider_complete, consumer_confirm, refund_job and rotate_peer_id were not exercised: create_job needs a sibling Ed25519-signed quote instruction. Jobs were not escrowed in this run.",
+    "functional": "full",
+    "functional_evidence": "register_provider wrote provider GrRvaYzNmuBmzpKkBNdJQvpxhwpCL8MXrz8igngex4N for campus-scout; update_provider changed the name to campus-scout-v2 and task_types to 3; NameTooShort and a second register were rejected."
   }
 ]

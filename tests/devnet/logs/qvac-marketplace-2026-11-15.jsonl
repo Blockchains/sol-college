@@ -1,0 +1,7 @@
+{"step":"setup","program":"2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","provider":"GrRvaYzNmuBmzpKkBNdJQvpxhwpCL8MXrz8igngex4N"}
+{"step":"register_provider_name_short","expectedFailure":true,"error":"NameTooShort"}
+{"step":"register_provider","ok":true,"sig":"5N7gh5NAsnRQU3xwmKhWxZwPPg16mmxrH9ixBBerLurtpSds7cg5yf2pidBDeJ86BqYpDrcCue5XB2g9dSY1JvQK"}
+{"step":"fetch_provider","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","name":"campus-scout","taskTypes":1,"jobsCompleted":"0"}
+{"step":"update_provider","ok":true,"sig":"4PSatmoiXgn3FhwF38Eq1DDfQPT5YdwbDuRfu9Vy7aGComvhCRGa8jVqBkuBrFbn4qxggA5jCXxs83VMxVaSJ2ss"}
+{"step":"fetch_after_update","ok":true,"name":"campus-scout-v2","taskTypes":3}
+{"step":"register_provider_twice","expectedFailure":true,"error":"Simulation failed. "}
