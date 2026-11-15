@@ -1,7 +1,7 @@
 // Optional 3D campus (three.js, bundled by esbuild at build time). Three shared sector rooms with one
-// avatar per project CTO agent. Click/tap or keyboard (Tab to canvas wrapper is not needed: the list is
-// the accessible view) selects an avatar and opens the same details overlay. No network calls; selecting
-// or approaching an avatar never invokes an agent.
+// avatar per project CTO agent. Pointer: click/tap an avatar. Keyboard: the canvas is focusable; Left/Right
+// arrows move between avatars, Enter or Space opens the details overlay. The 2D list stays available as the
+// accessible view. No network calls; selecting or approaching an avatar never invokes an agent.
 import { Scene, PerspectiveCamera, WebGLRenderer, Color, HemisphereLight, DirectionalLight, Mesh, MeshStandardMaterial,
   BoxGeometry, CylinderGeometry, SphereGeometry, Group, Raycaster, Vector2, CanvasTexture, SpriteMaterial, Sprite } from 'three';
 
@@ -15,13 +15,13 @@ function label(text, color = '#e9edf5') {
   s.scale.set(4, 1, 1); return s;
 }
 
-export function mountCampus(container, data, { reducedMotion, onSelect }) {
+export function mountCampus(container, data, { reducedMotion, onSelect, onFocusAvatar, distance = 20 }) {
   const w = container.clientWidth || 800, h = container.clientHeight || 440;
   const renderer = new WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); renderer.setSize(w, h);
   container.appendChild(renderer.domElement);
   const scene = new Scene(); scene.background = new Color(0x06070a);
-  const camera = new PerspectiveCamera(50, w / h, 0.1, 200); camera.position.set(0, 14, 20); camera.lookAt(0, 0, 0);
+  const camera = new PerspectiveCamera(50, w / h, 0.1, 200); camera.position.set(0, distance * 0.7, distance); camera.lookAt(0, 0, 0);
   scene.add(new HemisphereLight(0xffffff, 0x223344, 1.1));
   const sun = new DirectionalLight(0xffffff, 1.2); sun.position.set(5, 12, 8); scene.add(sun);
   const avatars = [];
@@ -50,17 +50,46 @@ export function mountCampus(container, data, { reducedMotion, onSelect }) {
     scene.add(room);
   });
   const ray = new Raycaster(); const v = new Vector2();
-  renderer.domElement.addEventListener('pointerdown', (e) => {
-    const r = renderer.domElement.getBoundingClientRect();
+  const canvas = renderer.domElement;
+  canvas.tabIndex = 0;
+  canvas.setAttribute('role', 'application');
+  canvas.setAttribute('aria-roledescription', '3D campus');
+  canvas.setAttribute('aria-label', `3D campus with ${avatars.length} project avatar${avatars.length === 1 ? '' : 's'}. Left and right arrows move between avatars; Enter opens details.`);
+  let focusIdx = -1;
+  const highlight = (slug) => { avatars.forEach((a) => (a.mat.emissiveIntensity = a.slug === slug ? 0.9 : 0.25)); render(); };
+  canvas.addEventListener('pointerdown', (e) => {
+    const r = canvas.getBoundingClientRect();
     v.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(v, camera);
     const hit = ray.intersectObjects(avatars.flatMap((a) => a.meshes))[0];
-    if (hit) { avatars.forEach((a) => (a.mat.emissiveIntensity = a.slug === hit.object.userData.slug ? 0.9 : 0.25)); onSelect(hit.object.userData.slug); render(); }
+    if (hit) { const slug = hit.object.userData.slug; focusIdx = avatars.findIndex((a) => a.slug === slug); highlight(slug); onSelect(slug); }
   });
-  let angle = 0, raf = 0;
+  canvas.addEventListener('keydown', (e) => {
+    if (!avatars.length) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { focusIdx = (focusIdx + 1) % avatars.length; }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { focusIdx = (focusIdx - 1 + avatars.length) % avatars.length; }
+    else if ((e.key === 'Enter' || e.key === ' ') && focusIdx >= 0) { e.preventDefault(); onSelect(avatars[focusIdx].slug); return; }
+    else return;
+    e.preventDefault();
+    const a = avatars[focusIdx]; highlight(a.slug);
+    if (onFocusAvatar) onFocusAvatar(a.slug);
+  });
+  let angle = 0, raf = 0, visible = true;
   const render = () => renderer.render(scene, camera);
-  const tick = () => { angle += 0.0015; camera.position.x = Math.sin(angle) * 20; camera.position.z = Math.cos(angle) * 20; camera.lookAt(0, 0, 0); render(); raf = requestAnimationFrame(tick); };
+  const tick = () => { angle += 0.0015; camera.position.x = Math.sin(angle) * distance; camera.position.z = Math.cos(angle) * distance; camera.lookAt(0, 0, 0); render(); raf = visible ? requestAnimationFrame(tick) : 0; };
   if (reducedMotion) render(); else tick();
-  addEventListener('resize', () => { const W = container.clientWidth, H = container.clientHeight; renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); render(); });
-  return { dispose() { cancelAnimationFrame(raf); renderer.dispose(); } };
+  // Stop animating when the scene is off-screen (saves battery); resume when it scrolls back into view.
+  const io = typeof IntersectionObserver === 'function' ? new IntersectionObserver(([en]) => {
+    visible = !!en && en.isIntersecting;
+    if (visible && !reducedMotion && !raf) tick();
+  }) : null;
+  if (io) io.observe(container);
+  const resize = () => { const W = container.clientWidth, H = container.clientHeight; if (!W || !H) return; renderer.setSize(W, H); camera.aspect = W / H; camera.updateProjectionMatrix(); render(); };
+  const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
+  if (ro) ro.observe(container); else addEventListener('resize', resize);
+  return {
+    canvas,
+    highlight,
+    dispose() { cancelAnimationFrame(raf); raf = 0; if (io) io.disconnect(); if (ro) ro.disconnect(); renderer.dispose(); canvas.remove(); },
+  };
 }

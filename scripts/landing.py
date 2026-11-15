@@ -368,6 +368,84 @@ def fix_card_html(prs):
     )
 
 
+
+# ---------- live campus hero (first section of the landing page) ----------
+# Public, allowlisted view of config/projects/*.json, mirroring pilot/src/campus/projection.ts
+# (a pilot test checks the two agree). Only projects approved for listing with authorised research are shown;
+# examples/placeholders are excluded. The full projection is /campus/data.json, built later in CI.
+CAMPUS_SECTORS = [
+    ('DeFi', 'escrows, swaps, lending, payments'),
+    ('DePIN', 'physical-infrastructure networks'),
+    ('DeAI', 'decentralised AI'),
+]
+_PLACEHOLDER_RE = re.compile(r'(example|placeholder|todo|changeme|xxx|00000000-0000)', re.I)
+
+
+def _is_placeholder(c: dict) -> bool:
+    if c.get('placeholder') is True:
+        return True
+    vals = [c.get('projectId'), c.get('slug'), c.get('displayName'),
+            (c.get('upstream') or {}).get('repo'), (c.get('lab') or {}).get('repo')]
+    return any(isinstance(v, str) and _PLACEHOLDER_RE.search(v) for v in vals)
+
+
+def campus_projects(root=None) -> list[dict]:
+    root = Path(root) if root else ROOT
+    out = []
+    for f in sorted((root / 'config' / 'projects').glob('*.json')):
+        try:
+            c = json.loads(f.read_text(encoding='utf-8'))
+        except Exception as e:  # a broken config must not break the homepage; CI config validation reports it
+            print('landing: skipping unreadable project config', f.name, e)
+            continue
+        if _is_placeholder(c) or not (c.get('publicListing') or {}).get('approved') or not (c.get('research') or {}).get('authorised'):
+            continue
+        if c.get('sector') not in {s for s, _ in CAMPUS_SECTORS}:
+            continue
+        out.append({
+            'slug': str(c['slug']),
+            'displayName': str(c['displayName']),
+            'sector': str(c['sector']),
+            'description': str(c.get('description', '')),
+            'demonstration': c.get('ownership') == 'sol-college-demonstration',
+            'demonstrationNotice': str(c.get('demonstrationNotice') or ''),
+        })
+    return out
+
+
+def campus_hero_html(projects: list[dict]) -> str:
+    rooms = []
+    for sid, blurb in CAMPUS_SECTORS:
+        ps = [p for p in projects if p['sector'] == sid]
+        items = ''.join(
+            f'<li><button type="button" class="ch-avatar" data-slug="{E(p["slug"])}" aria-haspopup="dialog">'
+            f'<span class="ch-dot" aria-hidden="true"></span><span class="ch-name">{E(re.sub(r"\s*\(.*\)$", "", p["displayName"]))}</span>'
+            + ('<span class="ch-demo">Demo</span>' if p['demonstration'] else '') +
+            '</button></li>' for p in ps)
+        body = f'<ul class="ch-list">{items}</ul>' if ps else '<p class="ch-empty">No projects yet</p>'
+        rooms.append(
+            f'<li class="ch-room ch-{sid.lower()}"><h3>{E(sid)} room</h3><p class="ch-blurb">{E(blurb)}</p>{body}</li>')
+    n = len(projects)
+    count = f'{n} project{"" if n == 1 else "s"} on campus'
+    data = json.dumps(projects, ensure_ascii=False).replace('<', '\\u003c')
+    return (
+        '<section class="campus-hero" id="campus-hero" aria-labelledby="ch-title">\n'
+        '  <div class="ch-head">\n'
+        '    <div><p class="eyebrow">Live campus</p><h2 id="ch-title">Sol.College campus</h2>\n'
+        f'    <p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each avatar is a participating project and its Sol.College CTO agent. {E(count)}.</p></div>\n'
+        '    <a class="btn ch-explore" href="/campus/">Explore campus</a>\n'
+        '  </div>\n'
+        '  <div class="ch-stage" id="ch-stage" data-mode="2d">\n'
+        f'    <ul class="ch-rooms" aria-label="Campus rooms">{"".join(rooms)}</ul>\n'
+        '  </div>\n'
+        '  <p class="ch-note" id="ch-note">Select a project to see its details. Coordination is asynchronous through GitHub; nothing here starts a chat or calls an agent.</p>\n'
+        '  <dialog class="ch-dialog" id="ch-dialog" aria-labelledby="ch-dialog-title"><div id="ch-dialog-body"></div>'
+        '<form method="dialog"><button class="btn ch-close" value="close">Close</button></form></dialog>\n'
+        f'  <script type="application/json" id="ch-data">{data}</script>\n'
+        '</section>'
+    )
+
+
 def write_home(site='site'):
     site = Path(site)
     site.mkdir(parents=True, exist_ok=True)
@@ -395,6 +473,7 @@ def write_home(site='site'):
     tokens = {
         'TITLE': E(TITLE),
         'DESCRIPTION': E(DESCRIPTION),
+        'CAMPUS_HERO': campus_hero_html(campus_projects()),
         'JSON_LD': json_ld(),  # raw JSON inside a script tag; no HTML escaping
         'LIVE_COUNT': str(len(functional)),
         'LESSON_COUNT': str(len(apps)),
@@ -434,6 +513,7 @@ def write_home(site='site'):
     assets.mkdir(exist_ok=True)
     shutil.copy(HERE / 'landing.css', assets / 'landing.css')
     shutil.copy(HERE / 'landing.js', assets / 'landing.js')
+    shutil.copy(HERE / 'landing-campus.js', assets / 'landing-campus.js')
     print(
         'landing: wrote', site / 'index.html',
         'functional=', len(functional),

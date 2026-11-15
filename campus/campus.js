@@ -95,6 +95,9 @@ async function main() {
   $('#notices').innerHTML = DATA.notices.map((n) => `<li>${esc(n)}</li>`).join('');
   renderRooms();
   renderCredentials();
+  // Deep link from the landing page: /campus/#p-<slug> selects and focuses that project card.
+  const hp = decodeURIComponent(location.hash.replace(/^#p-/, ''));
+  if (location.hash.startsWith('#p-') && DATA.projects.some((p) => p.slug === hp)) selectProject(hp, { focusList: true });
   $('#filters').addEventListener('input', renderRooms);
   $('#verifyForm').addEventListener('submit', (e) => { e.preventDefault(); verify($('#credId').value); history.replaceState(null, '', `?id=${encodeURIComponent($('#credId').value.trim())}#verify`); });
   const qid = new URLSearchParams(location.search).get('id');

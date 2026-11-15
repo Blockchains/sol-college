@@ -666,3 +666,51 @@ footer p { margin: 0; max-width: 52rem; }
   .live-dot { animation: none; }
   .btn:hover { transform: none; }
 }
+
+/* ---------- live campus hero (first section) ---------- */
+.campus-hero { max-width: none; margin: 0; padding: 18px clamp(16px, 3vw, 40px) 8px; border-bottom: 1px solid var(--line);
+  background: radial-gradient(1200px 400px at 50% 0%, rgba(153, 69, 255, 0.16), transparent 70%), #05050b; }
+.campus-hero .ch-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin: 0 auto 12px; }
+.campus-hero h2 { margin: 0; font: 400 clamp(28px, 4vw, 44px)/1.05 var(--display); }
+.campus-hero .eyebrow { margin: 0 0 4px; }
+.campus-hero .ch-sub { margin: 6px 0 0; color: var(--mut); max-width: 64ch; font-size: 15px; }
+.ch-stage { position: relative; border: 1px solid var(--line-strong); border-radius: var(--radius); overflow: hidden; background: #06070a; }
+.ch-stage[data-mode="3d"] { display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+@media (min-width: 761px) { .ch-stage { height: clamp(380px, 56vh, 540px); } .ch-stage[data-mode="2d"] .ch-rooms { height: 100%; box-sizing: border-box; } }
+.ch-canvas { min-height: 0; height: 100%; }
+.ch-canvas canvas { display: block; width: 100%; height: 100%; }
+.ch-canvas canvas:focus-visible { outline: 3px solid var(--green); outline-offset: -3px; }
+.ch-rooms { list-style: none; margin: 0; padding: 14px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.ch-room { border: 1px solid var(--line); border-top: 3px solid var(--rc); border-radius: var(--radius-sm); padding: 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 14%, transparent), transparent 60%); }
+.ch-defi { --rc: #14f195; } .ch-depin { --rc: #00c2ff; } .ch-deai { --rc: #9945ff; }
+.ch-room h3 { margin: 0; font-size: 18px; }
+.ch-blurb { margin: 2px 0 10px; color: var(--mut-2); font-size: 13px; }
+.ch-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ch-avatar { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 12px 6px 6px; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: rgba(255,255,255,0.04); color: var(--ink); font: inherit; font-size: 15px; cursor: pointer; }
+.ch-avatar:hover { background: rgba(255,255,255,0.09); }
+.ch-avatar:focus-visible { outline: 3px solid var(--green); outline-offset: 2px; }
+.ch-dot { width: 30px; height: 30px; border-radius: 50%; background: radial-gradient(circle at 50% 35%, #fff 0 22%, var(--rc) 23% 100%); box-shadow: 0 0 14px var(--rc); }
+.ch-demo { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; padding: 2px 7px; border-radius: 6px; background: var(--amber); color: #1a1300; font-weight: 700; }
+.ch-empty { color: var(--mut-2); font-size: 14px; margin: 0; }
+.ch-stage[data-mode="3d"] .ch-rooms { min-height: 0; padding: 10px 14px; border-top: 1px solid var(--line); background: rgba(5,5,11,.9); }
+.ch-stage[data-mode="3d"] .ch-blurb { display: none; }
+.ch-stage[data-mode="3d"] .ch-room { padding: 8px 10px; }
+.ch-note { margin: 8px 0 6px; color: var(--mut-2); font-size: 13px; }
+.ch-explore { white-space: nowrap; }
+.ch-dialog { max-width: min(640px, 92vw); border: 1px solid var(--line-strong); border-radius: var(--radius); background: #0d0b1d; color: var(--ink); padding: 22px; }
+.ch-dialog::backdrop { background: rgba(0,0,0,.6); }
+.ch-dialog h3 { margin-top: 0; }
+.ch-demo-note { border-left: 3px solid var(--amber); padding-left: 10px; color: var(--mut); font-size: 14px; }
+.ch-meta { color: var(--mut-2); font-size: 14px; }
+.ch-prog { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; color: var(--mut); }
+.ch-prog li { border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; }
+.ch-close { margin-top: 8px; }
+@media (max-width: 760px) {
+  .campus-hero { padding-top: 12px; }
+  .ch-rooms { grid-template-columns: 1fr; min-height: 0; gap: 8px; padding: 10px; }
+  .ch-room { padding: 10px 12px; }
+  .ch-blurb { margin-bottom: 6px; }
+  .campus-hero .ch-sub { font-size: 14px; }
+}
