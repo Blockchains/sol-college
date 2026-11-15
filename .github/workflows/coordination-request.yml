@@ -29,12 +29,14 @@ jobs:
           if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: private control repo (vars.SC_CONTROL_REPO + secrets.SC_CONTROL_DEPLOY_KEY) is not configured; refusing to store Minds output in a public repository."; exit 1; fi
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { repository: "${{ vars.SC_CONTROL_REPO }}", ssh-key: "${{ secrets.SC_CONTROL_DEPLOY_KEY }}", path: control }
+      - name: Move private records out of the public workspace
+        run: mv control "$RUNNER_TEMP/control"
       - id: run
         env:
           MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
           MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}
           GITHUB_TOKEN: ${{ github.token }}
-          SC_PRIVATE_RECORDS_DIR: ${{ github.workspace }}/control/records
+          SC_PRIVATE_RECORDS_DIR: ${{ runner.temp }}/control/records
           SC_APPROVAL_REF: "environment-approval:run-${{ github.run_id }}"
           SC_APPROVED_BY: ${{ github.actor }}
           ISSUE: ${{ github.event.issue.number || inputs.issue }}
@@ -42,7 +44,7 @@ jobs:
       - name: Persist private result
         if: always()
         run: |
-          cd control && git config user.name "sol-college-pilot" && git config user.email "actions@users.noreply.github.com"
+          cd "$RUNNER_TEMP/control" && git config user.name "sol-college-pilot" && git config user.email "actions@users.noreply.github.com"
           git add -A records && (git diff --cached --quiet || (git commit -qm "coordination run ${{ github.run_id }}" && git push -q))
       - name: Public status line (no Minds content)
         if: always()
