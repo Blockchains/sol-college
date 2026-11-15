@@ -1,0 +1,183 @@
+{
+  "address": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+  "metadata": {
+    "name": "agenttrust",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "issue_credential",
+      "discriminator": [
+        255,
+        193,
+        171,
+        224,
+        68,
+        171,
+        194,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "credential",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  114,
+                  101,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              },
+              {
+                "kind": "arg",
+                "path": "credential_type"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent"
+        },
+        {
+          "name": "issuer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "credential_type",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "revoke_credential",
+      "discriminator": [
+        38,
+        123,
+        95,
+        95,
+        223,
+        158,
+        169,
+        87
+      ],
+      "accounts": [
+        {
+          "name": "credential",
+          "writable": true
+        },
+        {
+          "name": "issuer",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "get_credential",
+      "discriminator": [
+        14,
+        113,
+        163,
+        108,
+        101,
+        179,
+        20,
+        153
+      ],
+      "accounts": [
+        {
+          "name": "credential"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Credential",
+      "discriminator": [
+        145,
+        44,
+        68,
+        220,
+        67,
+        46,
+        100,
+        135
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "Credential",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "issuer",
+            "type": "pubkey"
+          },
+          {
+            "name": "credential_type",
+            "type": "string"
+          },
+          {
+            "name": "issued_at",
+            "type": "i64"
+          },
+          {
+            "name": "revoked",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "CredentialTypeTooLong",
+      "msg": "Credential type exceeds maximum length"
+    },
+    {
+      "code": 6001,
+      "name": "AlreadyRevoked",
+      "msg": "Credential has already been revoked"
+    },
+    {
+      "code": 6002,
+      "name": "UnauthorizedRevoke",
+      "msg": "Only the issuer can revoke this credential"
+    }
+  ]
+}

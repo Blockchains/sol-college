@@ -2640,5 +2640,64 @@
     "limits": "create_job, provider_complete, consumer_confirm, refund_job and rotate_peer_id were not exercised: create_job needs a sibling Ed25519-signed quote instruction. Jobs were not escrowed in this run.",
     "functional": "full",
     "functional_evidence": "register_provider wrote provider GrRvaYzNmuBmzpKkBNdJQvpxhwpCL8MXrz8igngex4N for campus-scout; update_provider changed the name to campus-scout-v2 and task_types to 3; NameTooShort and a second register were rejected."
+  },
+  {
+    "slug": "agenttrust",
+    "name": "AgentTrust",
+    "lesson": "/explore/agenttrust/",
+    "app": "/dapps/agenttrust/",
+    "fork": "https://github.com/Blockchains/agenttrust-sol",
+    "commit": "2c7154399c41c1f205d463faebf8e483a1f4a4d3",
+    "program": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The IDL was hand-derived from source because anchor idl build failed in this toolchain; issue_credential, get_credential and revoke_credential discriminators were confirmed by live devnet transactions. Upstream is the program only.",
+    "learn": "An issuer creates a credential PDA (seeds [\"credential\", agent, credential_type], type at most 32 bytes). get_credential logs and succeeds only while the credential is unrevoked; the issuer can then revoke it, after which get and a second revoke fail with AlreadyRevoked.",
+    "source": [
+      [
+        "agenttrust/programs/agenttrust/src/lib.rs L17-L27 (issue, revoke, get)",
+        "https://github.com/Blockchains/agenttrust-sol/blob/2c7154399c41c1f205d463faebf8e483a1f4a4d3/agenttrust/programs/agenttrust/src/lib.rs#L17-L27"
+      ],
+      [
+        "agenttrust/programs/agenttrust/src/instructions/issue_credential.rs L6-L45 (credential PDA seeds)",
+        "https://github.com/Blockchains/agenttrust-sol/blob/2c7154399c41c1f205d463faebf8e483a1f4a4d3/agenttrust/programs/agenttrust/src/instructions/issue_credential.rs#L6-L45"
+      ],
+      [
+        "agenttrust/programs/agenttrust/src/instructions/revoke_credential.rs L6-L24 and get_credential.rs L6-L22",
+        "https://github.com/Blockchains/agenttrust-sol/blob/2c7154399c41c1f205d463faebf8e483a1f4a4d3/agenttrust/programs/agenttrust/src/instructions/revoke_credential.rs#L6-L24"
+      ]
+    ],
+    "flow": "tests/devnet/agenttrust.mjs",
+    "log": "tests/devnet/logs/agenttrust-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "4M75zREfJk8DijoRmuW9yYSPyHavjvN3a22xsfi9MSwNqRUnzQN7gjKc6zzAou9VwwYjENmTpU84ct4rosZ6Ykni"
+      ],
+      [
+        "issue_credential type campus-scout for the lab wallet as agent (credential 9QXpx6HL\u2026)",
+        "45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt"
+      ],
+      [
+        "Fetched credential: agent and issuer are the lab wallet, type=campus-scout, revoked=false",
+        "(no tx; read-only)"
+      ],
+      [
+        "get_credential on the same account (still valid)",
+        "3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae"
+      ],
+      [
+        "revoke_credential by the issuer; fetched revoked=true",
+        "5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw"
+      ]
+    ],
+    "negative": [
+      "issue_credential with a 33-byte type is rejected (Max seed length exceeded; the type is also a PDA seed, so the program's CredentialTypeTooLong check is not reached)",
+      "get_credential after revoke is rejected (AlreadyRevoked)",
+      "A second revoke_credential is rejected (AlreadyRevoked)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same issue, get and revoke instructions were sent with the lab wallet through the IDL client in tests/devnet/agenttrust.mjs.",
+    "limits": "The hosted IDL is hand-derived from source (anchor idl build failed in this toolchain) and was confirmed by the verifying transactions. UnauthorizedRevoke was not exercised (would need a second wallet).",
+    "functional": "full",
+    "functional_evidence": "issue_credential wrote credential 9QXpx6HLdBZf2q6rYarS3ZPApgPfM8eSLj5kXzAH1zG1 for type campus-scout; get_credential succeeded while valid; revoke_credential set revoked=true; AlreadyRevoked rejected get and a second revoke; a 33-byte type was rejected as a PDA seed."
   }
 ]

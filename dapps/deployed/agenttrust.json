@@ -1,0 +1,27 @@
+{
+ "slug": "agenttrust",
+ "cluster": "devnet",
+ "program": "agenttrust",
+ "idl": "agenttrust.json",
+ "devnet": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "4M75zREfJk8DijoRmuW9yYSPyHavjvN3a22xsfi9MSwNqRUnzQN7gjKc6zzAou9VwwYjENmTpU84ct4rosZ6Ykni"
+  },
+  {
+   "label": "issue_credential",
+   "sig": "45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt"
+  },
+  {
+   "label": "get_credential",
+   "sig": "3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae"
+  },
+  {
+   "label": "revoke_credential",
+   "sig": "5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw"
+  }
+ ],
+ "verified": "2026-11-15"
+}

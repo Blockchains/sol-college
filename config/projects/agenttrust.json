@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agenttrust",
+  "slug": "agenttrust",
+  "displayName": "AgentTrust (Sol.College demonstration)",
+  "description": "On-chain agent credential registry on Solana devnet (Anchor 1.1). An issuer writes a credential PDA (seeds [\"credential\", agent, credential_type]), can fetch it while valid, and can revoke it. The IDL was hand-derived from source and confirmed by live devnet transactions.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/agenttrust-sol fork. The lab only changed declare_id / Anchor.toml to the Sol.College devnet program. The IDL on the hosted console was hand-derived from source because anchor idl build failed in this toolchain; instruction discriminators were confirmed by the verifying transactions. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "karanjadavi/agenttrust-sol",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agenttrust-sol",
+    "branch": "main"
+  },
+  "mind": {
+    "mappingRef": "agenttrust-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agenttrust"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T20:35:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (issue_credential, get_credential, revoke_credential)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agenttrust/",
+      "QA: devnet proof of issue_credential campus-scout, get_credential, revoke_credential, AlreadyRevoked, and a 33-byte type rejected as a PDA seed"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "unauthorized-revoke-fixture",
+        "title": "Exercise UnauthorizedRevoke with a second wallet against a lab-issued credential",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "1.1.2",
+    "solanaVersion": "2.3.13",
+    "rustToolchain": "1.89.0",
+    "programDir": "agenttrust/programs/agenttrust"
+  }
+}

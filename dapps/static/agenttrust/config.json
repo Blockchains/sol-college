@@ -1,0 +1,10 @@
+{
+ "name": "AgentTrust",
+ "fork": "https://github.com/Blockchains/agenttrust-sol",
+ "commit": "2c7154399c41c1f205d463faebf8e483a1f4a4d3",
+ "lesson": "/explore/agenttrust/",
+ "programs": {
+  "devnet": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+  "mainnet": null
+ }
+}

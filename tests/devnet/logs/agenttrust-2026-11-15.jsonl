@@ -1,0 +1,9 @@
+{"step":"setup","program":"2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe","agent":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","credential":"9QXpx6HLdBZf2q6rYarS3ZPApgPfM8eSLj5kXzAH1zG1"}
+{"step":"issue_credential_too_long","expectedFailure":true,"error":"Max seed length exceeded"}
+{"step":"issue_credential","ok":true,"sig":"45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt"}
+{"step":"fetch_credential","ok":true,"agent":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","issuer":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","credentialType":"campus-scout","revoked":false}
+{"step":"get_credential","ok":true,"sig":"3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae"}
+{"step":"revoke_credential","ok":true,"sig":"5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw"}
+{"step":"fetch_revoked","ok":true,"revoked":true}
+{"step":"get_credential_revoked","expectedFailure":true,"error":"AlreadyRevoked"}
+{"step":"revoke_twice","expectedFailure":true,"error":"AlreadyRevoked"}
