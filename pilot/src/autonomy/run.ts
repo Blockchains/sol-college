@@ -248,7 +248,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
           },
           testConclusions: [`Newest genuine candidate-validation run for ${meta.sha.slice(0, 12)} passed (fixture: ${p.validation.fixture}).`],
         });
-        if (res.outcome === "created" && "packageId" in res && res.packageId) { st.packages[meta.sha] = res.packageId; activity.push({ at: nowIso, text: `Built adoption package ${res.packageId} (awaiting the project reviewer)`, url: `https://github.com/${p.validation.workflowRepo}/blob/main/${res.path}` }); log(`package ${res.packageId}`); }
+        if (res.outcome === "created" && "packageId" in res && res.packageId) { st.packages[meta.sha] = res.packageId; pendingDispatches.push({ workflow: "project-acceptance.yml", inputs: { package_id: res.packageId } }); activity.push({ at: nowIso, text: `Built adoption package ${res.packageId} (awaiting the project reviewer)`, url: `https://github.com/${p.validation.workflowRepo}/blob/main/${res.path}` }); log(`package ${res.packageId}`); }
       }
       meta.handled = "package-built";
     } else {

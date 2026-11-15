@@ -13,7 +13,7 @@
 | devnet-treasury | contents: write | `LAB_TREASURY_KEYPAIR` (devnet lab treasury), control deploy key | lab-treasury (auto, main only) | no |
 | upstream-reconcile | contents: write | none | none | no |
 | adoption-package | contents: write, actions: read | none | none | no |
-| project-acceptance | contents: write, issues: write, actions: write | none | none | no |
+| project-acceptance | contents: write, issues: write, actions: write | control deploy key (auto path only) | acceptance (auto path; main only, no reviewer) / none (comment path) | no |
 | certificate-publication | contents: write, actions: write | none | none | no |
 | campus-publication | contents: read, actions: write | none | none | no |
 | build.yml (existing deploy) | contents: read, pages: write, id-token: write | CATALOG_TOKEN (optional, existing) | github-pages | no |
@@ -22,6 +22,15 @@ No workflow uses `pull_request_target`. Privileged jobs check out only this repo
 private control repo as data). Third-party actions are pinned to full SHAs (enforced by a unit test).
 
 ## Identities and acceptance
+- **Auto-acceptance (owner policy, user instruction t690u, 2026-11-15 18:29 GMT).** No `/sc-accept` comment is
+  required. `project-acceptance` (workflow_dispatch, environment `acceptance`, main only, no required reviewer) is
+  started automatically after `adoption-package` or when `cto-autonomy` builds a package, and accepts only when ALL
+  hold: candidate-validation passed on the exact candidate commit (newest genuine run = the package's run), the
+  adoption package exists, its sha256 equals the recomputed canonical hash (and its evidence digest matches), and
+  the candidate commit matches. The public acceptance record, the private log in the control repo and the
+  certificate all say **"auto-accepted by owner policy (2026-11-15, user instruction)"** with `humanReviewed: false`:
+  no human reviewed it. `certificate-publication` re-verifies the same conditions before issuing.
+- The manual path below still works and is optional.
 - Acceptance requires a new, unedited issue comment `/sc-accept …` by a configured reviewer: login **and** numeric
   account id **and** role `adoption-acceptance` **and** author association OWNER/MEMBER/COLLABORATOR. Bots and the
   configured agent identities are refused.

@@ -13,17 +13,18 @@
       "Structured experiment-patch tasks: a Mind's unified-diff patch, after the deterministic patch gate (size, path allowlist, no .github/workflow/toolchain/manifest edits, no secrets) and gitleaks, is applied by lab-patch to a fresh branch sc-lab/<project>/<task> on the project's lab fork (never main, never upstream), validated by the secret-free candidate-validation workflow, and opened as a lab PR on the fork when SC_LAB_PR_TOKEN is configured",
       "Upstream pull requests for fixes whose exact candidate passed validation: one focused PR per project at a time, after a duplicate check (needs a token with upstream PR rights; see docs/autonomy.md)",
       "Devnet lab treasury transfers requested by a Mind (devnet-treasury workflow): no per-request cap, no per-project daily cap, no recipient allowlist (owner instruction t688u); devnet only, key only as a protected secret, append-only ledger of every transaction",
-      "Publishing each Mind's operations snapshot (cognition balance and usage, usage by tool, equipped skills and apps, conversation count) to records/public/minds"
+      "Publishing each Mind's operations snapshot (cognition balance and usage, usage by tool, equipped skills and apps, conversation count) to records/public/minds",
+      "Auto-acceptance by owner policy (t690u, 2026-11-15): project-acceptance accepts a package with no human comment when candidate-validation passed on the exact candidate commit, the package exists, its sha256 matches the recomputed hash and the candidate matches; recorded as 'auto-accepted by owner policy (2026-11-15, user instruction)', then the certificate is issued and the campus republished"
     ],
     "excludes": [
       "Mind lifecycle (create, enable, disable)",
       "Circle membership",
       "Pause or resume",
-      "Project acceptance (/sc-accept stays a human comment by the configured reviewer)",
       "Mainnet: any non-devnet cluster is rejected before signing; mainnet keys are never used",
       "Giving any Mind a private key",
       "Pushes to main or to upstream repositories (upstream changes only as pull requests)",
-      "Bazaar publishing"
+      "Bazaar publishing",
+      "Manual acceptance on anyone's behalf: the agent never posts /sc-accept"
     ],
     "extendedBy": [
       {
@@ -33,6 +34,10 @@
       {
         "ref": "owner-instruction-2026-11-15T17:12Z (t688u)",
         "covers": "no spend caps and no recipient allowlist on the devnet lab treasury"
+      },
+      {
+        "ref": "owner-instruction-2026-11-15T18:29Z (t690u)",
+        "covers": "automatic acceptance without a /sc-accept comment"
       }
     ]
   },

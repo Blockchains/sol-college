@@ -45,6 +45,55 @@ export interface AcceptanceRecord {
   decidedAt: string;
   evidence: { commentUrl: string; commentId: number; repo: string };
   notProductionDeployment: true;
+  /** "manual-comment" (a reviewer's /sc-accept) or "auto-owner-policy" (no human reviewed it). Absent on older records = manual. */
+  method?: "manual-comment" | "auto-owner-policy";
+  autoPolicy?: { label: typeof AUTO_ACCEPT_LABEL; ref: string; humanReviewed: false; checks: string[]; validationRunUrl: string };
+}
+
+export const AUTO_ACCEPT_LABEL = "auto-accepted by owner policy (2026-11-15, user instruction)" as const;
+export const AUTO_ACCEPT_REF = "owner-instruction-2026-11-15T18:29Z (t690u)";
+
+export interface AutoAcceptanceContext {
+  project: ProjectConfig;
+  manifest: AdoptionManifest;
+  storedBytes: Buffer;
+  storedManifestSha256: string;
+  currentVerdict: CandidateVerdict;
+  now: string;
+}
+
+/**
+ * Owner policy t690u: accept without a human comment when ALL hold: candidate-validation passed on the exact
+ * candidate commit, the adoption package exists, its sha256 matches the recomputed hash, and the candidate
+ * commit matches. The record says plainly that no human reviewed it.
+ */
+export function verifyAutoAcceptance(ctx: AutoAcceptanceContext): AcceptanceRecord {
+  const m = ctx.manifest;
+  if (m.project.slug !== ctx.project.slug) throw new AcceptanceDenied("package belongs to another project");
+  const recomputed = sha256Hex(canonicalBytes(m));
+  if (recomputed !== ctx.storedManifestSha256 || sha256Hex(ctx.storedBytes) !== ctx.storedManifestSha256) throw new AcceptanceDenied("package sha256 does not match the recomputed canonical hash");
+  if (sha256Hex(canonicalBytes(m.evidence)) !== m.evidenceDigest) throw new AcceptanceDenied("package evidence digest does not match its evidence");
+  const v = ctx.currentVerdict;
+  if (!v.passed || !v.decidingRun) throw new AcceptanceDenied(`candidate-validation has not passed on the exact candidate (${v.reasons.join("; ")})`);
+  if (v.candidate.sha !== m.candidate.sha) throw new AcceptanceDenied("candidate commit mismatch");
+  if (v.decidingRun.runId !== m.evidence.runId) throw new AcceptanceDenied("a newer validation run exists for this candidate; repackage");
+  const base = { packageId: m.packageId, manifestSha256: recomputed, candidateSha: m.candidate.sha, reviewer: 0, method: "auto-owner-policy" };
+  return {
+    schema: "sc-acceptance/1",
+    acceptanceId: `acc-${sha256Hex(canonicalBytes(base)).slice(0, 16)}`,
+    decision: "adoption-acceptance",
+    project: { projectId: ctx.project.projectId, slug: ctx.project.slug },
+    packageId: m.packageId,
+    manifestSha256: recomputed,
+    candidateSha: m.candidate.sha,
+    upstreamBaseline: m.baseline.sha,
+    reviewer: { login: AUTO_ACCEPT_LABEL, id: 0, authorAssociation: "NONE (automated; no human reviewer)" },
+    decidedAt: ctx.now,
+    evidence: { commentUrl: v.decidingRun.htmlUrl, commentId: 0, repo: ctx.project.validation.workflowRepo },
+    notProductionDeployment: true,
+    method: "auto-owner-policy",
+    autoPolicy: { label: AUTO_ACCEPT_LABEL, ref: AUTO_ACCEPT_REF, humanReviewed: false, checks: ["candidate-validation passed on the exact candidate commit", "adoption package exists", "package sha256 matches the recomputed canonical hash", "candidate commit matches the package"], validationRunUrl: v.decidingRun.htmlUrl },
+  };
 }
 
 export class AcceptanceDenied extends Error {
@@ -87,6 +136,7 @@ export function verifyAcceptance(ctx: AcceptanceContext): AcceptanceRecord {
     decidedAt: ctx.comment.created_at,
     evidence: { commentUrl: ctx.comment.html_url, commentId: ctx.comment.id, repo: ctx.commentRepo },
     notProductionDeployment: true,
+    method: "manual-comment",
   };
 }
 

@@ -18,7 +18,7 @@ export interface Credential {
   packageId: string;
   manifestSha256: string;
   acceptedCommit: string;
-  acceptanceEvidence: { acceptanceId: string; reviewer: string; commentUrl: string; decidedAt: string };
+  acceptanceEvidence: { acceptanceId: string; reviewer: string; commentUrl: string; decidedAt: string; method: "manual-comment" | "auto-owner-policy"; humanReviewed: boolean; note?: string };
   issuer: "Sol.College";
   issuedAt: string;
   verification: { type: "platform-published-verification-record"; url: string; notes: string };
@@ -72,11 +72,11 @@ export function issueCredential(args: { acceptance: AcceptanceRecord | undefined
     packageId: a.packageId,
     manifestSha256: a.manifestSha256,
     acceptedCommit: a.candidateSha,
-    acceptanceEvidence: { acceptanceId: a.acceptanceId, reviewer: a.reviewer.login, commentUrl: a.evidence.commentUrl, decidedAt: a.decidedAt },
+    acceptanceEvidence: { acceptanceId: a.acceptanceId, reviewer: a.reviewer.login, commentUrl: a.evidence.commentUrl, decidedAt: a.decidedAt, method: a.method ?? "manual-comment", humanReviewed: a.method !== "auto-owner-policy", ...(a.method === "auto-owner-policy" ? { note: "Auto-accepted by owner policy (2026-11-15, user instruction): no human reviewed this contribution. Accepted because the exact candidate passed candidate-validation and the adoption package hash and candidate matched. The link is the validation run, not a review." } : {}) },
     issuer: "Sol.College",
     issuedAt: args.issuedAt,
     verification: { type: "platform-published-verification-record", url: `${args.verifyBaseUrl}?id=${id}`, notes: "Verification is the record published by Sol.College; it is not a cryptographic signature." },
-    disclaimers: ["Documents one accepted contribution only.", "Not an accreditation or assessment of general expertise.", "Not issued on-chain.", "Not cryptographically signed."],
+    disclaimers: [...(a.method === "auto-owner-policy" ? ["Auto-accepted by owner policy (2026-11-15, user instruction); no human reviewed it."] : []), "Documents one accepted contribution only.", "Not an accreditation or assessment of general expertise.", "Not issued on-chain.", "Not cryptographically signed."],
   };
 }
 

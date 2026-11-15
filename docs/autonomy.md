@@ -49,7 +49,8 @@ without a verified human acceptance, push to main or to upstream repositories (u
 contributor code (validation runs in the separate secret-free workflow).
 
 ## What still needs the owner
-1. `/sc-accept …` comment for each adoption package (the human acceptance; the bot is refused by design).
+1. Nothing for acceptance: since 18:29 GMT (t690u) packages are auto-accepted by owner policy (see docs/permissions.md);
+   `/sc-accept` remains an optional manual path.
 2. Approving `minds-admin` runs: Mind lifecycle (provision/pause/resume), Circle changes, equip/unequip.
 3. Adding a project to `config/autonomy.json` or changing the standing approval (a commit to main).
 4. Writing code: Minds now write patches (see 6); a token for opening PRs (`SC_LAB_PR_TOKEN`) is the one missing piece.

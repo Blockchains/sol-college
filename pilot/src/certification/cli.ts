@@ -20,7 +20,22 @@ if (cmd === "issue") {
   const accPath = join(PUBLIC_RECORDS_DIR, "acceptance", project.slug, `${a}.json`);
   const acc = existsSync(accPath) ? (JSON.parse(readFileSync(accPath, "utf8")) as AcceptanceRecord) : undefined;
   let verified = false;
-  if (acc) {
+  if (acc && acc.method === "auto-owner-policy") {
+    // Re-verify the policy conditions now: same package bytes/hash/candidate and a still-passing exact-SHA validation.
+    const { verifyAutoAcceptance } = await import("../acceptance/accept.ts");
+    const { getPolicy } = await import("../config/project.ts");
+    const { evaluateCandidate, fetchValidationEvidence } = await import("../validation/evidence.ts");
+    const g = githubFromEnv();
+    const pol = getPolicy(loadConfig(), project);
+    const pkg = readManifestBytes(join(PUBLIC_RECORDS_DIR, "adoption", project.slug, `${a}.json`));
+    const candidate = { project: project.slug, repo: project.lab.repo, sha: pkg.manifest.candidate.sha };
+    const ev = await fetchValidationEvidence(g, { workflowRepo: project.validation.workflowRepo, workflowPath: project.validation.workflowPath, titlePrefix: pol.validation.runTitlePrefix, candidate, requiredJobs: pol.validation.requiredJobs });
+    const repo = await g.get<{ id: number; default_branch: string }>(`/repos/${project.validation.workflowRepo}`);
+    const wf = await g.get<{ id: number }>(`/repos/${project.validation.workflowRepo}/actions/workflows/${project.validation.workflowPath.split("/").pop()}`);
+    const verdict = evaluateCandidate(ev, candidate, { repositoryId: repo.id, workflowId: wf.id, workflowPath: project.validation.workflowPath, defaultBranch: repo.default_branch, requiredJobs: pol.validation.requiredJobs });
+    const again = verifyAutoAcceptance({ project, manifest: pkg.manifest, storedBytes: pkg.bytes, storedManifestSha256: pkg.sha256, currentVerdict: verdict, now: acc.decidedAt });
+    verified = again.acceptanceId === acc.acceptanceId && again.manifestSha256 === acc.manifestSha256 && again.candidateSha === acc.candidateSha;
+  } else if (acc) {
     // Re-verify the acceptance evidence still exists on GitHub, unedited, from the same account.
     const c = await githubFromEnv().get<GhIssueComment>(`/repos/${acc.evidence.repo}/issues/comments/${acc.evidence.commentId}`);
     const cmdNow = parseAcceptanceComment(c.body);

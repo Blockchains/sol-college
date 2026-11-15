@@ -8,7 +8,7 @@ on:
       project: { required: true, type: string }
       candidate_sha: { required: true, type: string }
       inputs_path: { description: "Path in this repo to the package inputs JSON (contributions, narrative)", required: true, type: string }
-permissions: { contents: write, actions: read }
+permissions: { contents: write, actions: write }
 concurrency: { group: records-main, cancel-in-progress: false }
 jobs:
   package:
@@ -28,6 +28,11 @@ jobs:
       - run: |
           git config user.name "sol-college-pilot" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add records/public/adoption && (git diff --cached --quiet || (git commit -qm "adoption-package ${{ inputs.project }} ${{ inputs.candidate_sha }}" && git pull -q --rebase && git push -q))
+      - name: Auto-acceptance by owner policy (t690u)
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          id=$(jq -r '.packageId // empty' "$RUNNER_TEMP/pkg.json")
+          [ -n "$id" ] && gh workflow run project-acceptance.yml -R "$GITHUB_REPOSITORY" --ref main -f package_id="$id" || echo "no package id; nothing to accept"
       - name: Summary
         run: |
           { echo "## Adoption package"; echo '```json'; cat "$RUNNER_TEMP/pkg.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
