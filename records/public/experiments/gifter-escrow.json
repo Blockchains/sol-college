@@ -4,13 +4,40 @@
     {
       "id": "take-and-close-pda-seeds",
       "title": "Bind PDA signer seeds so take_and_close and refund complete",
-      "status": "approved-experiment",
+      "status": "tested-candidate",
       "baseline": "a9c3a417d2d78294f58975b1461859ffb20df05a",
       "candidateSha": "5628bfc9439f5e261098368d01c9b70b8c2e70ba",
       "links": [
-        { "type": "research-question", "title": "Research question #1", "url": "https://github.com/Blockchains/sol-college/issues/1", "at": "2026-11-15T15:30:56Z" },
-        { "type": "experiment", "title": "Experiment #2", "url": "https://github.com/Blockchains/sol-college/issues/2", "at": "2026-11-15T15:31:05Z" },
-        { "type": "upstream-pr", "title": "Upstream PR berkaycirak/gifter-escrow#1 (open; not accepted upstream)", "url": "https://github.com/berkaycirak/gifter-escrow/pull/1", "at": "2026-11-13T12:38:02Z" }
+        {
+          "type": "research-question",
+          "title": "Research question #1",
+          "url": "https://github.com/Blockchains/sol-college/issues/1",
+          "at": "2026-11-15T15:30:56Z"
+        },
+        {
+          "type": "experiment",
+          "title": "Experiment #2",
+          "url": "https://github.com/Blockchains/sol-college/issues/2",
+          "at": "2026-11-15T15:31:05Z"
+        },
+        {
+          "type": "upstream-pr",
+          "title": "Upstream PR berkaycirak/gifter-escrow#1 (open; not accepted upstream)",
+          "url": "https://github.com/berkaycirak/gifter-escrow/pull/1",
+          "at": "2026-11-13T12:38:02Z"
+        },
+        {
+          "type": "validation-run",
+          "title": "candidate-validation 5628bfc (passed: build + Solana runtime fixture)",
+          "url": "https://github.com/Blockchains/sol-college/actions/runs/43730277119",
+          "at": "2026-11-15T15:30:43Z"
+        },
+        {
+          "type": "validation-run",
+          "title": "Negative control e288388 (rejected: maker underpaid by one unit)",
+          "url": "https://github.com/Blockchains/sol-college/actions/runs/43730202863",
+          "at": "2026-11-15T15:30:01Z"
+        }
       ]
     }
   ]
