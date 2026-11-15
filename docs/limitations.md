@@ -17,3 +17,11 @@
   untrusted job downloads toolchains from release.anza.xyz and npm (build tools, not hosted services).
 - Pre-existing `verify-forks.yml` still uses tag-pinned actions; it is outside the pilot and untouched.
 - The SDK package is labelled private alpha; its API may change. The contract test will flag missing methods.
+
+- sentient-send has a build-only validation fixture (program builds and its unit tests run at the exact SHA); there is
+  no localnet behaviour fixture yet, so its candidates cannot reach "tested candidate" on behaviour evidence. The
+  repo's devnet flow (tests/devnet/sentient-send.mjs) is a natural basis for one.
+- Building lockfile-less candidates depends on resolving a Cargo.lock at validation time (recorded with its sha256 in
+  the run log) and on `cargoPins`; crates.io drift can still break a build until a pin is added.
+- Minds cannot push code. Autonomy opens issues, requests validation, triages, drafts packages and publishes status;
+  the code change for an experiment still needs a contributor (human or a separately authorised coding agent).

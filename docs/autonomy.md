@@ -33,3 +33,22 @@ contributor code (validation runs in the separate secret-free workflow).
 3. Adding a project to `config/autonomy.json` or changing the standing approval (a commit to main).
 4. Writing code: Minds cannot push code, so experiments still need a contributor (human or coding agent) to open the
    lab PR. Everything after the PR is automatic.
+
+## Evidence of live runs (2026-11-15, GMT)
+| Run | When | Result |
+| --- | --- | --- |
+| [43736138834](https://github.com/Blockchains/sol-college/actions/runs/43736138834) | 16:35 | first successful run: research-plan and progress-report tasks sent to both Minds; status published |
+| [43737400469](https://github.com/Blockchains/sol-college/actions/runs/43737400469) | 16:47 | gifter replies validated (report published, plan proposals all filtered by the topic gate); sentient replies parked for operator review |
+| [43737735184](https://github.com/Blockchains/sol-college/actions/runs/43737735184) | 16:50 | after the fixes below: Mind-proposed research issues opened, [#4](https://github.com/Blockchains/sol-college/issues/4) (gifter-escrow) and [#5](https://github.com/Blockchains/sol-college/issues/5) (sentient-send); both Lab Reporter statuses published to the campus |
+
+Fixes made from those runs (all fail-closed, none resend a message):
+- Boundary disclaimers such as "no mainnet keys" no longer count as raising an excluded topic; real mentions still do.
+- `evidenceRefs` may cite source ids as well as evidence ids, matching the facts policy.
+- A task in operator review is re-evaluated against correlated replies already in history (the Mind had sent a
+  corrected JSON reply for the same taskId), at most 3 times; nothing is resent.
+- A repeated `[research] <project>:` prefix in a proposal title is stripped.
+
+sentient-send baseline validation (build-only, exact SHA a1c663d): [43736971628](https://github.com/Blockchains/sol-college/actions/runs/43736971628)
+passed after two workflow fixes: the Anchor 0.32.1 release binary pinned by sha256 (npm has none), and, because the
+candidate has no Cargo.lock, a lockfile resolved for the platform-tools cargo 1.84 plus the per-project pin
+`blake3@1.8.2` (`validation.cargoPins`). Earlier failures: 43736019634, 43736417345, 43736709507.
