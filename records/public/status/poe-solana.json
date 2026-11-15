@@ -1,8 +1,8 @@
 {
   "schema": "sc-cto-status/1",
   "project": "poe-solana",
-  "updatedAt": "2026-11-15T17:58:04.130Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43744007776",
+  "updatedAt": "2026-11-15T17:58:57.438Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43744082590",
   "report": null,
   "activity": [
     {
@@ -18,8 +18,8 @@
       "text": "Writing the Lab Reporter status"
     }
   ],
-  "pendingTasks": 3,
-  "operatorReview": 0,
+  "pendingTasks": 2,
+  "operatorReview": 1,
   "upstreamHead": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
   "openLabPullRequests": 0
 }
