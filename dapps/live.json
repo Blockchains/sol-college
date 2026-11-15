@@ -3231,5 +3231,54 @@
     "limits": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. One escrow PDA per payer (no nonce). The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The lab applied a vault-PDA bump fix so signed SPL releases work; the same fix is offered upstream.",
     "functional": "full",
     "functional_evidence": "create_escrow wrote escrow 3X8DZn9uY4oUjSMHqbqr79tynPiKMEG2MjYpXJxV6m7b; fund_escrow moved 1_000_000 of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D into vault 4PPYT1tJm1rnibVp4wiSeg1inKZhxfdQ2k4MDBCbEu4G; start_work and submit_work were signed by provider GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb; confirm_completion (2xdASUju\u2026) left the escrow Released, the vault at 0, the provider ATA at +995_000 and the treasury ATA at +5_000. Recreating the same payer's escrow was rejected."
+  },
+  {
+    "slug": "pact-escrow",
+    "name": "Pact Escrow",
+    "lesson": "/explore/pact-escrow/",
+    "app": "/dapps/pact-escrow/",
+    "fork": "https://github.com/Blockchains/pact-escrow",
+    "commit": "71b455f09de4a59da245d36d696afb196dc6fae8",
+    "program": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+    "app_kind": "Custom Sol.College wallet console for this pinocchio (non-Anchor) program: instruction 0 creates and funds a program-owned SOL escrow PDA, 1 releases to the seller, 2 refunds to the buyer. The generic Anchor IDL console is not used here. The lab tree is branch sol-college-devnet of Blockchains/pact-escrow (Blockchains/pact is a different project).",
+    "learn": "create_escrow (ix 0) inits a program-owned PDA seeded [\"escrow\", buyer, seller, seed u64 LE] and system-transfers the amount into it. release (ix 1), signed by the buyer, debits that program-owned account directly and credits the seller. The rent remains in the PDA.",
+    "source": [
+      [
+        "src/lib.rs L27-L41 (process_instruction, ix 0/1/2)",
+        "https://github.com/Blockchains/pact-escrow/blob/71b455f09de4a59da245d36d696afb196dc6fae8/src/lib.rs#L27-L41"
+      ],
+      [
+        "src/instructions.rs L28-L148 (derive_escrow + CreateEscrow::process)",
+        "https://github.com/Blockchains/pact-escrow/blob/71b455f09de4a59da245d36d696afb196dc6fae8/src/instructions.rs#L28-L148"
+      ],
+      [
+        "src/instructions.rs L180-L248 (Release::process, program-owned lamport debit)",
+        "https://github.com/Blockchains/pact-escrow/blob/71b455f09de4a59da245d36d696afb196dc6fae8/src/instructions.rs#L180-L248"
+      ]
+    ],
+    "flow": "tests/devnet/pact-escrow.mjs",
+    "log": "tests/devnet/logs/pact-escrow-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy pact_escrow as BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp on devnet",
+        "GjHPN6cZDX8shTLviPmoWnsfCreP1orKjy8rkiiK5EpmjuANgs4jY4wND5QRxmqj6zGMaahS699RLzDp4Wx4CQ4"
+      ],
+      [
+        "create_escrow 1_000_000 lamports for seller GpUq5UH3\u2026, seed 20261115 (escrow 3xNd7gWF\u2026, program-owned, 2_061_720 lamports)",
+        "3L9d3bFxTHrUsTPgmnp7QY4JR97jHJGxftPa2qxkXSHkuG5Hs3gBMLhXkXQNhhuUyo4rXwny9s9vGpPohQrqrgeV"
+      ],
+      [
+        "release paid the seller +1_000_000 lamports; escrow left Released with 1_061_720 lamports of rent still in the PDA",
+        "3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ"
+      ]
+    ],
+    "negative": [
+      "create_escrow with amount=0 is rejected (InvalidInstructionData)"
+    ],
+    "ui_check": "The hosted page is a custom pinocchio console (Phantom or Solflare on devnet) that encodes raw instruction bytes. It was not driven in headless Chromium in this run; create_escrow and release were sent with the tester wallets through tests/devnet/pact-escrow.mjs.",
+    "limits": "refund was not exercised. The escrow PDA is not closed after release (rent remains). instructions_v2.rs is not the deployed entrypoint. The official program id was not reused. The lab replaced nostd_panic_handler! so the crate builds on current platform-tools rustc.",
+    "functional": "full",
+    "functional_evidence": "create_escrow wrote program-owned escrow 3xNd7gWFcDitPjQPCvy5Y64quDWXBRV4jKHcXjUZ1sGs (amount 1_000_000, status Active, 2_061_720 lamports). release 3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ paid seller GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb exactly 1_000_000 lamports and left the escrow Released with 1_061_720 lamports of rent still in the PDA. amount=0 was rejected."
   }
 ]

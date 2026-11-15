@@ -1,0 +1,89 @@
+{
+  "address": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+  "metadata": {
+    "name": "pact_escrow",
+    "version": "0.1.0",
+    "spec": "pinocchio-raw",
+    "description": "Not an Anchor IDL. Instruction 0=create_escrow (amount u64 LE, seed u64 LE), 1=release, 2=refund. Accounts: buyer, seller, escrow [, system_program for create]. PDA seeds [b\"escrow\", buyer, seller, seed LE]."
+  },
+  "instructions": [
+    {
+      "name": "create_escrow",
+      "discriminator": [
+        0
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "seller"
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "seed",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "release",
+      "discriminator": [
+        1
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "seller",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "refund",
+      "discriminator": [
+        2
+      ],
+      "accounts": [
+        {
+          "name": "buyer",
+          "writable": true
+        },
+        {
+          "name": "seller",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true
+        }
+      ],
+      "args": []
+    }
+  ]
+}

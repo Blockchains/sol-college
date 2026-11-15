@@ -1,0 +1,10 @@
+{
+ "name": "Pact Escrow",
+ "fork": "https://github.com/Blockchains/pact-escrow",
+ "commit": "71b455f09de4a59da245d36d696afb196dc6fae8",
+ "lesson": "/explore/pact-escrow/",
+ "programs": {
+  "devnet": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+  "mainnet": null
+ }
+}

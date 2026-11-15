@@ -1,0 +1,7 @@
+{"step":"setup","program":"BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp","escrow":"3xNd7gWFcDitPjQPCvy5Y64quDWXBRV4jKHcXjUZ1sGs","bump":254,"seed":"20261115","buyer":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr","seller":"GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb"}
+{"step":"balances_before","buyer":410093281,"seller":46948680,"existing":false}
+{"step":"create_escrow","ok":true,"sig":"3L9d3bFxTHrUsTPgmnp7QY4JR97jHJGxftPa2qxkXSHkuG5Hs3gBMLhXkXQNhhuUyo4rXwny9s9vGpPohQrqrgeV"}
+{"step":"after_create","buyer":408026561,"escrowLamports":2061720,"owner":"BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp","status":0,"storedAmount":"1000000","dataLen":81}
+{"step":"release","ok":true,"sig":"3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ"}
+{"step":"fetch","ok":true,"status":1,"after":{"buyer":408021561,"seller":47948680,"escrow":1061720},"deltas":{"buyer":-2071720,"seller":1000000,"escrow":1061720},"sellerDeltaFromMid":1000000}
+{"step":"negative_zero_amount","expectedFailure":true,"error":"Simulation failed. "}

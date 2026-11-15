@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-pact-escrow",
+  "slug": "pact-escrow",
+  "displayName": "Pact Escrow (Sol.College demonstration)",
+  "description": "Pinocchio (non-Anchor) SOL escrow for agent payments, on Solana devnet. create_escrow and release were verified end-to-end: 1_000_000 lamports were locked in a program-owned PDA and paid to the seller; rent remains in the PDA. A zero-amount create is rejected. The official program id was not reused.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of ACRLABSDEV/pact. The lab tree is branch sol-college-devnet of Blockchains/pact-escrow (Blockchains/pact already existed and is a different Tempo project). The lab changed crate::ID to a unique Sol.College devnet program and replaced pinocchio's nostd_panic_handler! with a plain #[panic_handler] so the crate builds on current platform-tools rustc. The hosted page is a custom wallet console (this is not an Anchor program). The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "ACRLABSDEV/pact",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/pact-escrow",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "pact-escrow-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-pactescrow"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:25:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Program correctness on the Solana runtime (create_escrow, release)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/pact-escrow/",
+      "QA: devnet proof of create_escrow, release, and zero-amount rejection"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "refund and v2 instructions"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "close-escrow-rent",
+        "title": "Add a close instruction that returns remaining rent after release or refund",
+        "skills": [
+          "Rust",
+          "Solana"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "n/a-pinocchio",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.85.0",
+    "programDir": "."
+  }
+}

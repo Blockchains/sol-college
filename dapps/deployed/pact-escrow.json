@@ -1,0 +1,23 @@
+{
+ "slug": "pact-escrow",
+ "cluster": "devnet",
+ "program": "pact_escrow",
+ "idl": "pact.json",
+ "devnet": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "GjHPN6cZDX8shTLviPmoWnsfCreP1orKjy8rkiiK5EpmjuANgs4jY4wND5QRxmqj6zGMaahS699RLzDp4Wx4CQ4"
+  },
+  {
+   "label": "create_escrow",
+   "sig": "3L9d3bFxTHrUsTPgmnp7QY4JR97jHJGxftPa2qxkXSHkuG5Hs3gBMLhXkXQNhhuUyo4rXwny9s9vGpPohQrqrgeV"
+  },
+  {
+   "label": "release",
+   "sig": "3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ"
+  }
+ ],
+ "verified": "2026-11-15"
+}

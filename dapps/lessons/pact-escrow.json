@@ -1,0 +1,35 @@
+{
+  "title": "Pact Escrow",
+  "summary": "Create a program-owned SOL escrow PDA, then release the amount to the seller. Refund (seller-signed) was not exercised in the lab proof.",
+  "what": "Pact is a no_std pinocchio program (not Anchor): instruction 0 creates and funds a program-owned escrow PDA, 1 releases the amount to the seller by direct lamport debit, and 2 refunds the buyer. Because the PDA is program-owned, release does not need a signed system transfer.",
+  "app_note": "The page at /dapps/pact-escrow/ is a small custom wallet console for this pinocchio program (not the generic Anchor IDL console). The lab tree is branch sol-college-devnet of Blockchains/pact-escrow (Blockchains/pact is a different Tempo project). declare_id was replaced with a unique lab program; pinocchio's nostd_panic_handler! was replaced so the crate builds on current platform-tools rustc.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/pact-escrow/, switch to Devnet, connect a wallet, and fetch the lab escrow (seller GpUq5UH3\u2026, seed 20261115) or create a new one with a fresh seed.",
+      "see": "Program BA6gPuCD\u2026. Lab escrow 3xNd7gWF\u2026 should be Released, with 1_061_720 lamports of rent still in the PDA and the seller paid 1_000_000.",
+      "ran": "create_escrow 3L9d3bFx\u2026; release 3p4DERSe\u2026."
+    },
+    {
+      "do": "create_escrow with amount=0 should fail.",
+      "see": "InvalidInstructionData / Simulation failed.",
+      "ran": "Rejected in tests/devnet/pact-escrow.mjs (negative_zero_amount)."
+    }
+  ],
+  "diagram": "buyer --create_escrow (ix 0)--> escrow [\"escrow\", buyer, seller, seed] (program-owned, rent + amount) ; buyer --release (ix 1)--> seller +amount (rent remains)",
+  "accounts": [
+    "escrow (seeds [\"escrow\", buyer, seller, seed u64 LE], owner = this program, 81 bytes)"
+  ],
+  "instructions": [
+    "create_escrow (0)",
+    "release (1)",
+    "refund (2)"
+  ],
+  "innovation": "A tiny pinocchio (no_std) SOL escrow whose PDA is program-owned, so release can debit lamports directly.",
+  "frontend": "Custom Sol.College wallet console for this pinocchio program (esm.sh @solana/web3.js).",
+  "exercises": [
+    "Fetch the lab escrow and confirm status is Released.",
+    "Explain why this release can debit the PDA when Guild's original vault debit could not.",
+    "Sketch a close instruction that returns remaining rent to the buyer."
+  ],
+  "not_covered": "refund was not exercised. The escrow PDA is not closed after release (rent remains). v2 instructions in instructions_v2.rs are not the deployed entrypoint."
+}
