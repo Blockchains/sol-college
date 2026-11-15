@@ -25,6 +25,7 @@ jobs:
       rust: ${{ steps.cfg.outputs.rust }}
       programdir: ${{ steps.cfg.outputs.programdir }}
       anchorsha: ${{ steps.cfg.outputs.anchorsha }}
+      cargopins: ${{ steps.cfg.outputs.cargopins }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { persist-credentials: false }
@@ -45,6 +46,9 @@ jobs:
           d=$(jq -r '.validation.programDir // "contract"' "$f"); [[ "$d" =~ ^(\.|[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*)$ ]] && [[ "$d" != *..* ]] || { echo "bad programDir"; exit 1; }
           echo "programdir=$d" >> "$GITHUB_OUTPUT"
           echo "anchorsha=$(jq -r '.validation.anchorBinarySha256 // ""' "$f")" >> "$GITHUB_OUTPUT"
+          pins=$(jq -r '(.validation.cargoPins // []) | join(" ")' "$f")
+          for x in $pins; do [[ "$x" =~ ^[a-z0-9_-]+@[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "bad cargo pin"; exit 1; }; done
+          echo "cargopins=$pins" >> "$GITHUB_OUTPUT"
 
   untrusted-validate:
     needs: check-request
@@ -85,6 +89,7 @@ jobs:
           fi
       - name: Build the candidate program (untrusted)
         working-directory: candidate/${{ needs.check-request.outputs.programdir }}
+        env: { CARGO_PINS: "${{ needs.check-request.outputs.cargopins }}" }
         run: |
           set -euo pipefail
           solana --version; anchor --version; RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" rustc --version
@@ -94,6 +99,7 @@ jobs:
             # Lockfile format 3 because the platform-tools cargo cannot read format 4. Recorded in the run log.
             rustup toolchain install 1.84.0 --profile minimal
             CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +1.84.0 generate-lockfile
+            for x in $CARGO_PINS; do cargo +1.84.0 update -p "${x%@*}" --precise "${x#*@}"; done
             sed -i 's/^version = 4$/version = 3/' Cargo.lock
             echo "generated Cargo.lock: sha256 $(sha256sum Cargo.lock | cut -c1-64)"
           fi

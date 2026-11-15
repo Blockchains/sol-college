@@ -356,6 +356,12 @@
         "anchorBinarySha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
+        },
+        "cargoPins": {
+          "description": "Exact crate versions applied with cargo update --precise when the candidate has no Cargo.lock (platform-tools cargo cannot parse edition-2024 manifests).",
+          "type": "array",
+          "maxItems": 10,
+          "items": { "type": "string", "pattern": "^[a-z0-9_-]+@[0-9]+\\.[0-9]+\\.[0-9]+$" }
         }
       }
     }
