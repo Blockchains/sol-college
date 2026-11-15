@@ -4,41 +4,144 @@
   "title": "Sol.College participating project configuration (public, non-confidential part)",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "projectId", "slug", "displayName", "description", "sector", "ownership", "upstream", "lab", "mind", "research", "reviewers", "policyVersion", "publicListing", "disclosure", "entitlement", "validation"],
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "slug",
+    "displayName",
+    "description",
+    "sector",
+    "ownership",
+    "upstream",
+    "lab",
+    "mind",
+    "research",
+    "reviewers",
+    "policyVersion",
+    "publicListing",
+    "disclosure",
+    "entitlement",
+    "validation"
+  ],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "placeholder": { "type": "boolean" },
-    "projectId": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$" },
-    "slug": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{1,63}$" },
-    "displayName": { "type": "string", "minLength": 1, "maxLength": 80 },
-    "description": { "type": "string", "minLength": 1, "maxLength": 400 },
-    "sector": { "enum": ["DeFi", "DePIN", "DeAI"] },
-    "ownership": { "enum": ["sol-college-demonstration", "participating-project"] },
-    "demonstrationNotice": { "type": "string", "minLength": 1 },
-    "upstream": { "$ref": "#/definitions/repoRef" },
-    "lab": { "$ref": "#/definitions/repoRef" },
+    "schemaVersion": {
+      "const": 1
+    },
+    "placeholder": {
+      "type": "boolean"
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+    },
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 400
+    },
+    "sector": {
+      "enum": [
+        "DeFi",
+        "DePIN",
+        "DeAI"
+      ]
+    },
+    "ownership": {
+      "enum": [
+        "sol-college-demonstration",
+        "participating-project"
+      ]
+    },
+    "demonstrationNotice": {
+      "type": "string",
+      "minLength": 1
+    },
+    "upstream": {
+      "$ref": "#/definitions/repoRef"
+    },
+    "lab": {
+      "$ref": "#/definitions/repoRef"
+    },
     "mind": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mappingRef", "mappingStatus", "configVersion"],
+      "required": [
+        "mappingRef",
+        "mappingStatus",
+        "configVersion"
+      ],
       "properties": {
-        "mappingRef": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$" },
-        "mappingStatus": { "enum": ["approved", "proposed", "none"] },
-        "configVersion": { "type": "integer", "minimum": 1 },
-        "conversationPrefix": { "type": "string", "pattern": "^sc-[a-z0-9-]{2,40}$" }
+        "mappingRef": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"
+        },
+        "mappingStatus": {
+          "enum": [
+            "approved",
+            "proposed",
+            "none"
+          ]
+        },
+        "configVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "conversationPrefix": {
+          "type": "string",
+          "pattern": "^sc-[a-z0-9-]{2,40}$"
+        }
       }
     },
     "research": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["authorised", "authorisedBy", "authorisedAt", "authorisationRef", "scope", "exclusions"],
+      "required": [
+        "authorised",
+        "authorisedBy",
+        "authorisedAt",
+        "authorisationRef",
+        "scope",
+        "exclusions"
+      ],
       "properties": {
-        "authorised": { "type": "boolean" },
-        "authorisedBy": { "type": "string", "minLength": 1 },
-        "authorisedAt": { "type": "string", "format": "date-time" },
-        "authorisationRef": { "type": "string", "minLength": 1 },
-        "scope": { "type": "array", "items": { "type": "string", "minLength": 1 } },
-        "exclusions": { "type": "array", "items": { "type": "string", "minLength": 1 } }
+        "authorised": {
+          "type": "boolean"
+        },
+        "authorisedBy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authorisedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "authorisationRef": {
+          "type": "string",
+          "minLength": 1
+        },
+        "scope": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
       }
     },
     "reviewers": {
@@ -46,73 +149,202 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["github", "githubId", "roles"],
+        "required": [
+          "github",
+          "githubId",
+          "roles"
+        ],
         "properties": {
-          "github": { "type": "string", "pattern": "^[A-Za-z0-9-]{1,39}$" },
-          "githubId": { "type": "integer", "minimum": 1 },
-          "roles": { "type": "array", "minItems": 1, "items": { "enum": ["experiment-permission", "rebase-permission", "compatibility-attestation", "adoption-acceptance"] } }
+          "github": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9-]{1,39}$"
+          },
+          "githubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "roles": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "enum": [
+                "experiment-permission",
+                "rebase-permission",
+                "compatibility-attestation",
+                "adoption-acceptance"
+              ]
+            }
+          }
         }
       }
     },
-    "policyVersion": { "type": "string", "pattern": "^pilot-policy-v[0-9]+$" },
+    "policyVersion": {
+      "type": "string",
+      "pattern": "^pilot-policy-v[0-9]+$"
+    },
     "publicListing": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["approved", "assignments", "contactRoute"],
+      "required": [
+        "approved",
+        "assignments",
+        "contactRoute"
+      ],
       "properties": {
-        "approved": { "type": "boolean" },
+        "approved": {
+          "type": "boolean"
+        },
         "assignments": {
           "type": "array",
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["id", "title", "skills", "status"],
+            "required": [
+              "id",
+              "title",
+              "skills",
+              "status"
+            ],
             "properties": {
-              "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-              "title": { "type": "string", "minLength": 1 },
-              "skills": { "type": "array", "items": { "type": "string" } },
-              "status": { "enum": ["open", "in-progress", "closed"] },
-              "issueUrl": { "type": "string", "format": "uri" }
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 1
+              },
+              "skills": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "enum": [
+                  "open",
+                  "in-progress",
+                  "closed"
+                ]
+              },
+              "issueUrl": {
+                "type": "string",
+                "format": "uri"
+              }
             }
           }
         },
-        "contactRoute": { "type": "string", "format": "uri" }
+        "contactRoute": {
+          "type": "string",
+          "format": "uri"
+        }
       }
     },
     "disclosure": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["securityReports", "mindsTranscripts", "publicFields"],
+      "required": [
+        "securityReports",
+        "mindsTranscripts",
+        "publicFields"
+      ],
       "properties": {
-        "securityReports": { "enum": ["private-only"] },
-        "mindsTranscripts": { "enum": ["private-only"] },
-        "publicFields": { "type": "array", "items": { "type": "string" } }
+        "securityReports": {
+          "enum": [
+            "private-only"
+          ]
+        },
+        "mindsTranscripts": {
+          "enum": [
+            "private-only"
+          ]
+        },
+        "publicFields": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "entitlement": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["plan", "status", "activation", "paymentVerification"],
+      "required": [
+        "plan",
+        "status",
+        "activation",
+        "paymentVerification"
+      ],
       "properties": {
-        "plan": { "type": "string" },
-        "status": { "enum": ["active", "paused", "expired"] },
-        "periodStart": { "type": "string", "format": "date" },
-        "periodEnd": { "type": "string", "format": "date" },
-        "activation": { "enum": ["manual"] },
-        "paymentVerification": { "enum": ["none-manual-entitlement", "not-applicable-demonstration"] },
-        "usageAllowanceCognition": { "type": "number", "minimum": 0 }
+        "plan": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "active",
+            "paused",
+            "expired"
+          ]
+        },
+        "periodStart": {
+          "type": "string",
+          "format": "date"
+        },
+        "periodEnd": {
+          "type": "string",
+          "format": "date"
+        },
+        "activation": {
+          "enum": [
+            "manual"
+          ]
+        },
+        "paymentVerification": {
+          "enum": [
+            "none-manual-entitlement",
+            "not-applicable-demonstration"
+          ]
+        },
+        "usageAllowanceCognition": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     },
     "validation": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["workflowRepo", "workflowPath", "fixture", "anchorVersion", "solanaVersion"],
+      "required": [
+        "workflowRepo",
+        "workflowPath",
+        "fixture",
+        "anchorVersion",
+        "solanaVersion",
+        "rustToolchain"
+      ],
       "properties": {
-        "workflowRepo": { "type": "string", "pattern": "^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$" },
-        "workflowPath": { "type": "string", "pattern": "^\\.github/workflows/[a-z0-9-]+\\.yml$" },
-        "fixture": { "type": "string" },
-        "anchorVersion": { "type": "string" },
-        "solanaVersion": { "type": "string" }
+        "workflowRepo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$"
+        },
+        "workflowPath": {
+          "type": "string",
+          "pattern": "^\\.github/workflows/[a-z0-9-]+\\.yml$"
+        },
+        "fixture": {
+          "type": "string"
+        },
+        "anchorVersion": {
+          "type": "string"
+        },
+        "solanaVersion": {
+          "type": "string"
+        },
+        "rustToolchain": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        }
       }
     }
   },
@@ -120,10 +352,19 @@
     "repoRef": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repo", "branch"],
+      "required": [
+        "repo",
+        "branch"
+      ],
       "properties": {
-        "repo": { "type": "string", "pattern": "^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$" },
-        "branch": { "type": "string", "minLength": 1 }
+        "repo": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
   }

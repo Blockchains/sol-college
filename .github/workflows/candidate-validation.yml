@@ -22,6 +22,7 @@ jobs:
       fixture: ${{ steps.cfg.outputs.fixture }}
       anchor: ${{ steps.cfg.outputs.anchor }}
       solana: ${{ steps.cfg.outputs.solana }}
+      rust: ${{ steps.cfg.outputs.rust }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { persist-credentials: false }
@@ -38,6 +39,7 @@ jobs:
           echo "fixture=$(jq -r .validation.fixture "$f")" >> "$GITHUB_OUTPUT"
           echo "anchor=$(jq -r .validation.anchorVersion "$f")" >> "$GITHUB_OUTPUT"
           echo "solana=$(jq -r .validation.solanaVersion "$f")" >> "$GITHUB_OUTPUT"
+          echo "rust=$(jq -r .validation.rustToolchain "$f")" >> "$GITHUB_OUTPUT"
 
   untrusted-validate:
     needs: check-request
@@ -60,9 +62,12 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with: { node-version: "22" }
       - name: Toolchain (Solana CLI and Anchor CLI, pinned by the project config)
-        env: { SOLANA_VERSION: "${{ needs.check-request.outputs.solana }}", ANCHOR_VERSION: "${{ needs.check-request.outputs.anchor }}" }
+        env: { SOLANA_VERSION: "${{ needs.check-request.outputs.solana }}", ANCHOR_VERSION: "${{ needs.check-request.outputs.anchor }}", RUST_TOOLCHAIN: "${{ needs.check-request.outputs.rust }}" }
         run: |
           set -euo pipefail
+          # Host toolchain for Anchor's IDL build (anchor 0.30.x needs a Rust that still has proc_macro::SourceFile).
+          rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
+          (cd candidate/contract && rustup override set "$RUST_TOOLCHAIN")
           sh -c "$(curl -sSfL "https://release.anza.xyz/v${SOLANA_VERSION}/install")"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
           npm i -g "@coral-xyz/anchor-cli@${ANCHOR_VERSION}"

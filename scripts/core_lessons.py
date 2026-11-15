@@ -291,7 +291,7 @@ os.makedirs(f'{S}/lessons/glossary',exist_ok=True)
 open(f'{S}/lessons/glossary/index.html','w').write(page(gloss_body,'Solana developer glossary: PDAs, CPIs, rent, has_one and more | Sol.College','Plain-English Solana and Anchor terms — PDAs, CPIs, rent, account constraints, bonding curves — each linked to the live Sol.College lesson that shows it in real code.','/lessons/glossary/'))
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
-NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
+NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
 for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if '/dapps/' in fp or '/legacy/' in fp: continue
   if os.path.normpath(fp)==os.path.normpath(f'{S}/index.html'): continue

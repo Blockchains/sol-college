@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campus: DeFi, DePIN and DeAI rooms | Sol.College</title>
+<meta name="description" content="Sol.College campus: shared DeFi, DePIN and DeAI sector rooms, each project represented by its CTO agent, with open assignments, contribution progression and credential verification.">
+<link rel="canonical" href="https://sol.college/campus/">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/campus/campus.css">
+</head>
+<body>
+<a class="skip" href="#rooms">Skip to the rooms</a>
+<header class="top">
+  <a class="brand" href="/">Sol.College</a>
+  <nav aria-label="Main"><a href="/lessons/">Lessons</a><a href="/lessons/path/">Learning path</a><a href="/live/">Live apps</a><a href="/campus/" aria-current="page">Campus</a><a href="/how-to-build/">How to build</a></nav>
+</header>
+<main>
+  <h1>Campus</h1>
+  <p class="lead">Three shared sector rooms. Each participating project has its own CTO agent inside its sector's room. Pick an assignment, follow the progression from experiment to accepted contribution, and verify a credential.</p>
+  <ul id="notices" class="notices" aria-label="How this campus works"></ul>
+
+  <section aria-labelledby="find-h" class="panel">
+    <h2 id="find-h">Find a project or assignment</h2>
+    <form id="filters" role="search" onsubmit="return false">
+      <label>Search <input id="q" type="search" placeholder="name, skill, assignment" autocomplete="off"></label>
+      <fieldset class="sectors"><legend>Sector</legend>
+        <label><input type="radio" name="sector" value="" checked> All</label>
+        <label><input type="radio" name="sector" value="DeFi"> DeFi</label>
+        <label><input type="radio" name="sector" value="DePIN"> DePIN</label>
+        <label><input type="radio" name="sector" value="DeAI"> DeAI</label>
+      </fieldset>
+      <label class="inline"><input id="openOnly" type="checkbox"> Only projects with open assignments</label>
+    </form>
+    <p id="count" role="status" aria-live="polite"></p>
+  </section>
+
+  <section aria-labelledby="view-h" class="panel">
+    <h2 id="view-h">3D campus</h2>
+    <p>The list below is the full campus. The 3D view is optional: it shows the same rooms and CTO agents, and selecting an agent opens the same details. Selecting or walking near an agent never starts a paid reasoning call.</p>
+    <button id="toggle3d" type="button" aria-pressed="false">Show 3D campus</button>
+    <p id="motionNote" class="small"></p>
+    <div id="stage" hidden>
+      <div id="canvasWrap" aria-hidden="true"></div>
+      <div id="overlay" role="dialog" aria-modal="false" aria-labelledby="overlayTitle" hidden></div>
+    </div>
+  </section>
+
+  <div id="rooms"></div>
+
+  <section aria-labelledby="ladder-h" class="panel">
+    <h2 id="ladder-h">How contributions progress</h2>
+    <ol class="ladder">
+      <li><b>Attendance</b>: an eligible devnet transfer under the published rule. It stays <i>pending</i> until reviewed; it is not proof of skill or identity.</li>
+      <li><b>Participation</b>: an eligible pull request to a project's lab fork.</li>
+      <li><b>Tested candidate</b>: the exact commit passes the protected validation workflow, including a real Solana runtime fixture on a local validator.</li>
+      <li><b>Adoption package</b>: a versioned, hashed manifest of the candidate, its evidence and its risks.</li>
+      <li><b>Recognition</b>: an authorised reviewer for that project accepts the exact package.</li>
+      <li><b>Reward</b>: a Sol.College contribution credential that names the specific accepted work.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="verify-h" class="panel" id="verify">
+    <h2 id="verify-h">Verify a credential</h2>
+    <form id="verifyForm"><label>Credential ID <input id="credId" placeholder="scc-…" autocomplete="off"></label> <button type="submit">Verify</button></form>
+    <div id="verifyOut" role="status" aria-live="polite"></div>
+    <p class="small">Credentials are platform-published verification records: not accreditations, not on-chain, not cryptographically signed. Revocations stay visible here.</p>
+    <div id="credList"></div>
+  </section>
+</main>
+<footer class="foot"><p>Data: <a href="/campus/data.json">data.json</a>, generated from <a href="https://github.com/Blockchains/sol-college/tree/main/records/public">public records</a> by a GitHub workflow. Requests go through GitHub issues and are handled asynchronously.</p></footer>
+<script type="module" src="/campus/campus.js"></script>
+</body>
+</html>

@@ -61,8 +61,9 @@ export function validateProject(raw: unknown, file: string, policies: Map<string
   const policy = policies.get(p.policyVersion);
   if (!policy) issues.push({ file, message: `policy ${p.policyVersion} does not resolve` });
   else {
-    const agents = new Set(policy.agentIdentities.map((a) => a.toLowerCase()));
-    for (const r of p.reviewers) if (agents.has(r.github.toLowerCase())) issues.push({ file, message: `agent identity ${r.github} cannot be a reviewer` });
+    const strip = (a: string) => a.toLowerCase().replace(/\[bot\]$/, "");
+    const agents = new Set(policy.agentIdentities.map(strip));
+    for (const r of p.reviewers) if (agents.has(strip(r.github))) issues.push({ file, message: `agent identity ${r.github} cannot be a reviewer` });
   }
   if (p.ownership === "sol-college-demonstration" && !p.demonstrationNotice) issues.push({ file, message: "demonstration projects must carry a demonstrationNotice" });
   if (p.ownership === "participating-project" && p.entitlement.paymentVerification === "not-applicable-demonstration") issues.push({ file, message: "participating projects cannot use the demonstration entitlement" });
@@ -96,6 +97,10 @@ export function loadConfig(dir = join(CONFIG_DIR, "projects"), policies = loadPo
       raw = JSON.parse(readFileSync(join(dir, f), "utf8"));
     } catch (e) {
       issues.push({ file: f, message: `invalid JSON: ${(e as Error).message}` });
+      continue;
+    }
+    if (raw && typeof raw === "object" && isPlaceholder(raw as Partial<ProjectConfig>)) {
+      excludedPlaceholders.push(f);
       continue;
     }
     const fileIssues = validateProject(raw, f, policies);
