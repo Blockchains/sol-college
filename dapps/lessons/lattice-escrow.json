@@ -1,0 +1,35 @@
+{
+  "title": "Lattice Escrow",
+  "summary": "Lock native SOL in a program-owned escrow PDA, then have the Lattice authority release it to the agent (minus a 1/67 protocol fee).",
+  "what": "Lattice Escrow is a small Anchor 0.32.1 SOL rail: the payer creates a program-owned PDA, and the lattice_wallet authority later releases the amount to the agent (fee = amount / 67) or refunds the payer after timeout. This lesson covers create_escrow and release_escrow.",
+  "app_note": "The page at /dapps/lattice-escrow/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/lattice-escrow. The lab only changed declare_id to a unique lab program and pointed the Anchor.toml wallet at the local CLI keypair.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/lattice-escrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow and release_escrow for transaction_id campus-scout-1 with 1_000_000 lamports.",
+      "see": "Program BTDakBxR\u2026. Escrow EdmCgtFn\u2026 should be Released, with 1_696_720 lamports of rent still in the PDA; the agent received 985_075 and the lattice wallet received a 14_925 fee.",
+      "ran": "create_escrow iACYvtQd\u2026; release_escrow 4ZWabJmK\u2026."
+    },
+    {
+      "do": "release_escrow signed by anyone other than lattice_wallet should fail.",
+      "see": "Unauthorized.",
+      "ran": "Rejected in tests/devnet/lattice-escrow.mjs (negative_wrong_authority)."
+    }
+  ],
+  "diagram": "payer --create_escrow--> escrow [\"escrow\", payer, transaction_id] (program-owned, rent + amount) ; lattice_wallet --release_escrow--> agent (amount - fee) + lattice_wallet (fee = amount/67)",
+  "accounts": [
+    "escrow (seeds [\"escrow\", payer, transaction_id bytes], owner = this program)"
+  ],
+  "instructions": [
+    "create_escrow",
+    "release_escrow",
+    "refund_escrow (not exercised)"
+  ],
+  "innovation": "A tiny program-owned SOL escrow with a fixed 1/67 Lattice fee, released only by the recorded lattice_wallet.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch escrow EdmCgtFn\u2026 and confirm status is Released.",
+    "Explain why release can debit this PDA.",
+    "Sketch the timeout path for refund_escrow."
+  ],
+  "not_covered": "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains)."
+}

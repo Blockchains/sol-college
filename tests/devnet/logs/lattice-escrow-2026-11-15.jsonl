@@ -1,0 +1,7 @@
+{"step":"setup","program":"BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L","escrow":"EdmCgtFnJFF3ni43X3TGLwyY58VjAQEpjmt9XzNSnh65","payer":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr","agent":"GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb","lattice":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","fee":"14925"}
+{"step":"balances_before","payer":403312641,"agent":47943680,"lattice":21575937719,"existing":false}
+{"step":"create_escrow","ok":true,"sig":"iACYvtQdVZYdf29BkaFs5NQT9GFH2ZLxGvzVLEGW5YjfjkQHkV5M3DHNUTsiJXfTYiBPQ425iinFgB5z3gTCt5v"}
+{"step":"after_create","escrowLamports":2696720,"owner":"BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L","len":206}
+{"step":"negative_wrong_authority","expectedFailure":true,"error":"Unauthorized"}
+{"step":"release_escrow","ok":true,"sig":"4ZWabJmKGMUWr18eLJTsLYaYope4jW5sgE9wjCFQhia46hVyDTYWb9aLepkziA9b8a5D6kA7AYxRsfC6cXJzPaD9"}
+{"step":"fetch","ok":true,"status":{"released":{}},"amount":"1000000","fee":"14925","after":{"payer":400610921,"agent":48928755,"lattice":21575947644,"escrow":1696720},"deltas":{"agent":985075,"lattice":9925}}

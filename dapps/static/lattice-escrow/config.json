@@ -1,0 +1,10 @@
+{
+ "name": "Lattice Escrow",
+ "fork": "https://github.com/Blockchains/lattice-escrow",
+ "commit": "ea1df2221718216516dc5702e7e7641944b6d51d",
+ "lesson": "/explore/lattice-escrow/",
+ "programs": {
+  "devnet": "BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L",
+  "mainnet": null
+ }
+}

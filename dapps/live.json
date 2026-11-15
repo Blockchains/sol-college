@@ -3349,5 +3349,54 @@
     "limits": "reject, claim_refund, close_job, hooks, and set_provider-after-create were not exercised. bonding_curve was not deployed. The official agentic_commerce program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize wrote config tU8ugVHKwybfn9YszrFq8stedhj6J8tMqoCAk2bHPPa (fee 50 bps). create_job wrote job C3VwDTjNqy1pyauj551XVWjVF2cGKfHdRhGh1HYh179S (campus-scout job). fund escrowed 1_000_000 of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D into vault CheoMeAup2fx9CfsH7LRgMupzizMnjEwh2LiK73K6Utu. submit was signed by provider GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb. complete 4qrg5aPT\u2026 left the job Completed, the vault at 0, the provider ATA at +995_000 and the treasury ATA at +5_000. Re-initialize was rejected."
+  },
+  {
+    "slug": "lattice-escrow",
+    "name": "Lattice Escrow",
+    "lesson": "/explore/lattice-escrow/",
+    "app": "/dapps/lattice-escrow/",
+    "fork": "https://github.com/Blockchains/lattice-escrow",
+    "commit": "ea1df2221718216516dc5702e7e7641944b6d51d",
+    "program": "BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of programs/escrow; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/lattice-escrow (unique declare_id).",
+    "learn": "create_escrow writes a program-owned PDA (seeds [\"escrow\", payer, transaction_id bytes]) and system-transfers amount lamports into it. release_escrow, signed by the recorded lattice_wallet, debits the PDA directly and pays the agent (amount - fee) plus a fee of amount/67 to the lattice wallet. Rent remains in the PDA.",
+    "source": [
+      [
+        "programs/escrow/src/lib.rs L11-L63 (create_escrow)",
+        "https://github.com/Blockchains/lattice-escrow/blob/ea1df2221718216516dc5702e7e7641944b6d51d/programs/escrow/src/lib.rs#L11-L63"
+      ],
+      [
+        "programs/escrow/src/lib.rs L66-L98 (release_escrow, program-owned lamport debit)",
+        "https://github.com/Blockchains/lattice-escrow/blob/ea1df2221718216516dc5702e7e7641944b6d51d/programs/escrow/src/lib.rs#L66-L98"
+      ],
+      [
+        "programs/escrow/src/lib.rs L169-L183 (CreateEscrow accounts, seeds)",
+        "https://github.com/Blockchains/lattice-escrow/blob/ea1df2221718216516dc5702e7e7641944b6d51d/programs/escrow/src/lib.rs#L169-L183"
+      ]
+    ],
+    "flow": "tests/devnet/lattice-escrow.mjs",
+    "log": "tests/devnet/logs/lattice-escrow-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy escrow as BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L on devnet",
+        "4qam31hoADtA1CLKrBk3LVcmFWWWZ6LrNFydm3iAvfU6hWz1hSSJAHgfj2vv6B4bk6BL1sS6c3eoMmjmYbtT8hX2"
+      ],
+      [
+        "create_escrow campus-scout-1, 1_000_000 lamports, agent GpUq5UH3\u2026, lattice wallet BP1uwSaT\u2026 (escrow EdmCgtFn\u2026, program-owned, 2_696_720 lamports)",
+        "iACYvtQdVZYdf29BkaFs5NQT9GFH2ZLxGvzVLEGW5YjfjkQHkV5M3DHNUTsiJXfTYiBPQ425iinFgB5z3gTCt5v"
+      ],
+      [
+        "release_escrow paid the agent +985_075 and lattice wallet +14_925 (amount/67); escrow left Released with 1_696_720 lamports of rent still in the PDA",
+        "4ZWabJmKGMUWr18eLJTsLYaYope4jW5sgE9wjCFQhia46hVyDTYWb9aLepkziA9b8a5D6kA7AYxRsfC6cXJzPaD9"
+      ]
+    ],
+    "negative": [
+      "release_escrow signed by the payer instead of lattice_wallet is rejected (Unauthorized)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; create_escrow and release_escrow were sent with the lab and tester wallets through tests/devnet/lattice-escrow.mjs.",
+    "limits": "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains). The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "create_escrow wrote program-owned escrow EdmCgtFnJFF3ni43X3TGLwyY58VjAQEpjmt9XzNSnh65 (amount 1_000_000, fee 14_925, 2_696_720 lamports). A release signed by the payer was rejected (Unauthorized). release_escrow 4ZWabJmK\u2026 paid agent GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb exactly 985_075 lamports and lattice wallet BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv a 14_925 fee, leaving the escrow Released with 1_696_720 lamports of rent still in the PDA."
   }
 ]
