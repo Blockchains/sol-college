@@ -1,0 +1,12 @@
+{
+  "_comment": "Shape of the protected MINDS_PROJECT_MAP secret (GitHub environment 'minds'). Never commit real Mind IDs. A mapping is only honoured when the public project config has mind.mappingStatus=approved with the same configVersion.",
+  "gifter-escrow-cto": {
+    "projectId": "sc-demo-gifter-escrow",
+    "mindId": "00000000-0000-0000-0000-000000000000",
+    "configVersion": 1,
+    "approvedBy": "Blockchains",
+    "approvedAt": "2026-11-15T00:00:00Z",
+    "role": "project-cto",
+    "testMind": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "placeholder": true,
+  "projectId": "example-project",
+  "slug": "example-project",
+  "displayName": "Example Project (placeholder)",
+  "description": "Placeholder configuration for documentation. Placeholders are excluded from live execution and campus listings.",
+  "sector": "DePIN",
+  "ownership": "participating-project",
+  "upstream": { "repo": "example-org/example", "branch": "main" },
+  "lab": { "repo": "Blockchains/example", "branch": "main" },
+  "mind": { "mappingRef": "example-project-cto", "mappingStatus": "none", "configVersion": 1 },
+  "research": {
+    "authorised": false,
+    "authorisedBy": "maintainer-login",
+    "authorisedAt": "2026-01-01T00:00:00Z",
+    "authorisationRef": "https://github.com/example-org/example/issues/0",
+    "scope": ["describe the authorised scope"],
+    "exclusions": ["mainnet keys", "production deployment"]
+  },
+  "reviewers": [{ "github": "maintainer-login", "githubId": 1, "roles": ["adoption-acceptance"] }],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": { "approved": false, "assignments": [], "contactRoute": "https://github.com/Blockchains/sol-college/issues/new?template=coordination-request.yml" },
+  "disclosure": { "securityReports": "private-only", "mindsTranscripts": "private-only", "publicFields": ["displayName", "description", "sector", "assignments"] },
+  "entitlement": { "plan": "pilot", "status": "paused", "activation": "manual", "paymentVerification": "none-manual-entitlement" },
+  "validation": { "workflowRepo": "Blockchains/sol-college", "workflowPath": ".github/workflows/candidate-validation.yml", "fixture": "none", "anchorVersion": "0.30.1", "solanaVersion": "1.18.26" }
+}

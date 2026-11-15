@@ -1,0 +1,37 @@
+{
+  "name": "sol-college-pilot",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sol.College GitHub-native asynchronous pilot: HelloMinds CTO coordination, candidate validation, adoption, acceptance, certification and campus projection.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test --test-reporter=spec 'tests/unit/**/*.test.ts' 'tests/recovery/**/*.test.ts' 'tests/integration/**/*.test.ts'",
+    "test:unit": "node --import tsx --test --test-reporter=spec 'tests/unit/**/*.test.ts'",
+    "test:recovery": "node --import tsx --test --test-reporter=spec 'tests/recovery/**/*.test.ts'",
+    "test:integration": "node --import tsx --test --test-reporter=spec 'tests/integration/**/*.test.ts'",
+    "config:validate": "tsx src/config/cli.ts",
+    "campus:build": "tsx src/campus/build.ts",
+    "pilot:build": "npm run config:validate && npm run campus:build -- ../site-pilot",
+    "minds": "tsx src/minds/cli.ts",
+    "evidence": "tsx src/validation/cli.ts",
+    "upstream": "tsx src/upstream/cli.ts",
+    "adoption": "tsx src/adoption/cli.ts",
+    "acceptance": "tsx src/acceptance/cli.ts",
+    "certificate": "tsx src/certification/cli.ts",
+    "coordination": "tsx src/coordination/cli.ts"
+  },
+  "dependencies": {
+    "@animocabrands/minds-client-lib": "0.1.7",
+    "ajv": "8.17.1",
+    "yaml": "2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.19.1",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}

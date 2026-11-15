@@ -11,3 +11,8 @@ dapps/app/dist/
 .solcollege/
 dapp-wallets/
 site_new/
+
+# pilot
+pilot/node_modules/
+site-pilot/
+.minds-private/

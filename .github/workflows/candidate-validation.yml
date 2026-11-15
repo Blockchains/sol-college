@@ -1,0 +1,123 @@
+name: candidate-validation
+# UNTRUSTED code path. Validates one exact candidate commit of a project's lab repository.
+# - No secrets are referenced anywhere in this workflow (no Builder key, no Grok key, no mainnet keys).
+# - GitHub-hosted ephemeral runners only; GITHUB_TOKEN is read-only.
+# - The Solana runtime fixture comes from this protected repository, not from the candidate.
+# - The attest job never checks out or executes candidate code; it only records the result of
+#   untrusted-validate and the SHA that actions/checkout resolved before any candidate code ran.
+run-name: candidate-validation ${{ inputs.project }} ${{ inputs.lab_repo }}@${{ inputs.candidate_sha }}
+on:
+  workflow_dispatch:
+    inputs:
+      project: { description: "Project slug (config/projects/<slug>.json)", required: true, type: string }
+      lab_repo: { description: "Lab repository owner/name (must match the project config)", required: true, type: string }
+      candidate_sha: { description: "Exact 40-character candidate commit SHA", required: true, type: string }
+permissions: { contents: read }
+concurrency: { group: "candidate-${{ inputs.project }}-${{ inputs.candidate_sha }}", cancel-in-progress: false }
+jobs:
+  check-request:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      fixture: ${{ steps.cfg.outputs.fixture }}
+      anchor: ${{ steps.cfg.outputs.anchor }}
+      solana: ${{ steps.cfg.outputs.solana }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { persist-credentials: false }
+      - id: cfg
+        env: { PROJECT: "${{ inputs.project }}", LAB_REPO: "${{ inputs.lab_repo }}", SHA: "${{ inputs.candidate_sha }}", REF: "${{ github.ref }}" }
+        run: |
+          set -euo pipefail
+          [ "$REF" = "refs/heads/main" ] || { echo "must be dispatched from protected main"; exit 1; }
+          [[ "$SHA" =~ ^[0-9a-f]{40}$ ]] || { echo "candidate_sha must be an exact 40-char SHA"; exit 1; }
+          [[ "$PROJECT" =~ ^[a-z0-9-]+$ ]] || { echo "bad project slug"; exit 1; }
+          f="config/projects/$PROJECT.json"; [ -f "$f" ] || { echo "unknown project"; exit 1; }
+          [ "$(jq -r .lab.repo "$f")" = "$LAB_REPO" ] || { echo "lab_repo does not match project config"; exit 1; }
+          [ "$(jq -r '.placeholder // false' "$f")" = "false" ] || { echo "placeholder project"; exit 1; }
+          echo "fixture=$(jq -r .validation.fixture "$f")" >> "$GITHUB_OUTPUT"
+          echo "anchor=$(jq -r .validation.anchorVersion "$f")" >> "$GITHUB_OUTPUT"
+          echo "solana=$(jq -r .validation.solanaVersion "$f")" >> "$GITHUB_OUTPUT"
+
+  untrusted-validate:
+    needs: check-request
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: { contents: read }
+    outputs:
+      commit: ${{ steps.co.outputs.commit }}
+    steps:
+      - name: Trusted fixture (this repository, protected main)
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { path: trusted, persist-credentials: false }
+      - name: Candidate (untrusted) at the exact SHA
+        id: co
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { repository: "${{ inputs.lab_repo }}", ref: "${{ inputs.candidate_sha }}", path: candidate, persist-credentials: false }
+      - name: Resolved SHA must equal the requested candidate (before any candidate code runs)
+        env: { WANT: "${{ inputs.candidate_sha }}", GOT: "${{ steps.co.outputs.commit }}" }
+        run: test "$WANT" = "$GOT"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22" }
+      - name: Toolchain (Solana CLI and Anchor CLI, pinned by the project config)
+        env: { SOLANA_VERSION: "${{ needs.check-request.outputs.solana }}", ANCHOR_VERSION: "${{ needs.check-request.outputs.anchor }}" }
+        run: |
+          set -euo pipefail
+          sh -c "$(curl -sSfL "https://release.anza.xyz/v${SOLANA_VERSION}/install")"
+          echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
+          npm i -g "@coral-xyz/anchor-cli@${ANCHOR_VERSION}"
+      - name: Build the candidate program (untrusted)
+        working-directory: candidate/contract
+        run: |
+          set -euo pipefail
+          solana --version; anchor --version; rustc --version
+          anchor build
+          ls -l target/deploy/*.so target/idl/*.json
+      - name: Install candidate client dependencies (scripts disabled)
+        working-directory: candidate/contract
+        run: npx -y yarn@1.22.22 install --frozen-lockfile --ignore-scripts --non-interactive
+      - name: Solana runtime integration fixture on a local validator
+        if: needs.check-request.outputs.fixture == 'gifter-escrow-localnet'
+        working-directory: candidate/contract
+        run: |
+          set -euo pipefail
+          PROGRAM_ID=$(jq -r .address target/idl/gifter_escrow.json)
+          solana-test-validator --reset --quiet --ledger "$RUNNER_TEMP/ledger" --bpf-program "$PROGRAM_ID" target/deploy/gifter_escrow.so > "$RUNNER_TEMP/validator.log" 2>&1 &
+          for i in $(seq 1 60); do solana cluster-version --url http://127.0.0.1:8899 >/dev/null 2>&1 && break; sleep 2; done
+          solana-keygen new --no-bip39-passphrase -s -o "$RUNNER_TEMP/payer.json" >/dev/null
+          solana airdrop 50 "$(solana-keygen pubkey "$RUNNER_TEMP/payer.json")" --url http://127.0.0.1:8899
+          cp ../../trusted/pilot/fixtures/solana/gifter-escrow-localnet.mjs ./sc-fixture.mjs
+          FIXTURE_RESULT="$RUNNER_TEMP/fixture-result.json" node sc-fixture.mjs target/idl/gifter_escrow.json http://127.0.0.1:8899 "$RUNNER_TEMP/payer.json"
+      - name: Fixture output (produced inside the untrusted job)
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with: { name: untrusted-fixture-output, path: "${{ runner.temp }}/fixture-result.json", if-no-files-found: ignore, retention-days: 90 }
+      - name: Cleanup
+        if: always()
+        run: pkill -f solana-test-validator || true; rm -rf "$RUNNER_TEMP/ledger" "$RUNNER_TEMP/payer.json"
+
+  attest:
+    needs: [check-request, untrusted-validate]
+    if: always()
+    name: "attest ${{ inputs.lab_repo }}@${{ inputs.candidate_sha }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: { contents: read }
+    steps:
+      - name: Record the verdict (no candidate code is checked out here)
+        env:
+          RESULT: "${{ needs.untrusted-validate.result }}"
+          RESOLVED: "${{ needs.untrusted-validate.outputs.commit }}"
+          SHA: "${{ inputs.candidate_sha }}"
+          PROJECT: "${{ inputs.project }}"
+          LAB: "${{ inputs.lab_repo }}"
+        run: |
+          set -euo pipefail
+          jq -n --arg p "$PROJECT" --arg lab "$LAB" --arg sha "$SHA" --arg resolved "$RESOLVED" --arg result "$RESULT" \
+            --arg run "$GITHUB_RUN_ID" --arg attempt "$GITHUB_RUN_ATTEMPT" --arg wf "$GITHUB_SHA" \
+            '{schema:"sc-validation-attestation/1",project:$p,labRepo:$lab,candidateSha:$sha,resolvedSha:$resolved,untrustedValidate:$result,runId:($run|tonumber),runAttempt:($attempt|tonumber),workflowVersionSha:$wf}' > attestation.json
+          cat attestation.json
+          [ "$RESULT" = "success" ] && [ "$RESOLVED" = "$SHA" ]
+      - if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with: { name: attestation, path: attestation.json, retention-days: 90 }

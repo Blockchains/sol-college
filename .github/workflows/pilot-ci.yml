@@ -1,0 +1,30 @@
+name: pilot-ci
+# Install, typecheck, tests and the public pilot build. No secrets; contacts no excluded services.
+on:
+  push:
+    branches: [main]
+    paths: ["pilot/**", "config/**", "records/public/**", "campus/**", ".github/workflows/**"]
+  pull_request:
+    paths: ["pilot/**", "config/**", "records/public/**", "campus/**", ".github/workflows/**"]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults: { run: { working-directory: pilot } }
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: node --version && npm --version
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm run config:validate
+      - run: npm test
+      - name: Public pilot build (campus projection)
+        run: npm run campus:build -- ../site-pilot && ls -la ../site-pilot/campus
+      - name: Secret scan of the public build output
+        run: |
+          if grep -rEo 'eyJ[A-Za-z0-9_-]{8,}\.eyJ[A-Za-z0-9_-]{8,}\.[A-Za-z0-9_-]{8,}' ../site-pilot --include='*.json' --include='*.html' --include='*.js' --exclude-dir=vendor; then echo "JWT-shaped token in public output"; exit 1; fi

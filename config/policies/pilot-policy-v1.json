@@ -1,0 +1,26 @@
+{
+  "policyVersion": "pilot-policy-v1",
+  "description": "Sol.College GitHub-native asynchronous pilot policy. Labels are status displays only; authority comes from this policy, protected configuration and verified GitHub identities.",
+  "operations": {
+    "readOnly": ["inventory", "project", "reconcile", "telemetry", "capabilities", "smoke-test-read"],
+    "requiresApproval": ["provision", "equip", "unequip", "circle-add", "circle-remove", "pause", "resume", "message", "smoke-test-message"],
+    "approvalMechanism": "GitHub environment 'minds-admin' with required reviewer; local operator CLI requires --approve <ref> matching the explicit target"
+  },
+  "agentIdentities": ["github-actions[bot]", "sol-college-cto[bot]"],
+  "acceptance": {
+    "command": "/sc-accept",
+    "requiredRole": "adoption-acceptance",
+    "allowedAuthorAssociations": ["OWNER", "MEMBER", "COLLABORATOR"],
+    "staleIf": ["upstream head changed since package", "newer validation run for the candidate is not successful", "manifest bytes changed", "reviewer no longer authorised"]
+  },
+  "validation": {
+    "requiredJobs": ["untrusted-validate", "attest"],
+    "rerunPolicy": "The most recent run (by run id) of the approved workflow for the exact candidate SHA decides, using its latest attempt. An older success never overrides a newer failure. A rerun that passes after a failure is recorded with both attempts.",
+    "runTitlePrefix": "candidate-validation"
+  },
+  "certification": {
+    "verificationType": "platform-published-verification-record",
+    "signed": false,
+    "notes": "Not accredited, not on-chain, not cryptographically signed. Verification = the record published at sol.college/campus/ and in Blockchains/sol-college records/public/certificates."
+  }
+}
