@@ -1,7 +1,8 @@
 // Sol.College landing: live campus hero.
-// First paint = server-rendered 2D rooms (no JS needed). After load, on capable desktops only, three.js is
-// lazy-loaded from /campus/campus3d.js and the 2D rooms become a compact list under the 3D scene.
-// Reduced motion, no WebGL, coarse pointers / small screens, Save-Data and low-power devices keep the 2D rooms.
+// First paint = server-rendered 2D rooms (no JS needed). After load (when the browser is idle), three.js is
+// lazy-loaded from /campus/campus3d.js and the 2D rooms become a compact list under the 3D scene. Phones get the
+// 3D scene too, in a lighter "low" quality (no bloom, fewer particles, capped resolution, adaptive DPR).
+// Reduced motion, no WebGL, Save-Data / 2g and very low-memory devices keep the accessible 2D rooms.
 // Data: embedded allowlisted list (#ch-data) and, when available, the public projection /campus/data.json.
 // No agent is called and no conversation is started from this page.
 const $ = (s, el = document) => el.querySelector(s);
@@ -69,11 +70,11 @@ function init() {
   const reduced = () => mq('(prefers-reduced-motion: reduce)');
   const lowPower = () => {
     const c = navigator.connection || {};
-    return mq('(max-width: 760px)') || mq('(pointer: coarse)') || c.saveData === true || /(^|-)2g$/.test(c.effectiveType || '')
-      || (navigator.hardwareConcurrency || 8) <= 2 || (navigator.deviceMemory || 8) < 2;
+    return c.saveData === true || /(^|-)2g$/.test(c.effectiveType || '') || (navigator.deviceMemory || 8) < 1 || (navigator.hardwareConcurrency || 8) < 2;
   };
+  const quality = () => (mq('(pointer: coarse)') || mq('(max-width: 760px)') || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 ? 'low' : 'high');
   const webgl = () => { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch { return false; } };
-  const why = () => (reduced() ? 'reduced motion is on' : lowPower() ? 'this device is shown the lighter 2D view' : !webgl() ? 'WebGL is not available' : '');
+  const why = () => (reduced() ? 'reduced motion is on' : lowPower() ? 'data saver or a low-power device' : !webgl() ? 'WebGL is not available' : '');
 
   const setMode = (m, note) => {
     stage.dataset.mode = m;
@@ -94,12 +95,15 @@ function init() {
       const shown = { sectors: data.sectors, projects: data.projects.filter((p) => slugs.has(p.slug)) };
       scene = mod.mountCampus(holder, shown, {
         reducedMotion: false,
-        distance: holder.clientWidth / Math.max(holder.clientHeight, 1) > 2.2 ? 15 : 18,
+        quality: quality(),
         onSelect: (slug) => open(slug, scene && scene.canvas),
         onFocusAvatar: (slug) => { const n = $('#ch-note'); const p = shown.projects.find((x) => x.slug === slug); if (n && p) n.textContent = `${p.displayName}: press Enter for details.`; },
       });
-      setMode('3d', 'Click an avatar (or focus the scene and use the arrow keys, then Enter) to see project details. The same projects are listed below the scene.');
+      setMode('3d', mq('(pointer: coarse)')
+        ? 'Tap an avatar to see project details. Swipe sideways or use the room buttons to move between rooms. The same projects are listed below.'
+        : 'Click an avatar (or focus the scene: arrow keys move between avatars and rooms, Enter opens details). Drag to look around. The same projects are listed below.');
     } catch (err) {
+      if (window.console) console.warn('campus 3D unavailable:', err && err.message);
       setMode('2d', 'Showing the 2D rooms (the 3D view could not load). Select a project to see its details.');
     }
   }
@@ -109,5 +113,4 @@ function init() {
   // Turning reduced motion on (or rotating to a small screen) drops back to 2D.
   const downgrade = () => { if (scene && why()) { scene.dispose(); scene = null; $('.ch-canvas', stage)?.remove(); setMode('2d', `Showing the 2D rooms (${why()}). Select a project to see its details.`); } };
   window.matchMedia?.('(prefers-reduced-motion: reduce)').addEventListener?.('change', downgrade);
-  window.matchMedia?.('(max-width: 760px)').addEventListener?.('change', downgrade);
 }

@@ -522,6 +522,7 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing.css', assets / 'landing.css')
     shutil.copy(HERE / 'landing.js', assets / 'landing.js')
     shutil.copy(HERE / 'landing-campus.js', assets / 'landing-campus.js')
+    shutil.copy(HERE / 'landing-bg.js', assets / 'landing-bg.js')
     _findings.write_pages(site, page_shell(site), sec_findings)
     print(
         'landing: wrote', site / 'index.html',

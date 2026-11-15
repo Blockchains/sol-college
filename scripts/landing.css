@@ -714,3 +714,152 @@ footer p { margin: 0; max-width: 52rem; }
   .ch-blurb { margin-bottom: 6px; }
   .campus-hero .ch-sub { font-size: 14px; }
 }
+
+/* =====================================================================================================
+   Hacker House theme (2026-11-15). One palette for the whole page: deep ink, violet / indigo LED glows,
+   Solana green accents, warm wood / amber secondary. Layered over the base styles above.
+   ===================================================================================================== */
+:root {
+  --bg: #07051a;
+  --bg-2: #0d0a2a;
+  --bg-elev: rgba(22, 16, 58, 0.58);
+  --ink: #f5f3ff;
+  --mut: #bdb6e6;
+  --mut-2: #8f88bd;
+  --line: rgba(160, 135, 255, 0.16);
+  --line-strong: rgba(170, 145, 255, 0.3);
+  --violet: #9945ff;
+  --indigo: #4b3bff;
+  --purple: #9945ff;
+  --green: #14f195;
+  --wood: #c98a4b;
+  --amber: #ffb86b;
+  --sol-grad: linear-gradient(90deg, #9945ff 0%, #6b6bff 50%, #14f195 100%);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --space-1: 8px; --space-2: 16px; --space-3: 24px; --space-4: 40px; --space-5: 64px; --space-6: 104px;
+}
+html, body { background: var(--bg); }
+body { font-size: 17px; line-height: 1.65; }
+body::before { /* replaced by .bg-aurora */
+  background: radial-gradient(1200px 700px at 50% -10%, rgba(75, 59, 255, 0.28), transparent 60%),
+              radial-gradient(900px 600px at 50% 115%, rgba(201, 138, 75, 0.12), transparent 60%), var(--bg);
+  animation: none;
+}
+body::after {
+  background-image: linear-gradient(rgba(170,145,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(170,145,255,0.035) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 10%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 0%, #000 10%, transparent 70%);
+}
+/* slow drifting aurora: three blurred blobs moved with transforms only (compositor-friendly) */
+.bg-aurora { position: fixed; inset: -20vmax; z-index: -1; pointer-events: none; overflow: hidden; opacity: 0.9; }
+.bg-aurora span { position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%; filter: blur(80px); will-change: transform; mix-blend-mode: screen; }
+.bg-aurora .a1 { left: 5%; top: 0; background: radial-gradient(circle, rgba(153,69,255,0.55), transparent 62%); animation: aur1 46s ease-in-out infinite alternate; }
+.bg-aurora .a2 { right: 0; top: 18%; background: radial-gradient(circle, rgba(75,59,255,0.5), transparent 62%); animation: aur2 58s ease-in-out infinite alternate; }
+.bg-aurora .a3 { left: 30%; bottom: -5%; background: radial-gradient(circle, rgba(20,241,149,0.18), transparent 60%); animation: aur3 64s ease-in-out infinite alternate; }
+@keyframes aur1 { to { transform: translate3d(18vmax, 10vmax, 0) scale(1.15); } }
+@keyframes aur2 { to { transform: translate3d(-20vmax, 8vmax, 0) scale(0.9); } }
+@keyframes aur3 { to { transform: translate3d(-10vmax, -14vmax, 0) scale(1.2); } }
+.bg-particles { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; opacity: 0.8; }
+
+/* type scale */
+h1 { font-size: clamp(2.6rem, 6.4vw, 5rem); line-height: 1.02; letter-spacing: -0.035em; }
+h2 { font-size: clamp(2rem, 4.2vw, 3.25rem); line-height: 1.06; letter-spacing: -0.03em; margin-bottom: 0.45em; }
+h3 { font-size: clamp(1.08rem, 1.4vw, 1.22rem); letter-spacing: -0.015em; }
+.lead { font-size: clamp(1.06rem, 1.5vw, 1.24rem); line-height: 1.6; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; color: #cfc2ff; letter-spacing: 0.18em; font-size: 0.72rem; }
+.eyebrow::before { content: ""; width: 22px; height: 2px; border-radius: 2px; background: var(--sol-grad); box-shadow: 0 0 10px rgba(153,69,255,0.8); }
+h1 em, .hero h1 em { background: linear-gradient(92deg, #c9a8ff 0%, #9945ff 35%, #14f195 100%); -webkit-background-clip: text; background-clip: text; }
+
+/* section rhythm */
+section.band { padding: clamp(64px, 9vw, var(--space-6)) 0; position: relative; }
+section.band + section.band { padding-top: clamp(40px, 6vw, 72px); }
+section.band + section.band::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: min(var(--max), calc(100% - 32px)); height: 1px; transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(153,69,255,0.35), rgba(20,241,149,0.25), transparent);
+}
+.hero.band { padding-top: clamp(40px, 6vw, 72px); }
+
+/* header */
+.top { background: rgba(7, 5, 26, 0.7); border-bottom: 1px solid transparent; border-image: linear-gradient(90deg, transparent, rgba(153,69,255,0.45), rgba(20,241,149,0.3), transparent) 1; }
+.logo { background: linear-gradient(135deg, #9945ff, #14f195); box-shadow: 0 0 22px rgba(153,69,255,0.55); }
+.top nav a:hover { background: rgba(153,69,255,0.12); }
+
+/* buttons */
+.btn { border-radius: 14px; background: linear-gradient(90deg, #14f195, #5ef0c8); box-shadow: 0 10px 30px -8px rgba(20,241,149,0.45), inset 0 1px 0 rgba(255,255,255,0.4); }
+.btn.ghost { border-color: var(--line-strong); background: rgba(153,69,255,0.06); }
+.btn.ghost:hover { background: rgba(153,69,255,0.16); border-color: rgba(170,145,255,0.55); }
+.btn.purple { background: linear-gradient(90deg, #6d3bff, #9945ff); }
+
+/* cards: one treatment everywhere */
+.glass, .card, .find-card, .proof-card, .principle, .path-card, .feature, .rule, .faq details {
+  background: linear-gradient(180deg, rgba(38, 27, 92, 0.5), rgba(13, 9, 36, 0.62));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 60px -28px rgba(0,0,0,0.75);
+  transition: border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+}
+.glass:hover, .card:hover, .find-card:hover, .proof-card:hover, .principle:hover, .path-card:hover, .feature:hover {
+  border-color: rgba(170,145,255,0.42);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 0 0 1px rgba(153,69,255,0.12), 0 28px 70px -26px rgba(75,59,255,0.55);
+  transform: translateY(-2px);
+}
+.compare-wrap.glass:hover { transform: none; }
+.proof-card b { background: linear-gradient(180deg, #fff 20%, #b9a6ff); -webkit-background-clip: text; background-clip: text; }
+.find-card, .card { position: relative; overflow: hidden; }
+.find-card::after, .card::after { content: ""; position: absolute; inset: 0 0 auto 0; height: 2px; background: var(--sol-grad); opacity: 0.55; }
+.live-dot { background: var(--green); box-shadow: 0 0 10px var(--green); }
+.audience { background: rgba(153,69,255,0.08); border-color: var(--line-strong); }
+.compare th { background: rgba(153,69,255,0.1); }
+.compare-wrap { -webkit-overflow-scrolling: touch; }
+footer { border-top: 1px solid var(--line); background: linear-gradient(180deg, transparent, rgba(75,59,255,0.08)); }
+
+/* campus hero: the hacker house scene */
+.campus-hero {
+  padding: clamp(14px, 2.4vw, 28px) clamp(12px, 3vw, 40px) 10px;
+  border-bottom: 0;
+  background:
+    radial-gradient(1100px 420px at 50% 0%, rgba(75, 59, 255, 0.32), transparent 70%),
+    radial-gradient(900px 300px at 50% 100%, rgba(201, 138, 75, 0.14), transparent 70%),
+    linear-gradient(180deg, rgba(7,5,26,0.2), rgba(7,5,26,0.85));
+}
+.campus-hero h2 { background: linear-gradient(92deg, #fff 0%, #d9c9ff 50%, #9fffd6 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ch-stage { background: #07051a; border-color: rgba(153,69,255,0.35); box-shadow: 0 0 0 1px rgba(75,59,255,0.15), 0 40px 120px -40px rgba(75,59,255,0.65), 0 0 80px -30px rgba(153,69,255,0.5); }
+@media (min-width: 761px) { .ch-stage { height: clamp(460px, 70vh, 760px); } }
+.ch-stage[data-mode="3d"] .ch-rooms { background: linear-gradient(180deg, rgba(10,7,32,0.92), rgba(7,5,26,0.98)); }
+.ch-room { background: linear-gradient(180deg, color-mix(in srgb, var(--rc) 14%, transparent), rgba(13,9,36,0.4) 70%); border-color: var(--line); }
+.ch-deai { --rc: #b06bff; } .ch-depin { --rc: #22c8ff; }
+.ch-dialog { background: linear-gradient(180deg, #150f3a, #0b0824); border-color: rgba(153,69,255,0.45); box-shadow: 0 40px 120px -20px rgba(75,59,255,0.6); }
+.ch-dialog::backdrop { background: rgba(4, 3, 16, 0.7); backdrop-filter: blur(4px); }
+.ch-canvas { position: relative; }
+/* scene overlay controls (also styled inside the 3D module for /campus/) */
+.c3-nav { position: absolute; left: 12px; top: 12px; display: flex; flex-wrap: wrap; gap: 6px; z-index: 2; }
+.c3-chip { appearance: none; font: 600 13px/1 var(--font); color: #e9e4ff; background: rgba(12, 8, 38, 0.72); border: 1px solid rgba(170,145,255,0.35); border-radius: 999px; padding: 9px 13px; min-height: 36px; cursor: pointer; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.c3-chip:hover { border-color: rgba(170,145,255,0.7); }
+.c3-chip[aria-pressed="true"] { background: linear-gradient(90deg, rgba(153,69,255,0.55), rgba(20,241,149,0.35)); border-color: transparent; color: #fff; }
+.c3-hint { position: absolute; right: 12px; bottom: 10px; z-index: 2; font: 500 12px/1.2 var(--font); color: rgba(233,228,255,0.75); background: rgba(12,8,38,0.55); padding: 6px 10px; border-radius: 999px; pointer-events: none; }
+
+/* mobile */
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+  section.band { padding: 56px 0; }
+  section.band + section.band { padding-top: 40px; }
+  .ch-stage[data-mode="3d"] { grid-template-rows: clamp(340px, 54vh, 500px) auto; }
+  .ch-stage[data-mode="3d"] .ch-rooms { grid-template-columns: 1fr; }
+  .ch-stage[data-mode="3d"] .ch-blurb { display: none; }
+  .proof-strip { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .proof-card { padding: 16px; }
+  .proof-card b { font-size: 2.2rem; }
+  .proof-card small { display: none; }
+  .glass, .card, .find-card, .proof-card, .principle, .path-card, .feature, .rule { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .glass:hover, .card:hover, .find-card:hover, .proof-card:hover, .principle:hover, .path-card:hover, .feature:hover { transform: none; }
+  .bg-aurora span { filter: blur(60px); }
+  .c3-chip { padding: 8px 11px; font-size: 12px; }
+  .cta-row .btn { flex: 1 1 auto; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-aurora span { animation: none; }
+  .bg-particles { display: none; }
+  .glass:hover, .card:hover, .find-card:hover, .proof-card:hover, .principle:hover, .path-card:hover, .feature:hover { transform: none; }
+}

@@ -114,24 +114,29 @@ async function main() {
   const qid = new URLSearchParams(location.search).get('id');
   if (qid) { $('#credId').value = qid; verify(qid); }
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const small = matchMedia('(max-width: 640px)').matches;
-  $('#motionNote').textContent = reduce ? 'Reduced motion is on: the 3D view will not animate.' : small ? 'On small screens the list above is the recommended view.' : '';
+  const coarse = matchMedia('(pointer: coarse)').matches || matchMedia('(max-width: 760px)').matches;
+  const quality = coarse || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 ? 'low' : 'high';
+  const saver = (navigator.connection || {}).saveData === true;
+  $('#motionNote').textContent = reduce ? 'Reduced motion is on: the 3D view is not shown automatically and does not animate.' : '';
   let scene = null;
-  $('#toggle3d').addEventListener('click', async () => {
+  const toggle = async (show) => {
     const stage = $('#stage');
-    const show = stage.hidden;
     stage.hidden = !show;
     $('#toggle3d').setAttribute('aria-pressed', String(show));
     $('#toggle3d').textContent = show ? 'Hide 3D campus' : 'Show 3D campus';
     if (show && !scene) {
       try {
         const mod = await import('/campus/campus3d.js');
-        scene = mod.mountCampus($('#canvasWrap'), DATA, { reducedMotion: reduce, onSelect: (slug) => selectProject(slug, { focusList: false }) });
+        scene = mod.mountCampus($('#canvasWrap'), DATA, { reducedMotion: reduce, quality, onSelect: (slug) => selectProject(slug, { focusList: false }) });
       } catch (e) {
         $('#canvasWrap').innerHTML = `<p class="small" style="padding:12px">3D view unavailable on this device (${esc(e.message)}). The list is the full campus.</p>`;
       }
     }
     if (!show) $('#overlay').hidden = true;
-  });
+  };
+  $('#toggle3d').addEventListener('click', () => toggle($('#stage').hidden));
+  // Show the 3D campus automatically (phones included) unless reduced motion or data saver is on; the list stays the full view.
+  const webgl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
+  if (!reduce && !saver && webgl && !location.hash.startsWith('#p-')) (window.requestIdleCallback || ((f) => setTimeout(f, 200)))(() => toggle(true));
 }
 main().catch((e) => { $('#rooms').innerHTML = `<p class="bad">Could not load campus data: ${esc(e.message)}</p>`; });

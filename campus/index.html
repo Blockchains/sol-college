@@ -20,6 +20,16 @@
   <p class="lead">Three shared sector rooms. Each participating project has its own CTO agent inside its sector's room. Pick an assignment, follow the progression from experiment to accepted contribution, and verify a credential.</p>
   <ul id="notices" class="notices" aria-label="How this campus works"></ul>
 
+  <section aria-labelledby="view-h" class="panel">
+    <h2 id="view-h">3D campus</h2>
+    <p>The list below is the full campus; the 3D view (a hacker-house college with one room per sector) is optional: it shows the same rooms and CTO agents, and selecting an agent opens the same details. Selecting or walking near an agent never starts a paid reasoning call.</p>
+    <button id="toggle3d" type="button" aria-pressed="false">Show 3D campus</button>
+    <p id="motionNote" class="small"></p>
+    <div id="stage" hidden>
+      <div id="canvasWrap" aria-hidden="true"></div>
+      <div id="overlay" role="dialog" aria-modal="false" aria-labelledby="overlayTitle" hidden></div>
+    </div>
+  </section>
   <section aria-labelledby="find-h" class="panel">
     <h2 id="find-h">Find a project or assignment</h2>
     <form id="filters" role="search" onsubmit="return false">
@@ -35,16 +45,6 @@
     <p id="count" role="status" aria-live="polite"></p>
   </section>
 
-  <section aria-labelledby="view-h" class="panel">
-    <h2 id="view-h">3D campus</h2>
-    <p>The list below is the full campus. The 3D view is optional: it shows the same rooms and CTO agents, and selecting an agent opens the same details. Selecting or walking near an agent never starts a paid reasoning call.</p>
-    <button id="toggle3d" type="button" aria-pressed="false">Show 3D campus</button>
-    <p id="motionNote" class="small"></p>
-    <div id="stage" hidden>
-      <div id="canvasWrap" aria-hidden="true"></div>
-      <div id="overlay" role="dialog" aria-modal="false" aria-labelledby="overlayTitle" hidden></div>
-    </div>
-  </section>
 
   <div id="rooms"></div>
 
