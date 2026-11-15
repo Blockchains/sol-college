@@ -170,7 +170,9 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     // A plan whose proposals were all filtered may be re-checked (no Mind call) while it is still the current plan,
     // e.g. after the public-text gate is corrected; issue creation is still deduplicated by proposal hash.
     const recheck = meta.handled === "no-eligible-proposal" && hours(meta.createdAt, now) < d.auto.limits.researchPlanIntervalHours;
-    if (meta.handled && !recheck) continue;
+    // Operator-review tasks get a bounded re-evaluation of replies already in history (reviewTask stops after MAX_REVIEW_ATTEMPTS).
+    const reviewable = meta.handled === "operator-review" && (d.store.read<TaskRecord>(`tasks/${slug}/${taskId}`)?.data.reviewAttempts ?? 0) < MAX_REVIEW_ATTEMPTS;
+    if (meta.handled && !recheck && !reviewable) continue;
     const stored = d.store.read<TaskRecord>(`tasks/${slug}/${taskId}`);
     if (!stored) { meta.handled = "missing-record"; continue; }
     let rec = stored.data;
