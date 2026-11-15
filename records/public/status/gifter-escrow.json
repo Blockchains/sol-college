@@ -1,14 +1,19 @@
 {
   "schema": "sc-cto-status/1",
   "project": "gifter-escrow",
-  "updatedAt": "2026-11-15T19:32:03.783Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43752921025",
+  "updatedAt": "2026-11-15T19:39:53.590Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43753645943",
   "report": {
     "summary": "Status for gifter-escrow from supplied records only. In flight: one open lab pull request, one package, one validation requested. No completed or slipped items are recorded in this task's records, and no period dates are given, so completion status cannot be reported. Cognition usage figures were not supplied and are reported as missing. Validation status is unknown; it comes only from GitHub workflow evidence, and no evidence records were included.",
     "at": "2026-11-15T16:47:25.562Z",
     "taskId": "report-gifter-escrow-2026111516"
   },
   "activity": [
+    {
+      "at": "2026-11-15T19:39:53.590Z",
+      "text": "Built adoption package gifter-escrow-64d8b648bab7-v1 (awaiting the project reviewer)",
+      "url": "https://github.com/Blockchains/sol-college/blob/main/records/public/adoption/gifter-escrow/gifter-escrow-64d8b648bab7-v1.json"
+    },
     {
       "at": "2026-11-15T19:30:41.162Z",
       "text": "Triaging a lab pull request (Blockchains/gifter-escrow/pull/2)"
@@ -53,14 +58,9 @@
     {
       "at": "2026-11-15T17:33:35.808Z",
       "text": "Writing a patch for a research question"
-    },
-    {
-      "at": "2026-11-15T16:50:53.023Z",
-      "text": "Opened research question: Refund negative cases in the localnet fixture",
-      "url": "https://github.com/Blockchains/sol-college/issues/4"
     }
   ],
-  "pendingTasks": 2,
+  "pendingTasks": 1,
   "operatorReview": 0,
   "upstreamHead": "a9c3a417d2d78294f58975b1461859ffb20df05a",
   "openLabPullRequests": 2
