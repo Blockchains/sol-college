@@ -1,0 +1,10 @@
+{
+ "name": "NAIM",
+ "fork": "https://github.com/Blockchains/naim-program",
+ "commit": "b8ab06436ad2cd39a186581805d55d74771f70af",
+ "lesson": "/explore/naim/",
+ "programs": {
+  "devnet": "3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3",
+  "mainnet": null
+ }
+}

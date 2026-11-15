@@ -2465,5 +2465,55 @@
     "limits": "claim_reward was not exercised: it needs an AGX token vault signed by the registry PDA. initialize_registry is a Sol.College lab patch, not present upstream.",
     "functional": "full",
     "functional_evidence": "initialize_registry, register_agent, update_state (Active), execute_task (tasks_completed=1, verified=true) and deactivate_agent all landed and were read back; AgentNotActive and AgentDeactivated were rejected as expected."
+  },
+  {
+    "slug": "naim",
+    "name": "NAIM",
+    "lesson": "/explore/naim/",
+    "app": "/dapps/naim/",
+    "fork": "https://github.com/Blockchains/naim-program",
+    "commit": "b8ab06436ad2cd39a186581805d55d74771f70af",
+    "program": "3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program for .agent names, staking and a secondary market; it has no first-party frontend in this repo, so this console is what we host.",
+    "learn": "An admin initialises a singleton config PDA (seeds [\"config\"]) with a treasury, per-length registration fees and a registration/grace period. Later, after init_token_config pins a $NAIM mint, agents can register, renew, stake, list and trade .agent names.",
+    "source": [
+      [
+        "programs/naim/src/lib.rs L38-L52 (initialize writes the config PDA)",
+        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L38-L52"
+      ],
+      [
+        "programs/naim/src/lib.rs L1049-L1061 (Initialize accounts, seeds [\"config\"])",
+        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L1049-L1061"
+      ],
+      [
+        "programs/naim/src/lib.rs L122-L194 (register_name; not exercised in this run \u2014 needs init_token_config)",
+        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194"
+      ]
+    ],
+    "flow": "tests/devnet/naim.mjs",
+    "log": "tests/devnet/logs/naim-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "3oXX7gg8VgGjY5UqyxfmGKgRcPsRuWoCFWRRaQ22UB6Ke5oX2g2RwSYeUQ4JRrCAufQRXhGik4pQ7zMYCRydMeum"
+      ],
+      [
+        "initialize with a 1-year registration period and 30-day grace (config 3Ay28Cir\u2026)",
+        "5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5"
+      ],
+      [
+        "Fetched config: admin and treasury are the lab wallet, registration_period=31536000",
+        "(no tx; read-only)"
+      ]
+    ],
+    "negative": [
+      "initialize with registration_period=0 is rejected (InvalidConfig)",
+      "A second initialize is rejected (the config PDA already exists)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same initialize instruction was sent with the lab wallet through the IDL client in tests/devnet/naim.mjs.",
+    "limits": "register_name, staking and the list/buy marketplace were not exercised: they need init_token_config and a $NAIM mint plus treasury/stakers vault ATAs.",
+    "functional": "full",
+    "functional_evidence": "initialize landed, the config account was read back from devnet with the expected admin, treasury and periods, InvalidConfig rejected a zero registration period, and a second initialize was rejected."
   }
 ]
