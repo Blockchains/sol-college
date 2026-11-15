@@ -1,9 +1,13 @@
 {
   "schema": "sc-cto-status/1",
   "project": "gifter-escrow",
-  "updatedAt": "2026-11-15T16:33:45.823Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43736138834",
-  "report": null,
+  "updatedAt": "2026-11-15T16:47:25.562Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43737400469",
+  "report": {
+    "summary": "Status for gifter-escrow from supplied records only. In flight: one open lab pull request, one package, one validation requested. No completed or slipped items are recorded in this task's records, and no period dates are given, so completion status cannot be reported. Cognition usage figures were not supplied and are reported as missing. Validation status is unknown; it comes only from GitHub workflow evidence, and no evidence records were included.",
+    "at": "2026-11-15T16:47:25.562Z",
+    "taskId": "report-gifter-escrow-2026111516"
+  },
   "activity": [
     {
       "at": "2026-11-15T16:33:45.823Z",
@@ -14,7 +18,7 @@
       "text": "CTO agent asked to progress report"
     }
   ],
-  "pendingTasks": 2,
+  "pendingTasks": 0,
   "operatorReview": 0,
   "upstreamHead": "a9c3a417d2d78294f58975b1461859ffb20df05a",
   "openLabPullRequests": 1

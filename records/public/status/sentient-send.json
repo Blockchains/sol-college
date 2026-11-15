@@ -1,8 +1,8 @@
 {
   "schema": "sc-cto-status/1",
   "project": "sentient-send",
-  "updatedAt": "2026-11-15T16:34:31.790Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43736138834",
+  "updatedAt": "2026-11-15T16:47:27.863Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43737400469",
   "report": null,
   "activity": [
     {
@@ -14,8 +14,8 @@
       "text": "CTO agent asked to progress report"
     }
   ],
-  "pendingTasks": 2,
-  "operatorReview": 0,
+  "pendingTasks": 0,
+  "operatorReview": 2,
   "upstreamHead": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
   "openLabPullRequests": 0
 }
