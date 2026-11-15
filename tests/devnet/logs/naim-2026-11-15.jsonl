@@ -3,3 +3,10 @@
 {"step":"initialize","ok":true,"sig":"5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5"}
 {"step":"fetch_config","ok":true,"admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","treasury":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","fee14":"1000000","registrationPeriod":"31536000","gracePeriod":"2592000"}
 {"step":"initialize_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"setup","program":"3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3","mint":"A9keuhfy58ayz3SsovWahrX2cGwJFqx14h45KUtjNNCt","tokenConfig":"BWmYXFwXzp1dLVUyWwZnQs6eZVPUtCWDTgsNia8eU8jL","stakersVault":"7TZegKxQ4PSdzNEMkfZAxw4kS3ovw2S632Zc4YDACya8","treasuryAta":"4Xrk5MeKCKi7wUiUHE5drEHE7nuefVHwxqQhKpWXF2k1"}
+{"step":"init_token_config","ok":true,"sig":"2xYYha8TGCwu6q52KSwx5gvUnJufi4NeFVGHMTrRzoBrvyMAVE3RDKpRQ6J5NSY4igzT9eCgiMixA7mqAg1tq57n"}
+{"step":"fetch_token_config","ok":true,"naimMint":"A9keuhfy58ayz3SsovWahrX2cGwJFqx14h45KUtjNNCt","treasury":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","fee14":"0"}
+{"step":"name_pdas","name":"campus-scout","nameRecord":"AzM1S31crSSqo2R6ifk4ZEoemW9TAdWdV7NFcpGw27eB","reputation":"DRFDJQ3rEa77oyGLBS6csSjVtDNGXJmgNNw2H4q4bU5m"}
+{"step":"register_name","ok":true,"sig":"qWqaBPeBmDYz1WUVJ3mmKcSnE9D2TqoRPdNc5JmHKH5TAJAYucoq3zgvmKGGbfyhocAGbnwDDSa1cUTzbz3KPV7"}
+{"step":"fetch_name","ok":true,"owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","resolver":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","metadataUri":"https://sol.college/dapps/naim/","expiryTimestamp":"1826310412","verified":false}
+{"step":"register_name_twice","expectedFailure":true,"error":"NameAlreadyRegistered"}

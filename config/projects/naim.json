@@ -27,9 +27,9 @@
     "authorisedAt": "2026-11-15T20:23:00Z",
     "authorisationRef": "https://github.com/Blockchains/sol-college",
     "scope": [
-      "Anchor program correctness on the Solana runtime (initialize, and later name / marketplace flows)",
+      "Anchor program correctness on the Solana runtime (initialize, init_token_config, register_name)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/naim/",
-      "QA: devnet proof of initialize, config read-back, InvalidConfig, and a rejected second initialize"
+      "QA: devnet proof of initialize, init_token_config, register_name campus-scout, InvalidConfig, a rejected second initialize, and NameAlreadyRegistered"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

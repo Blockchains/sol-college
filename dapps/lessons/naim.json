@@ -1,6 +1,6 @@
 {
   "title": "NAIM: on-chain .agent names for AI agents",
-  "summary": "Initialise the NAIM protocol config, then read the singleton config PDA that later .agent registrations hang off.",
+  "summary": "Initialise NAIM config and a $NAIM token config, then register a .agent name and read the name-record PDA.",
   "what": "NAIM is an Anchor program for a .agent name registry and secondary market aimed at AI agents. An admin initialises a config PDA (treasury, fee tiers, registration and grace periods). Later instructions register and renew names, stake $NAIM for fee discounts, and list or buy names in $NAIM, SOL or USDC. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
   "app_note": "The fork has no first-party frontend. The page at /dapps/naim/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
   "try_steps": [
@@ -122,7 +122,7 @@
       "approach": "Read L122-L194 and InitTokenConfig."
     }
   ],
-  "not_covered": "register_name, staking and the list/buy marketplace were not sent. The hosted UI was not clicked in headless Chromium in this run.",
+  "not_covered": "Staking, renew, and the list/buy marketplace were not exercised. The registered name is unverified.",
   "path_order": 24,
   "path_stage": 2,
   "difficulty": "Intermediate",

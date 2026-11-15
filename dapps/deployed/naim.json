@@ -13,6 +13,14 @@
   {
    "label": "initialize",
    "sig": "5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5"
+  },
+  {
+   "label": "init_token_config",
+   "sig": "2xYYha8TGCwu6q52KSwx5gvUnJufi4NeFVGHMTrRzoBrvyMAVE3RDKpRQ6J5NSY4igzT9eCgiMixA7mqAg1tq57n"
+  },
+  {
+   "label": "register_name",
+   "sig": "qWqaBPeBmDYz1WUVJ3mmKcSnE9D2TqoRPdNc5JmHKH5TAJAYucoq3zgvmKGGbfyhocAGbnwDDSa1cUTzbz3KPV7"
   }
  ],
  "verified": "2026-11-15"

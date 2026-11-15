@@ -2475,18 +2475,18 @@
     "commit": "b8ab06436ad2cd39a186581805d55d74771f70af",
     "program": "3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3",
     "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program for .agent names, staking and a secondary market; it has no first-party frontend in this repo, so this console is what we host.",
-    "learn": "An admin initialises a singleton config PDA (seeds [\"config\"]) with a treasury, per-length registration fees and a registration/grace period. Later, after init_token_config pins a $NAIM mint, agents can register, renew, stake, list and trade .agent names.",
+    "learn": "An admin initialises a singleton config PDA (seeds [\"config\"]) with a treasury, per-length registration fees and a registration/grace period, then init_token_config pins a $NAIM mint (fees may be 0). Agents can then register .agent names against a hashed name record.",
     "source": [
       [
         "programs/naim/src/lib.rs L38-L52 (initialize writes the config PDA)",
         "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L38-L52"
       ],
       [
-        "programs/naim/src/lib.rs L1049-L1061 (Initialize accounts, seeds [\"config\"])",
-        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L1049-L1061"
+        "programs/naim/src/lib.rs L73-L120 (init_token_config pins the $NAIM mint and vaults)",
+        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L73-L120"
       ],
       [
-        "programs/naim/src/lib.rs L122-L194 (register_name; not exercised in this run \u2014 needs init_token_config)",
+        "programs/naim/src/lib.rs L122-L194 (register_name writes a name-record PDA from a sha256 hash)",
         "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194"
       ]
     ],
@@ -2505,15 +2505,24 @@
       [
         "Fetched config: admin and treasury are the lab wallet, registration_period=31536000",
         "(no tx; read-only)"
+      ],
+      [
+        "init_token_config with lab $NAIM mint A9keuhfy\u2026 (6 decimals; all fees 0, treasury_bps=10000; token_config BWmYXFwX\u2026, stakers vault 7TZegKxQ\u2026)",
+        "2xYYha8TGCwu6q52KSwx5gvUnJufi4NeFVGHMTrRzoBrvyMAVE3RDKpRQ6J5NSY4igzT9eCgiMixA7mqAg1tq57n"
+      ],
+      [
+        "register_name campus-scout (sha256, uri https://sol.college/dapps/naim/; record AzM1S31c\u2026, verified=false)",
+        "qWqaBPeBmDYz1WUVJ3mmKcSnE9D2TqoRPdNc5JmHKH5TAJAYucoq3zgvmKGGbfyhocAGbnwDDSa1cUTzbz3KPV7"
       ]
     ],
     "negative": [
       "initialize with registration_period=0 is rejected (InvalidConfig)",
-      "A second initialize is rejected (the config PDA already exists)"
+      "A second initialize is rejected (the config PDA already exists)",
+      "A second register_name of campus-scout is rejected (NameAlreadyRegistered)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same initialize instruction was sent with the lab wallet through the IDL client in tests/devnet/naim.mjs.",
-    "limits": "register_name, staking and the list/buy marketplace were not exercised: they need init_token_config and a $NAIM mint plus treasury/stakers vault ATAs.",
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, init_token_config and register_name were sent with the lab wallet through the IDL client in tests/devnet/naim.mjs.",
+    "limits": "Staking, renew, and the list/buy marketplace were not exercised in this run. collect_fee is a no-op when the registration fee is 0, so no payer $NAIM ATA funding was required beyond the init_if_needed vault ATAs. The registered name is unverified (verified=false).",
     "functional": "full",
-    "functional_evidence": "initialize landed, the config account was read back from devnet with the expected admin, treasury and periods, InvalidConfig rejected a zero registration period, and a second initialize was rejected."
+    "functional_evidence": "initialize landed and the config was read back; init_token_config pinned lab mint A9keuhfy58ayz3SsovWahrX2cGwJFqx14h45KUtjNNCt; register_name wrote name-record AzM1S31crSSqo2R6ifk4ZEoemW9TAdWdV7NFcpGw27eB for campus-scout (owner=lab wallet, verified=false); InvalidConfig, a second initialize, and NameAlreadyRegistered were rejected."
   }
 ]
