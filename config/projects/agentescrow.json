@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agentescrow",
+  "slug": "agentescrow",
+  "displayName": "AgentEscrow (Sol.College demonstration)",
+  "description": "SPL-token escrow for AI-agent payments, on Solana devnet (Anchor 0.30.1). create_escrow, fund_escrow, start_work, submit_work and confirm_completion were verified end-to-end: 1_000_000 units escrowed, the provider received 995_000, a 0.5% fee (5_000) went to the lab treasury, and the vault was emptied. The lab also fixes an upstream vault-PDA bump typo so payouts can sign.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of AgentEscrow23/agentescrow. The lab tree is branch sol-college-devnet of Blockchains/agentescrow. The lab changed declare_id to a unique Sol.College devnet program and fixed release/refund to sign with the vault PDA bump (ctx.bumps.vault) instead of escrow.bump. The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The upstream author has not joined Sol.College; the vault-bump fix is offered upstream as an ordinary pull request and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "AgentEscrow23/agentescrow",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agentescrow",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agentescrow-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentescrow"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:20:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (create_escrow, fund_escrow, start_work, submit_work, confirm_completion)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agentescrow/",
+      "QA: devnet proof of the full escrow lifecycle, 0.5% fee split, and recreate rejection"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Dispute, timeout, and verifier flows"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "multi-escrow-seed",
+        "title": "Add a nonce or counter to escrow PDA seeds so one payer can open more than one escrow",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.30.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.85.0",
+    "programDir": "programs/agentescrow"
+  }
+}

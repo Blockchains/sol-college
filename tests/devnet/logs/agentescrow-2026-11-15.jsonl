@@ -1,0 +1,9 @@
+{"step":"setup","program":"9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv","escrow":"3X8DZn9uY4oUjSMHqbqr79tynPiKMEG2MjYpXJxV6m7b","vault":"4PPYT1tJm1rnibVp4wiSeg1inKZhxfdQ2k4MDBCbEu4G","existing":false,"payerAta":"CfhTGTJQSXv9DgjXa7P6YQeNcSAcD55vAgEyBUkJpaAb","providerAta":"2mjQSroiSvr8RqDek4dEuyj2jTTKJSFUP7oNwtSfWkG7","treasuryAta":"7sKiSPYJfL1GPktLjWDZ61GSSJxMc7RJDbvaxvMoktJx"}
+{"step":"balances_before","payer":"10000000","provider":"0","treasury":"0"}
+{"step":"create_escrow","ok":true,"sig":"36H5JNsWrkkCW9wVrVkFqhESAjfsdPKUr96mycqe9mkfvXfeKn23sACpH8eK4T1eqEtT3u1iK32BKDKhhwGJpFk6"}
+{"step":"fund_escrow","ok":true,"sig":"2VvQvDcxxTxj28fQ6dG5rSpLrgXraRPxsYY5V5cooNoGrtEmiwhptZtXMjTnH8ZRmBKFY7sjjNUXb1wTmf69AuYd"}
+{"step":"start_work","ok":true,"sig":"2GwpuTVqDLTdCnRNfKn4qPjfrYeFRPZwNgfcCNnvYLiLxvWgoQnHqajpHq3TeZGEbtLnKd2E8LmDAJ9eiCeTxuzx"}
+{"step":"submit_work","ok":true,"sig":"5V25q1Av9VSjKWC2JsCnYouRL8GT93AFGfd1EJdL6gAdw2yPr9K2ksiYxjhRoB9b3hHTX3X7f7gUmu7QFWikGfbM"}
+{"step":"confirm_completion","ok":true,"sig":"2xdASUjuudJufx8RJykmoR8dgv2z99Tzon1cTJTCknKKEv7X2ajSJzyBxy9vy9MBmkaCwa8tyDbVpzBZXf1mAk2Z"}
+{"step":"fetch","ok":true,"state":{"released":{}},"amount":"1000000","feeBps":50,"providerSubmitted":true,"after":{"payer":"9000000","provider":"995000","treasury":"5000","vault":"0"},"deltas":{"payer":"-1000000","provider":"995000","treasury":"5000"}}
+{"step":"negative_recreate","expectedFailure":true,"error":"Simulation failed. "}

@@ -1,0 +1,10 @@
+{
+ "name": "AgentEscrow",
+ "fork": "https://github.com/Blockchains/agentescrow",
+ "commit": "3a0dcac01088d140f80f8b6ee751e65cd083e9df",
+ "lesson": "/explore/agentescrow/",
+ "programs": {
+  "devnet": "9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv",
+  "mainnet": null
+ }
+}

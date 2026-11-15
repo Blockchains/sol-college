@@ -1,0 +1,35 @@
+{
+ "slug": "agentescrow",
+ "cluster": "devnet",
+ "program": "agentescrow",
+ "idl": "agentescrow.json",
+ "devnet": "9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "3mFzRCpAVb554YtxAZXZrivgkE8stw9FeyZ5nerWabpnRgX28cp4Wqe6j3vJsbQbzx3CwpXNRu2CrfZKY68ugQZQ"
+  },
+  {
+   "label": "create_escrow",
+   "sig": "36H5JNsWrkkCW9wVrVkFqhESAjfsdPKUr96mycqe9mkfvXfeKn23sACpH8eK4T1eqEtT3u1iK32BKDKhhwGJpFk6"
+  },
+  {
+   "label": "fund_escrow",
+   "sig": "2VvQvDcxxTxj28fQ6dG5rSpLrgXraRPxsYY5V5cooNoGrtEmiwhptZtXMjTnH8ZRmBKFY7sjjNUXb1wTmf69AuYd"
+  },
+  {
+   "label": "start_work",
+   "sig": "2GwpuTVqDLTdCnRNfKn4qPjfrYeFRPZwNgfcCNnvYLiLxvWgoQnHqajpHq3TeZGEbtLnKd2E8LmDAJ9eiCeTxuzx"
+  },
+  {
+   "label": "submit_work",
+   "sig": "5V25q1Av9VSjKWC2JsCnYouRL8GT93AFGfd1EJdL6gAdw2yPr9K2ksiYxjhRoB9b3hHTX3X7f7gUmu7QFWikGfbM"
+  },
+  {
+   "label": "confirm_completion",
+   "sig": "2xdASUjuudJufx8RJykmoR8dgv2z99Tzon1cTJTCknKKEv7X2ajSJzyBxy9vy9MBmkaCwa8tyDbVpzBZXf1mAk2Z"
+  }
+ ],
+ "verified": "2026-11-15"
+}

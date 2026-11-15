@@ -3166,5 +3166,70 @@
     "limits": "cancel_escrow (7-day window), token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar / MagicBlock PER was not used. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
     "functional": "full",
     "functional_evidence": "register_agent wrote agent 8qVcbPrWN9BkrLj8GH6ZeMjHHGHm5auctht1mTmCFHSC (campus-scout, Primary, active); lock_escrow escrowed 1_000_000 lamports; release_escrow paid payee m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr exactly 1_000_000 lamports and closed escrow HNqz8V3pAkycmkPSCJfebb9zT2hLZJZ6wLRBYZs2PD39; ModelTooLong and ZeroAmount were rejected."
+  },
+  {
+    "slug": "agentescrow",
+    "name": "AgentEscrow",
+    "lesson": "/explore/agentescrow/",
+    "app": "/dapps/agentescrow/",
+    "fork": "https://github.com/Blockchains/agentescrow",
+    "commit": "3a0dcac01088d140f80f8b6ee751e65cd083e9df",
+    "program": "9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified create_escrow, fund_escrow, start_work, submit_work and confirm_completion instructions; discriminators were confirmed by live transactions. The lab tree is on branch sol-college-devnet (unique declare_id plus a vault-PDA bump fix so signed SPL releases work).",
+    "learn": "create_escrow writes an escrow PDA (seeds [payer, \"escrow\"]). fund_escrow inits a vault token account PDA (seeds [escrow, \"vault\"], authority = vault) and transfers the SPL amount in. The provider then start_work and submit_work. confirm_completion, signed with the vault PDA bump, pays 99.5% to the provider and 0.5% to a treasury token account.",
+    "source": [
+      [
+        "programs/agentescrow/src/lib.rs L179-L213 (create_escrow)",
+        "https://github.com/Blockchains/agentescrow/blob/3a0dcac01088d140f80f8b6ee751e65cd083e9df/programs/agentescrow/src/lib.rs#L179-L213"
+      ],
+      [
+        "programs/agentescrow/src/lib.rs L215-L240 (fund_escrow, vault PDA + SPL transfer)",
+        "https://github.com/Blockchains/agentescrow/blob/3a0dcac01088d140f80f8b6ee751e65cd083e9df/programs/agentescrow/src/lib.rs#L215-L240"
+      ],
+      [
+        "programs/agentescrow/src/lib.rs L242-L284 (start_work / submit_work)",
+        "https://github.com/Blockchains/agentescrow/blob/3a0dcac01088d140f80f8b6ee751e65cd083e9df/programs/agentescrow/src/lib.rs#L242-L284"
+      ],
+      [
+        "programs/agentescrow/src/lib.rs L286-L320 and L597-L634 (confirm_completion + release_funds_internal with vault bump)",
+        "https://github.com/Blockchains/agentescrow/blob/3a0dcac01088d140f80f8b6ee751e65cd083e9df/programs/agentescrow/src/lib.rs#L286-L320"
+      ]
+    ],
+    "flow": "tests/devnet/agentescrow.mjs",
+    "log": "tests/devnet/logs/agentescrow-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy agentescrow as 9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv on devnet",
+        "3mFzRCpAVb554YtxAZXZrivgkE8stw9FeyZ5nerWabpnRgX28cp4Wqe6j3vJsbQbzx3CwpXNRu2CrfZKY68ugQZQ"
+      ],
+      [
+        "create_escrow 1_000_000 units of lab mint BJMSdujx\u2026 for provider GpUq5UH3\u2026 (escrow 3X8DZn9u\u2026)",
+        "36H5JNsWrkkCW9wVrVkFqhESAjfsdPKUr96mycqe9mkfvXfeKn23sACpH8eK4T1eqEtT3u1iK32BKDKhhwGJpFk6"
+      ],
+      [
+        "fund_escrow transferred 1_000_000 into vault 4PPYT1tJ\u2026",
+        "2VvQvDcxxTxj28fQ6dG5rSpLrgXraRPxsYY5V5cooNoGrtEmiwhptZtXMjTnH8ZRmBKFY7sjjNUXb1wTmf69AuYd"
+      ],
+      [
+        "start_work by provider GpUq5UH3\u2026 (state InProgress)",
+        "2GwpuTVqDLTdCnRNfKn4qPjfrYeFRPZwNgfcCNnvYLiLxvWgoQnHqajpHq3TeZGEbtLnKd2E8LmDAJ9eiCeTxuzx"
+      ],
+      [
+        "submit_work by the same provider (state PendingReview)",
+        "5V25q1Av9VSjKWC2JsCnYouRL8GT93AFGfd1EJdL6gAdw2yPr9K2ksiYxjhRoB9b3hHTX3X7f7gUmu7QFWikGfbM"
+      ],
+      [
+        "confirm_completion paid provider +995_000 and treasury +5_000; vault emptied; state Released",
+        "2xdASUjuudJufx8RJykmoR8dgv2z99Tzon1cTJTCknKKEv7X2ajSJzyBxy9vy9MBmkaCwa8tyDbVpzBZXf1mAk2Z"
+      ]
+    ],
+    "negative": [
+      "A second create_escrow for the same payer is rejected (escrow PDA seeds [payer, \"escrow\"] already in use)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the lifecycle was sent with the tester wallets through the IDL client in tests/devnet/agentescrow.mjs.",
+    "limits": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. One escrow PDA per payer (no nonce). The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The lab applied a vault-PDA bump fix so signed SPL releases work; the same fix is offered upstream.",
+    "functional": "full",
+    "functional_evidence": "create_escrow wrote escrow 3X8DZn9uY4oUjSMHqbqr79tynPiKMEG2MjYpXJxV6m7b; fund_escrow moved 1_000_000 of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D into vault 4PPYT1tJm1rnibVp4wiSeg1inKZhxfdQ2k4MDBCbEu4G; start_work and submit_work were signed by provider GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb; confirm_completion (2xdASUju\u2026) left the escrow Released, the vault at 0, the provider ATA at +995_000 and the treasury ATA at +5_000. Recreating the same payer's escrow was rejected."
   }
 ]
