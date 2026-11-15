@@ -1,0 +1,178 @@
+{
+  "title": "ZeroAI: on-chain crypto prediction snapshots with Pyth",
+  "summary": "Initialise a vault of Pyth feed addresses and a games PDA, then publish a ZEROAI prediction that snapshots those oracles.",
+  "what": "ZeroAI is an Anchor program that publishes ZEROAI's cryptocurrency price predictions on Solana. An admin creates a vault account holding six Pyth feed pubkeys, initialises a games PDA seeded by [\"games\", admin], and calls addgame with symbol and target-price vectors. addgame snapshots each Pyth feed if the price is no older than 60 seconds (otherwise it records 0). Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+  "app_note": "The fork has no first-party frontend. The page at /dapps/zeroai/ is the generic IDL-driven wallet console, with this devnet program id filled in. The IDL was converted from Anchor 0.29 shape to the 0.30 console format.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/zeroai/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
+      "see": "The page lists initvault, initgames, addgame and closegame, and shows program Db4FmHGi\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "Submit initvault: generate a fresh vault keypair (it must sign), set admin to your wallet, and paste the six documented Pyth devnet feed addresses from the lesson.",
+      "see": "A confirmed transaction and a new vault account whose admin is you.",
+      "ran": "initvault sig 4ULcmAEzZrwUHKghm18wnm1oPsH9Zd5ucbZcZeakQivBM99SkjgiQPXx5GmvYgRPE5DsmQ2T6KDXCmMfJs9nD4Du created vault FgNKkZHozETYzcrVWEd11j3gmuDSBEU8d6GcFhq7UqG."
+    },
+    {
+      "do": "Submit initgames with that vault and the games PDA seeds [\"games\", your pubkey].",
+      "see": "A games account with count=0 and symbol [ZEROAI Instant Win Games].",
+      "ran": "initgames sig 3dSETLN8qM1zgUCYdwBwYSnka93EJmEqxdEG2Lx3kqgW4q3qphY5KECMCN13EVjqjYbp6BUAYKNJfeD9R8LPCZNK created games 8F3BUi9ZRhxtL4CShW8nsooE9oURNUbL5VTVZ4ct7S8z, count=0."
+    },
+    {
+      "do": "Submit addgame with symbols [BTC, ETH, SOL, BNB, DOGE, JUP] and six target prices, passing the same six Pyth accounts.",
+      "see": "count increments to 1. closeprice may be all zeros if the Pyth feeds are older than 60 seconds.",
+      "ran": "addgame sig 5JhYuu9ahn7requMU3kDpBWQPLzhomsKA7aFRr5kYSgQHtHBSpGuWwfMpxw1infNwAqju1wUQoTM6dXewnrzaNVa; count=1, closeprice all zeros (stale feeds)."
+    },
+    {
+      "do": "Try initvault again with the same vault keypair.",
+      "see": "The transaction is rejected because the account already exists.",
+      "ran": "The lab run caught a failed second initvault, as expected."
+    }
+  ],
+  "diagram": "admin \u2500 initvault(admin, 6 Pyth feeds) \u2500\u25b6 Vault (signed account)\nadmin \u2500 initgames() \u2500\u25b6 Games PDA [\"games\", admin]\nadmin \u2500 addgame(symbols, target prices, 6 Pyth accounts) \u2500\u25b6 snapshot closeprice (0 if feed >60s old)",
+  "accounts": [
+    [
+      "Vault",
+      "Ordinary account (keypair signs initvault)",
+      "Stores admin and six Pyth feed addresses used later by addgame."
+    ],
+    [
+      "InstantWinGame (games)",
+      "PDA `[\"games\", admin]`",
+      "Prediction records: symbol, targetprice, closeprice, count, timestamp."
+    ],
+    [
+      "Pyth price feeds",
+      "Accounts owned by gSbePebf\u2026 (classic Pyth on devnet)",
+      "Passed to addgame; must match the vault's stored feed addresses."
+    ]
+  ],
+  "instructions": [
+    {
+      "name": "initvault",
+      "refs": [
+        [
+          "https://github.com/Blockchains/zeroai-solana/blob/ff7066dd815369baff410daa351520fca0390477/programs/zeroai-program/src/instructions/initialize.rs#L4-L7",
+          "initialize.rs L4-L7"
+        ],
+        [
+          "https://github.com/Blockchains/zeroai-solana/blob/ff7066dd815369baff410daa351520fca0390477/programs/zeroai-program/src/instructions/initialize.rs#L39-L50",
+          "accounts L39-L50"
+        ]
+      ],
+      "steps": [
+        "Payer signs; the vault keypair also signs and is initialised with the provided Vault struct (admin + six feeds)."
+      ]
+    },
+    {
+      "name": "initgames",
+      "refs": [
+        [
+          "https://github.com/Blockchains/zeroai-solana/blob/ff7066dd815369baff410daa351520fca0390477/programs/zeroai-program/src/instructions/initialize.rs#L9-L36",
+          "initialize.rs L9-L36"
+        ]
+      ],
+      "steps": [
+        "Requires vault.has_one = admin. Creates the games PDA and emits GameEvent with count=0."
+      ]
+    },
+    {
+      "name": "addgame",
+      "refs": [
+        [
+          "https://github.com/Blockchains/zeroai-solana/blob/ff7066dd815369baff410daa351520fca0390477/programs/zeroai-program/src/instructions/add.rs#L5-L49",
+          "add.rs L5-L49"
+        ]
+      ],
+      "steps": [
+        "Each Pyth account must match the vault feed. For every feed, get_price_no_older_than(..., 60) is recorded (or 0). count increments."
+      ]
+    }
+  ],
+  "innovation": {
+    "title": "On-chain publication of an AI model's price predictions, checked against Pyth",
+    "text": "The interesting DeAI idea is that ZEROAI's predicted prices are written to Solana and can be compared with a Pyth snapshot at the same moment, so later readers can audit the call. The program itself is a small admin-gated recorder, not an inference market or agent runtime.",
+    "refs": [
+      [
+        "https://github.com/Blockchains/zeroai-solana/blob/ff7066dd815369baff410daa351520fca0390477/README.md",
+        "README.md"
+      ]
+    ],
+    "more": "closegame was not exercised in this run. Stale Pyth feeds yield closeprice 0."
+  },
+  "frontend": [
+    {
+      "title": "Generic IDL console",
+      "refs": [
+        [
+          "/dapps/zeroai/",
+          "Hosted app"
+        ]
+      ],
+      "steps": [
+        "Connect a devnet wallet.",
+        "initvault needs a fresh vault keypair as a signer.",
+        "Then initgames and addgame against that vault."
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Derive the games PDA",
+      "steps": [
+        "Use seeds [\"games\", admin pubkey] and program id Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9.",
+        "Compare with the lab games account."
+      ],
+      "expect": "The address matches 8F3BUi9ZRhxtL4CShW8nsooE9oURNUbL5VTVZ4ct7S8z for the lab admin.",
+      "hint": "admin is the vault.admin / payer, not the vault address.",
+      "approach": "PublicKey.findProgramAddressSync in @solana/web3.js."
+    },
+    {
+      "title": "Why was closeprice all zeros?",
+      "steps": [
+        "Read add_game's get_price_no_older_than call.",
+        "Explain what happens when the feed is older than 60 seconds."
+      ],
+      "expect": "The code pushes 0 when the Option is None; it does not fail the transaction.",
+      "hint": "add.rs L19-L30.",
+      "approach": "Read the match on get_price_no_older_than."
+    },
+    {
+      "title": "Who can add a game?",
+      "steps": [
+        "Look at the has_one = admin constraint on the vault."
+      ],
+      "expect": "Only the admin stored on the vault can sign addgame / initgames.",
+      "hint": "InitGames and AddGame both have has_one = admin.",
+      "approach": "Read the account structs in initialize.rs and add.rs."
+    }
+  ],
+  "not_covered": "closegame was not sent. Pyth close prices were zero because the classic devnet feeds were stale. The hosted UI was not clicked in headless Chromium in this run.",
+  "path_order": 21,
+  "path_stage": 2,
+  "difficulty": "Intermediate",
+  "time": "35 min",
+  "objectives": [
+    "Create a vault of Pyth feed addresses and read it back from devnet.",
+    "Derive the games PDA and initialise it.",
+    "Explain why addgame can succeed with closeprice all zeros."
+  ],
+  "prereqs": [
+    "A wallet on devnet with a little SOL (initvault and initgames pay rent).",
+    "Comfort with Anchor accounts and Pyth price-feed accounts."
+  ],
+  "concepts": [
+    "anchor",
+    "pda",
+    "pyth-oracle",
+    "ai-predictions"
+  ],
+  "build": {
+    "dir": "programs/zeroai-program",
+    "anchor": "0.29.0",
+    "test": "tests/devnet/zeroai.mjs",
+    "note": "Program id on this lab deployment is Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9."
+  },
+  "functional": "full"
+}

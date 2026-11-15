@@ -1,0 +1,9 @@
+{"step":"setup","program":"Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9","admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","vault":"FgNKkZHozETYzcrVWEd11j3gmuDSBEU8d6GcFhq7UqG","games":"8F3BUi9ZRhxtL4CShW8nsooE9oURNUbL5VTVZ4ct7S8z"}
+{"step":"initvault","ok":true,"sig":"4ULcmAEzZrwUHKghm18wnm1oPsH9Zd5ucbZcZeakQivBM99SkjgiQPXx5GmvYgRPE5DsmQ2T6KDXCmMfJs9nD4Du"}
+{"step":"fetch_vault","ok":true,"admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","btcFeed":"HovQMDrbAgAYPCmHVSrezcSmkMtXSSUsLDFANExrZh2J","ethFeed":"EdVCmQ9FSPcVe5YySXDPCRmc8aDQLKJ9xvYBMZPie1Vw"}
+{"step":"initgames","ok":true,"sig":"3dSETLN8qM1zgUCYdwBwYSnka93EJmEqxdEG2Lx3kqgW4q3qphY5KECMCN13EVjqjYbp6BUAYKNJfeD9R8LPCZNK"}
+{"step":"fetch_games","ok":true,"author":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","count":"0","symbol":["ZEROAI Instant Win Games"]}
+{"step":"initvault_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"pyth_btc_exists","ok":true,"owner":"gSbePebfvPy7tRqimPoVecS2UsBvYv46ynrzWocc92s"}
+{"step":"addgame","ok":true,"sig":"5JhYuu9ahn7requMU3kDpBWQPLzhomsKA7aFRr5kYSgQHtHBSpGuWwfMpxw1infNwAqju1wUQoTM6dXewnrzaNVa"}
+{"step":"fetch_games_after_add","ok":true,"count":"1","closeprice":["0","0","0","0","0","0"]}

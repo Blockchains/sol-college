@@ -1,0 +1,27 @@
+{
+ "slug": "zeroai",
+ "cluster": "devnet",
+ "program": "zeroai_program",
+ "idl": "zeroai_program.json",
+ "devnet": "Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "T68DenqrQKht3N47j17mw3GhctV7CcqWdU4L6orDq93o8RqWjGmczDuihGayzSkZaQhauEZ6vMCxiSLQwCom3Tu"
+  },
+  {
+   "label": "initvault",
+   "sig": "4ULcmAEzZrwUHKghm18wnm1oPsH9Zd5ucbZcZeakQivBM99SkjgiQPXx5GmvYgRPE5DsmQ2T6KDXCmMfJs9nD4Du"
+  },
+  {
+   "label": "initgames",
+   "sig": "3dSETLN8qM1zgUCYdwBwYSnka93EJmEqxdEG2Lx3kqgW4q3qphY5KECMCN13EVjqjYbp6BUAYKNJfeD9R8LPCZNK"
+  },
+  {
+   "label": "addgame",
+   "sig": "5JhYuu9ahn7requMU3kDpBWQPLzhomsKA7aFRr5kYSgQHtHBSpGuWwfMpxw1infNwAqju1wUQoTM6dXewnrzaNVa"
+  }
+ ],
+ "verified": "2026-11-15"
+}

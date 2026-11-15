@@ -1,0 +1,378 @@
+{
+  "address": "Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9",
+  "metadata": {
+    "name": "zeroai_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": ""
+  },
+  "instructions": [
+    {
+      "name": "initvault",
+      "discriminator": [
+        90,
+        157,
+        179,
+        85,
+        186,
+        197,
+        251,
+        231
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "vault",
+          "type": {
+            "defined": {
+              "name": "Vault"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "initgames",
+      "discriminator": [
+        18,
+        12,
+        20,
+        6,
+        2,
+        147,
+        210,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "vault"
+        },
+        {
+          "name": "games",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "addgame",
+      "discriminator": [
+        167,
+        232,
+        16,
+        200,
+        194,
+        251,
+        224,
+        185
+      ],
+      "accounts": [
+        {
+          "name": "vault"
+        },
+        {
+          "name": "game",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "pythBtc"
+        },
+        {
+          "name": "pythEth"
+        },
+        {
+          "name": "pythSol"
+        },
+        {
+          "name": "pythBnb"
+        },
+        {
+          "name": "pythDoge"
+        },
+        {
+          "name": "pythJup"
+        }
+      ],
+      "args": [
+        {
+          "name": "symbol",
+          "type": {
+            "vec": "string"
+          }
+        },
+        {
+          "name": "price",
+          "type": {
+            "vec": "u64"
+          }
+        }
+      ]
+    },
+    {
+      "name": "closegame",
+      "discriminator": [
+        10,
+        78,
+        154,
+        135,
+        247,
+        103,
+        3,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "vault"
+        },
+        {
+          "name": "game",
+          "writable": true
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    },
+    {
+      "name": "InstantWinGame",
+      "discriminator": [
+        139,
+        56,
+        253,
+        6,
+        229,
+        88,
+        13,
+        139
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "GameEvent",
+      "discriminator": [
+        154,
+        5,
+        234,
+        245,
+        78,
+        248,
+        61,
+        153
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "You are not authorized to perform this action."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAccountData",
+      "msg": "aaaYou are not authorized to perform this action."
+    },
+    {
+      "code": 6002,
+      "name": "ReInitialize",
+      "msg": "The config has already been initialized."
+    },
+    {
+      "code": 6003,
+      "name": "UnInitialize",
+      "msg": "The config has not been initialized."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidArgument",
+      "msg": "Argument is invalid."
+    },
+    {
+      "code": 6005,
+      "name": "Overflow",
+      "msg": "An overflow occurs."
+    },
+    {
+      "code": 6006,
+      "name": "PythError",
+      "msg": "Pyth has an internal error."
+    },
+    {
+      "code": 6007,
+      "name": "PythOffline",
+      "msg": "Pyth price oracle is offline."
+    },
+    {
+      "code": 6008,
+      "name": "LoanValueTooHigh",
+      "msg": "The loan value is higher than the collateral value."
+    },
+    {
+      "code": 6009,
+      "name": "TryToSerializePriceAccount",
+      "msg": "Program should not try to serialize a price account."
+    }
+  ],
+  "types": [
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "btcFeed",
+            "type": "pubkey"
+          },
+          {
+            "name": "ethFeed",
+            "type": "pubkey"
+          },
+          {
+            "name": "solFeed",
+            "type": "pubkey"
+          },
+          {
+            "name": "bnbFeed",
+            "type": "pubkey"
+          },
+          {
+            "name": "dogeFeed",
+            "type": "pubkey"
+          },
+          {
+            "name": "jupFeed",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InstantWinGame",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "author",
+            "type": "pubkey"
+          },
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "symbol",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "targetprice",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "closeprice",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GameEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "symbol",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "targetprice",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "closeprice",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-zeroai",
+  "slug": "zeroai",
+  "displayName": "ZeroAI (Sol.College demonstration)",
+  "description": "ZEROAI on-chain cryptocurrency prediction records on Solana devnet (Anchor 0.29). An admin initialises a vault of Pyth feed addresses and a games PDA, then publishes a prediction snapshot against those oracles.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/zeroai-solana fork. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "zeroai-official/zeroai-solana",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/zeroai-solana",
+    "branch": "main"
+  },
+  "mind": {
+    "mappingRef": "zeroai-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-zeroai"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T20:16:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initvault, initgames, addgame, closegame)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/zeroai/",
+      "QA: devnet proof of initvault, initgames, addgame, and a rejected second initvault"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "fresh-pyth-close-prices",
+        "title": "Exercise addgame against Pyth feeds that are fresh within 60 seconds so closeprice is non-zero, and add a closegame fixture",
+        "skills": [
+          "Anchor",
+          "TypeScript",
+          "Pyth"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.29.0",
+    "solanaVersion": "1.18.17",
+    "rustToolchain": "1.85.1",
+    "programDir": "programs/zeroai-program"
+  }
+}

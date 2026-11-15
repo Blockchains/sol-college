@@ -1,0 +1,10 @@
+{
+ "name": "ZeroAI",
+ "fork": "https://github.com/Blockchains/zeroai-solana",
+ "commit": "ff7066dd815369baff410daa351520fca0390477",
+ "lesson": "/explore/zeroai/",
+ "programs": {
+  "devnet": "Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9",
+  "mainnet": null
+ }
+}
