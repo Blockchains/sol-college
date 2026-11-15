@@ -16,3 +16,9 @@ test("Defect questions ask for a program-source fix; failed attempts are retried
   (st.patchAttempts as Record<string, number>)["u"] = 3;
   assert.ok(!retryablePatch(st, "u"));
 });
+
+test("Replies with JS-style .replace() after a JSON string are evaluated literally and nothing else", async () => {
+  const { repairStringReplaceCalls } = await import("../../src/minds/task.ts");
+  assert.equal(repairStringReplaceCalls(`["a\\/\\/b".replace("\\/\\/","//"),"+ \\u0020x".replace(' ',''),"ok"]`), `["a//b","+ x","ok"]`);
+  assert.equal(repairStringReplaceCalls(`{"a":"b"}`), `{"a":"b"}`);
+});

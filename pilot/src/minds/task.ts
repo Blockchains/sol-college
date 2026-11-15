@@ -124,7 +124,28 @@ function extractJson(text: string): unknown {
   const t = normaliseReplyText(text);
   const m = /```(?:json)?\s*([\s\S]*?)```/.exec(t);
   const body = m?.[1] ?? t.slice(t.indexOf("{"), t.lastIndexOf("}") + 1);
-  return JSON.parse(body.trim());
+  try { return JSON.parse(body.trim()); } catch (e) {
+    const repaired = repairStringReplaceCalls(body.trim());
+    if (repaired === body.trim()) throw e;
+    return JSON.parse(repaired);
+  }
+}
+
+/**
+ * Minds sometimes write a JSON string followed by a JavaScript-style `.replace(a, b)` call (to dodge chat formatting of
+ * `//` or `&`). Evaluate exactly that pattern (first-occurrence replace with string literals, as in JavaScript) and
+ * nothing else; the result must still parse as JSON and pass every normal check.
+ */
+export function repairStringReplaceCalls(body: string): string {
+  const lit = String.raw`(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')`;
+  const re = new RegExp(String.raw`("(?:[^"\\]|\\.)*")((?:\.replace\(\s*${lit}\s*,\s*${lit}\s*\))+)`, "g");
+  const one = new RegExp(String.raw`\.replace\(\s*(${lit})\s*,\s*(${lit})\s*\)`, "g");
+  const unq = (l: string) => (l.startsWith("'") ? JSON.parse(`"${l.slice(1, -1).replace(/\\'/g, "'").replace(/"/g, '\\"')}"`) : JSON.parse(l)) as string;
+  return body.replace(re, (_all, str: string, calls: string) => {
+    let v = JSON.parse(str) as string;
+    for (const c of calls.matchAll(one)) v = v.replace(unq(c[1]!), () => unq(c[2]!));
+    return JSON.stringify(v);
+  });
 }
 
 const FORBIDDEN_CLAIM_KEYS = ["validationStatus", "validation", "accepted", "acceptance", "certificate", "testsPassed", "conclusion"];
