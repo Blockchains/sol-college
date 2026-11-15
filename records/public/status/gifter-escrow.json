@@ -1,14 +1,19 @@
 {
   "schema": "sc-cto-status/1",
   "project": "gifter-escrow",
-  "updatedAt": "2026-11-15T16:47:25.562Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43737400469",
+  "updatedAt": "2026-11-15T16:50:53.023Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/43737735184",
   "report": {
     "summary": "Status for gifter-escrow from supplied records only. In flight: one open lab pull request, one package, one validation requested. No completed or slipped items are recorded in this task's records, and no period dates are given, so completion status cannot be reported. Cognition usage figures were not supplied and are reported as missing. Validation status is unknown; it comes only from GitHub workflow evidence, and no evidence records were included.",
     "at": "2026-11-15T16:47:25.562Z",
     "taskId": "report-gifter-escrow-2026111516"
   },
   "activity": [
+    {
+      "at": "2026-11-15T16:50:53.023Z",
+      "text": "Opened research question: Refund negative cases in the localnet fixture",
+      "url": "https://github.com/Blockchains/sol-college/issues/4"
+    },
     {
       "at": "2026-11-15T16:33:45.823Z",
       "text": "CTO agent asked to research plan"
