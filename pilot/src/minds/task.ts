@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { MessageRecord, WaitForReplyOutcome } from "@animocabrands/minds-client-lib";
 import type { FileStore } from "../lib/store.ts";
 import type { MindsPort } from "./port.ts";
@@ -60,7 +61,10 @@ export interface TaskRecord {
 const TASK_ID_RE = /^[a-z0-9][a-z0-9-]{5,63}$/;
 
 export function taskAlias(prefix: string, spec: TaskSpec): string {
-  return `${prefix}-${spec.kind}-${spec.taskId}`.slice(0, 120);
+  const full = `${prefix}-${spec.kind}-${spec.taskId}`;
+  if (full.length <= 64) return full;
+  // HelloMinds aliases are limited to 64 characters: keep the prefix and a stable hash of kind+taskId.
+  return `${prefix.slice(0, 40)}-${createHash("sha256").update(`${spec.kind}:${spec.taskId}`).digest("hex").slice(0, 20)}`;
 }
 
 /** Message constructed internally; callers cannot inject a free-form prompt around it. */

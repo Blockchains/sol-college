@@ -53,3 +53,12 @@ test("Mind actions are schema-checked in task responses", () => {
   assert.equal(validateTaskResponse(spec, msg({ ...base, actions: [{ type: "devnet-transfer", recipient: "x", lamports: 1.5, reason: "r" }] })).ok, false);
   assert.equal(validateTaskResponse(spec, msg({ ...base, actions: [{ type: "mainnet-transfer" }] })).ok, false);
 });
+
+test("Task aliases never exceed the 64-character HelloMinds limit and stay stable", async () => {
+  const { taskAlias } = await import("../../src/minds/task.ts");
+  const spec = { taskId: "patch-gifter-escrow-4-2026111517", project: "gifter-escrow", kind: "experiment-patch" as const, instructions: "", sources: [], evidence: [], context: {} };
+  const a = taskAlias("sc-orboracle-solana", spec);
+  assert.ok(a.length <= 64);
+  assert.equal(a, taskAlias("sc-orboracle-solana", spec));
+  assert.equal(taskAlias("sc-x", { ...spec, taskId: "plan-x-2026111517", kind: "research-plan" }), "sc-x-research-plan-plan-x-2026111517");
+});
