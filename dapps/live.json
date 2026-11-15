@@ -2524,5 +2524,63 @@
     "limits": "Staking, renew, and the list/buy marketplace were not exercised in this run. collect_fee is a no-op when the registration fee is 0, so no payer $NAIM ATA funding was required beyond the init_if_needed vault ATAs. The registered name is unverified (verified=false).",
     "functional": "full",
     "functional_evidence": "initialize landed and the config was read back; init_token_config pinned lab mint A9keuhfy58ayz3SsovWahrX2cGwJFqx14h45KUtjNNCt; register_name wrote name-record AzM1S31crSSqo2R6ifk4ZEoemW9TAdWdV7NFcpGw27eB for campus-scout (owner=lab wallet, verified=false); InvalidConfig, a second initialize, and NameAlreadyRegistered were rejected."
+  },
+  {
+    "slug": "guild-protocol",
+    "name": "Guild Protocol",
+    "lesson": "/explore/guild-protocol/",
+    "app": "/dapps/guild-protocol/",
+    "fork": "https://github.com/Blockchains/guild-protocol",
+    "commit": "eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c",
+    "program": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream ships a dashboard in the same repo; we host the generic console against the lab deploy so the program can be exercised from sol.college without a separate host.",
+    "learn": "An admin initialises a singleton config PDA (seeds [\"config\"]) with a stake-mint pubkey, min_bond and fee_bps (max 1000). Agents then register with a handle and a SOL lamport bond (>= min_bond) held in a vault PDA (seeds [\"vault\", agent]). Later instructions post, claim, submit, review and cancel jobs.",
+    "source": [
+      [
+        "programs/guild/src/lib.rs L19-L27 (initialize)",
+        "https://github.com/Blockchains/guild-protocol/blob/eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c/programs/guild/src/lib.rs#L19-L27"
+      ],
+      [
+        "programs/guild/src/instructions/initialize.rs L8-L47 (config PDA seeds [\"config\"], FeeTooHigh)",
+        "https://github.com/Blockchains/guild-protocol/blob/eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c/programs/guild/src/instructions/initialize.rs#L8-L47"
+      ],
+      [
+        "programs/guild/src/lib.rs L29 and instructions/register_agent.rs L8-L70 (agent PDA, lamport vault)",
+        "https://github.com/Blockchains/guild-protocol/blob/eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c/programs/guild/src/instructions/register_agent.rs#L8-L70"
+      ]
+    ],
+    "flow": "tests/devnet/guild-protocol.mjs",
+    "log": "tests/devnet/logs/guild-protocol-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "5ohSK7ZKUZbyjnimhws1RDam7RXXGmvQ3CmR4zJgHFvx8ER9w85vdkYAFSTGP8JeztPyGmnSQbLCW95N2S6mGof3"
+      ],
+      [
+        "initialize with min_bond=1_000_000 lamports, fee_bps=250, stake mint A9keuhfy\u2026 (config 2w1AbEvB\u2026)",
+        "7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq"
+      ],
+      [
+        "Fetched config: authority is the lab wallet, min_bond=1000000, fee_bps=250, agent_count=0",
+        "(no tx; read-only)"
+      ],
+      [
+        "register_agent handle campus-scout with a 1_000_000 lamport bond (agent 27FKpZrz\u2026, vault FYLK3n8u\u2026)",
+        "52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"
+      ],
+      [
+        "Fetched agent: owner=lab wallet, handle=campus-scout, bond=1000000, active=true, trust=probation",
+        "(no tx; read-only)"
+      ]
+    ],
+    "negative": [
+      "initialize with fee_bps=2000 is rejected (FeeTooHigh; max 1000)",
+      "register_agent with bond=1 lamport is rejected (BondTooLow)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same initialize and register_agent instructions were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
+    "limits": "post_job, claim_job, submit_work, review_job, cancel_job and top_up_bond were not exercised in this run. stake_mint is recorded on config but the registration bond is SOL lamports, not an SPL transfer.",
+    "functional": "full",
+    "functional_evidence": "initialize landed and config was read back with min_bond=1000000 and fee_bps=250; register_agent wrote agent 27FKpZrzqNxoZefCbHmVF9kgLGV6P8jhzV8irNjzsnjh for campus-scout with bond=1000000 and trust=probation; FeeTooHigh and BondTooLow were rejected."
   }
 ]

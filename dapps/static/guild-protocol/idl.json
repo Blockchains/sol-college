@@ -1,0 +1,1171 @@
+{
+  "address": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
+  "metadata": {
+    "name": "guild",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "cancel_job",
+      "docs": [
+        "Cancel an unclaimed job and refund the bounty."
+      ],
+      "discriminator": [
+        126,
+        241,
+        155,
+        241,
+        50,
+        236,
+        83,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "job_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "claim_job",
+      "docs": [
+        "Claim an open job, locking the required stake."
+      ],
+      "discriminator": [
+        9,
+        160,
+        5,
+        231,
+        116,
+        123,
+        198,
+        14
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "agent"
+          ]
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.id",
+                "account": "Job"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the protocol config (one-time)."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "stake_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "min_bond",
+          "type": "u64"
+        },
+        {
+          "name": "fee_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "post_job",
+      "docs": [
+        "Post a job with an escrowed bounty."
+      ],
+      "discriminator": [
+        34,
+        208,
+        58,
+        248,
+        129,
+        234,
+        179,
+        211
+      ],
+      "accounts": [
+        {
+          "name": "poster",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config.job_count",
+                "account": "Config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bounty",
+          "type": "u64"
+        },
+        {
+          "name": "required_stake",
+          "type": "u64"
+        },
+        {
+          "name": "min_trust",
+          "type": {
+            "defined": {
+              "name": "TrustLevel"
+            }
+          }
+        },
+        {
+          "name": "spec_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "register_agent",
+      "docs": [
+        "Register a new agent identity with a staked bond."
+      ],
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "docs": [
+            "Vault PDA that custodies the agent's bonded lamports."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "handle",
+          "type": "string"
+        },
+        {
+          "name": "bond",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "review_job",
+      "docs": [
+        "Review submitted work: accept (release escrow) or reject (slash stake)."
+      ],
+      "discriminator": [
+        141,
+        103,
+        24,
+        191,
+        138,
+        248,
+        90,
+        21
+      ],
+      "accounts": [
+        {
+          "name": "reviewer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.id",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "job_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "worker.owner",
+                "account": "AgentProfile"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "worker"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker_wallet",
+          "writable": true
+        },
+        {
+          "name": "poster_wallet",
+          "writable": true
+        },
+        {
+          "name": "treasury",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "approve",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "submit_work",
+      "docs": [
+        "Submit delivered work for review."
+      ],
+      "discriminator": [
+        158,
+        80,
+        101,
+        51,
+        114,
+        130,
+        101,
+        253
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "agent"
+          ]
+        },
+        {
+          "name": "agent",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.id",
+                "account": "Job"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "delivery_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "top_up_bond",
+      "docs": [
+        "Add more collateral to an existing agent's bond."
+      ],
+      "discriminator": [
+        110,
+        37,
+        8,
+        119,
+        210,
+        231,
+        202,
+        197
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "agent"
+          ]
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentProfile",
+      "discriminator": [
+        60,
+        227,
+        42,
+        24,
+        0,
+        87,
+        86,
+        205
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Job",
+      "discriminator": [
+        75,
+        124,
+        80,
+        203,
+        161,
+        180,
+        202,
+        80
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "HandleTooLong",
+      "msg": "Handle exceeds maximum length of 32 bytes"
+    },
+    {
+      "code": 6001,
+      "name": "UriTooLong",
+      "msg": "Spec or delivery URI exceeds maximum length"
+    },
+    {
+      "code": 6002,
+      "name": "BondTooLow",
+      "msg": "Bond is below the protocol minimum"
+    },
+    {
+      "code": 6003,
+      "name": "FeeTooHigh",
+      "msg": "Fee exceeds the maximum allowed basis points"
+    },
+    {
+      "code": 6004,
+      "name": "InsufficientFreeBond",
+      "msg": "Agent does not have enough free (unlocked) bond"
+    },
+    {
+      "code": 6005,
+      "name": "AgentInactive",
+      "msg": "Agent is not active"
+    },
+    {
+      "code": 6006,
+      "name": "TrustTooLow",
+      "msg": "Agent trust level is below the job requirement"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidJobStatus",
+      "msg": "Job is not in the required status for this action"
+    },
+    {
+      "code": 6008,
+      "name": "Unauthorized",
+      "msg": "Caller is not authorized for this action"
+    },
+    {
+      "code": 6009,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6010,
+      "name": "BondLocked",
+      "msg": "Cannot withdraw while bond is locked against active jobs"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentProfile",
+      "docs": [
+        "On-chain identity + reputation for an autonomous agent.",
+        "PDA: [\"agent\", owner]."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "docs": [
+              "Wallet that controls this agent."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "handle",
+            "docs": [
+              "Short handle, max 32 bytes."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "bond",
+            "docs": [
+              "Bonded collateral currently locked for accountability."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "locked_bond",
+            "docs": [
+              "Portion of the bond currently locked against active jobs."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "jobs_completed",
+            "docs": [
+              "Count of jobs delivered and accepted."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "jobs_slashed",
+            "docs": [
+              "Count of jobs where the agent was slashed."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "reputation",
+            "docs": [
+              "Accumulated reputation score (non-transferable, on-chain)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "trust",
+            "docs": [
+              "Current trust tier."
+            ],
+            "type": {
+              "defined": {
+                "name": "TrustLevel"
+              }
+            }
+          },
+          {
+            "name": "active",
+            "docs": [
+              "Whether the agent is active and can take work."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump for the agent PDA."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "docs": [
+        "Global protocol configuration. One per deployment (PDA: [\"config\"])."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority allowed to update protocol parameters."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "stake_mint",
+            "docs": [
+              "Mint used for staking bonds and job escrow (e.g. SOL wrapper or SPL token)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "min_bond",
+            "docs": [
+              "Minimum bond an agent must lock to register, in base units."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_bps",
+            "docs": [
+              "Protocol fee in basis points (e.g. 250 = 2.5%) taken from settled jobs."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Destination that accrues protocol fees (the open-source treasury)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_count",
+            "docs": [
+              "Total number of agents registered (monotonic counter)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "job_count",
+            "docs": [
+              "Total number of jobs created (monotonic counter, also used as job id)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump for the config PDA."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Job",
+      "docs": [
+        "A unit of paid work. PDA: [\"job\", job_id_le_bytes]."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Sequential id from Config.job_count."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "poster",
+            "docs": [
+              "Who posted and funded the job."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "worker",
+            "docs": [
+              "Agent profile that claimed the job (default until claimed)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "reviewer",
+            "docs": [
+              "Designated reviewer (the poster may self-review or assign another)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bounty",
+            "docs": [
+              "Escrowed bounty in stake_mint base units."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "required_stake",
+            "docs": [
+              "Stake the worker must put at risk to claim (slashed on rejection)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_trust",
+            "docs": [
+              "Minimum trust tier required to claim."
+            ],
+            "type": {
+              "defined": {
+                "name": "TrustLevel"
+              }
+            }
+          },
+          {
+            "name": "spec_uri",
+            "docs": [
+              "IPFS/arweave CID or URL describing the task, max 200 bytes."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "delivery_uri",
+            "docs": [
+              "CID/URL of the delivered work, set on submit, max 200 bytes."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current status."
+            ],
+            "type": {
+              "defined": {
+                "name": "JobStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Unix timestamp when the job was created."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "docs": [
+              "Unix timestamp of last status change."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump for the job PDA."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobStatus",
+      "docs": [
+        "Lifecycle of a job in the marketplace."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Claimed"
+          },
+          {
+            "name": "Submitted"
+          },
+          {
+            "name": "Accepted"
+          },
+          {
+            "name": "Rejected"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TrustLevel",
+      "docs": [
+        "Trust tier an agent has earned. Higher tiers unlock larger jobs."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Probation"
+          },
+          {
+            "name": "Standard"
+          },
+          {
+            "name": "Trusted"
+          },
+          {
+            "name": "Senior"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "AGENT_SEED",
+      "type": "bytes",
+      "value": "[97, 103, 101, 110, 116]"
+    },
+    {
+      "name": "CONFIG_SEED",
+      "type": "bytes",
+      "value": "[99, 111, 110, 102, 105, 103]"
+    },
+    {
+      "name": "JOB_SEED",
+      "type": "bytes",
+      "value": "[106, 111, 98]"
+    },
+    {
+      "name": "VAULT_SEED",
+      "type": "bytes",
+      "value": "[118, 97, 117, 108, 116]"
+    }
+  ]
+}

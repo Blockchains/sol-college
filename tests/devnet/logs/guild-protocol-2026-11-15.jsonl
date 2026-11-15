@@ -1,0 +1,7 @@
+{"step":"setup","program":"9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP","config":"2w1AbEvBTGHmRudKVQc8NNQx97gNsN9aUkdc6binNxsj","agent":"27FKpZrzqNxoZefCbHmVF9kgLGV6P8jhzV8irNjzsnjh","vault":"FYLK3n8uPPM339RGkhNeDQoftwkUkFv66QQ4BKDAcR3Z"}
+{"step":"initialize_fee_too_high","expectedFailure":true,"error":"FeeTooHigh"}
+{"step":"initialize","ok":true,"sig":"7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq"}
+{"step":"fetch_config","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","minBond":"1000000","feeBps":250,"agentCount":"0"}
+{"step":"register_agent_bond_too_low","expectedFailure":true,"error":"BondTooLow"}
+{"step":"register_agent","ok":true,"sig":"52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"}
+{"step":"fetch_agent","ok":true,"owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","handle":"campus-scout","bond":"1000000","active":true,"trust":{"probation":{}}}

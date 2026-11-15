@@ -1,0 +1,67 @@
+{
+  "title": "Guild Protocol: on-chain agent labor market",
+  "summary": "Initialise the guild config, then register an agent with a SOL lamport bond and read the agent and vault PDAs.",
+  "what": "Guild Protocol is an Anchor 1.0 program for an on-chain agent labor market. An admin initialises a config PDA (stake mint, minimum bond, fee bps, treasury). Agents register a handle and lock a SOL bond in a vault PDA, then post, claim, submit and review jobs. Upstream also ships a dashboard; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+  "app_note": "The page at /dapps/guild-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/guild-protocol/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
+      "see": "The page lists initialize, register_agent, post_job and more, and shows program 9CHKw1dA\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "initialize is already done on this lab deployment. Fetch the config PDA (seeds [\"config\"]) and confirm min_bond and fee_bps.",
+      "see": "authority is the lab wallet, min_bond=1000000, fee_bps=250.",
+      "ran": "initialize sig 7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq wrote config 2w1AbEvBTGHmRudKVQc8NNQx97gNsN9aUkdc6binNxsj."
+    },
+    {
+      "do": "register_agent campus-scout is already taken by the lab wallet. Fetch agent 27FKpZrz\u2026 . A fee_bps=2000 initialize or a bond below min_bond should fail.",
+      "see": "handle=campus-scout, bond=1000000, active=true, trust=probation. FeeTooHigh / BondTooLow on the negatives.",
+      "ran": "register_agent sig 52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw."
+    }
+  ],
+  "diagram": "authority --initialize--> config PDA [\"config\"] ; owner --register_agent + lamports--> agent PDA [\"agent\", owner] + vault PDA [\"vault\", agent]",
+  "accounts": [
+    "config (seeds [\"config\"])",
+    "agent (seeds [\"agent\", owner])",
+    "vault (seeds [\"vault\", agent], system-owned lamport custody)"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "post_job",
+    "claim_job",
+    "submit_work",
+    "review_job",
+    "cancel_job",
+    "top_up_bond"
+  ],
+  "innovation": "A bonded agent labor market with job lifecycle and a lamport vault PDA, recorded on Solana rather than an off-chain board.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Read the config and agent accounts from the console.",
+    "Explain why fee_bps=2000 is rejected.",
+    "Sketch how post_job would lock bond."
+  ],
+  "not_covered": "post_job, claim_job, submit_work, review_job, cancel_job and top_up_bond were not exercised in this run.",
+  "path_order": 25,
+  "path_stage": "apply",
+  "difficulty": "intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Initialise a guild config",
+    "Register a bonded agent",
+    "Read agent state and name the rejected errors"
+  ],
+  "prereqs": [
+    "naim"
+  ],
+  "concepts": [
+    "PDA seeds",
+    "lamport vault",
+    "min bond",
+    "fee bps"
+  ],
+  "build": "Anchor 1.0.2 program, declared at 9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP on devnet.",
+  "functional": "full"
+}

@@ -1,0 +1,23 @@
+{
+ "slug": "guild-protocol",
+ "cluster": "devnet",
+ "program": "guild",
+ "idl": "guild.json",
+ "devnet": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "5ohSK7ZKUZbyjnimhws1RDam7RXXGmvQ3CmR4zJgHFvx8ER9w85vdkYAFSTGP8JeztPyGmnSQbLCW95N2S6mGof3"
+  },
+  {
+   "label": "initialize",
+   "sig": "7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq"
+  },
+  {
+   "label": "register_agent",
+   "sig": "52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"
+  }
+ ],
+ "verified": "2026-11-15"
+}
