@@ -26,10 +26,21 @@ function projectCard(p, headingLevel = 3) {
       <div><b>${g.approvedExperiments}</b>experiments</div><div><b>${g.testedCandidates}</b>tested candidates</div><div><b>${g.adoptionPackages}</b>adoption packages</div>
       <div><b>${g.projectAccepted}</b>project-accepted</div><div><b>${g.activeCredentials}</b>active credentials</div><div><b>${g.ideas}</b>ideas</div>
     </div>
+    ${liveStatusHtml(p)}
     <h4>Open assignments</h4>${assignments}
     ${records}
     <p class="small">${esc(p.coordination)} <a href="${esc(p.contactRoute)}">Open a coordination request</a>. Repos: <a href="https://github.com/${esc(p.repos.lab)}">lab fork</a>, <a href="https://github.com/${esc(p.repos.upstream)}">upstream</a>.</p>
   </article>`;
+}
+
+function liveStatusHtml(p) {
+  const s = p.liveStatus;
+  if (!s) return '<p class="small">CTO agent status: no autonomous run recorded yet.</p>';
+  const act = s.activity.slice(0, 4).map((a) => `<li>${a.url ? `<a href="${esc(a.url)}">${esc(a.text)}</a>` : esc(a.text)} <span class="small">${fmtDate(a.at)}</span></li>`).join('');
+  return `<div class="live"><h4>CTO agent status <span class="small">(updated ${fmtDate(s.updatedAt)}${s.runUrl ? `, <a href="${esc(s.runUrl)}">run</a>` : ''})</span></h4>
+    ${s.report ? `<p>${esc(s.report.summary)}</p>` : '<p class="small">Lab Reporter status pending.</p>'}
+    <p class="small">${s.pendingTasks} task(s) in progress with the CTO agent; ${s.openLabPullRequests} open lab pull request(s).</p>
+    ${act ? `<ul class="small">${act}</ul>` : ''}</div>`;
 }
 
 function filtered() {

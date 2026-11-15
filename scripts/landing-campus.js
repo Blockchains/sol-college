@@ -37,6 +37,7 @@ function init() {
           <li><b>${g.adoptionPackages ?? 0}</b> adoption packages</li><li><b>${g.projectAccepted ?? 0}</b> project-accepted</li>
           <li><b>${g.activeCredentials ?? 0}</b> active credentials</li></ul>
         ${open.length ? `<h4>Open assignments</h4><ul>${open.map((a) => `<li>${a.issueUrl ? `<a href="${esc(a.issueUrl)}">${esc(a.title)}</a>` : esc(a.title)}</li>`).join('')}</ul>` : ''}
+        ${fp.liveStatus ? `<h4>CTO agent status</h4>${fp.liveStatus.report ? `<p>${esc(fp.liveStatus.report.summary)}</p>` : ''}<p class="ch-meta">${fp.liveStatus.pendingTasks} task(s) in progress · ${fp.liveStatus.openLabPullRequests} open lab PR(s) · updated ${esc(String(fp.liveStatus.updatedAt).slice(0, 16).replace('T', ' '))} UTC${fp.liveStatus.runUrl ? ` · <a href="${esc(fp.liveStatus.runUrl)}">latest run</a>` : ''}</p>${fp.liveStatus.activity.length ? `<ul class="ch-meta">${fp.liveStatus.activity.slice(0, 3).map((a) => `<li>${a.url ? `<a href="${esc(a.url)}">${esc(a.text)}</a>` : esc(a.text)}</li>`).join('')}</ul>` : ''}` : ''}
         <p class="ch-meta">Repos: <a href="https://github.com/${esc(fp.repos.lab)}">lab fork</a> · <a href="https://github.com/${esc(fp.repos.upstream)}">upstream</a> · <a href="${esc(fp.contactRoute)}">coordination request</a></p>`;
     } else {
       more = `<p class="ch-meta">${esc(p.sector)} room</p>`;

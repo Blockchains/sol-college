@@ -55,3 +55,43 @@ export async function configureInstructions(
     return rec;
   });
 }
+
+/**
+ * Send one operator-authored message to a project's Mind in a dedicated conversation, at most once per
+ * (alias, text hash). Used for Skill-building requests. Same uncertainty rules as instructions.
+ */
+export async function sendOnce(
+  minds: Pick<MindsPort, "ensureConversation" | "getLatestHistoryFingerprint" | "sendMessage" | "waitForReply">,
+  store: FileStore,
+  o: { mindId: string; alias: string; messageText: string; timeoutMs: number },
+): Promise<ConfigureRecord & { replyText?: string }> {
+  const sha256 = sha256Hex(Buffer.from(o.messageText, "utf8"));
+  const key = `messages/${o.alias}-${sha256.slice(0, 12)}`;
+  return store.withLockAsync(key, async () => {
+    const existing = store.read<ConfigureRecord>(key);
+    if (existing) return existing.data;
+    const at = () => new Date().toISOString();
+    let rec: ConfigureRecord = { alias: o.alias, sha256, state: "intent", replyChars: 0, history: [{ at: at(), state: "intent", note: "message recorded" }] };
+    let v = store.write(key, rec, 0).version;
+    await minds.ensureConversation(o.alias, o.mindId);
+    const before = await minds.getLatestHistoryFingerprint(o.alias);
+    try {
+      await minds.sendMessage({ alias: o.alias, messageText: o.messageText });
+    } catch (e) {
+      rec = { ...rec, state: "uncertain", history: [...rec.history, { at: at(), state: "uncertain", note: `send outcome unknown: ${(e as Error).message}` }] };
+      store.write(key, rec, v);
+      return rec;
+    }
+    rec = { ...rec, state: "sent", history: [...rec.history, { at: at(), state: "sent", note: "sendMessage returned" }] };
+    v = store.write(key, rec, v).version;
+    if (o.timeoutMs <= 0) return rec;
+    const outcome = await minds.waitForReply({ alias: o.alias, timeoutMs: o.timeoutMs, sentMessageText: o.messageText, ...(before ? { afterFingerprint: before } : {}) });
+    if (!outcome.timedOut) {
+      const text = outcome.reply.messageText ?? "";
+      rec = { ...rec, state: "acknowledged", replyChars: text.length, ...(outcome.reply.fingerprint ? { replyFingerprint: outcome.reply.fingerprint } : {}), history: [...rec.history, { at: at(), state: "acknowledged", note: "reply received" }] };
+      store.write(key, rec, v);
+      return { ...rec, replyText: text };
+    }
+    return rec;
+  });
+}

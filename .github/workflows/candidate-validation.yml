@@ -23,6 +23,7 @@ jobs:
       anchor: ${{ steps.cfg.outputs.anchor }}
       solana: ${{ steps.cfg.outputs.solana }}
       rust: ${{ steps.cfg.outputs.rust }}
+      programdir: ${{ steps.cfg.outputs.programdir }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { persist-credentials: false }
@@ -40,6 +41,8 @@ jobs:
           echo "anchor=$(jq -r .validation.anchorVersion "$f")" >> "$GITHUB_OUTPUT"
           echo "solana=$(jq -r .validation.solanaVersion "$f")" >> "$GITHUB_OUTPUT"
           echo "rust=$(jq -r .validation.rustToolchain "$f")" >> "$GITHUB_OUTPUT"
+          d=$(jq -r '.validation.programDir // "contract"' "$f"); [[ "$d" =~ ^(\.|[A-Za-z0-9_.-]+(/[A-Za-z0-9_.-]+)*)$ ]] && [[ "$d" != *..* ]] || { echo "bad programDir"; exit 1; }
+          echo "programdir=$d" >> "$GITHUB_OUTPUT"
 
   untrusted-validate:
     needs: check-request
@@ -73,18 +76,19 @@ jobs:
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
           npm i -g "@coral-xyz/anchor-cli@${ANCHOR_VERSION}"
       - name: Build the candidate program (untrusted)
-        working-directory: candidate/contract
+        working-directory: candidate/${{ needs.check-request.outputs.programdir }}
         run: |
           set -euo pipefail
           solana --version; anchor --version; RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" rustc --version
           RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" anchor build
           ls -l target/deploy/*.so target/idl/*.json
       - name: Install candidate client dependencies (scripts disabled)
-        working-directory: candidate/contract
+        if: needs.check-request.outputs.fixture != 'build-only'
+        working-directory: candidate/${{ needs.check-request.outputs.programdir }}
         run: npx -y yarn@1.22.22 install --frozen-lockfile --ignore-scripts --non-interactive
       - name: Solana runtime integration fixture on a local validator
         if: needs.check-request.outputs.fixture == 'gifter-escrow-localnet'
-        working-directory: candidate/contract
+        working-directory: candidate/${{ needs.check-request.outputs.programdir }}
         run: |
           set -euo pipefail
           PROGRAM_ID=$(jq -r .address target/idl/gifter_escrow.json)

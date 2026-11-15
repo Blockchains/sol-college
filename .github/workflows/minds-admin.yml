@@ -46,9 +46,9 @@ jobs:
       - name: Private records location (fails closed until a private control repo is configured)
         env: { CONTROL_REPO: "${{ vars.SC_CONTROL_REPO }}" }
         run: |
-          if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: set repo variable SC_CONTROL_REPO (private repo) and secret SC_CONTROL_TOKEN"; exit 1; fi
+          if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: set repo variable SC_CONTROL_REPO (private repo) and secret SC_CONTROL_DEPLOY_KEY"; exit 1; fi
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with: { repository: "${{ vars.SC_CONTROL_REPO }}", token: "${{ secrets.SC_CONTROL_TOKEN }}", path: control }
+        with: { repository: "${{ vars.SC_CONTROL_REPO }}", ssh-key: "${{ secrets.SC_CONTROL_DEPLOY_KEY }}", path: control }
       - env:
           MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
           MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}

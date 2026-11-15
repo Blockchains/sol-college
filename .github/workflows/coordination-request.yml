@@ -1,6 +1,6 @@
 name: coordination-request
 # Privileged coordination: an authorised GitHub user opens a coordination-request issue; after a
-# reviewer approves the 'minds-admin' environment run, trusted code (default branch) validates the
+# protected 'minds' environment run starts (no manual reviewer; the requester must be a configured reviewer), trusted code (default branch) validates the
 # request, collects scoped context, sends ONE structured task to the project's approved CTO Mind,
 # validates the reply and stores the result in a PRIVATE control repository. The public issue only
 # receives a status line. No contributor code is executed here.
@@ -16,7 +16,7 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'coordination-request') }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment: minds-admin
+    environment: minds   # coordination is auto-approved (requester authorisation is checked in code)
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with: { persist-credentials: false }
@@ -26,9 +26,9 @@ jobs:
       - name: Private control repository (required; fails closed)
         env: { CONTROL_REPO: "${{ vars.SC_CONTROL_REPO }}" }
         run: |
-          if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: private control repo (vars.SC_CONTROL_REPO + secrets.SC_CONTROL_TOKEN) is not configured; refusing to store Minds output in a public repository."; exit 1; fi
+          if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: private control repo (vars.SC_CONTROL_REPO + secrets.SC_CONTROL_DEPLOY_KEY) is not configured; refusing to store Minds output in a public repository."; exit 1; fi
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with: { repository: "${{ vars.SC_CONTROL_REPO }}", token: "${{ secrets.SC_CONTROL_TOKEN }}", path: control }
+        with: { repository: "${{ vars.SC_CONTROL_REPO }}", ssh-key: "${{ secrets.SC_CONTROL_DEPLOY_KEY }}", path: control }
       - id: run
         env:
           MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}

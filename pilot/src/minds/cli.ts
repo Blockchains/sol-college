@@ -23,7 +23,7 @@ import { provisionMind } from "./provision.ts";
 import { equipApproved } from "./equip.ts";
 import { applyCirclePlan, planCircleChange } from "./circle.ts";
 import { runSmokeTest } from "./smoke.ts";
-import { configureInstructions } from "./configure.ts";
+import { configureInstructions, sendOnce } from "./configure.ts";
 import { dispatchTask, type TaskSpec } from "./task.ts";
 import { readFileSync } from "node:fs";
 
@@ -43,6 +43,8 @@ const { positionals, values } = parseArgs({
     "timeout-ms": { type: "string", default: "180000" },
     instructions: { type: "string" },
     spec: { type: "string" },
+    alias: { type: "string" },
+    file: { type: "string" },
   },
 });
 
@@ -137,6 +139,13 @@ async function main(): Promise<void> {
       if (!values.instructions) throw new Error("--instructions FILE is required");
       const rec = await configureInstructions(minds, new FileStore(privateRecordsDir()), { mindId: r.mindId, prefix: r.project.mind.conversationPrefix ?? `sc-${r.project.slug}`, text: readFileSync(values.instructions, "utf8"), timeoutMs: Number(values["timeout-ms"]) });
       return out({ project: r.project.slug, alias: rec.alias, instructionsSha256: rec.sha256, state: rec.state, acknowledged: rec.replyChars > 0, replyChars: rec.replyChars });
+    }
+    case "message": {
+      const r = await resolveProjectMind({ cfg, mapping, slug: need(slug), operation: "message", approval: approvalFor("message"), minds });
+      if (!values.alias || !values.file) throw new Error("--alias SUFFIX and --file FILE are required");
+      const prefix = r.project.mind.conversationPrefix ?? `sc-${r.project.slug}`;
+      const rec = await sendOnce(minds, new FileStore(privateRecordsDir()), { mindId: r.mindId, alias: `${prefix}-${values.alias}`, messageText: readFileSync(values.file, "utf8"), timeoutMs: Number(values["timeout-ms"]) });
+      return out({ project: r.project.slug, alias: rec.alias, state: rec.state, replyChars: rec.replyChars });
     }
     case "task": {
       const r = await resolveProjectMind({ cfg, mapping, slug: need(slug), operation: "message", approval: approvalFor("message"), minds });

@@ -11,6 +11,17 @@ export class GitHubApi {
     if (!r.ok) throw new Error(`GitHub GET ${path} -> ${r.status}`);
     return (await r.json()) as T;
   }
+
+  /** Write call (POST/PATCH). Only used by workflows whose token permissions allow it. 204 -> undefined. */
+  async send<T>(method: "POST" | "PATCH", path: string, body: unknown): Promise<T | undefined> {
+    const headers: Record<string, string> = { accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", "user-agent": "sol-college-pilot", "content-type": "application/json" };
+    if (this.token) headers["authorization"] = `Bearer ${this.token}`;
+    const r = await this.fetcher(`${this.base}${path}`, { method, headers, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(`GitHub ${method} ${path} -> ${r.status}`);
+    if (r.status === 204) return undefined;
+    const t = await r.text();
+    return (t ? JSON.parse(t) : undefined) as T | undefined;
+  }
 }
 
 export interface GhRepo { id: number; full_name: string; private: boolean }

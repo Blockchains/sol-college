@@ -32,6 +32,8 @@ export interface CampusProject {
   progression: { ideas: number; approvedExperiments: number; testedCandidates: number; adoptionPackages: number; projectAccepted: number; activeCredentials: number };
   records: PublicRecordLink[];
   repos: { upstream: string; lab: string };
+  /** Live CTO status from records/public/status/<slug>.json (written by the cto-autonomy workflow). */
+  liveStatus: { updatedAt: string; runUrl: string | null; report: { summary: string; at: string } | null; activity: Array<{ at: string; text: string; url: string | null }>; pendingTasks: number; openLabPullRequests: number } | null;
 }
 
 export interface CampusData {
@@ -49,6 +51,22 @@ const BLURB: Record<Sector, string> = {
 };
 
 /** Allowlisted public projection. Only fields named here can reach the public site. */
+function readLiveStatus(recordsDir: string, slug: string): CampusProject["liveStatus"] {
+  const f = join(recordsDir, "status", `${slug}.json`);
+  if (!existsSync(f)) return null;
+  const st = JSON.parse(readFileSync(f, "utf8")) as { updatedAt?: unknown; runUrl?: unknown; report?: { summary?: unknown; at?: unknown } | null; activity?: Array<{ at?: unknown; text?: unknown; url?: unknown }>; pendingTasks?: unknown; openLabPullRequests?: unknown };
+  const str = (v: unknown, max: number) => (typeof v === "string" ? v.slice(0, max) : "");
+  const url = (v: unknown) => (typeof v === "string" && /^https:\/\/(github\.com|sol\.college)\//.test(v) ? v : null);
+  return {
+    updatedAt: str(st.updatedAt, 40),
+    runUrl: url(st.runUrl),
+    report: st.report && typeof st.report.summary === "string" ? { summary: str(st.report.summary, 900), at: str(st.report.at, 40) } : null,
+    activity: (st.activity ?? []).slice(0, 8).map((a) => ({ at: str(a.at, 40), text: str(a.text, 200), url: url(a.url) })),
+    pendingTasks: typeof st.pendingTasks === "number" ? st.pendingTasks : 0,
+    openLabPullRequests: typeof st.openLabPullRequests === "number" ? st.openLabPullRequests : 0,
+  };
+}
+
 export function buildCampusData(projects: ProjectConfig[], recordsDir: string, repoBlobBase: string): CampusData {
   const live = projects.filter((p) => p.publicListing.approved && p.research.authorised && !p.placeholder);
   const regPath = join(recordsDir, "certificates", "registry.json");
@@ -104,6 +122,7 @@ export function buildCampusData(projects: ProjectConfig[], recordsDir: string, r
       },
       records,
       repos: { upstream: p.upstream.repo, lab: p.lab.repo },
+      liveStatus: readLiveStatus(recordsDir, p.slug),
     };
   });
   const data: CampusData = {

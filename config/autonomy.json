@@ -1,0 +1,31 @@
+{
+  "schema": "sc-autonomy/1",
+  "standingApproval": {
+    "approvedBy": "Blockchains",
+    "ref": "owner-instruction-2026-11-15T16:23Z",
+    "at": "2026-11-15T16:23:00Z",
+    "covers": [
+      "Structured Mind tasks of kinds research-plan, upstream-impact, pr-triage, adoption-draft and progress-report for the listed projects",
+      "Opening research-question issues in Blockchains/sol-college from Mind proposals that pass deterministic checks (at most one per project per run)",
+      "Dispatching candidate-validation for new open lab pull-request heads",
+      "Building adoption packages for candidates whose newest genuine validation run passed",
+      "Publishing the Lab Reporter status (checked text) to records/public/status"
+    ],
+    "excludes": [
+      "Mind lifecycle (create, enable, disable)",
+      "Circle membership",
+      "Pause or resume",
+      "Project acceptance (/sc-accept stays a human comment by the configured reviewer)",
+      "Mainnet, keys, faucet automation",
+      "Comments or pushes on upstream repositories"
+    ]
+  },
+  "projects": ["gifter-escrow", "sentient-send"],
+  "limits": {
+    "maxNewTasksPerProjectPerRun": 3,
+    "maxIssuesPerProjectPerRun": 1,
+    "researchPlanIntervalHours": 72,
+    "reportIntervalHours": 12,
+    "taskWaitMs": 20000
+  }
+}

@@ -22,7 +22,8 @@
     "adoption": "tsx src/adoption/cli.ts",
     "acceptance": "tsx src/acceptance/cli.ts",
     "certificate": "tsx src/certification/cli.ts",
-    "coordination": "tsx src/coordination/cli.ts"
+    "coordination": "tsx src/coordination/cli.ts",
+    "autonomy": "tsx src/autonomy/cli.ts"
   },
   "dependencies": {
     "@animocabrands/minds-client-lib": "0.1.7",

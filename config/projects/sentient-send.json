@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-sentient-send",
+  "slug": "sentient-send",
+  "displayName": "sentient.send (Sol.College demonstration)",
+  "description": "Winner-takes-all sentiment market on Solana devnet (Anchor 0.32): creators open markets with 2 to 10 sides, bettors back a side, the side with the most SOL wins. Sol.College runs this lab on its own fork.",
+  "sector": "DeFi",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/sentient.send fork. The upstream author (JB1HEY) has not joined Sol.College and there is no partnership; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College's own reviewer, not by the upstream project.",
+  "upstream": { "repo": "JB1HEY/sentient.send", "branch": "main" },
+  "lab": { "repo": "Blockchains/sentient.send", "branch": "main" },
+  "mind": { "mappingRef": "sentient-send-cto", "mappingStatus": "approved", "configVersion": 1, "conversationPrefix": "sc-sentient-send" },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T16:25:42Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college/issues/3",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (create_market, place_bet, claim_winnings, claim_creator_fees)",
+      "Frontend reliability of the hosted devnet app at sol.college/dapps/sentient-send/",
+      "QA: localnet fixtures and negative cases"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [{ "github": "Blockchains", "githubId": 11951015, "roles": ["experiment-permission", "rebase-permission", "compatibility-attestation", "adoption-acceptance"] }],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      { "id": "question-seed-32-bytes", "title": "Market questions over 32 bytes fail because the question is a PDA seed", "skills": ["Anchor", "Rust", "TypeScript"], "status": "open" },
+      { "id": "frontend-typecheck", "title": "Frontend does not type-check (MarketWithPrices drift); export builds with type errors ignored", "skills": ["TypeScript", "Next.js"], "status": "open" }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new?template=coordination-request.yml"
+  },
+  "disclosure": { "securityReports": "private-only", "mindsTranscripts": "private-only", "publicFields": ["displayName", "description", "sector", "assignments", "demonstrationNotice"] },
+  "entitlement": { "plan": "demonstration", "status": "active", "activation": "manual", "paymentVerification": "not-applicable-demonstration" },
+  "validation": { "workflowRepo": "Blockchains/sol-college", "workflowPath": ".github/workflows/candidate-validation.yml", "fixture": "build-only", "programDir": ".", "anchorVersion": "0.32.1", "solanaVersion": "2.3.0", "rustToolchain": "1.89.0" }
+}
