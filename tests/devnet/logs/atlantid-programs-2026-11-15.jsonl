@@ -1,0 +1,12 @@
+{"step":"8004_root","root":"GGQfKNpXq8HchNxecLfXi8D7xz9PDppdPAPgr5Fx4Nvd","collection":"6CTyGPcn8dMwKEqgtvx2XCpkGUd7uqCVK6937RSM5bhA","registryConfig":"Djy4TKPvFyEumcVTDCqJUHWErKqcaeRj4ULWwaPkedor","authority":"2KmHw8VbShuz9xfj3ecEjBM5nPKR5BcYHRDSFfK1286t"}
+{"step":"register_with_options","ok":true,"sig":"549HzQs8vtVFJuRndjkUErMfAjP7j5NdeVAekghatxDJswBcpaoigjm3kmNp9To3JHc1sDBU58MM2ExdspZ8FCAN","asset":"J1TstbZR9NYxNafzZ6tB1S9F1JqxCg5GAKCGH3QhGe2w","agent":"CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh","atomEnabled":true,"agentOwner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"initialize_root_config","ok":true,"sig":"27vjRYruXKJ2atJ28dVQJYqzby3wWmAq2vk4yp2jVRRXZjwioCTwnam85ptEBYKuAeJMV5ps5P9yQCLA1awB8wti","vaultRoot":"GGjNc8D9mYD6fsd94txY6wPvqAhGWGsDh465WPbwyBfK"}
+{"step":"create_vault","ok":true,"sig":"5T3E3YnWHiCb7BW7M31uzBf2rz4cbd3fyq5ox3VR6aSkdA72hFvmdPd7QhTA7rRkPdcMQndmDjttc2Ty6LNwSTCv","vault":"FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM","vaultAta":"DoUoyAY1iqrjTy74hCMqVP2o71Yo3fyKasyT2evNbJm3","vaultAuth":"A9CpqLgDiUB58JACHKPDHdv7Ce5cGV4QHxtc5BPtq6S8"}
+{"step":"fund_vault","vaultBal":"5000000"}
+{"step":"update_policy","ok":true,"sig":"67r8JwfJinGk5i6Amq1VVa9bs3ge23YzhxLwAJTFCfiUweKaNzUzCC3xL4d2oy5Pm3EjdfFjSnG8Hx6ibb5CJtVq"}
+{"step":"spend_owner","ok":true,"sig":"2KNCjsrcELznQMsyN7e5LreWfrd4e7uKZvhi78R1SWWQ7eLG1ghWrJk95273Xy23iS6Td45wuPDBABQRtrCjFi9C","recipientDelta":"3000000"}
+{"step":"withdraw","ok":true,"sig":"52hk3PiVqjY5Ma3SPNXPp5jVpLqm87rV982B16WUU1yknr44CsAnND9o6WBguAXvJi1DrVPCHU6hHNztgiMAYp8r","ownerDelta":"2000000","vaultLeft":"0"}
+{"step":"initialize_escrow_config","ok":true,"sig":"4HgPHwT4v8KieDETCxWW2n6ZA1Q2VUEhVMq6k1NESBxCgCzqBJVuMFmmS5n9DPpo5u1MnNeyzCL2hWaNs8baER7z","escrowConfig":"GEBQiq6TyXcfrx3k6iwwXFjDMmfNuccL9KBtm6yxz5Vk"}
+{"step":"create_escrow","ok":true,"sig":"5gBDpEvyFLUabYdAVvkL8bSwLtn5fMTwwCEKMnnFbe945P7t9kiCwLnGUr72p5PsUqPcMNhBhfDPJNVsHqU2CeUE","escrow":"BKTYkugZMeu87vLMaPzKRzrQT1rta8ZfnTZPDhWADbs7","escrowAta":"5nTgg6HiXgNi1DaBzdQk21eubvfAhSTQuTohiyLQBZJY","escrowBal":"1000000"}
+{"step":"mark_completed","ok":true,"sig":"44R9A9vVD8Z4SEbxyXsd2hDGX8NzMsDoAZfpzigZAqcaWM98u7DVE3LC8g8Env54buanRsCWrbCxj1ceRnDASdjx"}
+{"step":"accept_work","ok":true,"sig":"5nE2e2xdANKbFcTpoy9wCeVmWdXv9dP82joVj7KSBuR6jdxZrm9GgRiUGX3FZ8gq51K1o6yzqoRWfErW8ithxTav","vaultDelta":"990000","escrowClosed":true,"note":"logged after rpc; post-balance of closed escrow ATA threw in the first script run"}

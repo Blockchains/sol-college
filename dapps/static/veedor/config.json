@@ -1,0 +1,10 @@
+{
+ "name": "Veedor Settlement",
+ "fork": "https://github.com/Blockchains/veedor",
+ "commit": "0e71b53135e60861446e2bdb2ac7bfbdbfcf707e",
+ "lesson": "/explore/veedor/",
+ "programs": {
+  "devnet": "8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4",
+  "mainnet": null
+ }
+}

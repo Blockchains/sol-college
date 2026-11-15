@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-veedor",
+  "slug": "veedor",
+  "displayName": "Veedor Settlement (Sol.College demonstration)",
+  "description": "Attestation-gated SPL escrow for agent jobs on Solana devnet (Anchor 0.32.1). create_job, fund, submit_evidence and release were verified end-to-end: 1_000_000 lab tokens were locked in a job escrow ATA, the provider submitted evidence, a release without an Ed25519 precompile was rejected (MissingEd25519Instruction), and a lab verifier signature over the canonical attestation message released the 1_000_000 tokens to the provider (escrow ATA ended at 0).",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of JuanMarchetto/veedor. The lab tree is branch sol-college-devnet of Blockchains/veedor. The lab changed declare_id to a unique Sol.College devnet program and pointed the Anchor.toml program id at that key. The hosted IDL is a hand-derived subset covering create_job, fund, submit_evidence, release, resolve and crank_timeout; discriminators were confirmed by the verifying transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "JuanMarchetto/veedor",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/veedor",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "veedor-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-veedor"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:50:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (create_job, fund, submit_evidence, release with Ed25519 attestation)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/veedor/",
+      "QA: devnet proof of the attested release path and MissingEd25519Instruction rejection"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "dispute, resolve, and crank_timeout"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "host-generated-idl",
+        "title": "Replace the hand-derived hosted IDL with an Anchor-generated one once idl-build can run in this lab (openssl/make currently block it)",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/settlement"
+  }
+}

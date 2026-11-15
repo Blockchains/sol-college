@@ -1,0 +1,13 @@
+{"step":"setup","program":"8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4","job":"3kxikPVixRNYbhTawFa88pf7GX4gKou1X6dEcXSfSjQ9","buyer":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","provider":"4KrfWyqfYcq3xv1oZicDArGZuvnbyC5hpovrCFGUpLF3","verifier":"Hk8vBuTdzxXeWCurAY4Ryr7Mzg6ZqzZVEeQja5DmEWEk","mint":"BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D"}
+{"step":"fund_provider","sig":"gDMbVAcN7P4Ew13Q6z5FV8WcCQbxfDFASdWycGrZQY7sbNDfumKFwc6hmd7Q4uESRca8X5rsYpZxNSEHKFU1iwU"}
+{"step":"mint_to_buyer","sig":"2u5YJEjLoCUyVBuB3fsqSetmbLxU71mKbsvUht8EUUF7CTJNSMHfQx9L1yPPuzmgV7SujCQhTLhRYudJQo7VnJ1b","buyerAta":"J3weMnAcV3KkiQMGpzBTLGbZx4RcrNft6mzgBQJXykwm","providerAta":"9vwtF4164xtxbwBskCmCRQWdWj46soqhAXYTHdZvHCEe","escrowAta":"3DFLvvVEs11cdFZcWRHCHQx1QAs5cy1bAY4PHpJFv2q7"}
+{"step":"create_job","ok":true,"sig":"3gqyMx9GnDWBTKRFNVp7MZ21MNLXvLjcdHZ5h6haT4ibEFyKg5Lt9geh6DTLhLuakuLHXaemx43PqJLZLq5BCnBY"}
+{"step":"after_create","state":{"created":{}},"amount":"1000000","buyer":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"fund","ok":true,"sig":"5EtS5NtvoG8UuHAHSMHcqoYwf2TQR3fxBdumPhVDUnWr5dER8HmTufYuMC3FP2BH2qx8ay8HZC9v8pFRFvsBBmKG"}
+{"step":"after_fund","escrow":"1000000"}
+{"step":"submit_evidence","ok":true,"sig":"4xiB1hha4XPKTsJB7brUirPXe812MZYuGsZMPeHs7LQzDkTSN9wbdNKL3JyK5z5ECMiahXHbUkJf7XB6HvncapHH"}
+{"step":"after_evidence","state":{"underReview":{}}}
+{"step":"negative_no_ed25519","expectedFailure":true,"error":"MissingEd25519Instruction"}
+{"step":"release","ok":true,"sig":"zV2Zmb8JL4VDVkr2tgq9L2GyCK7mKmcW4fw377inv8AvEjvAZ2F2YR6KdzsxRZsS1AtofGvFospRJN4MsmsdoN8"}
+{"step":"after_release","state":{"released":{}},"providerDelta":"1000000","escrow":"0"}
+{"step":"DONE","ok":true}

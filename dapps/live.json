@@ -3475,5 +3475,155 @@
     "limits": "refund, cancel and recover were not exercised. mock_swap is a disclosed 1:1 transfer stand-in, not a real AMM. Official program ids were not reused. Hosted IDLs are hand-derived subsets confirmed by the verifying transactions.",
     "functional": "full",
     "functional_evidence": "create_commitment wrote commitment Gu9K13nugJNpoRGAmetoYGNjhK6B7pUsCTLE6yKVPznp and escrowed 1_000_000 of mint BJMSdujx\u2026. withdraw_for_swap moved the escrow into staging 4uVMKC2maMbRyHcAroqv8TcgkiiDCHP9FMaRrDBuECZ9. mock_swap_execute credited 1_000_000 of mint 7xP1NAVv\u2026 to the commitment output ATA. submit_proof 2PD31SxG\u2026 set status Passed and verified=true from that on-chain balance. release 2HQsUUms\u2026 left the commitment Released and paid payer m4AcRjHc\u2026 exactly +1_000_000 output (payer input \u22121_000_000). Recreating the same task_id was rejected."
+  },
+  {
+    "slug": "veedor",
+    "name": "Veedor Settlement",
+    "lesson": "/explore/veedor/",
+    "app": "/dapps/veedor/",
+    "fork": "https://github.com/Blockchains/veedor",
+    "commit": "0e71b53135e60861446e2bdb2ac7bfbdbfcf707e",
+    "program": "8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering create_job, fund, submit_evidence, release, resolve and crank_timeout; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/veedor (unique declare_id).",
+    "learn": "create_job writes a PDA (seeds [\"job\", job_id]) plus an escrow ATA owned by that PDA. fund moves job.amount of the chosen mint from the buyer ATA into the escrow. submit_evidence, signed by the recorded provider, stores the evidence hash and starts the review window. release pays the provider (Pass) or refunds the buyer (Fail) only if the previous instruction in the transaction is an Ed25519SigVerify over the 130-byte canonical attestation message, signed by job.verifier.",
+    "source": [
+      [
+        "programs/settlement/src/lib.rs L49-L73 (create_job)",
+        "https://github.com/Blockchains/veedor/blob/0e71b53135e60861446e2bdb2ac7bfbdbfcf707e/programs/settlement/src/lib.rs#L49-L73"
+      ],
+      [
+        "programs/settlement/src/lib.rs L75-L97 (fund)",
+        "https://github.com/Blockchains/veedor/blob/0e71b53135e60861446e2bdb2ac7bfbdbfcf707e/programs/settlement/src/lib.rs#L75-L97"
+      ],
+      [
+        "programs/settlement/src/lib.rs L99-L110 (submit_evidence)",
+        "https://github.com/Blockchains/veedor/blob/0e71b53135e60861446e2bdb2ac7bfbdbfcf707e/programs/settlement/src/lib.rs#L99-L110"
+      ],
+      [
+        "programs/settlement/src/lib.rs L133-L162 (release + Ed25519 adjacency check)",
+        "https://github.com/Blockchains/veedor/blob/0e71b53135e60861446e2bdb2ac7bfbdbfcf707e/programs/settlement/src/lib.rs#L133-L162"
+      ],
+      [
+        "crates/settlement-core/src/lib.rs L171-L177 (attestation_message)",
+        "https://github.com/Blockchains/veedor/blob/0e71b53135e60861446e2bdb2ac7bfbdbfcf707e/crates/settlement-core/src/lib.rs#L171-L177"
+      ]
+    ],
+    "flow": "tests/devnet/veedor.mjs",
+    "log": "tests/devnet/logs/veedor-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy settlement as 8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4 on devnet",
+        "4TtRVj327LswCSk9yvgM7MAdFy62AoJAMoXMFusK61je9LfRQbQmC42MDjsdUwpZhVKSSeuqxGQCcyGgGmpLcgqY"
+      ],
+      [
+        "create_job veedor-lab-job-1 (job 3kxikPVixRNYbhTawFa88pf7GX4gKou1X6dEcXSfSjQ9, amount 1_000_000, mint BJMSdujx\u2026)",
+        "3gqyMx9GnDWBTKRFNVp7MZ21MNLXvLjcdHZ5h6haT4ibEFyKg5Lt9geh6DTLhLuakuLHXaemx43PqJLZLq5BCnBY"
+      ],
+      [
+        "fund moved 1_000_000 tokens into escrow ATA 3DFLvvVEs11cdFZcWRHCHQx1QAs5cy1bAY4PHpJFv2q7",
+        "5EtS5NtvoG8UuHAHSMHcqoYwf2TQR3fxBdumPhVDUnWr5dER8HmTufYuMC3FP2BH2qx8ay8HZC9v8pFRFvsBBmKG"
+      ],
+      [
+        "submit_evidence (provider 4KrfWyqf\u2026) moved the job to UnderReview",
+        "4xiB1hha4XPKTsJB7brUirPXe812MZYuGsZMPeHs7LQzDkTSN9wbdNKL3JyK5z5ECMiahXHbUkJf7XB6HvncapHH"
+      ],
+      [
+        "release with a lab verifier attestation paid the provider ATA +1_000_000; escrow ATA ended at 0; job state Released",
+        "zV2Zmb8JL4VDVkr2tgq9L2GyCK7mKmcW4fw377inv8AvEjvAZ2F2YR6KdzsxRZsS1AtofGvFospRJN4MsmsdoN8"
+      ]
+    ],
+    "negative": [
+      "release without a preceding Ed25519SigVerify is rejected (MissingEd25519Instruction)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; create_job, fund, submit_evidence and release were sent with the lab, provider and verifier keys through tests/devnet/veedor.mjs. A hosted release still needs a custom Ed25519 pre-instruction.",
+    "limits": "dispute, resolve and crank_timeout were not exercised. The official program id was not reused. The hosted IDL is hand-derived because anchor idl build failed in this lab (openssl-sys needs make).",
+    "functional": "full",
+    "functional_evidence": "create_job wrote job 3kxikPVixRNYbhTawFa88pf7GX4gKou1X6dEcXSfSjQ9 (Created). fund locked 1_000_000 lab tokens in escrow 3DFLvvVE\u2026. submit_evidence moved the job to UnderReview. A release without an Ed25519 precompile was rejected (MissingEd25519Instruction). release zV2Zmb8J\u2026, with a lab verifier signature over the 130-byte attestation message (Pass tag 1), paid provider 4KrfWyqfYcq3xv1oZicDArGZuvnbyC5hpovrCFGUpLF3 exactly 1_000_000 tokens and left the escrow ATA at 0 with job state Released."
+  },
+  {
+    "slug": "atlantid-programs",
+    "name": "Atlantid Vault + Escrow",
+    "lesson": "/explore/atlantid-programs/",
+    "app": "/dapps/atlantid-programs/",
+    "fork": "https://github.com/Blockchains/atlantid-programs",
+    "commit": "5f8558b2f377fdccb2906cad33394e3593eed7e3",
+    "program": "8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at agent_vault. The hosted IDL is the lab build of programs/agent_vault; agent_escrow.json is also hosted. Discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/atlantid-programs (unique declare_ids). Vault creation is gated on the official devnet 8004 registry 8oo4J9tBB3Hna1jRQ3rWvJjojqM5DYTDJo5cejUuJy3C, which the lab did not redeploy. Escrow program 8m9ef1YpXNAAM9nmAhBR4Y4MVbejdKuNnYj9DMPYscnW.",
+    "learn": "initialize_root_config, signed by the program upgrade authority, writes the vault root config PDA. create_vault then requires a 8004 AgentAccount (seeds [\"agent\", asset] on the official registry) with atom_enabled and matching owner, and opens a vault PDA (seeds [\"vault\", owner, agent_asset]) plus an ATA owned by the vault authority. spend as the vault owner bypasses policy caps; withdraw returns remaining tokens. create_escrow locks client tokens against that vault; mark_completed and accept_work pay the vault ATA minus protocol_fee_bps and close the escrow ATA.",
+    "source": [
+      [
+        "programs/agent_vault/src/lib.rs L22-L36 (initialize_root_config)",
+        "https://github.com/Blockchains/atlantid-programs/blob/5f8558b2f377fdccb2906cad33394e3593eed7e3/programs/agent_vault/src/lib.rs#L22-L36"
+      ],
+      [
+        "programs/agent_vault/src/lib.rs L38-L40 (create_vault)",
+        "https://github.com/Blockchains/atlantid-programs/blob/5f8558b2f377fdccb2906cad33394e3593eed7e3/programs/agent_vault/src/lib.rs#L38-L40"
+      ],
+      [
+        "programs/agent_vault/src/instructions/create_vault.rs (8004 + ATOM gate)",
+        "https://github.com/Blockchains/atlantid-programs/blob/5f8558b2f377fdccb2906cad33394e3593eed7e3/programs/agent_vault/src/instructions/create_vault.rs"
+      ],
+      [
+        "programs/agent_escrow/src/lib.rs L61-L68 (create_escrow)",
+        "https://github.com/Blockchains/atlantid-programs/blob/5f8558b2f377fdccb2906cad33394e3593eed7e3/programs/agent_escrow/src/lib.rs#L61-L68"
+      ],
+      [
+        "programs/agent_escrow/src/lib.rs L70-L76 (mark_completed, accept_work)",
+        "https://github.com/Blockchains/atlantid-programs/blob/5f8558b2f377fdccb2906cad33394e3593eed7e3/programs/agent_escrow/src/lib.rs#L70-L76"
+      ]
+    ],
+    "flow": "tests/devnet/atlantid-programs.mjs",
+    "log": "tests/devnet/logs/atlantid-programs-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy agent_vault as 8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB on devnet",
+        "4jKvYPs3cZDprgfr9NEMLxmqXY49o7j467GLcf2LSgsMeD8ZYMmT6KNLroJ8LEh6tfKcEcvgBBZky72cAQNDSXSX"
+      ],
+      [
+        "Deploy agent_escrow as 8m9ef1YpXNAAM9nmAhBR4Y4MVbejdKuNnYj9DMPYscnW on devnet",
+        "4BXA23egUznQweCVmAu7MFH7RPMXj64sXrPPJ5kLHRTHGHh6BZqSLwoTd8qxNgRMaAyhkrppr53cHNRLCXp42SNE"
+      ],
+      [
+        "register_with_options on official 8004 (asset J1TstbZR9NYxNafzZ6tB1S9F1JqxCg5GAKCGH3QhGe2w, agent CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh, ATOM enabled)",
+        "549HzQs8vtVFJuRndjkUErMfAjP7j5NdeVAekghatxDJswBcpaoigjm3kmNp9To3JHc1sDBU58MM2ExdspZ8FCAN"
+      ],
+      [
+        "initialize_root_config (vault root GGjNc8D9mYD6fsd94txY6wPvqAhGWGsDh465WPbwyBfK, fee 0)",
+        "27vjRYruXKJ2atJ28dVQJYqzby3wWmAq2vk4yp2jVRRXZjwioCTwnam85ptEBYKuAeJMV5ps5P9yQCLA1awB8wti"
+      ],
+      [
+        "create_vault FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM (ATA DoUoyAY1iqrjTy74hCMqVP2o71Yo3fyKasyT2evNbJm3)",
+        "5T3E3YnWHiCb7BW7M31uzBf2rz4cbd3fyq5ox3VR6aSkdA72hFvmdPd7QhTA7rRkPdcMQndmDjttc2Ty6LNwSTCv"
+      ],
+      [
+        "update_policy daily_cap=4_000_000, per_tx_cap=2_000_000",
+        "67r8JwfJinGk5i6Amq1VVa9bs3ge23YzhxLwAJTFCfiUweKaNzUzCC3xL4d2oy5Pm3EjdfFjSnG8Hx6ibb5CJtVq"
+      ],
+      [
+        "spend 3_000_000 as owner (bypassed per_tx cap); recipient +3_000_000",
+        "2KNCjsrcELznQMsyN7e5LreWfrd4e7uKZvhi78R1SWWQ7eLG1ghWrJk95273Xy23iS6Td45wuPDBABQRtrCjFi9C"
+      ],
+      [
+        "withdraw remaining 2_000_000 to the owner ATA",
+        "52hk3PiVqjY5Ma3SPNXPp5jVpLqm87rV982B16WUU1yknr44CsAnND9o6WBguAXvJi1DrVPCHU6hHNztgiMAYp8r"
+      ],
+      [
+        "initialize_escrow_config (100 bps fee) and create_escrow atl-job-1 for 1_000_000 (escrow BKTYkugZMeu87vLMaPzKRzrQT1rta8ZfnTZPDhWADbs7)",
+        "5gBDpEvyFLUabYdAVvkL8bSwLtn5fMTwwCEKMnnFbe945P7t9kiCwLnGUr72p5PsUqPcMNhBhfDPJNVsHqU2CeUE"
+      ],
+      [
+        "mark_completed then accept_work: vault ATA +990_000 (1% fee), escrow ATA closed",
+        "5nE2e2xdANKbFcTpoy9wCeVmWdXv9dP82joVj7KSBuR6jdxZrm9GgRiUGX3FZ8gq51K1o6yzqoRWfErW8ithxTav"
+      ]
+    ],
+    "negative": [
+      "A 3_000_000 spend as owner was used to show cap bypass; set_agent_wallet + cap-enforced agent-wallet spend was not run in this pass."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the 8004 vault ceremony and escrow lifecycle were sent with the lab wallet through tests/devnet/atlantid-programs.mjs. Creating a new vault in the console still needs a prior official-8004 register_with_options.",
+    "limits": "set_agent_wallet and cap-enforced spend as the 8004 agent wallet were not exercised. dispute_work and timeout cranks were not exercised. The official 8004 registry and official program ids were not reused for vault/escrow.",
+    "functional": "full",
+    "functional_evidence": "register_with_options 549HzQs8\u2026 created 8004 agent CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh with atom_enabled=true. initialize_root_config 27vjRYru\u2026 and create_vault 5T3E3YnW\u2026 opened vault FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM. After funding 5_000_000, spend 2KNCjsrc\u2026 paid a recipient +3_000_000 (owner bypass of a 2_000_000 per-tx cap) and withdraw 52hk3PiV\u2026 returned 2_000_000. create_escrow 5gBDpEvy\u2026 locked 1_000_000; mark_completed 44R9A9vV\u2026 and accept_work 5nE2e2xd\u2026 paid the vault ATA exactly 990_000 (100 bps fee) and closed the escrow ATA."
   }
 ]

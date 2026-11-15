@@ -1,0 +1,11 @@
+{
+ "name": "Atlantid Vault + Escrow",
+ "fork": "https://github.com/Blockchains/atlantid-programs",
+ "commit": "5f8558b2f377fdccb2906cad33394e3593eed7e3",
+ "lesson": "/explore/atlantid-programs/",
+ "programs": {
+  "devnet": "8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB",
+  "mainnet": null,
+  "escrow_devnet": "8m9ef1YpXNAAM9nmAhBR4Y4MVbejdKuNnYj9DMPYscnW"
+ }
+}

@@ -1,0 +1,2227 @@
+{
+  "address": "8m9ef1YpXNAAM9nmAhBR4Y4MVbejdKuNnYj9DMPYscnW",
+  "metadata": {
+    "name": "agent_escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Agent Escrow Protocol"
+  },
+  "instructions": [
+    {
+      "name": "accept_work",
+      "discriminator": [
+        69,
+        200,
+        92,
+        157,
+        151,
+        9,
+        96,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true
+        },
+        {
+          "name": "worker_vault_ata",
+          "docs": [
+            "Worker vault ATA — receives (amount - protocol_fee)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_ata",
+          "docs": [
+            "Treasury ATA — receives protocol_fee."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "close_escrow_record",
+      "discriminator": [
+        102,
+        55,
+        211,
+        19,
+        136,
+        118,
+        69,
+        86
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "job_id"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "crank_dispute_timeout",
+      "discriminator": [
+        231,
+        145,
+        187,
+        233,
+        204,
+        230,
+        172,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "cranker",
+          "docs": [
+            "Anyone can crank."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client ATA — bond returned here (system failure, not client's fault)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "worker_vault_ata",
+          "docs": [
+            "Worker vault ATA — receives (amount - protocol_fee)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_ata",
+          "docs": [
+            "Treasury ATA — receives protocol_fee."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "crank_release",
+      "discriminator": [
+        159,
+        193,
+        118,
+        180,
+        49,
+        10,
+        170,
+        127
+      ],
+      "accounts": [
+        {
+          "name": "cranker",
+          "docs": [
+            "Anyone can crank."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "worker_vault_ata",
+          "docs": [
+            "Worker vault ATA — receives (amount - protocol_fee)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_ata",
+          "docs": [
+            "Treasury ATA — receives protocol_fee."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "crank_timeout",
+      "discriminator": [
+        102,
+        242,
+        155,
+        184,
+        215,
+        150,
+        81,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "cranker",
+          "docs": [
+            "Anyone can crank."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_escrow",
+      "discriminator": [
+        253,
+        215,
+        165,
+        116,
+        36,
+        108,
+        68,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "worker_vault",
+          "docs": [
+            "Worker's VaultAccount PDA — typed deserialization + owner check via agent_vault crate."
+          ]
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "job_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "escrow_authority"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "client_token_account",
+          "writable": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "timeout_slots",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "dispute_work",
+      "discriminator": [
+        179,
+        30,
+        10,
+        197,
+        126,
+        218,
+        33,
+        144
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_token_account",
+          "docs": [
+            "Escrow ATA — bond deposited here."
+          ],
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client token account — bond transferred from here."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize_escrow_config",
+      "discriminator": [
+        59,
+        6,
+        201,
+        67,
+        235,
+        49,
+        169,
+        95
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "treasury"
+        },
+        {
+          "name": "mint",
+          "docs": [
+            "The accepted escrow mint (USDC)."
+          ]
+        },
+        {
+          "name": "escrow_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "program_data",
+          "docs": [
+            "Program data for upgrade authority verification — only the",
+            "program’s upgrade authority can initialize the config."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  81,
+                  36,
+                  208,
+                  6,
+                  146,
+                  147,
+                  32,
+                  210,
+                  138,
+                  139,
+                  243,
+                  131,
+                  123,
+                  171,
+                  203,
+                  82,
+                  120,
+                  98,
+                  173,
+                  182,
+                  97,
+                  175,
+                  172,
+                  112,
+                  122,
+                  77,
+                  116,
+                  34,
+                  232,
+                  125,
+                  187
+                ]
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                2,
+                168,
+                246,
+                145,
+                78,
+                136,
+                161,
+                176,
+                226,
+                16,
+                21,
+                62,
+                247,
+                99,
+                174,
+                43,
+                0,
+                194,
+                185,
+                61,
+                22,
+                193,
+                36,
+                210,
+                192,
+                83,
+                122,
+                16,
+                4,
+                128,
+                0,
+                0
+              ]
+            }
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "acceptance_window_slots",
+          "type": "u64"
+        },
+        {
+          "name": "dispute_timeout_slots",
+          "type": "u64"
+        },
+        {
+          "name": "protocol_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "dispute_bond_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "mark_completed",
+      "discriminator": [
+        116,
+        162,
+        164,
+        123,
+        84,
+        87,
+        130,
+        129
+      ],
+      "accounts": [
+        {
+          "name": "worker",
+          "docs": [
+            "Worker signer — must be either `agent_wallet` (from 8004 AgentAccount)",
+            "or `owner` of the VaultAccount referenced by `escrow_record.worker_vault`."
+          ],
+          "signer": true
+        },
+        {
+          "name": "worker_vault",
+          "docs": [
+            "VaultAccount PDA from agent_vault program — typed deserialization + owner check."
+          ]
+        },
+        {
+          "name": "agent_account",
+          "docs": [
+            "AgentAccount PDA from 8004 registry — validated via PDA seeds derived from",
+            "worker_vault.agent_asset, ensuring the agent ↔ vault cross-reference."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "worker_vault.agent_asset",
+                "account": "VaultAccount"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                115,
+                254,
+                154,
+                49,
+                129,
+                129,
+                48,
+                89,
+                58,
+                8,
+                167,
+                194,
+                122,
+                8,
+                194,
+                220,
+                245,
+                213,
+                204,
+                195,
+                104,
+                134,
+                39,
+                243,
+                10,
+                135,
+                13,
+                68,
+                20,
+                212,
+                2,
+                39
+              ]
+            }
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_verdict",
+      "discriminator": [
+        138,
+        102,
+        56,
+        22,
+        229,
+        130,
+        105,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "resolver",
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_record",
+          "writable": true
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow_record"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_token_account",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "writable": true
+        },
+        {
+          "name": "worker_vault_ata",
+          "docs": [
+            "Worker vault ATA — receives funds on accepted verdict."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_ata",
+          "docs": [
+            "Treasury ATA — receives protocol fee + bond on accepted verdict."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "job_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "accepted",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_escrow_config",
+      "discriminator": [
+        211,
+        133,
+        69,
+        213,
+        234,
+        161,
+        120,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "escrow_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_authority",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "new_resolver",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "new_treasury",
+          "type": {
+            "option": "pubkey"
+          }
+        },
+        {
+          "name": "protocol_fee_bps",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "dispute_bond_bps",
+          "type": {
+            "option": "u16"
+          }
+        },
+        {
+          "name": "acceptance_window_slots",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "dispute_timeout_slots",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentAccount",
+      "discriminator": [
+        241,
+        119,
+        69,
+        140,
+        233,
+        9,
+        112,
+        50
+      ]
+    },
+    {
+      "name": "EscrowConfig",
+      "discriminator": [
+        138,
+        174,
+        227,
+        187,
+        239,
+        148,
+        1,
+        44
+      ]
+    },
+    {
+      "name": "EscrowRecord",
+      "discriminator": [
+        174,
+        124,
+        167,
+        70,
+        91,
+        85,
+        212,
+        227
+      ]
+    },
+    {
+      "name": "VaultAccount",
+      "discriminator": [
+        230,
+        251,
+        241,
+        83,
+        139,
+        202,
+        93,
+        28
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "EscrowCompleted",
+      "discriminator": [
+        229,
+        26,
+        0,
+        202,
+        140,
+        167,
+        106,
+        187
+      ]
+    },
+    {
+      "name": "EscrowCreated",
+      "discriminator": [
+        70,
+        127,
+        105,
+        102,
+        92,
+        97,
+        7,
+        173
+      ]
+    },
+    {
+      "name": "EscrowDisputed",
+      "discriminator": [
+        132,
+        73,
+        81,
+        200,
+        177,
+        51,
+        128,
+        18
+      ]
+    },
+    {
+      "name": "EscrowRefunded",
+      "discriminator": [
+        132,
+        209,
+        49,
+        109,
+        135,
+        138,
+        28,
+        81
+      ]
+    },
+    {
+      "name": "EscrowReleased",
+      "discriminator": [
+        131,
+        7,
+        138,
+        104,
+        166,
+        190,
+        113,
+        112
+      ]
+    },
+    {
+      "name": "EscrowVerdictSubmitted",
+      "discriminator": [
+        56,
+        179,
+        188,
+        52,
+        142,
+        142,
+        168,
+        103
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: signer is not the authority"
+    },
+    {
+      "code": 6001,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidEscrowStatus",
+      "msg": "Invalid escrow status for this operation"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Escrow amount must be greater than zero"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTimeout",
+      "msg": "Timeout slots must be greater than zero"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidWorkerVault",
+      "msg": "Invalid worker vault account"
+    },
+    {
+      "code": 6006,
+      "name": "MintMismatch",
+      "msg": "Mint does not match escrow config mint"
+    },
+    {
+      "code": 6007,
+      "name": "AcceptanceWindowExpired",
+      "msg": "Acceptance window has expired"
+    },
+    {
+      "code": 6008,
+      "name": "AcceptanceWindowActive",
+      "msg": "Acceptance window has not expired yet"
+    },
+    {
+      "code": 6009,
+      "name": "DisputeWindowActive",
+      "msg": "Dispute deadline has not expired yet"
+    },
+    {
+      "code": 6010,
+      "name": "TimeoutNotReached",
+      "msg": "Timeout slot has not been reached yet"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidResolver",
+      "msg": "Signer is not the configured resolver"
+    },
+    {
+      "code": 6012,
+      "name": "InvalidWorker",
+      "msg": "Signer is not the escrow worker (agent_asset or vault owner)"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidClient",
+      "msg": "Signer is not the escrow client"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidEscrowTokenAccount",
+      "msg": "Escrow token account does not match canonical escrow ATA"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidClientTokenAccount",
+      "msg": "Client token account is invalid for this escrow"
+    },
+    {
+      "code": 6016,
+      "name": "InvalidWorkerVaultAta",
+      "msg": "Worker vault ATA does not match canonical worker vault destination"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidTreasuryAta",
+      "msg": "Treasury ATA does not match canonical treasury destination"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidFeeBps",
+      "msg": "Fee basis points must be <= 10000"
+    },
+    {
+      "code": 6019,
+      "name": "NotTerminal",
+      "msg": "Escrow record is not in a terminal state"
+    },
+    {
+      "code": 6020,
+      "name": "OwnerMismatch",
+      "msg": "Agent owner does not match vault owner"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "collection",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "asset",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "atom_enabled",
+            "type": "bool"
+          },
+          {
+            "name": "agent_wallet",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "feedback_digest",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "feedback_count",
+            "type": "u64"
+          },
+          {
+            "name": "response_digest",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "response_count",
+            "type": "u64"
+          },
+          {
+            "name": "revoke_digest",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "revoke_count",
+            "type": "u64"
+          },
+          {
+            "name": "parent_asset",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "parent_locked",
+            "type": "bool"
+          },
+          {
+            "name": "col_locked",
+            "type": "bool"
+          },
+          {
+            "name": "agent_uri",
+            "type": "string"
+          },
+          {
+            "name": "nft_name",
+            "type": "string"
+          },
+          {
+            "name": "col",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCompleted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "worker",
+            "type": "pubkey"
+          },
+          {
+            "name": "acceptance_deadline_slot",
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowConfig",
+      "docs": [
+        "Singleton PDA `[b\"escrow_config\"]` — 157 bytes on-chain."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Who can call update this config."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "resolver",
+            "docs": [
+              "Who can call submit_verdict. Initially same as authority. Built for future inspector pool CPI"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "docs": [
+              "Protocol treasury for fee collection."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "Accepted escrow mint (USDC)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "protocol_fee_bps",
+            "docs": [
+              "Protocol fee on release, in basis points (e.g. 100 = 1%)."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "dispute_bond_bps",
+            "docs": [
+              "Bond required to file a dispute, in basis points of escrow amount."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "acceptance_window_slots",
+            "docs": [
+              "Acceptance window duration after mark_completed, in slots."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "dispute_timeout_slots",
+            "docs": [
+              "Max time for resolver to submit verdict after dispute, in slots."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "worker_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee",
+            "type": "u64"
+          },
+          {
+            "name": "timeout_slot",
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowDisputed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "bond_amount",
+            "type": "u64"
+          },
+          {
+            "name": "dispute_deadline_slot",
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowRecord",
+      "docs": [
+        "Per-job PDA `[b\"escrow\", job_id]` — 164 bytes on-chain."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "docs": [
+              "UUIDv4 job identifier (16 bytes)."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "client",
+            "docs": [
+              "Client (buyer) wallet. Receives refunds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "worker_vault",
+            "docs": [
+              "Worker's VaultAccount PDA. Receives released funds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "USDC amount locked (excluding bond)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bond_amount",
+            "docs": [
+              "Dispute bond deposited by client (0 until disputed)."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee",
+            "docs": [
+              "Protocol fee: (amount * config.protocol_fee_bps) / 10_000."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current state machine status."
+            ],
+            "type": {
+              "defined": {
+                "name": "EscrowStatus"
+              }
+            }
+          },
+          {
+            "name": "verdict",
+            "docs": [
+              "Resolver verdict (None until submit_verdict)."
+            ],
+            "type": {
+              "defined": {
+                "name": "EscrowVerdict"
+              }
+            }
+          },
+          {
+            "name": "acceptance_window_slots",
+            "docs": [
+              "Acceptance window (slots) — snapshotted from EscrowConfig at creation."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "dispute_timeout_slots",
+            "docs": [
+              "Dispute timeout (slots) — snapshotted from EscrowConfig at creation."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "dispute_bond_bps",
+            "docs": [
+              "Dispute bond (bps) — snapshotted from EscrowConfig at creation."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "created_slot",
+            "type": "u64"
+          },
+          {
+            "name": "timeout_slot",
+            "type": "u64"
+          },
+          {
+            "name": "completed_slot",
+            "type": "u64"
+          },
+          {
+            "name": "acceptance_deadline_slot",
+            "type": "u64"
+          },
+          {
+            "name": "disputed_slot",
+            "type": "u64"
+          },
+          {
+            "name": "dispute_deadline_slot",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "escrow_authority_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowRefunded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "trigger",
+            "type": {
+              "defined": {
+                "name": "RefundTrigger"
+              }
+            }
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "worker_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee",
+            "type": "u64"
+          },
+          {
+            "name": "trigger",
+            "type": {
+              "defined": {
+                "name": "ReleaseTrigger"
+              }
+            }
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Locked"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Released"
+          },
+          {
+            "name": "Refunded"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowVerdict",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Accepted"
+          },
+          {
+            "name": "Rejected"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowVerdictSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "resolver",
+            "type": "pubkey"
+          },
+          {
+            "name": "verdict",
+            "type": {
+              "defined": {
+                "name": "EscrowVerdict"
+              }
+            }
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Policy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "per_tx_cap",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RefundTrigger",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "CrankTimeout"
+          },
+          {
+            "name": "VerdictRejected"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReleaseTrigger",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Accept"
+          },
+          {
+            "name": "CrankRelease"
+          },
+          {
+            "name": "VerdictAccepted"
+          },
+          {
+            "name": "CrankDisputeTimeout"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_asset",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": {
+              "defined": {
+                "name": "Policy"
+              }
+            }
+          },
+          {
+            "name": "spend_window_start",
+            "type": "i64"
+          },
+          {
+            "name": "spent_in_window",
+            "type": "u64"
+          },
+          {
+            "name": "created_slot",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_authority_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

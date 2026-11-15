@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-atlantid-programs",
+  "slug": "atlantid-programs",
+  "displayName": "Atlantid Vault + Escrow (Sol.College demonstration)",
+  "description": "8004-gated agent vault and job escrow on Solana devnet (Anchor 0.32.1). The lab registered an official-devnet 8004 agent with ATOM enabled, initialized the vault root config as upgrade authority, created a vault, funded it, set a policy, spent 3_000_000 tokens as owner (bypassing a 2_000_000 per-tx cap), and withdrew the remaining 2_000_000. A follow-on escrow job of 1_000_000 tokens was created against that vault, marked completed, and accepted: the vault ATA received 990_000 after a 100 bps protocol fee, and the escrow ATA was closed.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of Atlantid-Fondation/atlantid-programs. The lab tree is branch sol-college-devnet of Blockchains/atlantid-programs. The lab changed declare_id for agent_vault and agent_escrow to unique Sol.College devnet programs. Vault creation is gated on the official devnet 8004 registry (8oo4J9tB\u2026) plus a Metaplex Core agent asset with ATOM enabled; the lab did not redeploy 8004. The hosted IDL is the lab build of agent_vault (agent_escrow.json is also hosted). The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "Atlantid-Fondation/atlantid-programs",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/atlantid-programs",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "atlantid-programs-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-atlantidprograms"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:50:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initialize_root_config, create_vault, spend, withdraw, and the escrow job lifecycle)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/atlantid-programs/",
+      "QA: devnet proof of the 8004 vault ceremony and escrow create/mark_completed/accept_work payout"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Agent-wallet spend path (set_agent_wallet) and dispute/timeout cranks"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "agent-wallet-spend",
+        "title": "Exercise set_agent_wallet plus cap-enforced spend as the 8004 agent wallet on the hosted console",
+        "skills": [
+          "Anchor",
+          "Ed25519"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/agent_vault"
+  }
+}
