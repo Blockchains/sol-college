@@ -1,0 +1,53 @@
+name: minds-smoke-test
+# Protected, opt-in live HelloMinds smoke test against an EXPLICITLY named Mind.
+# Read steps run in environment 'minds' (main branch only). The optional message step runs only when
+# allow_message=true, in environment 'minds-admin' (required reviewer), and only if the protected
+# MINDS_PROJECT_MAP designates the named Mind as a test Mind. Output is sanitised (no IDs, emails, wallets).
+on:
+  workflow_dispatch:
+    inputs:
+      mind_name: { description: "Exact name of the Mind to read (never auto-picked)", required: true, type: string }
+      allow_message: { description: "Send one harmless task-correlated message (test Mind only; needs approval)", type: boolean, default: false }
+permissions: { contents: read }
+concurrency: { group: minds-smoke, cancel-in-progress: false }
+jobs:
+  read-only:
+    if: ${{ !inputs.allow_message }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: minds
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - name: Smoke test (read-only)
+        env:
+          MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
+          MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}
+          MIND_NAME: ${{ inputs.mind_name }}
+        run: cd pilot && npx tsx src/minds/cli.ts smoke-test --mind-name "$MIND_NAME" | tee "$RUNNER_TEMP/smoke.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with: { name: minds-smoke-read-only, path: "${{ runner.temp }}/smoke.json", retention-days: 30 }
+  with-message:
+    if: ${{ inputs.allow_message }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: minds-admin
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - name: Smoke test (read + one harmless message to the designated test Mind)
+        env:
+          MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
+          MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}
+          MIND_NAME: ${{ inputs.mind_name }}
+          APPROVAL_REF: "environment-approval:run-${{ github.run_id }}"
+          ACTOR: ${{ github.actor }}
+        run: cd pilot && npx tsx src/minds/cli.ts smoke-test --mind-name "$MIND_NAME" --allow-message --approve "$APPROVAL_REF" --approved-by "$ACTOR" | tee "$RUNNER_TEMP/smoke.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with: { name: minds-smoke-with-message, path: "${{ runner.temp }}/smoke.json", retention-days: 30 }

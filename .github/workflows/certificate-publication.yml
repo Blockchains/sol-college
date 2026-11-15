@@ -1,0 +1,52 @@
+name: certificate-publication
+# Issues a narrow contribution credential ONLY if a recorded acceptance re-verifies against GitHub
+# (same comment, unedited, same reviewer account, reviewer still authorised). Fails closed otherwise.
+# Also handles revocation/supersession, which stay visible in the public registry.
+on:
+  workflow_call:
+    inputs:
+      package_id: { required: true, type: string }
+      subject: { required: true, type: string }
+  workflow_dispatch:
+    inputs:
+      action: { required: true, type: choice, options: [issue, revoke, supersede], default: issue }
+      package_id: { description: "issue: package id", required: false, type: string }
+      subject: { description: "issue: contributor GitHub login", required: false, type: string }
+      credential_id: { description: "revoke/supersede: credential id", required: false, type: string }
+      reason: { description: "revoke/supersede: reason (public)", required: false, type: string }
+      superseded_by: { description: "supersede: new credential id", required: false, type: string }
+permissions: { contents: write, actions: write }
+concurrency: { group: records-main-cert, cancel-in-progress: false }
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { ref: main }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ACTION: ${{ inputs.action || 'issue' }}
+          PKG: ${{ inputs.package_id }}
+          SUBJECT: ${{ inputs.subject }}
+          CRED: ${{ inputs.credential_id }}
+          REASON: ${{ inputs.reason }}
+          NEWID: ${{ inputs.superseded_by }}
+        run: |
+          set -euo pipefail
+          git pull -q --rebase || true
+          cd pilot
+          case "$ACTION" in
+            issue) npx tsx src/certification/cli.ts issue "$PKG" "$SUBJECT" ;;
+            revoke) npx tsx src/certification/cli.ts revoke "$CRED" "$REASON" ;;
+            supersede) npx tsx src/certification/cli.ts supersede "$CRED" "$NEWID" "$REASON" ;;
+          esac
+      - run: |
+          git config user.name "sol-college-pilot" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/certificates && (git diff --cached --quiet || (git commit -qm "certificate-publication ${{ inputs.action || 'issue' }} ${{ inputs.package_id }}${{ inputs.credential_id }}" && git pull -q --rebase && git push -q))
+      - name: Republish campus
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh workflow run campus-publication.yml -R "$GITHUB_REPOSITORY" --ref main

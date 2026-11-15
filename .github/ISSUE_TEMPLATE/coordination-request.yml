@@ -1,0 +1,19 @@
+name: Coordination request (CTO agent, asynchronous)
+description: Ask a project's Sol.College CTO agent for a research plan, upstream impact, PR triage, adoption draft or progress report.
+title: "[coordination] "
+labels: ["coordination-request"]
+body:
+  - type: markdown
+    attributes: { value: "This is asynchronous. A protected workflow runs only after an operator approves it; the agent's reply is stored privately and an operator posts a summary. Do not include secrets, credentials or security findings." }
+  - type: input
+    id: project
+    attributes: { label: Project, description: "Project slug, e.g. gifter-escrow" }
+    validations: { required: true }
+  - type: dropdown
+    id: kind
+    attributes: { label: Request type, options: ["Research plan", "Upstream impact", "PR triage", "Adoption draft", "Progress report"] }
+    validations: { required: true }
+  - type: textarea
+    id: question
+    attributes: { label: Question or request, description: "10 to 4000 characters." }
+    validations: { required: true }

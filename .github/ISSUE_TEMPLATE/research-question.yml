@@ -1,0 +1,32 @@
+name: Research question
+description: A structured research question for a participating project's lab (Sol.College pilot).
+title: "[research] "
+labels: ["research-question"]
+body:
+  - type: markdown
+    attributes: { value: "Research questions are ideas, not approved experiments. Labels are status displays only; an authorised project reviewer decides scope." }
+  - type: input
+    id: project
+    attributes: { label: Project, description: "Project slug from config/projects (e.g. gifter-escrow)" }
+    validations: { required: true }
+  - type: textarea
+    id: question
+    attributes: { label: Question, description: "What do we want to learn? Keep facts and hypotheses separate." }
+    validations: { required: true }
+  - type: textarea
+    id: sources
+    attributes: { label: Sources, description: "Exact repos/commits/links this question is about." }
+    validations: { required: true }
+  - type: textarea
+    id: hypothesis
+    attributes: { label: Hypothesis and how to test it }
+    validations: { required: true }
+  - type: checkboxes
+    id: boundaries
+    attributes:
+      label: Boundaries
+      options:
+        - label: Devnet / local validator only; no mainnet keys.
+          required: true
+        - label: No security findings in public; those go to the private channel.
+          required: true

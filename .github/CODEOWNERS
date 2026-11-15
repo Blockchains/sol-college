@@ -1,0 +1,7 @@
+# Protected configuration, policy, records and workflows require review by the Sol.College operator.
+# CODEOWNERS only takes effect with branch protection "Require review from Code Owners" (see docs/permissions.md).
+/.github/            @Blockchains
+/config/             @Blockchains
+/records/public/     @Blockchains
+/pilot/              @Blockchains
+/campus/             @Blockchains

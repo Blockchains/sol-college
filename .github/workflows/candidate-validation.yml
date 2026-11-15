@@ -65,9 +65,10 @@ jobs:
         env: { SOLANA_VERSION: "${{ needs.check-request.outputs.solana }}", ANCHOR_VERSION: "${{ needs.check-request.outputs.anchor }}", RUST_TOOLCHAIN: "${{ needs.check-request.outputs.rust }}" }
         run: |
           set -euo pipefail
-          # Host toolchain for Anchor's IDL build (anchor 0.30.x needs a Rust that still has proc_macro::SourceFile).
+          # Host toolchain for Anchor 0.30's IDL build: a nightly that still has proc_macro::SourceFile
+          # (same pin as verify-forks / tests/run_fork.py). cargo-build-sbf keeps using the Solana platform tools.
           rustup toolchain install "$RUST_TOOLCHAIN" --profile minimal
-          (cd candidate/contract && rustup override set "$RUST_TOOLCHAIN")
+          echo "IDL_RUSTUP_TOOLCHAIN=$RUST_TOOLCHAIN" >> "$GITHUB_ENV"
           sh -c "$(curl -sSfL "https://release.anza.xyz/v${SOLANA_VERSION}/install")"
           echo "$HOME/.local/share/solana/install/active_release/bin" >> "$GITHUB_PATH"
           npm i -g "@coral-xyz/anchor-cli@${ANCHOR_VERSION}"
@@ -75,8 +76,8 @@ jobs:
         working-directory: candidate/contract
         run: |
           set -euo pipefail
-          solana --version; anchor --version; rustc --version
-          anchor build
+          solana --version; anchor --version; RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" rustc --version
+          RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" anchor build
           ls -l target/deploy/*.so target/idl/*.json
       - name: Install candidate client dependencies (scripts disabled)
         working-directory: candidate/contract

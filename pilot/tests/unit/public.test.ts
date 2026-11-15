@@ -42,11 +42,16 @@ test("Secrets: Builder key never appears in public records, campus assets or con
     try { files = walk(join(REPO_ROOT, dir)); } catch { continue; }
     for (const f of files) assert.deepEqual(findSecretLeaks(readFileSync(f, "utf8"), [key]), [], f);
   }
-  assert.deepEqual(findSecretLeaks("eyJhbGciOiJFUzI1NiJ9xx.eyJzdWIiOiJ4In0xxxx.abcdefghijk"), ["jwt-shaped-token"]);
+  const fakeJwt = ["eyJ" + "hbGciOiJub25lIn0aa", "eyJ" + "zdWIiOiJ0ZXN0In0aa", "c2lnbmF0dXJlLWZha2U"].join("."); // synthetic, assembled at runtime
+  assert.deepEqual(findSecretLeaks(fakeJwt), ["jwt-shaped-token"]);
 });
 
 type Wf = { on: unknown; permissions?: unknown; jobs: Record<string, { steps?: Array<Record<string, unknown>>; environment?: unknown; permissions?: unknown }> };
 const wf = (n: string) => ({ text: readFileSync(join(REPO_ROOT, ".github/workflows", n), "utf8"), y: parse(readFileSync(join(REPO_ROOT, ".github/workflows", n), "utf8")) as Wf });
+
+test("Workflows: every workflow file is valid YAML with jobs", () => {
+  for (const f of readdirSync(join(REPO_ROOT, ".github/workflows")).filter((x) => x.endsWith(".yml"))) assert.ok(Object.keys(wf(f).y.jobs).length > 0, f);
+});
 
 test("Secrets: contributor-code workflow references no secrets and has a read-only token", () => {
   const { text, y } = wf("candidate-validation.yml");
@@ -67,7 +72,8 @@ test("Secrets: every privileged workflow uses a protected environment and never 
         assert.ok(job.environment, `${f}/${name} must run in a protected environment`);
         for (const s of job.steps ?? []) if (String(s["uses"] ?? "").startsWith("actions/checkout")) {
           const w = (s["with"] ?? {}) as Record<string, unknown>;
-          assert.ok(!w["ref"] && !w["repository"], `${f}/${name} checks out only this repository's protected default ref`);
+          const controlRepo = w["repository"] === "${{ vars.SC_CONTROL_REPO }}";
+          assert.ok(!w["ref"] && (!w["repository"] || controlRepo), `${f}/${name} checks out only this repository's default ref (or the private control repo as data)`);
         }
       }
     }

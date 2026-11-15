@@ -1,0 +1,29 @@
+name: Experiment
+description: An approved, isolated experiment (issue + branch/PR + baseline + hypothesis).
+title: "[experiment] "
+labels: ["experiment"]
+body:
+  - type: input
+    id: project
+    attributes: { label: Project }
+    validations: { required: true }
+  - type: input
+    id: research
+    attributes: { label: Research question issue, description: "Link to the research question" }
+    validations: { required: true }
+  - type: input
+    id: baseline
+    attributes: { label: Upstream baseline commit, description: "Exact 40-character SHA of the upstream commit the experiment starts from" }
+    validations: { required: true }
+  - type: input
+    id: branch
+    attributes: { label: Lab branch or PR }
+    validations: { required: true }
+  - type: textarea
+    id: hypothesis
+    attributes: { label: Hypothesis }
+    validations: { required: true }
+  - type: textarea
+    id: validation
+    attributes: { label: Validation plan, description: "Which checks of the protected candidate-validation workflow must pass?" }
+    validations: { required: true }

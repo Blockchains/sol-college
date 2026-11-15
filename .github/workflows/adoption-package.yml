@@ -1,0 +1,33 @@
+name: adoption-package
+# Builds the exact adoption manifest for a candidate from REAL GitHub evidence (validation runs fetched by
+# repository id, workflow id/path, branch and exact SHA). Fails closed unless the newest genuine run passed.
+# Writes canonical bytes once under records/public/adoption/<slug>/ (never overwritten).
+on:
+  workflow_dispatch:
+    inputs:
+      project: { required: true, type: string }
+      candidate_sha: { required: true, type: string }
+      inputs_path: { description: "Path in this repo to the package inputs JSON (contributions, narrative)", required: true, type: string }
+permissions: { contents: write, actions: read }
+concurrency: { group: records-main, cancel-in-progress: false }
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - id: pkg
+        env: { GITHUB_TOKEN: "${{ github.token }}", PROJECT: "${{ inputs.project }}", SHA: "${{ inputs.candidate_sha }}", INPUTS: "${{ inputs.inputs_path }}" }
+        run: |
+          set -euo pipefail
+          [[ "$INPUTS" =~ ^records/public/experiments/[a-z0-9-]+\.package-inputs\.json$ ]] || { echo "inputs must live under records/public/experiments"; exit 1; }
+          cd pilot && npx tsx src/adoption/cli.ts "$PROJECT" "$SHA" "../$INPUTS" | tee "$RUNNER_TEMP/pkg.json"
+      - run: |
+          git config user.name "sol-college-pilot" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/adoption && (git diff --cached --quiet || (git commit -qm "adoption-package ${{ inputs.project }} ${{ inputs.candidate_sha }}" && git pull -q --rebase && git push -q))
+      - name: Summary
+        run: |
+          { echo "## Adoption package"; echo '```json'; cat "$RUNNER_TEMP/pkg.json"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

@@ -1,11 +1,11 @@
 import { readFileSync } from "node:fs";
-import { createRequire } from "node:module";
+import { fileURLToPath } from "node:url";
 import type { MindsPort } from "./port.ts";
 import { shortRef } from "../lib/secrets.ts";
 
 export function installedSdkVersion(): string {
-  const require = createRequire(import.meta.url);
-  const pkgPath = require.resolve("@animocabrands/minds-client-lib").replace(/dist\/index\.js$/, "package.json");
+  const entry = fileURLToPath(import.meta.resolve("@animocabrands/minds-client-lib"));
+  const pkgPath = entry.replace(/dist\/index\.js$/, "package.json");
   return (JSON.parse(readFileSync(pkgPath, "utf8")) as { version: string }).version;
 }
 

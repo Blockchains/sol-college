@@ -1,0 +1,44 @@
+name: project-acceptance
+# Records an authorised reviewer's decision. Trigger: a NEW issue comment that starts with /sc-accept.
+# Trusted default-branch code re-fetches the comment by id, verifies the reviewer (login + account id +
+# role + association), the exact package/hash/candidate, the current upstream head and the current
+# validation verdict, and refuses stale or edited approvals. Nothing is recorded on failure.
+on:
+  issue_comment: { types: [created] }
+permissions: { contents: write, issues: write, actions: write }
+concurrency: { group: records-main, cancel-in-progress: false }
+jobs:
+  accept:
+    if: ${{ startsWith(github.event.comment.body, '/sc-accept ') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      package: ${{ steps.acc.outputs.package }}
+      subjects: ${{ steps.acc.outputs.subjects }}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - id: acc
+        env: { GITHUB_TOKEN: "${{ github.token }}", COMMENT_ID: "${{ github.event.comment.id }}" }
+        run: |
+          set -euo pipefail
+          cd pilot && npx tsx src/acceptance/cli.ts "$GITHUB_REPOSITORY" "$COMMENT_ID" | tee "$RUNNER_TEMP/acc.json"
+          echo "package=$(jq -r '.packageId // empty' "$RUNNER_TEMP/acc.json")" >> "$GITHUB_OUTPUT"
+          echo "subjects=$(jq -c '.subjectCandidates // []' "$RUNNER_TEMP/acc.json")" >> "$GITHUB_OUTPUT"
+      - run: |
+          git config user.name "sol-college-pilot" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/acceptance && (git diff --cached --quiet || (git commit -qm "project-acceptance ${{ steps.acc.outputs.package }}" && git pull -q --rebase && git push -q))
+      - name: Report outcome on the issue
+        if: always()
+        env: { GH_TOKEN: "${{ github.token }}", ISSUE: "${{ github.event.issue.number }}", OUTCOME: "${{ steps.acc.outcome }}" }
+        run: |
+          gh issue comment "$ISSUE" -R "$GITHUB_REPOSITORY" --body "Acceptance check ($OUTCOME): $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+  certificate:
+    needs: accept
+    if: ${{ needs.accept.outputs.package != '' }}
+    strategy: { matrix: { subject: "${{ fromJSON(needs.accept.outputs.subjects) }}" }, max-parallel: 1 }
+    uses: ./.github/workflows/certificate-publication.yml
+    with: { package_id: "${{ needs.accept.outputs.package }}", subject: "${{ matrix.subject }}" }
+    permissions: { contents: write, actions: write }

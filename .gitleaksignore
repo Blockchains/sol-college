@@ -5,3 +5,5 @@ legacy/assets/index-Cu0OVyPN.js:generic-api-key:22
 8d1c4f41e05f296ecb29c01e2d9f9d77ffef56b8:dapps/static/gree/437.4599d69a480be0f1.js:generic-api-key:1
 # Public devnet token-account address (vaultTokenAccount 8erUhLkn…) in a flow log; matched only because of the key name
 tests/devnet/logs/web3-splitter-2026-11-10.jsonl:generic-api-key:2
+# Synthetic JWT-shaped test string (not a credential) used to test the leak detector; replaced by a runtime-assembled value in the next commit
+7c016bc29f5dcd6de8afe66d18df4db9c982ed84:pilot/tests/unit/public.test.ts:jwt:45

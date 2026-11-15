@@ -1,0 +1,52 @@
+name: coordination-request
+# Privileged coordination: an authorised GitHub user opens a coordination-request issue; after a
+# reviewer approves the 'minds-admin' environment run, trusted code (default branch) validates the
+# request, collects scoped context, sends ONE structured task to the project's approved CTO Mind,
+# validates the reply and stores the result in a PRIVATE control repository. The public issue only
+# receives a status line. No contributor code is executed here.
+on:
+  issues: { types: [opened, labeled] }
+  workflow_dispatch:
+    inputs:
+      issue: { description: "Issue number", required: true, type: string }
+permissions: { contents: read, issues: write }
+concurrency: { group: "coordination-${{ github.event.issue.number || inputs.issue }}", cancel-in-progress: false }
+jobs:
+  coordinate:
+    if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.issue.labels.*.name, 'coordination-request') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: minds-admin
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { persist-credentials: false }
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - name: Private control repository (required; fails closed)
+        env: { CONTROL_REPO: "${{ vars.SC_CONTROL_REPO }}" }
+        run: |
+          if [ -z "$CONTROL_REPO" ]; then echo "MANUAL SETUP REQUIRED: private control repo (vars.SC_CONTROL_REPO + secrets.SC_CONTROL_TOKEN) is not configured; refusing to store Minds output in a public repository."; exit 1; fi
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { repository: "${{ vars.SC_CONTROL_REPO }}", token: "${{ secrets.SC_CONTROL_TOKEN }}", path: control }
+      - id: run
+        env:
+          MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
+          MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}
+          GITHUB_TOKEN: ${{ github.token }}
+          SC_PRIVATE_RECORDS_DIR: ${{ github.workspace }}/control/records
+          SC_APPROVAL_REF: "environment-approval:run-${{ github.run_id }}"
+          SC_APPROVED_BY: ${{ github.actor }}
+          ISSUE: ${{ github.event.issue.number || inputs.issue }}
+        run: cd pilot && npx tsx src/coordination/cli.ts "$GITHUB_REPOSITORY" "$ISSUE" | tee "$RUNNER_TEMP/status.json"
+      - name: Persist private result
+        if: always()
+        run: |
+          cd control && git config user.name "sol-college-pilot" && git config user.email "actions@users.noreply.github.com"
+          git add -A records && (git diff --cached --quiet || (git commit -qm "coordination run ${{ github.run_id }}" && git push -q))
+      - name: Public status line (no Minds content)
+        if: always()
+        env: { GH_TOKEN: "${{ github.token }}", ISSUE: "${{ github.event.issue.number || inputs.issue }}", OUTCOME: "${{ steps.run.outcome }}" }
+        run: |
+          state=$(jq -r '.state // "failed"' "$RUNNER_TEMP/status.json" 2>/dev/null || echo failed)
+          gh issue comment "$ISSUE" -R "$GITHUB_REPOSITORY" --body "Coordination run $GITHUB_RUN_ID: ${state} (step outcome: $OUTCOME). Asynchronous; any CTO reply is stored privately and summarised by an operator. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

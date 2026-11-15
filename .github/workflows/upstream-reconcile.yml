@@ -1,0 +1,29 @@
+name: upstream-reconcile
+# Trusted reconciliation of each live project's actual upstream head (GitHub API, no candidate code).
+# State lives in records/public/upstream/ and is updated conditionally (versioned); an observation older
+# than the recorded head (out-of-order run) never rewinds it. Impact = which experiments need rebase/retest.
+on:
+  schedule: [{ cron: "41 */6 * * *" }]
+  workflow_dispatch:
+    inputs:
+      project: { description: "Project slug (blank = all live projects)", required: false, type: string }
+permissions: { contents: write }
+concurrency: { group: records-main, cancel-in-progress: false }
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - env: { GITHUB_TOKEN: "${{ github.token }}", ONLY: "${{ inputs.project }}" }
+        run: |
+          set -euo pipefail
+          for f in config/projects/*.json; do s=$(basename "$f" .json); [ -z "$ONLY" ] || [ "$ONLY" = "$s" ] || continue
+            (cd pilot && npx tsx src/upstream/cli.ts "$s") | tee -a "$RUNNER_TEMP/impact.jsonl"; done
+      - name: Commit reconciled state (rebase-safe; conflicts mean another run won)
+        run: |
+          git config user.name "sol-college-pilot" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/upstream && (git diff --cached --quiet || (git commit -qm "upstream-reconcile run ${{ github.run_id }}" && git pull -q --rebase && git push -q))
