@@ -1,0 +1,11 @@
+{
+ "name": "TrustRail Pipelines",
+ "fork": "https://github.com/Blockchains/trustrail-pipelines",
+ "commit": "80a56ed03b5f12f22da0889efebdccdda8d26ce5",
+ "lesson": "/explore/trustrail-pipelines/",
+ "programs": {
+  "devnet": "5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+  "mainnet": null,
+  "mock_swap_devnet": "6iz6J7eBmrukLmVkw8hqx3EQUSwYrFsHtTFtKoc4sabS"
+ }
+}

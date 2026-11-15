@@ -1,0 +1,13 @@
+{"step":"setup","pipe":"5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq","mock":"6iz6J7eBmrukLmVkw8hqx3EQUSwYrFsHtTFtKoc4sabS","commitment":"Gu9K13nugJNpoRGAmetoYGNjhK6B7pUsCTLE6yKVPznp","escrowAta":"9kPdFFf1xw58trsN2GCLKBHQqxpKMvuWMgg6yHQH1v2M","outputAta":"CB2wcEwfe2kuoZBy5BQpzRr5pvrWABGbooE4mkuTx4NP","staging":"4uVMKC2maMbRyHcAroqv8TcgkiiDCHP9FMaRrDBuECZ9","poolAuth":"A823ntshwwPJWBHyVXAqHsN6cQg6yxfrWkaCHWFDDvDA"}
+{"step":"slot","slot":522683963}
+{"step":"initialize_mock_pool","ok":true,"sig":"4ke8gYnRPUkcZnE1LNTJzfYqptYWEufs7P6gxsa48u7FSenCrGjAji9JsR25ZucohhNPYQnXboVtds6EgBH8WrYb"}
+{"step":"balances_before","payerIn":"8000000","payerOut":"0"}
+{"step":"create_commitment","ok":true,"sig":"5iTu1jSzsHAJ7BkYLwhGBs6Gz7JR3h1Se24YToZHgjpybh5kbu1Nz3xH6NstokVJbAFM9AWe3XWAABqtzb9v4eEU"}
+{"step":"withdraw_for_swap","ok":true,"sig":"MwyX2md6tSizRCZwSvpaCS8JZSJV1twvvHEGXTECGRj5tbKkxmweQtDpKKcJLpiTb41QH6NTY9F8UkTBuQb5PDY"}
+{"step":"mock_swap_execute","ok":true,"sig":"5vzHuKg6rcuz5uj7HoZ5GwXKbriJhjUJGq2QfE2U8mGY6Z8N4ZjUEvG4QeetYF5beXMXSQmjDJcw9PDLoLdSncQL"}
+{"step":"output_ata_after_swap","amount":"1000000"}
+{"step":"submit_proof","ok":true,"sig":"2PD31SxGHrv9dMTa2LjtSmSoysABHWrv7TH3GbecmTeFrXAaKYzu99nTAGGGn7QqhGfMuXA9mnaB4GkcZyk59NCy"}
+{"step":"after_proof","status":{"passed":{}},"verified":true}
+{"step":"release","ok":true,"sig":"2HQsUUms3w4JSwnkXxVDJypFuqsnrzJEe5bgzxtMy2c3hVkBaypKi67g8HUaoKYE8pKtzkWFw4fkiheirznVoBHn"}
+{"step":"fetch","ok":true,"status":{"released":{}},"verified":true,"after":{"payerIn":"7000000","payerOut":"1000000"},"deltas":{"payerIn":"-1000000","payerOut":"1000000"}}
+{"step":"negative_recreate_or_zero","expectedFailure":true,"error":"Simulation failed. "}

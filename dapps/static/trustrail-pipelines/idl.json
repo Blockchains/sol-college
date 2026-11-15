@@ -1,0 +1,365 @@
+{
+  "address": "5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+  "metadata": {
+    "name": "trustrail_pipelines",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "create_commitment",
+      "discriminator": [
+        232,
+        31,
+        118,
+        65,
+        229,
+        2,
+        2,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "executor_agent"
+        },
+        {
+          "name": "input_token"
+        },
+        {
+          "name": "output_token"
+        },
+        {
+          "name": "commitment",
+          "writable": true
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true
+        },
+        {
+          "name": "output_ata",
+          "writable": true
+        },
+        {
+          "name": "payer_input_ata",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": [
+        {
+          "name": "task_id",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "executor_agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "input_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_output_amount",
+          "type": "u64"
+        },
+        {
+          "name": "deadline_slot",
+          "type": "u64"
+        },
+        {
+          "name": "expected_staging_ata",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_for_swap",
+      "discriminator": [
+        103,
+        30,
+        168,
+        54,
+        138,
+        247,
+        216,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "settler",
+          "signer": true
+        },
+        {
+          "name": "commitment",
+          "writable": true
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true
+        },
+        {
+          "name": "swap_staging_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "submit_proof",
+      "discriminator": [
+        54,
+        241,
+        46,
+        84,
+        4,
+        212,
+        46,
+        94
+      ],
+      "accounts": [
+        {
+          "name": "worker",
+          "signer": true
+        },
+        {
+          "name": "commitment",
+          "writable": true
+        },
+        {
+          "name": "output_ata"
+        }
+      ],
+      "args": [
+        {
+          "name": "proof_tx",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "proof_slot",
+          "type": "u64"
+        },
+        {
+          "name": "claimed_actual_output",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "release",
+      "discriminator": [
+        253,
+        249,
+        15,
+        206,
+        28,
+        127,
+        193,
+        241
+      ],
+      "accounts": [
+        {
+          "name": "settler",
+          "signer": true
+        },
+        {
+          "name": "commitment",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true
+        },
+        {
+          "name": "output_ata",
+          "writable": true
+        },
+        {
+          "name": "payer_output_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "payer_input_ata",
+          "writable": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Commitment",
+      "discriminator": [
+        61,
+        112,
+        129,
+        128,
+        24,
+        147,
+        77,
+        87
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "CommitmentStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "locked"
+          },
+          {
+            "name": "passed"
+          },
+          {
+            "name": "failedSlippage"
+          },
+          {
+            "name": "released"
+          },
+          {
+            "name": "refunded"
+          },
+          {
+            "name": "timedOut"
+          },
+          {
+            "name": "recovered"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Commitment",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task_id",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "executor_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "input_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "output_token",
+            "type": "pubkey"
+          },
+          {
+            "name": "input_amount",
+            "type": "u64"
+          },
+          {
+            "name": "min_output_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deadline_slot",
+            "type": "u64"
+          },
+          {
+            "name": "external_verdict",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "proof_tx",
+            "type": {
+              "option": {
+                "array": [
+                  "u8",
+                  64
+                ]
+              }
+            }
+          },
+          {
+            "name": "proof_slot",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "verified",
+            "type": "bool"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "CommitmentStatus"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "escrow_withdrawn",
+            "type": "bool"
+          },
+          {
+            "name": "expected_staging_ata",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ]
+}

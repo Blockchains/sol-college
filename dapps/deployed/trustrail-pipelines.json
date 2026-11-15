@@ -1,0 +1,44 @@
+{
+ "slug": "trustrail-pipelines",
+ "cluster": "devnet",
+ "program": "trustrail_pipelines",
+ "idl": "trustrail_pipelines.json",
+ "devnet": "5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+ "mainnet": null,
+ "mock_swap": "6iz6J7eBmrukLmVkw8hqx3EQUSwYrFsHtTFtKoc4sabS",
+ "sigs": [
+  {
+   "label": "deploy_pipelines",
+   "sig": "2DokmjeReEeo9qX8Frbq1C1fH1H66LLvi1T9bhd2kjnSC3FGThxDTuQDN8iRz7QfxeoH9sf8FVRmzbePU6aUkiir"
+  },
+  {
+   "label": "deploy_mock_swap",
+   "sig": "3Lc6LE8q8m9mCvu1WZj6NLR3YCpzk7jsNF8vhZjrGQdojx6smwvtnCkcueh7rJS3GqVun7RJyrgsiRSpm26AqJKW"
+  },
+  {
+   "label": "initialize_mock_pool",
+   "sig": "4ke8gYnRPUkcZnE1LNTJzfYqptYWEufs7P6gxsa48u7FSenCrGjAji9JsR25ZucohhNPYQnXboVtds6EgBH8WrYb"
+  },
+  {
+   "label": "create_commitment",
+   "sig": "5iTu1jSzsHAJ7BkYLwhGBs6Gz7JR3h1Se24YToZHgjpybh5kbu1Nz3xH6NstokVJbAFM9AWe3XWAABqtzb9v4eEU"
+  },
+  {
+   "label": "withdraw_for_swap",
+   "sig": "MwyX2md6tSizRCZwSvpaCS8JZSJV1twvvHEGXTECGRj5tbKkxmweQtDpKKcJLpiTb41QH6NTY9F8UkTBuQb5PDY"
+  },
+  {
+   "label": "mock_swap_execute",
+   "sig": "5vzHuKg6rcuz5uj7HoZ5GwXKbriJhjUJGq2QfE2U8mGY6Z8N4ZjUEvG4QeetYF5beXMXSQmjDJcw9PDLoLdSncQL"
+  },
+  {
+   "label": "submit_proof",
+   "sig": "2PD31SxGHrv9dMTa2LjtSmSoysABHWrv7TH3GbecmTeFrXAaKYzu99nTAGGGn7QqhGfMuXA9mnaB4GkcZyk59NCy"
+  },
+  {
+   "label": "release",
+   "sig": "2HQsUUms3w4JSwnkXxVDJypFuqsnrzJEe5bgzxtMy2c3hVkBaypKi67g8HUaoKYE8pKtzkWFw4fkiheirznVoBHn"
+  }
+ ],
+ "verified": "2026-11-15"
+}

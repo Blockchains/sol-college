@@ -1,0 +1,99 @@
+{
+  "address": "6iz6J7eBmrukLmVkw8hqx3EQUSwYrFsHtTFtKoc4sabS",
+  "metadata": {
+    "name": "mock_swap",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "initialize_mock_pool",
+      "discriminator": [
+        45,
+        25,
+        248,
+        172,
+        178,
+        33,
+        218,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "output_mint",
+          "writable": true
+        },
+        {
+          "name": "mock_pool_output_vault",
+          "writable": true
+        },
+        {
+          "name": "pool_authority"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "seed_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "mock_swap_execute",
+      "discriminator": [
+        100,
+        114,
+        36,
+        58,
+        134,
+        53,
+        139,
+        212
+      ],
+      "accounts": [
+        {
+          "name": "swap_staging_ata",
+          "writable": true
+        },
+        {
+          "name": "staging_authority",
+          "signer": true
+        },
+        {
+          "name": "mock_pool_input_vault",
+          "writable": true
+        },
+        {
+          "name": "mock_pool_output_vault",
+          "writable": true
+        },
+        {
+          "name": "pool_authority"
+        },
+        {
+          "name": "output_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_in",
+          "type": "u64"
+        }
+      ]
+    }
+  ]
+}
