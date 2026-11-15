@@ -4,7 +4,7 @@
   "mind": "SolCollege-TrustLock-CTO",
   "at": "2026-11-15T17:28:46.907Z",
   "isEnabled": true,
-  "cognitionBalance": -14.95794483,
+  "cognitionBalance": -15.99915183,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
@@ -77,5 +77,11 @@
     }
   ],
   "conversations": 3,
-  "sdkVersion": "0.1.7"
+  "sdkVersion": "0.1.7",
+  "status": "paused (no credits)",
+  "paused": true,
+  "dimmed": true,
+  "pausedAt": "2026-11-15T19:10:00Z",
+  "pausedReason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+  "balanceCheckedAt": "2026-11-15T19:12:00Z"
 }

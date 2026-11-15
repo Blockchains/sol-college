@@ -30,6 +30,8 @@ export interface AutonomyConfig {
   schema: "sc-autonomy/1";
   standingApproval: { approvedBy: string; ref: string; at: string; covers: string[]; excludes: string[] };
   projects: string[];
+  /** Projects the loop skips (no tasks, no HelloMinds calls); not a HelloMinds pause. */
+  paused?: Record<string, { status: string; reason: string; since: string; ref: string }>;
   limits: { maxNewTasksPerProjectPerRun: number; maxIssuesPerProjectPerRun: number; researchPlanIntervalHours: number; reportIntervalHours: number; taskWaitMs: number };
 }
 
@@ -317,6 +319,14 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     type Pr = { html_url: string; head: { repo: { full_name: string } | null; ref: string } };
     const open = await d.gh.get<Pr[]>(`/repos/${p.upstream.repo}/pulls?state=open&per_page=100`);
     if (open.some((x) => x.head.repo?.full_name === p.lab.repo)) { log(`upstream already has an open PR from ${p.lab.repo}; one focused PR per project`); continue; }
+    // Duplicate check: do not open a PR that overlaps an open upstream PR by anyone touching the same files.
+    let overlap: string | null = null;
+    for (const x of open.slice(0, 30)) {
+      const n = Number(x.html_url.split("/").pop());
+      const files = await d.gh.get<Array<{ filename: string }>>(`/repos/${p.upstream.repo}/pulls/${n}/files?per_page=100`).catch(() => []);
+      if (files.some((f) => meta.files.includes(f.filename))) { overlap = x.html_url; break; }
+    }
+    if (overlap) { st.upstreamPrs[sha] = `duplicate: overlaps open upstream PR ${overlap}`; log(`upstream PR for ${sha.slice(0, 7)} skipped: overlaps ${overlap}`); continue; }
     if (d.dryRun) continue;
     const body = `${publicTextCheck(meta.rationale, 2000).text}\n\nValidated: secret-free candidate-validation on the exact head \`${sha}\` passed (${verdict.decidingRun.htmlUrl}).\n\nOpened by Sol.College (a developer learning and R&D campus) from its demonstration lab fork ${p.lab.repo}. Not a partnership; please accept or decline as an ordinary contribution.`;
     const pr = await d.upstreamGh.send<{ html_url: string }>("POST", `/repos/${p.upstream.repo}/pulls`, { title: meta.title.slice(0, 120), head: `${p.lab.repo.split("/")[0]}:${m[1]}`, base: p.upstream.branch, body, maintainer_can_modify: true });
@@ -332,8 +342,10 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     if (q) {
       const labHead = (await d.gh.get<{ commit: { sha: string } }>(`/repos/${p.lab.repo}/branches/${encodeURIComponent(p.lab.branch)}`)).commit.sha;
       const files = await referencedFiles(d.gh, p.lab.repo, labHead, q.body ?? "");
+      if (files.length < 2) files.push(...(await programSourceFiles(d.gh, p.lab.repo, labHead, `${q.title}\n${q.body ?? ""}`, files.map((f) => f.path))));
+      const defect = looksLikeDefect(`${q.title}\n${q.body ?? ""}`);
       const taskId = `patch-${q.number}-${stamp(now)}-${(st.patchAttempts?.[q.html_url] ?? 0) + 1}`;
-      const t = await dispatch({ taskId, project: slug, kind: "experiment-patch", instructions: "Follow Sol.College operating instructions v1. Write the smallest correct code change that answers this research question as an experiment on the lab fork. Return it as one action {type:'patch',title,rationale,patchLines} where patchLines is a JSON array with ONE STRING PER LINE of a git unified diff (diff --git a/<path> b/<path>, ---/+++ headers, @@ hunks with exact context and correct line counts) against labHead; do not put the diff in a single string, because chat formatting strips newlines inside strings. The diff must apply with `git apply` to the file contents given in context.files, touching only program source or tests under the allowed paths. Do not edit .github, workflows, Anchor.toml, package manifests, lockfiles or toolchain files; no keys, no mainnet. Keep it under 400 changed lines. Code applies it to a branch sc-lab/<project>/<task> and the secret-free candidate-validation workflow builds it; you cannot mark it as passing. If the change needs devnet SOL for a test wallet, you may add {type:'devnet-transfer',recipient,lamports,reason}.", sources: [...sources, { id: "question", url: q.html_url }, { id: "lab-head", url: `https://github.com/${p.lab.repo}/commit/${labHead}`, sha: labHead }], evidence: [], context: { question: { title: q.title, body: (q.body ?? "").slice(0, 6000) }, labHead, allowedPathPrefixes: patchPolicyFor(p.validation.programDir ?? "contract").allowedPrefixes, files } }, {});
+      const t = await dispatch({ taskId, project: slug, kind: "experiment-patch", instructions: `Follow Sol.College operating instructions v1. Write the smallest correct code change that answers this research question as an experiment on the lab fork. Return it as one action {type:'patch',title,rationale,patchLines} where patchLines is a JSON array with ONE STRING PER LINE of a git unified diff (diff --git a/<path> b/<path>, ---/+++ headers, @@ hunks with exact context and correct line counts) against labHead; do not put the diff in a single string, because chat formatting strips newlines inside strings. The diff must apply with git apply to the file contents given in context.files, touching only program source or tests under the allowed paths. Do not edit .github, workflows, Anchor.toml, package manifests, lockfiles or toolchain files; no keys, no mainnet. Keep it under 400 changed lines. Code applies it to a branch sc-lab/<project>/<task> and the secret-free candidate-validation workflow builds it; you cannot mark it as passing. ${defect ? "THIS QUESTION DESCRIBES A DEFECT: the patch MUST change program source (programs/<name>/src/...) with the minimal correct fix; you may add or update a test as well, but a tests-only patch is not acceptable for this task. " : "Prefer a program-source fix when the question exposes a defect; otherwise a focused test experiment is fine. "}Example patchLines: [\"diff --git a/programs/x/src/lib.rs b/programs/x/src/lib.rs\",\"--- a/programs/x/src/lib.rs\",\"+++ b/programs/x/src/lib.rs\",\"@@ -10,3 +10,3 @@\",\" context\",\"-old\",\"+new\",\" context\"]. If the change needs devnet SOL for a test wallet, you may add {type:'devnet-transfer',recipient,lamports,reason}.`, sources: [...sources, { id: "question", url: q.html_url }, { id: "lab-head", url: `https://github.com/${p.lab.repo}/commit/${labHead}`, sha: labHead }], evidence: [], context: { question: { title: q.title, body: (q.body ?? "").slice(0, 6000) }, labHead, allowedPathPrefixes: patchPolicyFor(p.validation.programDir ?? "contract").allowedPrefixes, files } }, {});
       if (t !== null || d.dryRun) { st.patchRequests[q.html_url] = taskId; (st.patchAttempts ??= {})[q.html_url] = (st.patchAttempts[q.html_url] ?? 0) + 1; }
     }
   }
@@ -343,7 +355,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     try {
       const ops = await opsSnapshot(d.minds, r.mindId, prefix);
       mkdirSync(join(PUBLIC_RECORDS_DIR, "minds"), { recursive: true });
-      writeFileSync(join(PUBLIC_RECORDS_DIR, "minds", `${slug}.json`), JSON.stringify({ schema: "sc-mind-ops/1", project: slug, mind: mindName, at: nowIso, ...ops }, null, 2) + "\n");
+      writeFileSync(join(PUBLIC_RECORDS_DIR, "minds", `${slug}.json`), JSON.stringify({ schema: "sc-mind-ops/1", project: slug, mind: mindName, at: nowIso, status: "active", paused: false, ...ops }, null, 2) + "\n");
       st.lastOpsAt = nowIso;
     } catch (e) { log(`ops snapshot failed: ${(e as Error).message}`); }
   }
@@ -411,6 +423,35 @@ async function referencedFiles(gh: GitHubApi, labRepo: string, sha: string, body
   return out;
 }
 
+/** Words that mark a research question as a defect report, so the Mind is asked for a source fix, not only a test. */
+export function looksLikeDefect(text: string): boolean {
+  return /\b(fail|fails|failing|bug|broken|violation|panic|overflow|incorrect|wrong|missing|crash|error|cannot|can't|exploit|unchecked|leak)\b/i.test(text);
+}
+
+/** Program source the Mind needs to write an exact diff: files named in the question first, then lib.rs and instruction files. */
+async function programSourceFiles(gh: GitHubApi, labRepo: string, sha: string, text: string, have: string[]): Promise<Array<{ path: string; content: string }>> {
+  type T = { tree: Array<{ path: string; type: string; size?: number }> };
+  let tree: T["tree"] = [];
+  try { tree = (await gh.get<T>(`/repos/${labRepo}/git/trees/${sha}?recursive=1`)).tree; } catch { return []; }
+  const src = tree.filter((t) => t.type === "blob" && /(^|\/)programs\/[^/]+\/src\/.+\.rs$/.test(t.path) && !have.includes(t.path) && (t.size ?? 0) < 30000);
+  const lower = text.toLowerCase();
+  const score = (path: string) => { const base = path.split("/").pop()!.replace(/\.rs$/, ""); return (lower.includes(base.toLowerCase()) && base !== "mod" ? 0 : 2) + (/\/lib\.rs$/.test(path) ? -1 : 0) + (/instructions?\//.test(path) ? 0 : 1); };
+  const picked = src.sort((a, b) => score(a.path) - score(b.path) || a.path.localeCompare(b.path));
+  const out: Array<{ path: string; content: string }> = [];
+  let total = 0;
+  for (const f of picked) {
+    if (out.length >= 8 || total > 60000) break;
+    try {
+      const c = await gh.get<{ content?: string }>(`/repos/${labRepo}/contents/${f.path}?ref=${sha}`);
+      if (!c.content) continue;
+      const content = Buffer.from(c.content, "base64").toString("utf8");
+      if (total + content.length > 70000) continue;
+      out.push({ path: f.path, content }); total += content.length;
+    } catch { /* skip */ }
+  }
+  return out;
+}
+
 /** Deterministically check and dispatch a Mind's requested actions. Returns one outcome line per action. */
 async function handleActions(d: RunDeps, p: ProjectConfig, slug: string, taskId: string, resp: TaskResponse, mindName: string, activity: PublicStatus["activity"], log: (s: string) => void, nowIso: string): Promise<string[]> {
   const out: string[] = [];
@@ -446,11 +487,14 @@ async function handleActions(d: RunDeps, p: ProjectConfig, slug: string, taskId:
 /** Workflow dispatches requested by Mind actions; written by the CLI for the workflow to send after private records are pushed. */
 export const pendingDispatches: Array<{ workflow: string; inputs: Record<string, string> }> = [];
 
+/** Outcomes after which a research question gets another patch attempt (max 3 attempts per question). */
+export const RETRYABLE_PATCH_OUTCOMES = ["patch-rejected", "no-patch", "operator-review", "expired-no-reply"];
+
 /** An issue gets a (new) patch task if none was sent, or the last one returned a rejected patch (max 3 attempts). */
 export function retryablePatch(st: AutonomyState, issueUrl: string): boolean {
   const last = st.patchRequests?.[issueUrl];
   if (!last) return true;
-  return st.tasks[last]?.handled === "patch-rejected" && (st.patchAttempts?.[issueUrl] ?? 1) < 3;
+  return RETRYABLE_PATCH_OUTCOMES.includes(st.tasks[last]?.handled ?? "") && (st.patchAttempts?.[issueUrl] ?? 1) < 3;
 }
 
 /** A fix changes program or app source; a tests-only or docs-only patch is an experiment, not an upstream fix. */

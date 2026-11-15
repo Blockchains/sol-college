@@ -88,3 +88,16 @@ candidate has no Cargo.lock, a lockfile resolved for the platform-tools cargo 1.
 Known limits: four new Minds (ciphervault, colosseum, poe-solana, trustlock) ran out of cognition credits on their
 first tasks (balances -13 to -20 at 17:40 GMT); their tasks wait, unresent, until credits are topped up in HelloMinds.
 The gifter patch is tests-only, so it is a lab experiment and is not sent upstream (`isFixPatch`).
+
+## Focus on the three running CTO Minds (owner instruction t695u, 2026-11-15 19:03 GMT)
+- `config/autonomy.json` → `paused` lists ciphervault, colosseum, poe-solana and trustlock as **paused (no credits)**:
+  the loop skips them entirely (no tasks, no HelloMinds calls). No HelloMinds pause API was called; they resume when
+  the entry is removed after a cognition top-up. `records/public/minds/<slug>.json` carries `status`, `paused` and
+  `dimmed` so the campus can show them dimmed.
+- Coding tasks for gifter-escrow, sentient-send and orboracle-solana now include the program source at labHead in
+  `context.files` (files named in the question first, then lib.rs/instructions, ≤8 files), a one-string-per-line
+  `patchLines` example, and — when the research question reads as a defect — a requirement to change program source
+  (a tests-only patch is not accepted for that task). Questions whose last attempt was rejected, returned no patch,
+  went to operator review or expired are retried, up to 3 attempts.
+- Upstream PRs (SC_LAB_PR_TOKEN) additionally skip any validated fix that touches the same files as an open upstream
+  PR by anyone (duplicate check), besides the one-open-PR-per-project rule.

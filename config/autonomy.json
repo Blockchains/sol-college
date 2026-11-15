@@ -38,6 +38,10 @@
       {
         "ref": "owner-instruction-2026-11-15T18:29Z (t690u)",
         "covers": "automatic acceptance without a /sc-accept comment"
+      },
+      {
+        "ref": "owner-instruction-2026-11-15T19:03Z (t695u)",
+        "covers": "focus on gifter-escrow, sentient-send and orboracle-solana; skip the four Minds out of credits"
       }
     ]
   },
@@ -74,5 +78,31 @@
       "maxBytes": 60000
     },
     "maxPatchesPerTask": 1
+  },
+  "paused": {
+    "ciphervault": {
+      "status": "paused (no credits)",
+      "reason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+      "since": "2026-11-15T19:10:00Z",
+      "ref": "owner-instruction-2026-11-15T19:03Z (t695u)"
+    },
+    "colosseum": {
+      "status": "paused (no credits)",
+      "reason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+      "since": "2026-11-15T19:10:00Z",
+      "ref": "owner-instruction-2026-11-15T19:03Z (t695u)"
+    },
+    "poe-solana": {
+      "status": "paused (no credits)",
+      "reason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+      "since": "2026-11-15T19:10:00Z",
+      "ref": "owner-instruction-2026-11-15T19:03Z (t695u)"
+    },
+    "trustlock": {
+      "status": "paused (no credits)",
+      "reason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+      "since": "2026-11-15T19:10:00Z",
+      "ref": "owner-instruction-2026-11-15T19:03Z (t695u)"
+    }
   }
 }

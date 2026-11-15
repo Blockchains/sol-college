@@ -33,6 +33,7 @@ const deps = {
 const results: Array<Record<string, unknown>> = [];
 let failed = 0;
 for (const slug of auto.projects.filter((s) => !values.project || s === values.project)) {
+  if (auto.paused?.[slug]) { results.push({ project: slug, ok: true, skipped: auto.paused[slug]!.status }); continue; }
   const lines: string[] = [];
   try {
     const { status } = await runProject(deps, slug, (s) => lines.push(s));

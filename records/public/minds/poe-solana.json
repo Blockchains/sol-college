@@ -4,7 +4,7 @@
   "mind": "SolCollege-PoE-CTO",
   "at": "2026-11-15T17:27:32.932Z",
   "isEnabled": true,
-  "cognitionBalance": 57.54689301,
+  "cognitionBalance": -13.54023221,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
@@ -82,5 +82,11 @@
     }
   ],
   "conversations": 3,
-  "sdkVersion": "0.1.7"
+  "sdkVersion": "0.1.7",
+  "status": "paused (no credits)",
+  "paused": true,
+  "dimmed": true,
+  "pausedAt": "2026-11-15T19:10:00Z",
+  "pausedReason": "HelloMinds cognition balance is negative; skipped by the Sol.College autonomy loop until topped up. No HelloMinds pause API was called.",
+  "balanceCheckedAt": "2026-11-15T19:12:00Z"
 }
