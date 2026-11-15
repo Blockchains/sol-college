@@ -1,6 +1,6 @@
 {
   "title": "QVAC Marketplace: register an inference provider",
-  "summary": "Register a QVAC inference provider PDA, update its name and task types, and see why a short name or a second register is rejected.",
+  "summary": "Register a QVAC provider, then create an escrowed SOL job against an Ed25519-signed quote, complete it, and confirm to pay the provider.",
   "what": "QVAC Marketplace is an Anchor 1.0 program for an on-chain AI inference market. Providers register a name, task-type bitmask and QVAC DHT peer id. Consumers later create escrowed jobs against an Ed25519-signed quote. Upstream also has off-chain provider tooling; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
   "app_note": "The page at /dapps/qvac-marketplace/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
   "try_steps": [
@@ -40,7 +40,7 @@
     "Explain NameTooShort.",
     "Sketch the Ed25519 quote that create_job expects."
   ],
-  "not_covered": "create_job, provider_complete, consumer_confirm, refund_job and rotate_peer_id were not exercised. create_job needs a sibling Ed25519-signed quote.",
+  "not_covered": "refund_job and rotate_peer_id were not exercised. payment_mint is SOL-only in this MVP.",
   "path_order": 26,
   "path_stage": "apply",
   "difficulty": "intermediate",

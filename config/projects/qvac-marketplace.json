@@ -29,7 +29,7 @@
     "scope": [
       "Anchor program correctness on the Solana runtime (register_provider, update_provider)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/qvac-marketplace/",
-      "QA: devnet proof of register_provider campus-scout, update_provider, NameTooShort, and a rejected second register"
+      "QA: devnet proof of register_provider, update_provider, create_job, provider_complete, consumer_confirm, NameTooShort, and a rejected second register"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

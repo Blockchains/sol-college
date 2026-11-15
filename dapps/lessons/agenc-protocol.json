@@ -1,8 +1,8 @@
 {
   "title": "Agenc Protocol: initialise the coordination config",
-  "summary": "Initialise the Agenc protocol config PDA with a second signer and the program's ProgramData account, then read authority and treasury back.",
+  "summary": "Initialise the Agenc protocol config. register_agent and create_task are paused on this production build until stamp_release_surface.",
   "what": "Agenc Protocol is a large Anchor 0.32 agent-coordination program (tasks, bids, disputes, skills, listings). This lesson covers only initialize_protocol, which writes a singleton config PDA after proving the caller is the upgrade authority and a second multisig owner has co-signed. The hosted IDL is a minimal hand-derived subset confirmed by the live transaction.",
-  "app_note": "The page at /dapps/agenc-protocol/ is the generic IDL-driven wallet console. It currently lists only initialize_protocol (already done on this lab deploy).",
+  "app_note": "The page at /dapps/agenc-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in. register_agent and create_task are listed but will fail with ProtocolPaused until stamp_release_surface.",
   "try_steps": [
     {
       "do": "Open /dapps/agenc-protocol/, switch to Devnet, and connect a wallet. initialize_protocol is already done on this lab deployment.",
@@ -27,13 +27,13 @@
     "register_agent and a large additional surface exist in the program but are not in this IDL"
   ],
   "innovation": "A broad agent coordination protocol whose bootstrap requires the upgrade authority plus a second signer and an explicit ProgramData check.",
-  "frontend": "Generic Sol.College IDL console (initialize_protocol only).",
+  "frontend": "Generic Sol.College IDL console (initialize_protocol works; register_agent/create_task are paused).",
   "exercises": [
     "Fetch the lab protocol config.",
     "Explain why ProgramData must be passed.",
     "Sketch register_agent against this config."
   ],
-  "not_covered": "register_agent, tasks, bids, disputes, skills, listings and governance were not exercised. The hosted IDL does not list those instructions.",
+  "not_covered": "register_agent failed with ProtocolPaused (production builds start paused until stamp_release_surface). create_task was not sent.",
   "path_order": 28,
   "path_stage": "apply",
   "difficulty": "advanced",
@@ -53,5 +53,5 @@
     "protocol config PDA"
   ],
   "build": "Anchor 0.32.1 program (~2.4 MiB), declared at 2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i on devnet. IDL hand-derived subset, tx-confirmed.",
-  "functional": "full"
+  "functional": "partial"
 }

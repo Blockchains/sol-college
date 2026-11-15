@@ -17,6 +17,18 @@
   {
    "label": "register_agent",
    "sig": "52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"
+  },
+  {
+   "label": "post_job",
+   "sig": "2PW8f7mYoxQuikZhZ6PLFKEy4epxf8e5y3SiR8hGGZtrSwwSarB3gjgjpXnsXzpSc1uBkY7sH6TG3VoWaBNtgGLt"
+  },
+  {
+   "label": "claim_job",
+   "sig": "5LdY5kFZWSbs5eATep2BDFkqD6h1xi6MqX9KyY5oEgjiuLFwTU2zzhLZWTMRNisA9zodnW6BMy8AyGPRRxut7HQr"
+  },
+  {
+   "label": "submit_work",
+   "sig": "5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"
   }
  ],
  "verified": "2026-11-15"

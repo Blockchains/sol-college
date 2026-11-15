@@ -29,7 +29,7 @@
     "scope": [
       "Anchor program correctness on the Solana runtime (initialize_protocol)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/agenc-protocol/",
-      "QA: devnet proof of initialize_protocol with a second signer and ProgramData remaining account, config read-back, and InvalidDisputeThreshold"
+      "QA: devnet proof of initialize_protocol and InvalidDisputeThreshold; register_agent rejected with ProtocolPaused"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

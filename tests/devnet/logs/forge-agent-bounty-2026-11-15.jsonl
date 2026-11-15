@@ -2,3 +2,10 @@
 {"step":"initialize","ok":true,"sig":"2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"}
 {"step":"fetch_marketplace","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","totalBounties":"0"}
 {"step":"initialize_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"setup","program":"782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu","marketplace":"4yWx7jjP14U5mx9rsfg8uK4d6ToVfiXo4XUEQ1T58Cte","bounty":"4VEXSpTXBHejeH3coEig2bto2Dpx2XQHK3mmX7JPDzzN","escrow":"DcPAPUE9Nkndri3TUdvFaTDvNsjB3z8AQksBLyFho49g","creatorAta":"J3weMnAcV3KkiQMGpzBTLGbZx4RcrNft6mzgBQJXykwm","bountyId":"0"}
+{"step":"create_bounty_zero_reward","expectedFailure":true,"error":"InvalidReward"}
+{"step":"create_bounty","ok":true,"sig":"3GC1AnoP8eZFHXnzKLBru6EMV5a7fEsBwuNUWNxq7fuzfPp79WjRKgC3HypikTG9SuiUg35urf8BXMdf3KpSaip6"}
+{"step":"claim_bounty","ok":true,"sig":"LFwVVqF8cJxMJevXykQasG9GqX3JMVue4N4amJDi7rvGCfm2KnveHQNZmohgapsFrrKuoidm7CJfQHUF8yq8be3"}
+{"step":"submit_completion","ok":true,"sig":"ymex9VKdwiPZYAY6mSGgFUiQq9xU2Xpt4m3HqF7vTaXtyRjc4MYUmwVMDURNTAsTp92rj75XVxfm5M1kosLkhnE"}
+{"step":"approve_completion","ok":true,"sig":"2Fi73CSd1Y9jtAEc8riAtBCKRrBmrM6XUrSVG8Z6kjoZxWxxTSwUgiSp7NePGDcqJT8QoHKo51cGj3Nhz4oU4McZ"}
+{"step":"fetch","ok":true,"status":{"completed":{}},"title":"campus-scout bounty","assignedAgent":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","completedBounties":1,"totalEarned":"95000000","reputation":1050}

@@ -1,6 +1,6 @@
 {
   "title": "Guild Protocol: on-chain agent labor market",
-  "summary": "Initialise the guild config, then register an agent with a SOL lamport bond and read the agent and vault PDAs.",
+  "summary": "Initialise the guild, register an agent, post/claim/submit a job. review_job payout does not currently succeed on this deployment.",
   "what": "Guild Protocol is an Anchor 1.0 program for an on-chain agent labor market. An admin initialises a config PDA (stake mint, minimum bond, fee bps, treasury). Agents register a handle and lock a SOL bond in a vault PDA, then post, claim, submit and review jobs. Upstream also ships a dashboard; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
   "app_note": "The page at /dapps/guild-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
   "try_steps": [
@@ -43,7 +43,7 @@
     "Explain why fee_bps=2000 is rejected.",
     "Sketch how post_job would lock bond."
   ],
-  "not_covered": "post_job, claim_job, submit_work, review_job, cancel_job and top_up_bond were not exercised in this run.",
+  "not_covered": "review_job cannot settle: the program debit of the system-owned job vault is rejected by the runtime. Job 4XALzcMj\u2026 is left in Submitted.",
   "path_order": 25,
   "path_stage": "apply",
   "difficulty": "intermediate",
@@ -63,5 +63,5 @@
     "fee bps"
   ],
   "build": "Anchor 1.0.2 program, declared at 9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP on devnet.",
-  "functional": "full"
+  "functional": "partial"
 }

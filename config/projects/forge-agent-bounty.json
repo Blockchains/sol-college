@@ -29,7 +29,7 @@
     "scope": [
       "Anchor program correctness on the Solana runtime (initialize)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/forge-agent-bounty/",
-      "QA: devnet proof of initialize and a rejected second initialize"
+      "QA: devnet proof of initialize, create_bounty, claim_bounty, submit_completion, approve_completion, and InvalidReward"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

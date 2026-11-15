@@ -2572,16 +2572,28 @@
       [
         "Fetched agent: owner=lab wallet, handle=campus-scout, bond=1000000, active=true, trust=probation",
         "(no tx; read-only)"
+      ],
+      [
+        "post_job bounty=2_000_000 lamports, required_stake=0, min_trust=probation (job 4XALzcMj\u2026, vault 9QtHZsVD\u2026)",
+        "2PW8f7mYoxQuikZhZ6PLFKEy4epxf8e5y3SiR8hGGZtrSwwSarB3gjgjpXnsXzpSc1uBkY7sH6TG3VoWaBNtgGLt"
+      ],
+      [
+        "claim_job by the lab campus-scout agent",
+        "5LdY5kFZWSbs5eATep2BDFkqD6h1xi6MqX9KyY5oEgjiuLFwTU2zzhLZWTMRNisA9zodnW6BMy8AyGPRRxut7HQr"
+      ],
+      [
+        "submit_work with a lab delivery URI",
+        "5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"
       ]
     ],
     "negative": [
       "initialize with fee_bps=2000 is rejected (FeeTooHigh; max 1000)",
       "register_agent with bond=1 lamport is rejected (BondTooLow)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same initialize and register_agent instructions were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
-    "limits": "post_job, claim_job, submit_work, review_job, cancel_job and top_up_bond were not exercised in this run. stake_mint is recorded on config but the registration bond is SOL lamports, not an SPL transfer.",
-    "functional": "full",
-    "functional_evidence": "initialize landed and config was read back with min_bond=1000000 and fee_bps=250; register_agent wrote agent 27FKpZrzqNxoZefCbHmVF9kgLGV6P8jhzV8irNjzsnjh for campus-scout with bond=1000000 and trust=probation; FeeTooHigh and BondTooLow were rejected."
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, register_agent, post_job, claim_job and submit_work were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
+    "limits": "review_job (approve or reject) cannot settle: the program tries to debit the system-owned job vault by direct lamport mutation, and the runtime rejects that with 'instruction spent from the balance of an account it does not own'. Job 4XALzcMj\u2026 is left in Submitted. cancel_job and top_up_bond were not exercised.",
+    "functional": "partial",
+    "functional_evidence": "initialize, register_agent, post_job, claim_job and submit_work all landed, but review_job payout cannot complete because the program debit of the system-owned job vault is rejected by the runtime."
   },
   {
     "slug": "qvac-marketplace",
@@ -2592,7 +2604,7 @@
     "commit": "fdadfd06ab95c544038133afb7bc7de7f3f5e871",
     "program": "2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix",
     "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an inference marketplace program (plus off-chain QVAC/Hyperswarm provider tooling); we host the generic console against the lab deploy.",
-    "learn": "A provider registers a PDA (seeds [\"provider\", authority]) with a name (3\u201350 bytes), a non-zero task-type bitmask and a non-zero QVAC DHT peer id, then can update those fields or rotate the peer id. create_job escrows payment after verifying a sibling Ed25519-signed quote; that job flow was not exercised in this run.",
+    "learn": "A provider registers a PDA (seeds [\"provider\", authority]) with a name (3\u201350 bytes), a non-zero task-type bitmask and a non-zero QVAC DHT peer id. create_job escrows native SOL after verifying a sibling Ed25519-signed quote (amount, default mint, valid_until, quote_nonce). provider_complete records a response_hash; the consumer can then consumer_confirm immediately, paying the provider and closing the job.",
     "source": [
       [
         "programs/qvac_marketplace/src/lib.rs L21-L29 (register_provider)",
@@ -2630,16 +2642,28 @@
       [
         "Fetched provider after update: name=campus-scout-v2, task_types=3",
         "(no tx; read-only)"
+      ],
+      [
+        "create_job escrowed 1_000_000 lamports against a lab-signed Ed25519 quote (job EHa3yQFK\u2026, SOL mint, task_type=1)",
+        "67oYZvxv74wNSEQTx6Df3duTdXBBRf7XhtRQxKsCh2fSjQeck5o3ZYT4fPjJQhYs367ieUBM1cAHXYYNuuhXJPGA"
+      ],
+      [
+        "provider_complete with a non-zero response_hash",
+        "4QGRPURLK2FwN2JPWFeutYPZ1vSnX4LhrA5F88PKsT1nHJW39YB2DpeyEq3KMm7n35DsmzsMcstbkpzimvDhVjGN"
+      ],
+      [
+        "consumer_confirm released the 1_000_000 lamports and closed the job; provider jobs_completed=1, total_earned=1000000",
+        "3Rpn69G5pqim2FCjQ5kUiYWvNuwME6vJnwfVKLfDuBcYLzgz3vgQFhftydaoLr1wwzQQ2nAhAQDqCMTTibQJcYMv"
       ]
     ],
     "negative": [
       "register_provider with name \"x\" is rejected (NameTooShort; min 3 bytes)",
       "A second register_provider for the same authority is rejected (provider PDA already exists)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same register_provider and update_provider instructions were sent with the lab wallet through the IDL client in tests/devnet/qvac-marketplace.mjs.",
-    "limits": "create_job, provider_complete, consumer_confirm, refund_job and rotate_peer_id were not exercised: create_job needs a sibling Ed25519-signed quote instruction. Jobs were not escrowed in this run.",
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; register_provider, update_provider, create_job, provider_complete and consumer_confirm were sent with the lab wallet through the IDL client in tests/devnet/qvac-marketplace.mjs.",
+    "limits": "refund_job and rotate_peer_id were not exercised. The lab wallet was both consumer and provider authority. payment_mint must be the default pubkey (SOL-only MVP).",
     "functional": "full",
-    "functional_evidence": "register_provider wrote provider GrRvaYzNmuBmzpKkBNdJQvpxhwpCL8MXrz8igngex4N for campus-scout; update_provider changed the name to campus-scout-v2 and task_types to 3; NameTooShort and a second register were rejected."
+    "functional_evidence": "register_provider and update_provider landed; create_job escrowed 1_000_000 lamports against a verified Ed25519 quote; provider_complete and consumer_confirm released the escrow, closed job EHa3yQFKUGkqt8ouamSGLhj5WRZGAhS77SMTx8cQCqm6, and set jobs_completed=1 / total_earned=1000000; NameTooShort and a second register were rejected."
   },
   {
     "slug": "agenttrust",
@@ -2744,10 +2768,10 @@
     "negative": [
       "initialize_protocol with dispute_threshold=0 is rejected (InvalidDisputeThreshold)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize_protocol was sent with the lab wallet plus a second lab signer through the IDL client in tests/devnet/agenc-protocol.mjs. The console lists only the verified initialize_protocol instruction.",
-    "limits": "The hosted IDL is a hand-derived subset of one instruction; register_agent, tasks, bids, disputes, skills, listings and governance were not exercised. initialize_protocol requires the program ProgramData account as remaining_accounts[0] and a second signer distinct from the upgrade authority. The on-chain program is large (~2.4 MiB).",
-    "functional": "full",
-    "functional_evidence": "initialize_protocol landed and protocol config BhScAVMzdghR7jFzRLZb9Mhrt97Q2uYqz6CnPvXhVgi5 was read back with authority and treasury equal to the lab wallet; InvalidDisputeThreshold rejected dispute_threshold=0."
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). initialize_protocol is already done; register_agent is expected to fail with ProtocolPaused until the protocol is stamped and unpaused.",
+    "limits": "The production (non-canary) build starts protocol_paused=true until stamp_release_surface; register_agent therefore failed with ProtocolPaused and create_task was not sent. The hosted IDL is a hand-derived subset (initialize_protocol, plus unverified register_agent/create_task account layouts). The on-chain program is large (~2.4 MiB).",
+    "functional": "partial",
+    "functional_evidence": "initialize_protocol verified; register_agent and create_task were not completed because this production build starts paused until stamp_release_surface (ProtocolPaused)."
   },
   {
     "slug": "forge-agent-bounty",
@@ -2757,8 +2781,8 @@
     "fork": "https://github.com/Blockchains/forge-agent-bounty",
     "commit": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
     "program": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
-    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified initialize instruction; discriminators were confirmed by the live transaction. create_bounty and later flow need an SPL mint and were not exercised.",
-    "learn": "initialize writes a marketplace PDA (seeds [\"marketplace\"]) with the signer as authority and zero bounty/volume counters. create_bounty later escrows SPL tokens; that path was not exercised in this run.",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is hand-derived from source (initialize, create_bounty, claim_bounty, submit_completion, approve_completion); discriminators were confirmed by live transactions.",
+    "learn": "initialize writes a marketplace PDA (seeds [\"marketplace\"]). create_bounty escrows SPL tokens into a PDA token account (seeds [\"escrow\", creator, bounty_id]); an agent can claim, submit completion, and the creator can approve, paying 95% of the reward to the agent (5% remains in escrow as a platform fee).",
     "source": [
       [
         "programs/agent-bounty/src/lib.rs L10-L16 (initialize)",
@@ -2767,6 +2791,14 @@
       [
         "programs/agent-bounty/src/lib.rs L167-L179 (marketplace PDA seeds [\"marketplace\"])",
         "https://github.com/Blockchains/forge-agent-bounty/blob/5f30d18fe721e591b9dfe1549a2e19ecd212a2b6/programs/agent-bounty/src/lib.rs#L167-L179"
+      ],
+      [
+        "programs/agent-bounty/src/lib.rs L18-L65 (create_bounty escrows SPL tokens)",
+        "https://github.com/Blockchains/forge-agent-bounty/blob/5f30d18fe721e591b9dfe1549a2e19ecd212a2b6/programs/agent-bounty/src/lib.rs#L18-L65"
+      ],
+      [
+        "programs/agent-bounty/src/lib.rs L107-L146 (approve_completion pays 95% to the agent)",
+        "https://github.com/Blockchains/forge-agent-bounty/blob/5f30d18fe721e591b9dfe1549a2e19ecd212a2b6/programs/agent-bounty/src/lib.rs#L107-L146"
       ]
     ],
     "flow": "tests/devnet/forge-agent-bounty.mjs",
@@ -2784,15 +2816,36 @@
       [
         "Fetched marketplace: authority is the lab wallet, total_bounties=0",
         "(no tx; read-only)"
+      ],
+      [
+        "Created a lab SPL mint BJMSdujx\u2026 (6 decimals) and minted 1000 tokens to the lab ATA J3weMnAc\u2026",
+        "5J6dd4XCDkNwQBsipDPuGpyCsMqcLZyNVPwY4jpfGidYP1ci8jZis8jZkfXy68ZgDJG4m6eDvzFPhLP6QWBUek7h"
+      ],
+      [
+        "create_bounty campus-scout bounty, reward=100 tokens (bounty 4VEXSpTX\u2026, escrow DcPAPUE9\u2026)",
+        "3GC1AnoP8eZFHXnzKLBru6EMV5a7fEsBwuNUWNxq7fuzfPp79WjRKgC3HypikTG9SuiUg35urf8BXMdf3KpSaip6"
+      ],
+      [
+        "claim_bounty by the lab wallet (same wallet as creator)",
+        "LFwVVqF8cJxMJevXykQasG9GqX3JMVue4N4amJDi7rvGCfm2KnveHQNZmohgapsFrrKuoidm7CJfQHUF8yq8be3"
+      ],
+      [
+        "submit_completion with a lab delivery URL",
+        "ymex9VKdwiPZYAY6mSGgFUiQq9xU2Xpt4m3HqF7vTaXtyRjc4MYUmwVMDURNTAsTp92rj75XVxfm5M1kosLkhnE"
+      ],
+      [
+        "approve_completion: status=Completed, agent earned 95_000_000 (95%), reputation=1050",
+        "2Fi73CSd1Y9jtAEc8riAtBCKRrBmrM6XUrSVG8Z6kjoZxWxxTSwUgiSp7NePGDcqJT8QoHKo51cGj3Nhz4oU4McZ"
       ]
     ],
     "negative": [
-      "A second initialize is rejected (the marketplace PDA already exists)"
+      "A second initialize is rejected (the marketplace PDA already exists)",
+      "create_bounty with reward=0 is rejected (InvalidReward)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/forge-agent-bounty.mjs.",
-    "limits": "create_bounty, claim_bounty, submit_completion, approve_completion and reject_completion were not exercised: create_bounty needs an SPL mint and escrow token accounts. The hosted IDL is a hand-derived initialize-only subset confirmed by the verifying transaction.",
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the bounty lifecycle was sent with the lab wallet through the IDL client in tests/devnet/forge-agent-bounty.mjs.",
+    "limits": "reject_completion was not exercised. approve_completion pays 95% of the reward to the agent and leaves the 5% platform fee in the escrow token account (there is no treasury transfer). The lab wallet was both creator and agent.",
     "functional": "full",
-    "functional_evidence": "initialize landed and marketplace 4yWx7jjP14U5mx9rsfg8uK4d6ToVfiXo4XUEQ1T58Cte was read back with authority = lab wallet and total_bounties=0; a second initialize was rejected."
+    "functional_evidence": "initialize landed; create_bounty escrowed 100 tokens of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D; claim_bounty, submit_completion and approve_completion completed bounty 4VEXSpTXBHejeH3coEig2bto2Dpx2XQHK3mmX7JPDzzN with agent total_earned=95000000; InvalidReward rejected a zero reward."
   },
   {
     "slug": "hydra",

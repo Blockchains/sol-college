@@ -13,6 +13,22 @@
   {
    "label": "initialize",
    "sig": "2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"
+  },
+  {
+   "label": "create_bounty",
+   "sig": "3GC1AnoP8eZFHXnzKLBru6EMV5a7fEsBwuNUWNxq7fuzfPp79WjRKgC3HypikTG9SuiUg35urf8BXMdf3KpSaip6"
+  },
+  {
+   "label": "claim_bounty",
+   "sig": "LFwVVqF8cJxMJevXykQasG9GqX3JMVue4N4amJDi7rvGCfm2KnveHQNZmohgapsFrrKuoidm7CJfQHUF8yq8be3"
+  },
+  {
+   "label": "submit_completion",
+   "sig": "ymex9VKdwiPZYAY6mSGgFUiQq9xU2Xpt4m3HqF7vTaXtyRjc4MYUmwVMDURNTAsTp92rj75XVxfm5M1kosLkhnE"
+  },
+  {
+   "label": "approve_completion",
+   "sig": "2Fi73CSd1Y9jtAEc8riAtBCKRrBmrM6XUrSVG8Z6kjoZxWxxTSwUgiSp7NePGDcqJT8QoHKo51cGj3Nhz4oU4McZ"
   }
  ],
  "verified": "2026-11-15"

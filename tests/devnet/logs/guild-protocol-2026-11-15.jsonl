@@ -5,3 +5,7 @@
 {"step":"register_agent_bond_too_low","expectedFailure":true,"error":"BondTooLow"}
 {"step":"register_agent","ok":true,"sig":"52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"}
 {"step":"fetch_agent","ok":true,"owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","handle":"campus-scout","bond":"1000000","active":true,"trust":{"probation":{}}}
+{"step":"setup","program":"9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP","config":"2w1AbEvBTGHmRudKVQc8NNQx97gNsN9aUkdc6binNxsj","agent":"27FKpZrzqNxoZefCbHmVF9kgLGV6P8jhzV8irNjzsnjh","job":"4XALzcMjWXderNEnEjek71ZdpAsRfgKAtPoB7JR4ufj5","jobVault":"9QtHZsVDMXu89MJsffipMq3TXaJz88rKnA9PNWSdpWPL","jobId":"0"}
+{"step":"post_job","ok":true,"sig":"2PW8f7mYoxQuikZhZ6PLFKEy4epxf8e5y3SiR8hGGZtrSwwSarB3gjgjpXnsXzpSc1uBkY7sH6TG3VoWaBNtgGLt"}
+{"step":"claim_job","ok":true,"sig":"5LdY5kFZWSbs5eATep2BDFkqD6h1xi6MqX9KyY5oEgjiuLFwTU2zzhLZWTMRNisA9zodnW6BMy8AyGPRRxut7HQr"}
+{"step":"submit_work","ok":true,"sig":"5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"}

@@ -17,6 +17,18 @@
   {
    "label": "update_provider",
    "sig": "4PSatmoiXgn3FhwF38Eq1DDfQPT5YdwbDuRfu9Vy7aGComvhCRGa8jVqBkuBrFbn4qxggA5jCXxs83VMxVaSJ2ss"
+  },
+  {
+   "label": "create_job",
+   "sig": "67oYZvxv74wNSEQTx6Df3duTdXBBRf7XhtRQxKsCh2fSjQeck5o3ZYT4fPjJQhYs367ieUBM1cAHXYYNuuhXJPGA"
+  },
+  {
+   "label": "provider_complete",
+   "sig": "4QGRPURLK2FwN2JPWFeutYPZ1vSnX4LhrA5F88PKsT1nHJW39YB2DpeyEq3KMm7n35DsmzsMcstbkpzimvDhVjGN"
+  },
+  {
+   "label": "consumer_confirm",
+   "sig": "3Rpn69G5pqim2FCjQ5kUiYWvNuwME6vJnwfVKLfDuBcYLzgz3vgQFhftydaoLr1wwzQQ2nAhAQDqCMTTibQJcYMv"
   }
  ],
  "verified": "2026-11-15"
