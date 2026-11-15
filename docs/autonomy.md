@@ -32,7 +32,10 @@ repo). The campus build is re-triggered after each pass.
    `sc-lab/*` branch heads as candidates anyway (validation, PR triage, adoption draft).
 7. Upstream PRs for verified fixes (standing permission): one focused PR per project, duplicate-checked. Opening a
    PR on someone else's repository needs a token with that right; GitHub Actions' token has none and deploy keys
-   cannot open PRs, so this stays MANUAL SETUP REQUIRED until `SC_LAB_PR_TOKEN` (classic PAT, `public_repo`) exists.
+   cannot open PRs, so this stays MANUAL SETUP REQUIRED until `SC_LAB_PR_TOKEN` (classic PAT, `public_repo`) exists in environments
+   `minds` and `lab-coding`. Implemented in `runProject` step 4a: only for patches that change program/app source
+   (`isFixPatch`; tests-only patches stay lab experiments), only after the newest genuine validation of the exact SHA
+   passed, and only when the upstream has no open PR from the lab fork. The token is never given to a Mind.
 8. Devnet treasury: a validated reply may carry `{type:"devnet-transfer",recipient,lamports,reason}`; it is
    dispatched to `devnet-treasury.yml`. **No caps and no recipient allowlist** (t688u); devnet only, key only as a
    protected secret, append-only ledger `records/public/treasury/ledger.jsonl`.

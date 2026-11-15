@@ -5,7 +5,7 @@
  */
 import { parseArgs } from "node:util";
 import { loadConfig } from "../config/project.ts";
-import { githubFromEnv } from "../github/api.ts";
+import { GitHubApi, githubFromEnv } from "../github/api.ts";
 import { privateRecordsDir } from "../lib/paths.ts";
 import { assertNoSecrets } from "../lib/secrets.ts";
 import { FileStore } from "../lib/store.ts";
@@ -28,6 +28,7 @@ const deps = {
   now: () => new Date(),
   runUrl: process.env["GITHUB_RUN_ID"] ? `https://github.com/${process.env["GITHUB_REPOSITORY"]}/actions/runs/${process.env["GITHUB_RUN_ID"]}` : null,
   dryRun: values["dry-run"] ?? false,
+  ...(process.env["SC_LAB_PR_TOKEN"] ? { upstreamGh: new GitHubApi(process.env["SC_LAB_PR_TOKEN"]) } : {}),
 };
 const results: Array<Record<string, unknown>> = [];
 let failed = 0;

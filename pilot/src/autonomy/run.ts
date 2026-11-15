@@ -54,6 +54,10 @@ export interface AutonomyState {
   /** taskId -> outcome of the Mind's requested actions (patch / devnet-transfer) */
   actionsHandled?: Record<string, string[]>;
   lastOpsAt?: string;
+  /** candidate sha -> upstream PR url or reason it was not opened */
+  upstreamPrs?: Record<string, string>;
+  /** candidate sha -> sc-lab branch (when the candidate came from a lab PR rather than a bare branch) */
+  labBranches?: Record<string, string>;
   lastRunAt?: string;
 }
 
@@ -80,6 +84,8 @@ export interface RunDeps {
   now: () => Date;
   runUrl: string | null;
   dryRun?: boolean;
+  /** Token allowed to open PRs on upstream repositories (SC_LAB_PR_TOKEN); absent -> upstream PRs wait. */
+  upstreamGh?: GitHubApi;
 }
 
 const hours = (a: string | undefined, now: Date) => (a ? (now.getTime() - Date.parse(a)) / 3_600_000 : Infinity);
@@ -270,6 +276,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
   const branches = await d.gh.get<Br[]>(`/repos/${p.lab.repo}/branches?per_page=100`).catch(() => [] as Br[]);
   const candidates: LabPr[] = [...prs];
   for (const b of branches) if (b.name.startsWith(`sc-lab/${slug}/`) && !prs.some((x) => x.headSha === b.commit.sha)) candidates.push({ url: `https://github.com/${p.lab.repo}/tree/${b.name}`, number: 0, repo: p.lab.repo, headSha: b.commit.sha, title: b.name });
+  for (const b of branches) if (b.name.startsWith(`sc-lab/${slug}/`)) (st.labBranches ??= {})[b.commit.sha] = b.name;
   for (const pr of candidates) {
     if (st.prHeads[pr.url] === pr.headSha) continue;
     if (!st.validations[pr.headSha]) {
@@ -292,6 +299,28 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     const verdict = await candidateVerdict(d.gh, d.cfg, slug, sha);
     if (!verdict.passed || !verdict.decidingRun) continue;
     await dispatch({ taskId: `adopt-${slug}-${sha.slice(0, 7)}`, project: slug, kind: "adoption-draft", instructions: "Follow Sol.College operating instructions v1. Draft the adoption narrative for this validated candidate: summary = the problem solved; hypotheses = alternatives considered; proposals should include one titled 'Integration' and one titled 'Rollback'; uncertainties = risks. Do not claim acceptance.", sources: [...sources, { id: "pr", url: v.prUrl }, { id: "candidate", url: `https://github.com/${p.lab.repo}/commit/${sha}`, sha }], evidence: [{ id: "validation-run", url: verdict.decidingRun.htmlUrl }], context: { fixture: p.validation.fixture } }, { sha, prUrl: v.prUrl });
+  }
+
+  // 4a) Verified fixes go upstream (owner's standing permission): one focused PR per project, duplicate-checked.
+  // Needs SC_LAB_PR_TOKEN (a token allowed to open PRs on the upstream repo); without it the step is reported, not faked.
+  st.upstreamPrs ??= {};
+  for (const [sha, v] of Object.entries(st.validations)) {
+    const m = /\/tree\/(sc-lab\/[^/]+\/([a-z0-9-]+))$/.exec(v.prUrl) ?? /^(sc-lab\/[^/]+\/([a-z0-9-]+))$/.exec(st.labBranches?.[sha] ?? "");
+    if (!m || st.upstreamPrs[sha]) continue;
+    const metaFile = join(d.store.root, "lab-patches", slug, `${m[2]}.json`);
+    if (!existsSync(metaFile)) continue;
+    const meta = JSON.parse(readFileSync(metaFile, "utf8")) as { title: string; rationale: string; files: string[] };
+    if (!isFixPatch(meta.files)) { st.upstreamPrs[sha] = "not-a-fix (tests or experiment only)"; continue; }
+    const verdict = await candidateVerdict(d.gh, d.cfg, slug, sha);
+    if (!verdict.passed || !verdict.decidingRun) continue;
+    if (!d.upstreamGh) { st.upstreamPrs[sha] = "pending: SC_LAB_PR_TOKEN not configured"; log(`upstream PR for ${sha.slice(0, 7)} waits for SC_LAB_PR_TOKEN`); continue; }
+    type Pr = { html_url: string; head: { repo: { full_name: string } | null; ref: string } };
+    const open = await d.gh.get<Pr[]>(`/repos/${p.upstream.repo}/pulls?state=open&per_page=100`);
+    if (open.some((x) => x.head.repo?.full_name === p.lab.repo)) { log(`upstream already has an open PR from ${p.lab.repo}; one focused PR per project`); continue; }
+    if (d.dryRun) continue;
+    const body = `${publicTextCheck(meta.rationale, 2000).text}\n\nValidated: secret-free candidate-validation on the exact head \`${sha}\` passed (${verdict.decidingRun.htmlUrl}).\n\nOpened by Sol.College (a developer learning and R&D campus) from its demonstration lab fork ${p.lab.repo}. Not a partnership; please accept or decline as an ordinary contribution.`;
+    const pr = await d.upstreamGh.send<{ html_url: string }>("POST", `/repos/${p.upstream.repo}/pulls`, { title: meta.title.slice(0, 120), head: `${p.lab.repo.split("/")[0]}:${m[1]}`, base: p.upstream.branch, body, maintainer_can_modify: true });
+    if (pr) { st.upstreamPrs[sha] = pr.html_url; activity.push({ at: nowIso, text: `Opened an upstream pull request for a validated fix`, url: pr.html_url }); log(`upstream PR ${pr.html_url}`); }
   }
 
   // 4b) Coding: ask the Mind for a patch for the oldest open research question that has none yet.
@@ -422,4 +451,9 @@ export function retryablePatch(st: AutonomyState, issueUrl: string): boolean {
   const last = st.patchRequests?.[issueUrl];
   if (!last) return true;
   return st.tasks[last]?.handled === "patch-rejected" && (st.patchAttempts?.[issueUrl] ?? 1) < 3;
+}
+
+/** A fix changes program or app source; a tests-only or docs-only patch is an experiment, not an upstream fix. */
+export function isFixPatch(files: string[]): boolean {
+  return files.some((f) => /(^|\/)programs\/[^/]+\/src\//.test(f) || /^(app|frontend|web)\/src\//.test(f) || /^src\//.test(f));
 }

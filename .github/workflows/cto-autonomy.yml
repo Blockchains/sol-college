@@ -36,6 +36,7 @@ jobs:
           MINDS_BUILDER_API_KEY: ${{ secrets.MINDS_BUILDER_API_KEY }}
           MINDS_PROJECT_MAP: ${{ secrets.MINDS_PROJECT_MAP }}
           GITHUB_TOKEN: ${{ github.token }}
+          SC_LAB_PR_TOKEN: ${{ secrets.SC_LAB_PR_TOKEN }}
           SC_PRIVATE_RECORDS_DIR: ${{ runner.temp }}/control/records
           DRY: ${{ inputs.dry_run && '--dry-run' || '' }}
           SC_DISPATCH_FILE: ${{ runner.temp }}/dispatches.json

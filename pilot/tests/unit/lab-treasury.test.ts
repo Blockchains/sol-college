@@ -70,3 +70,10 @@ test("Patch text: patchLines survives chat formatting; a newline-stripped diff i
   assert.equal(checkPatch(patchText({ patch: lines.join("") }), pol).ok, false);
   assert.equal(patchText({ patchBase64: Buffer.from("x\n").toString("base64") }), "x\n");
 });
+
+test("Upstream PRs only for fixes: tests-only patches stay experiments", async () => {
+  const { isFixPatch } = await import("../../src/autonomy/run.ts");
+  assert.equal(isFixPatch(["contract/tests/refund-negative.ts"]), false);
+  assert.equal(isFixPatch(["programs/cipher-valut/src/instruction_handler/create_transaction.rs"]), true);
+  assert.equal(isFixPatch(["contract/programs/staking/src/lib.rs"]), true);
+});
