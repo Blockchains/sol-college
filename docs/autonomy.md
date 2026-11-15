@@ -72,3 +72,18 @@ sentient-send baseline validation (build-only, exact SHA a1c663d): [43736971628]
 passed after two workflow fixes: the Anchor 0.32.1 release binary pinned by sha256 (npm has none), and, because the
 candidate has no Cargo.lock, a lockfile resolved for the platform-tools cargo 1.84 plus the per-project pin
 `blake3@1.8.2` (`validation.cargoPins`). Earlier failures: 43736019634, 43736417345, 43736709507.
+
+## Evidence: coding, treasury, more Minds (2026-11-15, GMT)
+| What | Evidence |
+| --- | --- |
+| Lab treasury funded (10 devnet SOL from the deployer) | tx `5KpU25N7kaqBHCB5zwKZe3tUf23GFaBfECBxt19Db7FYAKyNmsv71EtsV5NRrqKoWRgQyNACZ4Rnfqotc4zcLA4H` |
+| First treasury transfer via `devnet-treasury` (0.1 SOL to a lab test wallet, operator verification) | run [43740923013](https://github.com/Blockchains/sol-college/actions/runs/43740923013), tx [`3b2UYpNx…tAkCwQ`](https://explorer.solana.com/tx/3b2UYpNxauzb9Fnx2tfkKY9Vk4ACfKhBeonLVnDFnADKwcJ1HVEm2viEeWYo1VAWRN5EN7YjMn8hqte2dVtAkCwQ?cluster=devnet), ledger line in `records/public/treasury/ledger.jsonl`. Earlier run 43740780358 was refused by the request check (bad requester name) before any signing. |
+| First Mind-authored patch | SolCollege-Gifter-CTO, task `patch-4-2026111517-1` (research question #4): `contract/tests/refund-negative.ts`, +145/-0, gate passed (sha256 `83c13846…`) |
+| Applied to a lab branch | [lab-patch 43744200878](https://github.com/Blockchains/sol-college/actions/runs/43744200878): branch `sc-lab/gifter-escrow/patch-4-2026111517-1`, head `036c6d5d6955c1345aa1f2bc2019054a479e2824` (first attempt 43744136814 failed before pushing: new file not staged; fixed with `git apply --index`) |
+| Exact-SHA validation | [candidate-validation 43744241991](https://github.com/Blockchains/sol-college/actions/runs/43744241991): PASS (gifter-escrow localnet fixture) |
+| Lab PR on the fork | [Blockchains/gifter-escrow#1](https://github.com/Blockchains/gifter-escrow/pull/1), opened by the operator because `SC_LAB_PR_TOKEN` is not configured |
+| Patch gate rejection (working as intended) | orboracle-solana `patch-10-2026111517`: diff arrived with newlines stripped by chat formatting, refused as "not a unified diff"; Minds now return `patchLines` and the question was re-asked |
+
+Known limits: four new Minds (ciphervault, colosseum, poe-solana, trustlock) ran out of cognition credits on their
+first tasks (balances -13 to -20 at 17:40 GMT); their tasks wait, unresent, until credits are topped up in HelloMinds.
+The gifter patch is tests-only, so it is a lab experiment and is not sent upstream (`isFixPatch`).
