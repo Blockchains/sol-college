@@ -13,8 +13,8 @@
   "research": {
     "authorised": true,
     "authorisedBy": "Blockchains",
-    "authorisedAt": "2026-11-15T15:30:00Z",
-    "authorisationRef": "https://github.com/Blockchains/sol-college/issues",
+    "authorisedAt": "2026-11-15T15:30:56Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college/issues/1",
     "scope": [
       "Anchor program correctness on the Solana runtime (create_escrow, take_and_close, refund)",
       "Frontend reliability of the hosted devnet app at sol.college/dapps/gifter-escrow/",

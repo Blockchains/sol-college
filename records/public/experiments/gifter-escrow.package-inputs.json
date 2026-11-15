@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "contributions": [
+    {
+      "title": "Bind PDA signer seeds in take_and_close and refund; remove debug println!; fix token list query key",
+      "author": "Blockchains",
+      "prUrl": "https://github.com/berkaycirak/gifter-escrow/pull/1",
+      "commits": [
+        "db240dbc56f549d0814ac9927bc123b55a87c226",
+        "a9967c080a7034b54a4994a0016c5cc6013c6b5c",
+        "5628bfc9439f5e261098368d01c9b70b8c2e70ba"
+      ]
+    }
+  ],
+  "narrative": {
+    "source": "operator",
+    "problem": "On the deployed devnet program take_and_close aborted with an access violation, so an escrow could be created but never taken; refund used the same signer-seed pattern.",
+    "alternatives": [
+      "Keep the temporaries and rebuild with a different toolchain (fragile: the failure depends on code generation)",
+      "Store the bump and escrow id bytes in the state account and borrow from there"
+    ],
+    "risks": [
+      "Program changes need a redeploy; existing escrows created by the old program keep their PDAs (seeds are unchanged, so they remain takeable).",
+      "Frontend token query changes affect only the dropdown data source."
+    ],
+    "limitations": [
+      "The Sol.College runtime fixture also passes on the upstream baseline a9c3a41 with Solana 1.18.26 platform tools: it does not reproduce the toolchain-dependent devnet crash. It proves the candidate's create/take/refund economics and negative cases on a local validator.",
+      "Frontend changes are not exercised by the fixture.",
+      "This is a Sol.College demonstration: acceptance is by Sol.College's own reviewer, not by the upstream project."
+    ],
+    "integration": "Merge the three commits onto upstream main (fast-forward from a9c3a41), rebuild with Anchor 0.30.1, redeploy to devnet, then run contract/tests/take-and-close.ts.",
+    "rollback": "Redeploy the previous program binary (program upgrade authority) and revert the three commits; account layouts are unchanged."
+  },
+  "testConclusions": [
+    "Exact candidate built with Anchor 0.30.1 / Solana 1.18.26 in the untrusted, secret-free job.",
+    "Runtime fixture on solana-test-validator: create, duplicate create rejected, outsider refund rejected, take swaps 10 A for 5 B and closes vault and state, repeat take rejected, take with insufficient balance rejected, refund returns the deposit.",
+    "Negative control e288388 (maker underpaid by one base unit) must be rejected by the same fixture."
+  ]
+}

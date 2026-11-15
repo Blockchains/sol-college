@@ -7,7 +7,7 @@ import { createServerMindsClient } from "../../src/minds/client.ts";
 import { installedSdkVersion, inventory } from "../../src/minds/ops.ts";
 import { GitHubApi, type GhRepo, type GhWorkflow } from "../../src/github/api.ts";
 import { evaluateCandidate, fetchValidationEvidence } from "../../src/validation/evidence.ts";
-import { GOOD, BAD } from "../fixtures/helpers.ts";
+import { GOOD, BAD, NEGATIVE } from "../fixtures/helpers.ts";
 
 const PORT_METHODS = ["listMinds", "getMind", "checkMindName", "awakenMind", "updateMindStatus", "getCognitionBalance", "getCognitionUsage", "getCognitionUsageByTool", "listEquippedSkills", "equipSkills", "unequipSkills", "listEquippedApps", "equipApps", "unequipApps", "getCircle", "addCircleMembers", "removeCircleMembers", "ensureConversation", "getConversation", "listConversations", "sendMessage", "getHistory", "getLatestHistoryFingerprint", "waitForReply", "subscribeEvents", "eventsIterator", "getMindIdForAlias", "listCirclesForAccount", "createConversation"];
 
@@ -50,8 +50,16 @@ test("[live] GitHub evidence: known-good candidate (lab fix fb2bbfd) passes on i
   assert.equal(v.passed, true, v.reasons.join("; "));
 });
 
-test("[live] GitHub evidence: known-bad candidate (upstream a9c3a41, println! in take_and_close) is blocked", { skip: !process.env["SC_LIVE_GITHUB"] && "set SC_LIVE_GITHUB=1" }, async () => {
-  const v = await verdictFor(BAD);
+test("[live] GitHub evidence: negative-control candidate (e288388, maker underpaid by one unit) is blocked by the runtime fixture", { skip: !process.env["SC_LIVE_GITHUB"] && "set SC_LIVE_GITHUB=1" }, async () => {
+  const v = await verdictFor(NEGATIVE);
   assert.equal(v.passed, false);
   assert.ok(v.decidingRun, "a genuine run exists and it failed");
+});
+
+// Honest record: the upstream baseline a9c3a41 (dangling PDA-seed temporaries, the cause of the devnet access
+// violation) PASSES the local fixture with Solana 1.18.26 platform tools. The fixture does not reproduce that
+// toolchain-dependent failure, so it is not claimed as a regression test for it.
+test("[live] GitHub evidence: upstream baseline a9c3a41 has genuine evidence (fixture does not reproduce the devnet crash)", { skip: !process.env["SC_LIVE_GITHUB"] && "set SC_LIVE_GITHUB=1" }, async () => {
+  const v = await verdictFor(BAD);
+  assert.ok(v.decidingRun, "a genuine run exists");
 });

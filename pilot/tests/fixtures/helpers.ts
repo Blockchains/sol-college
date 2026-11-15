@@ -12,7 +12,9 @@ export const cfg = () => loadConfig();
 export const gifter = (): ProjectConfig => structuredClone(cfg().projects.find((p) => p.slug === "gifter-escrow")!);
 
 export const GOOD = "fb2bbfd2e101c9e2600f6f6558c3335f691d5384";
-export const BAD = "a9c3a417d2d78294f58975b1461859ffb20df05a";
+export const BAD = "a9c3a417d2d78294f58975b1461859ffb20df05a"; // upstream baseline (berkaycirak/gifter-escrow head)
+/** Deliberately broken lab candidate (branch sc-negative-control): maker is paid one base unit less. */
+export const NEGATIVE = "e288388a15d46f4c3f7785fa833ea7f9a29d125a";
 export const EXPECTED = { repositoryId: 1000, workflowId: 2000, workflowPath: ".github/workflows/candidate-validation.yml", defaultBranch: "main", requiredJobs: ["untrusted-validate", "attest"] };
 
 export function run(over: Partial<RunEvidence> & { runId: number }, sha = GOOD, conclusion: string | null = "success"): RunEvidence {
