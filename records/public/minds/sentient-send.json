@@ -1,0 +1,81 @@
+{
+  "schema": "sc-mind-ops/1",
+  "project": "sentient-send",
+  "mind": "SolCollege-Sentient-CTO",
+  "at": "2026-11-15T17:34:05.060Z",
+  "isEnabled": true,
+  "cognitionBalance": 574.17179153,
+  "usageDaily": [
+    {
+      "bucket": "2026-11-15T00:00:00",
+      "value": 18.71249004682985
+    }
+  ],
+  "usageByTool": [
+    {
+      "tool": "FILE_Analyze",
+      "callCount": 1,
+      "creditsUsed": 8.2746488512
+    },
+    {
+      "tool": "LLM_Turn",
+      "callCount": 5,
+      "creditsUsed": 8.06992166542985
+    },
+    {
+      "tool": "SKILL_LoadPlaybook",
+      "callCount": 4,
+      "creditsUsed": 2.3679195302
+    }
+  ],
+  "skills": [
+    {
+      "name": "SolCollege_AdoptionEditor",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_ContributorGuide",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_CredentialExplainer",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_LabReporter",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_ProjectNavigator",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_PRTriage",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_PublicCampusRepresentative",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_ResearchPlanner",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_UpstreamAnalyst",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege_ValidationCoordinator",
+      "source": "mind"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Animoca Minds Auth",
+      "tier": "verified"
+    }
+  ],
+  "conversations": 6,
+  "sdkVersion": "0.1.7"
+}
