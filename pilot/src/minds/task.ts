@@ -40,8 +40,15 @@ export interface TaskResponse {
 
 /** Actions a Mind may request; executed only by protected workflows after deterministic checks. */
 export type MindAction =
-  | { type: "patch"; title: string; rationale: string; patch: string }
+  | { type: "patch"; title: string; rationale: string; patch?: string; patchLines?: string[]; patchBase64?: string }
   | { type: "devnet-transfer"; recipient: string; lamports: number; reason: string };
+
+/** The diff text of a patch action. patchLines is preferred: chat formatting can strip newlines inside strings. */
+export function patchText(a: { patch?: string; patchLines?: string[]; patchBase64?: string }): string {
+  if (Array.isArray(a.patchLines)) return a.patchLines.join("\n").replace(/\n*$/, "\n");
+  if (typeof a.patchBase64 === "string") return Buffer.from(a.patchBase64, "base64").toString("utf8");
+  return (a.patch ?? "").replace(/\r\n/g, "\n");
+}
 
 export interface TaskRecord {
   spec: TaskSpec;
@@ -81,7 +88,7 @@ export function buildTaskMessage(spec: TaskSpec): string {
     context: spec.context,
     expectedResponse: {
       protocol: RESPONSE_PROTOCOL,
-      fields: ["protocol", "taskId", "project", "summary", "facts[{statement,sourceRefs[]}]", "hypotheses[{statement,howToTest}]", "proposals[{title,detail}]", "evidenceRefs[]", "uncertainties[]", "actions[] (optional): {type:'patch',title,rationale,patch:<unified diff against the lab head given in context>} | {type:'devnet-transfer',recipient,lamports,reason}"],
+      fields: ["protocol", "taskId", "project", "summary", "facts[{statement,sourceRefs[]}]", "hypotheses[{statement,howToTest}]", "proposals[{title,detail}]", "evidenceRefs[]", "uncertainties[]", "actions[] (optional): {type:'patch',title,rationale,patchLines:[<one string per line of a unified diff against the lab head given in context>]} | {type:'devnet-transfer',recipient,lamports,reason}"],
       rules: [
         "Reply with exactly one fenced ```json block containing the response object.",
         "Only cite sourceRefs and evidenceRefs by the ids listed in this task.",
@@ -163,7 +170,8 @@ export function validateTaskResponse(spec: TaskSpec, reply: MessageRecord): Pars
     if (!Array.isArray(r["actions"])) errors.push("actions must be an array");
     else for (const a of r["actions"] as unknown[]) {
       const x = a as Record<string, unknown>;
-      if (x?.["type"] === "patch") { if (typeof x["title"] !== "string" || typeof x["patch"] !== "string" || typeof x["rationale"] !== "string") errors.push("patch action needs title, rationale and patch"); }
+      if (x?.["type"] === "patch") { const hasBody = typeof x["patch"] === "string" || typeof x["patchBase64"] === "string" || (Array.isArray(x["patchLines"]) && (x["patchLines"] as unknown[]).every((l) => typeof l === "string"));
+        if (typeof x["title"] !== "string" || typeof x["rationale"] !== "string" || !hasBody) errors.push("patch action needs title, rationale and patchLines (or patch / patchBase64)"); }
       else if (x?.["type"] === "devnet-transfer") { if (typeof x["recipient"] !== "string" || !Number.isInteger(x["lamports"]) || typeof x["reason"] !== "string") errors.push("devnet-transfer action needs recipient, integer lamports and reason"); }
       else errors.push(`unknown action type ${String(x?.["type"])}`);
     }

@@ -62,3 +62,11 @@ test("Task aliases never exceed the 64-character HelloMinds limit and stay stabl
   assert.equal(a, taskAlias("sc-orboracle-solana", spec));
   assert.equal(taskAlias("sc-x", { ...spec, taskId: "plan-x-2026111517", kind: "research-plan" }), "sc-x-research-plan-plan-x-2026111517");
 });
+
+test("Patch text: patchLines survives chat formatting; a newline-stripped diff is refused by the gate", async () => {
+  const { patchText } = await import("../../src/minds/task.ts");
+  const lines = ["diff --git a/programs/a/src/lib.rs b/programs/a/src/lib.rs", "--- a/programs/a/src/lib.rs", "+++ b/programs/a/src/lib.rs", "@@ -1,2 +1,3 @@", " fn main() {", "+    let ok = true;", " }"];
+  assert.equal(checkPatch(patchText({ patchLines: lines }), pol).ok, true);
+  assert.equal(checkPatch(patchText({ patch: lines.join("") }), pol).ok, false);
+  assert.equal(patchText({ patchBase64: Buffer.from("x\n").toString("base64") }), "x\n");
+});

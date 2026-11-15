@@ -17,7 +17,7 @@ import type { FileStore } from "../lib/store.ts";
 import type { MindMapping, Approval } from "../minds/authority.ts";
 import { resolveProjectMind } from "../minds/authority.ts";
 import type { MindsPort } from "../minds/port.ts";
-import { dispatchTask, normaliseReplyText, reconcileTask, MAX_REVIEW_ATTEMPTS, type TaskRecord, type TaskResponse, type TaskSpec, type SourceRef } from "../minds/task.ts";
+import { patchText, dispatchTask, normaliseReplyText, reconcileTask, MAX_REVIEW_ATTEMPTS, type TaskRecord, type TaskResponse, type TaskSpec, type SourceRef } from "../minds/task.ts";
 import { candidateVerdict, createAdoptionPackage } from "../adoption/create.ts";
 import { existingPackageFor } from "../adoption/package.ts";
 import { githubCompare, reconcileUpstream, type ExperimentRef } from "../upstream/reconcile.ts";
@@ -49,6 +49,8 @@ export interface AutonomyState {
   issuesOpened: Array<{ url: string; at: string; taskId: string }>;
   /** research-question issue url -> experiment-patch taskId */
   patchRequests?: Record<string, string>;
+  /** research-question issue url -> number of patch tasks sent (a rejected patch may be retried, at most 3 times) */
+  patchAttempts?: Record<string, number>;
   /** taskId -> outcome of the Mind's requested actions (patch / devnet-transfer) */
   actionsHandled?: Record<string, string[]>;
   lastOpsAt?: string;
@@ -198,7 +200,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
       st.actionsHandled![taskId] = d.dryRun ? ["dry-run"] : await handleActions(d, p, slug, taskId, resp, mindName, activity, log, nowIso);
     }
     if (meta.kind === "experiment-patch") {
-      meta.handled = resp.actions?.some((a) => a.type === "patch") ? "patch-handled" : "no-patch";
+      meta.handled = (st.actionsHandled?.[taskId] ?? []).some((x) => x.startsWith("patch queued")) ? "patch-handled" : resp.actions?.some((a) => a.type === "patch") ? "patch-rejected" : "no-patch";
       continue;
     }
     if (meta.kind === "research-plan") {
@@ -296,14 +298,14 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
   st.patchRequests ??= {};
   if (!pending("experiment-patch")) {
     type I = { title: string; html_url: string; body: string | null; number: number };
-    const open = (await d.gh.get<I[]>(`/repos/${p.validation.workflowRepo}/issues?labels=research-question&state=open&per_page=50&sort=created&direction=asc`)).filter((i) => i.title.startsWith(`[research] ${slug}:`) && !st.patchRequests![i.html_url]);
+    const open = (await d.gh.get<I[]>(`/repos/${p.validation.workflowRepo}/issues?labels=research-question&state=open&per_page=50&sort=created&direction=asc`)).filter((i) => i.title.startsWith(`[research] ${slug}:`) && retryablePatch(st, i.html_url));
     const q = open[0];
     if (q) {
       const labHead = (await d.gh.get<{ commit: { sha: string } }>(`/repos/${p.lab.repo}/branches/${encodeURIComponent(p.lab.branch)}`)).commit.sha;
       const files = await referencedFiles(d.gh, p.lab.repo, labHead, q.body ?? "");
       const taskId = `patch-${q.number}-${stamp(now)}`;
-      const t = await dispatch({ taskId, project: slug, kind: "experiment-patch", instructions: "Follow Sol.College operating instructions v1. Write the smallest correct code change that answers this research question as an experiment on the lab fork. Return it as one action {type:'patch',title,rationale,patch} where patch is a git unified diff (diff --git a/<path> b/<path>, ---/+++ headers, @@ hunks with exact context) against labHead, touching only program source or tests under the allowed paths. Do not edit .github, workflows, Anchor.toml, package manifests, lockfiles or toolchain files; no keys, no mainnet. Keep it under 400 changed lines. Code applies it to a branch sc-lab/<project>/<task> and the secret-free candidate-validation workflow builds it; you cannot mark it as passing. If the change needs devnet SOL for a test wallet, you may add {type:'devnet-transfer',recipient,lamports,reason}.", sources: [...sources, { id: "question", url: q.html_url }, { id: "lab-head", url: `https://github.com/${p.lab.repo}/commit/${labHead}`, sha: labHead }], evidence: [], context: { question: { title: q.title, body: (q.body ?? "").slice(0, 6000) }, labHead, allowedPathPrefixes: patchPolicyFor(p.validation.programDir ?? "contract").allowedPrefixes, files } }, {});
-      if (t !== null || d.dryRun) st.patchRequests[q.html_url] = taskId;
+      const t = await dispatch({ taskId, project: slug, kind: "experiment-patch", instructions: "Follow Sol.College operating instructions v1. Write the smallest correct code change that answers this research question as an experiment on the lab fork. Return it as one action {type:'patch',title,rationale,patchLines} where patchLines is a JSON array with ONE STRING PER LINE of a git unified diff (diff --git a/<path> b/<path>, ---/+++ headers, @@ hunks with exact context and correct line counts) against labHead; do not put the diff in a single string, because chat formatting strips newlines inside strings. The diff must apply with `git apply` to the file contents given in context.files, touching only program source or tests under the allowed paths. Do not edit .github, workflows, Anchor.toml, package manifests, lockfiles or toolchain files; no keys, no mainnet. Keep it under 400 changed lines. Code applies it to a branch sc-lab/<project>/<task> and the secret-free candidate-validation workflow builds it; you cannot mark it as passing. If the change needs devnet SOL for a test wallet, you may add {type:'devnet-transfer',recipient,lamports,reason}.", sources: [...sources, { id: "question", url: q.html_url }, { id: "lab-head", url: `https://github.com/${p.lab.repo}/commit/${labHead}`, sha: labHead }], evidence: [], context: { question: { title: q.title, body: (q.body ?? "").slice(0, 6000) }, labHead, allowedPathPrefixes: patchPolicyFor(p.validation.programDir ?? "contract").allowedPrefixes, files } }, {});
+      if (t !== null || d.dryRun) { st.patchRequests[q.html_url] = taskId; (st.patchAttempts ??= {})[q.html_url] = (st.patchAttempts[q.html_url] ?? 0) + 1; }
     }
   }
 
@@ -387,12 +389,13 @@ async function handleActions(d: RunDeps, p: ProjectConfig, slug: string, taskId:
   for (const a of resp.actions ?? []) {
     if (a.type === "patch") {
       if (patches++ >= 1) { out.push("patch: skipped (one patch per task)"); continue; }
-      const chk = checkPatch(a.patch, patchPolicyFor(p.validation.programDir ?? "contract"));
+      const diff = patchText(a);
+      const chk = checkPatch(diff, patchPolicyFor(p.validation.programDir ?? "contract"));
       const title = publicTextCheck(a.title, 120);
       if (!chk.ok || !title.ok) { out.push(`patch rejected: ${[...chk.reasons, ...title.reasons].join(", ")}`); log(`${taskId}: patch rejected (${chk.reasons.join(", ")})`); continue; }
       const dir = join(d.store.root, "lab-patches", slug);
       mkdirSync(dir, { recursive: true });
-      writeFileSync(join(dir, `${taskId}.diff`), a.patch.replace(/\r\n/g, "\n"));
+      writeFileSync(join(dir, `${taskId}.diff`), diff);
       writeFileSync(join(dir, `${taskId}.json`), JSON.stringify({ taskId, project: slug, title: title.text, rationale: publicTextCheck(a.rationale, 2000).text, sha256: chk.sha256, files: chk.files, added: chk.added, removed: chk.removed, mind: mindName, at: nowIso }, null, 2));
       // The private record must be pushed before lab-patch reads it: the workflow pushes the control repo first, then dispatches.
       pendingDispatches.push({ workflow: "lab-patch.yml", inputs: { project: slug, task_id: taskId, patch_sha256: chk.sha256 } });
@@ -413,3 +416,10 @@ async function handleActions(d: RunDeps, p: ProjectConfig, slug: string, taskId:
 
 /** Workflow dispatches requested by Mind actions; written by the CLI for the workflow to send after private records are pushed. */
 export const pendingDispatches: Array<{ workflow: string; inputs: Record<string, string> }> = [];
+
+/** An issue gets a (new) patch task if none was sent, or the last one returned a rejected patch (max 3 attempts). */
+export function retryablePatch(st: AutonomyState, issueUrl: string): boolean {
+  const last = st.patchRequests?.[issueUrl];
+  if (!last) return true;
+  return st.tasks[last]?.handled === "patch-rejected" && (st.patchAttempts?.[issueUrl] ?? 1) < 3;
+}
