@@ -1,0 +1,163 @@
+{
+  "title": "Trust Protocol: on-chain identity bonds for autonomous AI agents",
+  "summary": "Initialise the Trust Protocol with a SWORN mint, then read the protocol-config and insurance-pool PDAs that later identity bonds and contracts hang off.",
+  "what": "Trust Protocol is an open Anchor program for autonomous AI-agent reputation on Solana. An admin initialises a protocol-config PDA (SWORN mint, min/max identity bond, fee and governance parameters) and an insurance-pool PDA. Agents later lock a SWORN identity bond, bid on contracts, deliver work, and can be disputed or claim insurance. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+  "app_note": "The fork has no first-party frontend. The page at /dapps/trust-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/trust-protocol/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
+      "see": "The page lists initialize, register_agent, setup_bond_vault and many contract/dispute instructions, and shows program EaqMCxEC\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "initialize is already done on this lab deployment. Fetch the protocol-config PDA (seeds [\"protocol-config\"]) and confirm admin, sworn_mint and the bond bounds.",
+      "see": "admin is the lab wallet, sworn_mint is DwHZekzd\u2026, min_identity_bond=3000000, max_identity_bond=5000000, governance_phase=0.",
+      "ran": "initialize sig 22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn wrote protocol-config A39izGrYfwoq5EAosQCw9tU2bxthykXuMUaSkcAnCE3z and insurance-pool 2G6iBe6VyRyWUPrt7fvewHgKgLp8dywAkEiKyPHR5QP5."
+    },
+    {
+      "do": "If you try initialize again with the same PDAs, the transaction should fail because those accounts already exist.",
+      "see": "Simulation or confirmation fails (account already in use).",
+      "ran": "The lab run caught a failed second initialize, as expected."
+    }
+  ],
+  "diagram": "admin \u2500 create SWORN mint (6 decimals)\nadmin \u2500 initialize(min_bond, max_bond) \u2500\u25b6 ProtocolConfig [\"protocol-config\"] + InsurancePool [\"insurance-pool\"]\n(later) agent \u2500 register_agent(bond) \u2500\u25b6 identity PDA + transfer SWORN into bond vault",
+  "accounts": [
+    [
+      "ProtocolConfig",
+      "PDA `[\"protocol-config\"]`",
+      "Global config: admin, SWORN mint, bond bounds, fees, governance_phase, counters."
+    ],
+    [
+      "InsurancePool",
+      "PDA `[\"insurance-pool\"]`",
+      "Pool state: balances, claims, authority (the pool-authority PDA)."
+    ],
+    [
+      "pool_authority",
+      "PDA `[\"pool-authority\"]`",
+      "Unchecked PDA used as the insurance pool's authority. Not created as an account at initialize."
+    ],
+    [
+      "sworn_mint",
+      "Existing SPL Mint (6 decimals in the whitepaper)",
+      "Passed into initialize; later identity bonds and fees are in this mint."
+    ]
+  ],
+  "instructions": [
+    {
+      "name": "initialize",
+      "refs": [
+        [
+          "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/initialize.rs#L8-L56",
+          "programs/trust-protocol/src/instructions/initialize.rs L8-L56"
+        ],
+        [
+          "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/initialize.rs#L69-L106",
+          "accounts L69-L106"
+        ]
+      ],
+      "steps": [
+        "Admin-signed, once-only. Writes protocol_config (admin, sworn_mint, min/max identity bond, default fee and governance parameters) and insurance_pool (zero balances, authority = pool-authority PDA).",
+        "Does not create a token vault. That is a later setup_bond_vault / migrate_bond_vault step."
+      ]
+    },
+    {
+      "name": "register_agent",
+      "refs": [
+        [
+          "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/lib.rs#L32-L35",
+          "programs/trust-protocol/src/lib.rs L32-L35"
+        ]
+      ],
+      "steps": [
+        "Agent signs, posts a bond_amount of SWORN into a bond vault, and initialises an identity account.",
+        "Not exercised in this run: the vault must exist and the agent ATA must be funded. setup_bond_vault uses seed bond-vault; register_agent reads bond-vault-v2."
+      ]
+    }
+  ],
+  "innovation": {
+    "title": "A shared on-chain trust layer for AI agents, not just a payment allowance",
+    "text": "Identity bonds, contract bidding, delivery, disputes and an insurance pool are all in one program, with SWORN as the unit of stake. That is the interesting DeAI idea \u2014 agents that can be held to a bond \u2014 even though this lab run only proves the initialize foundation.",
+    "refs": [
+      [
+        "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/initialize.rs",
+        "initialize.rs"
+      ]
+    ],
+    "more": "register_agent, contracts, disputes and insurance were not sent in this run. There is a seed mismatch between setup_bond_vault (bond-vault) and register_agent (bond-vault-v2)."
+  },
+  "frontend": [
+    {
+      "title": "Generic IDL console",
+      "refs": [
+        [
+          "/dapps/trust-protocol/",
+          "Hosted app"
+        ]
+      ],
+      "steps": [
+        "Connect a devnet wallet.",
+        "initialize is already confirmed on this deployment; fetch protocol_config.",
+        "Later instructions (register_agent, contracts) need a SWORN vault and funded ATAs."
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Derive the protocol-config PDA",
+      "steps": [
+        "Use seeds [\"protocol-config\"] and the program id EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f.",
+        "Compare with the address created on devnet."
+      ],
+      "expect": "The address matches A39izGrYfwoq5EAosQCw9tU2bxthykXuMUaSkcAnCE3z.",
+      "hint": "A single constant seed, no pubkey bytes.",
+      "approach": "PublicKey.findProgramAddressSync in @solana/web3.js, or equivalent."
+    },
+    {
+      "title": "Why can't initialize run twice?",
+      "steps": [
+        "Read the account constraints on protocol_config and insurance_pool.",
+        "Explain what happens if a second admin tries initialize."
+      ],
+      "expect": "Both accounts use init, so a second call fails because the PDAs already exist.",
+      "hint": "Look at the init / seeds attributes in Initialize.",
+      "approach": "Read initialize.rs accounts L69-L106."
+    },
+    {
+      "title": "Find the bond-vault seed mismatch",
+      "steps": [
+        "Compare the PDA seeds on setup_bond_vault and register_agent."
+      ],
+      "expect": "setup_bond_vault uses bond-vault; register_agent uses bond-vault-v2. A migrate_bond_vault instruction exists.",
+      "hint": "Search the IDL or the Rust for bond-vault.",
+      "approach": "Read the IDL accounts or setup_bond_vault / register_agent / migrate_bond_vault."
+    }
+  ],
+  "not_covered": "register_agent, contracts, disputes and insurance were not sent: they need a bond vault and a funded SWORN ATA. The hosted UI was not clicked in headless Chromium in this run.",
+  "path_order": 20,
+  "path_stage": 2,
+  "difficulty": "Intermediate",
+  "time": "35 min",
+  "objectives": [
+    "Explain what initialize writes to the protocol-config and insurance-pool PDAs.",
+    "Derive those PDAs from the documented seeds and the lab program id.",
+    "State why a second initialize fails and what is still needed before register_agent."
+  ],
+  "prereqs": [
+    "A wallet on devnet with a little SOL (initialize pays rent for two PDAs).",
+    "Comfort with PDAs, Anchor init constraints, and SPL mints."
+  ],
+  "concepts": [
+    "pda",
+    "anchor",
+    "spl-mint",
+    "ai-agent-identity"
+  ],
+  "build": {
+    "dir": "programs/trust-protocol",
+    "anchor": "0.31.1",
+    "test": "tests/devnet/trust-protocol.mjs",
+    "note": "Program id on this lab deployment is EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f."
+  },
+  "functional": "full"
+}

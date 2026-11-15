@@ -1,0 +1,10 @@
+{
+ "name": "Trust Protocol",
+ "fork": "https://github.com/Blockchains/trust-protocol",
+ "commit": "0e8b8dc0eaf91060be05bb405a392645f8ec9289",
+ "lesson": "/explore/trust-protocol/",
+ "programs": {
+  "devnet": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
+  "mainnet": null
+ }
+}

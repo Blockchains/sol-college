@@ -1,0 +1,4 @@
+{"step":"setup","program":"EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f","admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","swornMint":"DwHZekzdhofMcQS6mtVWKwUMZaM2JQb72XtnoSt3MFBX","protocolConfig":"A39izGrYfwoq5EAosQCw9tU2bxthykXuMUaSkcAnCE3z","insurancePool":"2G6iBe6VyRyWUPrt7fvewHgKgLp8dywAkEiKyPHR5QP5","poolAuthority":"EMZQ9BQQHkQ9Nbpah7G3n2LKyxgEaUe8mLPcWz8BJzPT"}
+{"step":"initialize","ok":true,"sig":"22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn"}
+{"step":"fetch_config","ok":true,"admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","swornMint":"DwHZekzdhofMcQS6mtVWKwUMZaM2JQb72XtnoSt3MFBX","minIdentityBond":"3000000","maxIdentityBond":"5000000","governancePhase":0}
+{"step":"initialize_twice","expectedFailure":true,"error":"Simulation failed. "}

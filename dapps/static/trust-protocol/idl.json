@@ -1,0 +1,5699 @@
+{
+  "address": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
+  "metadata": {
+    "name": "trust_protocol",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Decentralized trust infrastructure for autonomous AI agents"
+  },
+  "instructions": [
+    {
+      "name": "accept_contract",
+      "docs": [
+        "Requester accepts deliverable. Releases payment + returns stake."
+      ],
+      "discriminator": [
+        217,
+        254,
+        164,
+        16,
+        244,
+        59,
+        30,
+        81
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "proof_of_execution",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "For SWORN: provider's ATA. For SOL: provider's wallet (system account)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_token_account",
+          "docs": [
+            "For SWORN: admin's ATA. For SOL: admin's wallet (system account)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "insurance_vault",
+          "docs": [
+            "For SWORN: insurance vault ATA. For SOL: pool authority PDA."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for SWORN contracts. Unused for SOL."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN mint for the burn CPI (10% of fee). Unused for SOL contracts."
+          ],
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "docs": [
+            "Requester's token account for SWORN top-up (\u00a77.7)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "accept_correction",
+      "docs": [
+        "Requester accepts provider's correction during dispute.",
+        "Resolves dispute + completes contract (releases payment)."
+      ],
+      "discriminator": [
+        165,
+        66,
+        100,
+        49,
+        175,
+        126,
+        167,
+        174
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "proof_of_execution",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "requester_identity",
+          "docs": [
+            "Requester identity for dispute friction penalty (\u00a79.3)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "For SWORN: provider's ATA. For SOL: provider's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_token_account",
+          "docs": [
+            "For SWORN: admin's ATA. For SOL: admin's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "insurance_vault",
+          "docs": [
+            "For SWORN: insurance vault ATA. For SOL: pool authority PDA."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for SWORN contracts. Unused for SOL."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN mint for the burn CPI (10% of fee). Unused for SOL contracts."
+          ],
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "docs": [
+            "Requester's token account for SWORN top-up (\u00a77.7)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "accept_proposal",
+      "docs": [
+        "Provider accepts a proposed contract by depositing stake.",
+        "Transitions contract from Proposed to Active."
+      ],
+      "discriminator": [
+        33,
+        190,
+        130,
+        178,
+        27,
+        12,
+        168,
+        238
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "docs": [
+            "Provider's identity \u2014 validates ban status, enforces exposure limit, tracks active_contracts"
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "Provider's SWORN token account (only needed for SWORN-denominated contracts)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault - already initialized by propose_contract (SWORN contracts only)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "approve_insurance_claim",
+      "docs": [
+        "Approve insurance claim (admin Phase 0-2, DAO Phase 3+)."
+      ],
+      "discriminator": [
+        62,
+        234,
+        156,
+        29,
+        42,
+        188,
+        177,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "insurance_claim",
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_vault",
+          "writable": true
+        },
+        {
+          "name": "claimant_token_account",
+          "writable": true
+        },
+        {
+          "name": "pool_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "calculate_trust_score",
+      "docs": [
+        "Compute and store TrustScore on-chain using the whitepaper formula.",
+        "Permissionless: any caller triggers recalculation.",
+        "sol_to_sworn_rate: SOL lamport to SWORN lamport exchange rate for volume normalization."
+      ],
+      "discriminator": [
+        107,
+        243,
+        145,
+        165,
+        89,
+        31,
+        36,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "sol_to_sworn_rate",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "cancel_proposal",
+      "docs": [
+        "Cancel an expired proposal. Requester reclaims escrowed funds."
+      ],
+      "discriminator": [
+        106,
+        74,
+        128,
+        146,
+        19,
+        65,
+        39,
+        23
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault - return funds to requester"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "check_maturation",
+      "docs": [
+        "Permissionless maturation check: marks identity as matured if 14 days + 5 tasks.",
+        "Whitepaper Section 10.2: agents self-mature without oracle dependency."
+      ],
+      "discriminator": [
+        96,
+        97,
+        235,
+        143,
+        88,
+        133,
+        130,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_contract",
+      "docs": [
+        "Create contract. Provider stakes based on TrustScore.",
+        "stake = value * factor_stake(score). Score 0 = 100%, Score 100 = 5%.",
+        "currency: 0=SWORN (default), 1=SOL. Whitepaper \u00a711.8b."
+      ],
+      "discriminator": [
+        244,
+        48,
+        244,
+        178,
+        216,
+        88,
+        122,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for this contract (initialized at contract creation)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN token mint (validated against protocol config)"
+          ]
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "type": "u64"
+        },
+        {
+          "name": "currency",
+          "type": "u8"
+        },
+        {
+          "name": "spec_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "escrow_factor_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "deliver_contract",
+      "docs": [
+        "Provider submits deliverable with Proof of Execution (PoE).",
+        "Whitepaper Section 1: immutable PoE with input/output hashes."
+      ],
+      "discriminator": [
+        53,
+        192,
+        20,
+        182,
+        199,
+        203,
+        163,
+        199
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "proof_of_execution",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "output_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "arweave_tx",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "deny_insurance_claim",
+      "docs": [
+        "Deny insurance claim. Collateral forfeited as anti-spam."
+      ],
+      "discriminator": [
+        51,
+        49,
+        81,
+        215,
+        254,
+        92,
+        211,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "signer": true
+        },
+        {
+          "name": "insurance_claim",
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_vault",
+          "writable": true
+        },
+        {
+          "name": "claimant_token_account",
+          "writable": true
+        },
+        {
+          "name": "pool_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit_stake",
+      "docs": [
+        "Deposit SWORN into SBLP. Split: 40% liquid reserve, 60% LP allocation."
+      ],
+      "discriminator": [
+        160,
+        167,
+        9,
+        220,
+        74,
+        243,
+        228,
+        43
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  45,
+                  105,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "stake_manager",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  45,
+                  109,
+                  97,
+                  110,
+                  97,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "deposit_to_insurance_pool",
+      "docs": [
+        "Deposit tokens into the InsurancePool.",
+        "Whitepaper \u00a711.5b: 60% of confiscations, 20% of protocol fees go to pool."
+      ],
+      "discriminator": [
+        218,
+        30,
+        243,
+        85,
+        26,
+        122,
+        157,
+        23
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "depositor_token_account",
+          "writable": true
+        },
+        {
+          "name": "insurance_vault",
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "emit_work_reward",
+      "docs": [
+        "Emit work reward for a completed task. Halving schedule: 10 SWORN base,",
+        "halves every 50,000 tasks. Converges to 1M SWORN total automatic emission."
+      ],
+      "discriminator": [
+        15,
+        176,
+        223,
+        97,
+        4,
+        223,
+        164,
+        142
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "work_rewards_vault",
+          "docs": [
+            "Work rewards reserve vault (holds the 15M SWORN allocation)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "Provider SWORN token account (receives the reward)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "escalate_dispute",
+      "docs": [
+        "Escalate dispute to next level (Level 1\u21922\u21923 only, no stake required)."
+      ],
+      "discriminator": [
+        129,
+        70,
+        111,
+        75,
+        130,
+        29,
+        225,
+        35
+      ],
+      "accounts": [
+        {
+          "name": "initiator",
+          "docs": [
+            "Either the requester or provider may escalate (Whitepaper Section 9)."
+          ],
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "escalate_to_appeal",
+      "docs": [
+        "Escalate a Level 3 (PublicJury) dispute to Level 4 (Appeal).",
+        "Whitepaper Section 9.5: escalating party deposits 50% of contract value (double-or-nothing).",
+        "On win: deposit returned. On loss: deposit confiscated (60% insurance, 25% winner, 15% burn).",
+        "Records depositor in dispute.initiator for correct refund/confiscation in resolve_dispute."
+      ],
+      "discriminator": [
+        111,
+        122,
+        127,
+        177,
+        135,
+        153,
+        163,
+        67
+      ],
+      "accounts": [
+        {
+          "name": "escalator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "escalator_token_account",
+          "docs": [
+            "For SWORN: escalator's ATA. For SOL: pass any account (not used)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "For SWORN: contract escrow vault. For SOL: pass any account (not used)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "expire_hibernation",
+      "docs": [
+        "Permissionless: expire hibernation once max duration has passed.",
+        "Resets hibernation state so standard decay resumes automatically."
+      ],
+      "discriminator": [
+        154,
+        216,
+        128,
+        5,
+        98,
+        8,
+        135,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "file_insurance_claim",
+      "docs": [
+        "File retroactive claim within 90-day window. Max 80% of contract value."
+      ],
+      "discriminator": [
+        64,
+        180,
+        112,
+        253,
+        63,
+        45,
+        247,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "claimant",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "insurance_claim",
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "claimant_token_account",
+          "writable": true
+        },
+        {
+          "name": "insurance_vault",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "evidence_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "force_mature",
+      "docs": [
+        "Force-mature an agent (devnet testing only).",
+        "Bypasses maturation period for testing contract lifecycle."
+      ],
+      "discriminator": [
+        105,
+        231,
+        101,
+        229,
+        160,
+        66,
+        73,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "harvest_lp_fees",
+      "docs": [
+        "Harvest LP fees. Distribution: 70% staker, 20% treasury, 10% insurance."
+      ],
+      "discriminator": [
+        153,
+        236,
+        19,
+        193,
+        135,
+        211,
+        138,
+        173
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "stake_manager",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  45,
+                  109,
+                  97,
+                  110,
+                  97,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "hibernate_agent",
+      "docs": [
+        "Declare hibernation: reduced decay (0.5/month) for up to 12 months.",
+        "Must be called BEFORE going inactive. Requires 5-task cooldown between hibernations."
+      ],
+      "discriminator": [
+        107,
+        122,
+        109,
+        195,
+        184,
+        143,
+        229,
+        113
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "duration_months",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the Trust Protocol with SWORN token and global config.",
+        "Whitepaper Section 8: Governance Phase 0 (founding team)."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "The SWORN token mint (fixed supply 100M, decimals 6 \u2014 whitepaper \u00a711.2)"
+          ]
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "pool_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "initiate_dispute",
+      "docs": [
+        "Initiate dispute on a contract."
+      ],
+      "discriminator": [
+        128,
+        242,
+        160,
+        23,
+        44,
+        61,
+        171,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "evidence_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "jury_vote",
+      "docs": [
+        "Jury vote (Public Jury / Appeal only, TrustScore > 70 required)."
+      ],
+      "discriminator": [
+        92,
+        192,
+        170,
+        145,
+        149,
+        194,
+        158,
+        196
+      ],
+      "accounts": [
+        {
+          "name": "juror",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "juror_identity"
+        },
+        {
+          "name": "vote_record",
+          "docs": [
+            "Double-vote prevention: one VoteRecord PDA per juror per dispute.",
+            "The `init` constraint rejects any second vote from the same juror."
+          ],
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "vote_for_provider",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "migrate_agent_identity",
+      "docs": [
+        "Migrate AgentIdentity v1 (95 bytes) to v2 (123 bytes).",
+        "Inserts volume_sol, total_deliveries, corrections_received, active_contracts,",
+        "last_task_completed_at fields (all zero) at correct Borsh offsets.",
+        "Idempotent: already-migrated accounts (123 bytes) are skipped."
+      ],
+      "discriminator": [
+        224,
+        85,
+        185,
+        55,
+        61,
+        13,
+        241,
+        39
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_identity",
+          "docs": [
+            "Cannot use Account<AgentIdentity> because old accounts have 95 bytes",
+            "and would fail Anchor deserialization against the new 123-byte struct."
+          ],
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_agent_v3",
+      "docs": [
+        "Migrate AgentIdentity v2 (123 bytes) -> v3 (146 bytes).",
+        "Adds hibernation + dispute_friction fields. Run after migrate_config_v3."
+      ],
+      "discriminator": [
+        190,
+        177,
+        158,
+        128,
+        15,
+        48,
+        77,
+        12
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "docs": [
+            "Protocol config \u2014 must be migrated to v3 first so Anchor can deserialize it."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_bond_vault",
+      "docs": [
+        "Migrate bond vault: close old (v1) vault, create new (v2) vault, update config.",
+        "Drains old tokens to admin, closes account, inits new vault with new mint."
+      ],
+      "discriminator": [
+        6,
+        206,
+        4,
+        148,
+        40,
+        177,
+        45,
+        36
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "old_bond_vault",
+          "docs": [
+            "Old bond vault (will be closed)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100,
+                  45,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin_old_token_account",
+          "docs": [
+            "Admin's token account for the OLD mint (receives drained tokens)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "new_sworn_mint",
+          "docs": [
+            "The new SWORN mint (v2 with metadata)"
+          ]
+        },
+        {
+          "name": "new_bond_vault",
+          "docs": [
+            "New bond vault PDA \u2014 initialized with new mint.",
+            "Uses different seeds (\"bond-vault-v2\") since old PDA can't be reused in same TX."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100,
+                  45,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  45,
+                  118,
+                  50
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_config_v3",
+      "docs": [
+        "Migrate ProtocolConfig v2 (146 bytes) -> v3 (186 bytes).",
+        "Adds work-reward halving fields. Must be run FIRST before other v3 migrations."
+      ],
+      "discriminator": [
+        78,
+        178,
+        126,
+        113,
+        62,
+        159,
+        225,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_dispute",
+      "docs": [
+        "Migrate Dispute v1 (218 bytes) -> v2 (219 bytes).",
+        "Adds private_rounds_count field. Run after migrate_config_v3."
+      ],
+      "discriminator": [
+        11,
+        78,
+        91,
+        228,
+        194,
+        62,
+        157,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "docs": [
+            "Protocol config \u2014 must be migrated to v3 first."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_dispute_appeal_stake",
+      "docs": [
+        "Migrate Dispute accounts to include appeal_stake field (u64).",
+        "Reallocs from 170 to 178 bytes. The new 8 bytes are zero-filled (appeal_stake=0).",
+        "appeal_stake is populated by escalate_to_appeal when Level 4 is reached.",
+        "Whitepaper Section 9.5: double-or-nothing stake deposit by escalating party.",
+        "Call once per old dispute. Idempotent for already-migrated accounts."
+      ],
+      "discriminator": [
+        175,
+        128,
+        14,
+        7,
+        137,
+        210,
+        44,
+        47
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "dispute",
+          "docs": [
+            "because old accounts have smaller size and fail deserialization."
+          ],
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_dispute_arbitration_fee",
+      "docs": [
+        "Migrate Dispute accounts to include arbitration_fee field (u64).",
+        "Reallocs from 178 to 186 bytes. The new 8 bytes are zero-filled.",
+        "Whitepaper Section 9.4: 2% arbitration fee per party for L3/L4 disputes."
+      ],
+      "discriminator": [
+        20,
+        34,
+        177,
+        24,
+        29,
+        243,
+        101,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_dispute_size",
+      "docs": [
+        "Migrate old Dispute accounts to include corrections_count field.",
+        "Reallocs from 169 to 170 bytes. Call once per old dispute."
+      ],
+      "discriminator": [
+        23,
+        134,
+        69,
+        131,
+        18,
+        104,
+        227,
+        195
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "dispute",
+          "docs": [
+            "because old accounts have smaller size and fail deserialization."
+          ],
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_insurance_pool",
+      "docs": [
+        "Migrate InsurancePool v1 (61 bytes) -> v2 (69 bytes).",
+        "Adds total_active_exposure field. Run after migrate_config_v3."
+      ],
+      "discriminator": [
+        244,
+        63,
+        168,
+        125,
+        230,
+        194,
+        45,
+        117
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "docs": [
+            "Protocol config \u2014 must be migrated to v3 first."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_protocol_config",
+      "docs": [
+        "Migrate ProtocolConfig from v1 (133 bytes) to v2 (146 bytes).",
+        "Adds protocol_fee_sworn_bps, protocol_fee_sol_bps, max_corrections,",
+        "deadline_validation fields with whitepaper defaults.",
+        "Idempotent: already-migrated accounts (146 bytes) are skipped."
+      ],
+      "discriminator": [
+        240,
+        133,
+        241,
+        218,
+        118,
+        253,
+        139,
+        28
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "docs": [
+            "Cannot use Account<ProtocolConfig> because old accounts have 133 bytes",
+            "and would fail Anchor deserialization against the new 146-byte struct."
+          ],
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "place_bid",
+      "docs": [
+        "Place a bid on a public contract. Computes bid_score on-chain.",
+        "bid_score = W_price * price_score + W_trust * trust_norm + W_speed * speed_score"
+      ],
+      "discriminator": [
+        238,
+        77,
+        148,
+        91,
+        200,
+        151,
+        92,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bidder_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  45,
+                  105,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "proposed_price",
+          "type": "u64"
+        },
+        {
+          "name": "proposed_deadline",
+          "type": "u64"
+        },
+        {
+          "name": "stake_offered",
+          "type": "u64"
+        },
+        {
+          "name": "message_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "sla_deadline_hours",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "propose_contract",
+      "docs": [
+        "Propose a contract. Only requester signs; deposits escrow.",
+        "Provider must call accept_proposal to activate.",
+        "currency: 0=SWORN (SPL token), 1=SOL (native lamports). Whitepaper Section 11.8b."
+      ],
+      "discriminator": [
+        45,
+        70,
+        126,
+        36,
+        54,
+        253,
+        121,
+        193
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "provider_identity",
+          "docs": [
+            "Provider's identity - read-only, used to calculate stake requirement."
+          ]
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA - holds requester's deposit until provider accepts or proposal expires."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint"
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "value",
+          "type": "u64"
+        },
+        {
+          "name": "expiry_seconds",
+          "type": "u64"
+        },
+        {
+          "name": "currency",
+          "type": "u8"
+        },
+        {
+          "name": "escrow_factor_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "redeliver_in_dispute",
+      "docs": [
+        "Provider re-delivers corrected work during Level 1 dispute.",
+        "Max 3 corrections before auto-escalation to Level 2 (PrivateRounds)."
+      ],
+      "discriminator": [
+        129,
+        225,
+        126,
+        86,
+        197,
+        72,
+        247,
+        208
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "proof_of_execution",
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "output_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "arweave_tx",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "register_agent",
+      "docs": [
+        "Register a new agent with soulbound identity bond (2-5 SWORN).",
+        "Creates DID: did:trust:{pubkey}. 14-day maturation period (+ 5 tasks)."
+      ],
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        },
+        {
+          "name": "agent_token_account",
+          "docs": [
+            "Agent's SWORN token account (source of bond)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "bond_vault",
+          "docs": [
+            "Bond vault (PDA-controlled, tokens locked permanently)",
+            "Uses bond-vault-v2 seeds after v1\u2192v2 migration."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100,
+                  45,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  45,
+                  118,
+                  50
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "bond_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "reject_delivery",
+      "docs": [
+        "Requester rejects delivery and requests correction (Whitepaper \u00a76.2).",
+        "corrections_used is incremented. Auto-escalates to dispute when limit reached."
+      ],
+      "discriminator": [
+        36,
+        183,
+        50,
+        167,
+        246,
+        186,
+        10,
+        45
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reason_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "resolve_dispute",
+      "docs": [
+        "Resolve dispute. Confiscated stakes: 15% burned, 60% insurance, 25% winner."
+      ],
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "resolver",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "requester_identity",
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "For SWORN: provider's ATA. For SOL: provider's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "docs": [
+            "For SWORN: requester's ATA. For SOL: requester's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for SWORN. Unused for SOL."
+          ],
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_vault",
+          "docs": [
+            "For SWORN: insurance vault ATA. For SOL: pool authority PDA."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN mint. Only used for SWORN burn path."
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "provider_wins",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "respond_dispute",
+      "docs": [
+        "Provider responds to dispute with correction/counter-evidence."
+      ],
+      "discriminator": [
+        71,
+        136,
+        87,
+        127,
+        213,
+        117,
+        241,
+        1
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true
+        },
+        {
+          "name": "contract"
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "response_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "select_bid",
+      "docs": [
+        "Requester selects a winning bid and assigns the provider."
+      ],
+      "discriminator": [
+        237,
+        159,
+        214,
+        70,
+        104,
+        96,
+        28,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "bid",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "contract"
+              },
+              {
+                "kind": "account",
+                "path": "bidder_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder_authority",
+          "docs": [
+            "The authority wallet of the bidder (used as PDA seed)"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "setup_bond_vault",
+      "docs": [
+        "Set up bond vault token account (one-time, after initialize).",
+        "Required before any agent can register."
+      ],
+      "discriminator": [
+        193,
+        20,
+        164,
+        2,
+        102,
+        86,
+        126,
+        42
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "The SWORN token mint referenced by protocol config"
+          ]
+        },
+        {
+          "name": "bond_vault",
+          "docs": [
+            "Bond vault PDA \u2014 initialized here as a token account"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100,
+                  45,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  111,
+                  108,
+                  45,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "sponsor_agent",
+      "docs": [
+        "Sponsor an agent (established agent vouches for newcomer).",
+        "Sponsor must have TrustScore >= 50 and matured identity."
+      ],
+      "discriminator": [
+        155,
+        17,
+        169,
+        36,
+        187,
+        55,
+        252,
+        56
+      ],
+      "accounts": [
+        {
+          "name": "sponsor",
+          "signer": true
+        },
+        {
+          "name": "sponsor_identity"
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "bonus_points",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "timeout_contract",
+      "docs": [
+        "Permissionless timeout: resolves abandoned contract after 72h delivery deadline.",
+        "Provider's stake is confiscated (60% insurance, 25% requester bonus, 15% burn).",
+        "Requester receives full escrow + 25% stake bonus.",
+        "Whitepaper Section 3/5: failed delivery = tasks_abandoned++, active_contracts--."
+      ],
+      "discriminator": [
+        212,
+        34,
+        248,
+        165,
+        58,
+        126,
+        234,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Permissionless: anyone can trigger the timeout after 72h"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "requester_token_account",
+          "docs": [
+            "For SWORN: requester's ATA. For SOL: requester's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for SWORN. Unused for SOL (lamports live in contract PDA)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "insurance_vault",
+          "docs": [
+            "For SWORN: insurance vault ATA. For SOL: not used (lamports go to requester)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN mint for burn CPI. Unused for SOL."
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "timeout_delivery",
+      "docs": [
+        "Permissionless: auto-accept Delivered contract if requester ignores it for 72h.",
+        "Whitepaper Section 3.5: protects provider from requester ghosting. GAP-11."
+      ],
+      "discriminator": [
+        54,
+        145,
+        192,
+        69,
+        13,
+        29,
+        208,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Permissionless: any caller can trigger after 72h"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contract",
+          "writable": true
+        },
+        {
+          "name": "proof_of_execution",
+          "writable": true
+        },
+        {
+          "name": "provider_identity",
+          "writable": true
+        },
+        {
+          "name": "requester_identity",
+          "docs": [
+            "Requester identity \u2014 for reputational penalty on timeout (Whitepaper \u00a77.5)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "For SWORN: provider's ATA. For SOL: provider's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "treasury_token_account",
+          "docs": [
+            "For SWORN: admin's ATA. For SOL: admin's wallet."
+          ],
+          "writable": true
+        },
+        {
+          "name": "insurance_vault",
+          "docs": [
+            "For SWORN: insurance vault ATA. For SOL: unused (pass dummy)."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "Escrow vault PDA for SWORN contracts."
+          ],
+          "writable": true
+        },
+        {
+          "name": "sworn_mint",
+          "docs": [
+            "SWORN mint for burn CPI. Unused for SOL."
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_config",
+      "docs": [
+        "Admin: update protocol config parameters (min_bond, maturation_period, etc.).",
+        "Whitepaper \u00a78: Phase 0-2 admin-controlled. GAP-1/GAP-2 fix."
+      ],
+      "discriminator": [
+        29,
+        158,
+        252,
+        191,
+        10,
+        83,
+        219,
+        99
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateConfigParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_insurance_exposure",
+      "docs": [
+        "Update InsurancePool total_active_exposure for solvency ratio calculation.",
+        "Whitepaper \u00a711.5c: solvency_ratio = balance / exposure. Admin-only Phase 0-2."
+      ],
+      "discriminator": [
+        34,
+        210,
+        24,
+        7,
+        13,
+        237,
+        133,
+        16
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "insurance_pool",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  115,
+                  117,
+                  114,
+                  97,
+                  110,
+                  99,
+                  101,
+                  45,
+                  112,
+                  111,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "protocol_config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_exposure",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_sworn_mint",
+      "docs": [
+        "Update SWORN mint address (v1 -> v2 migration).",
+        "Admin only (Phase 0-2 governance)."
+      ],
+      "discriminator": [
+        98,
+        194,
+        214,
+        18,
+        96,
+        98,
+        16,
+        55
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  45,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_sworn_mint",
+          "docs": [
+            "The new SWORN mint to set"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "wake_agent",
+      "docs": [
+        "Wake from hibernation early (or can be called by anyone after expiry via expire_hibernation)."
+      ],
+      "discriminator": [
+        16,
+        23,
+        15,
+        58,
+        6,
+        134,
+        163,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_identity",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw_bid",
+      "docs": [
+        "Withdraw (cancel) a bid on a public contract."
+      ],
+      "discriminator": [
+        110,
+        53,
+        157,
+        195,
+        147,
+        100,
+        110,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "bidder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bid",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  105,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bid.task_id",
+                "account": "Bid"
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bidder_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116,
+                  45,
+                  105,
+                  100,
+                  101,
+                  110,
+                  116,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "bidder"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw_stake",
+      "docs": [
+        "Withdraw SWORN from liquid reserve."
+      ],
+      "discriminator": [
+        153,
+        8,
+        22,
+        138,
+        105,
+        176,
+        87,
+        66
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "stake_manager",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101,
+                  45,
+                  109,
+                  97,
+                  110,
+                  97,
+                  103,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentIdentity",
+      "discriminator": [
+        11,
+        149,
+        31,
+        27,
+        186,
+        76,
+        241,
+        72
+      ]
+    },
+    {
+      "name": "Bid",
+      "discriminator": [
+        143,
+        246,
+        48,
+        245,
+        42,
+        145,
+        180,
+        88
+      ]
+    },
+    {
+      "name": "Contract",
+      "discriminator": [
+        172,
+        138,
+        115,
+        242,
+        121,
+        67,
+        183,
+        26
+      ]
+    },
+    {
+      "name": "Dispute",
+      "discriminator": [
+        36,
+        49,
+        241,
+        67,
+        40,
+        36,
+        241,
+        74
+      ]
+    },
+    {
+      "name": "InsuranceClaim",
+      "discriminator": [
+        52,
+        189,
+        95,
+        73,
+        117,
+        235,
+        160,
+        230
+      ]
+    },
+    {
+      "name": "InsurancePool",
+      "discriminator": [
+        239,
+        152,
+        145,
+        201,
+        228,
+        155,
+        139,
+        140
+      ]
+    },
+    {
+      "name": "ProofOfExecution",
+      "discriminator": [
+        56,
+        21,
+        105,
+        30,
+        102,
+        208,
+        67,
+        33
+      ]
+    },
+    {
+      "name": "ProtocolConfig",
+      "discriminator": [
+        207,
+        91,
+        250,
+        28,
+        152,
+        179,
+        215,
+        209
+      ]
+    },
+    {
+      "name": "StakeManager",
+      "discriminator": [
+        205,
+        143,
+        54,
+        235,
+        240,
+        28,
+        104,
+        211
+      ]
+    },
+    {
+      "name": "VoteRecord",
+      "discriminator": [
+        112,
+        9,
+        123,
+        165,
+        234,
+        9,
+        157,
+        167
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidBondAmount",
+      "msg": "Identity bond must be between 2 and 5 SWORN tokens"
+    },
+    {
+      "code": 6001,
+      "name": "IdentityNotMatured",
+      "msg": "Agent identity has not matured (14-day + 5-task requirement)"
+    },
+    {
+      "code": 6002,
+      "name": "AgentBanned",
+      "msg": "Agent is permanently banned due to fraud"
+    },
+    {
+      "code": 6003,
+      "name": "InsufficientStake",
+      "msg": "Insufficient stake for contract value and TrustScore"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidContractStatus",
+      "msg": "Contract is not in the expected status"
+    },
+    {
+      "code": 6005,
+      "name": "UnauthorizedRequester",
+      "msg": "Only the contract requester can perform this action"
+    },
+    {
+      "code": 6006,
+      "name": "UnauthorizedProvider",
+      "msg": "Only the contract provider can perform this action"
+    },
+    {
+      "code": 6007,
+      "name": "MaxDisputeLevel",
+      "msg": "Dispute level cannot be escalated further"
+    },
+    {
+      "code": 6008,
+      "name": "DisputeDeadlineNotReached",
+      "msg": "Dispute deadline has not passed"
+    },
+    {
+      "code": 6009,
+      "name": "DisputeDeadlineExpired",
+      "msg": "Dispute deadline has passed"
+    },
+    {
+      "code": 6010,
+      "name": "InsufficientJuryReputation",
+      "msg": "Jury member TrustScore must be > 70"
+    },
+    {
+      "code": 6011,
+      "name": "ClaimWindowExpired",
+      "msg": "Retroactive claim window (90 days) has expired"
+    },
+    {
+      "code": 6012,
+      "name": "ClaimAmountExceeded",
+      "msg": "Claim amount exceeds 80% of contract value"
+    },
+    {
+      "code": 6013,
+      "name": "ExposureLimitExceeded",
+      "msg": "Agent exposure exceeds 3x capital limit"
+    },
+    {
+      "code": 6014,
+      "name": "UnauthorizedAdmin",
+      "msg": "Only protocol admin can perform this action"
+    },
+    {
+      "code": 6015,
+      "name": "PoEHashMismatch",
+      "msg": "Proof of Execution hash mismatch"
+    },
+    {
+      "code": 6016,
+      "name": "InsufficientCollateral",
+      "msg": "Insufficient collateral for insurance claim"
+    },
+    {
+      "code": 6017,
+      "name": "GovernancePhaseRestricted",
+      "msg": "Governance phase does not allow this action"
+    },
+    {
+      "code": 6018,
+      "name": "MathOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6019,
+      "name": "AlreadyVoted",
+      "msg": "Agent has already voted on this dispute"
+    },
+    {
+      "code": 6020,
+      "name": "SoulboundViolation",
+      "msg": "Identity bond is soulbound and cannot be transferred"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidEscrowVault",
+      "msg": "Invalid escrow vault PDA"
+    },
+    {
+      "code": 6022,
+      "name": "ProposalExpired",
+      "msg": "Contract proposal has expired"
+    },
+    {
+      "code": 6023,
+      "name": "ProposalNotExpired",
+      "msg": "Proposal has not expired yet (cannot cancel before expiry)"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidCurrency",
+      "msg": "Invalid currency value (must be 0=SWORN or 1=SOL)"
+    },
+    {
+      "code": 6025,
+      "name": "CurrencyMismatchSol",
+      "msg": "Currency mismatch: operation requires SOL-denominated contract"
+    },
+    {
+      "code": 6026,
+      "name": "CurrencyMismatchSworn",
+      "msg": "Currency mismatch: operation requires SWORN-denominated contract"
+    },
+    {
+      "code": 6027,
+      "name": "MaxCorrectionsReached",
+      "msg": "Maximum corrections reached (3). Dispute auto-escalated to Level 2."
+    },
+    {
+      "code": 6028,
+      "name": "InvalidDestination",
+      "msg": "Destination account does not match expected recipient"
+    },
+    {
+      "code": 6029,
+      "name": "InvalidAccountSize",
+      "msg": "Account size is not the expected old format size"
+    },
+    {
+      "code": 6030,
+      "name": "TimeoutNotReached",
+      "msg": "Contract delivery timeout (72h) has not been reached yet"
+    },
+    {
+      "code": 6031,
+      "name": "JuryStillVoting",
+      "msg": "Jury is still voting: quorum not reached and deadline has not passed"
+    },
+    {
+      "code": 6032,
+      "name": "AgentHibernating",
+      "msg": "Agent is currently hibernating and cannot accept new contracts"
+    },
+    {
+      "code": 6033,
+      "name": "AgentNotHibernating",
+      "msg": "Agent is not currently hibernating"
+    },
+    {
+      "code": 6034,
+      "name": "AlreadyHibernating",
+      "msg": "Hibernation already active for this agent"
+    },
+    {
+      "code": 6035,
+      "name": "HibernationCooldown",
+      "msg": "Hibernation cooldown: must complete 5 tasks after last hibernation"
+    },
+    {
+      "code": 6036,
+      "name": "InvalidHibernationDuration",
+      "msg": "Hibernation duration must be between 1 and 12 months"
+    },
+    {
+      "code": 6037,
+      "name": "ClaimExceedsPoolCap",
+      "msg": "Claim exceeds 5% of InsurancePool balance (\u00a711.5b per-claim cap)"
+    },
+    {
+      "code": 6038,
+      "name": "InsurancePoolCrisis",
+      "msg": "InsurancePool in crisis (solvency < 0.5): only proven fraud claims accepted (\u00a711.5c)"
+    },
+    {
+      "code": 6039,
+      "name": "ContractNotPublic",
+      "msg": "Contract is not public (visibility must be 1 for bidding, \u00a76.5)"
+    },
+    {
+      "code": 6040,
+      "name": "ContractNotBiddable",
+      "msg": "Contract is not in Created/Proposed status (cannot bid on active contracts)"
+    },
+    {
+      "code": 6041,
+      "name": "BidPriceTooHigh",
+      "msg": "Proposed price exceeds contract escrow amount"
+    },
+    {
+      "code": 6042,
+      "name": "BidStakeInsufficient",
+      "msg": "Bid stake offered is below the minimum required for bidder TrustScore"
+    },
+    {
+      "code": 6043,
+      "name": "BidNotActive",
+      "msg": "Bid not found or already withdrawn"
+    },
+    {
+      "code": 6044,
+      "name": "UnauthorizedBidder",
+      "msg": "Only the bid owner can withdraw this bid"
+    },
+    {
+      "code": 6045,
+      "name": "UnauthorizedBidSelector",
+      "msg": "Only the contract requester can select a bid"
+    },
+    {
+      "code": 6046,
+      "name": "InsufficientLiquidReserve",
+      "msg": "Insufficient liquid reserve for withdrawal (\u00a711.10)"
+    },
+    {
+      "code": 6047,
+      "name": "WithdrawExceedsStake",
+      "msg": "Withdrawal amount exceeds staked balance"
+    },
+    {
+      "code": 6048,
+      "name": "NoFeesToHarvest",
+      "msg": "No LP fees to harvest"
+    },
+    {
+      "code": 6049,
+      "name": "ZeroDeposit",
+      "msg": "Deposit amount must be greater than zero"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentIdentity",
+      "docs": [
+        "Agent identity account - soulbound, non-transferable (Whitepaper Section 2: Identity Model)",
+        "Created on registration with a 2-5 SWORN identity bond.",
+        "DID format: did:trust:{pubkey}"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "The agent's wallet authority"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "identity_bond",
+            "docs": [
+              "SWORN tokens locked as identity bond (2-5 tokens, anti-Sybil)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "registered_at",
+            "docs": [
+              "Unix timestamp of registration"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "matured",
+            "docs": [
+              "Whether this identity has matured (14 days + 5 tasks \u2014 see check_maturation)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "trust_score",
+            "docs": [
+              "Current TrustScore (0-100, computed on-chain via calculate_trust_score instruction)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "tasks_completed",
+            "docs": [
+              "Total tasks completed (logarithmic weight in TrustScore)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "volume_processed",
+            "docs": [
+              "Total transaction volume in SWORN lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "volume_sol",
+            "docs": [
+              "Total transaction volume in SOL lamports (tracked separately for TrustScore)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "disputes_lost",
+            "docs": [
+              "Disputes lost count"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "disputes_won",
+            "docs": [
+              "Disputes won count"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "tasks_abandoned",
+            "docs": [
+              "Tasks abandoned count"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "fraud_flags",
+            "docs": [
+              "Fraud flags count"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "total_deliveries",
+            "docs": [
+              "Total deliveries submitted (includes re-deliveries during disputes)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "corrections_received",
+            "docs": [
+              "Corrections received from requester feedback (quality proxy)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "active_contracts",
+            "docs": [
+              "Number of currently active contracts (for exposure limit enforcement)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "last_task_completed_at",
+            "docs": [
+              "Timestamp of last completed task (for TrustScore decay calculation)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "sponsor_bonus",
+            "docs": [
+              "Sponsor bonus points from established agents"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "banned",
+            "docs": [
+              "Whether identity is permanently banned (fraud)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "is_hibernating",
+            "docs": [
+              "Hibernation state: 0 = active, 1 = hibernating (Whitepaper \u00a78.6)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "hibernation_started_at",
+            "docs": [
+              "Timestamp when hibernation started (0 if not hibernating)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "hibernation_ends_at",
+            "docs": [
+              "Timestamp when hibernation ends (0 if not hibernating)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "tasks_since_last_hibernation",
+            "docs": [
+              "Tasks completed since last hibernation ended (cooldown = 5 tasks, Whitepaper \u00a78.6)"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "dispute_friction_total",
+            "docs": [
+              "Accumulated dispute friction penalty in centibps (50 = 0.5 pts per round).",
+              "Whitepaper \u00a78.1: dispute_friction_total added to S_penalty.",
+              "Each Level 2 private round costs 0.5 pts to BOTH parties (max 2.5 per dispute)."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed for PDA derivation"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bid",
+      "docs": [
+        "Bid on a public contract (Whitepaper \u00a76.5: Public Contract Bidding)",
+        "Seeds: [b\"bid\", contract_key, bidder_key]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bid_id",
+            "docs": [
+              "Sequential bid ID (per contract, monotonically increasing)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "task_id",
+            "docs": [
+              "Contract (task) this bid is for"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bidder",
+            "docs": [
+              "Bidder agent identity PDA (DID reference)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "proposed_price",
+            "docs": [
+              "Proposed price in SWORN/SOL lamports (must be <= escrow_amount)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "proposed_deadline",
+            "docs": [
+              "Proposed deadline in hours"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bidder_ts",
+            "docs": [
+              "Bidder TrustScore snapshotted at bid time"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "stake_offered",
+            "docs": [
+              "Stake offered by bidder (>= required stake for their TrustScore)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "message_hash",
+            "docs": [
+              "SHA-256 hash of bid message/proposal"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of bid submission"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bid_score",
+            "docs": [
+              "Computed bid_score (scaled by 10000 for precision, Whitepaper \u00a76.5)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "docs": [
+              "Whether bid is active (false = withdrawn)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ClaimStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Filed"
+          },
+          {
+            "name": "UnderReview"
+          },
+          {
+            "name": "Approved"
+          },
+          {
+            "name": "Denied"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Contract",
+      "docs": [
+        "Contract between two agents (Whitepaper Section 3: Dynamic Staking)",
+        "stake_required = contract_value * factor_stake(TrustScore)",
+        "factor_stake: TrustScore 0 => 100%, TrustScore 100 => 5%"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Unique contract ID"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "docs": [
+              "The agent requesting work"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "docs": [
+              "The agent performing work"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "value",
+            "docs": [
+              "Contract value in SWORN lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "provider_stake",
+            "docs": [
+              "Stake locked by provider"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "requester_stake",
+            "docs": [
+              "Stake locked by requester (for dispute anti-spam)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Contract status"
+            ],
+            "type": {
+              "defined": {
+                "name": "ContractStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Creation timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "resolved_at",
+            "docs": [
+              "Completion/resolution timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "poe_hash",
+            "docs": [
+              "Proof of Execution hash (SHA-256 of deliverable)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "poe_arweave_tx",
+            "docs": [
+              "Arweave TX ID for full PoE data (43 bytes base64url)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "dispute_level",
+            "docs": [
+              "Dispute level if in dispute (0 = no dispute)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "proposal_expires_at",
+            "docs": [
+              "Unix timestamp when proposal expires (0 = no expiry / legacy contract)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "provider_stake_required",
+            "docs": [
+              "Provider stake required (calculated at proposal time, locked for accept)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "currency",
+            "docs": [
+              "Currency denomination: SWORN (SPL token) or SOL (native lamports)",
+              "Whitepaper Section 11.8b: contracts can be denominated in SOL or SWORN"
+            ],
+            "type": {
+              "defined": {
+                "name": "Currency"
+              }
+            }
+          },
+          {
+            "name": "escrow_factor_bps",
+            "docs": [
+              "Escrow factor in basis points (Whitepaper \u00a77.7: reduced escrow for experienced requesters)",
+              "escrow_factor(ts) = max(0.30, 1.0 - 0.70*(ts/100)^1.5)",
+              "10000 = 100% (full escrow \u2014 new requester, TS=0), 3000 = 30% (TS=100 minimum floor)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "spec_hash",
+            "docs": [
+              "SHA-256 hash of input specification (Whitepaper \u00a76.1: spec_hash)",
+              "Set at contract creation. Used for dispute evidence and PoE verification."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "corrections_used",
+            "docs": [
+              "Number of corrections used in the pre-dispute correction cycle (Whitepaper \u00a76.2)",
+              "Range: 0..max_corrections_contract. When limit reached, auto-escalates to dispute."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "max_corrections_contract",
+            "docs": [
+              "Per-contract max corrections (Whitepaper \u00a76.1: sla.max_corrections, default 3)",
+              "Copied from protocol_config.max_corrections at creation, but can be overridden."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "deadline_validation_contract",
+            "docs": [
+              "Per-contract validation deadline in seconds (Whitepaper \u00a76.1: sla.deadline_validation)",
+              "Copied from protocol_config.deadline_validation at creation. Default 72h = 259200."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "visibility",
+            "docs": [
+              "Contract visibility (Whitepaper \u00a76.4: private or public)",
+              "0 = Private (default), 1 = Public (enables bidding mechanism \u00a76.5)"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContractStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Created"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Delivered"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Cancelled"
+          },
+          {
+            "name": "ResolvedProvider"
+          },
+          {
+            "name": "ResolvedRequester"
+          },
+          {
+            "name": "Proposed"
+          },
+          {
+            "name": "CorrectionRequested"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Currency",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Sworn"
+          },
+          {
+            "name": "Sol"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Dispute",
+      "docs": [
+        "Dispute account (Whitepaper Section 9: Dispute Resolution)",
+        "4 levels: Direct Correction -> Private Rounds -> Public Jury -> Appeal"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "contract",
+            "docs": [
+              "Associated contract"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "initiator",
+            "docs": [
+              "Who initiated the dispute"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "level",
+            "docs": [
+              "Current dispute level"
+            ],
+            "type": {
+              "defined": {
+                "name": "DisputeLevel"
+              }
+            }
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Dispute status"
+            ],
+            "type": {
+              "defined": {
+                "name": "DisputeStatus"
+              }
+            }
+          },
+          {
+            "name": "evidence_hash",
+            "docs": [
+              "Evidence hash from initiator"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "response_hash",
+            "docs": [
+              "Response hash from respondent"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "votes_provider",
+            "docs": [
+              "Jury votes for provider (Public Jury / Appeal only)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "votes_requester",
+            "docs": [
+              "Jury votes for requester"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "jury_size",
+            "docs": [
+              "Total jury members assigned"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Escalation deadline (unix timestamp)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Created at"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "resolved_at",
+            "docs": [
+              "Resolved at"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "corrections_count",
+            "docs": [
+              "Number of corrections attempted (max 3 before auto-escalate to L2)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "private_rounds_count",
+            "docs": [
+              "Number of Level 2 private negotiation rounds (max 5, Whitepaper \u00a79.3).",
+              "Used to compute dispute friction: 0.5 pts * rounds to each party."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "appeal_stake",
+            "docs": [
+              "Appeal stake deposited by escalating party (Level 4 only).",
+              "On escalation to Appeal: escalating party deposits 50% of contract value.",
+              "Losing party forfeits their appeal_stake (60% insurance, 25% winner, 15% burn).",
+              "Whitepaper Section 9.5: double-or-nothing with larger jury."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "arbitration_fee",
+            "docs": [
+              "Arbitration fee per party (2% of contract value, Whitepaper \u00a79.4).",
+              "Both parties deposit this when escalating to Level 3 (PublicJury).",
+              "Winner recovers theirs; loser's fee is distributed to jury validators.",
+              "Stored as the per-party amount (i.e., 2% of contract value)."
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeLevel",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "DirectCorrection"
+          },
+          {
+            "name": "PrivateRounds"
+          },
+          {
+            "name": "PublicJury"
+          },
+          {
+            "name": "Appeal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Responded"
+          },
+          {
+            "name": "Voting"
+          },
+          {
+            "name": "ResolvedProvider"
+          },
+          {
+            "name": "ResolvedRequester"
+          },
+          {
+            "name": "Escalated"
+          },
+          {
+            "name": "JuryDecided"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min_identity_bond",
+            "docs": [
+              "Minimum identity bond in SWORN lamports (3 SWORN = 3_000_000 with 6 decimals \u2014 whitepaper \u00a72.1)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_identity_bond",
+            "docs": [
+              "Maximum identity bond in SWORN lamports (5 SWORN = 5_000_000 with 6 decimals)"
+            ],
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InsuranceClaim",
+      "docs": [
+        "Retroactive claim against the Insurance Pool"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "claimant",
+            "docs": [
+              "Claimant (requester who discovered defect)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "contract",
+            "docs": [
+              "Original contract"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount claimed (up to 80% of contract value)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "collateral",
+            "docs": [
+              "Anti-spam collateral deposited"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "evidence_hash",
+            "docs": [
+              "Evidence hash"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Claim status"
+            ],
+            "type": {
+              "defined": {
+                "name": "ClaimStatus"
+              }
+            }
+          },
+          {
+            "name": "filed_at",
+            "docs": [
+              "Filed at timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "contract_completed_at",
+            "docs": [
+              "Original contract completion timestamp (must be within 90 days)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InsurancePool",
+      "docs": [
+        "Insurance Pool (Whitepaper Section 11.5b)",
+        "Accumulates 60% of confiscated stakes. Enables 90-day retroactive claims.",
+        "Solvency ratio = total_balance / total_active_exposure (\u00a711.5c)."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_balance",
+            "docs": [
+              "Total SWORN in the pool"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_claims_paid",
+            "docs": [
+              "Total claims paid out"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "active_claims",
+            "docs": [
+              "Number of active claims"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "Authority (program PDA)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "total_active_exposure",
+            "docs": [
+              "Sum of all contracts completed in last 90 days eligible for retroactive claims (\u00a711.5c)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProofOfExecution",
+      "docs": [
+        "Proof of Execution record (Whitepaper Section 1: PoE)",
+        "Immutable record of task execution with input/output hashes"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "contract",
+            "docs": [
+              "Associated contract"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "docs": [
+              "Provider who executed"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "input_hash",
+            "docs": [
+              "SHA-256 hash of input specification"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "output_hash",
+            "docs": [
+              "SHA-256 hash of output/deliverable"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "submitted_at",
+            "docs": [
+              "Timestamp of submission"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "validated",
+            "docs": [
+              "Whether validated by requester"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "arweave_tx",
+            "docs": [
+              "Arweave TX for full payload"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolConfig",
+      "docs": [
+        "Protocol configuration (Whitepaper Section 8: Governance)",
+        "Phase 0-2: Centralized (founding team), Phase 3+: Decentralized (sqrt TrustScore voting)"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "Protocol admin (founding team in Phase 0-2)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "sworn_mint",
+            "docs": [
+              "SWORN token mint"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "min_identity_bond",
+            "docs": [
+              "Minimum identity bond (2 SWORN in lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_identity_bond",
+            "docs": [
+              "Maximum identity bond (5 SWORN in lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "maturation_period",
+            "docs": [
+              "Identity maturation period in seconds (14 days = 1_209_600 \u2014 Whitepaper \u00a710.2)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "min_stake_factor_bps",
+            "docs": [
+              "Minimum stake factor at TrustScore 100 (500 = 5.00%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "max_stake_factor_bps",
+            "docs": [
+              "Maximum stake factor at TrustScore 0 (10000 = 100%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "burn_rate_bps",
+            "docs": [
+              "Burn rate of confiscated tokens (1500 = 15%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "insurance_rate_bps",
+            "docs": [
+              "Insurance pool rate of confiscated tokens (6000 = 60%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "claim_window",
+            "docs": [
+              "Retroactive claim window in seconds (90 days = 7776000)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "max_claim_payout_bps",
+            "docs": [
+              "Max claim payout as % of contract value (8000 = 80%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "exposure_limit_multiplier",
+            "docs": [
+              "Exposure limit multiplier (3x capital)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "governance_phase",
+            "docs": [
+              "Governance phase (0, 1, 2 = centralized; 3+ = decentralized)"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "total_contracts",
+            "docs": [
+              "Total contracts created (counter)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_agents",
+            "docs": [
+              "Total agents registered"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_sworn_bps",
+            "docs": [
+              "Protocol fee rate for SWORN-denominated contracts in bps (50 = 0.5%)",
+              "Whitepaper \u00a711.8: SWORN fee < SOL fee to incentivise SWORN adoption"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "protocol_fee_sol_bps",
+            "docs": [
+              "Protocol fee rate for SOL-denominated contracts in bps (100 = 1.0%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "max_corrections",
+            "docs": [
+              "Max corrections before auto-escalating to Level 2 dispute (default: 3)",
+              "Whitepaper \u00a712.4.1: governable, range 1-10"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "deadline_validation",
+            "docs": [
+              "Requester validation timeout in seconds (default: 72h = 259200)",
+              "Whitepaper \u00a77.5 / \u00a712.4.1: deadline_validation, range 24h-168h"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "total_protocol_tasks",
+            "docs": [
+              "Total protocol-wide completed tasks (drives halving schedule, \u00a711.3b)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_work_rewards_emitted",
+            "docs": [
+              "Total work reward SWORN emitted so far (convergent to 1M automatic, \u00a711.3b)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "base_work_reward",
+            "docs": [
+              "Base work reward per task in SWORN lamports (default: 10 SWORN = 10_000_000, \u00a711.3b)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "halving_interval",
+            "docs": [
+              "Halving interval in tasks (default: 50_000, \u00a711.3b)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_work_rewards",
+            "docs": [
+              "Max automatic work rewards emittable (1_000_000 SWORN in lamports, \u00a711.3b)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "reserve_ratio_bps",
+            "docs": [
+              "SBLP reserve ratio in bps (4000 = 40%, Whitepaper \u00a711.10)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "lp_fee_staker_bps",
+            "docs": [
+              "SBLP LP fee share to stakers in bps (7000 = 70%, Whitepaper \u00a711.10)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bid_weight_price_bps",
+            "docs": [
+              "Bid weight for price factor (3500 = 0.35, Whitepaper \u00a76.5)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bid_weight_trust_bps",
+            "docs": [
+              "Bid weight for trust factor (4500 = 0.45, Whitepaper \u00a76.5)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bid_weight_speed_bps",
+            "docs": [
+              "Bid weight for speed factor (2000 = 0.20, Whitepaper \u00a76.5)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeManager",
+      "docs": [
+        "Staking-Based Liquidity Pool manager (Whitepaper \u00a711.10: SBLP)",
+        "Seeds: [b\"stake-manager\", agent_key]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "docs": [
+              "Agent who owns this stake position"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "total_staked",
+            "docs": [
+              "Total SWORN staked by this agent"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "liquid_reserve",
+            "docs": [
+              "Liquid reserve portion (reserve_ratio * total_staked)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "lp_allocation",
+            "docs": [
+              "LP allocation portion ((1-reserve_ratio) * total_staked)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "lp_fees_earned",
+            "docs": [
+              "Total LP fees earned (claimable)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "last_fee_harvest",
+            "docs": [
+              "Timestamp of last fee harvest"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateConfigParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "min_identity_bond",
+            "docs": [
+              "New min identity bond in SWORN lamports. None = no change."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_identity_bond",
+            "docs": [
+              "New max identity bond in SWORN lamports. None = no change."
+            ],
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "maturation_period",
+            "docs": [
+              "New maturation period in seconds. None = no change."
+            ],
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "protocol_fee_sworn_bps",
+            "docs": [
+              "Protocol fee SWORN bps (10-300). Whitepaper sect 11.8."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "protocol_fee_sol_bps",
+            "docs": [
+              "Protocol fee SOL bps (10-300). Must stay > sworn fee."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "max_corrections",
+            "docs": [
+              "Max corrections before L2 escalation (1-10). sect 12.4.1."
+            ],
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "deadline_validation",
+            "docs": [
+              "Requester validation timeout seconds (86400-604800). sect 7.5."
+            ],
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "reserve_ratio_bps",
+            "docs": [
+              "SBLP reserve ratio bps (1000-8000). sect 11.10."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "lp_fee_staker_bps",
+            "docs": [
+              "SBLP LP fee staker share bps (5000-9000). sect 11.10."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "bid_weight_price_bps",
+            "docs": [
+              "Bid weight: price factor bps. sect 6.5."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "bid_weight_trust_bps",
+            "docs": [
+              "Bid weight: trust factor bps. sect 6.5."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "bid_weight_speed_bps",
+            "docs": [
+              "Bid weight: speed factor bps. sect 6.5."
+            ],
+            "type": {
+              "option": "u16"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteRecord",
+      "docs": [
+        "Jury vote record (Whitepaper Section 9.4: Public Jury voting)",
+        "One PDA per juror per dispute. Prevents double-voting.",
+        "Seeds: [b\"vote\", dispute_key, juror_key]",
+        "Initialized in handler_vote; existence proves the juror already voted."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "dispute",
+            "docs": [
+              "The dispute this vote belongs to"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "juror",
+            "docs": [
+              "The juror who cast this vote"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "vote_for_provider",
+            "docs": [
+              "Whether the vote was for the provider (true) or requester (false)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "voted_at",
+            "docs": [
+              "Unix timestamp when vote was cast"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

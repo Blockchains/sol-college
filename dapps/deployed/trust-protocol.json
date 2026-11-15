@@ -1,0 +1,23 @@
+{
+ "slug": "trust-protocol",
+ "cluster": "devnet",
+ "program": "trust_protocol",
+ "idl": "trust_protocol.json",
+ "devnet": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "MrgKugdm6QvUpNt8EKcMLMxz9oAzBiA4e4evgtnskKFJy871dLEhdj3u5Q8QMewq3rWrBLmKQcJFoKScGcwQ6Kn"
+  },
+  {
+   "label": "create_sworn_mint",
+   "sig": "65f9z8GgYLTGBXy5Lux2LhPuFgQgnFY7nC4B21Rh6L2UxFfxRfYZTm92kHshtvTZgv7iBXyepbWm1jrbAiYg43HL"
+  },
+  {
+   "label": "initialize",
+   "sig": "22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn"
+  }
+ ],
+ "verified": "2026-11-15"
+}
