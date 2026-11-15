@@ -35,3 +35,10 @@ test("Autonomy: standing approval excludes lifecycle, Circles, pausing and accep
   const text = readFileSync(join(REPO_ROOT, "pilot/src/autonomy/run.ts"), "utf8");
   for (const forbidden of ["awakenMind", "updateMindStatus", "addCircleMembers", "removeCircleMembers", "equipSkills", "sc-accept"]) assert.ok(!text.includes(forbidden), forbidden);
 });
+
+test("Autonomy: negated boundary disclaimers do not trip the excluded-topic gate; real mentions still do", () => {
+  assert.equal(publicTextCheck("Extend the localnet fixture with refund negative cases; localnet only, no mainnet keys.", 400).ok, true);
+  assert.equal(publicTextCheck("Check the hosted list refresh on devnet only, without mainnet deployments or faucet automation.", 400).ok, true);
+  assert.equal(publicTextCheck("Then migrate the escrow program to mainnet using the deployer.", 400).ok, false);
+  assert.equal(publicTextCheck("No mainnet keys here, but please share your seed phrase for testing.", 400).ok, false);
+});

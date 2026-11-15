@@ -43,6 +43,8 @@ export interface TaskRecord {
   fingerprintBefore?: string;
   response?: TaskResponse;
   rawReplyFingerprint?: string;
+  /** Times an operator-review task was re-evaluated against its stored/corrected replies (bounded; never resends). */
+  reviewAttempts?: number;
   interimReplies?: string[];
   errors: string[];
   history: Array<{ at: string; state: TaskState; note: string }>;
@@ -144,7 +146,7 @@ export function validateTaskResponse(spec: TaskSpec, reply: MessageRecord): Pars
     const pr = p as { title?: unknown; detail?: unknown };
     if (typeof pr.title !== "string" || typeof pr.detail !== "string") errors.push("each proposal needs title and detail");
   }
-  for (const e of arr("evidenceRefs")) if (!allowedEvidence.has(String(e))) errors.push(`unknown evidence ref ${String(e)}`);
+  for (const e of arr("evidenceRefs")) if (!allowedEvidence.has(String(e)) && !allowedSources.has(String(e))) errors.push(`unknown evidence ref ${String(e)}`);
   arr("uncertainties");
   if (errors.length) return { ok: false, errors };
   return { ok: true, response: r as unknown as TaskResponse, errors: [] };
@@ -247,6 +249,7 @@ export async function reconcileTask(deps: Pick<DispatchDeps, "minds" | "store">,
   const cur = deps.store.read<TaskRecord>(k);
   if (!cur) throw new Error(`no task record ${spec.taskId}`);
   const rec = cur.data;
+  if (rec.state === "operator-review") return reviewTask(deps, spec, cur.version, rec);
   if (!["uncertain", "dispatched", "dispatch-intent"].includes(rec.state)) return rec;
   const rows = await deps.minds.getHistory(rec.alias, { limit: 50 });
   const sentIdx = rows.findIndex((r) => r.senderType === 1 && r.messageText === rec.messageText);
@@ -266,4 +269,31 @@ export async function reconcileTask(deps: Pick<DispatchDeps, "minds" | "store">,
     return next;
   }
   return acceptReply(deps.store, k, rec, cur.version, reply);
+}
+
+export const MAX_REVIEW_ATTEMPTS = 3;
+
+/**
+ * Re-evaluate an operator-review task whose reply failed validation: the Mind sometimes sends a
+ * corrected reply for the same taskId, and the response policy may have been widened since. Looks
+ * only at correlated replies already in history (newest-first), accepts the newest one that now
+ * validates, and never resends. Bounded by MAX_REVIEW_ATTEMPTS; tasks parked because the sent
+ * message was not found are left for the operator.
+ */
+async function reviewTask(deps: Pick<DispatchDeps, "minds" | "store">, spec: TaskSpec, version: number, rec: TaskRecord): Promise<TaskRecord> {
+  const k = key(spec);
+  const attempts = rec.reviewAttempts ?? 0;
+  if (attempts >= MAX_REVIEW_ATTEMPTS || rec.history.some((h) => h.note.startsWith("sent message not found"))) return rec;
+  const rows = await deps.minds.getHistory(rec.alias, { limit: 50 });
+  const sentIdx = rows.findIndex((r) => r.senderType === 1 && r.messageText === rec.messageText);
+  const counted = { ...rec, reviewAttempts: attempts + 1 };
+  if (sentIdx < 0) { deps.store.write(k, counted, version); return counted; }
+  const replies = rows.slice(0, sentIdx).filter((r) => r.senderType !== 1 && typeof r.messageText === "string" && !isInterimReply(r.messageText as string) && normaliseReplyText(r.messageText as string).includes(spec.taskId));
+  for (const reply of replies) {
+    if (!validateTaskResponse(spec, reply).ok) continue;
+    const reopened = transition({ ...counted, errors: [] }, "uncertain", `re-evaluated a correlated reply already in history (attempt ${attempts + 1}); nothing was resent`);
+    return acceptReply(deps.store, k, reopened, version, reply);
+  }
+  deps.store.write(k, counted, version);
+  return counted;
 }

@@ -141,3 +141,25 @@ test("Recovery: versioned instructions are sent once per hash; a repeat request 
   assert.notEqual(c.alias, a.alias);
   assert.equal(sends, 2);
 });
+
+test("Recovery: a corrected reply already in history clears operator review without a resend; bounded attempts", async () => {
+  const m = new FakeMinds();
+  const s = store();
+  const d = { minds: m, store: s, mindId: m.minds[0]!.mindId, aliasPrefix: "sc-gifter-escrow", timeoutMs: 20 };
+  const sp = { ...spec, taskId: "task-fix-01" };
+  await dispatchTask(d, sp);
+  // first reply is malformed (unterminated JSON) -> operator review
+  m.history.unshift({ fingerprint: "bad", senderType: 0, messageText: "```json\n{ \"protocol\": \"sc-task-response/1\", \"taskId\": \"task-fix-01\", \"summary\": [oops\n```" });
+  const r1 = await reconcileTask({ minds: m, store: s }, sp);
+  assert.equal(r1.state, "operator-review");
+  // no correction yet: attempt counted, still parked
+  const r2 = await reconcileTask({ minds: m, store: s }, sp);
+  assert.equal(r2.state, "operator-review");
+  assert.equal(r2.reviewAttempts, 1);
+  // the Mind sends a corrected reply for the same taskId
+  m.history.unshift({ fingerprint: "fixed", senderType: 0, messageText: validReplyFor("task-fix-01", "gifter-escrow") });
+  const r3 = await reconcileTask({ minds: m, store: s }, sp);
+  assert.equal(r3.state, "completed");
+  assert.equal(r3.rawReplyFingerprint, "fixed");
+  assert.equal(m.sendCalls.length, 1, "never resent");
+});

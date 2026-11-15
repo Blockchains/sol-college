@@ -17,7 +17,7 @@ import type { FileStore } from "../lib/store.ts";
 import type { MindMapping, Approval } from "../minds/authority.ts";
 import { resolveProjectMind } from "../minds/authority.ts";
 import type { MindsPort } from "../minds/port.ts";
-import { dispatchTask, normaliseReplyText, reconcileTask, type TaskRecord, type TaskResponse, type TaskSpec, type SourceRef } from "../minds/task.ts";
+import { dispatchTask, normaliseReplyText, reconcileTask, MAX_REVIEW_ATTEMPTS, type TaskRecord, type TaskResponse, type TaskSpec, type SourceRef } from "../minds/task.ts";
 import { candidateVerdict, createAdoptionPackage } from "../adoption/create.ts";
 import { existingPackageFor } from "../adoption/package.ts";
 import { githubCompare, reconcileUpstream, type ExperimentRef } from "../upstream/reconcile.ts";
@@ -84,12 +84,14 @@ export function loadAutonomy(): AutonomyConfig {
 /** Deterministic gate for any Mind-authored text that will become public. */
 export function publicTextCheck(text: string, max: number): { ok: boolean; text: string; reasons: string[] } {
   const t = normaliseReplyText(text).replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+  // Negated boundary disclaimers ("no mainnet keys", "devnet only, not mainnet") restate the rules, they do not raise the topic.
+  const topical = t.replace(/\b(no|not|never|without|excluding|excludes|nothing on|avoid(?:s|ing)?)\s+(?:any\s+|the\s+)?(?:use\s+of\s+)?(?:mainnet|faucet)(?:[\s-]+(?:keys?|funds|deployments?|claims?|automation|access))?(?:\s*(?:,|or|and|nor)\s*(?:mainnet|faucet)(?:[\s-]+(?:keys?|funds|deployments?|claims?|automation|access))?)*\b/gi, " ");
   const reasons: string[] = [];
   if (t.length < 20) reasons.push("too short");
   if (t.length > max) reasons.push(`longer than ${max} characters`);
   if (EMAIL.test(t)) reasons.push("contains an email address");
   if (findSecretLeaks(t).length) reasons.push("contains secret-shaped text");
-  if (EXCLUDED_TOPICS.test(t)) reasons.push("mentions an excluded topic");
+  if (EXCLUDED_TOPICS.test(topical)) reasons.push("mentions an excluded topic");
   if (/https?:\/\/(?!github\.com\/|sol\.college\/)/i.test(t)) reasons.push("links outside github.com or sol.college");
   return { ok: reasons.length === 0, text: t, reasons };
 }
@@ -165,11 +167,15 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
 
   // 1) Reconcile pending tasks and act on validated results.
   for (const [taskId, meta] of Object.entries(st.tasks)) {
-    if (meta.handled) continue;
+    // A plan whose proposals were all filtered may be re-checked (no Mind call) while it is still the current plan,
+    // e.g. after the public-text gate is corrected; issue creation is still deduplicated by proposal hash.
+    const recheck = meta.handled === "no-eligible-proposal" && hours(meta.createdAt, now) < d.auto.limits.researchPlanIntervalHours;
+    if (meta.handled && !recheck) continue;
     const stored = d.store.read<TaskRecord>(`tasks/${slug}/${taskId}`);
     if (!stored) { meta.handled = "missing-record"; continue; }
     let rec = stored.data;
-    if (["uncertain", "dispatched", "dispatch-intent"].includes(rec.state) && !d.dryRun) rec = await reconcileTask({ minds: d.minds, store: d.store }, rec.spec);
+    if (["uncertain", "dispatched", "dispatch-intent", "operator-review"].includes(rec.state) && !d.dryRun) rec = await reconcileTask({ minds: d.minds, store: d.store }, rec.spec);
+    if (rec.state === "operator-review" && (rec.reviewAttempts ?? 0) < MAX_REVIEW_ATTEMPTS && !rec.history.some((h) => h.note.startsWith("sent message not found"))) { log(`${taskId}: operator review pending re-evaluation (${rec.errors.join("; ")})`); continue; }
     if (rec.state === "operator-review") { meta.handled = "operator-review"; log(`${taskId}: operator review (${rec.errors.join("; ")})`); continue; }
     if (rec.state !== "completed" || !rec.response) {
       if (hours(meta.createdAt, now) > 48) { meta.handled = "expired-no-reply"; log(`${taskId}: no reply after 48h; closed without resend`); }
