@@ -1,0 +1,31 @@
+{
+ "slug": "oculus",
+ "cluster": "devnet",
+ "program": "oculus_policy",
+ "idl": "oculus_policy.json",
+ "devnet": "AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "2sETAwzaJdNMnbTvZRK6STF7azRQkpaWJDSiF7zxze3e66X9BEsS1DtPaoeBzhEMLoiGhYLQ5CiFgaX3E9JccmYJ"
+  },
+  {
+   "label": "init_policy",
+   "sig": "5bLBoCJe3gzqf5QyAAtsrYpkvSH3wYd1Rtmjt2Y1nDKeiCvGowNQjtH4Up6dNreKacqZJmeShp1b5KHBTojAMibg"
+  },
+  {
+   "label": "check_spend",
+   "sig": "5drX5AJtMtF1yFTDm2cLgi4uDeknCewg2tC3FLNzGNzEKqqNMn9zXTumWGX9jrw83WXhe7MJygJ5wjWjAFrfFjc9"
+  },
+  {
+   "label": "pause_agent",
+   "sig": "5cSzvNWLVeR15ixvhpbJaBcotMYiNduUW2XVaq7fUNLW7Y8imdnjbdyhwJeaYNHtvNa3nVm5Tftci6LnqLxSRjfT"
+  },
+  {
+   "label": "close_policy",
+   "sig": "51tw9GxStficyTxj7szSACadkXpKbaN7tam2uRiKXL9GyRYP5M2hvb8x9ViK4MHdubhKuzWphxYuzamXMfbDBJ3X"
+  }
+ ],
+ "verified": "2026-11-15"
+}

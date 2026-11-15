@@ -1,0 +1,359 @@
+{
+  "address": "AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js",
+  "metadata": {
+    "name": "oculus_policy",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "On-chain spending policy enforcement for AI agent wallets"
+  },
+  "instructions": [
+    {
+      "name": "init_policy",
+      "discriminator": [
+        45,
+        234,
+        110,
+        100,
+        209,
+        146,
+        191,
+        86
+      ],
+      "accounts": [
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "daily_limit_usdc",
+          "type": "u64"
+        },
+        {
+          "name": "window_seconds",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "check_spend",
+      "discriminator": [
+        27,
+        67,
+        214,
+        184,
+        97,
+        172,
+        196,
+        250
+      ],
+      "accounts": [
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "agent",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount_usdc",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "pause_agent",
+      "discriminator": [
+        148,
+        32,
+        1,
+        26,
+        147,
+        122,
+        178,
+        140
+      ],
+      "accounts": [
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "close_policy",
+      "discriminator": [
+        55,
+        42,
+        248,
+        229,
+        222,
+        138,
+        26,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Policy",
+      "discriminator": [
+        222,
+        135,
+        7,
+        163,
+        235,
+        177,
+        33,
+        68
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "SpendChecked",
+      "discriminator": [
+        21,
+        11,
+        31,
+        206,
+        177,
+        114,
+        195,
+        149
+      ]
+    },
+    {
+      "name": "LimitBreached",
+      "discriminator": [
+        85,
+        217,
+        247,
+        17,
+        136,
+        222,
+        130,
+        60
+      ]
+    },
+    {
+      "name": "AgentPaused",
+      "discriminator": [
+        228,
+        35,
+        167,
+        28,
+        96,
+        5,
+        210,
+        82
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "LimitExceeded",
+      "msg": "Spending exceeds the policy daily limit"
+    },
+    {
+      "code": 6001,
+      "name": "PolicyPaused",
+      "msg": "Policy is currently paused \u2014 cannot spend"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "Caller is not the policy owner"
+    },
+    {
+      "code": 6003,
+      "name": "ZeroAmount",
+      "msg": "Provided amount is zero"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidWindow",
+      "msg": "Window seconds must be between 60 and 86400"
+    },
+    {
+      "code": 6005,
+      "name": "LimitTooHigh",
+      "msg": "Daily limit cannot exceed 1_000_000 USDC"
+    }
+  ],
+  "types": [
+    {
+      "name": "Policy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "daily_limit_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "window_seconds",
+            "type": "u32"
+          },
+          {
+            "name": "window_start_at",
+            "type": "i64"
+          },
+          {
+            "name": "spent_window",
+            "type": "u64"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "pause_reason",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SpendChecked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "spent_window",
+            "type": "u64"
+          },
+          {
+            "name": "limit",
+            "type": "u64"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LimitBreached",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "attempted",
+            "type": "u64"
+          },
+          {
+            "name": "limit",
+            "type": "u64"
+          },
+          {
+            "name": "spent_window",
+            "type": "u64"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentPaused",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "u8"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

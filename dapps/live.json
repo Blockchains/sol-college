@@ -2310,5 +2310,68 @@
     "limits": "addgame succeeded but recorded closeprice [0,0,0,0,0,0] because the classic Pyth devnet feeds were older than the program's 60-second freshness window (it writes 0 when get_price_no_older_than returns None). closegame was not sent.",
     "functional": "full",
     "functional_evidence": "initvault, initgames and addgame all landed; the vault and games accounts were read back from devnet; a second initvault was rejected. close prices in addgame were zero because the Pyth feeds were stale."
+  },
+  {
+    "slug": "oculus",
+    "name": "Oculus Policy",
+    "lesson": "/explore/oculus/",
+    "app": "/dapps/oculus/",
+    "fork": "https://github.com/Blockchains/oculus-program",
+    "commit": "d5b8939a57af79b80be9877afb294cec991c157b",
+    "program": "AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program only; it has no first-party frontend, so this console is what we host. The IDL was derived from the program source (anchor idl-build did not emit one in this toolchain) and then confirmed by the live devnet transactions below.",
+    "learn": "An owner creates a policy PDA seeded by [\"policy\", agent] with a rolling window budget in USDC micro-units. The agent must sign check_spend, which rejects over-limit or paused attempts and otherwise increments spent_window. The owner can pause or close the policy.",
+    "source": [
+      [
+        "programs/oculus-policy/src/instructions/init_policy.rs L5-L50 (init_policy writes the policy PDA)",
+        "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/init_policy.rs#L5-L50"
+      ],
+      [
+        "programs/oculus-policy/src/instructions/check_spend.rs L19-L57 (window roll, LimitExceeded, SpendChecked)",
+        "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/check_spend.rs#L19-L57"
+      ],
+      [
+        "programs/oculus-policy/src/instructions/pause_agent.rs L6-L29 (owner sets paused=true)",
+        "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/pause_agent.rs#L6-L29"
+      ],
+      [
+        "programs/oculus-policy/src/instructions/close_policy.rs L5-L22 (owner closes the PDA)",
+        "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/close_policy.rs#L5-L22"
+      ]
+    ],
+    "flow": "tests/devnet/oculus.mjs",
+    "log": "tests/devnet/logs/oculus-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "2sETAwzaJdNMnbTvZRK6STF7azRQkpaWJDSiF7zxze3e66X9BEsS1DtPaoeBzhEMLoiGhYLQ5CiFgaX3E9JccmYJ"
+      ],
+      [
+        "init_policy for agent Cr1k16TP\u2026, daily_limit_usdc=1_000_000, window_seconds=3600 (policy ACn7AUPT\u2026)",
+        "5bLBoCJe3gzqf5QyAAtsrYpkvSH3wYd1Rtmjt2Y1nDKeiCvGowNQjtH4Up6dNreKacqZJmeShp1b5KHBTojAMibg"
+      ],
+      [
+        "check_spend amount_usdc=100 signed by the agent; spent_window read back as 100",
+        "5drX5AJtMtF1yFTDm2cLgi4uDeknCewg2tC3FLNzGNzEKqqNMn9zXTumWGX9jrw83WXhe7MJygJ5wjWjAFrfFjc9"
+      ],
+      [
+        "pause_agent reason=1; policy.paused=true",
+        "5cSzvNWLVeR15ixvhpbJaBcotMYiNduUW2XVaq7fUNLW7Y8imdnjbdyhwJeaYNHtvNa3nVm5Tftci6LnqLxSRjfT"
+      ],
+      [
+        "close_policy; the policy account was gone on a subsequent fetch",
+        "51tw9GxStficyTxj7szSACadkXpKbaN7tam2uRiKXL9GyRYP5M2hvb8x9ViK4MHdubhKuzWphxYuzamXMfbDBJ3X"
+      ]
+    ],
+    "negative": [
+      "init_policy with window_seconds=30 is rejected (InvalidWindow)",
+      "check_spend that would exceed the remaining window budget is rejected (LimitExceeded)",
+      "check_spend after pause_agent is rejected (PolicyPaused)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit init_policy / check_spend / pause_agent / close_policy). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/oculus.mjs.",
+    "limits": "check_spend is a policy check only: it does not transfer tokens. The 3600-second window reset was not waited out in this run. The hosted IDL was derived from source and confirmed by these transactions rather than produced by anchor idl-build.",
+    "functional": "full",
+    "functional_evidence": "init_policy, check_spend (spent_window=100), pause_agent and close_policy all landed; InvalidWindow, LimitExceeded and PolicyPaused were rejected as expected; the policy account was closed."
   }
 ]

@@ -1,0 +1,10 @@
+{
+ "name": "Oculus Policy",
+ "fork": "https://github.com/Blockchains/oculus-program",
+ "commit": "d5b8939a57af79b80be9877afb294cec991c157b",
+ "lesson": "/explore/oculus/",
+ "programs": {
+  "devnet": "AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js",
+  "mainnet": null
+ }
+}
