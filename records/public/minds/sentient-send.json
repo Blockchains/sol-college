@@ -2,30 +2,37 @@
   "schema": "sc-mind-ops/1",
   "project": "sentient-send",
   "mind": "SolCollege-Sentient-CTO",
-  "at": "2026-11-15T17:34:05.060Z",
+  "at": "2026-11-15T19:31:20.118Z",
+  "status": "active",
+  "paused": false,
   "isEnabled": true,
-  "cognitionBalance": 574.17179153,
+  "cognitionBalance": 536.11205393,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
-      "value": 18.71249004682985
+      "value": 61.1656836604122
     }
   ],
   "usageByTool": [
     {
-      "tool": "FILE_Analyze",
-      "callCount": 1,
-      "creditsUsed": 8.2746488512
+      "tool": "LLM_Turn",
+      "callCount": 12,
+      "creditsUsed": 38.6798014470122
     },
     {
-      "tool": "LLM_Turn",
-      "callCount": 5,
-      "creditsUsed": 8.06992166542985
+      "tool": "FILE_Analyze",
+      "callCount": 2,
+      "creditsUsed": 16.5705284987
     },
     {
       "tool": "SKILL_LoadPlaybook",
-      "callCount": 4,
-      "creditsUsed": 2.3679195302
+      "callCount": 7,
+      "creditsUsed": 4.1407895111
+    },
+    {
+      "tool": "SEARCH_Web",
+      "callCount": 2,
+      "creditsUsed": 1.7745642036
     }
   ],
   "skills": [
@@ -76,8 +83,6 @@
       "tier": "verified"
     }
   ],
-  "conversations": 6,
-  "sdkVersion": "0.1.7",
-  "status": "active",
-  "paused": false
+  "conversations": 12,
+  "sdkVersion": "0.1.7"
 }
