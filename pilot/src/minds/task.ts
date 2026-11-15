@@ -43,6 +43,7 @@ export interface TaskRecord {
   fingerprintBefore?: string;
   response?: TaskResponse;
   rawReplyFingerprint?: string;
+  interimReplies?: string[];
   errors: string[];
   history: Array<{ at: string; state: TaskState; note: string }>;
 }
@@ -85,9 +86,24 @@ export interface ParsedResponse {
   errors: string[];
 }
 
+/** Minds replies arrive as light HTML (<br>, <b>, entities). Normalise to plain text before parsing. */
+export function normaliseReplyText(text: string): string {
+  return text
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/?(?:p|div|pre|code|b|i|strong|em|span|ul|ol|li)(?:\s[^>]*)?>/gi, "")
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
+}
+
+/** A reply with no JSON block at all is an interim progress note, not a final (or invalid) answer. */
+export function isInterimReply(text: string): boolean {
+  const t = normaliseReplyText(text);
+  return !/```/.test(t) && !/\{\s*"protocol"/.test(t);
+}
+
 function extractJson(text: string): unknown {
-  const m = /```json\s*([\s\S]*?)```/.exec(text);
-  const body = m?.[1] ?? text;
+  const t = normaliseReplyText(text);
+  const m = /```(?:json)?\s*([\s\S]*?)```/.exec(t);
+  const body = m?.[1] ?? t.slice(t.indexOf("{"), t.lastIndexOf("}") + 1);
   return JSON.parse(body.trim());
 }
 
@@ -201,6 +217,11 @@ export async function dispatchTask(deps: DispatchDeps, spec: TaskSpec): Promise<
 }
 
 function acceptReply(store: FileStore, k: string, rec0: TaskRecord, v0: number, reply: MessageRecord): TaskRecord {
+  if (typeof reply.messageText === "string" && isInterimReply(reply.messageText)) {
+    const rec = transition({ ...rec0, interimReplies: [...(rec0.interimReplies ?? []), reply.fingerprint] }, "uncertain", "interim progress reply (no JSON block); waiting for the final reply. Reconcile later; never resend.");
+    store.write(k, rec, v0);
+    return rec;
+  }
   let rec = transition({ ...rec0, rawReplyFingerprint: reply.fingerprint }, "response-received", "reply received");
   let v = store.write(k, rec, v0).version;
   const parsed = validateTaskResponse(rec.spec, reply);
@@ -234,7 +255,10 @@ export async function reconcileTask(deps: Pick<DispatchDeps, "minds" | "store">,
     return next;
   }
   // newest-first: replies to our message have smaller indexes than sentIdx
-  const reply = rows.slice(0, sentIdx).reverse().find((r) => r.senderType !== 1 && typeof r.messageText === "string" && r.messageText.includes(spec.taskId));
+  // Prefer the earliest correlated reply that carries a JSON block; interim progress notes keep the task open.
+  const replies = rows.slice(0, sentIdx).reverse().filter((r) => r.senderType !== 1 && typeof r.messageText === "string");
+  const reply = replies.find((r) => !isInterimReply(r.messageText as string) && normaliseReplyText(r.messageText as string).includes(spec.taskId))
+    ?? replies.find((r) => normaliseReplyText(r.messageText as string).includes(spec.taskId));
   if (!reply) {
     const next = transition(rec, "uncertain", "message delivered; no correlated reply yet");
     deps.store.write(k, next, cur.version);

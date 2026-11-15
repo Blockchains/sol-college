@@ -4,24 +4,26 @@ SDK: `@animocabrands/minds-client-lib` 0.1.7 (exact, in `pilot/package-lock.json
 private alpha tooling"). API host fixed by the SDK (`https://api.build.hellominds.ai`). Methods and types used by the
 adapter are checked against the installed package by `tests/integration/contract-and-live.test.ts`.
 
-## Account inventory (read-only, 2026-11-15)
-- 1 Mind on the Builder account: "College", archetype `chiefofstaff`, enabled; equipped app "Animoca Minds Auth"
-  (verified, v1.1.11); no equipped Skills; Circle = steward only; no conversations.
-- Supported creation type discovered from a real Mind: `chiefofstaff` (the SDK documents `id` as an open slug; `cto`
-  is not assumed).
-- "College" is not designated as a test Mind and is not mapped to any project. It was only read, never messaged.
+## Account state (2026-11-15, after the user's 15:35 GMT approval)
+- 2 Minds on the Builder account:
+  - "College" (pre-existing, `chiefofstaff`): not mapped to any project; only read, never messaged.
+  - "SolCollege-Gifter-CTO" (`4073cf41…`, `chiefofstaff`, created 15:37 GMT by `minds provision`, idempotent: a rerun
+    returned the same Mind and created nothing). Mapped to `gifter-escrow` in the protected secret `MINDS_PROJECT_MAP`
+    (environments `minds` and `minds-admin`) as `project-cto`, plus a `test` entry pointing at the same Mind so the
+    smoke test's harmless message goes only to it. Public config `mind.mappingStatus` = `approved`.
+- Equipped: app "Animoca Minds Auth" (default); no Skills. Circle: steward only (unchanged).
+- Instructions v1 (`config/minds/cto-instructions-v1.md`, sha256 `a593cb66ef37…`) delivered with `minds configure` in
+  conversation `sc-gifter-escrow-instructions-a593cb66ef37`; the Mind acknowledged and restated scope, evidence rules
+  and response format. The SDK has no instructions/persona endpoint, so a message is the only supported surface;
+  acknowledgement does not guarantee compliance (every structured reply is validated by code).
 
-## Waiting for approval (nothing below has been done)
-1. **Test Mind** for the smoke test's message step. Either designate "College" as the test Mind, or create
-   `SolCollege-Test-CTO` (`awakenMind({ name: "SolCollege-Test-CTO", id: "chiefofstaff" })`; name currently available).
-   Creating a Mind may be billable.
-2. **Project CTO Mind** for gifter-escrow, e.g. `SolCollege-Gifter-CTO` (archetype `chiefofstaff`), via
-   `minds-admin` action `provision`. Then record its id in `MINDS_PROJECT_MAP` and change `mind.mappingStatus` to
-   `approved` in `config/projects/gifter-escrow.json` through a reviewed commit.
-3. **Instructions**: paste `config/minds/cto-instructions-v1.md` into the Mind (through its own supported surfaces).
-4. **Skills**: the ten playbooks in `config/minds/skills/` are playbooks only. Building them is done by describing them
-   to the Mind (Registry Offering, App Manifest, Tool Schemas, Skill Playbook); publishing to Bazaar is public and
-   must not include private project information. Equip by approved `skillId` via `minds-admin` action `equip`.
-5. **Connections**: GitHub through "Animoca Minds Auth" only if needed, restricted repos, read-only first, keys
-   entered in My Connections (never in chat).
-6. **Circles**: none planned for the pilot. Public visitors are never added to a private CTO Circle.
+## Skills
+The API exposes only Bazaar search and equip/unequip by `skillId`; it has no endpoint to create a Skill. Private
+Skills are built by describing them to the Mind. That was not done in this run because the CTO Mind stopped replying
+after the instructions message (see docs/verification.md). Third-party Bazaar Skills were not equipped: they are
+unvetted instructions from other authors and none matches the playbooks. To build: send each playbook in
+`config/minds/skills/` to the CTO Mind in its own conversation, tell it to keep the Skill private, then equip the
+returned `skillId` with `minds equip gifter-escrow --skills <id>`. Publishing to Bazaar still needs separate approval.
+
+## Still needing approval
+1. **Circles**: none planned for the pilot. Public visitors are never added to a private CTO Circle.

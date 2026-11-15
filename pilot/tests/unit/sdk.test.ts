@@ -103,3 +103,13 @@ test("SDK: Circle changes require approval and only approved explicit members", 
   const audit = await applyCirclePlan(m, "id", { add: ["dev@example.org"], remove: [], rejected: [] }, { approvedBy: "Blockchains", ref: "r", action: "circle-add", projectSlug: "gifter-escrow" });
   assert.deepEqual(audit, [{ email: "dev@example.org", action: "added", confirmedInFinalState: true }]);
 });
+
+test("SDK: HTML-formatted replies (<br>, &quot;) are normalised; progress notes without JSON are interim, not invalid", async () => {
+  const { validateTaskResponse, isInterimReply } = await import("../../src/minds/task.ts");
+  const s = spec("html-reply-task");
+  const obj = { protocol: "sc-task-response/1", taskId: s.taskId, project: s.project, summary: "ok", facts: [], hypotheses: [], proposals: [], evidenceRefs: [], uncertainties: [] };
+  const html = "Result for <b>" + s.taskId + "</b>:<br>```json<br>" + JSON.stringify(obj, null, 1).replace(/\n/g, "<br>").replace(/"/g, "&quot;") + "<br>```";
+  assert.equal(validateTaskResponse(s, { fingerprint: "f", senderType: 0, messageText: html }).ok, true);
+  assert.equal(isInterimReply("Task <b>" + s.taskId + "</b> received. I'm pulling the commits now."), true);
+  assert.equal(isInterimReply(html), false);
+});
