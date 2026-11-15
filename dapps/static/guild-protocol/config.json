@@ -1,7 +1,7 @@
 {
  "name": "Guild Protocol",
  "fork": "https://github.com/Blockchains/guild-protocol",
- "commit": "eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c",
+ "commit": "c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c",
  "lesson": "/explore/guild-protocol/",
  "programs": {
   "devnet": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",

@@ -2531,10 +2531,10 @@
     "lesson": "/explore/guild-protocol/",
     "app": "/dapps/guild-protocol/",
     "fork": "https://github.com/Blockchains/guild-protocol",
-    "commit": "eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c",
+    "commit": "c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c",
     "program": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
     "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream ships a dashboard in the same repo; we host the generic console against the lab deploy so the program can be exercised from sol.college without a separate host.",
-    "learn": "An admin initialises a singleton config PDA (seeds [\"config\"]) with a stake-mint pubkey, min_bond and fee_bps (max 1000). Agents then register with a handle and a SOL lamport bond (>= min_bond) held in a vault PDA (seeds [\"vault\", agent]). Later instructions post, claim, submit, review and cancel jobs.",
+    "learn": "initialize writes a config PDA (seeds [\"config\"]). Agents register at [\"agent\", owner] and post a SOL bond to a system-owned vault. post_job escrows a bounty into [\"vault\", job]; claim_job / submit_work advance the job; review_job (after a lab fix) pays the worker and treasury via invoke_signed system transfers signed with the vault PDA seeds.",
     "source": [
       [
         "programs/guild/src/lib.rs L19-L27 (initialize)",
@@ -2547,6 +2547,10 @@
       [
         "programs/guild/src/lib.rs L29 and instructions/register_agent.rs L8-L70 (agent PDA, lamport vault)",
         "https://github.com/Blockchains/guild-protocol/blob/eeeafce37ef5e4c24a35e10a3c7ac42277fd0a3c/programs/guild/src/instructions/register_agent.rs#L8-L70"
+      ],
+      [
+        "programs/guild/src/instructions/review_job.rs (invoke_signed system transfer from the vault PDA)",
+        "https://github.com/Blockchains/guild-protocol/blob/c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c/programs/guild/src/instructions/review_job.rs"
       ]
     ],
     "flow": "tests/devnet/guild-protocol.mjs",
@@ -2584,16 +2588,24 @@
       [
         "submit_work with a lab delivery URI",
         "5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"
+      ],
+      [
+        "Upgraded the program with an invoke_signed system-transfer payout fix",
+        "2tUpRAi7mi6h1j1QfMaeKfG1Vv5qtMPsCTdHUBB4QHaubV6zi2NNxoUjCzye9ZrY6LCyh4R3dTrY8bp5UC84W3G1"
+      ],
+      [
+        "review_job approved job 0: vault 9QtHZsVD\u2026 emptied, status=Accepted, jobs_completed=1, reputation=10, payout=1_950_000 fee=50_000",
+        "24ey28MbtrDiF9GDVwT8SVRw5azXgvcby5B7BzTNifcLdCNJZJxBJpTUdYUNvq22eWHWSUpg6NDdcQQTaZKH8aGi"
       ]
     ],
     "negative": [
       "initialize with fee_bps=2000 is rejected (FeeTooHigh; max 1000)",
       "register_agent with bond=1 lamport is rejected (BondTooLow)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, register_agent, post_job, claim_job and submit_work were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
-    "limits": "review_job (approve or reject) cannot settle: the program tries to debit the system-owned job vault by direct lamport mutation, and the runtime rejects that with 'instruction spent from the balance of an account it does not own'. Job 4XALzcMj\u2026 is left in Submitted. cancel_job and top_up_bond were not exercised.",
-    "functional": "partial",
-    "functional_evidence": "initialize, register_agent, post_job, claim_job and submit_work all landed, but review_job payout cannot complete because the program debit of the system-owned job vault is rejected by the runtime."
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through review_job were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
+    "limits": "cancel_job and top_up_bond were not re-exercised after the upgrade (cancel_job was patched the same way). The lab wallet was poster, worker, reviewer and treasury. A lab patch replaces direct lamport mutation of the system-owned vault with invoke_signed system transfers; the same fix is offered upstream as https://github.com/StackedLines/guild-protocol/pull/1",
+    "functional": "full",
+    "functional_evidence": "initialize, register_agent, post_job, claim_job and submit_work had already landed; after upgrading with an invoke_signed vault-payout fix, review_job approved job 4XALzcMjWXderNEnEjek71ZdpAsRfgKAtPoB7JR4ufj5, emptied vault 9QtHZsVDMXu89MJsffipMq3TXaJz88rKnA9PNWSdpWPL, paid 1_950_000 to the worker and 50_000 as a protocol fee, and set status=Accepted / jobs_completed=1."
   },
   {
     "slug": "qvac-marketplace",
@@ -2959,10 +2971,10 @@
     "lesson": "/explore/agentvault/",
     "app": "/dapps/agentvault/",
     "fork": "https://github.com/Blockchains/agentvault-protocol",
-    "commit": "618880911a1c6f984dbf4769a958afa7d0e0e3e7",
+    "commit": "5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c",
     "program": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",
     "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is hand-derived from source (initialize, register_agent, create_service, create_task, accept_task, complete_task); discriminators were confirmed by live transactions. The GitHub fork is named agentvault-protocol because Blockchains/agentvault already existed as a fork of a different project (abhinav-nav/agentvault).",
-    "learn": "initialize writes a global_state PDA (seeds [\"global_state\"]). Agents register at [\"agent\", authority]. A provider can create_service ([\"service\", agent, name]); a different client agent can create_task, escrowing native SOL into a system-owned [\"escrow\", task] PDA, and the provider can accept_task. complete_task is intended to release the escrow, but the program debit of that system-owned account is rejected by the runtime.",
+    "learn": "initialize writes a global_state PDA (seeds [\"global_state\"]). Agents register at [\"agent\", authority]. A provider can create_service; a different client agent can create_task, escrowing native SOL into a system-owned [\"escrow\", task] PDA, and the provider can accept_task. complete_task (after a lab fix) releases the escrow to the provider via an invoke_signed system transfer signed with the escrow PDA seeds.",
     "source": [
       [
         "programs/agentvault/src/lib.rs L17-L19 (initialize)",
@@ -2983,6 +2995,10 @@
       [
         "programs/agentvault/src/instructions/complete_task.rs (direct lamport debit of the escrow PDA)",
         "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/instructions/complete_task.rs"
+      ],
+      [
+        "programs/agentvault/src/instructions/complete_task.rs (invoke_signed system transfer from the escrow PDA)",
+        "https://github.com/Blockchains/agentvault-protocol/blob/5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c/programs/agentvault/src/instructions/complete_task.rs"
       ]
     ],
     "flow": "tests/devnet/agentvault.mjs",
@@ -3016,16 +3032,24 @@
       [
         "accept_task by the provider; task status=InProgress",
         "5aPQF4e2bQLvaeXqhhKbezGFiJPw6kuK4qy6VrHEWxPJuMJKECZdacqtgHBiTKBKqoJbjqMyKbUzavv53WG8oq12"
+      ],
+      [
+        "Upgraded the program with an invoke_signed system-transfer escrow payout fix",
+        "2WENELb7kbqFmgekVDinibfA8vBrZgZcX8BppZ6HJcu3oAYJjyx1NbXWTQjjEi5pp4nxFKqp59SJbjzdtk3qK6Ji"
+      ],
+      [
+        "complete_task on task 1: escrow 8QjZ1YGL\u2026 emptied, provider received 1_000_000 lamports, status=Completed, tasks_completed=1, reputation=10",
+        "XRMQsR4u4ArMJFgf5PA8jVV3CQK9TktoUkcUh9icrQ4PNCSs2XuTtgPQa1pTs5yxdiDZ5XgA5KRBKZ1i9D9B1us"
       ]
     ],
     "negative": [
       "register_agent with an empty name is rejected (AgentNameEmpty)",
       "create_service with price=0 is rejected (InvalidPrice)"
     ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through accept_task were sent with the lab and tester wallets through the IDL client in tests/devnet/agentvault.mjs.",
-    "limits": "complete_task cannot settle: the program tries to debit the system-owned escrow PDA by direct lamport mutation, and the runtime rejects that with 'instruction spent from the balance of an account it does not own'. Task 5mfPe9DT\u2026 is left InProgress. update_agent, deactivate_service, cancel_task and dispute_task were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
-    "functional": "partial",
-    "functional_evidence": "initialize, register_agent, create_service, create_task and accept_task all landed, but complete_task payout cannot complete because the program debit of the system-owned escrow is rejected by the runtime."
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through complete_task were sent with the lab and tester wallets through the IDL client in tests/devnet/agentvault.mjs.",
+    "limits": "cancel_task was patched the same way but not re-exercised after the upgrade (no pending task was left). update_agent, deactivate_service and dispute_task were not exercised. A lab patch replaces direct lamport mutation of the system-owned escrow with an invoke_signed system transfer; the same fix is offered upstream as https://github.com/sepivip/agentvault/pull/2",
+    "functional": "full",
+    "functional_evidence": "initialize, register_agent, create_service, create_task and accept_task had already landed; after upgrading with an invoke_signed escrow-payout fix, complete_task finished task 5mfPe9DTRHJxE3KYZP94dEiEnnnuVQpjjb3JY6pzE2o4, emptied escrow 8QjZ1YGLKJ4xPsrfejimPTUyu1AyxoozKXMy8kGGYFbf, paid the provider 1_000_000 lamports, and set status=Completed / tasks_completed=1 / reputation=10."
   },
   {
     "slug": "orrery",

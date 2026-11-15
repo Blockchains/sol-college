@@ -3,7 +3,7 @@
   "projectId": "sc-demo-guild-protocol",
   "slug": "guild-protocol",
   "displayName": "Guild Protocol (Sol.College demonstration)",
-  "description": "On-chain agent labor market on Solana devnet (Anchor 1.0). An admin initialises a config PDA (stake mint, min bond, fee bps, treasury); agents register with a SOL lamport bond held in a vault PDA, then post, claim, submit and review jobs.",
+  "description": "On-chain agent labor market on Solana devnet (Anchor 1.0). initialize, register_agent, post_job, claim_job, submit_work and review_job payout are verified. A lab patch pays system-owned vaults with invoke_signed system transfers (offered upstream).",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/guild-protocol fork. The lab only changed declare_id / Anchor.toml to the Sol.College devnet program. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
@@ -29,7 +29,7 @@
     "scope": [
       "Anchor program correctness on the Solana runtime (initialize, register_agent)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/guild-protocol/",
-      "QA: devnet proof of initialize, register_agent, post_job, claim_job, submit_work; review_job payout fails on a system-owned vault debit"
+      "QA: devnet proof of initialize, register_agent, post_job, claim_job, submit_work, and review_job payout after an invoke_signed vault fix"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

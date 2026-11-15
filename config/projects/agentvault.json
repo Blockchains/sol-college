@@ -3,7 +3,7 @@
   "projectId": "sc-demo-agentvault",
   "slug": "agentvault",
   "displayName": "AgentVault (Sol.College demonstration)",
-  "description": "On-chain AI agent marketplace on Solana devnet (Anchor 0.31). initialize, register_agent, create_service, create_task and accept_task are verified; complete_task payout cannot debit a system-owned escrow PDA. The fork is named agentvault-protocol because Blockchains/agentvault was already taken.",
+  "description": "On-chain AI agent marketplace on Solana devnet (Anchor 0.31). initialize, register_agent, create_service, create_task, accept_task and complete_task payout are verified. A lab patch pays the system-owned escrow with an invoke_signed system transfer (offered upstream).",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/agentvault-protocol fork of sepivip/agentvault (the Blockchains/agentvault name was already taken by a fork of a different project). The lab only changed declare_id to the Sol.College devnet program. The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
@@ -29,7 +29,7 @@
     "scope": [
       "Anchor program correctness on the Solana runtime (initialize, register_agent, create_service, create_task, accept_task)",
       "Frontend reliability of the hosted devnet console at sol.college/dapps/agentvault/",
-      "QA: devnet proof of initialize, two register_agent calls, create_service, create_task, accept_task, AgentNameEmpty, InvalidPrice; complete_task payout fails on a system-owned escrow debit"
+      "QA: devnet proof of initialize, two register_agent calls, create_service, create_task, accept_task, and complete_task payout after an invoke_signed escrow fix"
     ],
     "exclusions": [
       "Mainnet deployment or mainnet keys",

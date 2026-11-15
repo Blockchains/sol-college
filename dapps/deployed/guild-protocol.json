@@ -29,6 +29,14 @@
   {
    "label": "submit_work",
    "sig": "5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"
+  },
+  {
+   "label": "upgrade_payout_fix",
+   "sig": "2tUpRAi7mi6h1j1QfMaeKfG1Vv5qtMPsCTdHUBB4QHaubV6zi2NNxoUjCzye9ZrY6LCyh4R3dTrY8bp5UC84W3G1"
+  },
+  {
+   "label": "review_job",
+   "sig": "24ey28MbtrDiF9GDVwT8SVRw5azXgvcby5B7BzTNifcLdCNJZJxBJpTUdYUNvq22eWHWSUpg6NDdcQQTaZKH8aGi"
   }
  ],
  "verified": "2026-11-15"

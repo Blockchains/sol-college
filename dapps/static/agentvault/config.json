@@ -1,7 +1,7 @@
 {
  "name": "AgentVault",
  "fork": "https://github.com/Blockchains/agentvault-protocol",
- "commit": "618880911a1c6f984dbf4769a958afa7d0e0e3e7",
+ "commit": "5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c",
  "lesson": "/explore/agentvault/",
  "programs": {
   "devnet": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",

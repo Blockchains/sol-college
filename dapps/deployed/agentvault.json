@@ -33,6 +33,14 @@
   {
    "label": "accept_task",
    "sig": "5aPQF4e2bQLvaeXqhhKbezGFiJPw6kuK4qy6VrHEWxPJuMJKECZdacqtgHBiTKBKqoJbjqMyKbUzavv53WG8oq12"
+  },
+  {
+   "label": "upgrade_payout_fix",
+   "sig": "2WENELb7kbqFmgekVDinibfA8vBrZgZcX8BppZ6HJcu3oAYJjyx1NbXWTQjjEi5pp4nxFKqp59SJbjzdtk3qK6Ji"
+  },
+  {
+   "label": "complete_task",
+   "sig": "XRMQsR4u4ArMJFgf5PA8jVV3CQK9TktoUkcUh9icrQ4PNCSs2XuTtgPQa1pTs5yxdiDZ5XgA5KRBKZ1i9D9B1us"
   }
  ],
  "verified": "2026-11-15"
