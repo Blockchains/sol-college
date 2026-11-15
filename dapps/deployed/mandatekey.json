@@ -1,0 +1,23 @@
+{
+ "slug": "mandatekey",
+ "cluster": "devnet",
+ "program": "mandatekey",
+ "idl": "mandatekey.json",
+ "devnet": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "qUa3fsXhXnoFFePUeMdWfrsmHYTkJ8BQTurGYB6kXEjg8wTB6uvN7HLeDufNcm821HKTHB7me517STR2bG8z6jK"
+  },
+  {
+   "label": "create_mandate",
+   "sig": "3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh"
+  },
+  {
+   "label": "revoke",
+   "sig": "3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8"
+  }
+ ],
+ "verified": "2026-11-15"
+}

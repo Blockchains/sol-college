@@ -1,0 +1,6 @@
+{"step":"setup","program":"89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft","owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","agent":"3kUXzp3MKkACNYwdriniXJK6tLd823asEsaqQ3PNAGWC","mandateId":"773140793","mandate":"4snfZuq19MV93vc7kumcGfDu1u8kebSWksp8kgHQ3927"}
+{"step":"create_mandate","ok":true,"sig":"3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh"}
+{"step":"fetch_mandate","ok":true,"owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","agent":"3kUXzp3MKkACNYwdriniXJK6tLd823asEsaqQ3PNAGWC","revoked":false,"paymentCount":"0"}
+{"step":"create_mandate_invalid_window","expectedFailure":true,"error":"InvalidWindow"}
+{"step":"revoke","ok":true,"sig":"3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8"}
+{"step":"fetch_after_revoke","ok":true,"revoked":true}

@@ -1,0 +1,594 @@
+{
+  "address": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+  "metadata": {
+    "name": "mandatekey",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Open spending mandates for AI agents on Solana"
+  },
+  "instructions": [
+    {
+      "name": "create_mandate",
+      "docs": [
+        "SPEC §4.1"
+      ],
+      "discriminator": [
+        230,
+        170,
+        158,
+        68,
+        33,
+        169,
+        16,
+        158
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "mandate",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  97,
+                  110,
+                  100,
+                  97,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "args.agent"
+              },
+              {
+                "kind": "arg",
+                "path": "args.mandate_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "args",
+          "type": {
+            "defined": {
+              "name": "CreateMandateArgs"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "pay",
+      "docs": [
+        "SPEC §4.2 — checks run in the order the spec defines."
+      ],
+      "discriminator": [
+        119,
+        18,
+        216,
+        65,
+        192,
+        117,
+        122,
+        220
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "signer": true,
+          "relations": [
+            "mandate"
+          ]
+        },
+        {
+          "name": "cosigner",
+          "signer": true,
+          "optional": true
+        },
+        {
+          "name": "mandate",
+          "writable": true
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "revoke",
+      "docs": [
+        "SPEC §4.4"
+      ],
+      "discriminator": [
+        170,
+        23,
+        31,
+        34,
+        133,
+        173,
+        93,
+        242
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "mandate"
+          ]
+        },
+        {
+          "name": "mandate",
+          "writable": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Mandate",
+      "discriminator": [
+        113,
+        216,
+        98,
+        159,
+        185,
+        63,
+        55,
+        18
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "MandateCreated",
+      "discriminator": [
+        140,
+        30,
+        209,
+        254,
+        5,
+        128,
+        147,
+        113
+      ]
+    },
+    {
+      "name": "MandateRevoked",
+      "discriminator": [
+        228,
+        111,
+        181,
+        60,
+        204,
+        58,
+        131,
+        28
+      ]
+    },
+    {
+      "name": "PaymentMade",
+      "discriminator": [
+        227,
+        251,
+        123,
+        16,
+        133,
+        220,
+        83,
+        242
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Revoked",
+      "msg": "Mandate is revoked"
+    },
+    {
+      "code": 6001,
+      "name": "OutsideWindow",
+      "msg": "Outside mandate validity window"
+    },
+    {
+      "code": 6002,
+      "name": "MintNotAllowed",
+      "msg": "Mint not allowed by mandate"
+    },
+    {
+      "code": 6003,
+      "name": "DestinationNotAllowed",
+      "msg": "Destination not allowed by mandate"
+    },
+    {
+      "code": 6004,
+      "name": "PerPaymentExceeded",
+      "msg": "Per-payment limit exceeded"
+    },
+    {
+      "code": 6005,
+      "name": "PeriodExceeded",
+      "msg": "Period limit exceeded"
+    },
+    {
+      "code": 6006,
+      "name": "CosignerRequired",
+      "msg": "Co-signer signature required"
+    },
+    {
+      "code": 6007,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient vault balance"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidWindow",
+      "msg": "Invalid validity window"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidPeriod",
+      "msg": "Period length must be > 0"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidLimit",
+      "msg": "Per-payment max exceeds period max"
+    },
+    {
+      "code": 6011,
+      "name": "TooManyLimits",
+      "msg": "Too many token limits"
+    },
+    {
+      "code": 6012,
+      "name": "TooManyDestinations",
+      "msg": "Too many destinations"
+    },
+    {
+      "code": 6013,
+      "name": "MemoTooLong",
+      "msg": "Memo too long"
+    },
+    {
+      "code": 6014,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "CreateMandateArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "mandate_id",
+            "type": "u64"
+          },
+          {
+            "name": "cosigner",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "valid_from",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "intent_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "token_limits",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TokenLimitArgs"
+                }
+              }
+            }
+          },
+          {
+            "name": "destination_allowlist",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "allow_any_destination",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Mandate",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "version",
+            "type": "u8"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "mandate_id",
+            "type": "u64"
+          },
+          {
+            "name": "cosigner",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "valid_from",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "revoked",
+            "type": "bool"
+          },
+          {
+            "name": "intent_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "token_limits",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "TokenLimit"
+                }
+              }
+            }
+          },
+          {
+            "name": "destination_allowlist",
+            "type": {
+              "vec": "pubkey"
+            }
+          },
+          {
+            "name": "allow_any_destination",
+            "type": "bool"
+          },
+          {
+            "name": "payment_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MandateCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mandate",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "intent_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "MandateRevoked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mandate",
+            "type": "pubkey"
+          },
+          {
+            "name": "slot",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PaymentMade",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mandate",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "recipient",
+            "type": "pubkey"
+          },
+          {
+            "name": "payment_count",
+            "type": "u64"
+          },
+          {
+            "name": "spent_in_period",
+            "type": "u64"
+          },
+          {
+            "name": "cosigned",
+            "type": "bool"
+          },
+          {
+            "name": "memo",
+            "type": "bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenLimit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "per_payment_max",
+            "type": "u64"
+          },
+          {
+            "name": "period_max",
+            "type": "u64"
+          },
+          {
+            "name": "period_secs",
+            "type": "u32"
+          },
+          {
+            "name": "period_start",
+            "type": "i64"
+          },
+          {
+            "name": "spent_in_period",
+            "type": "u64"
+          },
+          {
+            "name": "cosign_threshold",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TokenLimitArgs",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "per_payment_max",
+            "type": "u64"
+          },
+          {
+            "name": "period_max",
+            "type": "u64"
+          },
+          {
+            "name": "period_secs",
+            "type": "u32"
+          },
+          {
+            "name": "cosign_threshold",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "name": "MandateKey",
+ "fork": "https://github.com/Blockchains/mandatekey",
+ "commit": "0f685ad32babef2abee1a1c9dff078fcf5956915",
+ "lesson": "/explore/mandatekey/",
+ "programs": {
+  "devnet": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+  "mainnet": null
+ }
+}

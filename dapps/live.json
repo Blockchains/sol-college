@@ -2026,114 +2026,171 @@
     ],
     "upstream_pr": "https://github.com/berkaycirak/gifter-escrow/pull/1"
   },
- {
-  "slug": "c4-comets-todor-edward-andrei",
-  "name": "NameGen (on-chain display names)",
-  "lesson": "/explore/c4-comets-todor-edward-andrei/",
-  "app": "/dapps/c4-comets-todor-edward-andrei/",
-  "fork": "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei",
-  "commit": "a435085b50be34ab3c7cc29e01570625bef499fa",
-  "program": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG",
-  "app_kind": "The fork's own Next.js 14 app (web/) exported as static pages with this devnet program ID. Changes: static export with basePath; getPda/getProgram read the program id from the IDL; Read decodes the name from the 8+32+64 account layout (BorshCoder.accounts.decode(\"UserData\") did not return .name in this IDL).",
-  "learn": "Each wallet has one NameGen PDA, seeded [\"user\", authority]. Init creates it, set_name writes a 64-byte UTF-8 name, clear_name zeros it, and a second wallet cannot change someone else's PDA because the seeds include the signer.",
-  "source": [
-   [
-    "lib.rs L12-L17 init_user",
-    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L12-L17"
-   ],
-   [
-    "lib.rs L19-L24 set_name ([u8; 64])",
-    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L19-L24"
-   ],
-   [
-    "lib.rs L26-L31 clear_name",
-    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L26-L31"
-   ],
-   [
-    "InitUser PDA seeds [\"user\", authority]",
-    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L35-L49"
-   ],
-   [
-    "UserData (owner + name)",
-    "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L62-L70"
-   ]
-  ],
-  "flow": "tests/devnet/c4-comets-todor-edward-andrei.mjs",
-  "log": "tests/devnet/logs/c4-comets-todor-edward-andrei-2026-11-13.jsonl",
-  "verified": "2026-11-13",
-  "steps": [
-   [
-    "Script: A already funded 0.05 SOL (no transfer resent)",
-    "(no tx; already funded)"
-   ],
-   [
-    "Script: B already funded 0.03 SOL (no transfer resent)",
-    "(no tx; already funded)"
-   ],
-   [
-    "Script: A inits user PDA [\"user\", A]",
-    "v1BNqC7KEmKTqqYkU7HR4c3XsT18taPRfb8dwifsMW2PsErCeUKxki8UqY5KQxXSuQr3UFRi68tvU5KJVUVh6JN"
-   ],
-   [
-    "Script: A saves name \"shadow-college\"",
-    "551MiW7rKYHsAhwcbLWT4GD7uZfX43cqAgJ4i6GHXH5TKGn3EDqW5dBYNJpiVjVd47mskQbXXLURxisH9dxT6FdV"
-   ],
-   [
-    "Script: A reads on-chain name (shadow-college)",
-    "(no tx; read-only)"
-   ],
-   [
-    "Script: A clears the name",
-    "4yYwwtWFRX4oUbvgVPfmNDGaawK9MsoS6A8TNWq1YuXDQPy1wxCrR63QJ9Fwru2yKaqYtJj2cD9LzfzxJsyZCWKj"
-   ],
-   [
-    "Script: A saves a second name \"nova-2026\"",
-    "5VeHKd7vnSBbbkZb2Nw9bBhYkVauXmc88Cb4C7Yz5sdrFNo34GTdxKJhZTq27nJTwHF3aSUztJzmnQmEWg8XG3T1"
-   ],
-   [
-    "UI: Connect Phantom — test wallet GNSx…mKoF appears",
-    "(no tx; read-only)"
-   ],
-   [
-    "UI: Init creates the wallet's NameGen PDA (first click; later clicks are rejected as already in use)",
-    "36dVtusJFBxkPVynMvCgDLHXHcWA5LeEwjo363ViCM1iEmYKJEMpCTPCLPRmsPMNidsmnDp8L7qJt9cdfZGEBEBn"
-   ],
-   [
-    "UI: Generate then Save writes \"shadow-4662\"",
-    "3s4RYRrnccmwsd8x1FkETRjtmvyHfbYjBtbj4hiJhEZixaDVGEL2tTuSFYaAn3u4fRwKD36DfMiWYrorSha26ojE"
-   ],
-   [
-    "UI: Read shows On-chain: shadow-4662 (Read OK)",
-    "(no tx; read-only)"
-   ],
-   [
-    "UI: Clear zeros the name",
-    "47iD4eHRuy5qAowQTJtXMCrPiVd9SbvYkrDZRTSESdikq9zzVZM9yKLJdCNiUbLxD6qmwBaSXjCEEsuWHnrzWPE4"
-   ]
-  ],
-  "negative": [
-   [
-    "A inits a second time (one PDA per wallet)",
-    "Allocate: account Address { address: G3qTnDqBEPTmCud9tRh1QzbA8KFqGCN68jZWkP7zXS7p, base: None } already in use"
-   ],
-   [
-    "A sets a name on B's uninitialised PDA",
-    "AnchorError caused by account: user_data. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
-   ],
-   [
-    "B sets a name on A's PDA (seeds include the signer)",
-    "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
-   ],
-   [
-    "B clears A's name",
-    "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
-   ]
-  ],
-  "ui_check": "tests/devnet/wallet_click.py c4 (log: tests/devnet/logs/ui-c4-comets-todor-edward-andrei-2026-11-13.jsonl). Init, Generate, Save, Read and Clear all succeed; a second Init is rejected as already in use.",
-  "limits": [
-   "The NotOwner error in set_name/clear_name is redundant: the PDA seeds already bind user_data to the signer, so a different wallet hits ConstraintSeeds first.",
-   "The unused NameGen.tsx component still passes setName a string; the hosted page (app/page.tsx) encodes [u8; 64] via toFixedU8_64 and reads the name from the 8+32+64 account layout."
-  ],
-  "functional": "full"
- }
+  {
+    "slug": "c4-comets-todor-edward-andrei",
+    "name": "NameGen (on-chain display names)",
+    "lesson": "/explore/c4-comets-todor-edward-andrei/",
+    "app": "/dapps/c4-comets-todor-edward-andrei/",
+    "fork": "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei",
+    "commit": "a435085b50be34ab3c7cc29e01570625bef499fa",
+    "program": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG",
+    "app_kind": "The fork's own Next.js 14 app (web/) exported as static pages with this devnet program ID. Changes: static export with basePath; getPda/getProgram read the program id from the IDL; Read decodes the name from the 8+32+64 account layout (BorshCoder.accounts.decode(\"UserData\") did not return .name in this IDL).",
+    "learn": "Each wallet has one NameGen PDA, seeded [\"user\", authority]. Init creates it, set_name writes a 64-byte UTF-8 name, clear_name zeros it, and a second wallet cannot change someone else's PDA because the seeds include the signer.",
+    "source": [
+      [
+        "lib.rs L12-L17 init_user",
+        "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L12-L17"
+      ],
+      [
+        "lib.rs L19-L24 set_name ([u8; 64])",
+        "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L19-L24"
+      ],
+      [
+        "lib.rs L26-L31 clear_name",
+        "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L26-L31"
+      ],
+      [
+        "InitUser PDA seeds [\"user\", authority]",
+        "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L35-L49"
+      ],
+      [
+        "UserData (owner + name)",
+        "https://github.com/Blockchains/C4_Comets_Todor_Edward__Andrei/blob/a435085b50be34ab3c7cc29e01570625bef499fa/programs/namegen/src/lib.rs#L62-L70"
+      ]
+    ],
+    "flow": "tests/devnet/c4-comets-todor-edward-andrei.mjs",
+    "log": "tests/devnet/logs/c4-comets-todor-edward-andrei-2026-11-13.jsonl",
+    "verified": "2026-11-13",
+    "steps": [
+      [
+        "Script: A already funded 0.05 SOL (no transfer resent)",
+        "(no tx; already funded)"
+      ],
+      [
+        "Script: B already funded 0.03 SOL (no transfer resent)",
+        "(no tx; already funded)"
+      ],
+      [
+        "Script: A inits user PDA [\"user\", A]",
+        "v1BNqC7KEmKTqqYkU7HR4c3XsT18taPRfb8dwifsMW2PsErCeUKxki8UqY5KQxXSuQr3UFRi68tvU5KJVUVh6JN"
+      ],
+      [
+        "Script: A saves name \"shadow-college\"",
+        "551MiW7rKYHsAhwcbLWT4GD7uZfX43cqAgJ4i6GHXH5TKGn3EDqW5dBYNJpiVjVd47mskQbXXLURxisH9dxT6FdV"
+      ],
+      [
+        "Script: A reads on-chain name (shadow-college)",
+        "(no tx; read-only)"
+      ],
+      [
+        "Script: A clears the name",
+        "4yYwwtWFRX4oUbvgVPfmNDGaawK9MsoS6A8TNWq1YuXDQPy1wxCrR63QJ9Fwru2yKaqYtJj2cD9LzfzxJsyZCWKj"
+      ],
+      [
+        "Script: A saves a second name \"nova-2026\"",
+        "5VeHKd7vnSBbbkZb2Nw9bBhYkVauXmc88Cb4C7Yz5sdrFNo34GTdxKJhZTq27nJTwHF3aSUztJzmnQmEWg8XG3T1"
+      ],
+      [
+        "UI: Connect Phantom \u2014 test wallet GNSx\u2026mKoF appears",
+        "(no tx; read-only)"
+      ],
+      [
+        "UI: Init creates the wallet's NameGen PDA (first click; later clicks are rejected as already in use)",
+        "36dVtusJFBxkPVynMvCgDLHXHcWA5LeEwjo363ViCM1iEmYKJEMpCTPCLPRmsPMNidsmnDp8L7qJt9cdfZGEBEBn"
+      ],
+      [
+        "UI: Generate then Save writes \"shadow-4662\"",
+        "3s4RYRrnccmwsd8x1FkETRjtmvyHfbYjBtbj4hiJhEZixaDVGEL2tTuSFYaAn3u4fRwKD36DfMiWYrorSha26ojE"
+      ],
+      [
+        "UI: Read shows On-chain: shadow-4662 (Read OK)",
+        "(no tx; read-only)"
+      ],
+      [
+        "UI: Clear zeros the name",
+        "47iD4eHRuy5qAowQTJtXMCrPiVd9SbvYkrDZRTSESdikq9zzVZM9yKLJdCNiUbLxD6qmwBaSXjCEEsuWHnrzWPE4"
+      ]
+    ],
+    "negative": [
+      [
+        "A inits a second time (one PDA per wallet)",
+        "Allocate: account Address { address: G3qTnDqBEPTmCud9tRh1QzbA8KFqGCN68jZWkP7zXS7p, base: None } already in use"
+      ],
+      [
+        "A sets a name on B's uninitialised PDA",
+        "AnchorError caused by account: user_data. Error Code: AccountNotInitialized. Error Number: 3012. Error Message: The program expected this account to be already initialized."
+      ],
+      [
+        "B sets a name on A's PDA (seeds include the signer)",
+        "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
+      ],
+      [
+        "B clears A's name",
+        "AnchorError caused by account: user_data. Error Code: ConstraintSeeds. Error Number: 2006. Error Message: A seeds constraint was violated."
+      ]
+    ],
+    "ui_check": "tests/devnet/wallet_click.py c4 (log: tests/devnet/logs/ui-c4-comets-todor-edward-andrei-2026-11-13.jsonl). Init, Generate, Save, Read and Clear all succeed; a second Init is rejected as already in use.",
+    "limits": [
+      "The NotOwner error in set_name/clear_name is redundant: the PDA seeds already bind user_data to the signer, so a different wallet hits ConstraintSeeds first.",
+      "The unused NameGen.tsx component still passes setName a string; the hosted page (app/page.tsx) encodes [u8; 64] via toFixedU8_64 and reads the name from the 8+32+64 account layout."
+    ],
+    "functional": "full"
+  },
+  {
+    "slug": "mandatekey",
+    "name": "MandateKey",
+    "lesson": "/explore/mandatekey/",
+    "app": "/dapps/mandatekey/",
+    "fork": "https://github.com/Blockchains/mandatekey",
+    "commit": "0f685ad32babef2abee1a1c9dff078fcf5956915",
+    "program": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program and a written spec only; it has no first-party frontend, so this console is what we host.",
+    "learn": "An owner creates an on-chain spending mandate for an AI-agent wallet: a PDA seeded by owner, agent and mandate id holds a validity window, optional co-signer, per-mint payment caps and a destination allowlist. The agent can then pay from a vault only while those rules hold; the owner can revoke the mandate.",
+    "source": [
+      [
+        "programs/mandatekey/src/lib.rs L21-L70 (create_mandate writes the mandate PDA)",
+        "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L21-L70"
+      ],
+      [
+        "programs/mandatekey/src/lib.rs L236-L249 (mandate PDA seeds: mandate, owner, agent, mandate_id)",
+        "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L236-L249"
+      ],
+      [
+        "programs/mandatekey/src/lib.rs L73-L166 (pay: window, mint, destination, caps, optional co-signer, then transfer_checked)",
+        "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L73-L166"
+      ],
+      [
+        "programs/mandatekey/src/lib.rs L169-L176 (revoke sets revoked=true)",
+        "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L169-L176"
+      ]
+    ],
+    "flow": "tests/devnet/mandatekey.mjs",
+    "log": "tests/devnet/logs/mandatekey-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "qUa3fsXhXnoFFePUeMdWfrsmHYTkJ8BQTurGYB6kXEjg8wTB6uvN7HLeDufNcm821HKTHB7me517STR2bG8z6jK"
+      ],
+      [
+        "create_mandate for a new agent, empty token limits, allow_any_destination, 30-day window (mandate PDA 4snfZuq1\u2026)",
+        "3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh"
+      ],
+      [
+        "Fetched the mandate account: revoked=false, payment_count=0, owner and agent match",
+        "(no tx; read-only)"
+      ],
+      [
+        "revoke by the owner; fetched the account again and revoked=true",
+        "3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8"
+      ]
+    ],
+    "negative": [
+      "create_mandate with expires_at before valid_from is rejected (InvalidWindow)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit create_mandate / revoke). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/mandatekey.mjs.",
+    "limits": "pay was not exercised: it needs a token vault owned by the mandate PDA and a listed mint. update_mandate, withdraw and close_mandate are still TODOs in the program.",
+    "functional": "full",
+    "functional_evidence": "create_mandate landed, the mandate account was read back from devnet, an invalid window was rejected, and revoke flipped revoked to true. The pay path was not exercised."
+  }
 ]
