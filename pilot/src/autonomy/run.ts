@@ -329,7 +329,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     if (overlap) { st.upstreamPrs[sha] = `duplicate: overlaps open upstream PR ${overlap}`; log(`upstream PR for ${sha.slice(0, 7)} skipped: overlaps ${overlap}`); continue; }
     if (d.dryRun) continue;
     const body = `${publicTextCheck(meta.rationale, 2000).text}\n\nValidated: secret-free candidate-validation on the exact head \`${sha}\` passed (${verdict.decidingRun.htmlUrl}).\n\nOpened by Sol.College (a developer learning and R&D campus) from its demonstration lab fork ${p.lab.repo}. Not a partnership; please accept or decline as an ordinary contribution.`;
-    const pr = await d.upstreamGh.send<{ html_url: string }>("POST", `/repos/${p.upstream.repo}/pulls`, { title: meta.title.slice(0, 120), head: `${p.lab.repo.split("/")[0]}:${m[1]}`, base: p.upstream.branch, body, maintainer_can_modify: true });
+    const pr = await d.upstreamGh.send<{ html_url: string }>("POST", `/repos/${p.upstream.repo}/pulls`, { title: meta.title.replace(/^\[lab\]\s*/i, "").slice(0, 120), head: `${p.lab.repo.split("/")[0]}:${m[1]}`, base: p.upstream.branch, body, maintainer_can_modify: true });
     if (pr) { st.upstreamPrs[sha] = pr.html_url; activity.push({ at: nowIso, text: `Opened an upstream pull request for a validated fix`, url: pr.html_url }); log(`upstream PR ${pr.html_url}`); }
   }
 
