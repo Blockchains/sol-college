@@ -1,0 +1,19 @@
+{
+ "slug": "forge-agent-bounty",
+ "cluster": "devnet",
+ "program": "agent_bounty",
+ "idl": "agent_bounty.json",
+ "devnet": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "2iL32TTm4n6fPpuemmsyyT6prSpqpVWrEnoCdfobroi1AptDquhVMCTKJkiL857tWQfCvwqik9ioMj7ekjXnih7N"
+  },
+  {
+   "label": "initialize",
+   "sig": "2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"
+  }
+ ],
+ "verified": "2026-11-15"
+}

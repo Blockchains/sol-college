@@ -2748,5 +2748,50 @@
     "limits": "The hosted IDL is a hand-derived subset of one instruction; register_agent, tasks, bids, disputes, skills, listings and governance were not exercised. initialize_protocol requires the program ProgramData account as remaining_accounts[0] and a second signer distinct from the upgrade authority. The on-chain program is large (~2.4 MiB).",
     "functional": "full",
     "functional_evidence": "initialize_protocol landed and protocol config BhScAVMzdghR7jFzRLZb9Mhrt97Q2uYqz6CnPvXhVgi5 was read back with authority and treasury equal to the lab wallet; InvalidDisputeThreshold rejected dispute_threshold=0."
+  },
+  {
+    "slug": "forge-agent-bounty",
+    "name": "Forge Agent Bounty",
+    "lesson": "/explore/forge-agent-bounty/",
+    "app": "/dapps/forge-agent-bounty/",
+    "fork": "https://github.com/Blockchains/forge-agent-bounty",
+    "commit": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
+    "program": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified initialize instruction; discriminators were confirmed by the live transaction. create_bounty and later flow need an SPL mint and were not exercised.",
+    "learn": "initialize writes a marketplace PDA (seeds [\"marketplace\"]) with the signer as authority and zero bounty/volume counters. create_bounty later escrows SPL tokens; that path was not exercised in this run.",
+    "source": [
+      [
+        "programs/agent-bounty/src/lib.rs L10-L16 (initialize)",
+        "https://github.com/Blockchains/forge-agent-bounty/blob/5f30d18fe721e591b9dfe1549a2e19ecd212a2b6/programs/agent-bounty/src/lib.rs#L10-L16"
+      ],
+      [
+        "programs/agent-bounty/src/lib.rs L167-L179 (marketplace PDA seeds [\"marketplace\"])",
+        "https://github.com/Blockchains/forge-agent-bounty/blob/5f30d18fe721e591b9dfe1549a2e19ecd212a2b6/programs/agent-bounty/src/lib.rs#L167-L179"
+      ]
+    ],
+    "flow": "tests/devnet/forge-agent-bounty.mjs",
+    "log": "tests/devnet/logs/forge-agent-bounty-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "2iL32TTm4n6fPpuemmsyyT6prSpqpVWrEnoCdfobroi1AptDquhVMCTKJkiL857tWQfCvwqik9ioMj7ekjXnih7N"
+      ],
+      [
+        "initialize marketplace 4yWx7jjP\u2026 with authority = lab wallet, total_bounties=0",
+        "2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"
+      ],
+      [
+        "Fetched marketplace: authority is the lab wallet, total_bounties=0",
+        "(no tx; read-only)"
+      ]
+    ],
+    "negative": [
+      "A second initialize is rejected (the marketplace PDA already exists)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/forge-agent-bounty.mjs.",
+    "limits": "create_bounty, claim_bounty, submit_completion, approve_completion and reject_completion were not exercised: create_bounty needs an SPL mint and escrow token accounts. The hosted IDL is a hand-derived initialize-only subset confirmed by the verifying transaction.",
+    "functional": "full",
+    "functional_evidence": "initialize landed and marketplace 4yWx7jjP14U5mx9rsfg8uK4d6ToVfiXo4XUEQ1T58Cte was read back with authority = lab wallet and total_bounties=0; a second initialize was rejected."
   }
 ]

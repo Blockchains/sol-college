@@ -1,0 +1,10 @@
+{
+ "name": "Forge Agent Bounty",
+ "fork": "https://github.com/Blockchains/forge-agent-bounty",
+ "commit": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
+ "lesson": "/explore/forge-agent-bounty/",
+ "programs": {
+  "devnet": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
+  "mainnet": null
+ }
+}

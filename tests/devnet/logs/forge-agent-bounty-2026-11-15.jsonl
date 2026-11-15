@@ -1,0 +1,4 @@
+{"step":"setup","program":"782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu","marketplace":"4yWx7jjP14U5mx9rsfg8uK4d6ToVfiXo4XUEQ1T58Cte"}
+{"step":"initialize","ok":true,"sig":"2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"}
+{"step":"fetch_marketplace","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","totalBounties":"0"}
+{"step":"initialize_twice","expectedFailure":true,"error":"Simulation failed. "}
