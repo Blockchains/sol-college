@@ -1,0 +1,10 @@
+{
+ "name": "Reddi Escrow",
+ "fork": "https://github.com/Blockchains/reddi-escrow-solana",
+ "commit": "d761cd6d7398d03340da284d2e95f98b63bd3f1d",
+ "lesson": "/explore/reddi-escrow/",
+ "programs": {
+  "devnet": "6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R",
+  "mainnet": null
+ }
+}

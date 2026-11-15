@@ -1,0 +1,391 @@
+{
+  "address": "6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R",
+  "metadata": {
+    "name": "escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "register_agent",
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "fee_collector",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent_type",
+          "type": {
+            "defined": {
+              "name": "AgentType"
+            }
+          }
+        },
+        {
+          "name": "model",
+          "type": "string"
+        },
+        {
+          "name": "rate_lamports",
+          "type": "u64"
+        },
+        {
+          "name": "min_reputation",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "lock_escrow",
+      "discriminator": [
+        55,
+        16,
+        5,
+        80,
+        13,
+        102,
+        206,
+        104
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payee"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "nonce",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "release_escrow",
+      "discriminator": [
+        146,
+        253,
+        129,
+        233,
+        20,
+        145,
+        181,
+        206
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payee",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentAccount",
+      "discriminator": [
+        241,
+        119,
+        69,
+        140,
+        233,
+        9,
+        112,
+        50
+      ]
+    },
+    {
+      "name": "EscrowAccount",
+      "discriminator": [
+        36,
+        69,
+        48,
+        18,
+        128,
+        225,
+        125,
+        135
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "UnauthorisedSigner",
+      "msg": "Unauthorised signer \u2014 only the payer can cancel"
+    },
+    {
+      "code": 6001,
+      "name": "DuplicateNonce",
+      "msg": "Duplicate nonce \u2014 escrow with this nonce already exists"
+    },
+    {
+      "code": 6002,
+      "name": "NotLocked",
+      "msg": "Escrow is not in Locked state"
+    },
+    {
+      "code": 6003,
+      "name": "AlreadyClosed",
+      "msg": "Escrow is already closed"
+    },
+    {
+      "code": 6004,
+      "name": "ZeroAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6005,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6006,
+      "name": "CancelWindowNotElapsed",
+      "msg": "Cancel window not elapsed (7 days required)"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidPayee",
+      "msg": "Invalid payee"
+    },
+    {
+      "code": 6008,
+      "name": "ModelTooLong",
+      "msg": "Model string exceeds maximum length"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "primary"
+          },
+          {
+            "name": "attestation"
+          },
+          {
+            "name": "both"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "locked"
+          },
+          {
+            "name": "released"
+          },
+          {
+            "name": "cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_type",
+            "type": {
+              "defined": {
+                "name": "AgentType"
+              }
+            }
+          },
+          {
+            "name": "model",
+            "type": "string"
+          },
+          {
+            "name": "rate_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "min_reputation",
+            "type": "u8"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u16"
+          },
+          {
+            "name": "jobs_completed",
+            "type": "u64"
+          },
+          {
+            "name": "jobs_failed",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "attestation_accuracy",
+            "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "payee",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "EscrowStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "created_slot",
+            "type": "u64"
+          },
+          {
+            "name": "delegated_to_per",
+            "type": "bool"
+          },
+          {
+            "name": "per_session_key",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

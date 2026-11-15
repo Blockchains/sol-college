@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-reddi-escrow",
+  "slug": "reddi-escrow",
+  "displayName": "Reddi Escrow (Sol.College demonstration)",
+  "description": "SOL escrow and agent registry from reddi-agent-protocol, on Solana devnet (Anchor 1.1.2). register_agent burns a 0.01 SOL fee to the incinerator; lock_escrow and release_escrow were verified end-to-end (payee received 1_000_000 lamports, PDA closed). Token escrow, ratings and Quasar/PER were not exercised.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of programs/escrow from nissan/reddi-agent-protocol. The lab tree is branch sol-college-devnet of Blockchains/reddi-escrow-solana (8448b8a plus declare_id). Blockchains/reddi-agent-protocol already existed and its default branch had diverged. The lab only changed declare_id to the Sol.College devnet program. The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "nissan/reddi-agent-protocol",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/reddi-escrow-solana",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "reddi-escrow-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-reddiescrow"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:05:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (register_agent, lock_escrow, release_escrow)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/reddi-escrow/",
+      "QA: devnet proof of register_agent, lock_escrow, release_escrow, ModelTooLong, and ZeroAmount"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Quasar / MagicBlock PER"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "token-escrow-fixture",
+        "title": "Exercise lock_token_escrow / release_token_escrow with the lab SPL mint",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "1.1.2",
+    "solanaVersion": "2.3.13",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/escrow"
+  }
+}

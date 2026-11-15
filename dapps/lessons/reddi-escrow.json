@@ -1,0 +1,58 @@
+{
+  "title": "Reddi Escrow",
+  "summary": "Register an agent (0.01 SOL incinerator fee), lock native SOL into a program-owned escrow PDA, and release it to the payee.",
+  "what": "Reddi's programs/escrow is an Anchor 1.1.2 marketplace rail: agents register on-chain, a payer locks SOL into a program-owned PDA, and later releases it to a payee (or cancels after a 7-day window). This lesson covers register_agent, lock_escrow and release_escrow. Only this escrow program was deployed; Quasar/PER was not used.",
+  "app_note": "The page at /dapps/reddi-escrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The lab tree lives on branch sol-college-devnet of Blockchains/reddi-escrow-solana because Blockchains/reddi-agent-protocol already existed and had diverged.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/reddi-escrow/, switch to Devnet, and connect a wallet. register_agent, lock_escrow and release_escrow are already done; the lab escrow PDA is closed.",
+      "see": "Program 6T8dguHE\u2026. Fetch agent 8qVcbPrW\u2026 (campus-scout, Primary, active). Escrow HNqz8V3p\u2026 should no longer exist.",
+      "ran": "register_agent 45k9qwLE\u2026; lock_escrow 54JL3pBH\u2026; release_escrow 4Pst7szi\u2026."
+    },
+    {
+      "do": "A 65-byte model, or lock_escrow with amount=0, should fail.",
+      "see": "ModelTooLong; ZeroAmount.",
+      "ran": "Rejected in tests/devnet/reddi-escrow.mjs."
+    }
+  ],
+  "diagram": "owner --register_agent--> agent [\"agent\", owner] + 0.01 SOL to incinerator ; payer --lock_escrow--> escrow [\"escrow\", payer, nonce] ; payer --release_escrow--> payee (escrow closed)",
+  "accounts": [
+    "agent (seeds [\"agent\", owner])",
+    "escrow (seeds [\"escrow\", payer, 16-byte nonce])",
+    "fee_collector (Solana incinerator 1nc1nerator11111111111111111111111111111111)"
+  ],
+  "instructions": [
+    "register_agent",
+    "lock_escrow",
+    "release_escrow",
+    "cancel / token escrow / ratings exist in the program but are not in this IDL"
+  ],
+  "innovation": "A program-owned SOL escrow PDA (so release can debit it) plus a cheap on-chain agent registry with an incinerator registration fee.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab agent.",
+    "Explain why release can debit this escrow when some other lab programs cannot.",
+    "Sketch the 7-day cancel window."
+  ],
+  "not_covered": "cancel_escrow, token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar/PER was not used.",
+  "path_order": 34,
+  "path_stage": "apply",
+  "difficulty": "intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Register an agent",
+    "Lock SOL in a program-owned escrow",
+    "Release the escrow to a payee"
+  ],
+  "prereqs": [
+    "orrery"
+  ],
+  "concepts": [
+    "agent registry",
+    "program-owned escrow PDA",
+    "incinerator fee",
+    "close account"
+  ],
+  "build": "Anchor 1.1.2 programs/escrow at 6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full"
+}

@@ -1,0 +1,7 @@
+{"step":"setup","program":"6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R","agent":"8qVcbPrWN9BkrLj8GH6ZeMjHHGHm5auctht1mTmCFHSC","escrow":"HNqz8V3pAkycmkPSCJfebb9zT2hLZJZ6wLRBYZs2PD39","payee":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr"}
+{"step":"register_agent_model_too_long","expectedFailure":true,"error":"ModelTooLong"}
+{"step":"register_agent","ok":true,"sig":"45k9qwLE47xiYZ3qUyohTqTnyFFr6aAcxwuu4VwZ3ZDVRjDPNMVgwWZUtg3FnPKWSs1t3LJjcDgwDhyv6qpJ6L88"}
+{"step":"lock_escrow_zero","expectedFailure":true,"error":"ZeroAmount"}
+{"step":"lock_escrow","ok":true,"sig":"54JL3pBHuLwkpo63pWE8sCHC28URadEUrzyuEQqfy8CY87L6gDvFbwjk8sF7pB2cGvWE1B1ZpxGGCT6dTFj2v8ur"}
+{"step":"release_escrow","ok":true,"sig":"4Pst7sziMAWG8CEGZbJazHRnFDLAyWGDXNpPTKrDQrPrHcVczmoh3ebMGHPPJpts2n89uFHQom2n5tEpkqbKnug1"}
+{"step":"fetch","ok":true,"model":"campus-scout","active":true,"rate":"1000000","agentType":{"primary":{}},"payeeDelta":1000000,"escrowClosed":true}

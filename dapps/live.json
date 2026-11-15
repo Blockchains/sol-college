@@ -3084,5 +3084,63 @@
     "limits": "redeem (Ed25519 voucher), top_up, channel close, bond and attest were not exercised. The lab wallet is admin, provider and channel payer. The settle mint is the lab SPL mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D also used for Forge. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
     "functional": "full",
     "functional_evidence": "initialize landed (config J5Bu3vKRY6EmMPBu1wU2HXVjpdJ1kZkbuG8ZDiJudLSQ, min_deposit=1000000); register_provider wrote provider 7gmBzHSNFfNVy3tGaux3VCswmQBXjs472czinJukCdGE; open_channel deposited 1_000_000 tokens into vault ksWqtFH1tq9655NjKCM8MnFSfaee2VscwSFuchQGAUf (channels=1, redeemed=0); BadParams and BadEndpoint were rejected."
+  },
+  {
+    "slug": "reddi-escrow",
+    "name": "Reddi Escrow",
+    "lesson": "/explore/reddi-escrow/",
+    "app": "/dapps/reddi-escrow/",
+    "fork": "https://github.com/Blockchains/reddi-escrow-solana",
+    "commit": "d761cd6d7398d03340da284d2e95f98b63bd3f1d",
+    "program": "6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified register_agent, lock_escrow and release_escrow instructions; discriminators were confirmed by live transactions. The lab tree is on branch sol-college-devnet (nissan/reddi-agent-protocol@8448b8a plus declare_id). Blockchains/reddi-agent-protocol already existed and its default branch had diverged, so this snapshot was published under reddi-escrow-solana.",
+    "learn": "register_agent writes an agent PDA (seeds [\"agent\", owner]) and burns a 0.01 SOL fee to the Solana incinerator. lock_escrow then inits a program-owned escrow PDA (seeds [\"escrow\", payer, 16-byte nonce]) and transfers native SOL into it. release_escrow, called by the payer, pays the payee and closes the PDA, returning rent to the payer.",
+    "source": [
+      [
+        "programs/escrow/src/lib.rs L54-L67 (register_agent)",
+        "https://github.com/Blockchains/reddi-escrow-solana/blob/d761cd6d7398d03340da284d2e95f98b63bd3f1d/programs/escrow/src/lib.rs#L54-L67"
+      ],
+      [
+        "programs/escrow/src/instructions/register_agent.rs (agent PDA + incinerator fee)",
+        "https://github.com/Blockchains/reddi-escrow-solana/blob/d761cd6d7398d03340da284d2e95f98b63bd3f1d/programs/escrow/src/instructions/register_agent.rs"
+      ],
+      [
+        "programs/escrow/src/instructions/lock_escrow.rs (program-owned escrow PDA + SOL transfer)",
+        "https://github.com/Blockchains/reddi-escrow-solana/blob/d761cd6d7398d03340da284d2e95f98b63bd3f1d/programs/escrow/src/instructions/lock_escrow.rs"
+      ],
+      [
+        "programs/escrow/src/instructions/release_escrow.rs (payee payout + close to payer)",
+        "https://github.com/Blockchains/reddi-escrow-solana/blob/d761cd6d7398d03340da284d2e95f98b63bd3f1d/programs/escrow/src/instructions/release_escrow.rs"
+      ]
+    ],
+    "flow": "tests/devnet/reddi-escrow.mjs",
+    "log": "tests/devnet/logs/reddi-escrow-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy programs/escrow as 6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R on devnet",
+        "5GhR5PDF8Nq8gDqei94fUW4CDBzRxAT8Qk65kjhxMYh4UKhs3csCQZAhyKHZLciPv5npeP2nv1rbQz4ND3PHDZVB"
+      ],
+      [
+        "register_agent campus-scout, type=Primary, rate=1_000_000 (agent 8qVcbPrW\u2026); 0.01 SOL burned to the incinerator",
+        "45k9qwLE47xiYZ3qUyohTqTnyFFr6aAcxwuu4VwZ3ZDVRjDPNMVgwWZUtg3FnPKWSs1t3LJjcDgwDhyv6qpJ6L88"
+      ],
+      [
+        "lock_escrow 1_000_000 lamports to tester payee m4AcRjHc\u2026 (escrow HNqz8V3p\u2026)",
+        "54JL3pBHuLwkpo63pWE8sCHC28URadEUrzyuEQqfy8CY87L6gDvFbwjk8sF7pB2cGvWE1B1ZpxGGCT6dTFj2v8ur"
+      ],
+      [
+        "release_escrow paid the payee +1_000_000 lamports and closed the escrow PDA",
+        "4Pst7sziMAWG8CEGZbJazHRnFDLAyWGDXNpPTKrDQrPrHcVczmoh3ebMGHPPJpts2n89uFHQom2n5tEpkqbKnug1"
+      ]
+    ],
+    "negative": [
+      "register_agent with a 65-byte model is rejected (ModelTooLong)",
+      "lock_escrow with amount=0 is rejected (ZeroAmount)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; register_agent, lock_escrow and release_escrow were sent with the lab and tester wallets through the IDL client in tests/devnet/reddi-escrow.mjs.",
+    "limits": "cancel_escrow (7-day window), token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar / MagicBlock PER was not used. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
+    "functional": "full",
+    "functional_evidence": "register_agent wrote agent 8qVcbPrWN9BkrLj8GH6ZeMjHHGHm5auctht1mTmCFHSC (campus-scout, Primary, active); lock_escrow escrowed 1_000_000 lamports; release_escrow paid payee m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr exactly 1_000_000 lamports and closed escrow HNqz8V3pAkycmkPSCJfebb9zT2hLZJZ6wLRBYZs2PD39; ModelTooLong and ZeroAmount were rejected."
   }
 ]
