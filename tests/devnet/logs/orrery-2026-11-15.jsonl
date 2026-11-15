@@ -1,0 +1,7 @@
+{"step":"setup","program":"93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu","config":"J5Bu3vKRY6EmMPBu1wU2HXVjpdJ1kZkbuG8ZDiJudLSQ","programData":"419UqDceWKrujuwtthNnWrA6EsGvDDoSqFdLekxMpyw1","provider":"7gmBzHSNFfNVy3tGaux3VCswmQBXjs472czinJukCdGE","channel":"3hvVKBsZZ7zG1yUizCEGtNSq2fMbnJeCwjwzcmMojSSJ","vault":"ksWqtFH1tq9655NjKCM8MnFSfaee2VscwSFuchQGAUf","payerTokens":"J3weMnAcV3KkiQMGpzBTLGbZx4RcrNft6mzgBQJXykwm","mint":"BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D","sessionKey":"AFvtRGor5VWH4o88kQCm75kLya5SvqwooJ8PbG9rVd5B"}
+{"step":"initialize_zero_deposit","expectedFailure":true,"error":"BadParams"}
+{"step":"initialize","ok":true,"sig":"7eyBizE6vP5DM12JSnc6Ha3aQSpDb61iCGPNjwKtrkTnZCfsMEgaWW8zWJP9b2Btqk6ThncDiHcRiJzKoYV778C"}
+{"step":"register_provider_bad_endpoint","expectedFailure":true,"error":"BadEndpoint"}
+{"step":"register_provider","ok":true,"sig":"F8ar4YK9sruhCshPCWfgs1hFjQoPLkVfPTiGkisG5nU1Uoj8rTGE2sNhBhum6W9fgwB54SH6PogTLGJYPajad3Y"}
+{"step":"open_channel","ok":true,"sig":"5fhrHv7n1SjCZVNVUwJgYrTNQvwD887NRTfBigxYARh23DGnKEm2NEaVXATV27B4vamfvqyqVmcnAkBFfLGfkrqD"}
+{"step":"fetch","ok":true,"providers":"1","channels":"1","minDeposit":"1000000","settleMint":"BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D","endpoint":"https://sol.college/dapps/orrery/","active":true,"deposit":"1000000","redeemed":"0"}

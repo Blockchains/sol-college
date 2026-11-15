@@ -1,0 +1,59 @@
+{
+  "title": "Orrery",
+  "summary": "Initialise the Orrery config (upgrade authority + settle mint), register a provider, and open a token-escrowed payment channel.",
+  "what": "Orrery is an Anchor 1.2 program for a peer-to-peer AI inference network: providers list an http(s) endpoint and a price-manifest hash, and users open SPL payment channels that a session key can later redeem with an Ed25519 voucher. This lesson covers initialize, register_provider and open_channel.",
+  "app_note": "The page at /dapps/orrery/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/orrery/, switch to Devnet, and connect a wallet. initialize, register_provider and open_channel are already done.",
+      "see": "Program 93Bs5W8q\u2026. Fetch config J5Bu3vKR\u2026 (providers=1, channels=1, settle mint BJMSdujx\u2026) and channel 3hvVKBsZ\u2026 (deposit=1000000, redeemed=0).",
+      "ran": "initialize 7eyBizE6\u2026; register_provider F8ar4YK9\u2026; open_channel 5fhrHv7n\u2026."
+    },
+    {
+      "do": "initialize with min_deposit=0, or register_provider with a ftp:// endpoint, should fail.",
+      "see": "BadParams; BadEndpoint.",
+      "ran": "Rejected in tests/devnet/orrery.mjs."
+    }
+  ],
+  "diagram": "upgrade authority --initialize--> config [\"config\"] + settle mint ; authority --register_provider--> provider [\"provider\", wallet] ; payer --open_channel--> channel [\"channel\", payer, provider, id] + vault ATA",
+  "accounts": [
+    "config (seeds [\"config\"])",
+    "provider (seeds [\"provider\", authority])",
+    "channel (seeds [\"channel\", payer, provider, id u64 LE])",
+    "vault (ATA of the channel)"
+  ],
+  "instructions": [
+    "initialize",
+    "register_provider",
+    "open_channel",
+    "redeem / top_up / close exist in the program but are not in this IDL"
+  ],
+  "innovation": "No protocol fee: channel deposits can only be redeemed to the provider against an Ed25519-signed voucher, or returned to the user when the channel closes.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab config, provider and channel.",
+    "Explain BadParams and BadEndpoint.",
+    "Sketch how redeem verifies an Ed25519 voucher in the same transaction."
+  ],
+  "not_covered": "redeem, top_up, channel close, bond and attest were not exercised. The settle mint is a lab SPL mint, not mainnet USDC.",
+  "path_order": 33,
+  "path_stage": "apply",
+  "difficulty": "intermediate",
+  "time": "25 min",
+  "objectives": [
+    "Initialise config as upgrade authority",
+    "Register a provider",
+    "Open a settle-token payment channel"
+  ],
+  "prereqs": [
+    "agentvault"
+  ],
+  "concepts": [
+    "upgrade-authority init",
+    "provider registry",
+    "SPL payment channel",
+    "settle mint"
+  ],
+  "build": "Anchor 1.2.0 program at 93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu on devnet, built with --arch v2 after cargo clean. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full"
+}

@@ -1,0 +1,10 @@
+{
+ "name": "Orrery",
+ "fork": "https://github.com/Blockchains/orrery",
+ "commit": "3ef0c787c1b85fae401fbd97fb80f387dadef3a1",
+ "lesson": "/explore/orrery/",
+ "programs": {
+  "devnet": "93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu",
+  "mainnet": null
+ }
+}

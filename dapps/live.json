@@ -3026,5 +3026,63 @@
     "limits": "complete_task cannot settle: the program tries to debit the system-owned escrow PDA by direct lamport mutation, and the runtime rejects that with 'instruction spent from the balance of an account it does not own'. Task 5mfPe9DT\u2026 is left InProgress. update_agent, deactivate_service, cancel_task and dispute_task were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
     "functional": "partial",
     "functional_evidence": "initialize, register_agent, create_service, create_task and accept_task all landed, but complete_task payout cannot complete because the program debit of the system-owned escrow is rejected by the runtime."
+  },
+  {
+    "slug": "orrery",
+    "name": "Orrery",
+    "lesson": "/explore/orrery/",
+    "app": "/dapps/orrery/",
+    "fork": "https://github.com/Blockchains/orrery",
+    "commit": "3ef0c787c1b85fae401fbd97fb80f387dadef3a1",
+    "program": "93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified initialize, register_provider and open_channel instructions; discriminators were confirmed by live transactions. Built with `anchor build --arch v2` after a cargo clean so a single platform-tools version was used.",
+    "learn": "initialize (upgrade authority only) writes a config PDA (seeds [\"config\"]) with a settle mint and bounded params (close_grace_secs 10 minutes\u20137 days, unbond_secs 1 hour\u201330 days, min_deposit > 0). Anyone can register_provider with an http(s) endpoint (\u2264120 printable ASCII). open_channel then transfers settle-mint tokens into a channel vault ATA (seeds [\"channel\", payer, provider, id]).",
+    "source": [
+      [
+        "program/programs/orrery/src/lib.rs L47-L63 (initialize, upgrade-authority gated)",
+        "https://github.com/Blockchains/orrery/blob/3ef0c787c1b85fae401fbd97fb80f387dadef3a1/program/programs/orrery/src/lib.rs#L47-L63"
+      ],
+      [
+        "program/programs/orrery/src/lib.rs L96-L120 (register_provider)",
+        "https://github.com/Blockchains/orrery/blob/3ef0c787c1b85fae401fbd97fb80f387dadef3a1/program/programs/orrery/src/lib.rs#L96-L120"
+      ],
+      [
+        "program/programs/orrery/src/lib.rs L238-L273 (open_channel deposits settle tokens)",
+        "https://github.com/Blockchains/orrery/blob/3ef0c787c1b85fae401fbd97fb80f387dadef3a1/program/programs/orrery/src/lib.rs#L238-L273"
+      ],
+      [
+        "program/programs/orrery/src/lib.rs L375-L385 (param and endpoint checks)",
+        "https://github.com/Blockchains/orrery/blob/3ef0c787c1b85fae401fbd97fb80f387dadef3a1/program/programs/orrery/src/lib.rs#L375-L385"
+      ]
+    ],
+    "flow": "tests/devnet/orrery.mjs",
+    "log": "tests/devnet/logs/orrery-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy program 93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu to devnet",
+        "nyUpTSU7CUA5mQK7CwbhXCCrg6YVPqD2Z8WJ1St85CSj1A19qZ8R4XiGxFDT3hGixAK6ucPYjmoj7zX7rRJcfuU"
+      ],
+      [
+        "initialize with grace=600s, unbond=3600s, min_deposit=1_000_000, settle mint BJMSdujx\u2026 (config J5Bu3vKR\u2026)",
+        "7eyBizE6vP5DM12JSnc6Ha3aQSpDb61iCGPNjwKtrkTnZCfsMEgaWW8zWJP9b2Btqk6ThncDiHcRiJzKoYV778C"
+      ],
+      [
+        "register_provider https://sol.college/dapps/orrery/ (provider 7gmBzHSN\u2026)",
+        "F8ar4YK9sruhCshPCWfgs1hFjQoPLkVfPTiGkisG5nU1Uoj8rTGE2sNhBhum6W9fgwB54SH6PogTLGJYPajad3Y"
+      ],
+      [
+        "open_channel id=1, deposit=1_000_000 of the lab SPL mint (channel 3hvVKBsZ\u2026, vault ksWqtFH1\u2026)",
+        "5fhrHv7n1SjCZVNVUwJgYrTNQvwD887NRTfBigxYARh23DGnKEm2NEaVXATV27B4vamfvqyqVmcnAkBFfLGfkrqD"
+      ]
+    ],
+    "negative": [
+      "initialize with min_deposit=0 is rejected (BadParams)",
+      "register_provider with a ftp:// endpoint is rejected (BadEndpoint)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, register_provider and open_channel were sent with the lab wallet through the IDL client in tests/devnet/orrery.mjs.",
+    "limits": "redeem (Ed25519 voucher), top_up, channel close, bond and attest were not exercised. The lab wallet is admin, provider and channel payer. The settle mint is the lab SPL mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D also used for Forge. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
+    "functional": "full",
+    "functional_evidence": "initialize landed (config J5Bu3vKRY6EmMPBu1wU2HXVjpdJ1kZkbuG8ZDiJudLSQ, min_deposit=1000000); register_provider wrote provider 7gmBzHSNFfNVy3tGaux3VCswmQBXjs472czinJukCdGE; open_channel deposited 1_000_000 tokens into vault ksWqtFH1tq9655NjKCM8MnFSfaee2VscwSFuchQGAUf (channels=1, redeemed=0); BadParams and BadEndpoint were rejected."
   }
 ]

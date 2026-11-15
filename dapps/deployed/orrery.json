@@ -1,0 +1,27 @@
+{
+ "slug": "orrery",
+ "cluster": "devnet",
+ "program": "orrery",
+ "idl": "orrery.json",
+ "devnet": "93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "nyUpTSU7CUA5mQK7CwbhXCCrg6YVPqD2Z8WJ1St85CSj1A19qZ8R4XiGxFDT3hGixAK6ucPYjmoj7zX7rRJcfuU"
+  },
+  {
+   "label": "initialize",
+   "sig": "7eyBizE6vP5DM12JSnc6Ha3aQSpDb61iCGPNjwKtrkTnZCfsMEgaWW8zWJP9b2Btqk6ThncDiHcRiJzKoYV778C"
+  },
+  {
+   "label": "register_provider",
+   "sig": "F8ar4YK9sruhCshPCWfgs1hFjQoPLkVfPTiGkisG5nU1Uoj8rTGE2sNhBhum6W9fgwB54SH6PogTLGJYPajad3Y"
+  },
+  {
+   "label": "open_channel",
+   "sig": "5fhrHv7n1SjCZVNVUwJgYrTNQvwD887NRTfBigxYARh23DGnKEm2NEaVXATV27B4vamfvqyqVmcnAkBFfLGfkrqD"
+  }
+ ],
+ "verified": "2026-11-15"
+}
