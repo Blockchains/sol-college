@@ -42,3 +42,5 @@ button{background:linear-gradient(90deg,#6d3bff,#9945ff)}
 .c3-chip[aria-pressed="true"]{background:linear-gradient(90deg,rgba(153,69,255,.55),rgba(20,241,149,.35));border-color:transparent}
 .c3-hint{position:absolute;right:10px;bottom:10px;z-index:2;font:500 12px/1.2 system-ui,sans-serif;color:rgba(233,228,255,.75);background:rgba(12,8,38,.55);padding:6px 10px;border-radius:999px;pointer-events:none}
 @media (max-width:640px){#canvasWrap{height:clamp(380px,64vh,560px)}#overlay{left:8px;right:8px;top:auto;bottom:8px;max-width:none;max-height:55%}}
+.notices li{background:rgba(255,184,107,.07);border-left-color:#ffb86b;color:#efe6ff;border-radius:0 10px 10px 0}
+@media (max-width:640px){.top nav{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}.top nav a{margin-left:0;padding:6px 10px;border-radius:999px;background:rgba(153,69,255,.1)}.top nav a[aria-current]{background:rgba(153,69,255,.35)}main{padding:12px 14px 32px}h1{font-size:1.8rem}}

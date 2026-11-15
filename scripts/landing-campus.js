@@ -52,7 +52,11 @@ function init() {
     if (scene) scene.highlight(slug);
     const show = () => {
       $('#ch-dialog-body').innerHTML = detailHtml(slug);
-      if (typeof dialog.showModal === 'function') { if (!dialog.open) dialog.showModal(); }
+      if (typeof dialog.showModal === 'function') {
+        if (!dialog.open) dialog.showModal();
+        // start at the top (the Close button would otherwise take focus and scroll the dialog to the bottom)
+        const h = $('#ch-dialog-title'); if (h) { h.tabIndex = -1; h.focus(); } dialog.scrollTop = 0;
+      }
       else { location.href = `/campus/#p-${encodeURIComponent(slug)}`; }
     };
     loadFull().then(show, show);
