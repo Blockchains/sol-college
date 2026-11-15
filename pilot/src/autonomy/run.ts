@@ -99,7 +99,8 @@ export function publicTextCheck(text: string, max: number): { ok: boolean; text:
 /** Choose the first Mind proposal that may become a research-question issue. */
 export function pickProposal(resp: TaskResponse, seen: string[]): { title: string; detail: string; hash: string } | null {
   for (const p of resp.proposals) {
-    const title = publicTextCheck(p.title, 120);
+    // Minds sometimes repeat the issue prefix ("[research] <project>: ..."); it is added again when the issue is opened.
+    const title = publicTextCheck(p.title.replace(/^(\s*\[[a-z -]+\]\s*[\w.-]*\s*:\s*)+/i, ""), 120);
     const detail = publicTextCheck(p.detail, 4000);
     if (!title.ok || !detail.ok || title.text.length < 12 || detail.text.length < 40) continue;
     const hash = sha256Hex(Buffer.from(title.text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim(), "utf8")).slice(0, 16);

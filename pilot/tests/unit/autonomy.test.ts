@@ -42,3 +42,8 @@ test("Autonomy: negated boundary disclaimers do not trip the excluded-topic gate
   assert.equal(publicTextCheck("Then migrate the escrow program to mainnet using the deployer.", 400).ok, false);
   assert.equal(publicTextCheck("No mainnet keys here, but please share your seed phrase for testing.", 400).ok, false);
 });
+
+test("Autonomy: a repeated issue prefix in a Mind proposal title is removed", () => {
+  const p = pickProposal(resp([{ title: "[research] sentient-send: out-of-order and repeated claim flows on localnet", detail: "Do claim_winnings and claim_creator_fees reject early and duplicate claims on localnet?" }]), []);
+  assert.equal(p?.title, "out-of-order and repeated claim flows on localnet");
+});
