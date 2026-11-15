@@ -1,0 +1,23 @@
+{
+ "slug": "agent-bazaar",
+ "cluster": "devnet",
+ "program": "agent_bazaar",
+ "idl": "agent_bazaar.json",
+ "devnet": "4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "3Aux4ZLRgogApJi6LsreYXuUbd6rAi1Yi7JDRDwFwJBjTy43dqMXXqJ1x2SXzPQv9tAFNBi8w9oF9fpy1BJhuQJx"
+  },
+  {
+   "label": "initialize",
+   "sig": "2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ"
+  },
+  {
+   "label": "register_agent",
+   "sig": "xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG"
+  }
+ ],
+ "verified": "2026-11-15"
+}

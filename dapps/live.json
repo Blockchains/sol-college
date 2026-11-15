@@ -2846,5 +2846,58 @@
     "limits": "spawn_child, record_earning, distribute_to_parent and deactivate_agent were not exercised. The hosted IDL is a hand-derived subset of initialize and register_root_agent, confirmed by the verifying transactions.",
     "functional": "full",
     "functional_evidence": "initialize landed and registry 7x3F2GgYEw8j3DipGPkRQAN5G5FV2PoG6VDqJkVtuUeS was read back; register_root_agent wrote agent 8E5gYQxrvuPhsYKFDTLAwKNbhx7tseLbfVUjChG52rhQ for campus-scout (depth=0, active=true); NameTooLong rejected a 33-byte name."
+  },
+  {
+    "slug": "agent-bazaar",
+    "name": "Agent Bazaar",
+    "lesson": "/explore/agent-bazaar/",
+    "app": "/dapps/agent-bazaar/",
+    "fork": "https://github.com/Blockchains/Agent-Bazaar-solana",
+    "commit": "b9b4cab7b196839e62a991252ec0395a1bae1140",
+    "program": "4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is a hand-derived subset covering the verified initialize and register_agent instructions; discriminators were confirmed by live transactions. The GitHub fork is named Agent-Bazaar-solana because Blockchains/agent-bazaar was already taken.",
+    "learn": "initialize writes a protocol PDA (seeds [\"protocol\"]) with platform_fee_bps <= 10000. register_agent then creates identity and reputation PDAs seeded by the current agent_count (first agent uses 0 as a little-endian u64).",
+    "source": [
+      [
+        "programs/agent_bazaar/src/lib.rs L17-L28 (initialize, InvalidFee)",
+        "https://github.com/Blockchains/Agent-Bazaar-solana/blob/b9b4cab7b196839e62a991252ec0395a1bae1140/programs/agent_bazaar/src/lib.rs#L17-L28"
+      ],
+      [
+        "programs/agent_bazaar/src/lib.rs L240-L252 (protocol PDA seeds [\"protocol\"])",
+        "https://github.com/Blockchains/Agent-Bazaar-solana/blob/b9b4cab7b196839e62a991252ec0395a1bae1140/programs/agent_bazaar/src/lib.rs#L240-L252"
+      ],
+      [
+        "programs/agent_bazaar/src/lib.rs L30-L80 and L255-L282 (register_agent, identity and reputation PDAs)",
+        "https://github.com/Blockchains/Agent-Bazaar-solana/blob/b9b4cab7b196839e62a991252ec0395a1bae1140/programs/agent_bazaar/src/lib.rs#L255-L282"
+      ]
+    ],
+    "flow": "tests/devnet/agent-bazaar.mjs",
+    "log": "tests/devnet/logs/agent-bazaar-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "3Aux4ZLRgogApJi6LsreYXuUbd6rAi1Yi7JDRDwFwJBjTy43dqMXXqJ1x2SXzPQv9tAFNBi8w9oF9fpy1BJhuQJx"
+      ],
+      [
+        "initialize with platform_fee_bps=250 (protocol 8qBZ1HYD\u2026)",
+        "2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ"
+      ],
+      [
+        "Fetched protocol: authority is the lab wallet, fee=250, agent_count=0",
+        "(no tx; read-only)"
+      ],
+      [
+        "register_agent campus-scout (identity 8Phw1JZ7\u2026, reputation 53vhq7UK\u2026, agent_id=0)",
+        "xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG"
+      ]
+    ],
+    "negative": [
+      "initialize with platform_fee_bps=10001 is rejected (InvalidFee)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize and register_agent were sent with the lab wallet through the IDL client in tests/devnet/agent-bazaar.mjs.",
+    "limits": "update_agent, deactivate/reactivate/close, update_fee and submit_feedback were not exercised. The hosted IDL is a hand-derived subset of initialize and register_agent, confirmed by the verifying transactions.",
+    "functional": "full",
+    "functional_evidence": "initialize landed and protocol 8qBZ1HYDXZumuCqUdqF3tgKUmFjtcts9LZL9rfJ1N7eE was read back with fee=250; register_agent wrote identity 8Phw1JZ7pLXmVH6CL11G7aEqJChQuHM3PjFK7xgpTyfS for campus-scout (agent_id=0, active=true); InvalidFee rejected fee_bps=10001."
   }
 ]

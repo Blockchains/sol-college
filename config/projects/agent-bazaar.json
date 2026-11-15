@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agent-bazaar",
+  "slug": "agent-bazaar",
+  "displayName": "Agent Bazaar (Sol.College demonstration)",
+  "description": "On-chain AI agent registry on Solana devnet (Anchor 0.31). An admin initialises a protocol PDA (seeds [\"protocol\"], fee_bps <= 10000), then agents register identity and reputation PDAs. The hosted IDL is a hand-derived subset of initialize and register_agent, confirmed on-chain.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/Agent-Bazaar-solana fork of MetaPsilo/Agent-Bazaar (the Blockchains/agent-bazaar name was already taken by a different repo). The lab only changed declare_id to the Sol.College devnet program. The hosted IDL is a hand-derived subset confirmed by the verifying transactions. The upstream author has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "MetaPsilo/Agent-Bazaar",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/Agent-Bazaar-solana",
+    "branch": "main"
+  },
+  "mind": {
+    "mappingRef": "agent-bazaar-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentbazaar"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T20:44:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initialize, register_agent)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agent-bazaar/",
+      "QA: devnet proof of initialize fee_bps=250, register_agent campus-scout, and InvalidFee"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "feedback-fixture",
+        "title": "Exercise update_agent and submit_feedback on the lab registry",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "2.3.13",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/agent_bazaar"
+  }
+}

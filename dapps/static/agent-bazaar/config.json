@@ -1,0 +1,10 @@
+{
+ "name": "Agent Bazaar",
+ "fork": "https://github.com/Blockchains/Agent-Bazaar-solana",
+ "commit": "b9b4cab7b196839e62a991252ec0395a1bae1140",
+ "lesson": "/explore/agent-bazaar/",
+ "programs": {
+  "devnet": "4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx",
+  "mainnet": null
+ }
+}

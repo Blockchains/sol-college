@@ -1,0 +1,6 @@
+{"step":"setup","program":"4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx","state":"8qBZ1HYDXZumuCqUdqF3tgKUmFjtcts9LZL9rfJ1N7eE","agent":"8Phw1JZ7pLXmVH6CL11G7aEqJChQuHM3PjFK7xgpTyfS","reputation":"53vhq7UKoknMwT1cEumqDt1psGPaPhpPypMYAvkNam4m"}
+{"step":"initialize_invalid_fee","expectedFailure":true,"error":"InvalidFee"}
+{"step":"initialize","ok":true,"sig":"2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ"}
+{"step":"fetch_state","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","fee":250,"agentCount":"0"}
+{"step":"register_agent","ok":true,"sig":"xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG"}
+{"step":"fetch_agent","ok":true,"name":"campus-scout","owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","active":true,"agentId":"0"}
