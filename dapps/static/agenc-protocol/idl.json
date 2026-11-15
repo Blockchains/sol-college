@@ -1,0 +1,131 @@
+{
+  "address": "2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i",
+  "metadata": {
+    "name": "agenc_coordination",
+    "version": "0.1.0",
+    "spec": "0.1.0"
+  },
+  "instructions": [
+    {
+      "name": "initialize_protocol",
+      "discriminator": [
+        188,
+        233,
+        252,
+        106,
+        134,
+        146,
+        202,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "protocol_config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "second_signer",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "dispute_threshold",
+          "type": "u8"
+        },
+        {
+          "name": "protocol_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "min_stake",
+          "type": "u64"
+        },
+        {
+          "name": "min_stake_for_dispute",
+          "type": "u64"
+        },
+        {
+          "name": "multisig_threshold",
+          "type": "u8"
+        },
+        {
+          "name": "multisig_owners",
+          "type": {
+            "vec": "pubkey"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ProtocolConfig",
+      "discriminator": [
+        207,
+        91,
+        250,
+        28,
+        152,
+        179,
+        215,
+        209
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "ProtocolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidDisputeThreshold",
+      "msg": "Invalid dispute threshold"
+    }
+  ]
+}

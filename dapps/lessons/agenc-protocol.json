@@ -1,0 +1,57 @@
+{
+  "title": "Agenc Protocol: initialise the coordination config",
+  "summary": "Initialise the Agenc protocol config PDA with a second signer and the program's ProgramData account, then read authority and treasury back.",
+  "what": "Agenc Protocol is a large Anchor 0.32 agent-coordination program (tasks, bids, disputes, skills, listings). This lesson covers only initialize_protocol, which writes a singleton config PDA after proving the caller is the upgrade authority and a second multisig owner has co-signed. The hosted IDL is a minimal hand-derived subset confirmed by the live transaction.",
+  "app_note": "The page at /dapps/agenc-protocol/ is the generic IDL-driven wallet console. It currently lists only initialize_protocol (already done on this lab deploy).",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agenc-protocol/, switch to Devnet, and connect a wallet. initialize_protocol is already done on this lab deployment.",
+      "see": "Program 2wAW3Ack\u2026 . Fetch the config PDA (seeds [\"protocol\"]) at BhScAVMz\u2026.",
+      "ran": "initialize_protocol sig 61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v wrote config with authority and treasury = lab wallet."
+    },
+    {
+      "do": "A fresh initialize with dispute_threshold=0 should fail; a second initialize of this deployment should also fail because the config PDA already exists.",
+      "see": "InvalidDisputeThreshold, or the account already in use.",
+      "ran": "dispute_threshold=0 was rejected in tests/devnet/agenc-protocol.mjs."
+    }
+  ],
+  "diagram": "upgrade authority + second signer + ProgramData --initialize_protocol--> protocol config PDA [\"protocol\"]",
+  "accounts": [
+    "protocol_config (seeds [\"protocol\"])",
+    "treasury (system-owned signer)",
+    "second_signer (distinct multisig owner)",
+    "ProgramData remaining account"
+  ],
+  "instructions": [
+    "initialize_protocol (hosted IDL)",
+    "register_agent and a large additional surface exist in the program but are not in this IDL"
+  ],
+  "innovation": "A broad agent coordination protocol whose bootstrap requires the upgrade authority plus a second signer and an explicit ProgramData check.",
+  "frontend": "Generic Sol.College IDL console (initialize_protocol only).",
+  "exercises": [
+    "Fetch the lab protocol config.",
+    "Explain why ProgramData must be passed.",
+    "Sketch register_agent against this config."
+  ],
+  "not_covered": "register_agent, tasks, bids, disputes, skills, listings and governance were not exercised. The hosted IDL does not list those instructions.",
+  "path_order": 28,
+  "path_stage": "apply",
+  "difficulty": "advanced",
+  "time": "25 min",
+  "objectives": [
+    "Initialise protocol config",
+    "Name InvalidDisputeThreshold",
+    "Explain the ProgramData remaining account"
+  ],
+  "prereqs": [
+    "agenttrust"
+  ],
+  "concepts": [
+    "upgrade authority",
+    "ProgramData",
+    "multisig bootstrap",
+    "protocol config PDA"
+  ],
+  "build": "Anchor 0.32.1 program (~2.4 MiB), declared at 2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full"
+}

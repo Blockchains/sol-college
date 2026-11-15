@@ -1,0 +1,10 @@
+{
+ "name": "Agenc Protocol",
+ "fork": "https://github.com/Blockchains/agenc-protocol",
+ "commit": "2e15cc8b9a12e221f5baedd269637cd977e5e9fc",
+ "lesson": "/explore/agenc-protocol/",
+ "programs": {
+  "devnet": "2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i",
+  "mainnet": null
+ }
+}

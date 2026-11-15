@@ -1,0 +1,5 @@
+{"step":"setup","program":"2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i","config":"BhScAVMzdghR7jFzRLZb9Mhrt97Q2uYqz6CnPvXhVgi5","programData":"6FLRyNkSFHB1nJ594zufFR8B3jSdgYEriNTYLfoKFhz8","second":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr","third":"GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb"}
+{"step":"initialize_protocol_bad_threshold","expectedFailure":true,"error":"InvalidDisputeThreshold"}
+{"step":"initialize_protocol","ok":true,"sig":"61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v"}
+{"step":"fetch_protocol_config","ok":true,"lamports":2433320,"owner":"2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i","dataLen":351}
+{"step":"decode_head","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","treasury":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}

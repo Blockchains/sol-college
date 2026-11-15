@@ -1,0 +1,19 @@
+{
+ "slug": "agenc-protocol",
+ "cluster": "devnet",
+ "program": "agenc_coordination",
+ "idl": "agenc_coordination.json",
+ "devnet": "2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "2Afxexc3LzAq64Bw61MVT6WfY5n1EG4ZoSzn3RirM1Xnm4wpALynKvejGMPYxcLt5bcNttiu1gL51HoWGavBKF8b"
+  },
+  {
+   "label": "initialize_protocol",
+   "sig": "61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v"
+  }
+ ],
+ "verified": "2026-11-15"
+}
