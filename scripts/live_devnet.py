@@ -84,13 +84,17 @@ summary=f'<p>Of {len(slugs)} published walkthroughs: <b>{counts.get("live",0)}</
 # Do not inject the old "Live on devnet" section into index.html. Use a non-landing shell for /live/.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import landing as _landing
+try:
+  import findings as _fd; _findings_live=_fd.live_section(_fd.load())
+except Exception as _e:
+  print('live_devnet: findings unavailable', _e); _findings_live=''
 _home=open(f'{S}/index.html').read() if os.path.exists(f'{S}/index.html') else ''
 home=_landing.page_shell(S) or _home
 if home and not _landing.is_landing(home) and 'data-landing=' not in (_home or ''):
     # First-run / rollback only: leave a pre-landing index alone for the lesson-page shell.
     pass
 # /live/ page in a non-landing shell. Only fully functional apps are listed as live environments.
-body=f'<h1>Live on devnet</h1><p class=lead>Solana forks from the SuperStack running as their own apps on devnet, each with its program deployed and its core flow exercised with real devnet transactions. Only apps whose core flow is fully functional are listed as live environments. Use a wallet set to devnet; devnet SOL is free at <a href="https://faucet.solana.com">faucet.solana.com</a> and has no value.</p>'+''.join(live_section(x) for x in LIVE)+(('<h2>Not yet fully functional</h2><p>These apps are hosted and were exercised on devnet, but a core path is still broken. They are not offered as live environments.</p>'+''.join(live_section(x, partial=True) for x in LIVE_PARTIAL)) if LIVE_PARTIAL else '')+'<h2>Status of every lesson</h2>'+summary
+body=f'<h1>Live on devnet</h1><p class=lead>Solana forks from the SuperStack running as their own apps on devnet, each with its program deployed and its core flow exercised with real devnet transactions. Only apps whose core flow is fully functional are listed as live environments. Use a wallet set to devnet; devnet SOL is free at <a href="https://faucet.solana.com">faucet.solana.com</a> and has no value.</p>'+_findings_live+''.join(live_section(x) for x in LIVE)+(('<h2>Not yet fully functional</h2><p>These apps are hosted and were exercised on devnet, but a core path is still broken. They are not offered as live environments.</p>'+''.join(live_section(x, partial=True) for x in LIVE_PARTIAL)) if LIVE_PARTIAL else '')+'<h2>Status of every lesson</h2>'+summary
 lp=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{body}</main>',re.sub(r'<!--sc-live-->.*?<!--/sc-live-->','',home,flags=re.S),count=1,flags=re.S) if home and '<main id=main>' in home else None
 if lp:
   lp=re.sub(r'<title>.*?</title>','<title>Live on devnet: verified Solana apps | Sol.College</title>',lp,count=1)

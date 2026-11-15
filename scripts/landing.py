@@ -17,6 +17,7 @@ Honesty rules:
 from __future__ import annotations
 import html, json, os, re, shutil, sys
 from pathlib import Path
+import findings as _findings  # records/public/findings -> landing card, proof stat, /findings/ pages
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -453,6 +454,13 @@ def write_home(site='site'):
     functional = [x for x in apps if is_fully_functional(x)]
     bugs = explicit_bugs(apps)
     fix_prs = opened_fix_prs(apps)
+    try:
+        sec_findings = _findings.load()
+    except SystemExit:
+        raise
+    except Exception as e:  # a broken record must not take the homepage down
+        print('landing: findings unavailable', type(e).__name__, e)
+        sec_findings = []
     tpl = (HERE / 'landing.html').read_text(encoding='utf-8')
     bug_note = (
         f'{len(bugs)} issues are labelled as bugs in our devnet evidence for the practice forks '
@@ -478,10 +486,10 @@ def write_home(site='site'):
         'LIVE_COUNT': str(len(functional)),
         'LESSON_COUNT': str(len(apps)),
         'BUG_COUNT': str(len(bugs)),
-        'FIX_CARD': fix_card_html(fix_prs),
+        'FIX_CARD': fix_card_html(fix_prs) + _findings.proof_card(sec_findings),
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
         'LIVE_CARDS': live_cards(functional),
-        'FINDINGS': findings_html(apps),
+        'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),
         'WAITLIST': WAITLIST,
         'WAITLIST_DEV': WAITLIST_DEV,
         'WAITLIST_SEC': WAITLIST_SEC,
@@ -514,6 +522,7 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing.css', assets / 'landing.css')
     shutil.copy(HERE / 'landing.js', assets / 'landing.js')
     shutil.copy(HERE / 'landing-campus.js', assets / 'landing-campus.js')
+    _findings.write_pages(site, page_shell(site), sec_findings)
     print(
         'landing: wrote', site / 'index.html',
         'functional=', len(functional),

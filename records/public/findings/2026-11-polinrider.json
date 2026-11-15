@@ -1,0 +1,357 @@
+{
+ "schema": "sol-college/finding/v1",
+ "id": "2026-11-polinrider",
+ "slug": "polinrider",
+ "kind": "security",
+ "title": "PolinRider-style supply-chain malware in 24 Solana project forks",
+ "shortTitle": "Supply-chain loader in 24 Solana repos",
+ "discoveredAt": "2026-11-15",
+ "discoveredBy": "Sol.College automated security review",
+ "severity": "critical",
+ "summary": "While cleaning a malware report on two forks in the Blockchains organisation, Sol.College's automated review scanned the organisation's repositories and found the same injected JavaScript loader in 24 of them. The code hides after long runs of whitespace on the last line of config files (postcss, tailwind, eslint, babel, jest), in hidden VS Code tasks that run when the folder is opened, and in JavaScript disguised as font files. Running the project's dev/build/lint tooling, or opening it in an editor that allows automatic tasks, downloads and runs a remote second stage. The pattern matches the publicly reported PolinRider campaign.",
+ "behaviour": [
+  "Obfuscated loader appended after whitespace on the last line of build/lint config files, so it runs whenever the tooling loads the config.",
+  "Hidden .vscode/tasks.json task with runOn: folderOpen (plus task.allowAutomaticTasks: true) that executes a disguised payload when the folder is opened.",
+  "JavaScript payloads disguised as Font Awesome font files, decoy files, and .gitignore entries that hide the attacker's push scripts.",
+  "The loader resolves its server from blockchain transaction data, then downloads and executes a second stage with full Node.js privileges (remote code execution; typically used to steal keys and tokens)."
+ ],
+ "method": "Read-only: repositories were cloned as bare git repos and every branch tree was scanned by content signatures. No code from any affected repository was installed or executed. Fixes are single, non-history-rewriting commits that remove only the injected content.",
+ "ourForks": {
+  "org": "Blockchains",
+  "reposCleaned": 24,
+  "branchesCleaned": 175,
+  "rescanClean": true,
+  "rescanAt": "2026-11-15",
+  "historyRewritten": false,
+  "securityIssues": "One security issue opened on each affected fork (issue #1)."
+ },
+ "upstreams": [
+  {
+   "fork": "Blockchains/Blinkr",
+   "upstream": "kendacki/Blinkr",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 2,
+   "upstreamBranchesScanned": 2,
+   "upstreamBranchesWithSignatures": 2,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/kendacki/Blinkr/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/boltick-client-app",
+   "upstream": "MatiMartinez/boltick-client-app",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 3,
+   "upstreamBranchesScanned": 3,
+   "upstreamBranchesWithSignatures": 3,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/MatiMartinez/boltick-client-app/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/buu-fun",
+   "upstream": "Buu-AI/buu-fun",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 38,
+   "upstreamBranchesScanned": 38,
+   "upstreamBranchesWithSignatures": 38,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Buu-AI/buu-fun/pull/315",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/Closing-Bell",
+   "upstream": "GuTS805/Closing-Bell",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "upstream_already_cleaned",
+   "note": "Maintainers had already removed the loader from the default branch; only residual attacker .gitignore entries remain, so no PR was opened."
+  },
+  {
+   "fork": "Blockchains/EscapeFromDelta",
+   "upstream": "Jsirpro/EscapeFromDelta",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 4,
+   "upstreamBranchesScanned": 4,
+   "upstreamBranchesWithSignatures": 4,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Jsirpro/EscapeFromDelta/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/game-pass-sdk",
+   "upstream": "Game-pass/game-pass-sdk",
+   "defaultBranch": "master",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Game-pass/game-pass-sdk/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/offline-cat",
+   "upstream": "yaseenammaar/offline-cat",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/yaseenammaar/offline-cat/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/refreeg-v2",
+   "upstream": "raji2004/refreeg-v2",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 10,
+   "upstreamBranchesScanned": 11,
+   "upstreamBranchesWithSignatures": 8,
+   "status": "upstream_already_cleaned",
+   "note": "Maintainers had already removed the loader from the default branch; only residual attacker .gitignore entries remain, so no PR was opened."
+  },
+  {
+   "fork": "Blockchains/Sol-Drive-Program",
+   "upstream": "Sol-Drive/Program",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Sol-Drive/Program/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/youngcrypton-Aegis",
+   "upstream": "youngcrypton/Aegis",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 3,
+   "upstreamBranchesScanned": 3,
+   "upstreamBranchesWithSignatures": 3,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/youngcrypton/Aegis/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/chain_move",
+   "upstream": "Obiajulu-gif/chain_move",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 20,
+   "upstreamBranchesWithSignatures": 2,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Obiajulu-gif/chain_move/pull/110",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/Senti.fi",
+   "upstream": "Senti-fi/Senti.fi",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Senti-fi/Senti.fi/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/aurumchain",
+   "upstream": "rsturua/aurumchain",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 2,
+   "upstreamBranchesScanned": 2,
+   "upstreamBranchesWithSignatures": 2,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/rsturua/aurumchain/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/Dappify",
+   "upstream": "herasoftlabs/Dappify",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/herasoftlabs/Dappify/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/justra-client-v2",
+   "upstream": "pro123908/justra-client-v2",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 2,
+   "upstreamBranchesScanned": 2,
+   "upstreamBranchesWithSignatures": 2,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/pro123908/justra-client-v2/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/mato-ui",
+   "upstream": "nightshade-labs/mato-ui",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 7,
+   "upstreamBranchesScanned": 7,
+   "upstreamBranchesWithSignatures": 7,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/nightshade-labs/mato-ui/pull/69",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/NexPay",
+   "upstream": "hussain-54/NexPay",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/hussain-54/NexPay/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/Solo-RWA",
+   "upstream": "Solo-RWA-token/Solo-RWA",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 7,
+   "upstreamBranchesScanned": 8,
+   "upstreamBranchesWithSignatures": 7,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/Solo-RWA-token/Solo-RWA/pull/7",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/fundraiser-colosseum",
+   "upstream": "jjeett0007/fundraiser-colosseum",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 3,
+   "upstreamBranchesScanned": 3,
+   "upstreamBranchesWithSignatures": 3,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/jjeett0007/fundraiser-colosseum/pull/2",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/Kabal.Fun",
+   "upstream": "progax01/Kabal.Fun",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/progax01/Kabal.Fun/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/solana-colossum-hackathon",
+   "upstream": "dhruvmalik007/solana-colossum-hackathon",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 5,
+   "upstreamBranchesScanned": 5,
+   "upstreamBranchesWithSignatures": 5,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/dhruvmalik007/solana-colossum-hackathon/pull/4",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/SOLHEALTH",
+   "upstream": "TimothyBabatu13/SOLHEALTH",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 1,
+   "upstreamBranchesScanned": 1,
+   "upstreamBranchesWithSignatures": 1,
+   "status": "pr_opened",
+   "pr": {
+    "url": "https://github.com/TimothyBabatu13/SOLHEALTH/pull/1",
+    "state": "open",
+    "recordedAt": "2026-11-15"
+   }
+  },
+  {
+   "fork": "Blockchains/curacao-crypto-onramp-bot",
+   "upstream": "BreadchainCoop/curacao-crypto-onramp-bot",
+   "defaultBranch": "main",
+   "forkBranchesCleaned": 18,
+   "upstreamBranchesScanned": 20,
+   "upstreamBranchesWithSignatures": 0,
+   "status": "upstream_already_cleaned",
+   "note": "The upstream project had already cleaned its own repository; no signatures found on any branch."
+  },
+  {
+   "fork": "Blockchains/saving-circles",
+   "upstream": "BreadchainCoop/saving-circles",
+   "defaultBranch": "dev",
+   "forkBranchesCleaned": 61,
+   "upstreamBranchesScanned": 62,
+   "upstreamBranchesWithSignatures": 0,
+   "status": "upstream_already_cleaned",
+   "note": "The upstream project had already cleaned its own repository; no signatures found on any branch."
+  }
+ ],
+ "disclosure": "Responsible disclosure: the malicious code was already public in each upstream repository, so every still-infected upstream project received one focused public pull request that removes it, with a high-level description only. We do not publish the payload, attacker infrastructure or reproduction steps. Each project decides whether to accept its pull request; Sol.College has no partnership with these projects and makes no claim about their production systems.",
+ "recommendations": [
+  "Treat any machine that ran dev/build/lint/test in an affected repo, or opened it with automatic tasks allowed, as compromised and rotate wallet keys, GitHub/npm tokens, SSH keys and .env secrets.",
+  "Disable automatic tasks in VS Code/Cursor (task.allowAutomaticTasks: off) and review .vscode/ in pull requests.",
+  "Protect default branches, require reviews and signed commits; the injecting commits were unsigned and some imitated normal or 'security fix' commits."
+ ],
+ "notAudit": "This is an automated signature-based review, not a security audit. A clean scan is not a guarantee that a repository is safe."
+}
