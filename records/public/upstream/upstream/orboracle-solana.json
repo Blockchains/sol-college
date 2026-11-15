@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "project": "orboracle-solana",
+    "upstreamRepo": "StabilityNexus/OrbOracle-Solana",
+    "branch": "main",
+    "head": "3581bf852fc1028990b179c24ba6f33adfb94a6f",
+    "previousHead": null,
+    "observedAt": "2026-11-15T17:29:43.902Z",
+    "sequence": 1
+  }
+}

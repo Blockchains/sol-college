@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "project": "colosseum",
+    "upstreamRepo": "NovenGrid/Colosseum",
+    "branch": "main",
+    "head": "783b1e1122ddcb939916fef2d108e3359b23f16a",
+    "previousHead": null,
+    "observedAt": "2026-11-15T17:26:34.028Z",
+    "sequence": 1
+  }
+}

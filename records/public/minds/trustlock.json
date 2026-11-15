@@ -1,0 +1,81 @@
+{
+  "schema": "sc-mind-ops/1",
+  "project": "trustlock",
+  "mind": "SolCollege-TrustLock-CTO",
+  "at": "2026-11-15T17:28:46.907Z",
+  "isEnabled": true,
+  "cognitionBalance": -14.95794483,
+  "usageDaily": [
+    {
+      "bucket": "2026-11-15T00:00:00",
+      "value": 14.95794482658009
+    }
+  ],
+  "usageByTool": [
+    {
+      "tool": "FILE_Analyze",
+      "callCount": 1,
+      "creditsUsed": 8.2800177019
+    },
+    {
+      "tool": "LLM_Turn",
+      "callCount": 3,
+      "creditsUsed": 6.086497288880089
+    },
+    {
+      "tool": "SKILL_LoadPlaybook",
+      "callCount": 1,
+      "creditsUsed": 0.5914298358
+    }
+  ],
+  "skills": [
+    {
+      "name": "SolCollege Adoption Editor",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Contributor Guide",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Credential Explainer",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Lab Reporter",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege PR Triage",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Project Navigator",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Public Campus Representative",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Research Planner",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Upstream Analyst",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollege Validation Coordinator",
+      "source": "mind"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Animoca Minds Auth",
+      "tier": "verified"
+    }
+  ],
+  "conversations": 3,
+  "sdkVersion": "0.1.7"
+}

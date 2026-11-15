@@ -1,0 +1,81 @@
+{
+  "schema": "sc-mind-ops/1",
+  "project": "ciphervault",
+  "mind": "SolCollege-CipherVault-CTO",
+  "at": "2026-11-15T17:25:21.038Z",
+  "isEnabled": true,
+  "cognitionBalance": -16.84875329,
+  "usageDaily": [
+    {
+      "bucket": "2026-11-15T00:00:00",
+      "value": 16.848753294603576
+    }
+  ],
+  "usageByTool": [
+    {
+      "tool": "FILE_Analyze",
+      "callCount": 1,
+      "creditsUsed": 8.2800177019
+    },
+    {
+      "tool": "LLM_Turn",
+      "callCount": 3,
+      "creditsUsed": 7.385875921103576
+    },
+    {
+      "tool": "SKILL_LoadPlaybook",
+      "callCount": 2,
+      "creditsUsed": 1.1828596716
+    }
+  ],
+  "skills": [
+    {
+      "name": "SolCollegeAdoptionEditorBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeContributorGuideBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeCredentialExplainerBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeLabReporterBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeProjectNavigatorBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegePRTriageBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegePublicCampusRepresentativeBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeResearchPlannerBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeUpstreamAnalystBody",
+      "source": "mind"
+    },
+    {
+      "name": "SolCollegeValidationCoordinatorBody",
+      "source": "mind"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Animoca Minds Auth",
+      "tier": "verified"
+    }
+  ],
+  "conversations": 3,
+  "sdkVersion": "0.1.7"
+}

@@ -1,0 +1,76 @@
+{
+  "schema": "sc-mind-ops/1",
+  "project": "colosseum",
+  "mind": "SolCollege-Colosseum-CTO",
+  "at": "2026-11-15T17:26:31.946Z",
+  "isEnabled": true,
+  "cognitionBalance": -15.44436368,
+  "usageDaily": [
+    {
+      "bucket": "2026-11-15T00:00:00",
+      "value": 15.444363682900194
+    }
+  ],
+  "usageByTool": [
+    {
+      "tool": "LLM_Turn",
+      "callCount": 3,
+      "creditsUsed": 8.347441947600196
+    },
+    {
+      "tool": "SKILL_LoadPlaybook",
+      "callCount": 12,
+      "creditsUsed": 7.0969217353
+    }
+  ],
+  "skills": [
+    {
+      "name": "Sol.College CTO Adoption Editor",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Contributor Guide",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Credential Explainer",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Lab Reporter",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO PR Triage",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Project Navigator",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Public Campus Representative",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Research Planner",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Upstream Analyst",
+      "source": "mind"
+    },
+    {
+      "name": "Sol.College CTO Validation Coordinator",
+      "source": "mind"
+    }
+  ],
+  "apps": [
+    {
+      "name": "Animoca Minds Auth",
+      "tier": "verified"
+    }
+  ],
+  "conversations": 3,
+  "sdkVersion": "0.1.7"
+}

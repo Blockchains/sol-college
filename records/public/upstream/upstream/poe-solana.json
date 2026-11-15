@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "project": "poe-solana",
+    "upstreamRepo": "ProofOfEstimate/poe-solana",
+    "branch": "main",
+    "head": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+    "previousHead": null,
+    "observedAt": "2026-11-15T17:27:35.383Z",
+    "sequence": 1
+  }
+}

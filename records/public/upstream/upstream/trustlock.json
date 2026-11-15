@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "project": "trustlock",
+    "upstreamRepo": "Solana-TrustLock/TrustLock",
+    "branch": "main",
+    "head": "18155f4de32e6a15afef5de57d1d8715b81c7604",
+    "previousHead": null,
+    "observedAt": "2026-11-15T17:28:49.222Z",
+    "sequence": 1
+  }
+}
