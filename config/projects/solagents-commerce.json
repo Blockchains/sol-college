@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-solagents-commerce",
+  "slug": "solagents-commerce",
+  "displayName": "SolAgents Agentic Commerce (Sol.College demonstration)",
+  "description": "SPL job escrow for agent work, on Solana devnet (Anchor 0.31.1). initialize, create_job, set_budget, fund, submit and complete were verified end-to-end: 1_000_000 units escrowed, the provider received 995_000, a 0.5% fee (5_000) went to the lab treasury, and the vault was emptied. bonding_curve was not deployed.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of darks0l/solagents-programs (programs/agentic-commerce only). The lab tree is branch sol-college-devnet of Blockchains/solagents-programs. The lab only changed declare_id for agentic_commerce to a unique Sol.College devnet program; bonding_curve was not deployed. The hosted IDL is the lab build of the upstream IDL, confirmed by the verifying transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "darks0l/solagents-programs",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/solagents-programs",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "solagents-commerce-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-solagents"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T21:30:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initialize, create_job, set_budget, fund, submit, complete)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/solagents-commerce/",
+      "QA: devnet proof of the full job lifecycle, 0.5% fee split, and re-initialize rejection"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "bonding_curve, hooks, reject, claim_refund"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "hook-program",
+        "title": "Exercise an optional hook program on fund/complete",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.85.0",
+    "programDir": "programs/agentic-commerce"
+  }
+}

@@ -3280,5 +3280,74 @@
     "limits": "refund was not exercised. The escrow PDA is not closed after release (rent remains). instructions_v2.rs is not the deployed entrypoint. The official program id was not reused. The lab replaced nostd_panic_handler! so the crate builds on current platform-tools rustc.",
     "functional": "full",
     "functional_evidence": "create_escrow wrote program-owned escrow 3xNd7gWFcDitPjQPCvy5Y64quDWXBRV4jKHcXjUZ1sGs (amount 1_000_000, status Active, 2_061_720 lamports). release 3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ paid seller GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb exactly 1_000_000 lamports and left the escrow Released with 1_061_720 lamports of rent still in the PDA. amount=0 was rejected."
+  },
+  {
+    "slug": "solagents-commerce",
+    "name": "SolAgents Agentic Commerce",
+    "lesson": "/explore/solagents-commerce/",
+    "app": "/dapps/solagents-commerce/",
+    "fork": "https://github.com/Blockchains/solagents-programs",
+    "commit": "8098f7b52f251dad792f2d3447c5192e5f45692b",
+    "program": "GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of programs/agentic-commerce; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/solagents-programs (unique declare_id). bonding_curve was not deployed.",
+    "learn": "initialize writes a config PDA (seeds [\"config\"], fee 50 bps, lab mint + treasury). create_job writes a job PDA (seeds [\"job\", config, job_id u64 LE]) and a job-owned vault (seeds [\"vault\", job]). set_budget then fund transfer the SPL budget into the vault. The provider submit, and the evaluator complete, which pays 99.5% to the provider and 0.5% to the treasury.",
+    "source": [
+      [
+        "programs/agentic-commerce/src/lib.rs L44-L49 (initialize)",
+        "https://github.com/Blockchains/solagents-programs/blob/8098f7b52f251dad792f2d3447c5192e5f45692b/programs/agentic-commerce/src/lib.rs#L44-L49"
+      ],
+      [
+        "programs/agentic-commerce/src/instructions/create_job.rs (job + vault PDAs)",
+        "https://github.com/Blockchains/solagents-programs/blob/8098f7b52f251dad792f2d3447c5192e5f45692b/programs/agentic-commerce/src/instructions/create_job.rs"
+      ],
+      [
+        "programs/agentic-commerce/src/instructions/fund.rs (SPL transfer into vault)",
+        "https://github.com/Blockchains/solagents-programs/blob/8098f7b52f251dad792f2d3447c5192e5f45692b/programs/agentic-commerce/src/instructions/fund.rs"
+      ],
+      [
+        "programs/agentic-commerce/src/instructions/complete.rs (signed vault payout + fee)",
+        "https://github.com/Blockchains/solagents-programs/blob/8098f7b52f251dad792f2d3447c5192e5f45692b/programs/agentic-commerce/src/instructions/complete.rs"
+      ]
+    ],
+    "flow": "tests/devnet/solagents-commerce.mjs",
+    "log": "tests/devnet/logs/solagents-commerce-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy agentic_commerce as GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev on devnet",
+        "3EZYE1MeQqzMioR7edh5xB3QCqKgZoCNrzLiCEcD31kc9aLGn5Aw9eZmQ99BXLJ7RK4j3kDHVj2m1WZCbtD8YDX8"
+      ],
+      [
+        "initialize fee_bps=50, mint BJMSdujx\u2026, treasury En7DGt8B\u2026 (config tU8ugVHK\u2026)",
+        "2qcZ22XuVAEWLaaJysJwiDvGkMAwCKCeNBpgsdzit9wKQYMmafxFD6bfCSWM6Amfj5pMG3DnT9WjNm9wf5dLeJmt"
+      ],
+      [
+        "create_job campus-scout job, provider GpUq5UH3\u2026, evaluator BP1uwSaT\u2026 (job C3VwDTjN\u2026, vault CheoMeAu\u2026)",
+        "35TFcNakwt8pHtRGN4nU2t9Wwf8hkKDtYrC2H6MjxCdsz1EpGSWKotn32eUoxidyFQtjEoFh9wA3FM1SSnY4g3Qc"
+      ],
+      [
+        "set_budget 1_000_000",
+        "3KbPJAZ2u2344GJSQFtiFQ47n2Zb5dgkJEKo9SZfMiba4jCqHU86gWtDCgPhCK6cxbJ6eaw3xqUz7jRwvYkP2sQT"
+      ],
+      [
+        "fund transferred 1_000_000 into the vault",
+        "Zg4PKG6F2gHHUphrHoHT7UKmHReLf6w8ddHK8Met5PxSpEdAt4NuTZYZuhw983JB5m91txt91cQwbkQ5DV3XrSq"
+      ],
+      [
+        "submit by the provider",
+        "bZAqsiatFJGTGcD8E5VqZ8q1pQNN6oFdXdf9sNY2Q1eZLCErVxct9YvpSCWBeRpNLUYqMNyea64q2aQcbgvSjsw"
+      ],
+      [
+        "complete by the evaluator paid provider +995_000 and treasury +5_000; vault emptied; status Completed",
+        "4qrg5aPTuPTF1h5ob8WVG2JbuAYYsZwiWqk4F9dSYtLnEj8MGUK6AFjFoydzAaqch1KrKFoQ6HbwornqXG1Y3YS5"
+      ]
+    ],
+    "negative": [
+      "A second initialize is rejected (config PDA already exists)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the lifecycle was sent with the lab and tester wallets through tests/devnet/solagents-commerce.mjs.",
+    "limits": "reject, claim_refund, close_job, hooks, and set_provider-after-create were not exercised. bonding_curve was not deployed. The official agentic_commerce program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize wrote config tU8ugVHKwybfn9YszrFq8stedhj6J8tMqoCAk2bHPPa (fee 50 bps). create_job wrote job C3VwDTjNqy1pyauj551XVWjVF2cGKfHdRhGh1HYh179S (campus-scout job). fund escrowed 1_000_000 of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D into vault CheoMeAup2fx9CfsH7LRgMupzizMnjEwh2LiK73K6Utu. submit was signed by provider GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb. complete 4qrg5aPT\u2026 left the job Completed, the vault at 0, the provider ATA at +995_000 and the treasury ATA at +5_000. Re-initialize was rejected."
   }
 ]

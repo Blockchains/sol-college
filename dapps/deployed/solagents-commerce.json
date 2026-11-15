@@ -1,0 +1,39 @@
+{
+ "slug": "solagents-commerce",
+ "cluster": "devnet",
+ "program": "agentic_commerce",
+ "idl": "agentic_commerce.json",
+ "devnet": "GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "3EZYE1MeQqzMioR7edh5xB3QCqKgZoCNrzLiCEcD31kc9aLGn5Aw9eZmQ99BXLJ7RK4j3kDHVj2m1WZCbtD8YDX8"
+  },
+  {
+   "label": "initialize",
+   "sig": "2qcZ22XuVAEWLaaJysJwiDvGkMAwCKCeNBpgsdzit9wKQYMmafxFD6bfCSWM6Amfj5pMG3DnT9WjNm9wf5dLeJmt"
+  },
+  {
+   "label": "create_job",
+   "sig": "35TFcNakwt8pHtRGN4nU2t9Wwf8hkKDtYrC2H6MjxCdsz1EpGSWKotn32eUoxidyFQtjEoFh9wA3FM1SSnY4g3Qc"
+  },
+  {
+   "label": "set_budget",
+   "sig": "3KbPJAZ2u2344GJSQFtiFQ47n2Zb5dgkJEKo9SZfMiba4jCqHU86gWtDCgPhCK6cxbJ6eaw3xqUz7jRwvYkP2sQT"
+  },
+  {
+   "label": "fund",
+   "sig": "Zg4PKG6F2gHHUphrHoHT7UKmHReLf6w8ddHK8Met5PxSpEdAt4NuTZYZuhw983JB5m91txt91cQwbkQ5DV3XrSq"
+  },
+  {
+   "label": "submit",
+   "sig": "bZAqsiatFJGTGcD8E5VqZ8q1pQNN6oFdXdf9sNY2Q1eZLCErVxct9YvpSCWBeRpNLUYqMNyea64q2aQcbgvSjsw"
+  },
+  {
+   "label": "complete",
+   "sig": "4qrg5aPTuPTF1h5ob8WVG2JbuAYYsZwiWqk4F9dSYtLnEj8MGUK6AFjFoydzAaqch1KrKFoQ6HbwornqXG1Y3YS5"
+  }
+ ],
+ "verified": "2026-11-15"
+}

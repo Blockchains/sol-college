@@ -1,0 +1,10 @@
+{
+ "name": "SolAgents Agentic Commerce",
+ "fork": "https://github.com/Blockchains/solagents-programs",
+ "commit": "8098f7b52f251dad792f2d3447c5192e5f45692b",
+ "lesson": "/explore/solagents-commerce/",
+ "programs": {
+  "devnet": "GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev",
+  "mainnet": null
+ }
+}

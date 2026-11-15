@@ -1,0 +1,11 @@
+{"step":"setup","program":"GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev","config":"tU8ugVHKwybfn9YszrFq8stedhj6J8tMqoCAk2bHPPa","client":"m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr","provider":"GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb","evaluator":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"initialize","ok":true,"sig":"2qcZ22XuVAEWLaaJysJwiDvGkMAwCKCeNBpgsdzit9wKQYMmafxFD6bfCSWM6Amfj5pMG3DnT9WjNm9wf5dLeJmt"}
+{"step":"pdas","jobId":"0","job":"C3VwDTjNqy1pyauj551XVWjVF2cGKfHdRhGh1HYh179S","vault":"CheoMeAup2fx9CfsH7LRgMupzizMnjEwh2LiK73K6Utu","feeBps":50}
+{"step":"balances_before","client":"9000000","provider":"995000","treasury":"5000"}
+{"step":"create_job","ok":true,"sig":"35TFcNakwt8pHtRGN4nU2t9Wwf8hkKDtYrC2H6MjxCdsz1EpGSWKotn32eUoxidyFQtjEoFh9wA3FM1SSnY4g3Qc"}
+{"step":"set_budget","ok":true,"sig":"3KbPJAZ2u2344GJSQFtiFQ47n2Zb5dgkJEKo9SZfMiba4jCqHU86gWtDCgPhCK6cxbJ6eaw3xqUz7jRwvYkP2sQT"}
+{"step":"fund","ok":true,"sig":"Zg4PKG6F2gHHUphrHoHT7UKmHReLf6w8ddHK8Met5PxSpEdAt4NuTZYZuhw983JB5m91txt91cQwbkQ5DV3XrSq"}
+{"step":"submit","ok":true,"sig":"bZAqsiatFJGTGcD8E5VqZ8q1pQNN6oFdXdf9sNY2Q1eZLCErVxct9YvpSCWBeRpNLUYqMNyea64q2aQcbgvSjsw"}
+{"step":"complete","ok":true,"sig":"4qrg5aPTuPTF1h5ob8WVG2JbuAYYsZwiWqk4F9dSYtLnEj8MGUK6AFjFoydzAaqch1KrKFoQ6HbwornqXG1Y3YS5"}
+{"step":"fetch","ok":true,"status":{"completed":{}},"jobId":"0","budget":"1000000","description":"campus-scout job","after":{"client":"8000000","provider":"1990000","treasury":"10000","vault":"0"},"deltas":{"client":"-1000000","provider":"995000","treasury":"5000"}}
+{"step":"negative_reinit","expectedFailure":true,"error":"Simulation failed. "}
