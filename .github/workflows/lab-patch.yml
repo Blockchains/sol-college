@@ -66,8 +66,8 @@ jobs:
           if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then echo "branch $BRANCH already exists; not overwriting"; exit 1; fi
           git checkout -q -b "$BRANCH"
           git apply --check --whitespace=nowarn "$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"
-          git apply --whitespace=nowarn "$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"
-          git -c user.name="sol-college-cto[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qam "$(jq -r .title "$RUNNER_TEMP/control/records/lab-patches/$P/$T.json")" -m "Authored by the Sol.College CTO agent for $P (task $T); applied by lab-patch run $GITHUB_RUN_ID after deterministic checks. Lab branch only; not merged."
+          git apply --index --whitespace=nowarn "$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"
+          git -c user.name="sol-college-cto[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qm "$(jq -r .title "$RUNNER_TEMP/control/records/lab-patches/$P/$T.json")" -m "Authored by the Sol.College CTO agent for $P (task $T); applied by lab-patch run $GITHUB_RUN_ID after deterministic checks. Lab branch only; not merged."
           /tmp/gitleaks git --no-banner --redact --exit-code 1 --log-opts="-1" .
           test -z "$(git diff HEAD~1 --name-only | grep -E '^\.github/|(^|/)\.vscode/|workflows' || true)"
           git push -q origin "$BRANCH"
