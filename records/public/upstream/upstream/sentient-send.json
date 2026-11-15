@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "data": {
+    "project": "sentient-send",
+    "upstreamRepo": "JB1HEY/sentient.send",
+    "branch": "main",
+    "head": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
+    "previousHead": null,
+    "observedAt": "2026-11-15T16:34:32.627Z",
+    "sequence": 1
+  }
+}
