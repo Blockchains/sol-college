@@ -55,7 +55,7 @@ test("SDK: project mapping is enforced (approved status, protected entry, projec
   const c = cfg();
   const m = new FakeMinds();
   const mindId = m.minds[0]!.mindId;
-  const p = c.projects[0]!;
+  const p = c.projects.find((x) => x.slug === "gifter-escrow")!;
   // public config says "proposed" -> denied even if a protected entry exists
   p.mind.mappingStatus = "proposed";
   const mapping = parseMindMapping(JSON.stringify({ [p.mind.mappingRef]: { projectId: p.projectId, mindId, configVersion: 1, approvedBy: "Blockchains", approvedAt: "2026-11-15T00:00:00Z", role: "project-cto" } }));
@@ -72,7 +72,7 @@ test("SDK: project mapping is enforced (approved status, protected entry, projec
 test("SDK: unsupported operation is rejected and mutations need a matching approval (not an agent)", async () => {
   const c = cfg();
   const m = new FakeMinds();
-  const p = c.projects[0]!;
+  const p = c.projects.find((x) => x.slug === "gifter-escrow")!;
   p.mind.mappingStatus = "approved";
   const mapping = { [p.mind.mappingRef]: { projectId: p.projectId, mindId: m.minds[0]!.mindId, configVersion: 1, approvedBy: "Blockchains", approvedAt: "x", role: "project-cto" as const } };
   await assert.rejects(resolveProjectMind({ cfg: c, mapping, slug: "gifter-escrow", operation: "delete-account", minds: m }), /not permitted/);

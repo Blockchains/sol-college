@@ -55,3 +55,28 @@ export async function mindDetail(minds: Pick<MindsPort, "getMind">, mindId: stri
     walletNote: "walletAddress/chain alone do not establish Solana signing, recurring debit or payment settlement",
   };
 }
+
+/**
+ * Public, sanitised operations snapshot for one project Mind: every read the SDK offers that is meaningful on the
+ * campus ops view (status, cognition balance, daily usage, usage by tool, equipped skills and apps, this project's
+ * conversation count). No Mind IDs, emails, wallet addresses or message text.
+ */
+export async function opsSnapshot(minds: Pick<MindsPort, "getMind" | "getCognitionBalance" | "getCognitionUsage" | "getCognitionUsageByTool" | "listEquippedSkills" | "listEquippedApps" | "listConversations">, mindId: string, aliasPrefix: string) {
+  const m = await minds.getMind(mindId);
+  const [t, skills, apps, convs] = await Promise.all([
+    telemetry(minds, mindId),
+    minds.listEquippedSkills(mindId),
+    minds.listEquippedApps(mindId),
+    minds.listConversations(),
+  ]);
+  return {
+    isEnabled: m.isEnabled ?? null,
+    cognitionBalance: t.cognitionBalance,
+    usageDaily: t.usageDaily.slice(-14),
+    usageByTool: t.byTool,
+    skills: skills.map((s) => ({ name: s.name ?? null, source: s.source ?? null })),
+    apps: apps.map((a) => ({ name: a.appName ?? null, tier: a.tier ?? null })),
+    conversations: convs.filter((c) => (c.alias ?? "").startsWith(`${aliasPrefix}-`)).length,
+    sdkVersion: installedSdkVersion(),
+  };
+}

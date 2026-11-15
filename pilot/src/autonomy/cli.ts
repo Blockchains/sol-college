@@ -11,7 +11,8 @@ import { assertNoSecrets } from "../lib/secrets.ts";
 import { FileStore } from "../lib/store.ts";
 import { parseMindMapping } from "../minds/authority.ts";
 import { builderKeyFromEnv, createServerMindsClient } from "../minds/client.ts";
-import { loadAutonomy, runProject } from "./run.ts";
+import { loadAutonomy, pendingDispatches, runProject } from "./run.ts";
+import { writeFileSync } from "node:fs";
 
 const { values } = parseArgs({ options: { "dry-run": { type: "boolean", default: false }, project: { type: "string" } } });
 const cfg = loadConfig();
@@ -43,4 +44,6 @@ for (const slug of auto.projects.filter((s) => !values.project || s === values.p
 const out = JSON.stringify({ at: new Date().toISOString(), dryRun: deps.dryRun, results }, null, 2);
 assertNoSecrets("autonomy output", out, [builderKeyFromEnv() ?? ""]);
 console.log(out);
+// Mind-requested workflow dispatches are sent by the workflow after the private records (patches) are pushed.
+if (process.env["SC_DISPATCH_FILE"]) writeFileSync(process.env["SC_DISPATCH_FILE"], JSON.stringify(pendingDispatches));
 if (failed) process.exitCode = 1;

@@ -16,7 +16,7 @@ export interface SourceRef {
 export interface TaskSpec {
   taskId: string;
   project: string;
-  kind: "research-plan" | "upstream-impact" | "pr-triage" | "adoption-draft" | "smoke-test" | "progress-report";
+  kind: "research-plan" | "upstream-impact" | "pr-triage" | "adoption-draft" | "smoke-test" | "progress-report" | "experiment-patch";
   instructions: string;
   sources: SourceRef[];
   evidence: SourceRef[];
@@ -33,7 +33,14 @@ export interface TaskResponse {
   proposals: Array<{ title: string; detail: string }>;
   evidenceRefs: string[];
   uncertainties: string[];
+  /** Optional requested actions. Each is re-checked deterministically by code before anything runs. */
+  actions?: MindAction[];
 }
+
+/** Actions a Mind may request; executed only by protected workflows after deterministic checks. */
+export type MindAction =
+  | { type: "patch"; title: string; rationale: string; patch: string }
+  | { type: "devnet-transfer"; recipient: string; lamports: number; reason: string };
 
 export interface TaskRecord {
   spec: TaskSpec;
@@ -70,7 +77,7 @@ export function buildTaskMessage(spec: TaskSpec): string {
     context: spec.context,
     expectedResponse: {
       protocol: RESPONSE_PROTOCOL,
-      fields: ["protocol", "taskId", "project", "summary", "facts[{statement,sourceRefs[]}]", "hypotheses[{statement,howToTest}]", "proposals[{title,detail}]", "evidenceRefs[]", "uncertainties[]"],
+      fields: ["protocol", "taskId", "project", "summary", "facts[{statement,sourceRefs[]}]", "hypotheses[{statement,howToTest}]", "proposals[{title,detail}]", "evidenceRefs[]", "uncertainties[]", "actions[] (optional): {type:'patch',title,rationale,patch:<unified diff against the lab head given in context>} | {type:'devnet-transfer',recipient,lamports,reason}"],
       rules: [
         "Reply with exactly one fenced ```json block containing the response object.",
         "Only cite sourceRefs and evidenceRefs by the ids listed in this task.",
@@ -148,6 +155,15 @@ export function validateTaskResponse(spec: TaskSpec, reply: MessageRecord): Pars
   }
   for (const e of arr("evidenceRefs")) if (!allowedEvidence.has(String(e)) && !allowedSources.has(String(e))) errors.push(`unknown evidence ref ${String(e)}`);
   arr("uncertainties");
+  if ("actions" in r) {
+    if (!Array.isArray(r["actions"])) errors.push("actions must be an array");
+    else for (const a of r["actions"] as unknown[]) {
+      const x = a as Record<string, unknown>;
+      if (x?.["type"] === "patch") { if (typeof x["title"] !== "string" || typeof x["patch"] !== "string" || typeof x["rationale"] !== "string") errors.push("patch action needs title, rationale and patch"); }
+      else if (x?.["type"] === "devnet-transfer") { if (typeof x["recipient"] !== "string" || !Number.isInteger(x["lamports"]) || typeof x["reason"] !== "string") errors.push("devnet-transfer action needs recipient, integer lamports and reason"); }
+      else errors.push(`unknown action type ${String(x?.["type"])}`);
+    }
+  }
   if (errors.length) return { ok: false, errors };
   return { ok: true, response: r as unknown as TaskResponse, errors: [] };
 }

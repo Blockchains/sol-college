@@ -22,6 +22,9 @@ import { candidateVerdict, createAdoptionPackage } from "../adoption/create.ts";
 import { existingPackageFor } from "../adoption/package.ts";
 import { githubCompare, reconcileUpstream, type ExperimentRef } from "../upstream/reconcile.ts";
 import { FileStore as Store } from "../lib/store.ts";
+import { checkPatch, patchPolicyFor } from "../lab/patch.ts";
+import { checkTransferRequest, loadTreasury } from "../treasury/treasury.ts";
+import { opsSnapshot } from "../minds/ops.ts";
 
 export interface AutonomyConfig {
   schema: "sc-autonomy/1";
@@ -44,6 +47,11 @@ export interface AutonomyState {
   packages: Record<string, string>;
   proposalHashes: string[];
   issuesOpened: Array<{ url: string; at: string; taskId: string }>;
+  /** research-question issue url -> experiment-patch taskId */
+  patchRequests?: Record<string, string>;
+  /** taskId -> outcome of the Mind's requested actions (patch / devnet-transfer) */
+  actionsHandled?: Record<string, string[]>;
+  lastOpsAt?: string;
   lastRunAt?: string;
 }
 
@@ -138,6 +146,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
   const p = getProject(d.cfg, slug);
   const approval: Approval = { approvedBy: d.auto.standingApproval.approvedBy, ref: d.auto.standingApproval.ref, action: "message", projectSlug: slug };
   const r = await resolveProjectMind({ cfg: d.cfg, mapping: d.mapping, slug, operation: "message", approval, minds: d.minds });
+  const mindName = (await d.minds.getMind(r.mindId)).name ?? `SolCollege CTO (${slug})`;
   const key = `autonomy/${slug}`;
   const cur = d.store.read<AutonomyState>(key);
   const st: AutonomyState = cur?.data ?? emptyState(slug);
@@ -155,7 +164,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     if (d.dryRun) { log(`[dry-run] would dispatch ${spec.taskId}`); return null; }
     const rec = await dispatchTask(deps, spec);
     log(`dispatched ${spec.taskId}: ${rec.state}`);
-    const verb: Record<Kind, string> = { "research-plan": "Drafting the next research question", "upstream-impact": "Assessing an upstream change", "pr-triage": "Triaging a lab pull request", "adoption-draft": "Drafting an adoption package", "progress-report": "Writing the Lab Reporter status", "smoke-test": "Running a smoke test" };
+    const verb: Record<Kind, string> = { "research-plan": "Drafting the next research question", "upstream-impact": "Assessing an upstream change", "pr-triage": "Triaging a lab pull request", "adoption-draft": "Drafting an adoption package", "progress-report": "Writing the Lab Reporter status", "smoke-test": "Running a smoke test", "experiment-patch": "Writing a patch for a research question" };
     activity.push({ at: nowIso, text: `${verb[spec.kind]}${meta.prUrl ? ` (${meta.prUrl.replace("https://github.com/", "")})` : ""}` });
     return rec;
   };
@@ -185,6 +194,13 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
       continue;
     }
     const resp = rec.response;
+    if (resp.actions?.length && !(st.actionsHandled ??= {})[taskId]) {
+      st.actionsHandled![taskId] = d.dryRun ? ["dry-run"] : await handleActions(d, p, slug, taskId, resp, mindName, activity, log, nowIso);
+    }
+    if (meta.kind === "experiment-patch") {
+      meta.handled = resp.actions?.some((a) => a.type === "patch") ? "patch-handled" : "no-patch";
+      continue;
+    }
     if (meta.kind === "research-plan") {
       const pick = issues < d.auto.limits.maxIssuesPerProjectPerRun ? pickProposal(resp, st.proposalHashes) : null;
       if (pick && !d.dryRun) {
@@ -247,7 +263,12 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
 
   // 3) Lab pull requests: validation + triage.
   const prs = await openLabPullRequests(d.gh, p);
-  for (const pr of prs) {
+  // Mind-authored lab branches (sc-lab/<slug>/...) are candidates even before a PR exists.
+  type Br = { name: string; commit: { sha: string } };
+  const branches = await d.gh.get<Br[]>(`/repos/${p.lab.repo}/branches?per_page=100`).catch(() => [] as Br[]);
+  const candidates: LabPr[] = [...prs];
+  for (const b of branches) if (b.name.startsWith(`sc-lab/${slug}/`) && !prs.some((x) => x.headSha === b.commit.sha)) candidates.push({ url: `https://github.com/${p.lab.repo}/tree/${b.name}`, number: 0, repo: p.lab.repo, headSha: b.commit.sha, title: b.name });
+  for (const pr of candidates) {
     if (st.prHeads[pr.url] === pr.headSha) continue;
     if (!st.validations[pr.headSha]) {
       const existing = await candidateVerdict(d.gh, d.cfg, slug, pr.headSha);
@@ -256,7 +277,7 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     if (!st.validations[pr.headSha] && !d.dryRun) {
       await d.gh.send("POST", `/repos/${p.validation.workflowRepo}/actions/workflows/${p.validation.workflowPath.split("/").pop()}/dispatches`, { ref: "main", inputs: { project: slug, lab_repo: p.lab.repo, candidate_sha: pr.headSha } });
       st.validations[pr.headSha] = { dispatchedAt: nowIso, prUrl: pr.url };
-      activity.push({ at: nowIso, text: `Requested validation of ${pr.repo}#${pr.number} at ${pr.headSha.slice(0, 7)}`, url: pr.url });
+      activity.push({ at: nowIso, text: `Requested validation of ${pr.number ? `${pr.repo}#${pr.number}` : pr.title} at ${pr.headSha.slice(0, 7)}`, url: pr.url });
       log(`validation dispatched for ${pr.url}@${pr.headSha.slice(0, 7)}`);
     }
     const t = await dispatch({ taskId: `triage-${slug}-${pr.headSha.slice(0, 7)}`, project: slug, kind: "pr-triage", instructions: "Follow Sol.College operating instructions v1. Triage this lab pull request: what it changes, risk, and what the validation fixture does and does not exercise. Do not state that validation passed.", sources: [...sources, { id: "pr", url: pr.url }, { id: "candidate", url: `https://github.com/${p.lab.repo}/commit/${pr.headSha}`, sha: pr.headSha }], evidence: [], context: { title: pr.title, fixture: p.validation.fixture } }, { sha: pr.headSha, prUrl: pr.url });
@@ -269,6 +290,31 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     const verdict = await candidateVerdict(d.gh, d.cfg, slug, sha);
     if (!verdict.passed || !verdict.decidingRun) continue;
     await dispatch({ taskId: `adopt-${slug}-${sha.slice(0, 7)}`, project: slug, kind: "adoption-draft", instructions: "Follow Sol.College operating instructions v1. Draft the adoption narrative for this validated candidate: summary = the problem solved; hypotheses = alternatives considered; proposals should include one titled 'Integration' and one titled 'Rollback'; uncertainties = risks. Do not claim acceptance.", sources: [...sources, { id: "pr", url: v.prUrl }, { id: "candidate", url: `https://github.com/${p.lab.repo}/commit/${sha}`, sha }], evidence: [{ id: "validation-run", url: verdict.decidingRun.htmlUrl }], context: { fixture: p.validation.fixture } }, { sha, prUrl: v.prUrl });
+  }
+
+  // 4b) Coding: ask the Mind for a patch for the oldest open research question that has none yet.
+  st.patchRequests ??= {};
+  if (!pending("experiment-patch")) {
+    type I = { title: string; html_url: string; body: string | null; number: number };
+    const open = (await d.gh.get<I[]>(`/repos/${p.validation.workflowRepo}/issues?labels=research-question&state=open&per_page=50&sort=created&direction=asc`)).filter((i) => i.title.startsWith(`[research] ${slug}:`) && !st.patchRequests![i.html_url]);
+    const q = open[0];
+    if (q) {
+      const labHead = (await d.gh.get<{ commit: { sha: string } }>(`/repos/${p.lab.repo}/branches/${encodeURIComponent(p.lab.branch)}`)).commit.sha;
+      const files = await referencedFiles(d.gh, p.lab.repo, labHead, q.body ?? "");
+      const taskId = `patch-${slug}-${q.number}-${stamp(now)}`.slice(0, 64);
+      const t = await dispatch({ taskId, project: slug, kind: "experiment-patch", instructions: "Follow Sol.College operating instructions v1. Write the smallest correct code change that answers this research question as an experiment on the lab fork. Return it as one action {type:'patch',title,rationale,patch} where patch is a git unified diff (diff --git a/<path> b/<path>, ---/+++ headers, @@ hunks with exact context) against labHead, touching only program source or tests under the allowed paths. Do not edit .github, workflows, Anchor.toml, package manifests, lockfiles or toolchain files; no keys, no mainnet. Keep it under 400 changed lines. Code applies it to a branch sc-lab/<project>/<task> and the secret-free candidate-validation workflow builds it; you cannot mark it as passing. If the change needs devnet SOL for a test wallet, you may add {type:'devnet-transfer',recipient,lamports,reason}.", sources: [...sources, { id: "question", url: q.html_url }, { id: "lab-head", url: `https://github.com/${p.lab.repo}/commit/${labHead}`, sha: labHead }], evidence: [], context: { question: { title: q.title, body: (q.body ?? "").slice(0, 6000) }, labHead, allowedPathPrefixes: patchPolicyFor(p.validation.programDir ?? "contract").allowedPrefixes, files } }, {});
+      if (t !== null || d.dryRun) st.patchRequests[q.html_url] = taskId;
+    }
+  }
+
+  // 4c) HelloMinds operations snapshot (cognition, usage by tool, equipped skills/apps, conversations), every 2 h.
+  if (hours(st.lastOpsAt, now) >= 1.9 && !d.dryRun) {
+    try {
+      const ops = await opsSnapshot(d.minds, r.mindId, prefix);
+      mkdirSync(join(PUBLIC_RECORDS_DIR, "minds"), { recursive: true });
+      writeFileSync(join(PUBLIC_RECORDS_DIR, "minds", `${slug}.json`), JSON.stringify({ schema: "sc-mind-ops/1", project: slug, mind: mindName, at: nowIso, ...ops }, null, 2) + "\n");
+      st.lastOpsAt = nowIso;
+    } catch (e) { log(`ops snapshot failed: ${(e as Error).message}`); }
   }
 
   // 5) Research plan (periodic) and Lab Reporter status.
@@ -319,3 +365,51 @@ function writeStatus(slug: string, o: { runUrl: string | null; activity: PublicS
   if (!o.dryRun) persistStatus(s);
   return s;
 }
+
+/** Fetch up to 6 files the question links to (github.com/<lab>/blob/<sha>/<path>), at the lab head, for patch context. */
+async function referencedFiles(gh: GitHubApi, labRepo: string, sha: string, body: string): Promise<Array<{ path: string; content: string }>> {
+  const re = new RegExp(`https://github\\.com/${labRepo.replace(/[.]/g, "\\.")}/blob/[0-9a-f]{7,40}/([^\\s#)]+)`, "g");
+  const paths = [...new Set([...body.matchAll(re)].map((m) => m[1]!))].slice(0, 6);
+  const out: Array<{ path: string; content: string }> = [];
+  for (const path of paths) {
+    try {
+      const f = await gh.get<{ content?: string; encoding?: string; type?: string }>(`/repos/${labRepo}/contents/${path}?ref=${sha}`);
+      if (f.type === "file" && f.content) out.push({ path, content: Buffer.from(f.content, "base64").toString("utf8").slice(0, 20000) });
+    } catch { /* missing file: skip */ }
+  }
+  return out;
+}
+
+/** Deterministically check and dispatch a Mind's requested actions. Returns one outcome line per action. */
+async function handleActions(d: RunDeps, p: ProjectConfig, slug: string, taskId: string, resp: TaskResponse, mindName: string, activity: PublicStatus["activity"], log: (s: string) => void, nowIso: string): Promise<string[]> {
+  const out: string[] = [];
+  let patches = 0;
+  for (const a of resp.actions ?? []) {
+    if (a.type === "patch") {
+      if (patches++ >= 1) { out.push("patch: skipped (one patch per task)"); continue; }
+      const chk = checkPatch(a.patch, patchPolicyFor(p.validation.programDir ?? "contract"));
+      const title = publicTextCheck(a.title, 120);
+      if (!chk.ok || !title.ok) { out.push(`patch rejected: ${[...chk.reasons, ...title.reasons].join(", ")}`); log(`${taskId}: patch rejected (${chk.reasons.join(", ")})`); continue; }
+      const dir = join(d.store.root, "lab-patches", slug);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, `${taskId}.diff`), a.patch.replace(/\r\n/g, "\n"));
+      writeFileSync(join(dir, `${taskId}.json`), JSON.stringify({ taskId, project: slug, title: title.text, rationale: publicTextCheck(a.rationale, 2000).text, sha256: chk.sha256, files: chk.files, added: chk.added, removed: chk.removed, mind: mindName, at: nowIso }, null, 2));
+      // The private record must be pushed before lab-patch reads it: the workflow pushes the control repo first, then dispatches.
+      pendingDispatches.push({ workflow: "lab-patch.yml", inputs: { project: slug, task_id: taskId, patch_sha256: chk.sha256 } });
+      out.push(`patch queued ${chk.sha256.slice(0, 12)} (${chk.files.length} files, +${chk.added}/-${chk.removed})`);
+      activity.push({ at: nowIso, text: `Wrote a patch (${chk.files.length} file${chk.files.length === 1 ? "" : "s"}, +${chk.added}/-${chk.removed}); applying it to a lab branch` });
+    } else if (a.type === "devnet-transfer") {
+      const t = loadTreasury();
+      const req = { project: slug, recipient: a.recipient, lamports: a.lamports, reason: publicTextCheck(a.reason, 300).text, taskId, requestedBy: mindName };
+      const errs = checkTransferRequest(req, t.address);
+      if (errs.length) { out.push(`transfer rejected: ${errs.join(", ")}`); continue; }
+      pendingDispatches.push({ workflow: "devnet-treasury.yml", inputs: { project: slug, recipient: req.recipient, lamports: String(req.lamports), reason: req.reason, task_id: taskId, requested_by: mindName } });
+      out.push(`devnet transfer queued: ${req.lamports} lamports`);
+      activity.push({ at: nowIso, text: `Requested a devnet treasury transfer (${req.lamports / 1e9} SOL)` });
+    }
+  }
+  return out;
+}
+
+/** Workflow dispatches requested by Mind actions; written by the CLI for the workflow to send after private records are pushed. */
+export const pendingDispatches: Array<{ workflow: string; inputs: Record<string, string> }> = [];

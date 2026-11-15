@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-orboracle-solana",
+  "slug": "orboracle-solana",
+  "displayName": "OrbOracle (Sol.College demonstration)",
+  "description": "Stake-weighted price oracle on Solana devnet (Anchor 0.31): token holders lock weight tokens, submit prices and earn SOL rewards; the program keeps a time-decayed weighted average. Sol.College runs this lab on its own fork.",
+  "sector": "DeFi",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/OrbOracle-Solana fork. The upstream author (StabilityNexus) has not joined Sol.College and there is no partnership; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College's own reviewer, not by the upstream project.",
+  "upstream": {
+    "repo": "StabilityNexus/OrbOracle-Solana",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/OrbOracle-Solana",
+    "branch": "main"
+  },
+  "mind": {
+    "mappingRef": "orboracle-solana-cto",
+    "mappingStatus": "approved",
+    "configVersion": 1,
+    "conversationPrefix": "sc-orboracle-solana"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T17:10:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college/issues/10",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initialize, deposit, submit_value, withdraw, blacklist votes)",
+      "Weighted-average and reward arithmetic",
+      "QA: localnet fixtures and negative cases"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "weighted-average-decay",
+        "title": "Characterise the time-decayed token-weighted average under skewed submissions and long gaps",
+        "skills": [
+          "Anchor",
+          "Rust"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new?template=coordination-request.yml"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "programDir": "anchor",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.89.0"
+  }
+}

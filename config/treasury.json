@@ -1,0 +1,15 @@
+{
+  "schema": "sc-treasury/1",
+  "cluster": "devnet",
+  "genesisHash": "EtWTRABZaYq6iMfeYKouRu166VU2xqa1wcaWoxPkrZBG",
+  "rpcUrl": "https://api.devnet.solana.com",
+  "address": "En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU",
+  "keySecret": "LAB_TREASURY_KEYPAIR (GitHub Actions environment lab-treasury, main only)",
+  "caps": "none (owner instruction t688u, 2026-11-15 17:12 GMT): no per-request cap, no per-project daily cap, no recipient allowlist on devnet",
+  "kept": [
+    "Devnet only: the RPC host must be api.devnet.solana.com and the cluster genesis hash must equal genesisHash, checked before signing",
+    "The private key exists only as the protected GitHub secret; it is never sent to a Mind, printed or written to any record",
+    "Append-only ledger of every transaction: records/public/treasury/ledger.jsonl (signature, amount, recipient, project, requesting Mind) plus the private copy in the control repo"
+  ],
+  "fundedBy": { "from": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv", "lamports": 10000000000, "signature": "5KpU25N7kaqBHCB5zwKZe3tUf23GFaBfECBxt19Db7FYAKyNmsv71EtsV5NRrqKoWRgQyNACZ4Rnfqotc4zcLA4H", "at": "2026-11-15T17:16:00Z" }
+}

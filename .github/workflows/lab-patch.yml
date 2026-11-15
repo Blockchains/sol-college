@@ -1,0 +1,102 @@
+name: lab-patch
+# Applies one Mind-authored patch (stored in the private control repo by cto-autonomy) to a fresh branch
+# sc-lab/<slug>/<task> on the project's lab fork. Never main, never upstream. git apply only: no candidate code runs.
+# Deterministic gate (pilot/src/lab/patch.ts): size limits, path allowlist, no .github/workflow/CI/toolchain/package
+# manifest edits, no keypairs or env files, no binary/mode/rename changes, no secret-shaped lines, then gitleaks.
+# Pushes with a per-fork deploy key (environment lab-coding, main only), then dispatches the secret-free
+# candidate-validation workflow on the exact new SHA. Opens a lab PR on the fork when SC_LAB_PR_TOKEN is configured.
+run-name: lab-patch ${{ inputs.project }} ${{ inputs.task_id }}
+on:
+  workflow_dispatch:
+    inputs:
+      project: { required: true, type: string }
+      task_id: { required: true, type: string }
+      patch_sha256: { required: true, type: string }
+permissions: { contents: write, actions: write }
+concurrency: { group: "lab-patch-${{ inputs.project }}", cancel-in-progress: false }
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: lab-coding
+    steps:
+      - name: Request checks
+        env: { REF: "${{ github.ref }}", P: "${{ inputs.project }}", T: "${{ inputs.task_id }}", H: "${{ inputs.patch_sha256 }}" }
+        run: |
+          set -euo pipefail
+          test "$REF" = "refs/heads/main"
+          [[ "$P" =~ ^[a-z0-9-]+$ ]] && [[ "$T" =~ ^[a-z0-9][a-z0-9-]{5,63}$ ]] && [[ "$H" =~ ^[0-9a-f]{64}$ ]]
+          echo "KEYNAME=LAB_DEPLOY_KEY_$(echo "$P" | tr 'a-z-' 'A-Z_')" >> "$GITHUB_ENV"
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { repository: "${{ vars.SC_CONTROL_REPO }}", ssh-key: "${{ secrets.SC_CONTROL_DEPLOY_KEY }}", path: control }
+      - name: Move private records out of the public workspace
+        run: mv control "$RUNNER_TEMP/control"
+      - name: Deterministic patch gate
+        env: { P: "${{ inputs.project }}", T: "${{ inputs.task_id }}", H: "${{ inputs.patch_sha256 }}" }
+        run: |
+          set -euo pipefail
+          f="$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"; test -f "$f"
+          cd pilot && npx tsx src/lab/cli.ts check --project "$P" --patch "$f" --sha256 "$H" | tee "$RUNNER_TEMP/gate.json"
+          echo "BRANCH=$(npx tsx src/lab/cli.ts branch --project "$P" --task "$T")" >> "$GITHUB_ENV"
+          echo "LAB=$(jq -r .lab.repo "../config/projects/$P.json")" >> "$GITHUB_ENV"
+          echo "LABBASE=$(jq -r .lab.branch "../config/projects/$P.json")" >> "$GITHUB_ENV"
+      - name: gitleaks (pinned)
+        run: |
+          set -euo pipefail
+          curl -sSfL -o /tmp/gl.tgz https://github.com/gitleaks/gitleaks/releases/download/v8.28.0/gitleaks_8.28.0_linux_x64.tar.gz
+          echo "a65b5253807a68ac0cafa4414031fd740aeb55f54fb7e55f386acb52e6a840eb  /tmp/gl.tgz" | sha256sum -c -
+          tar -xzf /tmp/gl.tgz -C /tmp gitleaks
+      - name: Apply to a fresh sc-lab branch and push (deploy key, no force)
+        id: push
+        env:
+          DEPLOY_KEY: ${{ secrets[env.KEYNAME] }}
+          P: ${{ inputs.project }}
+          T: ${{ inputs.task_id }}
+        run: |
+          set -euo pipefail
+          test -n "$DEPLOY_KEY" || { echo "MANUAL SETUP REQUIRED: secret $KEYNAME"; exit 1; }
+          install -m 600 /dev/null "$RUNNER_TEMP/k" && printf '%s\n' "$DEPLOY_KEY" > "$RUNNER_TEMP/k"
+          export GIT_SSH_COMMAND="ssh -i $RUNNER_TEMP/k -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          git clone -q --no-tags --single-branch -b "$LABBASE" "git@github.com:$LAB.git" "$RUNNER_TEMP/lab"
+          cd "$RUNNER_TEMP/lab"
+          if git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null; then echo "branch $BRANCH already exists; not overwriting"; exit 1; fi
+          git checkout -q -b "$BRANCH"
+          git apply --check --whitespace=nowarn "$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"
+          git apply --whitespace=nowarn "$RUNNER_TEMP/control/records/lab-patches/$P/$T.diff"
+          git -c user.name="sol-college-cto[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -qam "$(jq -r .title "$RUNNER_TEMP/control/records/lab-patches/$P/$T.json")" -m "Authored by the Sol.College CTO agent for $P (task $T); applied by lab-patch run $GITHUB_RUN_ID after deterministic checks. Lab branch only; not merged."
+          /tmp/gitleaks git --no-banner --redact --exit-code 1 --log-opts="-1" .
+          test -z "$(git diff HEAD~1 --name-only | grep -E '^\.github/|(^|/)\.vscode/|workflows' || true)"
+          git push -q origin "$BRANCH"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "base=$(git rev-parse HEAD~1)" >> "$GITHUB_OUTPUT"
+          rm -f "$RUNNER_TEMP/k"
+      - name: Dispatch secret-free candidate validation on the exact SHA
+        env: { GH_TOKEN: "${{ github.token }}", P: "${{ inputs.project }}", SHA: "${{ steps.push.outputs.sha }}" }
+        run: gh workflow run candidate-validation.yml -R "$GITHUB_REPOSITORY" --ref main -f project="$P" -f lab_repo="$LAB" -f candidate_sha="$SHA"
+      - name: Lab pull request on the fork (when SC_LAB_PR_TOKEN is configured)
+        id: pr
+        env: { GH_TOKEN: "${{ secrets.SC_LAB_PR_TOKEN }}", P: "${{ inputs.project }}", T: "${{ inputs.task_id }}" }
+        run: |
+          set -euo pipefail
+          if [ -z "$GH_TOKEN" ]; then echo "url=" >> "$GITHUB_OUTPUT"; echo "SC_LAB_PR_TOKEN not configured: branch pushed; cto-autonomy validates sc-lab branches without a PR"; exit 0; fi
+          meta="$RUNNER_TEMP/control/records/lab-patches/$P/$T.json"
+          body=$(printf '%s\n\n%s\n\n%s' "$(jq -r .rationale "$meta")" "Authored by the Sol.College CTO agent (task \`$T\`), applied by [lab-patch run $GITHUB_RUN_ID]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID) after deterministic checks and gitleaks. Validation: secret-free candidate-validation on the exact head SHA." "Sol.College demonstration lab; not a partnership with the upstream project.")
+          url=$(gh pr create -R "$LAB" --base "$LABBASE" --head "$BRANCH" --title "[lab] $(jq -r .title "$meta")" --body "$body")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: Record (private + public)
+        if: always()
+        env: { P: "${{ inputs.project }}", T: "${{ inputs.task_id }}", SHA: "${{ steps.push.outputs.sha }}", BASE: "${{ steps.push.outputs.base }}", PR: "${{ steps.pr.outputs.url }}", OUTCOME: "${{ steps.push.outcome }}" }
+        run: |
+          set -euo pipefail
+          mkdir -p records/public/lab
+          rec=$(jq -nc --arg p "$P" --arg t "$T" --arg lab "$LAB" --arg b "${BRANCH:-}" --arg sha "$SHA" --arg base "$BASE" --arg pr "$PR" --arg o "$OUTCOME" --arg run "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" --arg at "$(date -u +%FT%TZ)" --slurpfile g "$RUNNER_TEMP/gate.json" \
+            '{schema:"sc-lab-patch/1",at:$at,project:$p,taskId:$t,labRepo:$lab,branch:$b,headSha:$sha,baseSha:$base,pullRequest:($pr|select(.!="")),compare:(if $sha!="" then "https://github.com/\($lab)/compare/\($base)...\($sha)" else null end),outcome:$o,gate:($g[0]|{ok,files,added,removed,sha256}),runUrl:$run,author:"Sol.College CTO agent (HelloMinds)"}')
+          echo "$rec" >> records/public/lab/$P.jsonl
+          cd "$RUNNER_TEMP/control" && mkdir -p records/lab-patches/$P && echo "$rec" >> records/lab-patches/$P/runs.jsonl
+          git config user.name sol-college-lab && git config user.email "41898282+github-actions[bot]@users.noreply.github.com" && git add -A records && (git diff --cached --quiet || (git commit -qm "lab-patch $P $T" && git push -q))
+          cd "$GITHUB_WORKSPACE" && git config user.name sol-college-lab && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/lab && git commit -qm "lab-patch: $P $T" && for i in 1 2 3 4 5; do git pull -q --rebase && git push -q && break; sleep $((i*3)); done

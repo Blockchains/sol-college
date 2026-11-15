@@ -1,0 +1,60 @@
+name: devnet-treasury
+# Executes one Mind-requested devnet SOL transfer from the Sol.College lab treasury.
+# Owner instruction t688u (2026-11-15 17:12 GMT): no per-request cap, no per-project daily cap, no recipient allowlist.
+# Kept: devnet only (config host + live genesis hash asserted before signing; mainnet is unreachable), the key only
+# as the protected secret LAB_TREASURY_KEYPAIR (environment lab-treasury, main only; never sent to a Mind, never
+# printed), and an append-only ledger of every transaction (public records/public/treasury/ledger.jsonl + private copy).
+# No contributor or candidate code is checked out or executed here.
+run-name: devnet-treasury ${{ inputs.project }} ${{ inputs.lamports }} lamports (${{ inputs.task_id }})
+on:
+  workflow_dispatch:
+    inputs:
+      project: { description: "Project slug", required: true, type: string }
+      recipient: { description: "Devnet recipient address", required: true, type: string }
+      lamports: { description: "Amount in lamports", required: true, type: string }
+      reason: { description: "Reason (from the Mind's request)", required: true, type: string }
+      task_id: { description: "Mind task id that requested it", required: true, type: string }
+      requested_by: { description: "Requesting Mind (name)", required: true, type: string }
+permissions: { contents: write }
+concurrency: { group: devnet-treasury, cancel-in-progress: false }
+jobs:
+  transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: lab-treasury
+    steps:
+      - name: Must run from protected main
+        env: { REF: "${{ github.ref }}" }
+        run: test "$REF" = "refs/heads/main"
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with: { node-version: "22", cache: npm, cache-dependency-path: pilot/package-lock.json }
+      - run: cd pilot && npm ci --no-audit --no-fund
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with: { repository: "${{ vars.SC_CONTROL_REPO }}", ssh-key: "${{ secrets.SC_CONTROL_DEPLOY_KEY }}", path: control }
+      - name: Move private records out of the public workspace
+        run: mv control "$RUNNER_TEMP/control"
+      - name: Transfer (devnet asserted before signing)
+        env:
+          LAB_TREASURY_KEYPAIR: ${{ secrets.LAB_TREASURY_KEYPAIR }}
+          PROJECT: ${{ inputs.project }}
+          RECIPIENT: ${{ inputs.recipient }}
+          LAMPORTS: ${{ inputs.lamports }}
+          REASON: ${{ inputs.reason }}
+          TASK: ${{ inputs.task_id }}
+          BY: ${{ inputs.requested_by }}
+        run: |
+          set -euo pipefail
+          cd pilot && npx tsx src/treasury/cli.ts transfer --project "$PROJECT" --recipient "$RECIPIENT" --lamports "$LAMPORTS" --reason "$REASON" --task "$TASK" --requested-by "$BY" --private-ledger "$RUNNER_TEMP/control/records/treasury/ledger.jsonl" | tee "$RUNNER_TEMP/tx.json"
+      - name: Ledger (append-only; private copy first)
+        if: success()
+        run: |
+          cd "$RUNNER_TEMP/control" && git config user.name "sol-college-treasury" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A records && (git diff --cached --quiet || (git commit -qm "treasury tx run ${{ github.run_id }}" && git push -q))
+          cd "$GITHUB_WORKSPACE" && git config user.name "sol-college-treasury" && git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add records/public/treasury && git commit -qm "treasury: devnet tx ${{ github.run_id }}"
+          for i in 1 2 3 4 5; do git pull -q --rebase && git push -q && break; sleep $((i*3)); done
+      - name: Summary
+        if: always()
+        run: |
+          { echo "## Devnet treasury"; echo '```json'; cat "$RUNNER_TEMP/tx.json" 2>/dev/null || echo '{"ok":false}'; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

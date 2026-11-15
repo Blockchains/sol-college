@@ -9,6 +9,8 @@
 | minds-admin | contents: read | Builder key, mapping | minds (read) / minds-admin (mutate) | no |
 | coordination-request | contents: read, issues: write | Builder key, mapping, control deploy key | minds (auto; requester must be a configured reviewer) | no (issue text is data) |
 | cto-autonomy | contents: write, issues: write, actions: write | Builder key, mapping, control deploy key | minds (auto, main only) | no |
+| lab-patch | contents: write, actions: write | per-fork deploy key `LAB_DEPLOY_KEY_<SLUG>` (write, that fork only), control deploy key, optional `SC_LAB_PR_TOKEN` | lab-coding (auto, main only) | **no** (`git apply` of a gated diff; the build happens later in secret-free candidate-validation) |
+| devnet-treasury | contents: write | `LAB_TREASURY_KEYPAIR` (devnet lab treasury), control deploy key | lab-treasury (auto, main only) | no |
 | upstream-reconcile | contents: write | none | none | no |
 | adoption-package | contents: write, actions: read | none | none | no |
 | project-acceptance | contents: write, issues: write, actions: write | none | none | no |
@@ -27,8 +29,28 @@ private control repo as data). Third-party actions are pinned to full SHAs (enfo
   GitHub cannot distinguish them, so the rule "the agent never posts `/sc-accept`" is procedural. Fix: give the
   agent its own GitHub account or app and keep `Blockchains` as the only reviewer.
 
+## Coding autonomy (owner instruction t687u, 2026-11-15 17:10 GMT)
+A Mind writes code only as a unified diff inside a validated `experiment-patch` response. Code (never the Mind)
+checks it (`pilot/src/lab/patch.ts`: at most 8 files / 400 changed lines / 60 KB; paths only under the project's
+`programs/`, `tests/` and frontend `src/` dirs; refuses `.github/`, workflows, `.vscode`, Anchor.toml, package
+manifests, lockfiles, toolchain files, build.rs, keypairs, `.env`, binaries, mode changes, renames, secret-shaped
+lines and mainnet URLs), then `lab-patch` re-checks the stored diff's sha256, applies it to a fresh
+`sc-lab/<project>/<task>` branch on the lab fork (never main, never overwrites an existing branch, never upstream),
+runs gitleaks on the commit and refuses any `.github`/workflow path again, pushes with that fork's deploy key and
+dispatches the secret-free `candidate-validation` on the exact SHA. Upstream changes are only ever pull requests.
+
+## Devnet lab treasury (owner instructions t687u and t688u)
+Address `En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU`, funded with 10 devnet SOL from the deployer
+(tx `5KpU25N7…zcLA4H`). **No spend caps**: no per-request cap, no per-project daily cap and no recipient allowlist
+on devnet (t688u). Kept: devnet only (RPC host must be `api.devnet.solana.com` and the live genesis hash must be
+devnet's, checked before signing; any other cluster is refused), the private key only as the GitHub secret
+`LAB_TREASURY_KEYPAIR` in environment `lab-treasury` (never given to a Mind, never printed or recorded), and an
+append-only ledger of every transaction (signature, amount, recipient, project, requesting Mind):
+`records/public/treasury/ledger.jsonl` plus a private copy in the control repo. Requests come from Mind
+`devnet-transfer` actions and are structurally checked (valid address, positive integer lamports, reason).
+
 ## What the CTO Mind is never given
-Mainnet keys, GitHub organisation admin, branch-protection bypass, arbitrary shell or SQL, other projects' credentials.
+Any private key (treasury included), mainnet keys, GitHub organisation admin, branch-protection bypass, arbitrary shell or SQL, other projects' credentials.
 GitHub access for a Mind, if ever enabled, goes through a HelloMinds Connection (the equipped
 "Animoca Minds Auth" app lists GitHub), restricted to the project's repos and read-only first; credentials are
 entered in the Connections UI, never in conversation text.

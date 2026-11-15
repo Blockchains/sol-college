@@ -22,17 +22,34 @@ Limits: at most 3 new Mind tasks and 1 issue per project per run. Tasks without 
 without resend. Private records: `Blockchains/sol-college-control` (written through a deploy key scoped to that one
 repo). The campus build is re-triggered after each pass.
 
+## Coding, treasury and operations (since 2026-11-15 17:10 GMT, owner instructions t687u / t688u)
+6. Coding: for the oldest open research question of a project with no patch yet, the Mind gets an `experiment-patch`
+   task with the question, the lab head SHA and the files the question links to. A validated reply may carry one
+   `{type:"patch"}` action (unified diff). The deterministic gate (`pilot/src/lab/patch.ts`) runs; the diff is
+   stored privately and, after the control repo is pushed, `lab-patch.yml` applies it to `sc-lab/<project>/<task>`
+   on the lab fork, runs gitleaks, pushes with that fork's deploy key and dispatches `candidate-validation` on the
+   exact SHA. A lab PR on the fork is opened when `SC_LAB_PR_TOKEN` is configured; without it, the next pass treats
+   `sc-lab/*` branch heads as candidates anyway (validation, PR triage, adoption draft).
+7. Upstream PRs for verified fixes (standing permission): one focused PR per project, duplicate-checked. Opening a
+   PR on someone else's repository needs a token with that right; GitHub Actions' token has none and deploy keys
+   cannot open PRs, so this stays MANUAL SETUP REQUIRED until `SC_LAB_PR_TOKEN` (classic PAT, `public_repo`) exists.
+8. Devnet treasury: a validated reply may carry `{type:"devnet-transfer",recipient,lamports,reason}`; it is
+   dispatched to `devnet-treasury.yml`. **No caps and no recipient allowlist** (t688u); devnet only, key only as a
+   protected secret, append-only ledger `records/public/treasury/ledger.jsonl`.
+9. Operations: every pass writes `records/public/minds/<slug>.json` from the SDK (getMind status, cognition balance,
+   daily usage, usage by tool, equipped Skills and Apps, project conversation count, SDK version).
+Projects (7): gifter-escrow, sentient-send, ciphervault, colosseum, poe-solana, trustlock, orboracle-solana.
+
 ## What it never does
 Create/enable/disable Minds, change Circles, pause/resume, equip Skills, accept packages, issue certificates
-without a verified human acceptance, comment on or push to upstream repositories, touch mainnet or keys, run
+without a verified human acceptance, push to main or to upstream repositories (upstream only via PRs), touch mainnet, give any Mind a key, run
 contributor code (validation runs in the separate secret-free workflow).
 
 ## What still needs the owner
 1. `/sc-accept …` comment for each adoption package (the human acceptance; the bot is refused by design).
 2. Approving `minds-admin` runs: Mind lifecycle (provision/pause/resume), Circle changes, equip/unequip.
 3. Adding a project to `config/autonomy.json` or changing the standing approval (a commit to main).
-4. Writing code: Minds cannot push code, so experiments still need a contributor (human or coding agent) to open the
-   lab PR. Everything after the PR is automatic.
+4. Writing code: Minds now write patches (see 6); a token for opening PRs (`SC_LAB_PR_TOKEN`) is the one missing piece.
 
 ## Evidence of live runs (2026-11-15, GMT)
 | Run | When | Result |
