@@ -1,0 +1,10 @@
+{
+ "name": "EscrowAgent",
+ "fork": "https://github.com/Blockchains/escrowagent",
+ "commit": "dff2f7007c8674373db52dd9dae7d81a5122b794",
+ "lesson": "/explore/escrowagent/",
+ "programs": {
+  "devnet": "DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp",
+  "mainnet": null
+ }
+}

@@ -1,0 +1,2148 @@
+{
+  "address": "DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp",
+  "metadata": {
+    "name": "escrowagent",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "EscrowAgent — Trust & settlement layer for agent-to-agent transactions on Solana"
+  },
+  "instructions": [
+    {
+      "name": "accept_escrow",
+      "docs": [
+        "Provider (Agent B) accepts the escrow task."
+      ],
+      "discriminator": [
+        193,
+        2,
+        224,
+        245,
+        36,
+        116,
+        65,
+        154
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "docs": [
+            "The provider (Agent B) accepting the task",
+            "I-4: No `mut` needed — provider pays no SOL and no account writes target it"
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account to accept"
+          ],
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_escrow",
+      "docs": [
+        "Client cancels escrow before provider accepts.",
+        "Full refund, no fee."
+      ],
+      "discriminator": [
+        156,
+        203,
+        54,
+        179,
+        38,
+        72,
+        33,
+        21
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "docs": [
+            "The client cancelling the escrow"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account",
+            "M-1: Close escrow after cancellation, rent recovered to client"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault holding funds"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client's token account to receive refund"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "confirm_completion",
+      "docs": [
+        "Client confirms task completion (MultiSig / OnChain verification).",
+        "Releases funds to provider and collects protocol fee."
+      ],
+      "discriminator": [
+        187,
+        31,
+        6,
+        48,
+        117,
+        161,
+        2,
+        243
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "docs": [
+            "The client confirming the task is done"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — used to validate the fee account",
+            "H-1: Confirmation blocked when protocol is paused"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account",
+            "M-2: Only MultiSigConfirm and OnChain verification types allow client confirmation",
+            "M-1: Close escrow after completion, rent recovered to client"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault holding funds"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "Provider's token account to receive payment"
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_fee_account",
+          "docs": [
+            "Protocol fee token account",
+            "C-2: Validated against config.fee_authority (owner) + escrow.token_mint (mint)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client's token account to receive any vault remainder (H-1 griefing fix)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_escrow",
+      "docs": [
+        "Create a new escrow and deposit funds.",
+        "Fee rates are read from the protocol config."
+      ],
+      "discriminator": [
+        253,
+        215,
+        165,
+        116,
+        36,
+        108,
+        68,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "client",
+          "docs": [
+            "The client (Agent A) creating and funding the escrow"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "provider",
+          "docs": [
+            "The provider (Agent B) who will do the work"
+          ]
+        },
+        {
+          "name": "arbitrator",
+          "docs": [
+            "Optional arbitrator for dispute resolution"
+          ]
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config PDA — validated to ensure protocol is active"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow PDA account — derived from client + provider + task_hash"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "client"
+              },
+              {
+                "kind": "account",
+                "path": "provider"
+              },
+              {
+                "kind": "arg",
+                "path": "task_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_mint",
+          "docs": [
+            "The SPL token mint for the escrowed token"
+          ]
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "The client's token account (source of funds)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault PDA token account (holds funds in custody)"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "grace_period",
+          "type": "i64"
+        },
+        {
+          "name": "task_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "verification_type",
+          "type": {
+            "defined": {
+              "name": "VerificationType"
+            }
+          }
+        },
+        {
+          "name": "criteria_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "expire_escrow",
+      "docs": [
+        "Anyone can expire an escrow after deadline + grace period.",
+        "Only Active or AwaitingProvider — ProofSubmitted is protected.",
+        "Full refund to client, no fee."
+      ],
+      "discriminator": [
+        49,
+        150,
+        54,
+        201,
+        45,
+        106,
+        39,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "caller",
+          "docs": [
+            "Anyone can call expire — it's permissionless after deadline + grace"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account",
+            "H-2: Only Active and AwaitingProvider are expirable by deadline.",
+            "ProofSubmitted is EXCLUDED — once proof is submitted, the",
+            "provider is protected. Funds can only be released via",
+            "confirm_completion, provider_release, or dispute resolution.",
+            "M-1: Close escrow after expiry, rent recovered to client"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault holding funds"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client's token account to receive refund"
+          ],
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_protocol",
+      "docs": [
+        "Initialize the protocol config. Called once by the deployer.",
+        "Sets the fee authority, fee rates, escrow limits, and admin authority."
+      ],
+      "discriminator": [
+        188,
+        233,
+        252,
+        106,
+        134,
+        146,
+        202,
+        91
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "The deployer/admin initializing the protocol"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "The protocol config PDA — singleton, derived from a fixed seed"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_authority",
+          "type": "pubkey"
+        },
+        {
+          "name": "protocol_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "arbitrator_fee_bps",
+          "type": "u16"
+        },
+        {
+          "name": "min_escrow_amount",
+          "type": "u64"
+        },
+        {
+          "name": "max_escrow_amount",
+          "type": "u64"
+        },
+        {
+          "name": "min_grace_period",
+          "type": "i64"
+        },
+        {
+          "name": "max_deadline_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "provider_release",
+      "docs": [
+        "Provider self-releases funds after confirmation timeout.",
+        "Available when status is ProofSubmitted and grace period",
+        "has elapsed since proof submission without dispute."
+      ],
+      "discriminator": [
+        43,
+        208,
+        50,
+        80,
+        130,
+        238,
+        234,
+        147
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "docs": [
+            "The provider self-releasing funds after confirmation timeout"
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account — must be ProofSubmitted and provider must match",
+            "M-1: Close escrow after release, rent recovered to client"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault holding funds"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "Provider's token account to receive payment"
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_fee_account",
+          "docs": [
+            "Protocol fee token account — validated against config.fee_authority + escrow.token_mint"
+          ],
+          "writable": true
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client's token account to receive any vault remainder (H-1 griefing fix)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "raise_dispute",
+      "docs": [
+        "Either party raises a dispute.",
+        "Freezes funds and sets status to Disputed."
+      ],
+      "discriminator": [
+        41,
+        243,
+        1,
+        51,
+        150,
+        95,
+        246,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "raiser",
+          "docs": [
+            "The party raising the dispute"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status",
+            "H-1: Dispute raising blocked when protocol is paused"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account"
+          ],
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_dispute",
+      "docs": [
+        "Arbitrator resolves a dispute with a ruling.",
+        "Fee account is validated against the protocol config."
+      ],
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "arbitrator",
+          "docs": [
+            "The arbitrator resolving the dispute"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — used to validate the fee account",
+            "H-1: Dispute resolution blocked when protocol is paused"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account",
+            "M-1: Close escrow after resolution, rent recovered to client"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault",
+          "docs": [
+            "The escrow vault holding funds"
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_vault_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104,
+                  111,
+                  114,
+                  105,
+                  116,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client_token_account",
+          "docs": [
+            "Client's token account (for refund if ruling favors client)",
+            "Boxed to reduce stack frame size"
+          ],
+          "writable": true
+        },
+        {
+          "name": "provider_token_account",
+          "docs": [
+            "Provider's token account (for payment if ruling favors provider)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "arbitrator_token_account",
+          "docs": [
+            "Arbitrator's token account (for arbitrator fee)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "protocol_fee_account",
+          "docs": [
+            "Protocol fee token account",
+            "C-2: Validated against config.fee_authority (owner) + escrow.token_mint (mint)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "ruling",
+          "type": {
+            "defined": {
+              "name": "DisputeRuling"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_proof",
+      "docs": [
+        "Provider submits proof of task completion.",
+        "Proof is stored and status moves to ProofSubmitted.",
+        "No funds are transferred at this stage."
+      ],
+      "discriminator": [
+        54,
+        241,
+        46,
+        84,
+        4,
+        212,
+        46,
+        94
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "docs": [
+            "The provider submitting proof of work"
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "Protocol config — check paused status",
+            "H-1: Proof submission blocked when protocol is paused"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "docs": [
+            "The escrow account"
+          ],
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "proof_type",
+          "type": {
+            "defined": {
+              "name": "ProofType"
+            }
+          }
+        },
+        {
+          "name": "proof_data",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_protocol_config",
+      "docs": [
+        "Update protocol config. Admin only.",
+        "All fields are optional — pass None to keep current value."
+      ],
+      "discriminator": [
+        197,
+        97,
+        123,
+        54,
+        221,
+        168,
+        11,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "docs": [
+            "The current admin"
+          ],
+          "signer": true
+        },
+        {
+          "name": "config",
+          "docs": [
+            "The protocol config PDA"
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  116,
+                  111,
+                  99,
+                  111,
+                  108,
+                  95,
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "update",
+          "type": {
+            "defined": {
+              "name": "ConfigUpdate"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    },
+    {
+      "name": "ProtocolConfig",
+      "discriminator": [
+        207,
+        91,
+        250,
+        28,
+        152,
+        179,
+        215,
+        209
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "DisputeRaised",
+      "discriminator": [
+        246,
+        167,
+        109,
+        37,
+        142,
+        45,
+        38,
+        176
+      ]
+    },
+    {
+      "name": "DisputeResolved",
+      "discriminator": [
+        121,
+        64,
+        249,
+        153,
+        139,
+        128,
+        236,
+        187
+      ]
+    },
+    {
+      "name": "EscrowAccepted",
+      "discriminator": [
+        129,
+        122,
+        76,
+        235,
+        127,
+        11,
+        32,
+        165
+      ]
+    },
+    {
+      "name": "EscrowCancelled",
+      "discriminator": [
+        98,
+        241,
+        195,
+        122,
+        213,
+        0,
+        162,
+        161
+      ]
+    },
+    {
+      "name": "EscrowCompleted",
+      "discriminator": [
+        229,
+        26,
+        0,
+        202,
+        140,
+        167,
+        106,
+        187
+      ]
+    },
+    {
+      "name": "EscrowCreated",
+      "discriminator": [
+        70,
+        127,
+        105,
+        102,
+        92,
+        97,
+        7,
+        173
+      ]
+    },
+    {
+      "name": "EscrowExpired",
+      "discriminator": [
+        189,
+        22,
+        170,
+        250,
+        75,
+        218,
+        58,
+        112
+      ]
+    },
+    {
+      "name": "EscrowProofSubmitted",
+      "discriminator": [
+        144,
+        57,
+        242,
+        209,
+        218,
+        21,
+        81,
+        228
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "AmountZero",
+      "msg": "Escrow amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "DeadlineInPast",
+      "msg": "Deadline must be in the future"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidGracePeriod",
+      "msg": "Grace period must be non-negative"
+    },
+    {
+      "code": 6003,
+      "name": "FeeTooHigh",
+      "msg": "Protocol fee exceeds maximum allowed (5%)"
+    },
+    {
+      "code": 6004,
+      "name": "BelowMinimumAmount",
+      "msg": "Minimum escrow amount is 1000 lamports / token units"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidStatus",
+      "msg": "Escrow is not in the expected status for this operation"
+    },
+    {
+      "code": 6006,
+      "name": "NotAwaitingProvider",
+      "msg": "Escrow is not awaiting a provider"
+    },
+    {
+      "code": 6007,
+      "name": "NotActive",
+      "msg": "Escrow is not active"
+    },
+    {
+      "code": 6008,
+      "name": "NoProofSubmitted",
+      "msg": "Escrow has no proof submitted"
+    },
+    {
+      "code": 6009,
+      "name": "UnauthorizedClient",
+      "msg": "Only the client can perform this action"
+    },
+    {
+      "code": 6010,
+      "name": "UnauthorizedProvider",
+      "msg": "Only the provider can perform this action"
+    },
+    {
+      "code": 6011,
+      "name": "UnauthorizedArbitrator",
+      "msg": "Only the designated arbitrator can perform this action"
+    },
+    {
+      "code": 6012,
+      "name": "NotParticipant",
+      "msg": "Caller is not a participant in this escrow"
+    },
+    {
+      "code": 6013,
+      "name": "NoArbitrator",
+      "msg": "No arbitrator is assigned to this escrow"
+    },
+    {
+      "code": 6014,
+      "name": "DeadlinePassed",
+      "msg": "The deadline for this escrow has passed"
+    },
+    {
+      "code": 6015,
+      "name": "NotYetExpired",
+      "msg": "The escrow has not yet expired (deadline + grace period)"
+    },
+    {
+      "code": 6016,
+      "name": "GracePeriodExpired",
+      "msg": "Cannot dispute outside the grace period"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidProof",
+      "msg": "Proof data is invalid or does not match criteria"
+    },
+    {
+      "code": 6018,
+      "name": "VerificationTypeMismatch",
+      "msg": "Verification type mismatch"
+    },
+    {
+      "code": 6019,
+      "name": "UnregisteredOracle",
+      "msg": "Oracle is not registered for this escrow"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidSplitRuling",
+      "msg": "Dispute ruling basis points must total 10000"
+    },
+    {
+      "code": 6021,
+      "name": "DuplicateAccounts",
+      "msg": "Duplicate mutable accounts detected"
+    },
+    {
+      "code": 6022,
+      "name": "AlreadyDisputed",
+      "msg": "Cannot dispute an escrow that is already disputed"
+    },
+    {
+      "code": 6023,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6024,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient funds in escrow vault"
+    },
+    {
+      "code": 6025,
+      "name": "ConfigAlreadyInitialized",
+      "msg": "Protocol config has already been initialized"
+    },
+    {
+      "code": 6026,
+      "name": "UnauthorizedAdmin",
+      "msg": "Only the protocol admin can perform this action"
+    },
+    {
+      "code": 6027,
+      "name": "InvalidFeeAccount",
+      "msg": "Protocol fee account does not match the config"
+    },
+    {
+      "code": 6028,
+      "name": "ProtocolPaused",
+      "msg": "Protocol is currently paused"
+    },
+    {
+      "code": 6029,
+      "name": "AboveMaximumAmount",
+      "msg": "Escrow amount exceeds the maximum allowed"
+    },
+    {
+      "code": 6030,
+      "name": "SelfEscrow",
+      "msg": "Client and provider cannot be the same address"
+    },
+    {
+      "code": 6031,
+      "name": "ArbitratorConflict",
+      "msg": "Arbitrator cannot be the client or provider"
+    },
+    {
+      "code": 6032,
+      "name": "GracePeriodTooShort",
+      "msg": "Grace period is below the minimum required"
+    },
+    {
+      "code": 6033,
+      "name": "DeadlineTooFar",
+      "msg": "Deadline exceeds maximum allowed duration"
+    },
+    {
+      "code": 6034,
+      "name": "ConfirmationTimeout",
+      "msg": "Confirmation period expired, provider can self-release"
+    },
+    {
+      "code": 6035,
+      "name": "AutoReleaseNotReady",
+      "msg": "Auto-release delay has not elapsed yet"
+    },
+    {
+      "code": 6036,
+      "name": "DisputeTimeout",
+      "msg": "Dispute has timed out, default resolution applies"
+    }
+  ],
+  "types": [
+    {
+      "name": "ConfigUpdate",
+      "docs": [
+        "What to update — all fields optional (None = don't change)",
+        "C-2: Renamed fee_wallet to fee_authority (wallet Pubkey, not token account)"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee_authority",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "protocol_fee_bps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "arbitrator_fee_bps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "min_escrow_amount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_escrow_amount",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "min_grace_period",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "max_deadline_seconds",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "paused",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "new_admin",
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeRaised",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "raised_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "raised_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeResolved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "arbitrator",
+            "type": "pubkey"
+          },
+          {
+            "name": "ruling",
+            "type": {
+              "defined": {
+                "name": "DisputeRuling"
+              }
+            }
+          },
+          {
+            "name": "resolved_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeRuling",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "PayClient"
+          },
+          {
+            "name": "PayProvider"
+          },
+          {
+            "name": "Split",
+            "fields": [
+              {
+                "name": "client_bps",
+                "type": "u16"
+              },
+              {
+                "name": "provider_bps",
+                "type": "u16"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "arbitrator",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "escrow_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "protocol_fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "arbitrator_fee_bps",
+            "type": "u16"
+          },
+          {
+            "name": "task_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "verification_type",
+            "type": {
+              "defined": {
+                "name": "VerificationType"
+              }
+            }
+          },
+          {
+            "name": "criteria_count",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "grace_period",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "EscrowStatus"
+              }
+            }
+          },
+          {
+            "name": "proof_type",
+            "type": {
+              "option": {
+                "defined": {
+                  "name": "ProofType"
+                }
+              }
+            }
+          },
+          {
+            "name": "proof_data",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "proof_submitted_at",
+            "type": "i64"
+          },
+          {
+            "name": "dispute_raised_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowAccepted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "accepted_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "cancelled_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCompleted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_paid",
+            "type": "u64"
+          },
+          {
+            "name": "fee_collected",
+            "type": "u64"
+          },
+          {
+            "name": "completed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "task_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "verification_type",
+            "type": {
+              "defined": {
+                "name": "VerificationType"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowExpired",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "expired_at",
+            "type": "i64"
+          },
+          {
+            "name": "refund_amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowProofSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "proof_type",
+            "type": {
+              "defined": {
+                "name": "ProofType"
+              }
+            }
+          },
+          {
+            "name": "submitted_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "AwaitingProvider"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "ProofSubmitted"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Resolved"
+          },
+          {
+            "name": "Expired"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProofType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "TransactionSignature"
+          },
+          {
+            "name": "OracleAttestation"
+          },
+          {
+            "name": "SignedConfirmation"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProtocolConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "docs": [
+              "The admin authority — can update config, transfer authority"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_authority",
+            "docs": [
+              "The wallet (authority) that receives protocol fees — fee ATAs derived per mint"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "protocol_fee_bps",
+            "docs": [
+              "Protocol fee in basis points (e.g., 50 = 0.5%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "arbitrator_fee_bps",
+            "docs": [
+              "Arbitrator fee in basis points (e.g., 100 = 1.0%)"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "min_escrow_amount",
+            "docs": [
+              "Minimum escrow amount (in smallest token unit)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "max_escrow_amount",
+            "docs": [
+              "Maximum escrow amount (0 = no limit)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "min_grace_period",
+            "docs": [
+              "Minimum grace period in seconds (default 300 = 5 min)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "max_deadline_seconds",
+            "docs": [
+              "Maximum deadline offset in seconds from creation (default 604800 = 7 days)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "paused",
+            "docs": [
+              "Whether the protocol is paused (emergency stop)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerificationType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "OnChain"
+          },
+          {
+            "name": "OracleCallback"
+          },
+          {
+            "name": "MultiSigConfirm"
+          },
+          {
+            "name": "AutoRelease"
+          }
+        ]
+      }
+    }
+  ]
+}

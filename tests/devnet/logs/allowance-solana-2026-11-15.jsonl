@@ -1,0 +1,23 @@
+{"step":"setup","program":"EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN","vault":"HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR","session":"FY1VDLhXT2YAqXgp2o5SsjCB37TtCkxoLUpejDczoxV1","agent":"9doVFveToHQsafouTs1STToZDiQetWTgtqex9bhQ3CDd","merchant":"BKuV1QnJdB9zhbJv3uRrNFYCb3F3KRDyDJKzEHCDyfzo"}
+{"step":"init_vault","ok":true,"sig":"aUy7KApmkrWBqJr4xF4TcbsL5Hst4pSX7A5mSTYZhM5qCWrP1oSaJdv2r6rocGmBwMyBMNBS2t4FERZmP3joqHQ"}
+{"step":"deposit","ok":true,"sig":"2VP1LKULyRF3VgbysHGHrw7G4YymBoxKZkCh9taZDbA8nLFypzewWeRDS5UuJ9BHUGv1Nhz43vayPeSpobKmuCXA","vaultBal":"5000000"}
+{"step":"create_session","ok":true,"sig":"48LVbQSeSpvznAERU7e3nVFc2iP1QboGaeZ8NftoL49FtY5AfnB41N18prMzLUYB9YPg4k86tEFd8rfVVLM7nVQx"}
+{"step":"negative_over_cap","expectedFailure":true,"error":"Account `registryAgent` not provided."}
+{"step":"setup","program":"EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN","vault":"HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR","session":"9anKGUZTMW88nwg7m5GqnGeuPzT1bPfRZwgeH3Tjtnag","agent":"8Bk7nwjo4UFbkiNLsrHt5qfZtL6h3uz2yCApMkMBzedM","merchant":"415DCTqnJ2yeDX3z7EmhECH92fgo6jsyS792vLebcmyX"}
+{"step":"init_vault","skipped":true}
+{"step":"deposit","ok":true,"sig":"4MJMPKwvYZZzmyXWo3bCGn8ZzAZPnbaUFmUyEnDbXhJVx5p9HUKGuu4LaMsCwnwXCSfnoGSvZdbBzJFRmut5Sq1z","vaultBal":"10000000"}
+{"step":"create_session","ok":true,"sig":"3qYF9PU3s5hVhuVDaXruxxbxhkD7HnHTzJ8oC24k7vwok9FcZHCmhrPG8t5A3GPQHHFdeHg2sCS5DFEnvkWsuDWj"}
+{"step":"negative_over_cap","expectedFailure":true,"error":"Account `registryAgent` not provided."}
+{"step":"setup","program":"EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN","vault":"HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR","session":"7ptVfTkxLK54ScyHEf5LiG7yGzwUWtAPxg8KvVryMiKq","agent":"5vGjCMuCFiiju3bvY22eN88ZHBmTAHAnGbVZroELMjTc","merchant":"HenT3GANTghZadmgPzXkHcMWSGukxCmEwWRRZkPuBefV"}
+{"step":"init_vault","skipped":true}
+{"step":"deposit","ok":true,"sig":"2suE8jkVZiQKypcHsvN1295446v76tiRKZReVsi2fG8XivWRMZdoAd8UxXQsGatQ12nnYnZAkxJm4kMLYefNZDxB","vaultBal":"15000000"}
+{"step":"create_session","ok":true,"sig":"3vnYEuusm9SJABBvk4rkqXnpPPij1AcRaHLxnkpeS4ywv2zXE1UxvoMJDz35h6y1oxVRwjY22yUfqPJy5uEQu73B"}
+{"step":"negative_over_cap","expectedFailure":true,"error":"Account `registryAgent` not provided."}
+{"step":"setup","program":"EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN","vault":"HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR","session":"FNF37TaXxTYUGo1K4BfguejP8dH9qcfokJZPGfPDuATt","agent":"5v4G9oekTbebgXqRZzhngZm1GpDJTYVRzJtM2GWwVqwG","merchant":"Gg25WLuSmoYJk4HBHR5XJpuU317uyj5H2t8H3PUzc7z4"}
+{"step":"init_vault","skipped":true}
+{"step":"deposit","skipped":true,"vaultBal":"15000000"}
+{"step":"create_session","ok":true,"sig":"47utkXeHyTxuBc4euSVngAYy7e5YLGBv1aGHjG3V4WL2ecXFKRRJoTxwoAU7JALs79rms2ouoR839HEwLyWsHPjk"}
+{"step":"negative_over_cap","expectedFailure":true,"error":"OverRequestCap"}
+{"step":"agent_pay","ok":true,"sig":"4yvW5qbW8oqyWxfYWnb9Dv73y9b9jM5ygi9qoqCBnQkrf7yhZdmKBZhjy14oxYkryuQzoaqpbTQNDAfXNcAwFVxy","merchantDelta":"1000000"}
+{"step":"withdraw","ok":true,"sig":"zePTz5pCujNkzRdcHT9PaTKTCcyLkrTtoGUYyUxinTfuzZ2yqmXNYqTFPZgFdP8Vzcw5iWQeemLgTNcRzWGbpHi","ownerDelta":"14000000","vaultLeft":"0"}
+{"step":"DONE","ok":true}

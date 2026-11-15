@@ -1,0 +1,10 @@
+{
+ "name": "Agent Court",
+ "fork": "https://github.com/Blockchains/agent-court",
+ "commit": "5612922c42d8ad92ec5cc5aaca39ce5e476d9521",
+ "lesson": "/explore/agent-court/",
+ "programs": {
+  "devnet": "CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ",
+  "mainnet": null
+ }
+}

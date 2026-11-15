@@ -3625,5 +3625,196 @@
     "limits": "set_agent_wallet and cap-enforced spend as the 8004 agent wallet were not exercised. dispute_work and timeout cranks were not exercised. The official 8004 registry and official program ids were not reused for vault/escrow.",
     "functional": "full",
     "functional_evidence": "register_with_options 549HzQs8\u2026 created 8004 agent CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh with atom_enabled=true. initialize_root_config 27vjRYru\u2026 and create_vault 5T3E3YnW\u2026 opened vault FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM. After funding 5_000_000, spend 2KNCjsrc\u2026 paid a recipient +3_000_000 (owner bypass of a 2_000_000 per-tx cap) and withdraw 52hk3PiV\u2026 returned 2_000_000. create_escrow 5gBDpEvy\u2026 locked 1_000_000; mark_completed 44R9A9vV\u2026 and accept_work 5nE2e2xd\u2026 paid the vault ATA exactly 990_000 (100 bps fee) and closed the escrow ATA."
+  },
+  {
+    "slug": "allowance-solana",
+    "name": "Allowance",
+    "lesson": "/explore/allowance-solana/",
+    "app": "/dapps/allowance-solana/",
+    "fork": "https://github.com/Blockchains/allowance-solana",
+    "commit": "f04b282d8e2372b41de18498933ee1000b5ac084",
+    "program": "EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of programs/allowance; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/allowance-solana (unique declare_id).",
+    "learn": "init_vault writes a PDA (seeds [\"vault\", owner]) plus a vault ATA. deposit/withdraw move tokens as the owner. create_session binds an agent to per-request and daily caps plus a merchant allow-list (seeds [\"session\", vault, agent]). agent_pay, signed by that agent, pays a listed merchant from the vault ATA, enforcing those caps. Unused optional accounts (registry, ATOM, pending) must be passed as the program id when using older Anchor clients.",
+    "source": [
+      [
+        "programs/allowance/src/lib.rs L27-L35 (init_vault, deposit, withdraw)",
+        "https://github.com/Blockchains/allowance-solana/blob/f04b282d8e2372b41de18498933ee1000b5ac084/programs/allowance/src/lib.rs#L27-L35"
+      ],
+      [
+        "programs/allowance/src/lib.rs L47-L51 (create_session)",
+        "https://github.com/Blockchains/allowance-solana/blob/f04b282d8e2372b41de18498933ee1000b5ac084/programs/allowance/src/lib.rs#L47-L51"
+      ],
+      [
+        "programs/allowance/src/lib.rs L69-L71 (agent_pay)",
+        "https://github.com/Blockchains/allowance-solana/blob/f04b282d8e2372b41de18498933ee1000b5ac084/programs/allowance/src/lib.rs#L69-L71"
+      ],
+      [
+        "programs/allowance/src/instructions/agent_pay.rs (listed-merchant caps)",
+        "https://github.com/Blockchains/allowance-solana/blob/f04b282d8e2372b41de18498933ee1000b5ac084/programs/allowance/src/instructions/agent_pay.rs"
+      ]
+    ],
+    "flow": "tests/devnet/allowance-solana.mjs",
+    "log": "tests/devnet/logs/allowance-solana-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy allowance as EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN on devnet",
+        "fqJnE3Uw3jxoQWgnWKTxNpAoteTbqhhFrouEDjWH8P2rz46Nuh9WsdELnvgfso9AstfAAhksJvZyk15baE3gFsZ"
+      ],
+      [
+        "init_vault (vault HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR)",
+        "aUy7KApmkrWBqJr4xF4TcbsL5Hst4pSX7A5mSTYZhM5qCWrP1oSaJdv2r6rocGmBwMyBMNBS2t4FERZmP3joqHQ"
+      ],
+      [
+        "deposit (first fund, 5_000_000 lab tokens; later top-ups left 15_000_000 before the final pay)",
+        "2VP1LKULyRF3VgbysHGHrw7G4YymBoxKZkCh9taZDbA8nLFypzewWeRDS5UuJ9BHUGv1Nhz43vayPeSpobKmuCXA"
+      ],
+      [
+        "create_session for agent 5v4G9oek\u2026 / merchant Gg25WLuS\u2026 (session FNF37TaX\u2026)",
+        "47utkXeHyTxuBc4euSVngAYy7e5YLGBv1aGHjG3V4WL2ecXFKRRJoTxwoAU7JALs79rms2ouoR839HEwLyWsHPjk"
+      ],
+      [
+        "agent_pay 1_000_000 to the listed merchant",
+        "4yvW5qbW8oqyWxfYWnb9Dv73y9b9jM5ygi9qoqCBnQkrf7yhZdmKBZhjy14oxYkryuQzoaqpbTQNDAfXNcAwFVxy"
+      ],
+      [
+        "withdraw remaining 14_000_000; vault ATA ended at 0",
+        "zePTz5pCujNkzRdcHT9PaTKTCcyLkrTtoGUYyUxinTfuzZ2yqmXNYqTFPZgFdP8Vzcw5iWQeemLgTNcRzWGbpHi"
+      ]
+    ],
+    "negative": [
+      "agent_pay of 2_000_000 with per_request_cap 1_000_000 is rejected (OverRequestCap)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and agent keys through tests/devnet/allowance-solana.mjs.",
+    "limits": "The 8004/ATOM unlisted-merchant reputation path and pending-approval vouchers were not exercised. The official program id was not reused. Extra deposits during client retries left 15_000_000 in the vault before the successful pay+withdraw.",
+    "functional": "full",
+    "functional_evidence": "init_vault aUy7KApm\u2026 wrote vault HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR. After deposits totaling 15_000_000, create_session 47utkXeH\u2026 bound agent 5v4G9oekTbebgXqRZzhngZm1GpDJTYVRzJtM2GWwVqwG to listed merchant Gg25WLuSmoYJk4HBHR5XJpuU317uyj5H2t8H3PUzc7z4. agent_pay of 2_000_000 was rejected (OverRequestCap). agent_pay 4yvW5qbW\u2026 paid that merchant exactly 1_000_000. withdraw zePTz5pC\u2026 returned 14_000_000 to the owner and left the vault ATA at 0."
+  },
+  {
+    "slug": "escrowagent",
+    "name": "EscrowAgent",
+    "lesson": "/explore/escrowagent/",
+    "app": "/dapps/escrowagent/",
+    "fork": "https://github.com/Blockchains/escrowagent",
+    "commit": "dff2f7007c8674373db52dd9dae7d81a5122b794",
+    "program": "DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of programs/escrowagent; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/escrowagent (unique declare_id).",
+    "learn": "initialize_protocol writes a singleton protocol_config PDA (seeds [\"protocol_config\"]). create_escrow (seeds [\"escrow\", client, provider, task_hash]) funds a vault token account (seeds [\"vault\", escrow], authority seeds [\"vault_authority\", escrow]). The provider accept_escrow then submit_proof. For MultiSigConfirm, confirm_completion pays the provider, collects protocol_fee_bps, and closes the escrow to the client.",
+    "source": [
+      [
+        "programs/escrowagent/src/lib.rs L23-L45 (initialize_protocol)",
+        "https://github.com/Blockchains/escrowagent/blob/dff2f7007c8674373db52dd9dae7d81a5122b794/programs/escrowagent/src/lib.rs#L23-L45"
+      ],
+      [
+        "programs/escrowagent/src/lib.rs L60-L78 (create_escrow)",
+        "https://github.com/Blockchains/escrowagent/blob/dff2f7007c8674373db52dd9dae7d81a5122b794/programs/escrowagent/src/lib.rs#L60-L78"
+      ],
+      [
+        "programs/escrowagent/src/lib.rs L81-L102 (accept_escrow, submit_proof, confirm_completion)",
+        "https://github.com/Blockchains/escrowagent/blob/dff2f7007c8674373db52dd9dae7d81a5122b794/programs/escrowagent/src/lib.rs#L81-L102"
+      ],
+      [
+        "programs/escrowagent/src/instructions/confirm.rs",
+        "https://github.com/Blockchains/escrowagent/blob/dff2f7007c8674373db52dd9dae7d81a5122b794/programs/escrowagent/src/instructions/confirm.rs"
+      ]
+    ],
+    "flow": "tests/devnet/escrowagent.mjs",
+    "log": "tests/devnet/logs/escrowagent-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy escrowagent as DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp on devnet",
+        "2DCqPB4H4i2D7hUPKofQ59mqdRTnAvw2iigxmosCCfMECLzLDiJ3oqqbqzCU7Ud6XrDvoxh1BqnTr7Udhc388Zgj"
+      ],
+      [
+        "initialize_protocol (config HeohivfGSgX3jCGtRD4RakhYj8QAxzh8EUYjwDamctqm, 0 bps fees)",
+        "2hKEFgYdbcSqQHeyQXVRY4hNdPe776Fy6G2svRvBTMGt8RvF2UStVKBxS9w4jKpgwYmS3Rw3oZhCXGp3ZB288ziM"
+      ],
+      [
+        "create_escrow 1_000_000 (escrow 4EK362s6ytPUkzq7z676eCDgXwy1pVVSdxKC3ghQhHXe, vault 6butfk6y\u2026)",
+        "3kEYjsfR8rGS2QhELuBuduxZBmZq5LpTV8Be6tR7TXVUS37LUKbTaoLCMJNwA9HyHngNXD8VexwzqwAYYj8PMvtf"
+      ],
+      [
+        "accept_escrow by provider H2vegMao5SMA5khB2psDqtJRV92B5TdEpuKHUwKJVyRk",
+        "3YCUf4kTsRvSmT12WugatfstFDp7q9mKsHbLtXpNsHRytfKGbfvJoctinwAAosLWJS9hcu9jNfmPmQYUzJHxW1QV"
+      ],
+      [
+        "submit_proof SignedConfirmation",
+        "2zhxDCQ5DzTMizcufV9xeXz1PPnmztc3typMjG6ThtXTWQD7T1keGFdVTb6qsgaz37Ju7owEcQsgwBQ5ZeJvWFQg"
+      ],
+      [
+        "confirm_completion paid the provider +1_000_000 and closed the escrow",
+        "29ihkALiV7C8kYaCDNpfwGbXh8kPCsUNW1hV55iPCHzhHPChrExH6CkYH1eKpiJJLLXpL2MiP9BfMvXotpsCxPzz"
+      ]
+    ],
+    "negative": [
+      "Self-escrow is rejected by the program (client != provider); the lab used a distinct provider key."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and provider keys through tests/devnet/escrowagent.mjs.",
+    "limits": "Disputes, expiry, provider_release, and non-zero protocol fees were not exercised. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_protocol 2hKEFgYd\u2026 wrote config HeohivfGSgX3jCGtRD4RakhYj8QAxzh8EUYjwDamctqm. create_escrow 3kEYjsfR\u2026 locked 1_000_000 lab tokens in vault 6butfk6ygXbKCvtkT7Ax2Kaaueg9u5gepkxxCfFEyhR4 (escrow 4EK362s6ytPUkzq7z676eCDgXwy1pVVSdxKC3ghQhHXe). accept_escrow 3YCUf4kT\u2026 and submit_proof 2zhxDCQ5\u2026 moved it to ProofSubmitted. confirm_completion 29ihkALi\u2026 paid provider H2vegMao5SMA5khB2psDqtJRV92B5TdEpuKHUwKJVyRk exactly 1_000_000 (0 bps fee) and closed the escrow account."
+  },
+  {
+    "slug": "agent-court",
+    "name": "Agent Court",
+    "lesson": "/explore/agent-court/",
+    "app": "/dapps/agent-court/",
+    "fork": "https://github.com/Blockchains/agent-court",
+    "commit": "5612922c42d8ad92ec5cc5aaca39ce5e476d9521",
+    "program": "CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of agent-court-escrow; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/agent-court (unique declare_id).",
+    "learn": "deposit writes a PDA (seeds [\"escrow\", agent_a, agent_b, service_hash]) and a vault token account (seeds [\"vault\", escrow], authority = escrow) and transfers amount from agent_a. file_dispute can be signed by either agent. render_verdict records Release, Refund, or Split. claim then pays according to that verdict; a Release pays the full amount to agent_b.",
+    "source": [
+      [
+        "agent-court-escrow/programs/agent-court-escrow/src/lib.rs L31-L91 (deposit)",
+        "https://github.com/Blockchains/agent-court/blob/5612922c42d8ad92ec5cc5aaca39ce5e476d9521/agent-court-escrow/programs/agent-court-escrow/src/lib.rs#L31-L91"
+      ],
+      [
+        "agent-court-escrow/programs/agent-court-escrow/src/lib.rs L93-L163 (file_dispute)",
+        "https://github.com/Blockchains/agent-court/blob/5612922c42d8ad92ec5cc5aaca39ce5e476d9521/agent-court-escrow/programs/agent-court-escrow/src/lib.rs#L93-L163"
+      ],
+      [
+        "agent-court-escrow/programs/agent-court-escrow/src/lib.rs L165-L208 (render_verdict)",
+        "https://github.com/Blockchains/agent-court/blob/5612922c42d8ad92ec5cc5aaca39ce5e476d9521/agent-court-escrow/programs/agent-court-escrow/src/lib.rs#L165-L208"
+      ],
+      [
+        "agent-court-escrow/programs/agent-court-escrow/src/lib.rs L268-L394 (claim)",
+        "https://github.com/Blockchains/agent-court/blob/5612922c42d8ad92ec5cc5aaca39ce5e476d9521/agent-court-escrow/programs/agent-court-escrow/src/lib.rs#L268-L394"
+      ]
+    ],
+    "flow": "tests/devnet/agent-court.mjs",
+    "log": "tests/devnet/logs/agent-court-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy agent-court-escrow as CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ on devnet",
+        "JRopgSz8Jq5dyXALxcPfoXx79s73wnkqtvchYuBEKqQnFD6yanQJeYfjGuSv4g4YXM1EiWg9UpeQQ18DnyJVTfM"
+      ],
+      [
+        "deposit 1_000_000 (escrow 4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq, vault C4wGawpd\u2026)",
+        "4VXTKE1BMgrSGGit4jVqaiKzofT4Jwe5PV6iSQT7W5krBYQ3gXgv11yMerpMuzLcaT4WZr2kpoRYu36bdKVRt36e"
+      ],
+      [
+        "file_dispute by agent_a",
+        "5LiKYDjp6ewGGF4ZhFSxzeiX8SjMbZNMB4qD2dCsVTZraKj3cMwAcby2a2dnabzxbbNvEaksojjE5uVNuKUEGZqV"
+      ],
+      [
+        "render_verdict Release",
+        "3UMuS92XyzEvPLcsZkXxgGD8iyinFD8oF6eR3iYYwmTobf9rXRt5iB1buuutjUhzk4rRKp7q8AFZaYBTVZnpAmsF"
+      ],
+      [
+        "claim paid agent_b 2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8 exactly 1_000_000",
+        "62QNHz1Cz8TBmxihgbD77ePHv7gx4rrDRxx8a8UGQobC2N7dw4m6LjXdtLhcR9gfou4ERh9s4dicRzu48nCbBfnr"
+      ]
+    ],
+    "negative": [
+      "timeout_release cannot be cranked until 3600 seconds have passed (MIN_TIMEOUT_SECONDS); the lab used the dispute/verdict path instead."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab wallet through tests/devnet/agent-court.mjs.",
+    "limits": "timeout_release and Split/Refund verdicts were not exercised. The official program id was not reused. render_verdict accepts any judge signer (as written upstream).",
+    "functional": "full",
+    "functional_evidence": "deposit 4VXTKE1B\u2026 locked 1_000_000 lab tokens in vault C4wGawpd84LEHn4Wz5HAJW7qPBLvpsQXXKKotgMnK8Ht (escrow 4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq). file_dispute 5LiKYDjp\u2026 and render_verdict 3UMuS92X\u2026 set verdict Release. claim 62QNHz1C\u2026 paid agent_b 2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8 exactly 1_000_000."
   }
 ]

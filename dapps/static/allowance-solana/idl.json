@@ -1,0 +1,1616 @@
+{
+  "address": "EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN",
+  "metadata": {
+    "name": "allowance",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "An on-chain spending firewall for AI agents paying over x402"
+  },
+  "instructions": [
+    {
+      "name": "agent_pay",
+      "discriminator": [
+        191,
+        210,
+        112,
+        56,
+        82,
+        215,
+        140,
+        233
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "signer": true,
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "writable": true,
+          "relations": [
+            "pending"
+          ]
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "merchant_ata",
+          "docs": [
+            "The merchant's associated token account, so the money can only land",
+            "where an x402 facilitator expects it."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "merchant"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "registry_agent",
+          "optional": true
+        },
+        {
+          "name": "atom_stats",
+          "optional": true
+        },
+        {
+          "name": "pending",
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "approve_pending",
+      "discriminator": [
+        171,
+        11,
+        173,
+        28,
+        199,
+        199,
+        129,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "relations": [
+            "pending"
+          ]
+        },
+        {
+          "name": "pending",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "close_session",
+      "discriminator": [
+        68,
+        114,
+        178,
+        140,
+        222,
+        38,
+        248,
+        211
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_session",
+      "discriminator": [
+        242,
+        193,
+        143,
+        179,
+        150,
+        25,
+        122,
+        227
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "agent"
+        },
+        {
+          "name": "session",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  115,
+                  115,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SessionParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault"
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "owner_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "freeze_all",
+      "discriminator": [
+        187,
+        113,
+        158,
+        131,
+        118,
+        61,
+        214,
+        69
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "init_vault",
+      "discriminator": [
+        77,
+        79,
+        85,
+        150,
+        33,
+        217,
+        52,
+        106
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "reject_pending",
+      "discriminator": [
+        238,
+        90,
+        25,
+        174,
+        160,
+        197,
+        129,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "relations": [
+            "pending"
+          ]
+        },
+        {
+          "name": "pending",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "request_approval",
+      "discriminator": [
+        14,
+        31,
+        134,
+        78,
+        89,
+        175,
+        45,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "writable": true
+        },
+        {
+          "name": "merchant"
+        },
+        {
+          "name": "pending",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  101,
+                  110,
+                  100,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "session"
+              },
+              {
+                "kind": "account",
+                "path": "session.created_at",
+                "account": "Session"
+              },
+              {
+                "kind": "account",
+                "path": "session.pending_nonce",
+                "account": "Session"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "reason",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "revoke_session",
+      "discriminator": [
+        86,
+        92,
+        198,
+        120,
+        144,
+        2,
+        7,
+        194
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "session"
+          ]
+        },
+        {
+          "name": "session",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "unfreeze",
+      "discriminator": [
+        133,
+        160,
+        68,
+        253,
+        80,
+        232,
+        218,
+        247
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "withdraw",
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault"
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "owner_ata",
+          "writable": true
+        },
+        {
+          "name": "vault_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Pending",
+      "discriminator": [
+        36,
+        180,
+        147,
+        170,
+        72,
+        175,
+        173,
+        126
+      ]
+    },
+    {
+      "name": "Session",
+      "discriminator": [
+        243,
+        81,
+        72,
+        115,
+        214,
+        188,
+        72,
+        144
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "FundsMoved",
+      "discriminator": [
+        45,
+        213,
+        142,
+        27,
+        233,
+        76,
+        210,
+        8
+      ]
+    },
+    {
+      "name": "PaymentMade",
+      "discriminator": [
+        227,
+        251,
+        123,
+        16,
+        133,
+        220,
+        83,
+        242
+      ]
+    },
+    {
+      "name": "PendingCreated",
+      "discriminator": [
+        102,
+        221,
+        227,
+        180,
+        16,
+        127,
+        15,
+        171
+      ]
+    },
+    {
+      "name": "PendingResolved",
+      "discriminator": [
+        11,
+        160,
+        50,
+        191,
+        26,
+        122,
+        101,
+        26
+      ]
+    },
+    {
+      "name": "SessionCreated",
+      "discriminator": [
+        107,
+        111,
+        254,
+        25,
+        21,
+        122,
+        220,
+        225
+      ]
+    },
+    {
+      "name": "SessionRevoked",
+      "discriminator": [
+        90,
+        48,
+        35,
+        234,
+        203,
+        192,
+        126,
+        211
+      ]
+    },
+    {
+      "name": "VaultFrozen",
+      "discriminator": [
+        13,
+        199,
+        172,
+        111,
+        88,
+        10,
+        151,
+        247
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Frozen",
+      "msg": "The vault is frozen"
+    },
+    {
+      "code": 6001,
+      "name": "Revoked",
+      "msg": "The session was revoked"
+    },
+    {
+      "code": 6002,
+      "name": "Expired",
+      "msg": "The session has expired"
+    },
+    {
+      "code": 6003,
+      "name": "ZeroAmount",
+      "msg": "Amount must be above zero"
+    },
+    {
+      "code": 6004,
+      "name": "ReasonMissing",
+      "msg": "A reason is required"
+    },
+    {
+      "code": 6005,
+      "name": "ReasonTooLong",
+      "msg": "Reason is longer than 200 bytes"
+    },
+    {
+      "code": 6006,
+      "name": "OverRequestCap",
+      "msg": "Amount is over the per-request cap"
+    },
+    {
+      "code": 6007,
+      "name": "OverDailyCap",
+      "msg": "Amount would pass the session's daily cap"
+    },
+    {
+      "code": 6008,
+      "name": "OverMerchantCap",
+      "msg": "Amount would pass this merchant's daily cap"
+    },
+    {
+      "code": 6009,
+      "name": "OverOtherCap",
+      "msg": "Amount would pass the daily cap for unlisted merchants"
+    },
+    {
+      "code": 6010,
+      "name": "NotListed",
+      "msg": "Merchant is not listed and unlisted merchants are not allowed"
+    },
+    {
+      "code": 6011,
+      "name": "ReputationAccountMissing",
+      "msg": "Unlisted merchant: reputation accounts are required"
+    },
+    {
+      "code": 6012,
+      "name": "BadReputationAccount",
+      "msg": "Reputation accounts are not the registry's or not this merchant's"
+    },
+    {
+      "code": 6013,
+      "name": "LowReputation",
+      "msg": "Merchant's reputation is below the session minimum"
+    },
+    {
+      "code": 6014,
+      "name": "PendingMismatch",
+      "msg": "Pending request does not match this payment"
+    },
+    {
+      "code": 6015,
+      "name": "PendingNotApproved",
+      "msg": "Pending request is not approved"
+    },
+    {
+      "code": 6016,
+      "name": "PendingNotOpen",
+      "msg": "Pending request is already resolved"
+    },
+    {
+      "code": 6017,
+      "name": "TooManyMerchants",
+      "msg": "At most 5 listed merchants"
+    },
+    {
+      "code": 6018,
+      "name": "BadExpiry",
+      "msg": "Expiry must be in the future"
+    },
+    {
+      "code": 6019,
+      "name": "BadCaps",
+      "msg": "Caps must be above zero, per-request at most daily, reputation at most 100"
+    },
+    {
+      "code": 6020,
+      "name": "LabelTooLong",
+      "msg": "Merchant label is longer than 24 bytes"
+    },
+    {
+      "code": 6021,
+      "name": "DuplicateMerchant",
+      "msg": "Merchant listed twice"
+    },
+    {
+      "code": 6022,
+      "name": "NotOwner",
+      "msg": "Only the vault owner can do this"
+    },
+    {
+      "code": 6023,
+      "name": "NotAgent",
+      "msg": "Only the session's agent can do this"
+    },
+    {
+      "code": 6024,
+      "name": "SessionStillActive",
+      "msg": "Revoke the session or wait for it to expire first"
+    },
+    {
+      "code": 6025,
+      "name": "MathOverflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "FundsMoved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit",
+            "type": "bool"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantCap",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant",
+            "docs": [
+              "The payTo wallet (owner of the merchant's token account)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "spent_today",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MerchantInput",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PaymentMade",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "pending",
+            "docs": [
+              "Set when an approved over-cap request was used as a voucher."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "reputation",
+            "docs": [
+              "Some(score) when the merchant was unlisted and passed the reputation gate."
+            ],
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "spent_today",
+            "type": "u64"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pending",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "resolved_at",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "PendingStatus"
+              }
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "pending",
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingResolved",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "pending",
+            "type": "pubkey"
+          },
+          {
+            "name": "approved",
+            "type": "bool"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PendingStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Approved"
+          },
+          {
+            "name": "Rejected"
+          },
+          {
+            "name": "Used"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Session",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "per_request_cap",
+            "type": "u64"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "spent_today",
+            "type": "u64"
+          },
+          {
+            "name": "other_daily_cap",
+            "docs": [
+              "Daily cap shared by merchants not listed below; 0 means unlisted merchants are refused."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "other_spent_today",
+            "type": "u64"
+          },
+          {
+            "name": "min_reputation",
+            "docs": [
+              "Minimum Agent Registry score (0..=100) for unlisted merchants."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "day_start",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "revoked",
+            "type": "bool"
+          },
+          {
+            "name": "total_paid",
+            "type": "u64"
+          },
+          {
+            "name": "pending_nonce",
+            "type": "u64"
+          },
+          {
+            "name": "merchants",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "MerchantCap"
+                }
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SessionCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SessionParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "per_request_cap",
+            "type": "u64"
+          },
+          {
+            "name": "daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "other_daily_cap",
+            "type": "u64"
+          },
+          {
+            "name": "min_reputation",
+            "type": "u8"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "merchants",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "MerchantInput"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "SessionRevoked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "session",
+            "type": "pubkey"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "frozen",
+            "docs": [
+              "Kill switch: blocks every agent_pay and request_approval for every session."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "session_count",
+            "docs": [
+              "Sessions ever created, for the dashboard."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultFrozen",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
+          },
+          {
+            "name": "at",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

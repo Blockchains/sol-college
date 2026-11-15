@@ -1,0 +1,37 @@
+{
+  "title": "Allowance",
+  "summary": "Open an owner vault, fund it, grant a session to an agent, and let that agent pay a listed merchant within per-request and daily caps.",
+  "what": "Allowance is an Anchor 0.32.1 spending firewall for x402-style agent payments. init_vault creates a PDA (seeds [\"vault\", owner]) and its ATA. deposit/withdraw move tokens under the owner. create_session binds an agent key to caps and a merchant allow-list. agent_pay, signed by the session agent, pays a listed merchant from the vault ATA; unlisted merchants require 8004/ATOM reputation accounts.",
+  "app_note": "The page at /dapps/allowance-solana/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/allowance-solana. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/allowance-solana/, switch to Devnet, and connect a wallet. The lab already ran init_vault, deposit, create_session, a rejected over-cap agent_pay, a 1_000_000 listed-merchant payment, and withdraw.",
+      "see": "Program EMQ41VCu\u2026. Vault HBqti9tX\u2026 should have a 0-token ATA after withdraw; merchant Gg25WLuS\u2026 received 1_000_000.",
+      "ran": "init_vault aUy7KApm\u2026; deposit 2VP1LKUL\u2026; create_session 47utkXeH\u2026; over-cap rejected OverRequestCap; agent_pay 4yvW5qbW\u2026; withdraw zePTz5pC\u2026"
+    }
+  ],
+  "diagram": "owner --init_vault/deposit--> vault PDA+ATA; owner --create_session--> session(agent, caps, merchants); agent --agent_pay--> merchant ATA; owner --withdraw--> owner ATA.",
+  "accounts": [
+    "vault PDA seeds [\"vault\", owner]",
+    "session PDA seeds [\"session\", vault, agent]",
+    "vault ATA (authority = vault)"
+  ],
+  "instructions": [
+    "init_vault",
+    "deposit",
+    "create_session",
+    "agent_pay",
+    "withdraw",
+    "freeze_all / pending approvals (not exercised)"
+  ],
+  "innovation": "Payments leave the vault only through agent_pay, which enforces per-request, daily, and per-merchant caps (or a one-time approved pending voucher) and optionally a 8004 reputation gate for unlisted merchants.",
+  "frontend": "Generic IDL console at /dapps/allowance-solana/. Optional agent_pay accounts (registry, ATOM, pending) should be passed as the program id when unused.",
+  "exercises": [
+    "Reproduce OverRequestCap with amount > per_request_cap.",
+    "Name the seeds of the vault and session PDAs."
+  ],
+  "not_covered": [
+    "Unlisted-merchant reputation path",
+    "request_approval / approve_pending vouchers"
+  ]
+}

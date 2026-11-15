@@ -1,0 +1,6 @@
+{"step":"setup","program":"CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ","escrow":"4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq","vault":"C4wGawpd84LEHn4Wz5HAJW7qPBLvpsQXXKKotgMnK8Ht","agentB":"2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8"}
+{"step":"deposit","ok":true,"sig":"4VXTKE1BMgrSGGit4jVqaiKzofT4Jwe5PV6iSQT7W5krBYQ3gXgv11yMerpMuzLcaT4WZr2kpoRYu36bdKVRt36e","vaultBal":"1000000"}
+{"step":"file_dispute","ok":true,"sig":"5LiKYDjp6ewGGF4ZhFSxzeiX8SjMbZNMB4qD2dCsVTZraKj3cMwAcby2a2dnabzxbbNvEaksojjE5uVNuKUEGZqV"}
+{"step":"render_verdict","ok":true,"sig":"3UMuS92XyzEvPLcsZkXxgGD8iyinFD8oF6eR3iYYwmTobf9rXRt5iB1buuutjUhzk4rRKp7q8AFZaYBTVZnpAmsF","verdict":"Release"}
+{"step":"claim","ok":true,"sig":"62QNHz1Cz8TBmxihgbD77ePHv7gx4rrDRxx8a8UGQobC2N7dw4m6LjXdtLhcR9gfou4ERh9s4dicRzu48nCbBfnr","agentBDelta":"1000000"}
+{"step":"DONE","ok":true}

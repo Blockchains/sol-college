@@ -1,0 +1,1045 @@
+{
+  "address": "CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ",
+  "metadata": {
+    "name": "agent_court_escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "On-chain escrow and dispute resolution for AI agent transactions"
+  },
+  "instructions": [
+    {
+      "name": "claim",
+      "discriminator": [
+        62,
+        198,
+        214,
+        193,
+        213,
+        159,
+        108,
+        210
+      ],
+      "accounts": [
+        {
+          "name": "claimer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_a",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_b",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.service_hash",
+                "account": "Escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "agent_a_token_account",
+          "writable": true
+        },
+        {
+          "name": "agent_b_token_account",
+          "writable": true
+        },
+        {
+          "name": "agent_a",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit",
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "agent_a",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent_b"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_a"
+              },
+              {
+                "kind": "account",
+                "path": "agent_b"
+              },
+              {
+                "kind": "arg",
+                "path": "service_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_a_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "agent_a"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "service_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "timeout_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "file_dispute",
+      "discriminator": [
+        210,
+        63,
+        221,
+        114,
+        212,
+        97,
+        195,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_a",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_b",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.service_hash",
+                "account": "Escrow"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "render_verdict",
+      "discriminator": [
+        26,
+        187,
+        96,
+        10,
+        194,
+        100,
+        172,
+        54
+      ],
+      "accounts": [
+        {
+          "name": "judge",
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_a",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_b",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.service_hash",
+                "account": "Escrow"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "verdict",
+          "type": {
+            "defined": {
+              "name": "Verdict"
+            }
+          }
+        },
+        {
+          "name": "split_bps_a",
+          "type": "u16"
+        },
+        {
+          "name": "split_bps_b",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "submit_evidence",
+      "discriminator": [
+        12,
+        169,
+        228,
+        194,
+        229,
+        31,
+        44,
+        39
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_a",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_b",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.service_hash",
+                "account": "Escrow"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "evidence_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "timeout_release",
+      "discriminator": [
+        98,
+        176,
+        26,
+        12,
+        83,
+        105,
+        154,
+        68
+      ],
+      "accounts": [
+        {
+          "name": "cranker",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_a",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.agent_b",
+                "account": "Escrow"
+              },
+              {
+                "kind": "account",
+                "path": "escrow.service_hash",
+                "account": "Escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "escrow"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "agent_b_token_account",
+          "writable": true
+        },
+        {
+          "name": "agent_a",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ClaimEvent",
+      "discriminator": [
+        93,
+        15,
+        70,
+        170,
+        48,
+        140,
+        212,
+        219
+      ]
+    },
+    {
+      "name": "DepositEvent",
+      "discriminator": [
+        120,
+        248,
+        61,
+        83,
+        31,
+        142,
+        107,
+        144
+      ]
+    },
+    {
+      "name": "DisputeFiledEvent",
+      "discriminator": [
+        210,
+        85,
+        92,
+        64,
+        250,
+        199,
+        242,
+        51
+      ]
+    },
+    {
+      "name": "EvidenceSubmittedEvent",
+      "discriminator": [
+        202,
+        231,
+        219,
+        220,
+        101,
+        71,
+        194,
+        70
+      ]
+    },
+    {
+      "name": "TimeoutReleaseEvent",
+      "discriminator": [
+        177,
+        213,
+        165,
+        247,
+        112,
+        78,
+        2,
+        166
+      ]
+    },
+    {
+      "name": "VerdictRenderedEvent",
+      "discriminator": [
+        14,
+        88,
+        238,
+        6,
+        205,
+        81,
+        27,
+        229
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ZeroAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidTimeout",
+      "msg": "Timeout must be between 1 hour and 30 days"
+    },
+    {
+      "code": 6002,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidStatus",
+      "msg": "Invalid escrow status for this operation"
+    },
+    {
+      "code": 6004,
+      "name": "TimeoutNotExpired",
+      "msg": "Timeout period has not expired yet"
+    },
+    {
+      "code": 6005,
+      "name": "TimeoutExpired",
+      "msg": "Timeout period has expired, cannot file dispute"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Signer is not authorized for this operation"
+    },
+    {
+      "code": 6007,
+      "name": "EvidenceFull",
+      "msg": "Evidence submission limit reached for this party"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidSplit",
+      "msg": "Split basis points must sum to 10000"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidVerdict",
+      "msg": "Verdict::None is not a valid verdict"
+    }
+  ],
+  "types": [
+    {
+      "name": "ClaimEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "verdict",
+            "type": {
+              "defined": {
+                "name": "Verdict"
+              }
+            }
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "timeout_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeFiledEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "filed_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_a",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "service_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "EscrowStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "timeout_at",
+            "type": "i64"
+          },
+          {
+            "name": "dispute_filed_at",
+            "type": "i64"
+          },
+          {
+            "name": "verdict",
+            "type": {
+              "defined": {
+                "name": "Verdict"
+              }
+            }
+          },
+          {
+            "name": "split_bps_a",
+            "type": "u16"
+          },
+          {
+            "name": "split_bps_b",
+            "type": "u16"
+          },
+          {
+            "name": "evidence_count_a",
+            "type": "u8"
+          },
+          {
+            "name": "evidence_count_b",
+            "type": "u8"
+          },
+          {
+            "name": "evidence_hashes_a",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    32
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "evidence_hashes_b",
+            "type": {
+              "array": [
+                {
+                  "array": [
+                    "u8",
+                    32
+                  ]
+                },
+                5
+              ]
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Resolved"
+          },
+          {
+            "name": "Released"
+          },
+          {
+            "name": "Claimed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EvidenceSubmittedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "submitted_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "evidence_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "index",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TimeoutReleaseEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_b",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Verdict",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Release"
+          },
+          {
+            "name": "Refund"
+          },
+          {
+            "name": "Split"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VerdictRenderedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "verdict",
+            "type": {
+              "defined": {
+                "name": "Verdict"
+              }
+            }
+          },
+          {
+            "name": "split_bps_a",
+            "type": "u16"
+          },
+          {
+            "name": "split_bps_b",
+            "type": "u16"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "name": "Allowance",
+ "fork": "https://github.com/Blockchains/allowance-solana",
+ "commit": "f04b282d8e2372b41de18498933ee1000b5ac084",
+ "lesson": "/explore/allowance-solana/",
+ "programs": {
+  "devnet": "EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN",
+  "mainnet": null
+ }
+}

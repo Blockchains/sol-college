@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agent-court",
+  "slug": "agent-court",
+  "displayName": "Agent Court (Sol.College demonstration)",
+  "description": "Agent-to-agent SPL escrow with dispute, verdict and claim on Solana devnet (Anchor 0.32.1). deposit, file_dispute, render_verdict(Release) and claim were verified: 1_000_000 lab tokens were locked, a dispute was filed, a Release verdict was rendered, and claim paid agent_b exactly 1_000_000.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of pactnetwork/agent-court. The lab tree is branch sol-college-devnet of Blockchains/agent-court. The lab changed declare_id in agent-court-escrow to a unique Sol.College devnet program. The hosted IDL is the lab build. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "pactnetwork/agent-court",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agent-court",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agent-court-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentcourt"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T22:01:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (deposit, file_dispute, render_verdict, claim)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agent-court/",
+      "QA: devnet proof of the Release verdict payout to agent_b"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "timeout_release (min timeout is 1 hour) and Split/Refund verdicts"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "timeout-release",
+        "title": "Exercise timeout_release after the 3600-second minimum and a Split verdict claim",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "agent-court-escrow/programs/agent-court-escrow"
+  }
+}

@@ -1,0 +1,7 @@
+{"step":"setup","program":"DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp","config":"HeohivfGSgX3jCGtRD4RakhYj8QAxzh8EUYjwDamctqm","escrow":"4EK362s6ytPUkzq7z676eCDgXwy1pVVSdxKC3ghQhHXe","vault":"6butfk6ygXbKCvtkT7Ax2Kaaueg9u5gepkxxCfFEyhR4","provider":"H2vegMao5SMA5khB2psDqtJRV92B5TdEpuKHUwKJVyRk"}
+{"step":"initialize_protocol","ok":true,"sig":"2hKEFgYdbcSqQHeyQXVRY4hNdPe776Fy6G2svRvBTMGt8RvF2UStVKBxS9w4jKpgwYmS3Rw3oZhCXGp3ZB288ziM"}
+{"step":"create_escrow","ok":true,"sig":"3kEYjsfR8rGS2QhELuBuduxZBmZq5LpTV8Be6tR7TXVUS37LUKbTaoLCMJNwA9HyHngNXD8VexwzqwAYYj8PMvtf","vaultBal":"1000000"}
+{"step":"accept_escrow","ok":true,"sig":"3YCUf4kTsRvSmT12WugatfstFDp7q9mKsHbLtXpNsHRytfKGbfvJoctinwAAosLWJS9hcu9jNfmPmQYUzJHxW1QV"}
+{"step":"submit_proof","ok":true,"sig":"2zhxDCQ5DzTMizcufV9xeXz1PPnmztc3typMjG6ThtXTWQD7T1keGFdVTb6qsgaz37Ju7owEcQsgwBQ5ZeJvWFQg"}
+{"step":"confirm_completion","ok":true,"sig":"29ihkALiV7C8kYaCDNpfwGbXh8kPCsUNW1hV55iPCHzhHPChrExH6CkYH1eKpiJJLLXpL2MiP9BfMvXotpsCxPzz","providerDelta":"1000000","escrowClosed":true}
+{"step":"DONE","ok":true}
