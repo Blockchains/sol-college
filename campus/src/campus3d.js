@@ -215,15 +215,20 @@ export function mountCampus(container, data, opts = {}) {
 
   // shared geometries
   const glowTex = glowTexture();
-  const tableTop = new BoxGeometry(7.2, 0.12, 1.7), legGeo = new BoxGeometry(0.12, 0.72, 1.3), edgeGeo = new BoxGeometry(7.2, 0.035, 0.035);
+  const legGeo = new BoxGeometry(0.12, 0.72, 1.3);
   const tableMat = new MeshStandardMaterial({ color: 0x2a1810, roughness: 0.28, metalness: 0.25 });
   const velvet = new MeshStandardMaterial({ color: 0x5226b8, roughness: 0.85, metalness: 0, emissive: 0x1a0a52, emissiveIntensity: 0.55 });
   const screenBack = new MeshStandardMaterial({ color: 0x0a0a14, roughness: 0.5 });
 
   // chairs: instanced wingbacks (seat, back, two wings, cushion) — 6 per room
-  const seatsPerSide = 3, roomCounts = sectors.map((sid) => data.projects.filter((p) => p.sector === sid).length);
-  const sidesFor = (r) => (roomCounts[r] > seatsPerSide ? 2 : 1);
-  const chairCount = sectors.reduce((n, _, r) => n + sidesFor(r) * seatsPerSide, 0) || 1;
+  // Seating grows with the room: every project gets a seat. Up to 4 on the far side (facing the camera); beyond
+  // that both sides are used and the spacing tightens so the table still fits the room.
+  const roomCounts = sectors.map((sid) => data.projects.filter((p) => p.sector === sid).length);
+  const sidesFor = (r) => (roomCounts[r] > 4 ? 2 : 1);
+  const perSide = (r) => Math.max(3, Math.ceil(roomCounts[r] / sidesFor(r)));
+  const spacing = (r) => Math.min(2.4, (ROOM_W - 1.4) / perSide(r));
+  const tableLen = (r) => perSide(r) * spacing(r) + 0.4;
+  const chairCount = sectors.reduce((n, _, r) => n + sidesFor(r) * perSide(r), 0) || 1;
   const parts = [
     [new BoxGeometry(0.8, 0.42, 0.75), [0, 0.21, 0]],
     [new BoxGeometry(0.85, 1.25, 0.2), [0, 0.82, 0.32]],
@@ -235,13 +240,15 @@ export function mountCampus(container, data, opts = {}) {
   const seatPos = []; // [roomIndex][slot] => {x, z, rotY}
   for (let r = 0; r < nRooms; r++) {
     seatPos[r] = [];
-    for (let side = 0; side < sidesFor(r); side++) for (let k = 0; k < seatsPerSide; k++) {
-      const x = roomX(r) + (k - (seatsPerSide - 1) / 2) * 2.4, z = side === 0 ? -1.45 : 1.45, rot = side === 0 ? Math.PI : 0;
-      // far side (z<0) faces the camera: those seats are filled first
-      seatPos[r].push({ x, z, rot });
+    for (let side = 0; side < sidesFor(r); side++) for (let k = 0; k < perSide(r); k++) {
+      // far side (z<0): wingback chairs facing the table and the camera. Near side (crowded rooms only): backless
+      // stools offset by half a seat, avatars turned towards the camera so nobody hides behind a chair.
+      const near = side === 1;
+      const x = roomX(r) + (k - (perSide(r) - 1) / 2 + (near ? 0.5 : 0)) * spacing(r), z = near ? 1.35 : -1.45, rot = Math.PI;
+      seatPos[r].push({ x, z, rot, near });
       dummy.position.set(x, 0, z); dummy.rotation.set(0, rot, 0); dummy.updateMatrix();
       parts.forEach(([, off], pi) => {
-        part.position.set(off[0], off[1], off[2]); part.updateMatrix();
+        part.position.set(off[0], off[1], off[2]); part.scale.setScalar(near && pi > 0 ? 0 : 1); part.updateMatrix();
         part.matrix.premultiply(dummy.matrix);
         chairMeshes[pi].setMatrixAt(ci, part.matrix);
       });
@@ -257,8 +264,10 @@ export function mountCampus(container, data, opts = {}) {
     const cx = roomX(r), accent = ROOM[sid] ?? VIOLET, css = ROOM_CSS[sid] ?? '#9945ff';
     const room = new Group(); scene.add(room);
     // table
-    const top = new Mesh(tableTop, tableMat); top.position.set(cx, 0.78, 0); room.add(top);
-    for (const sx of [-3.1, 3.1]) { const leg = new Mesh(legGeo, tableMat); leg.position.set(cx + sx, 0.36, 0); room.add(leg); }
+    const L = tableLen(r);
+    const top = new Mesh(new BoxGeometry(L, 0.12, 1.7), tableMat); top.position.set(cx, 0.78, 0); room.add(top);
+    const edgeGeo = new BoxGeometry(L, 0.035, 0.035);
+    for (const sx of [-(L / 2 - 0.5), L / 2 - 0.5]) { const leg = new Mesh(legGeo, tableMat); leg.position.set(cx + sx, 0.36, 0); room.add(leg); }
     const edgeMat = new MeshBasicMaterial({ map: grad, toneMapped: false });
     for (const sz of [-0.85, 0.85]) { const e = new Mesh(edgeGeo, edgeMat); e.position.set(cx, 0.78, sz); room.add(e); }
     // under-table glow
@@ -279,10 +288,10 @@ export function mountCampus(container, data, opts = {}) {
       const halo = new Sprite(new SpriteMaterial({ map: glowTex, color: 0xffb36b, transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false })); halo.scale.set(1.3, 1.3, 1); halo.position.copy(bulb.position); room.add(halo);
     }
     // avatars: seated at the table, far side first (facing the camera)
-    const order = [0, 1, 2, 3, 4, 5];
-    ps.slice(0, seatPos[r].length).forEach((p, j) => {
-      const seat = seatPos[r][order[j]];
-      const a = new Group(); a.position.set(seat.x, 0, seat.z * 0.82); a.rotation.y = seat.rot; a.userData.base = 1.3; a.scale.setScalar(1.3); room.add(a);
+    const sc = Math.min(1.3, spacing(r) / 1.85);
+    ps.forEach((p, j) => {
+      const seat = seatPos[r][j];
+      const a = new Group(); a.position.set(seat.x, 0, seat.z * 0.82); a.rotation.y = seat.rot; a.userData.base = sc; a.scale.setScalar(sc); room.add(a);
       const bodyMat = new MeshStandardMaterial({ color: new Color(0xf4f0ff).lerp(new Color(accent), 0.18), emissive: accent, emissiveIntensity: low ? 0.5 : 0.32, roughness: 0.3, metalness: 0.15 });
       const body = new Mesh(new CapsuleGeometry(0.32, 0.55, low ? 4 : 8, low ? 10 : 18), bodyMat); body.position.y = 0.95;
       const head = new Mesh(new SphereGeometry(0.3, low ? 14 : 24, low ? 10 : 18), bodyMat); head.position.y = 1.72;
@@ -300,8 +309,8 @@ export function mountCampus(container, data, opts = {}) {
       const scarf = new Mesh(new TorusGeometry(0.3, 0.06, 8, low ? 16 : 28), new MeshBasicMaterial({ map: grad, toneMapped: false })); scarf.rotation.x = Math.PI / 2; scarf.position.y = 1.42;
       const hit = new Mesh(new CylinderGeometry(0.75, 0.75, 2.6, 8), new MeshBasicMaterial({ visible: false })); hit.position.y = 1.2; // generous tap target
       body.userData.slug = head.userData.slug = hit.userData.slug = p.slug;
-      a.add(body, head, visor, halo, glow, lap, base, scarf, hit);
-      const label = labelSprite(p.displayName.replace(/\s*\(.*\)$/, ''), css); label.position.set(seat.x, 3.3 + (j % 2) * 0.55, seat.z * 0.82); label.scale.set(3.0, 0.75, 1); label.userData.y0 = 3.3 + (j % 2) * 0.55; room.add(label);
+      a.add(body, head, visor, halo, glow, base, scarf, hit); if (!seat.near) a.add(lap);
+      const label = labelSprite(p.displayName.replace(/\s*\(.*\)$/, ''), css); const ly = seat.near ? 2.35 + (j % 2) * 0.35 : 3.25 + (j % 2) * 0.5 * (sc / 1.3); label.position.set(seat.x, ly, seat.z * 0.82); label.scale.set(2.9 * Math.max(0.8, sc / 1.3), 0.72 * Math.max(0.8, sc / 1.3), 1); label.userData.y0 = ly; room.add(label);
       avatars.push({ slug: p.slug, group: a, bodyMat, halo, glow, label, room: r, phase: j * 1.7, hover: 0, target: 0 });
       hitTargets.push(hit, body, head);
     });
@@ -346,6 +355,7 @@ export function mountCampus(container, data, opts = {}) {
   // ---------- camera rig ----------
   const views = [{ name: 'Overview', x: 0 }, ...sectors.map((s, i) => ({ name: `${s}`, x: roomX(i), room: i }))];
   const aspect0 = w0 / h0;
+  const fitV = (h) => (h / 2) / Math.tan(MathUtils.degToRad(camera.fov / 2));
   const fitDist = (span) => (span / 2) / Math.tan(MathUtils.degToRad(camera.fov / 2)) / Math.max(0.55, camera.aspect) * 1.02;
   const rig = { yaw: 0, pitch: 0.3, dist: 18, tx: 0, ty: 1.25, tz: 0 };
   const goal = { ...rig };
@@ -356,8 +366,14 @@ export function mountCampus(container, data, opts = {}) {
     goal.tx = v.x; goal.tz = viewIdx === 0 ? 0 : 0.2;
     const portrait = camera.aspect < 1;
     const fov = portrait ? 60 : 48; if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
-    goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : 0.78))) : Math.max(6.5, fitDist(ROOM_W * (portrait ? 0.56 : 0.9)));
-    goal.pitch = viewIdx === 0 ? 0.3 : (portrait ? 0.34 : 0.22); goal.ty = portrait ? 1.45 : 1.4; goal.yaw = 0;
+    // portrait: lens shift so the room sits lower in the frame (the space above the bookshelves is otherwise empty)
+    const W = container.clientWidth || 1, H = container.clientHeight || 1;
+    if (portrait && viewIdx > 0) camera.setViewOffset(W, H, 0, -H * 0.07, W, H); else camera.clearViewOffset();
+    const crowded = viewIdx > 0 && sidesFor(v.room) === 2;
+    goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : 0.78)))
+      : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.7, tableLen(v.room) + 1.4) : ROOM_W * (crowded ? 1.05 : 0.9)));
+    goal.pitch = viewIdx === 0 ? 0.3 : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
+    goal.ty = crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4; goal.yaw = 0;
     if (instant) Object.assign(rig, goal);
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === viewIdx)));
     if (ready) wake();

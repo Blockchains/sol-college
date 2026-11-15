@@ -845,7 +845,7 @@ footer { border-top: 1px solid var(--line); background: linear-gradient(180deg, 
   body { font-size: 16px; }
   section.band { padding: 56px 0; }
   section.band + section.band { padding-top: 40px; }
-  .ch-stage[data-mode="3d"] { grid-template-rows: clamp(340px, 54vh, 500px) auto; }
+  .ch-stage[data-mode="3d"] { grid-template-rows: clamp(320px, 46vh, 440px) auto; }
   .ch-stage[data-mode="3d"] .ch-rooms { grid-template-columns: 1fr; }
   .ch-stage[data-mode="3d"] .ch-blurb { display: none; }
   .proof-strip { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -863,3 +863,11 @@ footer { border-top: 1px solid var(--line); background: linear-gradient(180deg, 
   .bg-particles { display: none; }
   .glass:hover, .card:hover, .find-card:hover, .proof-card:hover, .principle:hover, .path-card:hover, .feature:hover { transform: none; }
 }
+/* 3D mode: the scene gets a fixed height; the room list below it is compact */
+@media (min-width: 761px) { .ch-stage[data-mode="3d"] { height: auto; grid-template-rows: clamp(440px, 64vh, 700px) auto; } }
+.ch-stage[data-mode="3d"] .ch-list { gap: 6px; }
+.ch-stage[data-mode="3d"] .ch-avatar { min-height: 34px; padding: 3px 10px 3px 3px; font-size: 13.5px; gap: 6px; }
+.ch-stage[data-mode="3d"] .ch-dot { width: 24px; height: 24px; }
+.ch-stage[data-mode="3d"] .ch-demo { font-size: 10px; padding: 1px 5px; }
+.ch-stage[data-mode="3d"] .ch-room h3 { font-size: 15px; margin-bottom: 6px; }
+.ch-stage[data-mode="3d"] .ch-list { flex-direction: row; flex-wrap: wrap; }
