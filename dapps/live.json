@@ -3816,5 +3816,123 @@
     "limits": "timeout_release and Split/Refund verdicts were not exercised. The official program id was not reused. render_verdict accepts any judge signer (as written upstream).",
     "functional": "full",
     "functional_evidence": "deposit 4VXTKE1B\u2026 locked 1_000_000 lab tokens in vault C4wGawpd84LEHn4Wz5HAJW7qPBLvpsQXXKKotgMnK8Ht (escrow 4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq). file_dispute 5LiKYDjp\u2026 and render_verdict 3UMuS92X\u2026 set verdict Release. claim 62QNHz1C\u2026 paid agent_b 2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8 exactly 1_000_000."
+  },
+  {
+    "slug": "covenant",
+    "name": "Covenant",
+    "lesson": "/explore/covenant/",
+    "app": "/dapps/covenant/",
+    "fork": "https://github.com/Blockchains/covenant-protocol",
+    "commit": "ee7bceb4d9c3fd9f1883f1a34be628a546988284",
+    "program": "6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the upstream app IDL with the lab program address substituted (the lab idl-build failed on proc-macro2); discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/covenant-protocol (unique declare_id). Blockchains/covenant is an unrelated fork of a different project and was not used.",
+    "learn": "init_config, signed by the upgrade authority, writes a singleton config PDA (seeds [\"config\"]) with a 3-arbitrator set and challenge-period bounds. create_job (seeds [\"job\", poster, spec_hash]) funds a PDA token account (seeds [\"escrow_token\", job]). accept_job and submit_work are signed by the taker; submit_work starts the challenge clock. finalize_payment is permissionless after that clock and pays the taker unless a sold claim listing is present (seeds [\"claim\", job], uninitialized here).",
+    "source": [
+      [
+        "programs/covenant/src/lib.rs L29-L47 (init_config)",
+        "https://github.com/Blockchains/covenant-protocol/blob/ee7bceb4d9c3fd9f1883f1a34be628a546988284/programs/covenant/src/lib.rs#L29-L47"
+      ],
+      [
+        "programs/covenant/src/lib.rs L59-L67 (create_job)",
+        "https://github.com/Blockchains/covenant-protocol/blob/ee7bceb4d9c3fd9f1883f1a34be628a546988284/programs/covenant/src/lib.rs#L59-L67"
+      ],
+      [
+        "programs/covenant/src/lib.rs L69-L85 (accept_job, submit_work, finalize_payment)",
+        "https://github.com/Blockchains/covenant-protocol/blob/ee7bceb4d9c3fd9f1883f1a34be628a546988284/programs/covenant/src/lib.rs#L69-L85"
+      ],
+      [
+        "programs/covenant/src/instructions/finalize_payment.rs",
+        "https://github.com/Blockchains/covenant-protocol/blob/ee7bceb4d9c3fd9f1883f1a34be628a546988284/programs/covenant/src/instructions/finalize_payment.rs"
+      ]
+    ],
+    "flow": "tests/devnet/covenant.mjs",
+    "log": "tests/devnet/logs/covenant-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy covenant as 6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4 on devnet",
+        "2KSyE7kbBZi3hgNaat4BkySYRdqkAx9xfXDEGh6pDfGmWpyifM1nGYNiKXtBmjFCHRLv9nd6VxkUDRxTsYEYXSzS"
+      ],
+      [
+        "init_config (config 9S6yJCLGu6okuQis68DMGbr4cZFBzYMYwd4nmrVdPnvb, min challenge 1s, threshold 2)",
+        "4enbnEYjddMdj6Ht7h3mqWbFWAMKaN6ThqpTjFNMZNkFaMbvfrTyLDLpuQ6qU1nvK8JxPrDfrWANNm1B6LeViRhJ"
+      ],
+      [
+        "create_job 1_000_000 (job 9SncPbxrqLudFdN3AqsZZqFDyobML8EutnkpDYZWJUYY, escrow D5RJvHWVZ8J5GH3Wt7bbDkCMNwPPbbL2am9GcTMuNF3b)",
+        "28FY42WbRPCyCCgzGXhkJVQacC264cFyvS1KwyXRxhVMnT6d23zFexbiNaTCbUrBrN4pS4Ru1Z4LmaDiTosiDYsp"
+      ],
+      [
+        "accept_job by taker C8Kh4ewr9iJB7yT1tsEUkuKTUTb7E23U83wL8WVBgKmd",
+        "2WU9SALSgyoRSMY3HRUF94w7cCLNjv8KhWzAhMuMycsveaAJz3CMA2oC1pR7qXxmQh7s9m1t3ozVFBPNeZJNq9gf"
+      ],
+      [
+        "submit_work",
+        "4irBFJ1GY2uuLaVBTixLbmrY5ZhxHDDGr3ytRXEwu3oWZfTV7iwEZZesYWdBLUR9xPEDpuVJcAvbnxEmK7KZzDtU"
+      ],
+      [
+        "finalize_payment paid the taker +1_000_000 and closed the job",
+        "65DJztfHtc6bcR3BUrZvdPLJLzffArkQBRJfU4Z5WdVeKARJDpeTNnXGrRoxoxtGKYHY9yhW7cJZb7Yfsiz9Gtmq"
+      ]
+    ],
+    "negative": [
+      "init_config requires the program upgrade authority (enforced via ProgramData); the lab used the deployer."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and taker keys through tests/devnet/covenant.mjs.",
+    "limits": "Disputes, cancel_job, and claim-listing sales were not exercised. The official program id was not reused. The hosted IDL is the upstream app IDL with the lab address substituted because idl-build failed.",
+    "functional": "full",
+    "functional_evidence": "init_config 4enbnEYj\u2026 wrote config 9S6yJCLGu6okuQis68DMGbr4cZFBzYMYwd4nmrVdPnvb (upgrade-authority gated). create_job 28FY42Wb\u2026 locked 1_000_000 lab tokens in escrow D5RJvHWVZ8J5GH3Wt7bbDkCMNwPPbbL2am9GcTMuNF3b (job 9SncPbxrqLudFdN3AqsZZqFDyobML8EutnkpDYZWJUYY). accept_job 2WU9SALS\u2026 and submit_work 4irBFJ1G\u2026 moved it to Delivered. After the 1-second challenge period, finalize_payment 65DJztfH\u2026 paid taker C8Kh4ewr9iJB7yT1tsEUkuKTUTb7E23U83wL8WVBgKmd exactly 1_000_000 and closed the job account."
+  },
+  {
+    "slug": "otomat",
+    "name": "Otomat",
+    "lesson": "/explore/otomat/",
+    "app": "/dapps/otomat/",
+    "fork": "https://github.com/Blockchains/otomat",
+    "commit": "da2c4c84fc27aa185cfe01baeb1c029010a49d96",
+    "program": "343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab build of programs/otomat-rail; discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/otomat (unique declare_id).",
+    "learn": "open_channel writes a PDA (seeds [\"channel\", payer, payee, mint]) and an escrow ATA owned by escrow_auth (seeds [\"escrow_auth\", channel]), then transfers the deposit from the payer ATA. close_channel is signed by the facilitator and requires instruction 0 to be an Ed25519 verification of the payer's check (`otomat/v2/check|` || channel || cumulative_le || nonce_le || expiry_le). It pays the cumulative amount to the payee, refunds the remainder, and closes the channel and escrow ATA.",
+    "source": [
+      [
+        "programs/otomat-rail/src/lib.rs L28-L38 (open_channel)",
+        "https://github.com/Blockchains/otomat/blob/da2c4c84fc27aa185cfe01baeb1c029010a49d96/programs/otomat-rail/src/lib.rs#L28-L38"
+      ],
+      [
+        "programs/otomat-rail/src/lib.rs L40-L48 (close_channel)",
+        "https://github.com/Blockchains/otomat/blob/da2c4c84fc27aa185cfe01baeb1c029010a49d96/programs/otomat-rail/src/lib.rs#L40-L48"
+      ],
+      [
+        "programs/otomat-rail/src/ed25519.rs (check message + pre-instruction parse)",
+        "https://github.com/Blockchains/otomat/blob/da2c4c84fc27aa185cfe01baeb1c029010a49d96/programs/otomat-rail/src/ed25519.rs"
+      ],
+      [
+        "programs/otomat-rail/src/instructions/channel.rs (open/close handlers)",
+        "https://github.com/Blockchains/otomat/blob/da2c4c84fc27aa185cfe01baeb1c029010a49d96/programs/otomat-rail/src/instructions/channel.rs"
+      ]
+    ],
+    "flow": "tests/devnet/otomat.mjs",
+    "log": "tests/devnet/logs/otomat-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy otomat-rail as 343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA on devnet",
+        "97vMcQVJXkYQXy4HBPe3eEV4PneSVuC14n7E77G8esXKr6j5qjf3Jtm6VKhkDBGq5YJSqKQsxvk9kMX32d68HH1"
+      ],
+      [
+        "open_channel deposit 2_000_000 (channel 3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t, escrow ATA 9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw)",
+        "34PspCsJptuEEDiN4ZgmjUfe6NEWRQouuJDF9ou8kLsaW9xJqGWPW5yV8QV1qHXBBF9Z6MYfzsEk75iV6ubTvKfw"
+      ],
+      [
+        "close_channel paid payee 4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8 exactly 1_000_000, refunded 1_000_000, and closed the channel",
+        "4AQp5jvYtT3LsLHgArLVNCwp86kWULAwLVEBALZVwCUMG5y9KoMR2fzsk3EBn3XGPSZwgmwm7ieV7hUnnuGZyQPm"
+      ]
+    ],
+    "negative": [
+      "close_channel without an Ed25519 pre-instruction is rejected (MissingEd25519Instruction)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and payee keys through tests/devnet/otomat.mjs.",
+    "limits": "dispute_channel, timeout_reclaim, commit_receipt, and facilitator bonds were not exercised. The official program id was not reused. The lab used the payer as the facilitator.",
+    "functional": "full",
+    "functional_evidence": "open_channel 34PspCsJ\u2026 locked 2_000_000 lab tokens in escrow ATA 9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw (channel 3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t). close_channel without Ed25519 was rejected (MissingEd25519Instruction). close_channel 4AQp5jvY\u2026 with a payer-signed otomat/v2/check paid payee 4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8 exactly 1_000_000, refunded 1_000_000 to the payer, and closed the channel and escrow ATA."
   }
 ]

@@ -1,0 +1,33 @@
+{
+  "title": "Otomat",
+  "summary": "Open a payment channel, lock tokens, and settle a payer-signed check through an Ed25519 pre-instruction.",
+  "what": "Otomat is an Anchor 0.31.1 payment-channel rail. open_channel (seeds [\"channel\", payer, payee, mint]) funds an ATA owned by an escrow_auth PDA (seeds [\"escrow_auth\", channel]). close_channel, signed by the facilitator, settles a cumulative amount to the payee and refunds the rest, but only after instruction 0 is an Ed25519 verification of the payer's check: `otomat/v2/check|` || channel || cumulative_le || nonce_le || expiry_le.",
+  "app_note": "The page at /dapps/otomat/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/otomat. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/otomat/, switch to Devnet, and connect a wallet. The lab already opened a 2_000_000-token channel, rejected a close without Ed25519, then settled a 1_000_000 check.",
+      "see": "Program 343pmZcq\u2026. Channel 3zfGyMqw\u2026 and escrow ATA 9GeU2hYH\u2026 should be closed; payee 4262h4DM\u2026 received 1_000_000.",
+      "ran": "open_channel 34PspCsJ\u2026; close_channel 4AQp5jvY\u2026"
+    }
+  ],
+  "diagram": "payer --open_channel--> channel+escrow ATA; facilitator --close_channel + Ed25519(payer check)--> payee ATA + refund, accounts closed.",
+  "accounts": [
+    "channel PDA seeds [\"channel\", payer, payee, mint]",
+    "escrow_auth PDA seeds [\"escrow_auth\", channel]",
+    "escrow ATA (authority = escrow_auth)"
+  ],
+  "instructions": [
+    "open_channel",
+    "close_channel",
+    "dispute_channel / resolve_dispute / timeout_reclaim (not exercised)"
+  ],
+  "innovation": "Settlement is a facilitator-submitted, payer-signed off-chain check verified by the Ed25519 precompile; the program also checks that the pre-instruction's offsets point at its own data.",
+  "frontend": "Generic IDL console at /dapps/otomat/. close_channel requires an Ed25519 pre-instruction as ix 0.",
+  "exercises": [
+    "Reconstruct the check message for a 1_000_000 cumulative and nonce 1.",
+    "What error is returned if close_channel has no Ed25519 pre-instruction?"
+  ],
+  "not_covered": [
+    "Unilateral dispute, timeout reclaim, receipts, and facilitator bonds"
+  ]
+}

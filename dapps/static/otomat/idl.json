@@ -1,0 +1,1851 @@
+{
+  "address": "343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA",
+  "metadata": {
+    "name": "otomat_rail",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Otomat x402 settlement rail program"
+  },
+  "instructions": [
+    {
+      "name": "close_channel",
+      "docs": [
+        "Cooperatively close a channel: settle `cumulative_amount` to the payee,",
+        "refund the remainder, and close the account. Requires a payer-signed",
+        "check verified through the Ed25519 pre-instruction."
+      ],
+      "discriminator": [
+        0,
+        104,
+        36,
+        1,
+        66,
+        0,
+        103,
+        157
+      ],
+      "accounts": [
+        {
+          "name": "facilitator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "channel",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  110,
+                  110,
+                  101,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel.payer",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.payee",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.mint",
+                "account": "Channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "and escrow-vault rent."
+          ],
+          "writable": true,
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "payee",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "escrow_authority"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payee_ata",
+          "writable": true
+        },
+        {
+          "name": "payer_ata",
+          "writable": true
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "cumulative_amount",
+          "type": "u64"
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "signature",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "commit_receipt",
+      "docs": [
+        "Commit an on-chain receipt for an `exact`-scheme (single) settlement."
+      ],
+      "discriminator": [
+        151,
+        113,
+        134,
+        175,
+        215,
+        19,
+        239,
+        23
+      ],
+      "accounts": [
+        {
+          "name": "facilitator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payer"
+        },
+        {
+          "name": "payee"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "receipt",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  112,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              },
+              {
+                "kind": "arg",
+                "path": "resource_hash"
+              },
+              {
+                "kind": "arg",
+                "path": "nonce"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "resource_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "nonce",
+          "type": "u64"
+        },
+        {
+          "name": "scheme",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "dispute_channel",
+      "docs": [
+        "Submit a newer payer-signed check to open (or extend) the dispute window."
+      ],
+      "discriminator": [
+        62,
+        30,
+        173,
+        35,
+        100,
+        219,
+        251,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "submitter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "channel",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  110,
+                  110,
+                  101,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel.payer",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.payee",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.mint",
+                "account": "Channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "instructions",
+          "address": "Sysvar1nstructions1111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "counter_cumulative",
+          "type": "u64"
+        },
+        {
+          "name": "counter_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "counter_signature",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "open_channel",
+      "docs": [
+        "Open and fund a payer -> payee escrow channel."
+      ],
+      "discriminator": [
+        91,
+        45,
+        253,
+        71,
+        140,
+        166,
+        107,
+        109
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "payee"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "channel",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  110,
+                  110,
+                  101,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer"
+              },
+              {
+                "kind": "account",
+                "path": "payee"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "escrow_authority"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "deposit",
+          "type": "u64"
+        },
+        {
+          "name": "expiry",
+          "type": "i64"
+        },
+        {
+          "name": "facilitator",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "open_facilitator_bond",
+      "docs": [
+        "Post a facilitator bond into a program-owned vault."
+      ],
+      "discriminator": [
+        235,
+        37,
+        89,
+        152,
+        150,
+        18,
+        144,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "bond_mint"
+        },
+        {
+          "name": "bond",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  97,
+                  99,
+                  105,
+                  108,
+                  105,
+                  116,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  98,
+                  111,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bond_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bond"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "bond_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "operator_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "resolve_dispute",
+      "docs": [
+        "Finalise a disputed/unilaterally-closed channel after the challenge window."
+      ],
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "resolver",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "channel",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  110,
+                  110,
+                  101,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel.payer",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.payee",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.mint",
+                "account": "Channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "payee",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "escrow_authority"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payee_ata",
+          "writable": true
+        },
+        {
+          "name": "payer_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "slash_facilitator",
+      "docs": [
+        "Slash a facilitator bond by `amount`; governance-signed."
+      ],
+      "discriminator": [
+        154,
+        98,
+        149,
+        97,
+        71,
+        210,
+        204,
+        61
+      ],
+      "accounts": [
+        {
+          "name": "governance",
+          "signer": true
+        },
+        {
+          "name": "operator",
+          "docs": [
+            "`has_one = operator` against the bond account."
+          ],
+          "relations": [
+            "bond"
+          ]
+        },
+        {
+          "name": "bond",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  97,
+                  99,
+                  105,
+                  108,
+                  105,
+                  116,
+                  97,
+                  116,
+                  111,
+                  114,
+                  95,
+                  98,
+                  111,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "bond_mint",
+          "relations": [
+            "bond"
+          ]
+        },
+        {
+          "name": "bond_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "bond"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "bond_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "slash_destination",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "reason_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "timeout_reclaim",
+      "docs": [
+        "Reclaim the escrow to the payer once a channel has expired without a close."
+      ],
+      "discriminator": [
+        57,
+        19,
+        28,
+        96,
+        44,
+        229,
+        135,
+        216
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "channel",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  110,
+                  110,
+                  101,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel.payer",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.payee",
+                "account": "Channel"
+              },
+              {
+                "kind": "account",
+                "path": "channel.mint",
+                "account": "Channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payee",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "mint",
+          "relations": [
+            "channel"
+          ]
+        },
+        {
+          "name": "escrow_authority",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119,
+                  95,
+                  97,
+                  117,
+                  116,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "channel"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow_ata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "escrow_authority"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "payer_ata",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Channel",
+      "discriminator": [
+        49,
+        159,
+        99,
+        106,
+        220,
+        87,
+        219,
+        88
+      ]
+    },
+    {
+      "name": "FacilitatorBond",
+      "discriminator": [
+        25,
+        138,
+        205,
+        215,
+        129,
+        42,
+        252,
+        10
+      ]
+    },
+    {
+      "name": "Receipt",
+      "discriminator": [
+        39,
+        154,
+        73,
+        106,
+        80,
+        102,
+        145,
+        153
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ChannelClosed",
+      "discriminator": [
+        119,
+        198,
+        23,
+        254,
+        216,
+        124,
+        84,
+        16
+      ]
+    },
+    {
+      "name": "ChannelDisputed",
+      "discriminator": [
+        12,
+        104,
+        251,
+        60,
+        127,
+        104,
+        248,
+        19
+      ]
+    },
+    {
+      "name": "ChannelOpened",
+      "discriminator": [
+        253,
+        213,
+        255,
+        96,
+        31,
+        188,
+        47,
+        170
+      ]
+    },
+    {
+      "name": "ChannelReclaimed",
+      "discriminator": [
+        197,
+        109,
+        90,
+        216,
+        34,
+        203,
+        123,
+        20
+      ]
+    },
+    {
+      "name": "FacilitatorBonded",
+      "discriminator": [
+        176,
+        218,
+        169,
+        203,
+        69,
+        21,
+        186,
+        226
+      ]
+    },
+    {
+      "name": "FacilitatorSlashed",
+      "discriminator": [
+        230,
+        20,
+        22,
+        105,
+        7,
+        148,
+        126,
+        15
+      ]
+    },
+    {
+      "name": "ReceiptCommitted",
+      "discriminator": [
+        21,
+        39,
+        220,
+        84,
+        163,
+        1,
+        110,
+        196
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidSignature",
+      "msg": "Ed25519 signature does not match the expected channel check"
+    },
+    {
+      "code": 6001,
+      "name": "NonceNotIncreasing",
+      "msg": "Nonce must strictly increase over the last recorded check"
+    },
+    {
+      "code": 6002,
+      "name": "CumulativeExceedsDeposit",
+      "msg": "Cumulative amount exceeds the channel deposit"
+    },
+    {
+      "code": 6003,
+      "name": "CumulativeRegression",
+      "msg": "Counter check cumulative may not fall below the recorded settled amount"
+    },
+    {
+      "code": 6004,
+      "name": "ChannelExpired",
+      "msg": "Channel has already expired"
+    },
+    {
+      "code": 6005,
+      "name": "ChannelNotExpired",
+      "msg": "Channel has not yet reached its expiry"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidChannelStatus",
+      "msg": "Channel status does not permit this operation"
+    },
+    {
+      "code": 6007,
+      "name": "MissingEd25519Instruction",
+      "msg": "Ed25519 pre-instruction is missing at index 0"
+    },
+    {
+      "code": 6008,
+      "name": "MessageMismatch",
+      "msg": "Signed message does not match the reconstructed check"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidTokenProgram",
+      "msg": "Token program is not a supported SPL Token or Token-2022 program"
+    },
+    {
+      "code": 6010,
+      "name": "FacilitatorMismatch",
+      "msg": "Signer is not the facilitator registered on this channel"
+    },
+    {
+      "code": 6011,
+      "name": "GovernanceMismatch",
+      "msg": "Signer is not the configured governance authority"
+    },
+    {
+      "code": 6012,
+      "name": "BondInsufficient",
+      "msg": "Slash amount exceeds the remaining bonded balance"
+    },
+    {
+      "code": 6013,
+      "name": "BondAlreadyActive",
+      "msg": "Operator already has an active bond"
+    },
+    {
+      "code": 6014,
+      "name": "DisputeWindowActive",
+      "msg": "Dispute challenge window has not yet elapsed"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidScheme",
+      "msg": "Unknown payment scheme identifier"
+    },
+    {
+      "code": 6016,
+      "name": "ZeroAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidExpiry",
+      "msg": "Expiry must be in the future"
+    }
+  ],
+  "types": [
+    {
+      "name": "Channel",
+      "docs": [
+        "A payer -> payee escrow channel keyed by `(payer, payee, mint)`.",
+        "",
+        "PDA seeds: `[b\"channel\", payer, payee, mint]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payer",
+            "docs": [
+              "Funder of the escrow; the only party whose Ed25519 checks are honoured."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "payee",
+            "docs": [
+              "Recipient of settled funds."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "docs": [
+              "SPL Token or Token-2022 mint escrowed by this channel."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "facilitator",
+            "docs": [
+              "Settlement signer authorised to cooperatively close the channel."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit",
+            "docs": [
+              "Total amount the payer deposited into escrow."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "cumulative_paid",
+            "docs": [
+              "Highest cumulative amount recorded from a verified check."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "Highest check nonce recorded; monotonically increasing."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "expiry",
+            "docs": [
+              "Unix timestamp after which the payer may `timeout_reclaim`."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current lifecycle status."
+            ],
+            "type": {
+              "defined": {
+                "name": "ChannelStatus"
+              }
+            }
+          },
+          {
+            "name": "dispute_window_end",
+            "docs": [
+              "Unix timestamp at which the dispute window closes (0 when not disputing)."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump for the channel PDA."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "escrow_bump",
+            "docs": [
+              "Bump for the escrow-authority PDA that owns the vault."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChannelClosed",
+      "docs": [
+        "Emitted when a channel is finalised (cooperative close, dispute resolution,",
+        "or timeout reclaim) and settled on-chain."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "channel",
+            "type": "pubkey"
+          },
+          {
+            "name": "cumulative_paid",
+            "type": "u64"
+          },
+          {
+            "name": "refund",
+            "type": "u64"
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChannelDisputed",
+      "docs": [
+        "Emitted when a newer signed check overrides the pending close of a channel."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "channel",
+            "type": "pubkey"
+          },
+          {
+            "name": "counter_cumulative",
+            "type": "u64"
+          },
+          {
+            "name": "counter_nonce",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChannelOpened",
+      "docs": [
+        "Emitted when a payer opens and funds a payment channel."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "channel",
+            "type": "pubkey"
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "payee",
+            "type": "pubkey"
+          },
+          {
+            "name": "deposit",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChannelReclaimed",
+      "docs": [
+        "Emitted when a payer reclaims their escrow after the channel expires without",
+        "a settlement (`timeout_reclaim`). Complements the generic [`ChannelClosed`]",
+        "with reclaim-specific payer, mint, and refunded amount so indexers can tell an",
+        "abandonment refund apart from a cooperative close or a dispute resolution."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "channel",
+            "type": "pubkey"
+          },
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChannelStatus",
+      "docs": [
+        "Lifecycle status of a payment [`Channel`]."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "CloseInitiated"
+          },
+          {
+            "name": "Closed"
+          },
+          {
+            "name": "Disputed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FacilitatorBond",
+      "docs": [
+        "A facilitator operator's slashable bond.",
+        "",
+        "PDA seeds: `[b\"facilitator_bond\", operator]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "bond_amount",
+            "docs": [
+              "Amount originally bonded into the vault."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bond_mint",
+            "docs": [
+              "Mint of the bonded asset (OTOMAT / USDC / SOL wrapper in v1)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "slashed",
+            "docs": [
+              "Cumulative amount slashed so far."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "docs": [
+              "Whether the operator is still an active facilitator."
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "last_settle_ts",
+            "docs": [
+              "Unix timestamp of the last settlement bookkeeping update."
+            ],
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FacilitatorBonded",
+      "docs": [
+        "Emitted when an operator posts a facilitator bond."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FacilitatorSlashed",
+      "docs": [
+        "Emitted when governance slashes a facilitator bond."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Receipt",
+      "docs": [
+        "An on-chain payment receipt committed for `exact` and channel settlements.",
+        "",
+        "PDA seeds: `[b\"receipt\", payer, resource_hash, nonce_le]`."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "payee",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "resource_hash",
+            "docs": [
+              "`sha256(resource_url)` bound to the payment."
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "scheme",
+            "docs": [
+              "`0` = exact, `1` = otomat-channel, `2` = otomat-stream."
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReceiptCommitted",
+      "docs": [
+        "Emitted when a facilitator commits a single-payment (`exact` scheme) receipt."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "payer",
+            "type": "pubkey"
+          },
+          {
+            "name": "payee",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "resource_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "scheme",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

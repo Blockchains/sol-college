@@ -1,0 +1,5 @@
+{"step":"setup","program":"343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA","channel":"3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t","escrowAta":"9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw","payee":"4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8","expiry":1794784008}
+{"step":"open_channel","ok":true,"sig":"34PspCsJptuEEDiN4ZgmjUfe6NEWRQouuJDF9ou8kLsaW9xJqGWPW5yV8QV1qHXBBF9Z6MYfzsEk75iV6ubTvKfw","vaultBal":"2000000"}
+{"step":"negative_no_ed25519","expectedFailure":true,"error":"MissingEd25519Instruction"}
+{"step":"close_channel","ok":true,"sig":"4AQp5jvYtT3LsLHgArLVNCwp86kWULAwLVEBALZVwCUMG5y9KoMR2fzsk3EBn3XGPSZwgmwm7ieV7hUnnuGZyQPm","payeeDelta":"1000000","escrowLeft":"0","channelClosed":true}
+{"step":"DONE","ok":true}

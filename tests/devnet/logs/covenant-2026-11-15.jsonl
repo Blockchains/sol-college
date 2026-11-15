@@ -1,0 +1,7 @@
+{"step":"setup","program":"6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4","config":"9S6yJCLGu6okuQis68DMGbr4cZFBzYMYwd4nmrVdPnvb","job":"9SncPbxrqLudFdN3AqsZZqFDyobML8EutnkpDYZWJUYY","escrowToken":"D5RJvHWVZ8J5GH3Wt7bbDkCMNwPPbbL2am9GcTMuNF3b","taker":"C8Kh4ewr9iJB7yT1tsEUkuKTUTb7E23U83wL8WVBgKmd","programData":"5r45e4shp7owhrDMXSgDurm5r4guBGMaEn1JBndtwcu2"}
+{"step":"init_config","ok":true,"sig":"4enbnEYjddMdj6Ht7h3mqWbFWAMKaN6ThqpTjFNMZNkFaMbvfrTyLDLpuQ6qU1nvK8JxPrDfrWANNm1B6LeViRhJ"}
+{"step":"create_job","ok":true,"sig":"28FY42WbRPCyCCgzGXhkJVQacC264cFyvS1KwyXRxhVMnT6d23zFexbiNaTCbUrBrN4pS4Ru1Z4LmaDiTosiDYsp","vaultBal":"1000000"}
+{"step":"accept_job","ok":true,"sig":"2WU9SALSgyoRSMY3HRUF94w7cCLNjv8KhWzAhMuMycsveaAJz3CMA2oC1pR7qXxmQh7s9m1t3ozVFBPNeZJNq9gf"}
+{"step":"submit_work","ok":true,"sig":"4irBFJ1GY2uuLaVBTixLbmrY5ZhxHDDGr3ytRXEwu3oWZfTV7iwEZZesYWdBLUR9xPEDpuVJcAvbnxEmK7KZzDtU"}
+{"step":"finalize_payment","ok":true,"sig":"65DJztfHtc6bcR3BUrZvdPLJLzffArkQBRJfU4Z5WdVeKARJDpeTNnXGrRoxoxtGKYHY9yhW7cJZb7Yfsiz9Gtmq","takerDelta":"1000000","jobClosed":true}
+{"step":"DONE","ok":true}

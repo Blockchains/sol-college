@@ -1,0 +1,10 @@
+{
+ "name": "Covenant",
+ "fork": "https://github.com/Blockchains/covenant-protocol",
+ "commit": "ee7bceb4d9c3fd9f1883f1a34be628a546988284",
+ "lesson": "/explore/covenant/",
+ "programs": {
+  "devnet": "6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4",
+  "mainnet": null
+ }
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-covenant",
+  "slug": "covenant",
+  "displayName": "Covenant (Sol.College demonstration)",
+  "description": "Optimistic SPL job escrow on Solana devnet (Anchor 0.30.1). init_config, create_job, accept_job, submit_work and finalize_payment were verified: 1_000_000 lab tokens were locked, the taker accepted and submitted work, and after a 1-second challenge period finalize_payment paid the taker exactly 1_000_000 and closed the job.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of wienerlabs/covenant. The lab tree is branch sol-college-devnet of Blockchains/covenant-protocol (Blockchains/covenant is an unrelated fork of a different project). The lab changed declare_id to a unique Sol.College devnet program. The hosted IDL is the upstream app IDL with the lab address substituted, because the lab idl-build failed; discriminators were confirmed by live transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "wienerlabs/covenant",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/covenant-protocol",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "covenant-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-covenant"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T22:08:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (init_config, create_job, accept_job, submit_work, finalize_payment)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/covenant/",
+      "QA: devnet proof of the optimistic happy path with a 1-second challenge period"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "raise_dispute, resolve_dispute, cancel_job, and claim-listing sale"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "dispute-path",
+        "title": "Exercise raise_dispute and resolve_dispute with the 3-of-N arbitrator set",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.30.1",
+    "solanaVersion": "2.3.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/covenant"
+  }
+}

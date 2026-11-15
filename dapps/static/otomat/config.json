@@ -1,0 +1,10 @@
+{
+ "name": "Otomat",
+ "fork": "https://github.com/Blockchains/otomat",
+ "commit": "da2c4c84fc27aa185cfe01baeb1c029010a49d96",
+ "lesson": "/explore/otomat/",
+ "programs": {
+  "devnet": "343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA",
+  "mainnet": null
+ }
+}

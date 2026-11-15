@@ -1,0 +1,37 @@
+{
+  "title": "Covenant",
+  "summary": "Post a token-funded job, let a taker accept and submit work, then finalize payment after the challenge period.",
+  "what": "Covenant is an Anchor 0.30.1 optimistic escrow for agent jobs. init_config (restricted to the program upgrade authority) writes a singleton config PDA (seeds [\"config\"]) with an arbitrator set and challenge-period bounds. create_job (seeds [\"job\", poster, spec_hash]) locks tokens in a PDA token account (seeds [\"escrow_token\", job]). The taker accept_job then submit_work, which starts the challenge clock. finalize_payment is permissionless once that clock expires and no dispute is active; it pays the taker (or a sold claim buyer), credits reputation, and closes the job.",
+  "app_note": "The page at /dapps/covenant/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/covenant-protocol. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/covenant/, switch to Devnet, and connect a wallet. The lab already ran init_config, create_job, accept_job, submit_work and finalize_payment for 1_000_000 lab tokens with a 1-second challenge period.",
+      "see": "Program 6ftEd3uT\u2026. Job 9SncPbxr\u2026 should be closed; taker C8Kh4ewr\u2026 received 1_000_000.",
+      "ran": "init_config 4enbnEYj\u2026; create_job 28FY42Wb\u2026; accept_job 2WU9SALS\u2026; submit_work 4irBFJ1G\u2026; finalize_payment 65DJztfH\u2026"
+    }
+  ],
+  "diagram": "admin --init_config--> config; poster --create_job--> job+escrow_token; taker --accept_job/submit_work--> Delivered; anyone --finalize_payment--> taker ATA, job closed.",
+  "accounts": [
+    "config PDA seeds [\"config\"]",
+    "job PDA seeds [\"job\", poster, spec_hash]",
+    "escrow_token PDA seeds [\"escrow_token\", job]",
+    "reputation PDA seeds [\"reputation\", taker]",
+    "claim listing PDA seeds [\"claim\", job] (uninitialized in the happy path)"
+  ],
+  "instructions": [
+    "init_config",
+    "create_job",
+    "accept_job",
+    "submit_work",
+    "finalize_payment"
+  ],
+  "innovation": "Payment is delayed until the challenge period expires, and finalize_payment always sees the deterministic claim-listing PDA so a sold claim cannot be skipped.",
+  "frontend": "Generic IDL console at /dapps/covenant/.",
+  "exercises": [
+    "Derive the job PDA from poster and spec_hash.",
+    "What account must sign init_config besides the admin?"
+  ],
+  "not_covered": [
+    "Disputes, cancel_job, and claim-listing sales"
+  ]
+}
