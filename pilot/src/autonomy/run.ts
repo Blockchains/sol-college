@@ -152,7 +152,8 @@ export async function runProject(d: RunDeps, slug: string, log: (s: string) => v
     if (d.dryRun) { log(`[dry-run] would dispatch ${spec.taskId}`); return null; }
     const rec = await dispatchTask(deps, spec);
     log(`dispatched ${spec.taskId}: ${rec.state}`);
-    activity.push({ at: nowIso, text: `CTO agent asked to ${spec.kind.replace("-", " ")}${meta.prUrl ? ` for ${meta.prUrl.replace("https://github.com/", "")}` : ""}` });
+    const verb: Record<Kind, string> = { "research-plan": "Drafting the next research question", "upstream-impact": "Assessing an upstream change", "pr-triage": "Triaging a lab pull request", "adoption-draft": "Drafting an adoption package", "progress-report": "Writing the Lab Reporter status", "smoke-test": "Running a smoke test" };
+    activity.push({ at: nowIso, text: `${verb[spec.kind]}${meta.prUrl ? ` (${meta.prUrl.replace("https://github.com/", "")})` : ""}` });
     return rec;
   };
 
