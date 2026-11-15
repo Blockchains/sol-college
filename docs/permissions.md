@@ -7,7 +7,8 @@
 | candidate-validation | contents: read | **none** | none | **yes, isolated** (untrusted-validate job only) |
 | minds-smoke-test | contents: read | Builder key | minds / minds-admin (message) | no |
 | minds-admin | contents: read | Builder key, mapping | minds (read) / minds-admin (mutate) | no |
-| coordination-request | contents: read, issues: write | Builder key, mapping, control token | minds-admin | no (issue text is data) |
+| coordination-request | contents: read, issues: write | Builder key, mapping, control deploy key | minds (auto; requester must be a configured reviewer) | no (issue text is data) |
+| cto-autonomy | contents: write, issues: write, actions: write | Builder key, mapping, control deploy key | minds (auto, main only) | no |
 | upstream-reconcile | contents: write | none | none | no |
 | adoption-package | contents: write, actions: read | none | none | no |
 | project-acceptance | contents: write, issues: write, actions: write | none | none | no |
@@ -36,6 +37,7 @@ entered in the Connections UI, never in conversation text.
 1. Ruleset on `main`: require a pull request with 1 approval and code-owner review; require status check `pilot-ci / ci`;
    block force pushes and deletions. Allow `github-actions[bot]` to push only to `records/public/**` (or move record
    writes to PRs).
-2. Private control repo `Blockchains/sol-college-control` (private): holds task records, provisioning state, Minds
-   transcripts and security notes. Access: owner only plus a fine-grained token (contents: read/write on that repo)
-   stored as `SC_CONTROL_TOKEN` in environment `minds-admin`.
+2. Private control repo `Blockchains/sol-college-control` (created 2026-11-15): task records, provisioning state,
+   autonomy state. Access: owner plus one **deploy key** with write access to that repository only (narrowest
+   credential GitHub offers without a GitHub App), stored as `SC_CONTROL_DEPLOY_KEY` in environments `minds` and
+   `minds-admin`. Fine-grained tokens cannot be created through the API.

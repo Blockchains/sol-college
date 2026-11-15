@@ -17,13 +17,30 @@ adapter are checked against the installed package by `tests/integration/contract
   and response format. The SDK has no instructions/persona endpoint, so a message is the only supported surface;
   acknowledgement does not guarantee compliance (every structured reply is validated by code).
 
-## Skills
-The API exposes only Bazaar search and equip/unequip by `skillId`; it has no endpoint to create a Skill. Private
-Skills are built by describing them to the Mind. That was not done in this run because the CTO Mind stopped replying
-after the instructions message (see docs/verification.md). Third-party Bazaar Skills were not equipped: they are
-unvetted instructions from other authors and none matches the playbooks. To build: send each playbook in
-`config/minds/skills/` to the CTO Mind in its own conversation, tell it to keep the Skill private, then equip the
-returned `skillId` with `minds equip gifter-escrow --skills <id>`. Publishing to Bazaar still needs separate approval.
+## Second CTO Mind (2026-11-15 16:25 GMT)
+- "SolCollege-Sentient-CTO" (`13a9d041…`, `chiefofstaff`) for `sentient-send` (DeFi, Sol.College-owned demonstration
+  lab on Blockchains/sentient.send; no partnership with the upstream author). Same idempotent provisioning, mapping
+  entry `sentient-send-cto`, instructions v1 (acknowledged), autonomy schedule. First research question: issue #3
+  (questions over 32 bytes fail because the question is a PDA seed).
+
+## Skills (built by the Minds themselves, 2026-11-15)
+Requested in conversation `<prefix>-skills-v1` with four playbooks (Project Navigator, Research Planner, PR Triage,
+Lab Reporter): private, no Bazaar. Each Mind built, registered unlisted (`isListed=false`) and equipped all four;
+confirmed independently with `listEquippedSkills`, and a public Bazaar search for "Sol.College"/"SolCollege" returns
+nothing.
+
+| Mind | Skill | skillId |
+| --- | --- | --- |
+| SolCollege-Gifter-CTO | Sol.College Project Navigator | E5A8D041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Gifter-CTO | Sol.College Research Planner | E9A8D041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Gifter-CTO | Sol.College PR Triage | EBA8D041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Gifter-CTO | Sol.College Lab Reporter | EEA8D041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Sentient-CTO | SolCollege_ProjectNavigator | 2EAED041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Sentient-CTO | SolCollege_ResearchPlanner | 31AED041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Sentient-CTO | SolCollege_PRTriage | 38AED041-F36B-1410-8467-00039CE7DF11 |
+| SolCollege-Sentient-CTO | SolCollege_LabReporter | 3BAED041-F36B-1410-8467-00039CE7DF11 |
+
+The other six playbooks are not built yet. Publishing any Skill to Bazaar still needs separate approval.
 
 ## Still needing approval
 1. **Circles**: none planned for the pilot. Public visitors are never added to a private CTO Circle.
