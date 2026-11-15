@@ -289,7 +289,10 @@ export async function reconcileTask(deps: Pick<DispatchDeps, "minds" | "store">,
   // newest-first: replies to our message have smaller indexes than sentIdx
   // Prefer the earliest correlated reply that carries a JSON block; interim progress notes keep the task open.
   const replies = rows.slice(0, sentIdx).reverse().filter((r) => r.senderType !== 1 && typeof r.messageText === "string");
-  const reply = replies.find((r) => !isInterimReply(r.messageText as string) && normaliseReplyText(r.messageText as string).includes(spec.taskId))
+  // A Mind sometimes sends a corrected reply for the same taskId ("formatting correction"): the newest correlated
+  // reply that validates wins; otherwise fall back to the earliest correlated one (which may go to operator review).
+  const reply = [...replies].reverse().find((r) => !isInterimReply(r.messageText as string) && normaliseReplyText(r.messageText as string).includes(spec.taskId) && validateTaskResponse(spec, r).ok)
+    ?? replies.find((r) => !isInterimReply(r.messageText as string) && normaliseReplyText(r.messageText as string).includes(spec.taskId))
     ?? replies.find((r) => normaliseReplyText(r.messageText as string).includes(spec.taskId));
   if (!reply) {
     const next = transition(rec, "uncertain", "message delivered; no correlated reply yet");
