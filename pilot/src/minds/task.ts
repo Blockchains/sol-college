@@ -133,7 +133,8 @@ export function validateTaskResponse(spec: TaskSpec, reply: MessageRecord): Pars
   for (const f of arr("facts")) {
     const fact = f as { statement?: unknown; sourceRefs?: unknown };
     if (typeof fact.statement !== "string" || !Array.isArray(fact.sourceRefs) || fact.sourceRefs.length === 0) errors.push("each fact needs a statement and at least one sourceRef");
-    else for (const s of fact.sourceRefs) if (!allowedSources.has(String(s))) errors.push(`fact cites unknown source ${String(s)}`);
+    // Facts may cite any id listed in the task (sources or evidence); nothing else.
+    else for (const s of fact.sourceRefs) if (!allowedSources.has(String(s)) && !allowedEvidence.has(String(s))) errors.push(`fact cites unknown source ${String(s)}`);
   }
   for (const h of arr("hypotheses")) {
     const hy = h as { statement?: unknown; howToTest?: unknown };

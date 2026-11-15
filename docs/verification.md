@@ -21,7 +21,7 @@ Repo commit at time of writing: see `git log` (f53d142 and later). Runs are in h
 | Minds smoke test with message (local operator) | PASS (8/8) | `minds smoke-test --mind-name SolCollege-Gifter-CTO --allow-message …` | reply received in ~60 s |
 | Minds smoke test with message, on Actions | PASS (8/8; reply step = timeout handled) | run 43731784210 (env `minds-admin`, approved under the user's instruction) | Mind did not reply within 180 s; recorded uncertain, no resend |
 | CTO instructions v1 delivered | PASS | `minds configure gifter-escrow …` | acknowledged (1644 chars) |
-| Structured task (PR triage) | PARTIAL: dispatched, interim reply, final reply pending | `minds task gifter-escrow --spec …` | state `uncertain`; reconcile with `reconcileTask`; never resent |
+| Structured task (PR triage of 5628bfc) | PASS (completed after operator re-evaluation) | `minds task gifter-escrow --spec …`, then `reconcileTask` | interim note at ~11 min, final sc-task-response/1 at ~15 min: 9 sourced facts, 3 hypotheses, 3 proposals, 4 uncertainties. First validated as operator-review (a fact cited an evidence id); policy updated so facts may cite any id listed in the task; same stored reply re-evaluated, never resent. The Mind found a real fixture gap: refund closure is not asserted |
 | Private Skills built/equipped | NOT EXECUTED | — | no create-Skill API; Mind-built Skills postponed (Mind slow to reply); third-party Skills not equipped |
 | Landing hero: 3D campus first, lazy three.js | PASS | live https://sol.college/ (Playwright, desktop 1440×900) | 3D after load; FCP ≈1.2 s, campus3d.js (139 KB) requested after first paint |
 | Landing: keyboard (focus scene, arrows, Enter) opens overlay | PASS | Playwright | |
