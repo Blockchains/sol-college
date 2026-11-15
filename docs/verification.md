@@ -13,7 +13,9 @@ Repo commit at time of writing: see `git log` (f53d142 and later). Runs are in h
 | Candidate validation, negative control e288388 | FAIL as intended | run 43730202863 | fixture: makerGainB 4.999999 ≠ 5, run blocked |
 | Candidate validation, upstream baseline a9c3a41 | PASS (limitation) | run 43729455493 | fixture does not reproduce the toolchain-dependent devnet crash |
 | Adoption package | PASS | run 43731781862, commit 91ede63 | `gifter-escrow-5628bfc9439f-v1`, sha256 70ae6f6d…f4da, deciding run 43730277119 |
-| Project acceptance | NOT EXECUTED (needs the human reviewer) | `/sc-accept …` comment by @Blockchains | the agent must not post it |
+| Project acceptance (auto, owner policy t690u) | PASS: gifter-escrow-5628bfc9439f-v1 accepted as acc-f3ed74b742d6541e, labelled "auto-accepted by owner policy (2026-11-15, user instruction)", humanReviewed false | project-acceptance run 43747291510 (accept-auto + certificate) | no human reviewed it; /sc-accept remains optional |
+| Certificate | PASS: scc-d1082e3d503c1455c30a issued to Blockchains, live in https://sol.college/campus/data.json | certificate job in 43747291510; campus-publication 43747361061; deploy 43747381414 | re-verified against GitHub before issue |
+| Auto-chain from cto-autonomy | RAN, then corrected: cto-autonomy 43747545014 dispatched project-acceptance 43747646642, which accepted gifter-escrow-036c6d5d6955-v1 (Mind-authored lab patch) and issued scc-15353a337da12b1b4418 to github-actions[bot]; credential revoked, bot-authored packages now refused | 43747545014, 43747646642 | no self-acceptance |
 | Certificate | NOT EXECUTED | follows acceptance automatically | fails closed without verified acceptance |
 | Minds smoke test, read-only, on Actions (College) | PASS | run 43729497471 (env `minds`) | message steps NOT EXECUTED (not a test Mind) |
 | CTO Mind provisioning | PASS | `minds provision gifter-escrow --name SolCollege-Gifter-CTO --archetype chiefofstaff` | idempotent rerun created nothing; approval: user instruction 15:35 GMT |

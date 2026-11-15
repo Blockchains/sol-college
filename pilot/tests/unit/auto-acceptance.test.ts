@@ -31,3 +31,8 @@ test("Auto-acceptance is refused when any condition fails", () => {
   assert.throws(() => verifyAutoAcceptance({ ...ctx, storedBytes: Buffer.concat([pkg.bytes, Buffer.from(" ")]) }), /sha256/);
   assert.throws(() => verifyAutoAcceptance({ ...ctx, currentVerdict: { ...passing, decidingRun: { runId: 1, htmlUrl: "x" } as never } }), /newer validation run/);
 });
+
+test("Auto-acceptance refuses agent-authored work (no self-acceptance)", () => {
+  const m = { ...pkg.manifest, contributions: pkg.manifest.contributions.map((c) => ({ ...c, author: "github-actions[bot]" })) };
+  assert.throws(() => verifyAutoAcceptance({ ...ctx, manifest: m }), /self-acceptance/);
+});

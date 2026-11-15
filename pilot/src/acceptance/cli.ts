@@ -40,7 +40,7 @@ if (a0 === "auto") {
   if (!a1) throw new Error("usage: acceptance auto <packageId>");
   const { project, policy, manifest, sha256, bytes } = loadPackage(a1);
   const verdict = await verdictFor(gh, project, policy, manifest.candidate.sha);
-  const rec = verifyAutoAcceptance({ project, manifest, storedBytes: bytes, storedManifestSha256: sha256, currentVerdict: verdict, now: new Date().toISOString() });
+  const rec = verifyAutoAcceptance({ project, manifest, storedBytes: bytes, storedManifestSha256: sha256, agentIdentities: policy.agentIdentities, currentVerdict: verdict, now: new Date().toISOString() });
   const stored = storeAcceptance(join(PUBLIC_RECORDS_DIR, "acceptance"), rec);
   const priv = process.env["SC_PRIVATE_RECORDS_DIR"];
   if (priv && stored.created) { mkdirSync(join(priv, "acceptance"), { recursive: true }); appendFileSync(join(priv, "acceptance", "log.jsonl"), JSON.stringify({ ...rec, runUrl: process.env["GITHUB_RUN_ID"] ? `https://github.com/${process.env["GITHUB_REPOSITORY"]}/actions/runs/${process.env["GITHUB_RUN_ID"]}` : null }) + "\n"); }

@@ -30,6 +30,9 @@ private control repo as data). Third-party actions are pinned to full SHAs (enfo
   the candidate commit matches. The public acceptance record, the private log in the control repo and the
   certificate all say **"auto-accepted by owner policy (2026-11-15, user instruction)"** with `humanReviewed: false`:
   no human reviewed it. `certificate-publication` re-verifies the same conditions before issuing.
+- Agent-authored work is never auto-accepted (no self-acceptance): a package whose contributor is a bot/agent identity
+  (e.g. a Mind's lab patch pushed as `github-actions[bot]`) is refused. Added after the first chained run certified
+  `gifter-escrow-036c6d5d6955-v1` to `github-actions[bot]`; that credential was revoked.
 - The manual path below still works and is optional.
 - Acceptance requires a new, unedited issue comment `/sc-accept …` by a configured reviewer: login **and** numeric
   account id **and** role `adoption-acceptance` **and** author association OWNER/MEMBER/COLLABORATOR. Bots and the

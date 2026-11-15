@@ -58,6 +58,7 @@ export interface AutoAcceptanceContext {
   manifest: AdoptionManifest;
   storedBytes: Buffer;
   storedManifestSha256: string;
+  agentIdentities?: string[];
   currentVerdict: CandidateVerdict;
   now: string;
 }
@@ -70,6 +71,11 @@ export interface AutoAcceptanceContext {
 export function verifyAutoAcceptance(ctx: AutoAcceptanceContext): AcceptanceRecord {
   const m = ctx.manifest;
   if (m.project.slug !== ctx.project.slug) throw new AcceptanceDenied("package belongs to another project");
+  // No self-acceptance: work authored by an agent or bot identity (e.g. a Mind's lab patch pushed by Actions) is never
+  // auto-accepted or certified; it needs a human contributor of record.
+  const agents = new Set(["github-actions[bot]", "sol-college-cto[bot]", ...(ctx.agentIdentities ?? [])].map((a) => a.toLowerCase()));
+  const botAuthors = m.contributions.map((c) => c.author).filter((a) => a.toLowerCase().endsWith("[bot]") || agents.has(a.toLowerCase()));
+  if (botAuthors.length) throw new AcceptanceDenied(`agent-authored work cannot be auto-accepted (no self-acceptance): ${botAuthors.join(", ")}`);
   const recomputed = sha256Hex(canonicalBytes(m));
   if (recomputed !== ctx.storedManifestSha256 || sha256Hex(ctx.storedBytes) !== ctx.storedManifestSha256) throw new AcceptanceDenied("package sha256 does not match the recomputed canonical hash");
   if (sha256Hex(canonicalBytes(m.evidence)) !== m.evidenceDigest) throw new AcceptanceDenied("package evidence digest does not match its evidence");
