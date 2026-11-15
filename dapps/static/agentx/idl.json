@@ -1,0 +1,598 @@
+{
+  "address": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+  "metadata": {
+    "name": "agentx",
+    "version": "0.2.1",
+    "spec": "0.1.0",
+    "description": "Lifecycle of autonomous AI agents on Solana (lab initialize_registry patch)"
+  },
+  "instructions": [
+    {
+      "name": "initialize_registry",
+      "discriminator": [
+        189,
+        181,
+        20,
+        17,
+        174,
+        57,
+        249,
+        59
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "writable": true
+        },
+        {
+          "name": "agx_mint"
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_agent",
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent_account",
+          "writable": true
+        },
+        {
+          "name": "registry",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent_id",
+          "type": {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "model",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "execute_task",
+      "discriminator": [
+        40,
+        221,
+        126,
+        117,
+        34,
+        115,
+        211,
+        2
+      ],
+      "accounts": [
+        {
+          "name": "task_account",
+          "writable": true
+        },
+        {
+          "name": "agent_account",
+          "writable": true
+        },
+        {
+          "name": "registry",
+          "writable": true
+        },
+        {
+          "name": "oracle",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "task_nonce",
+          "type": "u64"
+        },
+        {
+          "name": "result_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "result_summary",
+          "type": "string"
+        },
+        {
+          "name": "reward_lamports",
+          "type": "u64"
+        },
+        {
+          "name": "success",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "update_state",
+      "discriminator": [
+        135,
+        112,
+        215,
+        75,
+        247,
+        185,
+        53,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "agent_account",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_status",
+          "type": {
+            "defined": {
+              "name": "AgentStatus"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "claim_reward",
+      "discriminator": [
+        149,
+        95,
+        181,
+        242,
+        94,
+        90,
+        158,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "agent_account",
+          "writable": true
+        },
+        {
+          "name": "reward_vault",
+          "writable": true
+        },
+        {
+          "name": "owner_token_account",
+          "writable": true
+        },
+        {
+          "name": "registry"
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deactivate_agent",
+      "discriminator": [
+        205,
+        171,
+        239,
+        225,
+        82,
+        126,
+        96,
+        166
+      ],
+      "accounts": [
+        {
+          "name": "agent_account",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentAccount",
+      "discriminator": [
+        241,
+        119,
+        69,
+        140,
+        233,
+        9,
+        112,
+        50
+      ]
+    },
+    {
+      "name": "RegistryAccount",
+      "discriminator": [
+        113,
+        93,
+        106,
+        201,
+        100,
+        166,
+        146,
+        98
+      ]
+    },
+    {
+      "name": "TaskAccount",
+      "discriminator": [
+        235,
+        32,
+        10,
+        23,
+        81,
+        60,
+        170,
+        203
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentRegisteredEvent",
+      "discriminator": [
+        5,
+        45,
+        126,
+        32,
+        57,
+        44,
+        245,
+        15
+      ]
+    },
+    {
+      "name": "TaskExecutedEvent",
+      "discriminator": [
+        254,
+        22,
+        133,
+        127,
+        157,
+        246,
+        147,
+        85
+      ]
+    },
+    {
+      "name": "RewardClaimedEvent",
+      "discriminator": [
+        246,
+        43,
+        215,
+        228,
+        82,
+        49,
+        230,
+        56
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Agent name exceeds maximum length"
+    },
+    {
+      "code": 6001,
+      "name": "ModelTooLong",
+      "msg": "Model identifier exceeds maximum length"
+    },
+    {
+      "code": 6002,
+      "name": "ResultTooLong",
+      "msg": "Task result summary exceeds maximum length"
+    },
+    {
+      "code": 6003,
+      "name": "AgentNotActive",
+      "msg": "Agent is not in Active status"
+    },
+    {
+      "code": 6004,
+      "name": "AgentDeactivated",
+      "msg": "Agent has been permanently deactivated"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Caller is not authorized for this action"
+    },
+    {
+      "code": 6006,
+      "name": "RegistrationPaused",
+      "msg": "New agent registrations are currently paused"
+    },
+    {
+      "code": 6007,
+      "name": "NoRewardsToClaim",
+      "msg": "No rewards available to claim"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Inactive"
+          },
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Paused"
+          },
+          {
+            "name": "Deactivated"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "model",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "AgentStatus"
+              }
+            }
+          },
+          {
+            "name": "tasks_completed",
+            "type": "u64"
+          },
+          {
+            "name": "tasks_failed",
+            "type": "u64"
+          },
+          {
+            "name": "total_rewards",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RegistryAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_agents",
+            "type": "u64"
+          },
+          {
+            "name": "total_tasks",
+            "type": "u64"
+          },
+          {
+            "name": "agx_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "registration_paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TaskAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "task_nonce",
+            "type": "u64"
+          },
+          {
+            "name": "submitted_at",
+            "type": "i64"
+          },
+          {
+            "name": "result_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "result_summary",
+            "type": "string"
+          },
+          {
+            "name": "reward_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "verified",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentRegisteredEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_id",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TaskExecutedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "task_nonce",
+            "type": "u64"
+          },
+          {
+            "name": "success",
+            "type": "bool"
+          },
+          {
+            "name": "reward_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "RewardClaimedEvent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

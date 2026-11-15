@@ -1,0 +1,10 @@
+{
+ "name": "AgentX",
+ "fork": "https://github.com/Blockchains/AgentX-Solana-Deploy",
+ "commit": "2dfa2d92d8e535fc10513b9dc8722bb92bc1badf",
+ "lesson": "/explore/agentx/",
+ "programs": {
+  "devnet": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+  "mainnet": null
+ }
+}

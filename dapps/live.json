@@ -2394,5 +2394,76 @@
     "limits": "check_spend is a policy check only: it does not transfer tokens. The 3600-second window reset was not waited out in this run. The hosted IDL was derived from source and confirmed by these transactions rather than produced by anchor idl-build.",
     "functional": "full",
     "functional_evidence": "init_policy, check_spend (spent_window=100), pause_agent and close_policy all landed; InvalidWindow, LimitExceeded and PolicyPaused were rejected as expected; the policy account was closed."
+  },
+  {
+    "slug": "agentx",
+    "name": "AgentX",
+    "lesson": "/explore/agentx/",
+    "app": "/dapps/agentx/",
+    "fork": "https://github.com/Blockchains/AgentX-Solana-Deploy",
+    "commit": "2dfa2d92d8e535fc10513b9dc8722bb92bc1badf",
+    "program": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program only. The hosted IDL was derived from the program source (anchor idl-build failed in this toolchain) and confirmed by the live transactions below. initialize_registry is a lab patch.",
+    "learn": "An admin initialises a registry PDA (lab patch \u2014 upstream shipped no initialize instruction). Owners register an agent PDA seeded by [\"agent\", owner, agent_id]; the agent starts Inactive. The owner can update_state to Active, an oracle (the registry authority) commits execute_task results, and the owner can deactivate the agent permanently.",
+    "source": [
+      [
+        "programs/agentx/src/lib.rs L292-L305 (lab initialize_registry writes the registry PDA)",
+        "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L292-L305"
+      ],
+      [
+        "programs/agentx/src/lib.rs L167-L191 and L307-L347 (register_agent PDA [\"agent\", owner, agent_id])",
+        "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L307-L347"
+      ],
+      [
+        "programs/agentx/src/lib.rs L349-L399 (execute_task, oracle must be registry.authority, agent must be Active)",
+        "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L349-L399"
+      ],
+      [
+        "programs/agentx/src/lib.rs L401-L456 (update_state and deactivate_agent)",
+        "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L401-L456"
+      ]
+    ],
+    "flow": "tests/devnet/agentx.mjs",
+    "log": "tests/devnet/logs/agentx-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deployed the program to devnet (upgrade authority is the lab wallet)",
+        "czBdZUMnPUFKSQ4Z4BSYcQJAfYT9iTL458zQ6aGv1vRRRudfqe4Z4fdVGEzeKemqhYj2CPHNhzxWHXxGuvbB8SP"
+      ],
+      [
+        "Upgraded the program with the lab initialize_registry patch",
+        "65dyL7yDijzQjJnvdykcrAppPbWzw8wR4e9eGNeurkegtnpobVD2EBZhymDYdw9mEcNXF88qe69k4sWo9c98LReP"
+      ],
+      [
+        "initialize_registry created registry AeeXtNcd\u2026, authority=lab wallet, registration_paused=false",
+        "3XPkzaUoGaKYeKriePpe9qVAdXgWABtUAcvsjZ7KVW5YFMEiPkrMiMBW1igfHbTi5BAHqmdp2Wkixx6T4F6nws88"
+      ],
+      [
+        "register_agent id=sc-deai1 name=campus-scout model=grok-bot created agent 6FtQojvN\u2026 status=Inactive",
+        "4zenNhJ5GXq34w1r14gCN2iM1qPw6BcxaXDfRsvNqYrWvLkoLPY2i38rvij9XYsqWG9yW5ZRhUb7xkYkhHrHnm6G"
+      ],
+      [
+        "update_state to Active",
+        "4idYwJhhjJcQ8RMBxynvw5GyCyBT3PDaKEM9g4QE4prGGjKF62pvA4Z7tmQPsfTgukFVKtpJ54iCxQzy87d4fPdi"
+      ],
+      [
+        "execute_task nonce=1 success=true reward=42, task 7MR2FKL5\u2026; tasks_completed=1",
+        "M1vYKfRRx5y5B9f4rZWkGAQRiTUcMzTcMtxtJPAR8rWBDGad28Sf4yHF68P4WC3W8mUFHaYP7H7N7mMChpDbgxd"
+      ],
+      [
+        "deactivate_agent; status=Deactivated",
+        "YHeFy4nAV9tNAG8Kg6jGQ1ezwArfJuXhV6yQjmGDvAwSvN29g4Lybkw9BMCFy9t2LvPUB987cUHi3Ci6fstDagw"
+      ]
+    ],
+    "negative": [
+      "A second register_agent with the same agent_id is rejected (account already in use)",
+      "execute_task while the agent is Inactive is rejected (AgentNotActive)",
+      "update_state after deactivate_agent is rejected (AgentDeactivated)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/agentx.mjs.",
+    "limits": "claim_reward was not exercised: it needs an AGX token vault signed by the registry PDA. initialize_registry is a Sol.College lab patch, not present upstream.",
+    "functional": "full",
+    "functional_evidence": "initialize_registry, register_agent, update_state (Active), execute_task (tasks_completed=1, verified=true) and deactivate_agent all landed and were read back; AgentNotActive and AgentDeactivated were rejected as expected."
   }
 ]

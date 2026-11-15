@@ -1,0 +1,39 @@
+{
+ "slug": "agentx",
+ "cluster": "devnet",
+ "program": "agentx",
+ "idl": "agentx.json",
+ "devnet": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "czBdZUMnPUFKSQ4Z4BSYcQJAfYT9iTL458zQ6aGv1vRRRudfqe4Z4fdVGEzeKemqhYj2CPHNhzxWHXxGuvbB8SP"
+  },
+  {
+   "label": "upgrade_init_registry_patch",
+   "sig": "65dyL7yDijzQjJnvdykcrAppPbWzw8wR4e9eGNeurkegtnpobVD2EBZhymDYdw9mEcNXF88qe69k4sWo9c98LReP"
+  },
+  {
+   "label": "initialize_registry",
+   "sig": "3XPkzaUoGaKYeKriePpe9qVAdXgWABtUAcvsjZ7KVW5YFMEiPkrMiMBW1igfHbTi5BAHqmdp2Wkixx6T4F6nws88"
+  },
+  {
+   "label": "register_agent",
+   "sig": "4zenNhJ5GXq34w1r14gCN2iM1qPw6BcxaXDfRsvNqYrWvLkoLPY2i38rvij9XYsqWG9yW5ZRhUb7xkYkhHrHnm6G"
+  },
+  {
+   "label": "update_state",
+   "sig": "4idYwJhhjJcQ8RMBxynvw5GyCyBT3PDaKEM9g4QE4prGGjKF62pvA4Z7tmQPsfTgukFVKtpJ54iCxQzy87d4fPdi"
+  },
+  {
+   "label": "execute_task",
+   "sig": "M1vYKfRRx5y5B9f4rZWkGAQRiTUcMzTcMtxtJPAR8rWBDGad28Sf4yHF68P4WC3W8mUFHaYP7H7N7mMChpDbgxd"
+  },
+  {
+   "label": "deactivate_agent",
+   "sig": "YHeFy4nAV9tNAG8Kg6jGQ1ezwArfJuXhV6yQjmGDvAwSvN29g4Lybkw9BMCFy9t2LvPUB987cUHi3Ci6fstDagw"
+  }
+ ],
+ "verified": "2026-11-15"
+}

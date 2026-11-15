@@ -1,0 +1,196 @@
+{
+  "title": "AgentX: on-chain lifecycle for autonomous AI agents",
+  "summary": "Initialise a registry, register an agent PDA, activate it, commit an oracle-signed task result, then deactivate it.",
+  "what": "AgentX is an Anchor program for the lifecycle of autonomous AI agents on Solana: a global registry, per-agent PDAs, oracle-signed task records and (optional) AGX reward claims. Upstream shipped no initialize instruction even though every other instruction requires the registry PDA, so this lab deployment adds initialize_registry. The hosted app is Sol.College's generic IDL console pointed at this devnet program.",
+  "app_note": "The fork has no first-party frontend. The page at /dapps/agentx/ is the generic IDL-driven wallet console. initialize_registry is a lab patch.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentx/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
+      "see": "The page lists initialize_registry, register_agent, execute_task, update_state, claim_reward and deactivate_agent, and shows program 7cnrBzeF\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "initialize_registry is already done on this lab deployment. Fetch the registry PDA (seeds [\"registry\"]).",
+      "see": "authority is the lab wallet, registration_paused is false.",
+      "ran": "initialize_registry sig 3XPkzaUoGaKYeKriePpe9qVAdXgWABtUAcvsjZ7KVW5YFMEiPkrMiMBW1igfHbTi5BAHqmdp2Wkixx6T4F6nws88 wrote registry AeeXtNcdGeJbWsZNZ6mgtg7iQn9KEtjKLDAoY8kKS1CS."
+    },
+    {
+      "do": "register_agent with a fresh 8-byte agent_id, a short name and model, then update_state to Active.",
+      "see": "An agent PDA seeded by [\"agent\", owner, agent_id] starting Inactive, then Active.",
+      "ran": "register_agent sig 4zenNhJ5GXq34w1r14gCN2iM1qPw6BcxaXDfRsvNqYrWvLkoLPY2i38rvij9XYsqWG9yW5ZRhUb7xkYkhHrHnm6G created 6FtQojvNw9Uh1nyAHQwv8T74SaX3KxbwBzTceVNLqcMx (campus-scout); update_state sig 4idYwJhhjJcQ8RMBxynvw5GyCyBT3PDaKEM9g4QE4prGGjKF62pvA4Z7tmQPsfTgukFVKtpJ54iCxQzy87d4fPdi."
+    },
+    {
+      "do": "As the registry authority (oracle), submit execute_task with a result hash, a short summary, a reward and success=true.",
+      "see": "A task PDA and tasks_completed incremented.",
+      "ran": "execute_task sig M1vYKfRRx5y5B9f4rZWkGAQRiTUcMzTcMtxtJPAR8rWBDGad28Sf4yHF68P4WC3W8mUFHaYP7H7N7mMChpDbgxd wrote task 7MR2FKL5kAtpGt8bzcWm8wPVuAQ4HpULpBmqmBqfgUdR; tasks_completed=1, total_rewards=42."
+    },
+    {
+      "do": "deactivate_agent, then try update_state back to Active.",
+      "see": "status=Deactivated; a later update is rejected with AgentDeactivated.",
+      "ran": "deactivate_agent sig YHeFy4nAV9tNAG8Kg6jGQ1ezwArfJuXhV6yQjmGDvAwSvN29g4Lybkw9BMCFy9t2LvPUB987cUHi3Ci6fstDagw; the lab run caught AgentDeactivated."
+    }
+  ],
+  "diagram": "admin \u2500 initialize_registry() \u2500\u25b6 Registry PDA [\"registry\"]  (lab patch)\nowner \u2500 register_agent(id, name, model) \u2500\u25b6 Agent PDA [\"agent\", owner, id] (Inactive)\nowner \u2500 update_state(Active)\noracle(=registry.authority) \u2500 execute_task(...) \u2500\u25b6 Task PDA [\"task\", agent, nonce]\nowner \u2500 deactivate_agent() \u2500\u25b6 status=Deactivated (irreversible)",
+  "accounts": [
+    [
+      "RegistryAccount",
+      "PDA `[\"registry\"]`",
+      "Authority, totals, AGX mint, registration_paused. Created by the lab initialize_registry patch."
+    ],
+    [
+      "AgentAccount",
+      "PDA `[\"agent\", owner, agent_id]`",
+      "Name, model, status, task counters, accrued rewards."
+    ],
+    [
+      "TaskAccount",
+      "PDA `[\"task\", agent, task_nonce le bytes]`",
+      "Oracle-submitted result hash, summary, reward, verified flag."
+    ]
+  ],
+  "instructions": [
+    {
+      "name": "initialize_registry",
+      "refs": [
+        [
+          "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L292-L305",
+          "lib.rs L292-L305"
+        ]
+      ],
+      "steps": [
+        "Lab patch. Creates the registry PDA and records the authority and AGX mint pubkey."
+      ]
+    },
+    {
+      "name": "register_agent",
+      "refs": [
+        [
+          "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L307-L347",
+          "lib.rs L307-L347"
+        ]
+      ],
+      "steps": [
+        "Creates the agent PDA, starting Inactive, and increments registry.total_agents."
+      ]
+    },
+    {
+      "name": "update_state",
+      "refs": [
+        [
+          "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L401-L419",
+          "lib.rs L401-L419"
+        ]
+      ],
+      "steps": [
+        "Owner-only. Cannot reactivate a Deactivated agent."
+      ]
+    },
+    {
+      "name": "execute_task",
+      "refs": [
+        [
+          "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L349-L399",
+          "lib.rs L349-L399"
+        ]
+      ],
+      "steps": [
+        "Oracle must be registry.authority; agent must be Active. Credits tasks_completed and total_rewards on success."
+      ]
+    },
+    {
+      "name": "deactivate_agent",
+      "refs": [
+        [
+          "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs#L456-L464",
+          "lib.rs L456-L464"
+        ]
+      ],
+      "steps": [
+        "Owner-only, irreversible."
+      ]
+    }
+  ],
+  "innovation": {
+    "title": "A shared on-chain identity and task log for autonomous agents",
+    "text": "The interesting DeAI idea is a registry of agent PDAs plus oracle-signed task receipts that anyone can audit. Rewards accrue on the agent account; claiming them (AGX transfer) was not exercised here. The lab had to add initialize_registry because upstream omitted it.",
+    "refs": [
+      [
+        "https://github.com/Blockchains/AgentX-Solana-Deploy/blob/2dfa2d92d8e535fc10513b9dc8722bb92bc1badf/programs/agentx/src/lib.rs",
+        "lib.rs"
+      ]
+    ],
+    "more": "claim_reward needs an AGX vault and was not sent."
+  },
+  "frontend": [
+    {
+      "title": "Generic IDL console",
+      "refs": [
+        [
+          "/dapps/agentx/",
+          "Hosted app"
+        ]
+      ],
+      "steps": [
+        "Connect a devnet wallet.",
+        "initialize_registry is already confirmed; fetch the registry.",
+        "register_agent with a unique 8-byte id."
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Derive the agent PDA",
+      "steps": [
+        "Seeds are [\"agent\", owner pubkey, 8-byte agent_id]. Use program id 7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K."
+      ],
+      "expect": "It matches 6FtQojvNw9Uh1nyAHQwv8T74SaX3KxbwBzTceVNLqcMx for agent_id sc-deai1 and the lab owner.",
+      "hint": "agent_id is raw 8 bytes, not a string account.",
+      "approach": "PublicKey.findProgramAddressSync."
+    },
+    {
+      "title": "Why did the first execute_task fail?",
+      "steps": [
+        "Read the AgentNotActive constraint on ExecuteTask."
+      ],
+      "expect": "The agent starts Inactive; update_state to Active is required first.",
+      "hint": "constraint = agent_account.status == AgentStatus::Active",
+      "approach": "Read the ExecuteTask accounts struct."
+    },
+    {
+      "title": "Who may sign execute_task?",
+      "steps": [
+        "Find the oracle constraint."
+      ],
+      "expect": "oracle.key() must equal registry.authority.",
+      "hint": "Unauthorized if it does not.",
+      "approach": "Read ExecuteTask."
+    }
+  ],
+  "not_covered": "claim_reward was not sent (needs an AGX vault). The hosted UI was not clicked in headless Chromium in this run. initialize_registry is a lab patch.",
+  "path_order": 23,
+  "path_stage": 2,
+  "difficulty": "Intermediate",
+  "time": "35 min",
+  "objectives": [
+    "Initialise (or fetch) the registry PDA.",
+    "Register, activate and deactivate an agent.",
+    "Explain why execute_task requires Active status and the registry authority as oracle."
+  ],
+  "prereqs": [
+    "A wallet on devnet with a little SOL.",
+    "Comfort with PDAs and Anchor constraints."
+  ],
+  "concepts": [
+    "pda",
+    "anchor",
+    "ai-agent-registry",
+    "oracle-callback"
+  ],
+  "build": {
+    "dir": "programs/agentx",
+    "anchor": "0.30.1",
+    "test": "tests/devnet/agentx.mjs",
+    "note": "Program id on this lab deployment is 7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K. initialize_registry is a lab patch."
+  },
+  "functional": "full"
+}

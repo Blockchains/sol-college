@@ -1,0 +1,14 @@
+{"step":"setup","program":"7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","registry":"AeeXtNcdGeJbWsZNZ6mgtg7iQn9KEtjKLDAoY8kKS1CS","agentId":"sc-deai1","agentAccount":"6FtQojvNw9Uh1nyAHQwv8T74SaX3KxbwBzTceVNLqcMx"}
+{"step":"initialize_registry","ok":true,"sig":"3XPkzaUoGaKYeKriePpe9qVAdXgWABtUAcvsjZ7KVW5YFMEiPkrMiMBW1igfHbTi5BAHqmdp2Wkixx6T4F6nws88"}
+{"step":"fetch_registry","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","totalAgents":"0","registrationPaused":false}
+{"step":"register_agent","ok":true,"sig":"4zenNhJ5GXq34w1r14gCN2iM1qPw6BcxaXDfRsvNqYrWvLkoLPY2i38rvij9XYsqWG9yW5ZRhUb7xkYkhHrHnm6G"}
+{"step":"fetch_agent","ok":true,"owner":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","name":"campus-scout","model":"grok-bot","status":{"inactive":{}},"tasksCompleted":"0"}
+{"step":"register_agent_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"execute_task_inactive","expectedFailure":true,"error":"AgentNotActive"}
+{"step":"update_state_active","ok":true,"sig":"4idYwJhhjJcQ8RMBxynvw5GyCyBT3PDaKEM9g4QE4prGGjKF62pvA4Z7tmQPsfTgukFVKtpJ54iCxQzy87d4fPdi"}
+{"step":"fetch_after_update","ok":true,"status":{"active":{}}}
+{"step":"execute_task","ok":true,"sig":"M1vYKfRRx5y5B9f4rZWkGAQRiTUcMzTcMtxtJPAR8rWBDGad28Sf4yHF68P4WC3W8mUFHaYP7H7N7mMChpDbgxd","task":"7MR2FKL5kAtpGt8bzcWm8wPVuAQ4HpULpBmqmBqfgUdR"}
+{"step":"fetch_after_task","ok":true,"tasksCompleted":"1","totalRewards":"42","verified":true,"resultSummary":"devnet proof task"}
+{"step":"deactivate_agent","ok":true,"sig":"YHeFy4nAV9tNAG8Kg6jGQ1ezwArfJuXhV6yQjmGDvAwSvN29g4Lybkw9BMCFy9t2LvPUB987cUHi3Ci6fstDagw"}
+{"step":"fetch_after_deactivate","ok":true,"status":{"deactivated":{}}}
+{"step":"update_state_after_deactivate","expectedFailure":true,"error":"AgentDeactivated"}

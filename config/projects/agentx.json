@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agentx",
+  "slug": "agentx",
+  "displayName": "AgentX (Sol.College demonstration)",
+  "description": "On-chain lifecycle for autonomous AI agents on Solana devnet (Anchor 0.30). An admin initialises a registry PDA (lab patch: upstream shipped no initialize instruction); owners register agent PDAs, an oracle commits task results, and the owner can update status or deactivate.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/AgentX-Solana-Deploy fork. The initialize_registry instruction is a lab patch because upstream has no way to create the registry PDA that every other instruction requires. The upstream author has not joined Sol.College; the patch is offered upstream as an ordinary pull request and acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "agentx-protocol/AgentX-Solana-Deploy",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/AgentX-Solana-Deploy",
+    "branch": "main"
+  },
+  "mind": {
+    "mappingRef": "agentx-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentx"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-15T20:22:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness on the Solana runtime (initialize_registry, register_agent, update_state, execute_task, deactivate_agent)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agentx/",
+      "QA: devnet proof of registry init, agent registration, activation, a verified task, deactivate, and rejected inactive/deactivated paths"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "claim-reward-fixture",
+        "title": "Add a devnet fixture that creates an AGX mint and reward vault and exercises claim_reward",
+        "skills": [
+          "Anchor",
+          "TypeScript",
+          "SPL token"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.30.1",
+    "solanaVersion": "1.18.17",
+    "rustToolchain": "1.85.1",
+    "programDir": "programs/agentx"
+  }
+}
