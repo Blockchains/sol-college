@@ -17,6 +17,22 @@
   {
    "label": "initialize",
    "sig": "22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn"
+  },
+  {
+   "label": "mint_sworn_ata",
+   "sig": "5mXbW3sguNGp85RPwemLHkgPqVqVA1aJhSQVvzgCofzsqrEBXxoaNunxDkgS48c8itUNsxK8Rv3M43Jcu6Bb2NUs"
+  },
+  {
+   "label": "setup_bond_vault",
+   "sig": "4Cat1QhyVQdpfcCZMugTiHz9KrxZwPVN831DDfvhJCXxMsb8J7MfZrVoL7XGubTnwVW9RRfsRd5ULJVaPZSaLKbY"
+  },
+  {
+   "label": "migrate_bond_vault",
+   "sig": "3qU8KyYivgLCWWqrpzkCfqLc4chqJBDCKXFdWQcbHTBWgcKmmS8DkAzty2tvkgMq2GLSVNw7i6QmwNa3iC2WBhEu"
+  },
+  {
+   "label": "register_agent",
+   "sig": "51V4vmiv51i9LgXStPFiQZAAA5PLrKWS3hWeZhP6FugJxd4aczotFtBUYaDKWxmqU2npkEwAuxh2FwVMsfvY7AFT"
   }
  ],
  "verified": "2026-11-15"

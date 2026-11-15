@@ -1,6 +1,6 @@
 {
   "title": "Trust Protocol: on-chain identity bonds for autonomous AI agents",
-  "summary": "Initialise the Trust Protocol with a SWORN mint, then read the protocol-config and insurance-pool PDAs that later identity bonds and contracts hang off.",
+  "summary": "Initialise the Trust Protocol, stand up the SWORN bond vault (including the v1\u2192v2 migration), and register an agent with an identity bond.",
   "what": "Trust Protocol is an open Anchor program for autonomous AI-agent reputation on Solana. An admin initialises a protocol-config PDA (SWORN mint, min/max identity bond, fee and governance parameters) and an insurance-pool PDA. Agents later lock a SWORN identity bond, bid on contracts, deliver work, and can be disputed or claim insurance. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
   "app_note": "The fork has no first-party frontend. The page at /dapps/trust-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
   "try_steps": [
@@ -18,6 +18,11 @@
       "do": "If you try initialize again with the same PDAs, the transaction should fail because those accounts already exist.",
       "see": "Simulation or confirmation fails (account already in use).",
       "ran": "The lab run caught a failed second initialize, as expected."
+    },
+    {
+      "do": "After initialize, call setup_bond_vault then migrate_bond_vault (this deployment's register_agent reads the bond-vault-v2 PDA). Mint SWORN to your ATA and submit register_agent with bond_amount between 3_000_000 and 5_000_000.",
+      "see": "An AgentIdentity PDA with identity_bond set and matured=false.",
+      "ran": "register_agent sig 51V4vmiv51i9LgXStPFiQZAAA5PLrKWS3hWeZhP6FugJxd4aczotFtBUYaDKWxmqU2npkEwAuxh2FwVMsfvY7AFT created identity 3dNYaVynAit9sav9bmTra242HEUGxcP4Sfhp2gLZ9qNi with identity_bond=3000000."
     }
   ],
   "diagram": "admin \u2500 create SWORN mint (6 decimals)\nadmin \u2500 initialize(min_bond, max_bond) \u2500\u25b6 ProtocolConfig [\"protocol-config\"] + InsurancePool [\"insurance-pool\"]\n(later) agent \u2500 register_agent(bond) \u2500\u25b6 identity PDA + transfer SWORN into bond vault",
@@ -133,7 +138,7 @@
       "approach": "Read the IDL accounts or setup_bond_vault / register_agent / migrate_bond_vault."
     }
   ],
-  "not_covered": "register_agent, contracts, disputes and insurance were not sent: they need a bond vault and a funded SWORN ATA. The hosted UI was not clicked in headless Chromium in this run.",
+  "not_covered": "Contract, dispute and insurance instructions were not sent. The hosted UI was not clicked in headless Chromium in this run.",
   "path_order": 20,
   "path_stage": 2,
   "difficulty": "Intermediate",
@@ -159,5 +164,6 @@
     "test": "tests/devnet/trust-protocol.mjs",
     "note": "Program id on this lab deployment is EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f."
   },
-  "functional": "full"
+  "functional": "full",
+  "functional_evidence": "initialize landed and protocol_config was read back; setup_bond_vault and migrate_bond_vault created the v2 bond vault; register_agent locked a 3 SWORN identity bond and the AgentIdentity account was read back; a second register_agent was rejected."
 }

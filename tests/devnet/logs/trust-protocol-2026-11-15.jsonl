@@ -2,3 +2,10 @@
 {"step":"initialize","ok":true,"sig":"22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn"}
 {"step":"fetch_config","ok":true,"admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","swornMint":"DwHZekzdhofMcQS6mtVWKwUMZaM2JQb72XtnoSt3MFBX","minIdentityBond":"3000000","maxIdentityBond":"5000000","governancePhase":0}
 {"step":"initialize_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"setup","program":"EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f","admin":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","mint":"DwHZekzdhofMcQS6mtVWKwUMZaM2JQb72XtnoSt3MFBX","agentAta":"8j29fgaV3a2mj756CzBJcBcdTZEa6bjUJ4dAFE1kWHiq","bondVaultV1":"3FARpREoAuZdKh5eifjL7sXQVEDsGv6FcELwM1fbinad","bondVaultV2":"GNnxUPuBjmPZihSRGd34DrhLFVcmDe58QtZhimQxt7Hm","agentIdentity":"3dNYaVynAit9sav9bmTra242HEUGxcP4Sfhp2gLZ9qNi"}
+{"step":"setup_bond_vault","ok":true,"sig":"4Cat1QhyVQdpfcCZMugTiHz9KrxZwPVN831DDfvhJCXxMsb8J7MfZrVoL7XGubTnwVW9RRfsRd5ULJVaPZSaLKbY"}
+{"step":"migrate_bond_vault","ok":true,"sig":"3qU8KyYivgLCWWqrpzkCfqLc4chqJBDCKXFdWQcbHTBWgcKmmS8DkAzty2tvkgMq2GLSVNw7i6QmwNa3iC2WBhEu"}
+{"step":"register_agent","ok":true,"sig":"51V4vmiv51i9LgXStPFiQZAAA5PLrKWS3hWeZhP6FugJxd4aczotFtBUYaDKWxmqU2npkEwAuxh2FwVMsfvY7AFT"}
+{"step":"fetch_identity","ok":true,"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","identityBond":"3000000","matured":false,"trustScore":0}
+{"step":"register_agent_twice","expectedFailure":true,"error":"Simulation failed. "}
+{"step":"register_agent_low_bond","expectedFailure":true,"error":"Simulation failed. "}

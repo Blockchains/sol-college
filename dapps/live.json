@@ -2202,7 +2202,7 @@
     "commit": "0e8b8dc0eaf91060be05bb405a392645f8ec9289",
     "program": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
     "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. Upstream is an Anchor program (identity bonds, contracts, disputes, insurance) with no first-party frontend in this repo, so this console is what we host.",
-    "learn": "An admin initialises the Trust Protocol with a SWORN mint, writing a protocol-config PDA and an insurance-pool PDA. Agents later post an identity bond in SWORN, bid on contracts, deliver work, and can be disputed. This lab run proves the once-only initialize path on devnet.",
+    "learn": "An admin initialises the Trust Protocol with a SWORN mint, writes a protocol-config PDA and an insurance-pool PDA, stands up the bond vault (setup_bond_vault then migrate_bond_vault to the bond-vault-v2 seeds register_agent expects), and an agent posts a 3\u20135 SWORN identity bond.",
     "source": [
       [
         "programs/trust-protocol/src/lib.rs L24-L29 (initialize entrypoint)",
@@ -2217,8 +2217,12 @@
         "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/initialize.rs#L69-L106"
       ],
       [
-        "programs/trust-protocol/src/lib.rs L32-L35 (register_agent entrypoint; not exercised in this run)",
-        "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/lib.rs#L32-L35"
+        "programs/trust-protocol/src/instructions/admin.rs (setup_bond_vault + migrate_bond_vault to bond-vault-v2)",
+        "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/admin.rs"
+      ],
+      [
+        "programs/trust-protocol/src/instructions/identity.rs L98-L136 (register_agent identity PDA and bond-vault-v2)",
+        "https://github.com/Blockchains/trust-protocol/blob/0e8b8dc0eaf91060be05bb405a392645f8ec9289/programs/trust-protocol/src/instructions/identity.rs#L98-L136"
       ]
     ],
     "flow": "tests/devnet/trust-protocol.mjs",
@@ -2240,15 +2244,32 @@
       [
         "Fetched protocol_config: admin is the lab wallet, sworn_mint matches, bonds 3000000/5000000, governance_phase=0",
         "(no tx; read-only)"
+      ],
+      [
+        "Minted 5 SWORN (6 decimals) to the lab wallet ATA 8j29fgaV\u2026",
+        "5mXbW3sguNGp85RPwemLHkgPqVqVA1aJhSQVvzgCofzsqrEBXxoaNunxDkgS48c8itUNsxK8Rv3M43Jcu6Bb2NUs"
+      ],
+      [
+        "setup_bond_vault created the v1 bond-vault token PDA",
+        "4Cat1QhyVQdpfcCZMugTiHz9KrxZwPVN831DDfvhJCXxMsb8J7MfZrVoL7XGubTnwVW9RRfsRd5ULJVaPZSaLKbY"
+      ],
+      [
+        "migrate_bond_vault created bond-vault-v2 (same SWORN mint) and closed the v1 vault",
+        "3qU8KyYivgLCWWqrpzkCfqLc4chqJBDCKXFdWQcbHTBWgcKmmS8DkAzty2tvkgMq2GLSVNw7i6QmwNa3iC2WBhEu"
+      ],
+      [
+        "register_agent with bond_amount=3_000_000 created identity 3dNYaVyn\u2026; identity_bond=3000000, matured=false",
+        "51V4vmiv51i9LgXStPFiQZAAA5PLrKWS3hWeZhP6FugJxd4aczotFtBUYaDKWxmqU2npkEwAuxh2FwVMsfvY7AFT"
       ]
     ],
     "negative": [
+      "A second register_agent for the same agent is rejected (identity PDA already exists)",
       "A second initialize is rejected (the protocol-config and insurance-pool PDAs already exist)"
     ],
     "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit initialize or later instructions). It was not driven in headless Chromium in this run; the same initialize instruction was sent with the lab wallet through the IDL client in tests/devnet/trust-protocol.mjs.",
-    "limits": "register_agent was not exercised: it needs a funded SWORN ATA and a bond vault. setup_bond_vault initialises a PDA seeded bond-vault, while register_agent reads bond-vault-v2 (a migrate_bond_vault path exists). Contract, dispute and insurance instructions were not sent.",
+    "limits": "Contract, dispute and insurance instructions were not sent. The below-min bond path was attempted with a different signer but used the lab ATA, so that failure is not a clean InvalidBondAmount proof. Bonds are locked in the vault.",
     "functional": "full",
-    "functional_evidence": "initialize landed, protocol_config and insurance_pool were read back from devnet with the expected admin, SWORN mint and bond bounds, and a second initialize was rejected."
+    "functional_evidence": "initialize landed and protocol_config was read back; setup_bond_vault and migrate_bond_vault created the v2 bond vault; register_agent locked a 3 SWORN identity bond and the AgentIdentity account was read back; a second register_agent was rejected."
   },
   {
     "slug": "zeroai",
