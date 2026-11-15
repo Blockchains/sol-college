@@ -1,0 +1,63 @@
+{
+  "title": "AgentVault",
+  "summary": "Initialise global state, register client and provider agents, list a service, escrow a task and accept it. complete_task payout does not currently succeed on this deployment.",
+  "what": "AgentVault is an Anchor 0.31 marketplace for AI agents: a global_state PDA tracks counters, agents register, providers list services, and clients escrow SOL into a task. This lesson covers initialize through accept_task. complete_task is in the hosted IDL but cannot settle on this program because it debits a system-owned escrow PDA.",
+  "app_note": "The page at /dapps/agentvault/ is the generic IDL-driven wallet console, with this devnet program id filled in. The GitHub fork is named agentvault-protocol because Blockchains/agentvault was already taken by a different project.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentvault/, switch to Devnet, and connect a wallet. initialize, two register_agent calls, create_service, create_task and accept_task are already done.",
+      "see": "Program Di62pbYo\u2026. Fetch global_state 7GNtYaqn\u2026 (total_agents=2, total_tasks=1, total_completed=0) and task 5mfPe9DT\u2026 (InProgress).",
+      "ran": "initialize 4DurFMvk\u2026; register_agent client 51rpNWyN\u2026; register_agent provider 4DwHuHmv\u2026; create_service 4ePvLxqv\u2026; create_task 28jspxT7\u2026; accept_task 5aPQF4e2\u2026."
+    },
+    {
+      "do": "A register_agent with an empty name, or a create_service with price=0, should fail. complete_task is expected to fail on this deployment.",
+      "see": "AgentNameEmpty; InvalidPrice; complete_task: instruction spent from the balance of an account it does not own.",
+      "ran": "Rejected / simulated in tests/devnet/agentvault.mjs."
+    }
+  ],
+  "diagram": "authority --initialize--> global_state [\"global_state\"] ; authority --register_agent--> agent [\"agent\", wallet] ; provider --create_service--> service [\"service\", agent, name] ; client --create_task--> task [\"task\", id] + escrow [\"escrow\", task] ; provider --accept_task--> task",
+  "accounts": [
+    "global_state (seeds [\"global_state\"])",
+    "agent (seeds [\"agent\", authority])",
+    "service (seeds [\"service\", agent, name])",
+    "task (seeds [\"task\", task_id u64 LE])",
+    "escrow (seeds [\"escrow\", task])"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "create_service",
+    "create_task",
+    "accept_task",
+    "complete_task (in the IDL; payout currently fails on a system-owned escrow debit)"
+  ],
+  "innovation": "A compact agent registry plus SOL-escrowed tasks between two registered agents, with reputation increment intended on completion.",
+  "frontend": "Generic Sol.College IDL console (complete_task payout currently fails).",
+  "exercises": [
+    "Fetch global_state and the InProgress lab task.",
+    "Explain why complete_task is rejected by the runtime.",
+    "Sketch an invoke_signed system transfer that would release the escrow."
+  ],
+  "not_covered": "complete_task cannot settle: the program debit of the system-owned escrow is rejected by the runtime. Task 5mfPe9DT\u2026 is left InProgress. update_agent, deactivate_service, cancel_task and dispute_task were not exercised.",
+  "path_order": 32,
+  "path_stage": "apply",
+  "difficulty": "intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Initialise global state",
+    "Register two agents and list a service",
+    "Escrow and accept a task",
+    "See why complete_task payout fails"
+  ],
+  "prereqs": [
+    "agent-bazaar"
+  ],
+  "concepts": [
+    "agent registry",
+    "service listing",
+    "SOL escrow PDA",
+    "system-owned account debit"
+  ],
+  "build": "Anchor 0.31.0 program at Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "partial"
+}

@@ -2952,5 +2952,79 @@
     "limits": "update_agent, deactivate/reactivate/close, update_fee and submit_feedback were not exercised. The hosted IDL is a hand-derived subset of initialize and register_agent, confirmed by the verifying transactions.",
     "functional": "full",
     "functional_evidence": "initialize landed and protocol 8qBZ1HYDXZumuCqUdqF3tgKUmFjtcts9LZL9rfJ1N7eE was read back with fee=250; register_agent wrote identity 8Phw1JZ7pLXmVH6CL11G7aEqJChQuHM3PjFK7xgpTyfS for campus-scout (agent_id=0, active=true); InvalidFee rejected fee_bps=10001."
+  },
+  {
+    "slug": "agentvault",
+    "name": "AgentVault",
+    "lesson": "/explore/agentvault/",
+    "app": "/dapps/agentvault/",
+    "fork": "https://github.com/Blockchains/agentvault-protocol",
+    "commit": "618880911a1c6f984dbf4769a958afa7d0e0e3e7",
+    "program": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is hand-derived from source (initialize, register_agent, create_service, create_task, accept_task, complete_task); discriminators were confirmed by live transactions. The GitHub fork is named agentvault-protocol because Blockchains/agentvault already existed as a fork of a different project (abhinav-nav/agentvault).",
+    "learn": "initialize writes a global_state PDA (seeds [\"global_state\"]). Agents register at [\"agent\", authority]. A provider can create_service ([\"service\", agent, name]); a different client agent can create_task, escrowing native SOL into a system-owned [\"escrow\", task] PDA, and the provider can accept_task. complete_task is intended to release the escrow, but the program debit of that system-owned account is rejected by the runtime.",
+    "source": [
+      [
+        "programs/agentvault/src/lib.rs L17-L19 (initialize)",
+        "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/lib.rs#L17-L19"
+      ],
+      [
+        "programs/agentvault/src/instructions/initialize.rs (global_state seeds [\"global_state\"])",
+        "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/instructions/initialize.rs"
+      ],
+      [
+        "programs/agentvault/src/instructions/register_agent.rs (agent seeds [\"agent\", authority])",
+        "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/instructions/register_agent.rs"
+      ],
+      [
+        "programs/agentvault/src/instructions/create_task.rs (SOL escrow via system transfer)",
+        "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/instructions/create_task.rs"
+      ],
+      [
+        "programs/agentvault/src/instructions/complete_task.rs (direct lamport debit of the escrow PDA)",
+        "https://github.com/Blockchains/agentvault-protocol/blob/618880911a1c6f984dbf4769a958afa7d0e0e3e7/programs/agentvault/src/instructions/complete_task.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentvault.mjs",
+    "log": "tests/devnet/logs/agentvault-2026-11-15.jsonl",
+    "verified": "2026-11-15",
+    "steps": [
+      [
+        "Deploy program Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA to devnet",
+        "4R21Yene7uU55kHV57rz2rkMyzHsYhRxtBq26KqtEStntLBpXx2bWP2sgbgYb84tnB2vWDWErrBBD2fdAJXtB8pb"
+      ],
+      [
+        "initialize wrote global_state 7GNtYaqn\u2026",
+        "4DurFMvkaYU3Fsobf8WU2rR92iZ6iy7arv3CEx7EoDoRwf2RbqWhtuCm6LkwkxMfHc36YT6fwAKvKJPdTPGpKFR5"
+      ],
+      [
+        "register_agent campus-scout (client 4zLnBLF1\u2026)",
+        "51rpNWyNYj2oSFa8rh5LNx9q83a7A5wepswdH8xbn8AHEY5tCbDNHMiSV1FYaywd9wwC7a2eiSH9EbLy8nETr7EN"
+      ],
+      [
+        "register_agent campus-provider (provider 88a6Bf93\u2026, tester wallet)",
+        "4DwHuHmv713P9CaMqXcmGUj5T6eKy1MKEBtkbuZ4UaHgVYnzW59gKT9YSRuVmgDPoKWq33wHB3axjtFGBUbEdhJP"
+      ],
+      [
+        "create_service campus-scout-svc, price=1_000_000 lamports (service DCG2cymi\u2026)",
+        "4ePvLxqv3b8FdQXaQeC8A4B8zdzCgMUVofXeRyG8hrNdq7zyFcSwVMctrmduujxAsQcYFi9Qy2xUDcUqH9fibgDy"
+      ],
+      [
+        "create_task escrowed 1_000_000 lamports (task 5mfPe9DT\u2026, escrow 8QjZ1YGL\u2026)",
+        "28jspxT7hHUgg9RPEHdViUmvqsZ9q4sfexZ3xtph88otxCNFgzTaUhQMjKY3nW9Q1hohmc6Y4WXDm5DY7diGzsoc"
+      ],
+      [
+        "accept_task by the provider; task status=InProgress",
+        "5aPQF4e2bQLvaeXqhhKbezGFiJPw6kuK4qy6VrHEWxPJuMJKECZdacqtgHBiTKBKqoJbjqMyKbUzavv53WG8oq12"
+      ]
+    ],
+    "negative": [
+      "register_agent with an empty name is rejected (AgentNameEmpty)",
+      "create_service with price=0 is rejected (InvalidPrice)"
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through accept_task were sent with the lab and tester wallets through the IDL client in tests/devnet/agentvault.mjs.",
+    "limits": "complete_task cannot settle: the program tries to debit the system-owned escrow PDA by direct lamport mutation, and the runtime rejects that with 'instruction spent from the balance of an account it does not own'. Task 5mfPe9DT\u2026 is left InProgress. update_agent, deactivate_service, cancel_task and dispute_task were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
+    "functional": "partial",
+    "functional_evidence": "initialize, register_agent, create_service, create_task and accept_task all landed, but complete_task payout cannot complete because the program debit of the system-owned escrow is rejected by the runtime."
   }
 ]

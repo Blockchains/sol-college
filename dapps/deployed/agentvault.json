@@ -1,0 +1,39 @@
+{
+ "slug": "agentvault",
+ "cluster": "devnet",
+ "program": "agentvault",
+ "idl": "agentvault.json",
+ "devnet": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",
+ "mainnet": null,
+ "sigs": [
+  {
+   "label": "deploy",
+   "sig": "4R21Yene7uU55kHV57rz2rkMyzHsYhRxtBq26KqtEStntLBpXx2bWP2sgbgYb84tnB2vWDWErrBBD2fdAJXtB8pb"
+  },
+  {
+   "label": "initialize",
+   "sig": "4DurFMvkaYU3Fsobf8WU2rR92iZ6iy7arv3CEx7EoDoRwf2RbqWhtuCm6LkwkxMfHc36YT6fwAKvKJPdTPGpKFR5"
+  },
+  {
+   "label": "register_agent_client",
+   "sig": "51rpNWyNYj2oSFa8rh5LNx9q83a7A5wepswdH8xbn8AHEY5tCbDNHMiSV1FYaywd9wwC7a2eiSH9EbLy8nETr7EN"
+  },
+  {
+   "label": "register_agent_provider",
+   "sig": "4DwHuHmv713P9CaMqXcmGUj5T6eKy1MKEBtkbuZ4UaHgVYnzW59gKT9YSRuVmgDPoKWq33wHB3axjtFGBUbEdhJP"
+  },
+  {
+   "label": "create_service",
+   "sig": "4ePvLxqv3b8FdQXaQeC8A4B8zdzCgMUVofXeRyG8hrNdq7zyFcSwVMctrmduujxAsQcYFi9Qy2xUDcUqH9fibgDy"
+  },
+  {
+   "label": "create_task",
+   "sig": "28jspxT7hHUgg9RPEHdViUmvqsZ9q4sfexZ3xtph88otxCNFgzTaUhQMjKY3nW9Q1hohmc6Y4WXDm5DY7diGzsoc"
+  },
+  {
+   "label": "accept_task",
+   "sig": "5aPQF4e2bQLvaeXqhhKbezGFiJPw6kuK4qy6VrHEWxPJuMJKECZdacqtgHBiTKBKqoJbjqMyKbUzavv53WG8oq12"
+  }
+ ],
+ "verified": "2026-11-15"
+}
