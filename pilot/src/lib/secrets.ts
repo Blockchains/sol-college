@@ -28,5 +28,6 @@ export function redact(text: string, knownSecrets: readonly string[] = []): stri
 
 /** Short, non-reversible reference for private identifiers in logs (e.g. Mind IDs). */
 export function shortRef(id: string): string {
-  return id.length <= 6 ? "…" : `…${id.slice(-6)}`;
+  // Mind IDs on one account share a suffix, so the prefix is the distinguishing part.
+  return id.length <= 8 ? "…" : `${id.slice(0, 8)}…`;
 }

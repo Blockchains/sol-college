@@ -119,3 +119,25 @@ test("Recovery: approved package / credential files are never overwritten; dupli
   assert.equal(writeImmutableCanonical(p, { a: 1 }).created, false);
   assert.throws(() => writeImmutableCanonical(p, { a: 2 }), ImmutableRecordError);
 });
+
+test("Recovery: versioned instructions are sent once per hash; a repeat request does not resend", async () => {
+  const { configureInstructions } = await import("../../src/minds/configure.ts");
+  const { FileStore } = await import("../../src/lib/store.ts");
+  const { FakeMinds } = await import("../fixtures/fake-minds.ts");
+  const { tmp } = await import("../fixtures/helpers.ts");
+  const fake = new FakeMinds();
+  fake.replyBehaviour = { kind: "reply", text: () => "Acknowledged." };
+  const store = new FileStore(tmp());
+  let sends = 0;
+  const orig = fake.sendMessage.bind(fake);
+  fake.sendMessage = async (b) => { sends++; return orig(b); };
+  const mindId = (await fake.listMinds())[0]?.mindId ?? "m-test";
+  const a = await configureInstructions(fake, store, { mindId, prefix: "sc-x", text: "rules v1", timeoutMs: 10 });
+  const b = await configureInstructions(fake, store, { mindId, prefix: "sc-x", text: "rules v1", timeoutMs: 10 });
+  assert.equal(a.state, "acknowledged");
+  assert.deepEqual(b, a);
+  assert.equal(sends, 1);
+  const c = await configureInstructions(fake, store, { mindId, prefix: "sc-x", text: "rules v2", timeoutMs: 10 });
+  assert.notEqual(c.alias, a.alias);
+  assert.equal(sends, 2);
+});

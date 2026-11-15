@@ -9,7 +9,7 @@
   "demonstrationNotice": "Sol.College-owned demonstration on the Blockchains/gifter-escrow fork. The upstream author (berkaycirak) has not joined Sol.College; fixes are offered upstream as ordinary pull requests and acceptance here is by Sol.College's own reviewer, not by the upstream project.",
   "upstream": { "repo": "berkaycirak/gifter-escrow", "branch": "main" },
   "lab": { "repo": "Blockchains/gifter-escrow", "branch": "main" },
-  "mind": { "mappingRef": "gifter-escrow-cto", "mappingStatus": "proposed", "configVersion": 1, "conversationPrefix": "sc-gifter-escrow" },
+  "mind": { "mappingRef": "gifter-escrow-cto", "mappingStatus": "approved", "configVersion": 1, "conversationPrefix": "sc-gifter-escrow" },
   "research": {
     "authorised": true,
     "authorisedBy": "Blockchains",

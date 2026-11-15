@@ -1,0 +1,11 @@
+import { createServerMindsClient } from './src/minds/client.ts';
+import { FileStore } from './src/lib/store.ts';
+import { reconcileTask } from './src/minds/task.ts';
+import { readFileSync } from 'node:fs';
+const m = createServerMindsClient();
+const alias = 'sc-gifter-escrow-pr-triage-pr-triage-gifter-escrow-5628bfc-v1';
+const h = await m.getHistory(alias, { limit: 5 } as any);
+console.log(h.map((r: any) => `${r.senderType ?? r.role ?? '?'} ${String(r.messageText ?? '').length}ch ${String(r.messageText ?? '').slice(0, 80).replace(/\n/g, ' ')}`).join('\n'));
+const spec = JSON.parse(readFileSync('/workspace/sol-college/minds-private/task-pr-triage.json', 'utf8'));
+const rec = await reconcileTask({ minds: m, store: new FileStore(process.env.SC_PRIVATE_RECORDS_DIR!) }, spec);
+console.log(JSON.stringify({ state: rec.state, errors: rec.errors, summary: rec.response?.summary, facts: rec.response?.facts.length, proposals: rec.response?.proposals.map(p => p.title), uncertainties: rec.response?.uncertainties }, null, 1));

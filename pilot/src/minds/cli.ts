@@ -7,6 +7,8 @@
  *   minds circle <slug> --add e1,e2 --remove e3 --approve REF --approved-by LOGIN         (mutation)
  *   minds pause <slug> | resume <slug> --approve REF --approved-by LOGIN                  (mutation)
  *   minds smoke-test --mind-name NAME [--allow-message --approve REF --approved-by LOGIN]
+ *   minds configure <slug> --instructions FILE --approve REF --approved-by LOGIN         (message; once per instructions hash)
+ *   minds task <slug> --spec FILE --approve REF --approved-by LOGIN                      (message; structured sc-task/1)
  * Output is sanitised JSON (no Builder key, emails, wallet addresses or full Mind IDs).
  */
 import { parseArgs } from "node:util";
@@ -21,6 +23,9 @@ import { provisionMind } from "./provision.ts";
 import { equipApproved } from "./equip.ts";
 import { applyCirclePlan, planCircleChange } from "./circle.ts";
 import { runSmokeTest } from "./smoke.ts";
+import { configureInstructions } from "./configure.ts";
+import { dispatchTask, type TaskSpec } from "./task.ts";
+import { readFileSync } from "node:fs";
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
@@ -36,6 +41,8 @@ const { positionals, values } = parseArgs({
     "mind-name": { type: "string" },
     "allow-message": { type: "boolean", default: false },
     "timeout-ms": { type: "string", default: "180000" },
+    instructions: { type: "string" },
+    spec: { type: "string" },
   },
 });
 
@@ -123,6 +130,23 @@ async function main(): Promise<void> {
       const res = await runSmokeTest(minds, { testMindId: target.mindId, expectedName: name, allowMessage: values["allow-message"] ?? false, designatedTestMind: designated, timeoutMs: Number(values["timeout-ms"]), runId: process.env["GITHUB_RUN_ID"] ?? String(Date.now()) });
       out({ at: new Date().toISOString(), ...res });
       if (res.steps.some((s) => s.status === "FAIL")) process.exitCode = 1;
+      return;
+    }
+    case "configure": {
+      const r = await resolveProjectMind({ cfg, mapping, slug: need(slug), operation: "message", approval: approvalFor("message"), minds });
+      if (!values.instructions) throw new Error("--instructions FILE is required");
+      const rec = await configureInstructions(minds, new FileStore(privateRecordsDir()), { mindId: r.mindId, prefix: r.project.mind.conversationPrefix ?? `sc-${r.project.slug}`, text: readFileSync(values.instructions, "utf8"), timeoutMs: Number(values["timeout-ms"]) });
+      return out({ project: r.project.slug, alias: rec.alias, instructionsSha256: rec.sha256, state: rec.state, acknowledged: rec.replyChars > 0, replyChars: rec.replyChars });
+    }
+    case "task": {
+      const r = await resolveProjectMind({ cfg, mapping, slug: need(slug), operation: "message", approval: approvalFor("message"), minds });
+      if (!values.spec) throw new Error("--spec FILE is required");
+      const spec = JSON.parse(readFileSync(values.spec, "utf8")) as TaskSpec;
+      if (spec.project !== r.project.slug) throw new Error("task project does not match the slug");
+      const rec = await dispatchTask({ minds, store: new FileStore(privateRecordsDir()), mindId: r.mindId, aliasPrefix: r.project.mind.conversationPrefix ?? `sc-${r.project.slug}`, timeoutMs: Number(values["timeout-ms"]) }, spec);
+      const resp = rec.response;
+      out({ project: r.project.slug, taskId: spec.taskId, alias: rec.alias, state: rec.state, errors: rec.errors, summary: resp?.summary ?? null, facts: resp?.facts.length ?? 0, hypotheses: resp?.hypotheses.length ?? 0, proposals: resp?.proposals.map((x) => x.title) ?? [], uncertainties: resp?.uncertainties ?? [] });
+      if (rec.state !== "completed" && rec.state !== "validated") process.exitCode = 2;
       return;
     }
     default:
