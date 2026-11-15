@@ -249,7 +249,7 @@ export function mountCampus(container, data, opts = {}) {
   for (let r = 0; r < nRooms; r++) {
     seatPos[r] = [];
     const { far, near } = roomProjects[r];
-    const nF = Math.max(far.length, 3), nN = near.length;
+    const nF = far.length >= 2 ? far.length : 3, nN = near.length; // 2+ active agents: centred, no empty chairs between them
     for (let k = 0; k < nF; k++) seatPos[r].push({ x: roomX(r) + (k - (nF - 1) / 2) * spacing(r), z: -1.45, rot: Math.PI, near: false, p: far[k - Math.floor((nF - far.length) / 2)] || null });
     const nOff = nN === nF ? 0.5 : 0; // interleave when both sides have the same count
     for (let k = 0; k < nN; k++) seatPos[r].push({ x: roomX(r) + (k - (nN - 1) / 2 + nOff) * spacing(r), z: 1.35, rot: Math.PI, near: true, p: near[k] });
@@ -276,8 +276,10 @@ export function mountCampus(container, data, opts = {}) {
   function makeLabel(p, css, paused) {
     const full = String(p.displayName).replace(/\s*\(.*\)$/, '').trim(), short = shortName(p.displayName);
     const el = document.createElement('button'); el.type = 'button'; el.tabIndex = -1; el.className = 'c3-label' + (paused ? ' is-paused' : '');
-    el.style.setProperty('--acc', css); el.title = full + (paused ? ' (CTO agent paused)' : '');
-    el.innerHTML = '<span class="c3-dot"></span><span class="c3-short"></span><span class="c3-full"></span>' + (paused ? '<span class="c3-state">Paused</span>' : '');
+    el.style.setProperty('--acc', css); const tag = (p.agent && p.agent.label) || 'Paused';
+    el.title = full + (paused ? ` (CTO agent: ${tag})` : '');
+    el.innerHTML = '<span class="c3-dot"></span><span class="c3-short"></span><span class="c3-full"></span>' + (paused ? '<span class="c3-state"></span>' : '');
+    if (paused) el.querySelector('.c3-state').textContent = tag;
     el.querySelector('.c3-short').textContent = short; el.querySelector('.c3-full').textContent = full;
     if (short === full) el.classList.add('no-short');
     el.addEventListener('click', (e) => { e.stopPropagation(); const s = p.slug; focusIdx = avatars.findIndex((x) => x.slug === s); highlight(s); onSelect(s); });

@@ -28,7 +28,7 @@ function init() {
     const p = fp || ep;
     if (!p) return '<p>Project not found.</p>';
     const ag = (fp && fp.agent) || ep && ep.agent;
-    const state = ag ? (ag.state === 'paused' ? `<p class="ch-agent is-paused"><b>CTO agent paused.</b> ${esc(ag.note)}</p>` : ag.state === 'active' ? `<p class="ch-agent"><span class="live-dot" aria-hidden="true"></span><b>CTO agent active.</b> ${esc(ag.note)}</p>` : '') : '';
+    const state = ag ? (ag.state === 'paused' ? `<p class="ch-agent is-paused"><b>${ag.label === 'No credits' ? 'CTO agent out of credits' : 'CTO agent paused'}.</b> ${esc(ag.note)}</p>` : ag.state === 'active' ? `<p class="ch-agent"><span class="live-dot" aria-hidden="true"></span><b>CTO agent active.</b> ${esc(ag.note)}</p>` : '') : '';
     const demo = p.demonstrationNotice ? `<p class="ch-demo-note"><b>Demonstration project.</b> ${esc(p.demonstrationNotice)}</p>` : '';
     let more = '';
     if (fp) {

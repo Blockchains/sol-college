@@ -409,7 +409,27 @@ def _agent_state(root, c) -> dict:
     Source of truth: config/autonomy.json, maintained by the autonomy worker (paused map/list, enabled flags)."""
     slug = c.get('slug')
     if (c.get('mind') or {}).get('mappingStatus') != 'approved':
-        return {'state': 'none', 'note': 'No CTO agent provisioned'}
+        return {'state': 'none', 'label': '', 'note': 'No CTO agent provisioned'}
+    st = _config_agent_state(root, slug)
+    if st['state'] != 'active':
+        return st
+    # operations snapshot published by the autonomy loop: paused / not enabled / no credits => cannot produce work
+    try:
+        ops = json.loads((Path(root) / 'records' / 'public' / 'minds' / f'{slug}.json').read_text(encoding='utf-8'))
+    except Exception:
+        ops = None
+    if isinstance(ops, dict):
+        bal = ops.get('cognitionBalance')
+        at = str(ops.get('balanceCheckedAt') or ops.get('at') or '')[:16].replace('T', ' ')
+        if ops.get('paused') is True or ops.get('isEnabled') is False:
+            pr = ops.get('pausedReason')
+            return {'state': 'paused', 'label': 'Paused', 'note': (pr[:240] if isinstance(pr, str) and pr else '') or f"Paused ({str(ops.get('status') or '')[:60] or 'Mind not enabled'})"}
+        if isinstance(bal, (int, float)) and not isinstance(bal, bool) and bal <= 0:
+            return {'state': 'paused', 'label': 'No credits', 'note': f'Out of credits: HelloMinds cognition balance {bal:.2f}' + (f' (checked {at} UTC)' if at else '') + '. This agent cannot produce work until its credits are topped up.'}
+    return st
+
+
+def _config_agent_state(root, slug) -> dict:
     try:
         auto = json.loads((Path(root) / 'config' / 'autonomy.json').read_text(encoding='utf-8'))
     except Exception:
@@ -445,12 +465,12 @@ def _agent_state(root, c) -> dict:
         elif not reason:
             reason = s(v)
     if flag is False:
-        return {'state': 'paused', 'note': reason or 'Paused in config/autonomy.json'}
+        return {'state': 'paused', 'label': 'Paused', 'note': reason or 'Paused in config/autonomy.json'}
     if flag is True:
-        return {'state': 'active', 'note': 'Active: scheduled autonomy runs'}
+        return {'state': 'active', 'label': 'Active', 'note': 'Active: scheduled autonomy runs'}
     if not listed:
-        return {'state': 'paused', 'note': 'Paused: not in the autonomy schedule'}
-    return {'state': 'active', 'note': 'Active: scheduled autonomy runs'}
+        return {'state': 'paused', 'label': 'Paused', 'note': 'Paused: not in the autonomy schedule'}
+    return {'state': 'active', 'label': 'Active', 'note': 'Active: scheduled autonomy runs'}
 
 def campus_projects(root=None) -> list[dict]:
     root = Path(root) if root else ROOT
@@ -486,7 +506,7 @@ def campus_hero_html(projects: list[dict]) -> str:
         items = ''.join(
             f'<li><button type="button" class="ch-avatar{" is-paused" if (p.get("agent") or {}).get("state") == "paused" else ""}" data-slug="{E(p["slug"])}" aria-haspopup="dialog">'
             f'<span class="ch-dot" aria-hidden="true"></span><span class="ch-name">{E(re.sub(r"\s*\(.*\)$", "", p["displayName"]))}</span>'
-            + (('<span class="ch-state" title="' + E(p['agent']['note']) + '">Paused</span>') if (p.get('agent') or {}).get('state') == 'paused'
+            + (('<span class="ch-state" title="' + E(p['agent']['note']) + '">' + E(p['agent'].get('label') or 'Paused') + '</span>') if (p.get('agent') or {}).get('state') == 'paused'
                else ('<span class="ch-demo" title="CTO Mind live: last autonomous pass ' + E(p['ctoLive']) + ' (Sol.College demonstration lab)">CTO live</span>') if p.get('ctoLive')
                else ('<span class="ch-demo">Demo</span>' if p['demonstration'] else '')) +
             '</button></li>' for p in ps)

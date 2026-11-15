@@ -16,7 +16,7 @@ function projectCard(p, headingLevel = 3) {
     : '<p class="empty">No public records yet.</p>';
   const g = p.progression;
   const paused = p.agent && p.agent.state === 'paused';
-  const agentLine = p.agent && p.agent.state !== 'none' ? `<p class="agent-state${paused ? ' is-paused' : ''}"><b>${paused ? 'CTO agent paused' : 'CTO agent active'}.</b> ${esc(p.agent.note)}</p>` : '';
+  const agentLine = p.agent && p.agent.state !== 'none' ? `<p class="agent-state${paused ? ' is-paused' : ''}"><b>${paused ? (p.agent.label === 'No credits' ? 'CTO agent out of credits' : 'CTO agent paused') : 'CTO agent active'}.</b> ${esc(p.agent.note)}</p>` : '';
   return `<article class="card${paused ? ' is-paused' : ''}" id="p-${esc(p.slug)}" data-slug="${esc(p.slug)}" tabindex="-1">
     <div class="cto"><span class="avatar" aria-hidden="true"></span><span>${esc(p.cto.label)}</span></div>
     ${agentLine}
