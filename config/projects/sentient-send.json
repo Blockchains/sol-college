@@ -39,5 +39,5 @@
   },
   "disclosure": { "securityReports": "private-only", "mindsTranscripts": "private-only", "publicFields": ["displayName", "description", "sector", "assignments", "demonstrationNotice"] },
   "entitlement": { "plan": "demonstration", "status": "active", "activation": "manual", "paymentVerification": "not-applicable-demonstration" },
-  "validation": { "workflowRepo": "Blockchains/sol-college", "workflowPath": ".github/workflows/candidate-validation.yml", "fixture": "build-only", "programDir": ".", "anchorVersion": "0.32.1", "solanaVersion": "2.3.0", "rustToolchain": "1.89.0" }
+  "validation": { "workflowRepo": "Blockchains/sol-college", "workflowPath": ".github/workflows/candidate-validation.yml", "fixture": "build-only", "programDir": ".", "anchorVersion": "0.32.1", "anchorBinarySha256": "5f25b850ce80278507a98947833fcd48423391f6d145046ffb0c5fd130dec436", "solanaVersion": "2.3.0", "rustToolchain": "1.89.0" }
 }

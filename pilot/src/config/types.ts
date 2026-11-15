@@ -43,7 +43,7 @@ export interface ProjectConfig {
     paymentVerification: "none-manual-entitlement" | "not-applicable-demonstration";
     usageAllowanceCognition?: number;
   };
-  validation: { workflowRepo: string; workflowPath: string; fixture: string; programDir?: string; anchorVersion: string; solanaVersion: string; rustToolchain: string };
+  validation: { workflowRepo: string; workflowPath: string; fixture: string; programDir?: string; anchorVersion: string; anchorBinarySha256?: string; solanaVersion: string; rustToolchain: string };
 }
 
 export interface Policy {
