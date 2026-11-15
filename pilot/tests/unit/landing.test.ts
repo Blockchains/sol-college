@@ -21,7 +21,7 @@ test("landing campus hero lists the same projects as the public projection", () 
     assert.equal(q["displayName"], p.displayName);
     assert.equal(q["sector"], p.sector);
     assert.equal(q["demonstration"], p.ownership === "sol-college-demonstration");
-    assert.deepEqual(Object.keys(q).sort(), ["demonstration", "demonstrationNotice", "description", "displayName", "sector", "slug"]);
+    assert.deepEqual(Object.keys(q).sort(), ["ctoLive", "demonstration", "demonstrationNotice", "description", "displayName", "sector", "slug"]);
   }
 });
 
@@ -30,7 +30,8 @@ test("landing campus hero renders first, labels demonstrations, links to /campus
   const tpl = readFileSync(join(REPO_ROOT, "scripts/landing.html"), "utf8");
   assert.ok(tpl.indexOf("{{CAMPUS_HERO}}") < tpl.indexOf('id="learn"'), "campus hero must precede the existing hero");
   assert.match(html, /href="\/campus\/">Explore campus</);
-  assert.match(html, /class="ch-demo">Demo</);
+  // A live CTO shows its real status ("CTO live", with the demonstration-lab notice in the title); otherwise "Demo".
+  assert.match(html, /class="ch-demo"(?: title="CTO Mind live: last autonomous pass [^"]+ \(Sol.College demonstration lab\)")?>(?:Demo|CTO live)</);
   assert.equal((html.match(/class="ch-room /g) ?? []).length, 3);
   assert.doesNotMatch(html, /[\w.+-]+@[\w-]+\.[a-z]{2,}|"reviewers"|mappingRef|accountId|configVersion/i);
 });

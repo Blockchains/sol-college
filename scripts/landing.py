@@ -390,6 +390,20 @@ def _is_placeholder(c: dict) -> bool:
     return any(isinstance(v, str) and _PLACEHOLDER_RE.search(v) for v in vals)
 
 
+def _cto_live(root, c) -> str:
+    """'' unless the project's CTO Mind is mapped and its autonomy status was updated in the last 6 hours (UTC ISO time)."""
+    if (c.get('mind') or {}).get('mappingStatus') != 'approved':
+        return ''
+    f = Path(root) / 'records' / 'public' / 'status' / f"{c.get('slug')}.json"
+    try:
+        at = json.loads(f.read_text(encoding='utf-8')).get('updatedAt') or ''
+        from datetime import datetime, timezone
+        age = datetime.now(timezone.utc) - datetime.fromisoformat(at.replace('Z', '+00:00'))
+        return at[:16].replace('T', ' ') + ' UTC' if age.total_seconds() < 6 * 3600 else ''
+    except Exception:
+        return ''
+
+
 def campus_projects(root=None) -> list[dict]:
     root = Path(root) if root else ROOT
     out = []
@@ -410,6 +424,7 @@ def campus_projects(root=None) -> list[dict]:
             'description': str(c.get('description', '')),
             'demonstration': c.get('ownership') == 'sol-college-demonstration',
             'demonstrationNotice': str(c.get('demonstrationNotice') or ''),
+            'ctoLive': _cto_live(root, c),
         })
     return out
 
@@ -421,7 +436,8 @@ def campus_hero_html(projects: list[dict]) -> str:
         items = ''.join(
             f'<li><button type="button" class="ch-avatar" data-slug="{E(p["slug"])}" aria-haspopup="dialog">'
             f'<span class="ch-dot" aria-hidden="true"></span><span class="ch-name">{E(re.sub(r"\s*\(.*\)$", "", p["displayName"]))}</span>'
-            + ('<span class="ch-demo">Demo</span>' if p['demonstration'] else '') +
+            + (('<span class="ch-demo" title="CTO Mind live: last autonomous pass ' + E(p['ctoLive']) + ' (Sol.College demonstration lab)">CTO live</span>') if p.get('ctoLive')
+               else ('<span class="ch-demo">Demo</span>' if p['demonstration'] else '')) +
             '</button></li>' for p in ps)
         body = f'<ul class="ch-list">{items}</ul>' if ps else '<p class="ch-empty">No projects yet</p>'
         rooms.append(
