@@ -44,3 +44,30 @@ button{background:linear-gradient(90deg,#6d3bff,#9945ff)}
 @media (max-width:640px){#canvasWrap{height:clamp(380px,64vh,560px)}#overlay{left:8px;right:8px;top:auto;bottom:8px;max-width:none;max-height:55%}}
 .notices li{background:rgba(255,184,107,.07);border-left-color:#ffb86b;color:#efe6ff;border-radius:0 10px 10px 0}
 @media (max-width:640px){.top nav{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;width:100%;-webkit-overflow-scrolling:touch;scrollbar-width:none}.top nav a{margin-left:0;padding:6px 10px;border-radius:999px;background:rgba(153,69,255,.1)}.top nav a[aria-current]{background:rgba(153,69,255,.35)}main{padding:12px 14px 32px}h1{font-size:1.8rem}}
+
+/* 3D campus: crisp HTML name labels projected from the scene (campus3d.js placeLabels) */
+.c3-labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+.c3-label { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 7px; max-width: min(78vw, 300px);
+  padding: 6px 12px 6px 10px; border-radius: 999px; border: 1.5px solid var(--acc, #9945ff); background: rgba(8, 6, 24, 0.94);
+  color: #fff; font: 650 14px/1.25 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: 0.005em; white-space: nowrap;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45), 0 0 14px color-mix(in srgb, var(--acc, #9945ff) 35%, transparent);
+  pointer-events: auto; cursor: pointer; visibility: hidden; opacity: 0; transition: opacity .2s ease, box-shadow .2s ease;
+  will-change: transform, opacity; -webkit-font-smoothing: antialiased; appearance: none; text-align: left; }
+.c3-label .c3-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--acc, #9945ff); box-shadow: 0 0 8px var(--acc, #9945ff); flex: none; }
+.c3-label .c3-full { display: none; white-space: normal; }
+.c3-label.is-full .c3-full, .c3-label:focus-visible .c3-full { display: inline; }
+.c3-label.is-full:not(.no-short) .c3-short, .c3-label:focus-visible:not(.no-short) .c3-short { display: none; }
+.c3-label.no-short .c3-full { display: none !important; }
+.c3-label.is-full { white-space: normal; }
+.c3-label.is-sel { box-shadow: 0 0 0 3px color-mix(in srgb, var(--acc, #9945ff) 45%, transparent), 0 8px 22px rgba(0,0,0,0.5); }
+.c3-label.is-paused { border-color: rgba(190, 182, 230, 0.55); background: rgba(14, 12, 30, 0.92); color: #e4e0f5; font-weight: 600; font-size: 13px; }
+.c3-label.is-paused .c3-dot { background: #8d86ad; box-shadow: none; }
+.c3-label .c3-state { font: 750 11px/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; text-transform: uppercase; letter-spacing: .06em; color: #1a1530; background: #ffcf7a; padding: 3px 6px; border-radius: 999px; }
+@media (max-width: 760px) { .c3-label { font-size: 14px; padding: 6px 11px 6px 9px; } .c3-label.is-paused { font-size: 13px; } }
+@media (prefers-reduced-motion: reduce) { .c3-label { transition: none; } }
+/* v3: contrast + paused agents */
+:root{--mut:#d0caf0}
+.agent-state{font-size:.88rem;margin:8px 0;padding:6px 10px;border-radius:8px;border:1px solid rgba(20,241,149,.35);background:rgba(20,241,149,.07)}
+.agent-state.is-paused{border-color:rgba(255,207,122,.5);background:rgba(255,207,122,.08)}
+.card.is-paused{opacity:.78;border-style:dashed}.card.is-paused:hover,.card.is-paused:focus-within{opacity:1}
+.card.is-paused .avatar{filter:grayscale(1) brightness(.8)}

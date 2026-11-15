@@ -404,6 +404,54 @@ def _cto_live(root, c) -> str:
         return ''
 
 
+def _agent_state(root, c) -> dict:
+    """CTO agent display state; mirrors pilot/src/campus/agent-state.ts (tested for agreement).
+    Source of truth: config/autonomy.json, maintained by the autonomy worker (paused map/list, enabled flags)."""
+    slug = c.get('slug')
+    if (c.get('mind') or {}).get('mappingStatus') != 'approved':
+        return {'state': 'none', 'note': 'No CTO agent provisioned'}
+    try:
+        auto = json.loads((Path(root) / 'config' / 'autonomy.json').read_text(encoding='utf-8'))
+    except Exception:
+        auto = {}
+
+    def s(v, n=240):
+        return v[:n] if isinstance(v, str) else ''
+    projects = auto.get('projects') if isinstance(auto.get('projects'), list) else []
+    listed, flag, reason = False, None, ''
+    for e in projects:
+        if e == slug:
+            listed = True
+        elif isinstance(e, dict):
+            if (e.get('slug') or e.get('project') or e.get('id')) != slug:
+                continue
+            listed = True
+            if e.get('paused') is True or e.get('enabled') is False:
+                flag = False
+            elif e.get('enabled') is True or e.get('paused') is False:
+                flag = True
+            reason = s(e.get('pausedReason') or e.get('reason') or e.get('note'))
+    en, pz, dz = auto.get('enabled'), auto.get('paused'), auto.get('disabled')
+    if flag is None and isinstance(en, dict) and isinstance(en.get(slug), bool):
+        flag = en[slug]
+    if flag is None and ((isinstance(pz, list) and slug in pz) or (isinstance(dz, list) and slug in dz)):
+        flag = False
+    if flag is None and isinstance(pz, dict) and slug in pz:
+        flag = False
+        v = pz[slug]
+        if not reason and isinstance(v, dict):
+            st, rs = s(v.get('status'), 60), s(v.get('reason'))
+            reason = s((st[:1].upper() + st[1:] + (': ' + rs if rs else '')) if st else rs)
+        elif not reason:
+            reason = s(v)
+    if flag is False:
+        return {'state': 'paused', 'note': reason or 'Paused in config/autonomy.json'}
+    if flag is True:
+        return {'state': 'active', 'note': 'Active: scheduled autonomy runs'}
+    if not listed:
+        return {'state': 'paused', 'note': 'Paused: not in the autonomy schedule'}
+    return {'state': 'active', 'note': 'Active: scheduled autonomy runs'}
+
 def campus_projects(root=None) -> list[dict]:
     root = Path(root) if root else ROOT
     out = []
@@ -424,7 +472,8 @@ def campus_projects(root=None) -> list[dict]:
             'description': str(c.get('description', '')),
             'demonstration': c.get('ownership') == 'sol-college-demonstration',
             'demonstrationNotice': str(c.get('demonstrationNotice') or ''),
-            'ctoLive': _cto_live(root, c),
+            'agent': (ag := _agent_state(root, c)),
+            'ctoLive': _cto_live(root, c) if ag['state'] == 'active' else '',
         })
     return out
 
@@ -432,29 +481,35 @@ def campus_projects(root=None) -> list[dict]:
 def campus_hero_html(projects: list[dict]) -> str:
     rooms = []
     for sid, blurb in CAMPUS_SECTORS:
-        ps = [p for p in projects if p['sector'] == sid]
+        # active CTO agents first; paused agents are listed dimmed with an explicit 'Paused' state
+        ps = sorted((p for p in projects if p['sector'] == sid), key=lambda p: (p.get('agent') or {}).get('state') == 'paused')
         items = ''.join(
-            f'<li><button type="button" class="ch-avatar" data-slug="{E(p["slug"])}" aria-haspopup="dialog">'
+            f'<li><button type="button" class="ch-avatar{" is-paused" if (p.get("agent") or {}).get("state") == "paused" else ""}" data-slug="{E(p["slug"])}" aria-haspopup="dialog">'
             f'<span class="ch-dot" aria-hidden="true"></span><span class="ch-name">{E(re.sub(r"\s*\(.*\)$", "", p["displayName"]))}</span>'
-            + (('<span class="ch-demo" title="CTO Mind live: last autonomous pass ' + E(p['ctoLive']) + ' (Sol.College demonstration lab)">CTO live</span>') if p.get('ctoLive')
+            + (('<span class="ch-state" title="' + E(p['agent']['note']) + '">Paused</span>') if (p.get('agent') or {}).get('state') == 'paused'
+               else ('<span class="ch-demo" title="CTO Mind live: last autonomous pass ' + E(p['ctoLive']) + ' (Sol.College demonstration lab)">CTO live</span>') if p.get('ctoLive')
                else ('<span class="ch-demo">Demo</span>' if p['demonstration'] else '')) +
             '</button></li>' for p in ps)
         body = f'<ul class="ch-list">{items}</ul>' if ps else '<p class="ch-empty">No projects yet</p>'
         rooms.append(
             f'<li class="ch-room ch-{sid.lower()}"><h3>{E(sid)} room</h3><p class="ch-blurb">{E(blurb)}</p>{body}</li>')
     n = len(projects)
-    count = f'{n} project{"" if n == 1 else "s"} on campus'
+    n_act = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'active')
+    n_pau = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'paused')
+    count = f'{n} project{"" if n == 1 else "s"} on campus' + (f' ({n_act} active CTO agent{"" if n_act == 1 else "s"}, {n_pau} paused)' if n_pau else '')
+    active_line = f'{n_act} active CTO agent{"" if n_act == 1 else "s"}'
     data = json.dumps(projects, ensure_ascii=False).replace('<', '\\u003c')
     return (
         '<section class="campus-hero" id="campus-hero" aria-labelledby="ch-title">\n'
         '  <div class="ch-head">\n'
-        '    <div><p class="eyebrow">Live campus</p><h2 id="ch-title">Sol.College campus</h2>\n'
-        f'    <p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each avatar is a participating project and its Sol.College CTO agent. {E(count)}.</p></div>\n'
-        '    <a class="btn ch-explore" href="/campus/">Explore campus</a>\n'
+        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2></div>\n'
+        '    <a class="btn ghost ch-explore" href="/campus/">Explore campus</a>\n'
         '  </div>\n'
         '  <div class="ch-stage" id="ch-stage" data-mode="2d">\n'
+        '    <div class="ch-poster" aria-hidden="true"><span class="ch-shelf"></span><span class="ch-table"></span><span class="ch-load">Loading the live 3D campus…</span></div>\n'
         f'    <ul class="ch-rooms" aria-label="Campus rooms">{"".join(rooms)}</ul>\n'
         '  </div>\n'
+        f'  <p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each avatar is a participating project and its Sol.College CTO agent. {E(count)}.</p>\n'
         '  <p class="ch-note" id="ch-note">Select a project to see its details. Coordination is asynchronous through GitHub; nothing here starts a chat or calls an agent.</p>\n'
         '  <dialog class="ch-dialog" id="ch-dialog" aria-labelledby="ch-dialog-title"><div id="ch-dialog-body"></div>'
         '<form method="dialog"><button class="btn ch-close" value="close">Close</button></form></dialog>\n'

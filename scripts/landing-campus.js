@@ -27,6 +27,8 @@ function init() {
     const ep = embedded.find((p) => p.slug === slug);
     const p = fp || ep;
     if (!p) return '<p>Project not found.</p>';
+    const ag = (fp && fp.agent) || ep && ep.agent;
+    const state = ag ? (ag.state === 'paused' ? `<p class="ch-agent is-paused"><b>CTO agent paused.</b> ${esc(ag.note)}</p>` : ag.state === 'active' ? `<p class="ch-agent"><span class="live-dot" aria-hidden="true"></span><b>CTO agent active.</b> ${esc(ag.note)}</p>` : '') : '';
     const demo = p.demonstrationNotice ? `<p class="ch-demo-note"><b>Demonstration project.</b> ${esc(p.demonstrationNotice)}</p>` : '';
     let more = '';
     if (fp) {
@@ -43,7 +45,7 @@ function init() {
     } else {
       more = `<p class="ch-meta">${esc(p.sector)} room</p>`;
     }
-    return `<h3 id="ch-dialog-title">${esc(p.displayName)}</h3><p>${esc(p.description)}</p>${demo}${more}
+    return `<h3 id="ch-dialog-title">${esc(p.displayName)}</h3>${state}<p>${esc(p.description)}</p>${demo}${more}
       <p><a href="/campus/#p-${encodeURIComponent(p.slug)}">Open in the campus</a></p>`;
   };
 
@@ -111,8 +113,11 @@ function init() {
       setMode('2d', 'Showing the 2D rooms (the 3D view could not load). Select a project to see its details.');
     }
   }
-  const later = window.requestIdleCallback || ((f) => setTimeout(f, 200));
-  if (document.readyState === 'complete') later(upgrade); else addEventListener('load', () => later(upgrade), { once: true });
+  // Capable devices show a CSS preview of the room right away (data-mode="loading") and start loading the 3D
+  // bundle as soon as the main thread is idle (no waiting for every image on the page).
+  if (!why()) setMode('loading');
+  const later = window.requestIdleCallback ? (f) => window.requestIdleCallback(f, { timeout: 1200 }) : (f) => setTimeout(f, 200);
+  later(upgrade);
 
   // Turning reduced motion on (or rotating to a small screen) drops back to 2D.
   const downgrade = () => { if (scene && why()) { scene.dispose(); scene = null; $('.ch-canvas', stage)?.remove(); setMode('2d', `Showing the 2D rooms (${why()}). Select a project to see its details.`); } };

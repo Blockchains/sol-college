@@ -1,5 +1,13 @@
 // Sol.College landing: faint drifting particles over the CSS aurora. Cheap by design: a few dozen dots, capped at
 // ~30 fps, paused when the tab is hidden, and not started at all with reduced motion or Save-Data.
+// Sections fade up as they scroll into view. Only sections that start below the fold are hidden first, the class
+// is added here (no-JS visitors always see everything) and reduced motion skips it.
+(function () {
+  if (!('IntersectionObserver' in window) || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+  var els = [].slice.call(document.querySelectorAll('main > section.band:not(.hero)')).filter(function (s) { return s.getBoundingClientRect().top > innerHeight; });
+  var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+  els.forEach(function (s) { s.classList.add('rv'); io.observe(s); });
+})();
 (function () {
   var c = document.getElementById('bg-particles');
   if (!c || !c.getContext) return;

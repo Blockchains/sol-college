@@ -21,7 +21,8 @@ test("landing campus hero lists the same projects as the public projection", () 
     assert.equal(q["displayName"], p.displayName);
     assert.equal(q["sector"], p.sector);
     assert.equal(q["demonstration"], p.ownership === "sol-college-demonstration");
-    assert.deepEqual(Object.keys(q).sort(), ["ctoLive", "demonstration", "demonstrationNotice", "description", "displayName", "sector", "slug"]);
+    assert.deepEqual(q["agent"], p.agent, `agent state of ${p.slug} must agree (landing.py vs agent-state.ts)`);
+    assert.deepEqual(Object.keys(q).sort(), ["agent", "ctoLive", "demonstration", "demonstrationNotice", "description", "displayName", "sector", "slug"]);
   }
 });
 

@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { SECTORS, type ProjectConfig, type Sector } from "../config/types.ts";
 import { findSecretLeaks } from "../lib/secrets.ts";
+import { agentState, type AgentState } from "./agent-state.ts";
 
 export interface PublicRecordLink {
   type: "research-question" | "experiment" | "pull-request" | "validation-run" | "adoption-package" | "acceptance" | "credential" | "upstream-pr";
@@ -33,6 +34,8 @@ export interface CampusProject {
   records: PublicRecordLink[];
   repos: { upstream: string; lab: string };
   /** Live CTO status from records/public/status/<slug>.json (written by the cto-autonomy workflow). */
+  /** CTO agent display state (active / paused / none): config/autonomy.json, see agent-state.ts. */
+  agent: AgentState;
   liveStatus: { updatedAt: string; runUrl: string | null; report: { summary: string; at: string } | null; activity: Array<{ at: string; text: string; url: string | null }>; pendingTasks: number; openLabPullRequests: number } | null;
 }
 
@@ -122,6 +125,7 @@ export function buildCampusData(projects: ProjectConfig[], recordsDir: string, r
       },
       records,
       repos: { upstream: p.upstream.repo, lab: p.lab.repo },
+      agent: agentState(p.slug, p.mind.mappingStatus),
       liveStatus: readLiveStatus(recordsDir, p.slug),
     };
   });

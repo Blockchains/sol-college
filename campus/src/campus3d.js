@@ -9,6 +9,9 @@
 // keyboard (focus the canvas: Left/Right moves between avatars, Up/Down between rooms, Enter or Space opens details).
 // Quality: "high" adds bloom and more particles; "low" (phones, weak GPUs) keeps geometry and particle counts down.
 // Frame time is measured continuously: resolution drops (and bloom switches off) if the device cannot keep up.
+// Text: avatar names are crisp HTML overlays projected from 3D each frame (system UI font, solid pills, collision
+// stacking, distance fade); wall screens and the sign are canvas textures drawn at a fixed high resolution, so text
+// stays sharp even when the 3D resolution is lowered. Paused CTO agents are drawn dimmed and labelled 'Paused'.
 import {
   Scene, PerspectiveCamera, WebGLRenderer, Color, FogExp2, HemisphereLight, AmbientLight, PointLight, Mesh, Group,
   MeshStandardMaterial, MeshBasicMaterial, BoxGeometry, PlaneGeometry, SphereGeometry, CapsuleGeometry, TorusGeometry,
@@ -89,28 +92,29 @@ function woodTexture(low) {
   return t;
 }
 
-function screenTexture(title, sub, accent) {
-  const c = document.createElement('canvas'); c.width = 512; c.height = 288; const g = c.getContext('2d');
-  g.fillStyle = '#0c1a7a'; g.fillRect(0, 0, 512, 288);
-  // pixel grid backdrop
-  g.fillStyle = 'rgba(255,255,255,0.06)';
-  for (let y = 0; y < 288; y += 12) for (let x = 0; x < 512; x += 12) if (((x * 7 + y * 13) % 5) === 0) g.fillRect(x, y, 10, 10);
-  // pixel blocks (white, like the hacker-room wall screen)
+function screenTexture(title, sub, accent, maxAniso) {
+  // drawn at 1536x864 regardless of the 3D resolution, with large type: readable from the overview camera
+  const W = 1536, H = 864, c = document.createElement('canvas'); c.width = W; c.height = H; const g = c.getContext('2d');
+  const bg = g.createLinearGradient(0, 0, 0, H); bg.addColorStop(0, '#13208f'); bg.addColorStop(1, '#0a1260');
+  g.fillStyle = bg; g.fillRect(0, 0, W, H);
+  g.fillStyle = 'rgba(255,255,255,0.05)';
+  for (let y = 0; y < H; y += 36) for (let x = 0; x < W; x += 36) if (((x * 7 + y * 13) % 5) === 0) g.fillRect(x, y, 30, 30);
   g.fillStyle = '#ffffff';
-  for (const [x, y, w, h] of [[24, 24, 36, 12], [24, 36, 12, 24], [452, 24, 36, 12], [476, 36, 12, 24], [24, 252, 36, 12], [24, 228, 12, 24], [452, 252, 36, 12], [476, 228, 12, 24]]) g.fillRect(x, y, w, h);
+  for (const [x, y, w, h] of [[60, 60, 96, 30], [60, 90, 30, 66], [W - 156, 60, 96, 30], [W - 90, 90, 30, 66], [60, H - 90, 96, 30], [60, H - 156, 30, 66], [W - 156, H - 90, 96, 30], [W - 90, H - 156, 30, 66]]) g.fillRect(x, y, w, h);
   g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.font = '800 64px ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace'; g.fillText(title, 256, 128);
-  g.fillStyle = accent; g.fillRect(156, 172, 200, 6);
-  g.fillStyle = '#c9d4ff'; g.font = '600 26px ui-monospace, Menlo, Consolas, monospace'; g.fillText(sub, 256, 214);
-  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; return t;
+  g.font = '900 250px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'; g.fillText(title, W / 2, 330);
+  g.fillStyle = accent; g.fillRect(W / 2 - 300, 520, 600, 16);
+  g.fillStyle = '#ffffff'; g.font = '800 104px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'; g.fillText(sub, W / 2, 660);
+  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; t.anisotropy = maxAniso || 8; return t;
 }
 
-function signTexture() {
-  const c = document.createElement('canvas'); c.width = 1024; c.height = 256; const g = c.getContext('2d');
+function signTexture(maxAniso) {
+  const c = document.createElement('canvas'); c.width = 2048; c.height = 512; const g = c.getContext('2d');
   g.textAlign = 'center'; g.textBaseline = 'middle';
-  g.fillStyle = '#ffffff'; g.font = '900 132px system-ui, "Segoe UI", Roboto, sans-serif'; g.fillText('SOL.COLLEGE', 512, 112);
-  g.font = '700 38px system-ui, "Segoe UI", Roboto, sans-serif'; g.fillStyle = '#d9ccff'; g.fillText('HACKER HOUSE CAMPUS  ·  DEVNET LABS', 512, 206);
-  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; return t;
+  g.shadowColor = 'rgba(153,69,255,0.9)'; g.shadowBlur = 28;
+  g.fillStyle = '#ffffff'; g.font = '900 264px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'; g.fillText('SOL.COLLEGE', 1024, 220);
+  g.shadowBlur = 0; g.font = '800 76px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif'; g.fillStyle = '#ece6ff'; g.fillText('HACKER HOUSE CAMPUS  ·  DEVNET LABS', 1024, 420);
+  const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; t.anisotropy = maxAniso || 8; return t;
 }
 
 function gradientTexture() {
@@ -131,18 +135,14 @@ function uplightTexture() {
   g.fillStyle = gr; g.fillRect(0, 0, 64, 256); return new CanvasTexture(c);
 }
 
-function labelSprite(text, accent) {
-  const c = document.createElement('canvas'); c.width = 512; c.height = 128; const g = c.getContext('2d');
-  const t = text.length > 24 ? text.slice(0, 23) + '…' : text;
-  g.font = '700 46px system-ui, "Segoe UI", Roboto, sans-serif';
-  const w = Math.min(500, g.measureText(t).width + 70), x = (512 - w) / 2;
-  g.fillStyle = 'rgba(10,7,32,0.82)'; g.strokeStyle = accent; g.lineWidth = 4;
-  g.beginPath(); g.roundRect(x, 18, w, 88, 44); g.fill(); g.stroke();
-  g.fillStyle = accent; g.beginPath(); g.arc(x + 36, 62, 9, 0, Math.PI * 2); g.fill();
-  g.fillStyle = '#ffffff'; g.textBaseline = 'middle'; g.fillText(t, x + 56, 64);
-  const tex = new CanvasTexture(c); tex.colorSpace = SRGBColorSpace;
-  const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, depthWrite: false, depthTest: false }));
-  s.scale.set(3.2, 0.8, 1); s.renderOrder = 10; return s;
+// Short display name for a label: strip "(…)" suffixes; long names keep whole words up to ~18 characters.
+// The full name is always available (title tooltip, aria-label, and the expanded label on hover/focus/selection).
+function shortName(name) {
+  const full = String(name).replace(/\s*\(.*\)$/, '').trim();
+  if (full.length <= 18) return full;
+  let out = '';
+  for (const w of full.split(/\s+/)) { if ((out + ' ' + w).trim().length > 18) break; out = (out + ' ' + w).trim(); }
+  return out || full.slice(0, 18);
 }
 
 // ---------- scene ----------
@@ -158,6 +158,7 @@ export function mountCampus(container, data, opts = {}) {
   container.style.position = container.style.position || 'relative';
   container.appendChild(renderer.domElement);
   const canvas = renderer.domElement;
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
   canvas.style.touchAction = 'pan-y'; // vertical swipes still scroll the page on phones
 
   const scene = new Scene(); scene.background = new Color(INK); scene.fog = new FogExp2(INK, low ? 0.03 : 0.024);
@@ -210,8 +211,8 @@ export function mountCampus(container, data, opts = {}) {
     const p = new Mesh(new PlaneGeometry(1.6, WALL_H * 0.9), upMat); p.position.set(-totalW / 2 + (i + 0.5) * (totalW / ups), WALL_H * 0.45, -ROOM_D / 2 + 0.03); scene.add(p);
   }
   // signage
-  const sign = new Mesh(new PlaneGeometry(9, 2.25), new MeshBasicMaterial({ map: signTexture(), transparent: true, depthWrite: false, color: 0xd8d0ff }));
-  sign.position.set(0, WALL_H - 0.85, -ROOM_D / 2 + 0.06); scene.add(sign);
+  const sign = new Mesh(new PlaneGeometry(6.8, 1.7), new MeshBasicMaterial({ map: signTexture(maxAniso), transparent: true, depthWrite: false, toneMapped: false }));
+  sign.position.set(0, WALL_H - 0.72, -ROOM_D / 2 + 0.06); scene.add(sign);
 
   // shared geometries
   const glowTex = glowTexture();
@@ -223,40 +224,68 @@ export function mountCampus(container, data, opts = {}) {
   // chairs: instanced wingbacks (seat, back, two wings, cushion) — 6 per room
   // Seating grows with the room: every project gets a seat. Up to 4 on the far side (facing the camera); beyond
   // that both sides are used and the spacing tightens so the table still fits the room.
-  const roomCounts = sectors.map((sid) => data.projects.filter((p) => p.sector === sid).length);
-  const sidesFor = (r) => (roomCounts[r] > 4 ? 2 : 1);
-  const perSide = (r) => Math.max(3, Math.ceil(roomCounts[r] / sidesFor(r)));
+  // Seating: active CTO agents sit at the table on the far side facing the camera (prominent, full size; a fifth+
+  // active agent uses a backless stool on the near side). Paused agents stand in a back row by the bookshelves,
+  // smaller and dimmed, offset by half a seat so they never hide an active agent.
+  const isPaused = (p) => (p.agent && p.agent.state) === 'paused';
+  const roomProjects = sectors.map((sid) => {
+    const ps = data.projects.filter((p) => p.sector === sid);
+    const act = ps.filter((p) => !isPaused(p)), pau = ps.filter(isPaused);
+    const far = act.slice(0, 4), near = act.slice(4);
+    return { far, near, back: pau };
+  });
+  const roomCounts = roomProjects.map((rp) => rp.far.length + rp.near.length);
+  const sidesFor = (r) => (roomProjects[r].near.length ? 2 : 1);
+  const perSide = (r) => Math.max(3, roomProjects[r].far.length, roomProjects[r].near.length, roomProjects[r].back.length - 1);
   const spacing = (r) => Math.min(2.4, (ROOM_W - 1.4) / perSide(r));
   const tableLen = (r) => perSide(r) * spacing(r) + 0.4;
-  const chairCount = sectors.reduce((n, _, r) => n + sidesFor(r) * perSide(r), 0) || 1;
   const parts = [
     [new BoxGeometry(0.8, 0.42, 0.75), [0, 0.21, 0]],
     [new BoxGeometry(0.85, 1.25, 0.2), [0, 0.82, 0.32]],
     [new BoxGeometry(0.14, 0.9, 0.6), [-0.42, 0.7, 0.08]],
     [new BoxGeometry(0.14, 0.9, 0.6), [0.42, 0.7, 0.08]],
   ];
-  const chairMeshes = parts.map(([g]) => { const m = new InstancedMesh(g, velvet, chairCount); scene.add(m); return m; });
-  const dummy = new Object3D(), part = new Object3D(); let ci = 0;
-  const seatPos = []; // [roomIndex][slot] => {x, z, rotY}
+  const seatPos = []; // [roomIndex] => [{x, z, rot, near, p}]
   for (let r = 0; r < nRooms; r++) {
     seatPos[r] = [];
-    for (let side = 0; side < sidesFor(r); side++) for (let k = 0; k < perSide(r); k++) {
-      // far side (z<0): wingback chairs facing the table and the camera. Near side (crowded rooms only): backless
-      // stools offset by half a seat, avatars turned towards the camera so nobody hides behind a chair.
-      const near = side === 1;
-      const x = roomX(r) + (k - (perSide(r) - 1) / 2 + (near ? 0.5 : 0)) * spacing(r), z = near ? 1.35 : -1.45, rot = Math.PI;
-      seatPos[r].push({ x, z, rot, near });
-      dummy.position.set(x, 0, z); dummy.rotation.set(0, rot, 0); dummy.updateMatrix();
-      parts.forEach(([, off], pi) => {
-        part.position.set(off[0], off[1], off[2]); part.scale.setScalar(near && pi > 0 ? 0 : 1); part.updateMatrix();
-        part.matrix.premultiply(dummy.matrix);
-        chairMeshes[pi].setMatrixAt(ci, part.matrix);
-      });
-      ci++;
-    }
+    const { far, near } = roomProjects[r];
+    const nF = Math.max(far.length, 3), nN = near.length;
+    for (let k = 0; k < nF; k++) seatPos[r].push({ x: roomX(r) + (k - (nF - 1) / 2) * spacing(r), z: -1.45, rot: Math.PI, near: false, p: far[k - Math.floor((nF - far.length) / 2)] || null });
+    const nOff = nN === nF ? 0.5 : 0; // interleave when both sides have the same count
+    for (let k = 0; k < nN; k++) seatPos[r].push({ x: roomX(r) + (k - (nN - 1) / 2 + nOff) * spacing(r), z: 1.35, rot: Math.PI, near: true, p: near[k] });
+    const back = roomProjects[r].back, nB = back.length, bs = Math.min(spacing(r) * 1.1, (ROOM_W - 1.6) / Math.max(1, nB));
+    for (let k = 0; k < nB; k++) seatPos[r].push({ x: roomX(r) + (k - (nB - 1) / 2) * bs, z: -3.7, rot: Math.PI, near: false, back: true, p: back[k] });
+  }
+  const chairCount = seatPos.reduce((n, s) => n + s.length, 0) || 1;
+  const chairMeshes = parts.map(([g]) => { const m = new InstancedMesh(g, velvet, chairCount); scene.add(m); return m; });
+  const dummy = new Object3D(), part = new Object3D(); let ci = 0;
+  for (let r = 0; r < nRooms; r++) for (const { x, z, rot, near, back } of seatPos[r]) {
+    dummy.position.set(x, 0, z); dummy.rotation.set(0, rot, 0); dummy.updateMatrix();
+    parts.forEach(([, off], pi) => {
+      part.position.set(off[0], off[1], off[2]); part.scale.setScalar(back || (near && pi > 0) ? 0 : near ? 0.85 : 1); part.updateMatrix();
+      part.matrix.premultiply(dummy.matrix);
+      chairMeshes[pi].setMatrixAt(ci, part.matrix);
+    });
+    ci++;
   }
   chairMeshes.forEach((m) => (m.instanceMatrix.needsUpdate = true));
 
+  // ---------- HTML labels (crisp text, projected from 3D every frame) ----------
+  const labelLayer = document.createElement('div'); labelLayer.className = 'c3-labels'; labelLayer.setAttribute('aria-hidden', 'true');
+  container.appendChild(labelLayer);
+  function makeLabel(p, css, paused) {
+    const full = String(p.displayName).replace(/\s*\(.*\)$/, '').trim(), short = shortName(p.displayName);
+    const el = document.createElement('button'); el.type = 'button'; el.tabIndex = -1; el.className = 'c3-label' + (paused ? ' is-paused' : '');
+    el.style.setProperty('--acc', css); el.title = full + (paused ? ' (CTO agent paused)' : '');
+    el.innerHTML = '<span class="c3-dot"></span><span class="c3-short"></span><span class="c3-full"></span>' + (paused ? '<span class="c3-state">Paused</span>' : '');
+    el.querySelector('.c3-short').textContent = short; el.querySelector('.c3-full').textContent = full;
+    if (short === full) el.classList.add('no-short');
+    el.addEventListener('click', (e) => { e.stopPropagation(); const s = p.slug; focusIdx = avatars.findIndex((x) => x.slug === s); highlight(s); onSelect(s); });
+    el.addEventListener('pointerenter', () => { hovered = p.slug; wake(); });
+    el.addEventListener('pointerleave', () => { if (hovered === p.slug) { hovered = null; wake(); } });
+    labelLayer.appendChild(el);
+    return { el, w: 0, h: 0, x: -1e4, y: -1e4, o: -1, full: false };
+  }
   const roomLights = [];
   const avatars = [];
   const hitTargets = [];
@@ -275,9 +304,11 @@ export function mountCampus(container, data, opts = {}) {
     pool.rotation.x = -Math.PI / 2; pool.position.set(cx, 0.012, 0); room.add(pool);
     // wall screen
     const ps = data.projects.filter((p) => p.sector === sid);
-    const scr = new Mesh(new PlaneGeometry(3.4, 1.9), new MeshBasicMaterial({ map: screenTexture(`${sid}`, ps.length ? `${ps.length} project${ps.length === 1 ? '' : 's'} · room` : 'no projects yet', css), toneMapped: false }));
-    scr.position.set(cx, 2.75, -ROOM_D / 2 + 0.08); room.add(scr);
-    const bezel = new Mesh(new BoxGeometry(3.55, 2.05, 0.06), screenBack); bezel.position.set(cx, 2.75, -ROOM_D / 2 + 0.04); room.add(bezel);
+    const nAct = ps.filter((p) => !isPaused(p)).length, nPau = ps.length - nAct;
+    const sub = !ps.length ? 'no projects yet' : nPau ? `${nAct} active · ${nPau} paused` : `${nAct} active agent${nAct === 1 ? '' : 's'}`;
+    const scr = new Mesh(new PlaneGeometry(3.4, 1.9), new MeshBasicMaterial({ map: screenTexture(sid, sub, css, maxAniso), toneMapped: false }));
+    scr.position.set(cx, 2.55, -ROOM_D / 2 + 0.08); room.add(scr);
+    const bezel = new Mesh(new BoxGeometry(3.55, 2.05, 0.06), screenBack); bezel.position.set(cx, 2.55, -ROOM_D / 2 + 0.04); room.add(bezel);
     // room light (indigo wash tinted by sector)
     const pl = new PointLight(new Color(INDIGO).lerp(new Color(accent), 0.25), low ? 10 : 14, 14, 1.6); pl.position.set(cx, 3.6, -2.2); room.add(pl); roomLights.push(pl);
     const warm = new PointLight(0xffb36b, low ? 7 : 9, 9, 1.4); warm.position.set(cx, 3.1, 0.6); room.add(warm);
@@ -289,29 +320,32 @@ export function mountCampus(container, data, opts = {}) {
     }
     // avatars: seated at the table, far side first (facing the camera)
     const sc = Math.min(1.3, spacing(r) / 1.85);
-    ps.forEach((p, j) => {
-      const seat = seatPos[r][j];
-      const a = new Group(); a.position.set(seat.x, 0, seat.z * 0.82); a.rotation.y = seat.rot; a.userData.base = sc; a.scale.setScalar(sc); room.add(a);
-      const bodyMat = new MeshStandardMaterial({ color: new Color(0xf4f0ff).lerp(new Color(accent), 0.18), emissive: accent, emissiveIntensity: low ? 0.5 : 0.32, roughness: 0.3, metalness: 0.15 });
+    seatPos[r].filter((s) => s.p).forEach((seat, j) => {
+      const p = seat.p, paused = isPaused(p), asc = paused ? sc * 0.8 : sc;
+      const a = new Group(); a.position.set(seat.x, 0, seat.z * 0.82); a.rotation.y = seat.rot; a.userData.base = asc; a.scale.setScalar(asc); room.add(a);
+      const bodyMat = paused
+        ? new MeshStandardMaterial({ color: 0x6a6488, emissive: 0x241c4a, emissiveIntensity: 0.25, roughness: 0.6, metalness: 0.05, transparent: true, opacity: 0.78 })
+        : new MeshStandardMaterial({ color: new Color(0xf4f0ff).lerp(new Color(accent), 0.18), emissive: accent, emissiveIntensity: low ? 0.5 : 0.32, roughness: 0.3, metalness: 0.15 });
+      const dimAccent = paused ? 0x5b5380 : accent;
       const body = new Mesh(new CapsuleGeometry(0.32, 0.55, low ? 4 : 8, low ? 10 : 18), bodyMat); body.position.y = 0.95;
       const head = new Mesh(new SphereGeometry(0.3, low ? 14 : 24, low ? 10 : 18), bodyMat); head.position.y = 1.72;
-      const visor = new Mesh(new BoxGeometry(0.42, 0.1, 0.05), new MeshBasicMaterial({ color: accent, toneMapped: false })); visor.position.set(0, 1.74, -0.27);
-      const halo = new Mesh(new TorusGeometry(0.42, 0.025, 8, low ? 24 : 48), new MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.9, toneMapped: false })); halo.rotation.x = Math.PI / 2; halo.position.y = 2.15;
-      const glow = new Sprite(new SpriteMaterial({ map: glowTex, color: accent, transparent: true, opacity: 0.5, blending: AdditiveBlending, depthWrite: false })); glow.scale.set(2.2, 2.2, 1); glow.position.y = 1.3;
+      const visor = new Mesh(new BoxGeometry(0.42, 0.1, 0.05), new MeshBasicMaterial({ color: dimAccent, toneMapped: false })); visor.position.set(0, 1.74, -0.27);
+      const halo = new Mesh(new TorusGeometry(0.42, 0.025, 8, low ? 24 : 48), new MeshBasicMaterial({ color: accent, transparent: true, opacity: paused ? 0 : 0.9, toneMapped: false })); halo.rotation.x = Math.PI / 2; halo.position.y = 2.15; halo.visible = !paused;
+      const glow = new Sprite(new SpriteMaterial({ map: glowTex, color: dimAccent, transparent: true, opacity: paused ? 0.12 : 0.5, blending: AdditiveBlending, depthWrite: false })); glow.scale.set(2.2, 2.2, 1); glow.position.y = 1.3;
       // laptop on the table in front of the avatar
       const lap = new Group(); lap.position.set(0, 0.84, -0.62);
       const lbase = new Mesh(new BoxGeometry(0.62, 0.03, 0.42), screenBack); lap.add(lbase);
       const lid = new Group(); lid.position.set(0, 0.015, -0.2); lid.rotation.x = -0.28; lap.add(lid);
       const shell = new Mesh(new BoxGeometry(0.62, 0.4, 0.02), screenBack); shell.position.y = 0.2; lid.add(shell);
-      const lscr = new Mesh(new PlaneGeometry(0.56, 0.35), new MeshBasicMaterial({ color: 0x6070ff, toneMapped: false })); lscr.position.set(0, 0.2, 0.011); lid.add(lscr);
+      const lscr = new Mesh(new PlaneGeometry(0.56, 0.35), new MeshBasicMaterial({ color: paused ? 0x1a1838 : 0x6070ff, toneMapped: false })); lscr.position.set(0, 0.2, 0.011); lid.add(lscr);
       const logo = new Mesh(new PlaneGeometry(0.16, 0.05), new MeshBasicMaterial({ map: grad, toneMapped: false })); logo.position.set(0, 0.22, -0.011); logo.rotation.y = Math.PI; lid.add(logo);
-      const base = new Mesh(new TorusGeometry(0.55, 0.03, 6, low ? 24 : 40), new MeshBasicMaterial({ color: accent, transparent: true, opacity: 0.8, toneMapped: false })); base.rotation.x = Math.PI / 2; base.position.y = 0.03;
-      const scarf = new Mesh(new TorusGeometry(0.3, 0.06, 8, low ? 16 : 28), new MeshBasicMaterial({ map: grad, toneMapped: false })); scarf.rotation.x = Math.PI / 2; scarf.position.y = 1.42;
+      const base = new Mesh(new TorusGeometry(0.55, 0.03, 6, low ? 24 : 40), new MeshBasicMaterial({ color: dimAccent, transparent: true, opacity: paused ? 0.35 : 0.8, toneMapped: false })); base.rotation.x = Math.PI / 2; base.position.y = 0.03;
+      const scarf = new Mesh(new TorusGeometry(0.3, 0.06, 8, low ? 16 : 28), paused ? new MeshBasicMaterial({ color: 0x4a4468 }) : new MeshBasicMaterial({ map: grad, toneMapped: false })); scarf.rotation.x = Math.PI / 2; scarf.position.y = 1.42;
       const hit = new Mesh(new CylinderGeometry(0.75, 0.75, 2.6, 8), new MeshBasicMaterial({ visible: false })); hit.position.y = 1.2; // generous tap target
       body.userData.slug = head.userData.slug = hit.userData.slug = p.slug;
-      a.add(body, head, visor, halo, glow, base, scarf, hit); if (!seat.near) a.add(lap);
-      const label = labelSprite(p.displayName.replace(/\s*\(.*\)$/, ''), css); const ly = seat.near ? 2.35 + (j % 2) * 0.35 : 3.25 + (j % 2) * 0.5 * (sc / 1.3); label.position.set(seat.x, ly, seat.z * 0.82); label.scale.set(2.9 * Math.max(0.8, sc / 1.3), 0.72 * Math.max(0.8, sc / 1.3), 1); label.userData.y0 = ly; room.add(label);
-      avatars.push({ slug: p.slug, group: a, bodyMat, halo, glow, label, room: r, phase: j * 1.7, hover: 0, target: 0 });
+      a.add(body, head, visor, halo, glow, base, scarf, hit); if (!seat.near && !seat.back) a.add(lap);
+      const label = makeLabel(p, css, paused);
+      avatars.push({ slug: p.slug, group: a, bodyMat, halo, glow, label, paused, room: r, phase: j * 1.7, hover: 0, target: 0, base: paused ? 0.25 : (low ? 0.5 : 0.32) });
       hitTargets.push(hit, body, head);
     });
   });
@@ -371,7 +405,7 @@ export function mountCampus(container, data, opts = {}) {
     if (portrait && viewIdx > 0) camera.setViewOffset(W, H, 0, -H * 0.07, W, H); else camera.clearViewOffset();
     const crowded = viewIdx > 0 && sidesFor(v.room) === 2;
     goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : 0.78)))
-      : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.7, tableLen(v.room) + 1.4) : ROOM_W * (crowded ? 1.05 : 0.9)));
+      : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.2, tableLen(v.room) + 0.5) : ROOM_W * (crowded ? 1.05 : 0.9)));
     goal.pitch = viewIdx === 0 ? 0.3 : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
     goal.ty = crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4; goal.yaw = 0;
     if (instant) Object.assign(rig, goal);
@@ -455,7 +489,49 @@ export function mountCampus(container, data, opts = {}) {
   // ---------- loop ----------
   let raf = 0, visible = true, last = performance.now(), t = 0, frames = 0, acc = 0, slowStreak = 0, still = 0;
   const camPos = new Vector3();
-  const render = () => { if (composer) composer.render(); else renderer.render(scene, camera); };
+  const render = () => { if (composer) composer.render(); else renderer.render(scene, camera); placeLabels(); };
+  // Project every label anchor, then place labels in priority order (selected/hovered, active, paused; nearer
+  // first). A label that would overlap one already placed is nudged upwards (up to 3 steps), then sideways; if it
+  // still collides, a paused label is hidden. Distant paused labels fade out; anything off-screen or behind is hidden.
+  const anchor = new Vector3(), camDir = new Vector3(), toA = new Vector3();
+  const placeLabels = () => {
+    const W = container.clientWidth, H = container.clientHeight; if (!W || !H) return;
+    camera.getWorldDirection(camDir);
+    const items = [];
+    for (const a of avatars) {
+      const L = a.label;
+      a.group.getWorldPosition(anchor); anchor.y += 2.45 * a.group.scale.y;
+      toA.copy(anchor).sub(camera.position); const dist = toA.length(); const facing = toA.dot(camDir) / dist;
+      anchor.project(camera);
+      const sx = (anchor.x + 1) / 2 * W, sy = (1 - anchor.y) / 2 * H;
+      const on = facing > 0.2 && anchor.z < 1 && sx > -40 && sx < W + 40 && sy > -10 && sy < H + 10;
+      const pri = (a.slug === selected || a.slug === hovered ? 0 : a.paused ? 2 : 1);
+      const fade = a.paused ? MathUtils.clamp((22 - dist) / 6, 0, 1) : MathUtils.clamp((40 - dist) / 8, 0, 1);
+      items.push({ a, L, sx, sy, on: on && fade > 0.05, pri, dist, fade });
+    }
+    items.sort((p, q) => p.pri - q.pri || p.dist - q.dist);
+    const placed = [];
+    const hit = (r) => placed.some((q) => r.x < q.x + q.w + 4 && r.x + r.w + 4 > q.x && r.y < q.y + q.h + 3 && r.y + r.h + 3 > q.y);
+    for (const it of items) {
+      const { a, L } = it;
+      const full = a.slug === selected || a.slug === hovered;
+      if (L.full !== full) { L.full = full; L.el.classList.toggle('is-full', full); L.w = 0; }
+      L.el.classList.toggle('is-sel', a.slug === selected);
+      if (!it.on) { if (L.o !== 0) { L.el.style.opacity = '0'; L.el.style.visibility = 'hidden'; L.o = 0; } continue; }
+      if (!L.w) { L.w = L.el.offsetWidth; L.h = L.el.offsetHeight; }
+      let r = { x: Math.round(it.sx - L.w / 2), y: Math.round(it.sy - L.h), w: L.w, h: L.h };
+      r.x = Math.max(4, Math.min(W - L.w - 4, r.x)); r.y = Math.max(4, Math.min(H - L.h - 4, r.y));
+      let ok = !hit(r);
+      for (let k = 1; !ok && k <= 3; k++) { const c = { ...r, y: r.y - k * (L.h + 3) }; if (c.y >= 2 && !hit(c)) { r = c; ok = true; } }
+      for (const dx of [1, -1]) { if (ok) break; const c = { ...r, x: r.x + dx * (L.w / 2 + 6) }; if (c.x >= 2 && c.x + c.w <= W - 2 && !hit(c)) { r = c; ok = true; } }
+      if (!ok && it.pri === 2) { if (L.o !== 0) { L.el.style.opacity = '0'; L.el.style.visibility = 'hidden'; L.o = 0; } continue; }
+      placed.push(r);
+      const o = Math.round(it.fade * 100) / 100;
+      if (L.x !== r.x || L.y !== r.y) { L.el.style.transform = `translate3d(${r.x}px,${r.y}px,0)`; L.x = r.x; L.y = r.y; }
+      if (L.o !== o) { L.el.style.opacity = String(o); L.el.style.visibility = 'visible'; L.o = o; }
+      L.el.style.zIndex = String(10 - it.pri);
+    }
+  };
   const step = (dt) => {
     const now = performance.now();
     const auto = !reducedMotion && now > idleUntil;
@@ -473,10 +549,9 @@ export function mountCampus(container, data, opts = {}) {
       a.hover += (want - a.hover) * Math.min(1, dt * 10);
       const bob = reducedMotion ? 0 : Math.sin(t * 1.6 + a.phase) * 0.04;
       a.group.position.y = bob; a.group.scale.setScalar(a.group.userData.base * (1 + a.hover * 0.12));
-      a.bodyMat.emissiveIntensity = (low ? 0.5 : 0.32) + a.hover * 0.9;
+      a.bodyMat.emissiveIntensity = a.base + a.hover * (a.paused ? 0.35 : 0.9);
       a.halo.rotation.z = t * 0.8 + a.phase; a.halo.material.opacity = 0.6 + a.hover * 0.4;
-      a.glow.material.opacity = 0.35 + a.hover * 0.5 + (reducedMotion ? 0 : Math.sin(t * 2 + a.phase) * 0.06);
-      a.label.position.y = a.label.userData.y0 + bob + a.hover * 0.25;
+      a.glow.material.opacity = (a.paused ? 0.1 : 0.35) + a.hover * 0.5 + (reducedMotion || a.paused ? 0 : Math.sin(t * 2 + a.phase) * 0.06);
     }
     if (particles) {
       const p = particles.geometry.attributes.position, arr = p.array;
@@ -515,7 +590,7 @@ export function mountCampus(container, data, opts = {}) {
   function resize() {
     const W = container.clientWidth, H = container.clientHeight; if (!W || !H) return;
     renderer.setSize(W, H); if (composer) composer.setSize(W, H); if (bloom) bloom.setSize(W, H);
-    camera.aspect = W / H; camera.updateProjectionMatrix(); setView(viewIdx); wake();
+    camera.aspect = W / H; camera.updateProjectionMatrix(); setView(viewIdx); for (const a of avatars) a.label.w = 0; wake();
   }
   const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
   if (ro) ro.observe(container); else addEventListener('resize', resize);
@@ -530,7 +605,7 @@ export function mountCampus(container, data, opts = {}) {
     dispose() {
       cancelAnimationFrame(raf); raf = 0; if (io) io.disconnect(); if (ro) ro.disconnect(); document.removeEventListener('visibilitychange', onVis);
       scene.traverse((o) => { if (o.geometry) o.geometry.dispose(); const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach((x) => { if (x.map) x.map.dispose(); if (x.emissiveMap) x.emissiveMap.dispose(); x.dispose(); }); });
-      if (composer) composer.dispose?.(); renderer.dispose(); canvas.remove(); nav.remove(); hint.remove();
+      if (composer) composer.dispose?.(); renderer.dispose(); canvas.remove(); nav.remove(); hint.remove(); labelLayer.remove();
     },
   };
 }

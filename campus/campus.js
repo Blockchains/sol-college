@@ -15,8 +15,11 @@ function projectCard(p, headingLevel = 3) {
     ? `<details><summary>Engineering record (${p.records.length})</summary><ul>${p.records.map((r) => `<li><a href="${esc(r.url)}">${esc(r.title)}</a> <span class="small">${esc(r.type)}, ${fmtDate(r.at)}</span></li>`).join('')}</ul></details>`
     : '<p class="empty">No public records yet.</p>';
   const g = p.progression;
-  return `<article class="card" id="p-${esc(p.slug)}" data-slug="${esc(p.slug)}" tabindex="-1">
+  const paused = p.agent && p.agent.state === 'paused';
+  const agentLine = p.agent && p.agent.state !== 'none' ? `<p class="agent-state${paused ? ' is-paused' : ''}"><b>${paused ? 'CTO agent paused' : 'CTO agent active'}.</b> ${esc(p.agent.note)}</p>` : '';
+  return `<article class="card${paused ? ' is-paused' : ''}" id="p-${esc(p.slug)}" data-slug="${esc(p.slug)}" tabindex="-1">
     <div class="cto"><span class="avatar" aria-hidden="true"></span><span>${esc(p.cto.label)}</span></div>
+    ${agentLine}
     <${h}>${esc(p.displayName)}</${h}>
     <p>${esc(p.description)}</p>
     ${p.demonstrationNotice ? `<p class="demo"><b>Demonstration.</b> ${esc(p.demonstrationNotice)}</p>` : ''}
@@ -61,7 +64,8 @@ function renderRooms() {
   const sector = (document.querySelector('input[name=sector]:checked') || {}).value || '';
   $('#count').textContent = `${list.length} of ${DATA.projects.length} project${DATA.projects.length === 1 ? '' : 's'} shown`;
   $('#rooms').innerHTML = DATA.sectors.filter((s) => !sector || s.id === sector).map((s) => {
-    const ps = list.filter((p) => p.sector === s.id);
+    // active CTO agents first, paused ones after (stable order otherwise)
+    const ps = list.filter((p) => p.sector === s.id).sort((x, y) => ((x.agent && x.agent.state === 'paused') ? 1 : 0) - ((y.agent && y.agent.state === 'paused') ? 1 : 0));
     return `<section class="room" aria-labelledby="room-${s.id}"><h2 id="room-${s.id}">${esc(s.name)} room <small>${esc(s.blurb)}</small></h2>
       ${ps.length ? `<div class="cards">${ps.map((p) => projectCard(p)).join('')}</div>` : `<p class="empty">No ${s.id === 'DeFi' ? 'matching ' : ''}projects in this room yet.</p>`}</section>`;
   }).join('');
