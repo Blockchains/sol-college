@@ -88,6 +88,15 @@ jobs:
         run: |
           set -euo pipefail
           solana --version; anchor --version; RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" rustc --version
+          if [ ! -f Cargo.lock ]; then
+            # No committed lockfile: resolve one that the Solana platform-tools cargo (1.84) can build, by asking
+            # cargo 1.84 to prefer versions compatible with it (e.g. zeroize 1.8.x rather than 1.9 / edition 2024).
+            # Lockfile format 3 because the platform-tools cargo cannot read format 4. Recorded in the run log.
+            rustup toolchain install 1.84.0 --profile minimal
+            CARGO_RESOLVER_INCOMPATIBLE_RUST_VERSIONS=fallback cargo +1.84.0 generate-lockfile
+            sed -i 's/^version = 4$/version = 3/' Cargo.lock
+            echo "generated Cargo.lock: sha256 $(sha256sum Cargo.lock | cut -c1-64)"
+          fi
           RUSTUP_TOOLCHAIN="$IDL_RUSTUP_TOOLCHAIN" anchor build
           ls -l target/deploy/*.so target/idl/*.json
       - name: Install candidate client dependencies (scripts disabled)
