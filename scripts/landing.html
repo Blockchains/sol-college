@@ -36,21 +36,27 @@
 <body>
 <div class="bg-aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
 <canvas class="bg-particles" id="bg-particles" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>Sol.College</a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
   <nav id="site-nav" aria-label="Main">
-    <a href="#pathways">Pathways</a>
-    <a href="#loop">The loop</a>
-    <a href="#for-teams">For teams</a>
-    <a href="#faq">FAQ</a>
     <a href="/lessons/">Lessons</a>
-    <a href="/lessons/path/">Learning path</a>
-    <a href="/lessons/glossary/">Glossary</a>
-    <a href="/live/">Live apps</a>
+    <a href="/live/">Live</a>
     <a href="/campus/">Campus</a>
-    <a href="/explore/">Source library (not yet live)</a>
+    <a href="#for-teams">For teams</a>
+    <details class="nav-fold">
+      <summary>More</summary>
+      <div>
+        <a href="/lessons/path/">Learning path</a>
+        <a href="#pathways">Pathways</a>
+        <a href="#loop">The loop</a>
+        <a href="/lessons/glossary/">Glossary</a>
+        <a href="#faq">FAQ</a>
+        <a href="/explore/">Source library (not yet live)</a>
+      </div>
+    </details>
     <a class="btn nav-cta" href="{{START_LESSON}}">Start a lesson</a>
     <a class="btn ghost nav-cta" href="{{PROJECT}}">Bring your dApp</a>
   </nav>
@@ -60,68 +66,50 @@
   </div>
 </header>
 <main id="main">
-<section class="band hero" id="learn">
-  <div class="inner">
+<section class="stage-hero hero">
+  {{CAMPUS_HERO}}
+  <div class="stage-veil" aria-hidden="true"></div>
+  <div class="stage-copy" id="learn">
     <div class="audience" role="tablist" aria-label="Choose your starting point">
       <button type="button" role="tab" id="tab-learn" aria-controls="hero-learn" aria-selected="true" tabindex="0">I want to learn</button>
       <button type="button" role="tab" id="tab-teams" aria-controls="hero-teams" aria-selected="false" tabindex="-1">I build a dApp</button>
     </div>
 
-    <div id="hero-learn" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-learn">
-      <div>
-        <h1>Learn on real Solana dApps. Help make them better.</h1>
-        <p class="lead">{{LIVE_COUNT}} practice apps are already running on devnet. Open a lesson, connect your own wallet, and work through the real program.</p>
-        <p class="cta-row">
-          <a class="btn" href="{{START_LESSON}}">Start the first lesson</a>
-          <a class="btn ghost" href="/lessons/path/">Follow the path</a>
-        </p>
-        <p class="hero-quiet"><a href="{{WAITLIST}}">Join the learner waitlist</a> if you want a cohort. The lessons are open now. Teams can <a href="{{PROJECT}}">bring a project</a>.</p>
-        <div class="hero-more">
-          <p>Explore how real applications work, test their limits, discover issues and turn your findings into useful improvements.</p>
-          <p>Sol.College brings developers, security researchers and bug bounty hunters together with the teams building on Solana. Learn by doing meaningful work. Give projects feedback they can act on.</p>
-        </div>
-        <p class="tagline">Practical learning. Authorised testing. Real project feedback.</p>
-      </div>
-      <div>
-        <div class="proof-strip" aria-label="Evidence from our own work">
-          <a class="glass proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working practice environments on devnet</span><small>Core flows completed in our evidence.</small></a>
-          <a class="glass proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>documented bugs found in the forks</span><small>Explicit bug records in our evidence, not a formal audit.</small></a>
-          {{FIX_CARD}}
-          <a class="glass proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons on live deployments</span><small>Each lesson is built to end in a commit suggestion.</small></a>
-        </div>
-      </div>
+    <div id="hero-learn" class="hero-panel" role="tabpanel" aria-labelledby="tab-learn">
+      <p class="hero-kicker"><span class="live-dot" aria-hidden="true"></span>{{LIVE_COUNT}} practice apps running on devnet</p>
+      <h1>Learn on <em>real</em> Solana dApps.</h1>
+      <p class="hero-promise">Help make them better.</p>
+      <p class="lead">Open a lesson, connect your own wallet, and work through the program. The campus behind this page is live. These are devnet forks we ran ourselves, not a claim that the original team is a partner.</p>
+      <p class="cta-row">
+        <a class="btn" href="{{START_LESSON}}">Start the first lesson</a>
+        <a class="btn ghost" href="/campus/">Walk the campus</a>
+      </p>
     </div>
 
-    <div id="hero-teams" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
-      <div>
-        <p class="eyebrow">For Solana teams</p>
-        <h1>A flywheel that turns testing into <em>improvements</em>.</h1>
-        <p class="lead">Put an isolated devnet fork of your dApp in front of developers, testers and researchers. They learn on a live application; you receive reproducible findings and commit suggestions.</p>
-        <p class="cta-row">
-          <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
-          <a class="btn ghost" href="#loop">See the loop</a>
-        </p>
-        <div class="hero-more">
-          <p>Commit suggestions are patches and regression tests. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for your team to accept or decline.</p>
-          <p>The loop is designed so authorised testing continuously feeds improvements you can merge — without anyone experimenting on your production system.</p>
-        </div>
-      </div>
-      <div>
-        <ol class="pipeline" style="display:block">
-          <li><strong>Your dApp</strong> <span>The application you already built.</span></li>
-          <li><strong>Isolated devnet fork</strong> <span>A practice environment, not production.</span></li>
-          <li><strong>Learners test and debug</strong> <span>Developers, testers and researchers, inside an agreed scope.</span></li>
-          <li><strong>Reproducible findings</strong> <span>Evidence another person can evaluate.</span></li>
-          <li><strong>Suggested commits, opened as PRs</strong> <span>Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</span></li>
-          <li><strong>Your team reviews and merges</strong> <span>You decide what lands.</span></li>
-          <li><strong>Retest on devnet</strong> <span>Prove the fix, then go around again.</span></li>
-        </ol>
-      </div>
+    <div id="hero-teams" class="hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
+      <p class="eyebrow">For Solana teams</p>
+      <h1>Testing that comes back as <em>a patch</em>.</h1>
+      <p class="lead">Put an isolated devnet fork in front of developers, testers and researchers. They learn on a live application. You get reproducible findings and commit suggestions. You accept or decline.</p>
+      <p class="cta-row">
+        <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
+        <a class="btn ghost" href="#loop">See the loop</a>
+      </p>
     </div>
   </div>
 </section>
 
-{{CAMPUS_HERO}}
+<section class="band proof-band">
+  <div class="inner">
+    <div class="score proof-strip" aria-label="Evidence from our own work">
+      <a class="proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working environments</span><small>Core flows completed in our evidence.</small></a>
+      <a class="proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>bugs found in the forks</span><small>Explicit records in our evidence, not a formal audit.</small></a>
+      {{FIX_CARD}}
+      <a class="proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons</span><small>Each one is built to end in a commit suggestion.</small></a>
+    </div>
+    {{MARQUEE}}
+    <p class="hero-quiet"><a href="{{WAITLIST}}">Join the learner waitlist</a> if you want a cohort. The lessons are open now. Teams can <a href="{{PROJECT}}">bring a project</a>. Or <a href="/lessons/path/">follow the path</a>.</p>
+  </div>
+</section>
 
 <section class="band" id="loop">
   <div class="inner">

@@ -403,13 +403,17 @@ export function mountCampus(container, data, opts = {}) {
     const portrait = camera.aspect < 1;
     const fov = portrait ? 60 : 48; if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
     // portrait: lens shift so the room sits lower in the frame (the space above the bookshelves is otherwise empty)
+    // hero: the landing page uses the campus as a full-bleed background, so the wide overview fills the frame
     const W = container.clientWidth || 1, H = container.clientHeight || 1;
-    if (portrait && viewIdx > 0) camera.setViewOffset(W, H, 0, -H * 0.07, W, H); else camera.clearViewOffset();
+    if (portrait && viewIdx > 0) camera.setViewOffset(W, H, 0, -H * 0.07, W, H);
+    else camera.clearViewOffset();
     const crowded = viewIdx > 0 && sidesFor(v.room) === 2;
-    goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : 0.78)))
+    const heroWide = opts.hero && !portrait && viewIdx === 0;
+    goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : heroWide ? 0.58 : 0.78)))
       : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.2, tableLen(v.room) + 0.5) : ROOM_W * (crowded ? 1.05 : 0.9)));
-    goal.pitch = viewIdx === 0 ? 0.3 : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
-    goal.ty = crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4; goal.yaw = 0;
+    goal.pitch = viewIdx === 0 ? (heroWide ? 0.46 : 0.3) : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
+    goal.ty = crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : (heroWide ? 0.85 : 1.4); goal.yaw = 0;
+    if (opts.hero && !portrait && camera.fov !== 40) { camera.fov = 40; camera.updateProjectionMatrix(); }
     if (instant) Object.assign(rig, goal);
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === viewIdx)));
     if (ready) wake();
@@ -520,6 +524,9 @@ export function mountCampus(container, data, opts = {}) {
       if (L.full !== full) { L.full = full; L.el.classList.toggle('is-full', full); L.w = 0; }
       L.el.classList.toggle('is-sel', a.slug === selected);
       if (!it.on) { if (L.o !== 0) { L.el.style.opacity = '0'; L.el.style.visibility = 'hidden'; L.o = 0; } continue; }
+      // On the landing hero, keep name pills off the headline and off the bottom dock.
+      const inCopy = opts.hero && (camera.aspect < 1 ? it.sy > H * 0.4 : it.sx < W * 0.58 || it.sy > H - 140);
+      if (inCopy) { if (L.o !== 0) { L.el.style.opacity = '0'; L.el.style.visibility = 'hidden'; L.o = 0; } continue; }
       if (!L.w) { L.w = L.el.offsetWidth; L.h = L.el.offsetHeight; }
       let r = { x: Math.round(it.sx - L.w / 2), y: Math.round(it.sy - L.h), w: L.w, h: L.h };
       r.x = Math.max(4, Math.min(W - L.w - 4, r.x)); r.y = Math.max(4, Math.min(H - L.h - 4, r.y));

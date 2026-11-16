@@ -220,6 +220,38 @@ def explicit_bugs(apps):
     return found
 
 
+def orbit_html(apps):
+    """Six real practice-app names placed around the hero ring. Short names read at a glance."""
+    picked = []
+    for x in apps:
+        name = display_name(x)
+        if 3 <= len(name) <= 18 and name not in picked:
+            picked.append(name)
+        if len(picked) == 6:
+            break
+    if len(picked) < 6:
+        for x in apps:
+            name = display_name(x)
+            if name not in picked:
+                picked.append(name if len(name) <= 18 else name[:17].rstrip() + '…')
+            if len(picked) == 6:
+                break
+    return ''.join(f'<span class="sat sat-{i}">{E(name)}</span>' for i, name in enumerate(picked, 1))
+
+
+def marquee_html(apps):
+    names = [display_name(x) for x in apps]
+    if not names:
+        return ''
+    chips = ''.join(f'<span>{E(n)}</span>' for n in names)
+    return (
+        '<div class="marquee">'
+        '<p class="marquee-label">Running on devnet now</p>'
+        f'<div class="marquee-mask" aria-hidden="true"><div class="marquee-track">{chips}{chips}</div></div>'
+        '</div>'
+    )
+
+
 def live_cards(apps):
     out = []
     for x in apps:
@@ -582,6 +614,8 @@ def write_home(site='site'):
         'FIX_CARD': fix_card_html(fix_prs) + _findings.proof_card(sec_findings),
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
         'LIVE_CARDS': live_cards(functional),
+        'ORBIT': orbit_html(functional),
+        'MARQUEE': marquee_html(functional),
         'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),
         'START_LESSON': START_LESSON,
         'WAITLIST': WAITLIST,

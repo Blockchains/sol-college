@@ -102,6 +102,7 @@ function init() {
       scene = mod.mountCampus(holder, shown, {
         reducedMotion: false,
         quality: quality(),
+        hero: true,
         onSelect: (slug) => open(slug, scene && scene.canvas),
         onFocusAvatar: (slug) => { const n = $('#ch-note'); const p = shown.projects.find((x) => x.slug === slug); if (n && p) n.textContent = `${p.displayName}: press Enter for details.`; },
       });
