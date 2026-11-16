@@ -1265,7 +1265,7 @@ section.band h2 { letter-spacing: -0.02em; }
 }
 .hero-steps li strong, .hero-steps li span { grid-column: 2; min-width: 0; }
 .hero-steps li span { display: block; }
-#environments .card {
+#featured .card , #environments .card {
   background:
     radial-gradient(140px 90px at 0 0, rgba(20,241,149,0.14), transparent 70%),
     linear-gradient(180deg, rgba(42, 28, 96, 0.55), rgba(8, 6, 22, 0.82));
@@ -1584,8 +1584,8 @@ section.band h2 { letter-spacing: -0.02em; }
 .proof-band .hero-quiet { margin: 14px 0 0; }
 main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
 .proof-band + section.band { padding-top: 48px; }
-#environments .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-#environments .card h3 { font-family: var(--display); font-size: 1.55rem; font-weight: 400; }
+#featured .grid, #environments .grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+#featured .card h3 , #environments .card h3 { font-family: var(--display); font-size: 1.55rem; font-weight: 400; }
 @media (max-width: 760px) {
   .top {
     top: 0;
@@ -1716,12 +1716,12 @@ section.band a:hover { color: #3a1d8f; }
 }
 
 /* Practice apps are product posters. The icon is the art; the type sells the project.
-   This block stays after the dark #environments .card gradient so it wins. */
-#environments .grid {
+   This block stays after the dark card gradient so it wins. */
+#featured .grid, #environments .grid {
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: 22px;
 }
-#environments .card {
+#featured .card , #environments .card {
   padding: 0;
   gap: 0;
   overflow: hidden;
@@ -1732,11 +1732,11 @@ section.band a:hover { color: #3a1d8f; }
   box-shadow: 0 18px 44px rgba(48, 24, 96, 0.1);
   transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
-#environments .card:hover {
+#featured .card:hover , #environments .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 28px 60px rgba(48, 24, 96, 0.16);
 }
-#environments .card .mark-stage {
+#featured .card .mark-stage , #environments .card .mark-stage {
   position: relative;
   display: block;
   aspect-ratio: 1;
@@ -1746,7 +1746,7 @@ section.band a:hover { color: #3a1d8f; }
     radial-gradient(70% 60% at 100% 100%, rgba(153, 69, 255, 0.16), transparent 55%),
     #f6f1e7;
 }
-#environments .card .mark-stage::after {
+#featured .card .mark-stage::after , #environments .card .mark-stage::after {
   content: "";
   position: absolute;
   left: 0;
@@ -1755,7 +1755,7 @@ section.band a:hover { color: #3a1d8f; }
   height: 4px;
   background: linear-gradient(90deg, #14f195, #9945ff);
 }
-#environments .card .mark {
+#featured .card .mark , #environments .card .mark {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -1766,15 +1766,15 @@ section.band a:hover { color: #3a1d8f; }
   transform-origin: center;
   transition: transform 0.45s ease;
 }
-#environments .card:hover .mark { transform: scale(1.26); }
-#environments .card .card-body {
+#featured .card:hover .mark , #environments .card:hover .mark { transform: scale(1.26); }
+#featured .card .card-body , #environments .card .card-body {
   display: flex;
   flex-direction: column;
   gap: 10px;
   flex: 1;
   padding: 16px 18px 18px;
 }
-#environments .card .meta {
+#featured .card .meta , #environments .card .meta {
   align-self: flex-start;
   margin: 0;
   padding: 5px 10px 5px 8px;
@@ -1786,11 +1786,11 @@ section.band a:hover { color: #3a1d8f; }
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
-#environments .card .live-dot {
+#featured .card .live-dot , #environments .card .live-dot {
   background: #12c47a;
   box-shadow: 0 0 0 3px rgba(20, 241, 149, 0.28);
 }
-#environments .card h3 {
+#featured .card h3 , #environments .card h3 {
   font-family: var(--display);
   font-size: clamp(1.55rem, 2vw, 1.85rem);
   font-weight: 400;
@@ -1798,22 +1798,22 @@ section.band a:hover { color: #3a1d8f; }
   line-height: 1.08;
   margin: 0;
 }
-#environments .card h3,
-#environments .card h3 a { color: #140c28; text-decoration: none; }
-#environments .card h3 a:hover { color: #3a1d8f; }
-#environments .card .pitch {
+#featured .card h3, #environments .card h3,
+#featured .card h3 a , #environments .card h3 a { color: #140c28; text-decoration: none; }
+#featured .card h3 a:hover , #environments .card h3 a:hover { color: #3a1d8f; }
+#featured .card .pitch , #environments .card .pitch {
   margin: 0;
   flex: 1;
   color: #2a2344;
   font-size: 1.02rem;
   line-height: 1.45;
 }
-#environments .card .links {
+#featured .card .links , #environments .card .links {
   flex-direction: column;
   gap: 8px;
   margin-top: 6px;
 }
-#environments .card .links a {
+#featured .card .links a , #environments .card .links a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1825,22 +1825,153 @@ section.band a:hover { color: #3a1d8f; }
   font-weight: 750;
   letter-spacing: -0.01em;
 }
-#environments .card .links a.app {
+#featured .card .links a.app , #environments .card .links a.app {
   background: linear-gradient(180deg, #5dffc0, #14f195);
   color: #04281c;
   box-shadow: 0 10px 22px rgba(20, 241, 149, 0.32);
 }
-#environments .card .links a.lesson {
+#featured .card .links a.lesson , #environments .card .links a.lesson {
   background: #fff;
   color: #3a1d8f;
   border: 1.5px solid #d9ccff;
 }
-#environments .card .links a.app:hover { background: #14f195; color: #04281c; }
-#environments .card .links a.lesson:hover { background: #3a1d8f; color: #fff; border-color: #3a1d8f; }
-@media (prefers-reduced-motion: reduce) {
-  #environments .card,
-  #environments .card .mark { transition: none; }
-  #environments .card:hover,
-  #environments .card:hover .mark { transform: none; }
-  #environments .card .mark { transform: none; }
+#featured .card .links a.app:hover , #environments .card .links a.app:hover { background: #14f195; color: #04281c; }
+#featured .card .links a.lesson:hover , #environments .card .links a.lesson:hover { background: #3a1d8f; color: #fff; border-color: #3a1d8f; }
+#featured .card .links a.evidence , #environments .card .links a.evidence {
+  background: transparent;
+  color: #160e2e;
+  border: 1.5px solid rgba(22, 14, 46, 0.16);
 }
+#featured .card .links a.evidence:hover , #environments .card .links a.evidence:hover {
+  background: #160e2e;
+  color: #fff;
+}
+@media (prefers-reduced-motion: reduce) {
+  #featured .card, #environments .card,
+  #featured .card .mark , #environments .card .mark { transition: none; }
+  #featured .card:hover, #environments .card:hover,
+  #featured .card:hover .mark , #environments .card:hover .mark { transform: none; }
+  #featured .card .mark , #environments .card .mark { transform: none; }
+}
+
+/* The headline is two sentences. It has to fit the hero column and stay the first thing a visitor reads. */
+.stage-copy { width: min(480px, calc(100% - 48px)); }
+.stage-hero h1 {
+  font-size: clamp(2.45rem, 4vw, 3.55rem);
+  max-width: 12em;
+  line-height: 1.02;
+}
+.stage-hero .hero-promise {
+  font-size: clamp(1.55rem, 2.4vw, 2.2rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+  color: #160e2e;
+}
+@media (max-width: 760px) {
+  .stage-hero h1 { max-width: 12em; font-size: clamp(2.15rem, 9vw, 2.75rem); }
+  .stage-hero .hero-promise { font-size: 1.35rem; }
+}
+
+.rels { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.rel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #efe8fb;
+  color: #3a1d8f;
+  font-size: 0.72rem;
+  font-weight: 750;
+  letter-spacing: 0.01em;
+}
+.rel.pr { background: #fff4d6; color: #6a4a00; }
+.level::after { content: " · "; }
+
+.results { margin: 28px 0 8px; }
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(40, 20, 80, 0.06);
+}
+.results-table caption {
+  caption-side: bottom;
+  text-align: left;
+  padding: 12px 4px 0;
+  color: #4e4668;
+  font-size: 0.95rem;
+}
+.results-table th, .results-table td {
+  padding: 14px 16px;
+  text-align: right;
+  border-bottom: 1px solid rgba(22, 14, 46, 0.1);
+  color: #241c3a;
+}
+.results-table thead th { text-align: right; background: #efe8fb; color: #160e2e; font-size: 0.82rem; }
+.results-table thead th:first-child, .results-table tbody th { text-align: left; }
+.results-table tbody th { background: #1b1530; color: #fff; font-weight: 650; }
+.results-table td { background: #fff; font-variant-numeric: tabular-nums; font-weight: 700; }
+.results .honest { margin: 14px 0 0; max-width: 68ch; }
+@media (max-width: 760px) {
+  .results { overflow: visible; }
+  .results-table { min-width: 0; }
+  .results-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .results-table, .results-table tbody, .results-table tr, .results-table th, .results-table td { display: block; width: auto; }
+  .results-table tr { margin: 0 0 12px; border-radius: 16px; overflow: hidden; background: #fff; }
+  .results-table tbody th, .results-table td { text-align: left; border-bottom: 0; }
+  .results-table td { display: flex; justify-content: space-between; gap: 12px; padding-top: 8px; padding-bottom: 8px; }
+  .results-table td::before { content: attr(data-label); font-weight: 650; color: #4e4668; }
+  .results-table caption { display: block; width: 100%; max-width: none; }
+}
+
+.example-steps { list-style: none; margin: 22px 0 0; padding: 0; display: grid; gap: 12px; }
+.example-steps li {
+  display: grid;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid rgba(22, 14, 46, 0.08);
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 12px 32px rgba(40, 20, 80, 0.05);
+}
+.example-steps strong { color: #160e2e; }
+.links-inline { margin-top: 16px; }
+.links-inline a { font-weight: 750; }
+
+/* The campus list sits on the light sheet. Rooms stay readable, and the stage grows with the list. */
+#campus .campus-hero {
+  background: transparent;
+  border: 0;
+  padding: 0;
+}
+#campus .campus-hero h2 {
+  background: none;
+  -webkit-text-fill-color: #160e2e;
+  color: #160e2e;
+}
+#campus .ch-head { align-items: flex-start; }
+#campus .ch-live, #campus .ch-sub, #campus .ch-note, #campus .ch-blurb { color: #3d3658; }
+#campus .ch-sub { max-width: 68ch; margin-top: 10px; }
+#campus .ch-stage,
+#campus .ch-stage[data-mode="2d"] {
+  height: auto;
+  background: #fff;
+  border-color: rgba(22, 14, 46, 0.08);
+  box-shadow: 0 16px 40px rgba(40, 20, 80, 0.06);
+}
+#campus .ch-rooms,
+#campus .ch-stage[data-mode="2d"] .ch-rooms { height: auto; }
+#campus .ch-room {
+  background: #f7f4fb;
+  color: #160e2e;
+}
+#campus .ch-room h3 { color: #160e2e; }
+#campus .ch-avatar {
+  color: #160e2e;
+  background: #fff;
+  border-color: rgba(22, 14, 46, 0.1);
+}
+#campus .ch-avatar:hover { background: #efe8fb; }

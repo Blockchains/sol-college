@@ -26,10 +26,10 @@ test("landing campus hero lists the same projects as the public projection", () 
   }
 });
 
-test("landing campus hero renders first, labels demonstrations, links to /campus/", () => {
+test("landing campus list follows the proposition, labels demonstrations, links to /campus/", () => {
   const html = py("import landing; print(landing.campus_hero_html(landing.campus_projects()))");
   const tpl = readFileSync(join(REPO_ROOT, "scripts/landing.html"), "utf8");
-  assert.ok(tpl.indexOf("{{CAMPUS_HERO}}") < tpl.indexOf('id="learn"'), "campus hero must precede the existing hero");
+  assert.ok(tpl.indexOf('id="learn"') < tpl.indexOf("{{CAMPUS_HERO}}"), "the proposition comes before the campus list");
   assert.match(html, /href="\/campus\/">Explore campus</);
   // A live CTO shows its real status ("CTO live", with the demonstration-lab notice in the title); otherwise "Demo".
   assert.match(html, /class="ch-demo"(?: title="CTO Mind live: last autonomous pass [^"]+ \(Sol.College demonstration lab\)")?>(?:Demo|CTO live)</);

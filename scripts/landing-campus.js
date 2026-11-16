@@ -9,7 +9,8 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const hero = $('#campus-hero');
 // The homepage picture is the generated film. The 3D campus stays on /campus/.
-if (hero && !document.getElementById('film-stage')) init();
+// Clicks on the homepage room list still open the project dialog.
+if (hero) init();
 
 function init() {
   const stage = $('#ch-stage');
@@ -116,6 +117,11 @@ function init() {
       if (window.console) console.warn('campus 3D unavailable:', err && err.message);
       setMode('2d', 'Showing the 2D rooms (the 3D view could not load). Select a project to see its details.');
     }
+  }
+  // The film is the homepage picture. Keep the room list clickable and leave the 3D walk on /campus/.
+  if (document.getElementById('film-stage')) {
+    setMode('2d', 'Independent practice forks. Select a project for details. The 3D walk is on the campus page.');
+    return;
   }
   // Capable devices show a CSS preview of the room right away (data-mode="loading") and start loading the 3D
   // bundle as soon as the main thread is idle (no waiting for every image on the page).
