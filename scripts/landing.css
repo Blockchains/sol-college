@@ -1318,6 +1318,18 @@ section.band h2 { letter-spacing: -0.02em; }
   align-items: flex-start;
   overflow: hidden;
 }
+.film-hero {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: #f4efe6 url('/assets/hero-wide.jpg') center / cover no-repeat;
+  overflow: hidden;
+}
+.film-hero canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 .stage-hero .campus-hero {
   position: absolute;
   inset: 0;
@@ -1325,8 +1337,12 @@ section.band h2 { letter-spacing: -0.02em; }
   margin: 0;
   padding: 0;
   border: 0;
-  background: #f4ecff;
+  background: transparent;
+  pointer-events: none;
 }
+.stage-hero .ch-stage,
+.stage-hero .ch-canvas { display: none !important; }
+.stage-hero .ch-dialog { pointer-events: auto; }
 .stage-hero .ch-head,
 .stage-hero .ch-sub {
   position: absolute;
@@ -1597,10 +1613,17 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
     height: 48svh !important;
     overflow: visible;
   }
-  .stage-veil { display: none; }
+  .film-hero {
+    background-image: url('/assets/hero-tall.jpg');
+    background-position: center 22%;
+  }
+  .stage-veil {
+    display: block;
+    background: linear-gradient(180deg, rgba(247, 244, 251, 0) 0%, rgba(247, 244, 251, 0) 46%, rgba(247, 244, 251, 0.55) 68%, rgba(247, 244, 251, 0.94) 84%);
+  }
   .stage-copy {
     width: auto;
-    margin: 0 16px 20px;
+    margin: 0 16px 36px;
     text-align: center;
   }
   .stage-hero .audience {

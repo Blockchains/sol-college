@@ -8,7 +8,8 @@
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 const hero = $('#campus-hero');
-if (hero) init();
+// The homepage picture is the generated film. The 3D campus stays on /campus/.
+if (hero && !document.getElementById('film-stage')) init();
 
 function init() {
   const stage = $('#ch-stage');
