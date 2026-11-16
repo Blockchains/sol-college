@@ -51,15 +51,15 @@
     <a href="/live/">Live apps</a>
     <a href="/campus/">Campus</a>
     <a href="/explore/">Source library (not yet live)</a>
-    <a class="btn nav-cta" href="{{PROJECT}}">Bring your dApp</a>
+    <a class="btn nav-cta" href="{{START_LESSON}}">Start a lesson</a>
+    <a class="btn ghost nav-cta" href="{{PROJECT}}">Bring your dApp</a>
   </nav>
   <div class="top-cta">
-    <a class="btn" href="{{PROJECT}}">Bring your dApp</a>
+    <a class="btn" href="{{START_LESSON}}">Start a lesson</a>
+    <a class="btn ghost" href="{{PROJECT}}">Bring your dApp</a>
   </div>
 </header>
 <main id="main">
-{{CAMPUS_HERO}}
-
 <section class="band hero" id="learn">
   <div class="inner">
     <div class="audience" role="tablist" aria-label="Choose your starting point">
@@ -70,11 +70,12 @@
     <div id="hero-learn" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-learn">
       <div>
         <h1>Learn on real Solana dApps. Help make them better.</h1>
-        <p class="lead">Build your development and security skills inside live, hands-on environments based on participating Solana projects.</p>
+        <p class="lead">{{LIVE_COUNT}} practice apps are already running on devnet. Open a lesson, connect your own wallet, and work through the real program.</p>
         <p class="cta-row">
-          <a class="btn" href="{{WAITLIST}}">Join the learner waitlist</a>
-          <a class="btn ghost" href="{{PROJECT}}">Bring your project</a>
+          <a class="btn" href="{{START_LESSON}}">Start the first lesson</a>
+          <a class="btn ghost" href="/lessons/path/">Follow the path</a>
         </p>
+        <p class="hero-quiet"><a href="{{WAITLIST}}">Join the learner waitlist</a> if you want a cohort. The lessons are open now. Teams can <a href="{{PROJECT}}">bring a project</a>.</p>
         <div class="hero-more">
           <p>Explore how real applications work, test their limits, discover issues and turn your findings into useful improvements.</p>
           <p>Sol.College brings developers, security researchers and bug bounty hunters together with the teams building on Solana. Learn by doing meaningful work. Give projects feedback they can act on.</p>
@@ -119,6 +120,8 @@
     </div>
   </div>
 </section>
+
+{{CAMPUS_HERO}}
 
 <section class="band" id="loop">
   <div class="inner">

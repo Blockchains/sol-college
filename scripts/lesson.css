@@ -5,7 +5,7 @@
 .lesson .ex{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;margin:14px 0}
 .lesson .ok{color:var(--a)}.lesson .ran{font-size:14px;color:var(--a)}.lesson .notran{font-size:14px;color:var(--mut)}.lesson .bad{color:#ff7a90}
 .lesson .num{display:inline-block;min-width:1.8em;height:1.8em;line-height:1.8em;text-align:center;border-radius:50%;background:var(--b);color:#fff;font-weight:800;margin-right:8px}
-.lesson table{width:100%;border-collapse:collapse}.lesson td,.lesson th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+.lesson table{width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed}.lesson td,.lesson th{border-bottom:1px solid var(--line);padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
 .lesson .meta-bar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin:8px 0 18px;font-size:14px;color:var(--mut)}
 .lesson .goals{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 20px;margin:18px 0 8px}
 .lesson .goals h2,.lesson .goals h3{margin:12px 0 6px;font-size:1.05em}
@@ -19,3 +19,41 @@
 .lesson details.sol[open]>summary:before{content:"▾ "}
 .chip.beg{background:#0f3a2c;color:#9ff5d0}.chip.int{background:#2a2460;color:#d9d6ff}.chip.adv{background:#3a1a2a;color:#ffc2d0}
 .path-stage{margin:28px 0 8px}.path-stage>ol{padding-left:1.3em}.path-stage>ol>li{margin:0 0 10px}
+.readbar{position:fixed;top:0;left:0;right:0;height:3px;z-index:30;pointer-events:none}
+.readbar>span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--a),var(--b))}
+.lesson-layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;grid-template-areas:"main rail";gap:8px 32px;align-items:start}
+.lesson-main{grid-area:main;min-width:0;overflow-wrap:anywhere}
+.lesson pre{max-width:100%}
+.lesson-main h2,.lesson-main h3{scroll-margin-top:84px}
+.rail{grid-area:rail;position:sticky;top:72px;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 96px);overflow:auto;padding:8px 0}
+.rail a{color:var(--mut);text-decoration:none;font-size:13px;line-height:1.35;padding:6px 10px;border-left:2px solid transparent;border-radius:0 8px 8px 0}
+.rail a[aria-current]{color:#fff;border-left-color:var(--a);background:rgba(20,241,149,.08)}
+.rail a:hover{color:#fff}
+.dock{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0 18px;padding:10px 12px;background:rgba(11,10,20,.92);border:1px solid var(--line);border-radius:14px}
+.dock-pin{position:fixed;z-index:6;left:50%;bottom:12px;transform:translateX(-50%);width:min(720px,calc(100% - 24px));margin:0;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+.dock-pin[hidden]{display:none}
+.dock .btn,button.btn{margin:0}
+button.btn{font:inherit;font-weight:800;cursor:pointer;border:0}
+button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
+.step-check{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.step-check input{margin-top:7px;width:1.15em;height:1.15em;accent-color:var(--a);flex:none}
+.step.done>.step-check>span{opacity:.72}
+.finder{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:16px 0 8px}
+.finder label{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--mut);font-weight:700}
+.finder input[type=search]{width:100%;font:inherit;background:#0b0a14;color:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.finder-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.finder-row button{font:inherit;font-weight:700;font-size:13px;background:#0b0a14;color:var(--mut);border:1px solid var(--line);border-radius:99px;padding:6px 12px;cursor:pointer}
+.finder-row button[aria-pressed=true]{color:#06110c;background:var(--a);border-color:var(--a)}
+.resume{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:#0f3a2c;color:#d7ffef}
+.resume a{color:#fff;font-weight:800}
+.card[hidden],.path-stage[hidden],dt[hidden],dd[hidden],#lesson-empty[hidden],#resume[hidden]{display:none}
+pre.diagram,pre.sh{position:relative}
+.copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}
+.copy:hover,.copy:focus-visible{color:#06110c;background:var(--a)}
+@media(max-width:900px){
+ .lesson-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"rail" "main"}
+ .rail{position:sticky;top:7.5rem;z-index:4;flex-direction:row;max-height:none;width:100%;overflow-x:auto;gap:6px;padding:8px 0;background:rgba(11,10,20,.94);border-bottom:1px solid var(--line)}
+ .rail a{border-left:0;border-bottom:2px solid transparent;white-space:nowrap;border-radius:8px}
+ .rail a[aria-current]{border-bottom-color:var(--a);border-left-color:transparent}
+ .dock .btn,button.btn{flex:1 1 auto;text-align:center}
+}

@@ -945,6 +945,7 @@ h1, h2 { text-wrap: balance; }
 
 /* hero copy: short lead above the fold, detail after the CTAs */
 .hero .lead { color: #e2ddf8; font-size: clamp(1.08rem, 1.5vw, 1.28rem); max-width: 38rem; }
+.hero-quiet { margin: 0 0 4px; color: var(--mut-2); font-size: 0.95rem; }
 .hero-more { max-width: 40rem; margin: 18px 0 6px; padding-left: 14px; border-left: 2px solid rgba(153,69,255,0.45); }
 .hero-more p { margin: 0 0 8px; color: var(--mut); font-size: 1rem; line-height: 1.6; }
 .hero .tagline { color: var(--mut-2); font-size: .95rem; }

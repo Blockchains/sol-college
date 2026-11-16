@@ -1,3 +1,4 @@
+import html
 # Hand-written topic text. Facts are kept general and every lesson links the official docs.
 LESSONS = [
  dict(slug="pdas", title="Program Derived Addresses (PDAs)", docs=[("Solana docs: Program Derived Address","https://solana.com/docs/core/pda"),("Anchor docs: PDAs","https://www.anchor-lang.com/docs/basics/pda")],
@@ -91,8 +92,9 @@ GUIDES = [
  dict(slug="setup", title="Set up a Solana development environment", body=[
   ("Install the toolchain","The Solana docs keep a one-line installer that sets up Rust, the Solana CLI, Anchor (through AVM), Node.js and Yarn. Follow the current command on the official installation page, not a copied snippet, because versions change.",[("Solana docs: Installation","https://solana.com/docs/intro/installation")]),
   ("Verify","Check each tool reports a version:","rustc --version\nsolana --version\nanchor --version\nnode --version"),
-  ("Point the CLI at a cluster","Use localnet or devnet while learning. Create a filesystem keypair for development only and never reuse it on mainnet.","solana config set --url devnet\nsolana-keygen new\nsolana airdrop 2"),
-  ("Learn from real projects","Browse the Explore page, filter to Anchor or Rust, and open a project's fork to see a working layout.",[("Explore the SuperStack","/explore/")]),
+  ("Point the CLI at a cluster","Use localnet or devnet while learning. Create a filesystem keypair for development only and never reuse it on mainnet. The public RPC airdrop is closed on devnet: requestAirdrop returns 410. Request test SOL from a web faucet while you are signed in. Devnet SOL has no value.","solana config set --url devnet\nsolana-keygen new"),
+  ("Fund the devnet keypair","Open the official faucet, sign in, and request devnet SOL to the address from solana address. Do not paste a mainnet key into a faucet.",[("Solana faucet","https://faucet.solana.com"),("Cookbook: airdrops and faucets","https://solana.com/developers/cookbook/development/airdrops-and-faucets")]),
+  ("Learn from a running app","The live lessons are apps you can open on devnet today. The source library is generated from forks that have not been deployed.",[("Start the learning path","/lessons/path/"),("How to use a lesson","/lessons/guide/"),("Source library","/explore/")]),
  ]),
  dict(slug="anchor-workflow", title="The Anchor workflow", body=[
   ("Create a workspace","anchor init scaffolds a workspace with programs/, tests/ and an Anchor.toml that names the cluster and wallet.","anchor init my_program\ncd my_program"),
@@ -107,7 +109,7 @@ GUIDES = [
   ("Fuzz","Trident is a fuzzing framework for Anchor programs.",[("Trident","https://github.com/Ackee-Blockchain/trident")]),
  ]),
  dict(slug="deploy", title="Deploy to devnet, then mainnet", body=[
-  ("Devnet first","Set the cluster in Anchor.toml (or pass the provider flag), fund the deploy wallet with a devnet airdrop, and deploy.","solana config set --url devnet\nanchor deploy --provider.cluster devnet\nsolana program show <PROGRAM_ID>"),
+  ("Devnet first","Set the cluster in Anchor.toml (or pass the provider flag), fund the deploy wallet from a web faucet (the public RPC airdrop is closed), and deploy.","solana config set --url devnet\nanchor deploy --provider.cluster devnet\nsolana program show <PROGRAM_ID>"),
   ("Exercise it like a user","Run your client against devnet, check transactions in an explorer, and confirm upgrade authority and account sizes are what you expect.",[("Solana docs: Deploying programs","https://solana.com/docs/programs/deploying")]),
   ("Mainnet","Use a dedicated, well-funded deployer key, and consider a multisig (such as Squads) as upgrade authority. Publish a verifiable build so users can match on-chain bytecode to source.",[("Verified builds","https://solana.com/developers/guides/advanced/verified-builds"),("Squads","https://squads.so/")]),
   ("Priority fees and reliability","Mainnet transactions compete for block space, so clients should set compute-unit limits and prices.",[("Solana docs: Fees","https://solana.com/docs/core/fees"),("Lesson: Transactions","/learn-by-example/transactions/")]),
@@ -118,6 +120,51 @@ GUIDES = [
   ("CPI safety","Verify the program ID you invoke, and only sign with PDA seeds for the exact call that needs them.",[("Lesson: CPIs","/learn-by-example/cpis/")]),
   ("Closing and re-initialisation","Close accounts with Anchor's close constraint, and be careful with init_if_needed.",None),
   ("Oracles","Check feed identity, staleness and confidence before acting on a price.",[("Lesson: Oracles","/learn-by-example/oracles/")]),
-  ("Reviews and references","Study public audit findings and the Solana security courses before mainnet.",[("Solana developer courses: Program security","https://solana.com/developers/courses/program-security"),("sealevel-attacks (Coral)","https://github.com/coral-xyz/sealevel-attacks")]),
+  ("Reviews and references","Study public audit findings and the Solana security courses before mainnet.",[("Solana developer courses: Program security","https://solana.com/developers/courses/program-security"),("sealevel-attacks (Coral)","https://github.com/coral-xyz/sealevel-attacks"),("Live lessons","/lessons/")]),
  ]),
 ]
+
+def guide_article(g):
+  """Numbered guide body. Callers add page chrome, crumbs, and lesson.css."""
+  E = lambda s: html.escape(str(s), quote=True)
+  toc = []
+  steps = []
+  for i, (h, t, x) in enumerate(g['body'], 1):
+    extra = ''
+    if isinstance(x, str):
+      extra = f'<pre class="sh"><code>{E(x)}</code></pre>'
+    elif x:
+      extra = '<ul>' + ''.join(f'<li><a href="{E(u)}">{E(n)}</a></li>' for n, u in x) + '</ul>'
+    toc.append(f'<a href="#s{i}">{i}. {E(h)}</a>')
+    steps.append(f'<section class="path-stage" id="s{i}"><h2><span class="num">{i}</span>{E(h)}</h2><p>{E(t)}</p>{extra}</section>')
+  rail = '<nav class="rail" aria-label="On this page">' + ''.join(toc) + '</nav>'
+  main = (
+    '<p class="eyebrow">Guide</p>'
+    f'<h1>{E(g["title"])}</h1>'
+    f'<p class="lead">{len(g["body"])} steps. Copy a command, then check the official docs before you rely on a flag.</p>'
+    + ''.join(steps)
+    + '<p class="docs">Commands and APIs change. The official <a href="https://solana.com/docs">Solana docs</a> and <a href="https://www.anchor-lang.com/docs">Anchor docs</a> are the source of truth. When you want a running app, open a <a href="/lessons/">live lesson</a>.</p>'
+  )
+  return (
+    '<div class="readbar" aria-hidden="true"><span></span></div>'
+    f'<article class="lesson" data-slug="guide-{E(g["slug"])}">'
+    '<div class="lesson-layout"><div class="lesson-main">' + main + '</div>' + rail + '</div></article>'
+  )
+
+def guide_index(guides):
+  E = lambda s: html.escape(str(s), quote=True)
+  cards = []
+  for i, g in enumerate(guides, 1):
+    blurb = g['body'][0][1]
+    if len(blurb) > 140:
+      blurb = blurb[:137].rsplit(' ', 1)[0] + '…'
+    cards.append(
+      f'<article class="card"><p class="meta">Guide {i} · {len(g["body"])} steps</p>'
+      f'<h3><a href="/how-to-build/{E(g["slug"])}/">{E(g["title"])}</a></h3>'
+      f'<p>{E(blurb)}</p><p><a href="/how-to-build/{E(g["slug"])}/">Open the guide</a></p></article>'
+    )
+  return (
+    f'<p class="lead">{len(guides)} practical guides for when you leave the live lessons and build your own program.</p>'
+    '<p class="cta"><a class="btn" href="/lessons/guide/">How to use a lesson</a> <a class="btn ghost" href="/lessons/path/">Back to the path</a></p>'
+    '<div class="grid">' + ''.join(cards) + '</div>'
+  )
