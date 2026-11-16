@@ -1547,22 +1547,56 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
     width: auto;
     margin: 0 0 calc(var(--header-h) * -1);
     border-radius: 0;
-    background: rgba(255, 255, 255, 0.94);
+    background: #fff;
+    box-shadow: 0 1px 0 rgba(22, 14, 46, 0.06);
   }
   .top nav.is-open { background: #fff; border-radius: 0 0 16px 16px; padding-inline: 8px; }
   .stage-hero {
     height: 100svh;
     min-height: 100svh;
     align-items: flex-end;
-    padding: 0 0 176px;
+    justify-content: flex-end;
+    padding: 0;
   }
   .stage-veil {
-    background: linear-gradient(180deg, rgba(10, 6, 28, 0.02) 0%, rgba(10, 6, 28, 0.2) 28%, rgba(10, 6, 28, 0.78) 46%, rgba(10, 6, 28, 0.9) 100%);
+    background: linear-gradient(180deg, rgba(8, 6, 24, 0) 0%, rgba(8, 6, 24, 0) 36%, rgba(8, 6, 24, 0.45) 54%, rgba(8, 6, 24, 0.82) 72%, rgba(8, 6, 24, 0.92) 100%);
   }
-  .stage-copy { width: auto; margin: 0 18px 8px; }
-  .stage-hero h1 { font-size: clamp(2.6rem, 11vw, 3.4rem); max-width: 10ch; }
-  .stage-hero .hero-promise { font-size: 1.15rem; }
-  .stage-hero .lead { font-size: 0.98rem; }
-  .stage-hero .cta-row .btn { flex: 1 1 auto; }
-  .stage-hero .ch-rooms { left: 12px; right: auto; bottom: 12px; width: min(440px, calc(100% - 24px)); }
+  .stage-copy {
+    width: auto;
+    margin: 0 16px 124px;
+    text-align: center;
+  }
+  .stage-hero .audience {
+    width: auto;
+    margin: 0 auto 14px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 0;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+  }
+  .stage-hero .audience button {
+    flex: 0 1 auto;
+    min-height: 36px;
+    padding-inline: 14px;
+    font-size: 0.86rem;
+    color: #3c3558;
+  }
+  .stage-hero h1 {
+    font-size: clamp(2.35rem, 10vw, 2.9rem);
+    max-width: 12ch;
+    margin-inline: auto;
+    text-align: center;
+  }
+  .stage-hero .hero-promise,
+  .stage-hero .lead { margin-inline: auto; text-align: center; }
+  .stage-hero .hero-promise { font-size: 1.05rem; }
+  .stage-hero .lead { font-size: 0.92rem; max-width: 34ch; }
+  .stage-hero .cta-row { flex-wrap: nowrap; justify-content: center; gap: 8px; margin-top: 0.8rem; }
+  .stage-hero .cta-row .btn { flex: 1 1 0; min-height: 48px; font-size: 0.92rem; padding-inline: 8px; }
+  .stage-hero .ch-rooms {
+    left: 12px;
+    right: 12px;
+    bottom: 10px;
+    width: auto;
+    max-height: 112px;
+  }
 }
