@@ -666,6 +666,11 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing-film.js', assets / 'landing-film.js')
     shutil.copy(HERE / 'hero-wide.jpg', assets / 'hero-wide.jpg')
     shutil.copy(HERE / 'hero-tall.jpg', assets / 'hero-tall.jpg')
+    for name in (
+        'hero-talk-wide-a.jpg', 'hero-talk-wide-b.jpg', 'hero-talk-wide-c.jpg',
+        'hero-talk-tall-a.jpg', 'hero-talk-tall-b.jpg', 'hero-talk-tall-c.jpg',
+    ):
+        shutil.copy(HERE / name, assets / name)
     marks = HERE / 'marks'
     if marks.is_dir():
         dest = assets / 'marks'
