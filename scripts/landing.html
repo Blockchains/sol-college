@@ -36,21 +36,27 @@
 <body>
 <div class="bg-aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
 <canvas class="bg-particles" id="bg-particles" aria-hidden="true"></canvas>
+<div class="grain" aria-hidden="true"></div>
 <a class="skip" href="#main">Skip to content</a>
 <header class="top">
   <a class="brand" href="/"><span class="logo" aria-hidden="true"></span>Sol.College</a>
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
   <nav id="site-nav" aria-label="Main">
-    <a href="#pathways">Pathways</a>
-    <a href="#loop">The loop</a>
-    <a href="#for-teams">For teams</a>
-    <a href="#faq">FAQ</a>
     <a href="/lessons/">Lessons</a>
-    <a href="/lessons/path/">Learning path</a>
-    <a href="/lessons/glossary/">Glossary</a>
-    <a href="/live/">Live apps</a>
+    <a href="/live/">Live</a>
     <a href="/campus/">Campus</a>
-    <a href="/explore/">Source library (not yet live)</a>
+    <a href="#for-teams">For teams</a>
+    <details class="nav-fold">
+      <summary>More</summary>
+      <div>
+        <a href="/lessons/path/">Learning path</a>
+        <a href="#pathways">Pathways</a>
+        <a href="#loop">The loop</a>
+        <a href="/lessons/glossary/">Glossary</a>
+        <a href="#faq">FAQ</a>
+        <a href="/explore/">Source library (not yet live)</a>
+      </div>
+    </details>
     <a class="btn nav-cta" href="{{START_LESSON}}">Start a lesson</a>
     <a class="btn ghost nav-cta" href="{{PROJECT}}">Bring your dApp</a>
   </nav>
@@ -69,33 +75,40 @@
 
     <div id="hero-learn" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-learn">
       <div>
-        <h1>Learn on real Solana dApps. Help make them better.</h1>
-        <p class="lead">{{LIVE_COUNT}} practice apps are already running on devnet. Open a lesson, connect your own wallet, and work through the real program.</p>
+        <p class="hero-kicker"><span class="live-dot" aria-hidden="true"></span>{{LIVE_COUNT}} practice apps running on devnet</p>
+        <h1>Learn on <em>real</em> Solana dApps.</h1>
+        <p class="hero-promise">Help make them better.</p>
+        <p class="lead">Open a lesson, connect your own wallet, and work through the program. These are devnet forks we ran ourselves. They are not a claim that the original team is a partner.</p>
         <p class="cta-row">
           <a class="btn" href="{{START_LESSON}}">Start the first lesson</a>
           <a class="btn ghost" href="/lessons/path/">Follow the path</a>
         </p>
         <p class="hero-quiet"><a href="{{WAITLIST}}">Join the learner waitlist</a> if you want a cohort. The lessons are open now. Teams can <a href="{{PROJECT}}">bring a project</a>.</p>
-        <div class="hero-more">
-          <p>Explore how real applications work, test their limits, discover issues and turn your findings into useful improvements.</p>
-          <p>Sol.College brings developers, security researchers and bug bounty hunters together with the teams building on Solana. Learn by doing meaningful work. Give projects feedback they can act on.</p>
-        </div>
-        <p class="tagline">Practical learning. Authorised testing. Real project feedback.</p>
       </div>
       <div>
-        <div class="proof-strip" aria-label="Evidence from our own work">
-          <a class="glass proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working practice environments on devnet</span><small>Core flows completed in our evidence.</small></a>
-          <a class="glass proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>documented bugs found in the forks</span><small>Explicit bug records in our evidence, not a formal audit.</small></a>
-          {{FIX_CARD}}
-          <a class="glass proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons on live deployments</span><small>Each lesson is built to end in a commit suggestion.</small></a>
+        <div class="orbit" role="img" aria-label="{{LIVE_COUNT}} practice apps are live on devnet. The names around the ring are a sample.">
+          <div class="orbit-glow" aria-hidden="true"></div>
+          <div class="orbit-ring" aria-hidden="true"></div>
+          <div class="orbit-ring orbit-ring-2" aria-hidden="true"></div>
+          <div class="orbit-core">
+            <b>{{LIVE_COUNT}}</b>
+            <span>live on devnet</span>
+          </div>
+          {{ORBIT}}
         </div>
+      </div>
+      <div class="score proof-strip" aria-label="Evidence from our own work">
+        <a class="proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>fully working environments</span><small>Core flows completed in our evidence.</small></a>
+        <a class="proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>bugs found in the forks</span><small>Explicit records in our evidence, not a formal audit.</small></a>
+        {{FIX_CARD}}
+        <a class="proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons</span><small>Each one is built to end in a commit suggestion.</small></a>
       </div>
     </div>
 
     <div id="hero-teams" class="hero-grid hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
       <div>
         <p class="eyebrow">For Solana teams</p>
-        <h1>A flywheel that turns testing into <em>improvements</em>.</h1>
+        <h1>Testing that comes back as <em>a patch</em>.</h1>
         <p class="lead">Put an isolated devnet fork of your dApp in front of developers, testers and researchers. They learn on a live application; you receive reproducible findings and commit suggestions.</p>
         <p class="cta-row">
           <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
@@ -107,7 +120,7 @@
         </div>
       </div>
       <div>
-        <ol class="pipeline" style="display:block">
+        <ol class="pipeline hero-steps">
           <li><strong>Your dApp</strong> <span>The application you already built.</span></li>
           <li><strong>Isolated devnet fork</strong> <span>A practice environment, not production.</span></li>
           <li><strong>Learners test and debug</strong> <span>Developers, testers and researchers, inside an agreed scope.</span></li>
@@ -118,6 +131,7 @@
         </ol>
       </div>
     </div>
+    {{MARQUEE}}
   </div>
 </section>
 
