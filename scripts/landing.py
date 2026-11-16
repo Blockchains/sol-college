@@ -24,6 +24,8 @@ ROOT = HERE.parent
 SITE = 'https://sol.college'
 E = lambda s: html.escape(str(s), quote=True)
 
+# Overwritten by core_lessons with the first fully working path lesson before write_home.
+START_LESSON = '/lessons/'
 WAITLIST = 'https://github.com/Blockchains/sol-college/issues/new?template=learner-waitlist.yml'
 WAITLIST_DEV = WAITLIST + '&role=Developer'
 WAITLIST_SEC = WAITLIST + '&role=Security+researcher'
@@ -581,6 +583,7 @@ def write_home(site='site'):
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
         'LIVE_CARDS': live_cards(functional),
         'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),
+        'START_LESSON': START_LESSON,
         'WAITLIST': WAITLIST,
         'WAITLIST_DEV': WAITLIST_DEV,
         'WAITLIST_SEC': WAITLIST_SEC,

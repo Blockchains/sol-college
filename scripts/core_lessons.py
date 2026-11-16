@@ -73,11 +73,20 @@ def auto_lesson(x):
     instructions=[dict(name=r['note'],steps=[],refs=[r]) for r in refs],
     innovation=dict(text=x['learn'],refs=refs[:1]),frontend=[],
     exercises=[dict(title='Read a proof transaction',steps=['Open the first signature under Proof on Solana Explorer (devnet).','Scroll to Instruction details and Program logs.'],expect=f'The program {x["program"]} is invoked and the transaction succeeded.')])
-# CSS is loaded from a sibling file written at build-authoring time, inlined below by the next chunk.
-_css=os.path.join(os.path.dirname(os.path.abspath(__file__)),'lesson.css')
+# CSS and the lesson reader script are inlined so the paused Pages pipeline
+# (which runs this file, not build.py) ships the reading UI.
+_here=os.path.dirname(os.path.abspath(__file__))
+_css=os.path.join(_here,'lesson.css')
+_js=os.path.join(_here,'lesson.js')
 CSS='<style>'+(open(_css).read() if os.path.exists(_css) else '')+'</style>'
+if os.path.exists(_js):
+  CSS+='<script>'+open(_js).read()+'</script>'
 DIFF_CLASS={'Beginner':'beg','Intermediate':'int','Advanced':'adv'}
+def canon_diff(level):
+  s=str(level or '').strip()
+  return {'beginner':'Beginner','intermediate':'Intermediate','advanced':'Advanced'}.get(s.lower(), s)
 def dchip(level):
+  level=canon_diff(level)
   if not level: return ''
   return f'<span class="chip {DIFF_CLASS.get(level,"")}">{E(level)}</span>'
 def concept_chip(cid):
@@ -173,7 +182,12 @@ def render(x,L,n):
     seq,si,pn=PARTIAL,next((i for i,y in enumerate(PARTIAL) if y['slug']==sl),0),len(PARTIAL)
   stg=stage_of(L)
   nav=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <a href="/lessons/path/">Path</a> / <span>{E(L["title"])}</span></nav>'
-  h=[nav,CSS,'<article class=lesson>']
+  sections=[]
+  if L.get('objectives') or L.get('prereqs') or L.get('concepts'): sections.append(('goals','Objectives'))
+  sections+=[('what','What it does'),('try','Try it'),('how','How it works'),('key','Key idea'),('frontend','Frontend'),('proof','Proof'),('exercises','Exercises')]
+  if L.get('build'): sections.append(('build','Build locally'))
+  rail='<nav class=rail aria-label="On this page">'+''.join(f'<a href="#{i}">{E(name)}</a>' for i,name in sections)+'</nav>'
+  h=[CSS,'<div class=readbar aria-hidden=true><span></span></div>',f'<article class=lesson data-slug="{E(sl)}">','<div class=lesson-layout><div class=lesson-main>',nav]
   eyebrow='Core lesson · live on Solana devnet'
   if kind=='partial':
     eyebrow+=' · debug challenge'
@@ -187,6 +201,9 @@ def render(x,L,n):
   if L.get('time'): meta.append(f'<span>{E(L["time"])} to work through</span>')
   if stg: meta.append(f'<span>Stage {stg["id"]}: <a href="/lessons/path/#stage-{stg["id"]}">{E(stg["name"])}</a></span>')
   if meta: h.append('<p class=meta-bar>'+' · '.join(meta)+'</p>')
+  dock=f'<div class=dock role=region aria-label="Lesson actions"><a class=btn href="{E(x["app"])}">Open the app</a><button type=button class="btn ghost" data-jump>Next section</button>'
+  # next lesson is filled in after seq is known; placeholder replaced below
+  h.append('<!--dock-->')
   if L.get('objectives') or L.get('prereqs') or L.get('concepts'):
     g=['<aside class=goals>']
     if L.get('objectives'):
@@ -197,9 +214,6 @@ def render(x,L,n):
       g.append('<h3>Concepts you will meet</h3><p>'+' '.join(concept_chip(c) for c in L['concepts'])+' · <a href="/lessons/glossary/">Glossary</a></p>')
     g.append('</aside>')
     h.append(''.join(g))
-  toc='<p class=toc><a href="#goals">Objectives</a><a href="#what">1 What it does</a><a href="#try">2 Try it</a><a href="#how">3 How it works</a><a href="#key">4 Key idea</a><a href="#frontend">5 Frontend</a><a href="#proof">6 Proof</a><a href="#exercises">7 Exercises</a>'
-  if L.get('build'): toc+='<a href="#build">8 Build it locally</a>'
-  h.append(toc+'</p>')
   h.append(f'<h2 id=what><span class=num>1</span>What the app does</h2><p>{md(L["what"])}</p>')
   h.append(f'<p><a class=btn href="{E(x["app"])}">Open the live app (devnet)</a> <a class="btn ghost" href="{E(x["fork"])}/tree/{E(x["commit"])}">Source @ {E(x["commit"][:7])}</a></p>')
   h.append(f'<dl class=facts><dt>Program (devnet)</dt><dd><a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a></dd><dt>Fork</dt><dd><a href="{E(x["fork"])}">{E(x["fork"][19:])}</a> @ <code>{E(x["commit"][:7])}</code></dd><dt>Verified</dt><dd>{E(x["verified"])} (see <a href="#proof">Proof</a>)</dd>'+(f'<dt>What we changed</dt><dd>{md(L["app_note"])}</dd>' if L.get('app_note') else '')+'</dl>')
@@ -212,8 +226,15 @@ def render(x,L,n):
       else: bits.append(f'<br><span class=ran>✅ {md(a)}</span>')
     r=''.join(bits)
     return r+(f'<br><span class=notran>◻️ {md(s["ran_note"])}</span>' if s.get('ran_note') else '')
-  st=''.join(f'<li>{md(s["do"])}'+(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')+ev(s)+'</li>' for s in pre+L['try_steps'])
-  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>Each step says what to do and what you should see. ✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><ol class=steps>{st}</ol>')
+  steps_all=pre+L['try_steps']
+  st=''.join(
+    '<li class=step><label class=step-check>'
+    f'<input type=checkbox data-step="{i}" aria-label="Mark step {i+1} done">'
+    f'<span>{md(s["do"])}</span></label>'
+    +(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')
+    +ev(s)+'</li>'
+    for i,s in enumerate(steps_all))
+  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>Check a step when you have done it. This browser remembers the ticks for this lesson. ✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><p class=meta id=step-status></p><ol class=steps>{st}</ol>')
   h.append('<h2 id=how><span class=num>3</span>How it works</h2>')
   if L.get('diagram'): h.append(f'<pre class=diagram>{E(L["diagram"])}</pre>')
   if L.get('accounts'): h.append('<table><tr><th>Account</th><th>Address (seeds)</th><th>Holds</th></tr>'+''.join('<tr>'+''.join(f'<td>{md(c)}</td>' for c in r)+'</tr>' for r in L['accounts'])+'</table>')
@@ -271,9 +292,12 @@ def render(x,L,n):
   if prev: navb+=f'<a class="btn ghost" href="/lessons/{E(prev["slug"])}/">← {E(lesson_of(prev)["title"])}</a> '
   next_label='Next debug challenge' if kind=='partial' else 'Next on the path'
   if nxt: navb+=f'<a class=btn href="/lessons/{E(nxt["slug"])}/">{next_label}: {E(lesson_of(nxt)["title"])}</a> '
-  navb+='<a class="btn ghost" href="/lessons/path/">The learning path</a> <a class="btn ghost" href="/lessons/">All lessons</a></p></article>'
+  navb+='<a class="btn ghost" href="/lessons/path/">The learning path</a> <a class="btn ghost" href="/lessons/">All lessons</a> <a class="btn ghost" href="/lessons/guide/">How to use a lesson</a></p>'
   h.append(navb)
-  return ''.join(h)
+  h.append('</div>'+rail+'</div></article>')
+  if nxt: dock+=f'<a class=btn href="/lessons/{E(nxt["slug"])}/">{next_label}</a>'
+  dock+='</div>'
+  return ''.join(h).replace('<!--dock-->',dock,1)
 # Lesson/inner pages must not use the pivoted landing as their chrome.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import landing as _landing
@@ -285,7 +309,9 @@ def page(main,title,desc,path):
   t=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{main}</main>',home,count=1,flags=re.S)
   t=re.sub(r'<title>.*?</title>',lambda _:f'<title>{E(title)}</title>',t,count=1)
   t=re.sub(r'<script type="application/ld\+json">.*?</script>','',t,flags=re.S)
-  t=t.replace('href="https://sol.college/"',f'href="{SITE}{path}"').replace('content="https://sol.college/"',f'content="{SITE}{path}"')
+  url=f'{SITE}{path}'
+  t=re.sub(r'(<link rel=canonical href=")[^"]*"',lambda m:m.group(1)+url+'"',t,count=1)
+  t=re.sub(r'(<meta property=og:url content=")[^"]*"',lambda m:m.group(1)+url+'"',t,count=1)
   for a in ('name=description','property=og:description','name=twitter:description'): t=re.sub(f'(<meta {a} content=")[^"]*',lambda m:m.group(1)+E(desc),t,count=1)
   for a in ('property=og:title','name=twitter:title'): t=re.sub(f'(<meta {a} content=")[^"]*',lambda m:m.group(1)+E(title),t,count=1)
   return t
@@ -298,10 +324,13 @@ for x in PATH_LIVE:
   os.makedirs(f'{S}/explore/{sl}',exist_ok=True); open(f'{S}/explore/{sl}/index.html','w').write(pg)
   kind=functional_of(x)
   step=f"path {FULL_I[sl]+1}" if kind=='full' and sl in FULL_I else ('debug challenge' if kind=='partial' else (f"path {L['path_order']}" if L.get('path_order') else None))
-  meta=' · '.join(filter(None,[L.get('difficulty'), L.get('time'), step]))
+  diff=canon_diff(L.get('difficulty') or '')
+  meta=' · '.join(filter(None,[diff, L.get('time'), step]))
   chips=' '.join(concept_chip(c) for c in (L.get('concepts') or [])[:5])
   badge='<span class="chip">Debug challenge</span> ' if kind=='partial' else ''
-  cards.append(f'<article class=card data-slug="{E(sl)}"><p class=meta>{badge}{dchip(L.get("difficulty",""))} {E(meta)}</p><h3><a href="/lessons/{E(sl)}/">{E(L["title"])}</a></h3><p>{md(L.get("summary") or L["what"][:200])}</p><p>{chips}</p><p><a href="/lessons/{E(sl)}/">Start the lesson</a> · <a href="{E(x["app"])}">Open the live app</a> · <a href="{AD(x["program"])}">program</a></p></article>')
+  plain=re.sub(r'\[([^\]]+)\]\([^)]+\)',r'\1',L.get('summary') or L.get('what') or '')
+  blob=' '.join([L['title'],plain,L.get('difficulty') or '',' '.join(L.get('concepts') or [])]).lower()
+  cards.append(f'<article class=card data-lesson data-slug="{E(sl)}" data-diff="{E(diff)}" data-text="{E(blob)}"><p class=meta>{badge}{dchip(diff)} {E(meta)}</p><h3><a href="/lessons/{E(sl)}/">{E(L["title"])}</a></h3><p>{md(L.get("summary") or L["what"][:200])}</p><p>{chips}</p><p><a href="/lessons/{E(sl)}/">Start the lesson</a> · <a href="{E(x["app"])}">Open the live app</a> · <a href="{AD(x["program"])}">program</a></p></article>')
 def stage_blocks(with_cards=True, pool=None):
   if pool is None: pool=FULL
   out=[]
@@ -316,9 +345,12 @@ def stage_blocks(with_cards=True, pool=None):
     for x in items:
       L=lesson_of(x)
       lis+=f'<li><a href="/lessons/{E(x["slug"])}/"><b>{E(L["title"])}</b></a> · {E(L.get("time") or "")} · {E(L.get("summary") or "")}</li>'
-    body=f'<section class=path-stage id=stage-{st["id"]}><h2>Stage {st["id"]}: {E(st["name"])} {dchip(st["level"])} · about {mins} min</h2><p>{md(st["blurb"])}</p><ol>{lis}</ol>'
+    first=items[0]
+    body=f'<section class=path-stage id=stage-{st["id"]}><h2>Stage {st["id"]}: {E(st["name"])} {dchip(st["level"])} · about {mins} min</h2><p>{md(st["blurb"])}</p><p><a class=btn href="/lessons/{E(first["slug"])}/">Start stage {st["id"]}</a></p>'
     if with_cards:
       body+='<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in items)+'</div>'
+    else:
+      body+=f'<ol>{lis}</ol>'
     out.append(body+'</section>')
   return ''.join(out)
 grid=f'<div class=grid>{"".join(cards)}</div>'
@@ -328,8 +360,24 @@ debug=''
 if PARTIAL:
   dbg_cards=''.join(cards[PATH_I[x['slug']]] for x in PARTIAL)
   debug='<section class=path-stage id=debug-challenges><h2>Debug challenges</h2><p>These apps are on devnet, but a core flow does not complete yet (a swap that crashes, a claim that cannot pay out, a market with no redeem). Use them to practise finding the bug, writing a patch and a regression test, and retesting on devnet. They are not listed as live environments on the <a href="/lessons/path/">learning path</a> until the fork is fully working.</p><div class=grid>'+dbg_cards+'</div></section>'
+staged_ids={st['id'] for st in PATH.get('stages',[])}
+rest=[x for x in FULL if lesson_of(x).get('path_stage') not in staged_ids]
+more=''
+if rest:
+  more=('<section class=path-stage id=more-live><h2>More live lessons</h2>'
+        '<p>These '+str(len(rest))+' apps are fully working on devnet. They are not a numbered step on the <a href="/lessons/path/">learning path</a> yet, and they still turn up in search.</p>'
+        '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in rest)+'</div></section>')
 lead_extra=(', plus %s <a href="#debug-challenges">debug challenges</a>' % np) if np else ''
-idx=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav><h1>Lessons: live Solana apps, step by step</h1><p class=lead>{nf} fully working live environments, ordered along the <a href="/lessons/path/">learning path</a>{lead_extra}. A new lesson appears here automatically when another app goes live on devnet.</p>{intro}{stage_blocks()}{debug}<p class=note>Looking for the 2,000+ code walkthroughs generated from source? They are in the <a href="/explore/">Source library (not yet live)</a>. They have not been built or run, so they are not lessons.</p>'
+finder='''<div class=finder><label>Find a lesson <input id=lesson-q type=search placeholder="PDA, escrow, oracle, beginner" autocomplete=off></label>
+<div class=finder-row role=group aria-label=Difficulty>
+<button type=button data-diff="" aria-pressed=true>All</button>
+<button type=button data-diff=Beginner>Beginner</button>
+<button type=button data-diff=Intermediate>Intermediate</button>
+<button type=button data-diff=Advanced>Advanced</button>
+</div>
+<p class=meta id=lesson-count></p><p class=resume id=resume hidden></p></div>
+<p class=meta id=lesson-empty hidden>No lesson matches that search.</p>'''
+idx=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav>{CSS}<h1>Lessons: live Solana apps, step by step</h1><p class=lead>{nf} fully working live environments, ordered along the <a href="/lessons/path/">learning path</a>{lead_extra}. A new lesson appears here automatically when another app goes live on devnet.</p>{finder}{stage_blocks()}{more}{debug}<div class=index-intro>{intro}<p><a href="/lessons/guide/">How to use a lesson</a> · <a href="/how-to-build/">How to build your own</a></p></div><p class=note>Looking for the 2,000+ code walkthroughs generated from source? They are in the <a href="/explore/">Source library (not yet live)</a>. They have not been built or run, so they are not lessons.</p>'
 os.makedirs(f'{S}/lessons',exist_ok=True); open(f'{S}/lessons/index.html','w').write(page(idx,'Lessons: live Solana devnet apps, step by step | Sol.College',f'{nf} step-by-step Solana lessons on fully working devnet apps, plus {np} debug challenges. Real code and real transactions, ordered from beginner to advanced.','/lessons/'))
 # ---- learning path page
 def _mins(x):
@@ -349,7 +397,8 @@ path_parts.append(CSS)
 path_parts.append('<h1>The path: become a Solana developer with live apps</h1>')
 path_parts.append('<p class=lead>%s fully working live environments, ordered by the concepts they teach — not by when they went live. Each one is a real app running on Solana devnet, with a working frontend, the program\'s real code at a pinned commit, and the transactions that prove it. About %s hours of hands-on work.</p>' % (nf, hours))
 path_parts.append('<p>When you finish this path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
-path_parts.append(f'<p class=cta><a class=btn href="/lessons/{E(first["slug"])}/">Start with lesson 1: {E(lesson_of(first)["title"])}</a> <a class="btn ghost" href="/lessons/">All lessons</a></p>')
+path_parts.append(f'<p class=cta><a class=btn href="/lessons/{E(first["slug"])}/">Start with lesson 1: {E(lesson_of(first)["title"])}</a> <a class="btn ghost" href="/lessons/">All lessons</a> <a class="btn ghost" href="/lessons/guide/">How to use a lesson</a></p>')
+path_parts.append('<p class=resume id=resume hidden></p>')
 path_parts.append(stage_blocks(False))
 path_parts.append(debug_path)
 path_parts.append('<p class=note>Only apps whose core flow is fully working on devnet (<code>functional: full</code>) are listed as live environments in the stages above. New live apps are added to the path by concept, not by date. The <a href="/lessons/">lessons index</a> always has the full list, including debug challenges. The 2,000+ source-only walkthroughs stay in the <a href="/explore/">Source library</a> — they have not been deployed or run, so they are not on this path.</p>')
@@ -365,17 +414,61 @@ def gloss_item(t):
   les=shown.get(t['id'],[])
   links=' '.join(f'<a href="/lessons/{E(x["slug"])}/">{E(lesson_of(x)["title"].split(":")[0])}</a>' for x in les) or '—'
   docs=f' · <a href="{E(t["docs"])}">Official docs</a>' if t.get('docs') else ''
-  return f'<dt id="{E(t["id"])}">{E(t["name"])}</dt><dd>{md(t["def"])}{docs}<br><small>Shown in: {links}</small></dd>'
+  hay=' '.join([t['name'], t.get('def') or '', t['id']]).lower()
+  return f'<dt id="{E(t["id"])}" data-term="{E(hay)}">{E(t["name"])}</dt><dd>{md(t["def"])}{docs}<br><small>Shown in: {links}</small></dd>'
 g_toc=' · '.join(f'<a href="#{E(t["id"])}">{E(t["name"])}</a>' for t in GLOSS.get('terms',[]))
 gloss_body=f'''<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <span>Glossary</span></nav>
 {CSS}
 <h1>{E(GLOSS.get("title") or "Solana developer glossary")}</h1>
 <p class=lead>{md(GLOSS.get("lead") or "")}</p>
+<div class=finder><label>Find a term <input id=gloss-q type=search placeholder="PDA, rent, has_one" autocomplete=off></label></div>
 <p class=toc>{g_toc}</p>
 <dl class=gloss>{''.join(gloss_item(t) for t in GLOSS.get("terms",[]))}</dl>
 <p class=note>These are the terms the <a href="/lessons/path/">core lessons</a> use. For a broader list that also covers the source library, see the site <a href="/glossary/">glossary</a>.</p>'''
 os.makedirs(f'{S}/lessons/glossary',exist_ok=True)
 open(f'{S}/lessons/glossary/index.html','w').write(page(gloss_body,'Solana developer glossary: PDAs, CPIs, rent, has_one and more | Sol.College','Plain-English Solana and Anchor terms — PDAs, CPIs, rent, account constraints, bonding curves — each linked to the live Sol.College lesson that shows it in real code.','/lessons/glossary/'))
+# ---- how to use a lesson, and the how-to-build guides (incremental deploys skip build.py)
+def _guide_page(body, title, desc, path):
+  return page(CSS+body, title, desc, path)
+learner = '''<div class=readbar aria-hidden=true><span></span></div>
+<article class=lesson data-slug=guide-using-a-lesson>
+<div class=lesson-layout><div class=lesson-main>
+<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <span>How to use a lesson</span></nav>
+<p class=eyebrow>Guide</p>
+<h1>How to use a lesson</h1>
+<p class=lead>A lesson is a devnet app you can open, plus the accounts, instructions and transactions that explain it. Nothing here asks you to wait for a cohort.</p>
+<section class=path-stage id=s1><h2><span class=num>1</span>Start from the path</h2>
+<p>The <a href="/lessons/path/">learning path</a> orders the fully working apps by concept: accounts and PDAs, then authorization, then markets, staking and oracles. The <a href="/lessons/">lessons index</a> can filter by difficulty and remembers the last lesson you opened in this browser.</p></section>
+<section class=path-stage id=s2><h2><span class=num>2</span>Use your own devnet wallet</h2>
+<p>Install Phantom or Solflare, switch it to Solana devnet, and request test SOL from <a href="https://faucet.solana.com">faucet.solana.com</a> while you are signed in. The public RPC airdrop is closed. Devnet SOL has no value. Open the app from the lesson and approve each transaction yourself.</p></section>
+<section class=path-stage id=s3><h2><span class=num>3</span>Check off the steps</h2>
+<p>On Try it, tick a step when you have done it. The ticks stay in this browser, on this device. A green check with an explorer link is a step we already ran, with the real signature. A signature is never invented.</p></section>
+<section class=path-stage id=s4><h2><span class=num>4</span>Read the proof before you trust the prose</h2>
+<p>Section 6 lists the recorded devnet transactions. Open one on Solana Explorer and read the instruction and the program logs. If a step has no signature, the lesson says so.</p></section>
+<section class=path-stage id=s5><h2><span class=num>5</span>Try an exercise before you open the approach</h2>
+<p>Hints stay visible. The reference approach is folded. Debug challenges are apps whose core flow does not complete yet. They are practice for finding the bug, not live environments on the path.</p></section>
+<section class=path-stage id=s6><h2><span class=num>6</span>Build your own after the path</h2>
+<p>The <a href="/how-to-build/">how to build</a> guides cover the toolchain, the Anchor workflow, tests, deploy and a security checklist. They link the official docs because commands change.</p></section>
+<p class=cta><a class=btn href="/lessons/path/">Start the path</a> <a class="btn ghost" href="/how-to-build/">How to build</a></p>
+</div>
+<nav class=rail aria-label="On this page"><a href="#s1">1. Start from the path</a><a href="#s2">2. Your wallet</a><a href="#s3">3. Check off steps</a><a href="#s4">4. Read the proof</a><a href="#s5">5. Exercises</a><a href="#s6">6. Build your own</a></nav>
+</div>
+<div class=dock role=region aria-label="Guide actions"><a class=btn href="/lessons/path/">Open the path</a><button type=button class="btn ghost" data-jump>Next section</button></div>
+</article>'''
+os.makedirs(f'{S}/lessons/guide',exist_ok=True)
+open(f'{S}/lessons/guide/index.html','w').write(_guide_page(learner,'How to use a Sol.College lesson | Sol.College','Open a live devnet lesson, check off the steps in your browser, and read the recorded transactions before you trust the prose.','/lessons/guide/'))
+def write_guides():
+  import content,hubs
+  guides=list(content.GUIDES)+[hubs.BUILD_DAPP]
+  os.makedirs(f'{S}/how-to-build',exist_ok=True)
+  crumbs='<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>How to build</span></nav>'
+  open(f'{S}/how-to-build/index.html','w').write(page(crumbs+CSS+'<h1>How to build</h1>'+content.guide_index(guides),'How to build on Solana: setup, Anchor, testing, deploy, security | Sol.College','Practical Solana guides: environment setup, Anchor workflow, testing, deploying to devnet and mainnet, and a security checklist.','/how-to-build/'))
+  for g in guides:
+    c=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/how-to-build/">How to build</a> / <span>{E(g["title"])}</span></nav>'
+    os.makedirs(f'{S}/how-to-build/{g["slug"]}',exist_ok=True)
+    open(f'{S}/how-to-build/{g["slug"]}/index.html','w').write(page(c+CSS+content.guide_article(g),g['title']+' | Sol.College',g['title']+': a practical Solana guide with links to the official docs.',f'/how-to-build/{g["slug"]}/'))
+  return [f'/how-to-build/{g["slug"]}/' for g in guides]+['/how-to-build/','/lessons/guide/']
+GUIDE_PATHS=write_guides()
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
 NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
@@ -395,9 +488,10 @@ for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if t!=o: open(fp,'w').write(t)
 sm=f'{S}/sitemap.xml'
 if os.path.exists(sm):
-  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/']+[f'/lessons/{x["slug"]}/' for x in LIVE] if f'<loc>{SITE}{p}</loc>' not in t)
+  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])
+_landing.START_LESSON=f'/lessons/{first["slug"]}/'
 _landing.write_home(S)
 _landing.enrich_lessons(S)

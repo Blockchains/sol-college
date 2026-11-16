@@ -1,5 +1,5 @@
 import json,os,re,html,shutil,collections,glob,datetime
-from content import LESSONS,NOTES,CATEGORIES,GUIDES
+from content import LESSONS,NOTES,CATEGORIES,GUIDES,guide_article,guide_index
 import hubs
 GUIDES=GUIDES+[hubs.BUILD_DAPP]
 SITE='https://sol.college'; OUT=os.environ.get('SITE_OUT','site'); E=html.escape
@@ -404,16 +404,12 @@ for c,ps in sorted(cats.items(),key=lambda kv:len(kv[1])):
 page('/what-to-build/','What to build on Solana: gaps and patterns from real projects','Idea pages from catalog analysis: categories with few strong projects, common stacks per category, and starter paths into real code.',
 '<h1>What to build</h1><p class=lead>Ordered from least served to most served. "Strong" means 100+ GitHub stars on the original repository.</p><table class=tbl><thead><tr><th>Category</th><th>Projects</th><th>Strong</th><th></th></tr></thead><tbody>'+''.join(f'<tr><td>{E(c)}</td><td>{n}</td><td>{s}</td><td><a href="/what-to-build/{sl}/">Gaps and starter path →</a></td></tr>' for c,sl,n,s in ideas)+'</tbody></table>',crumbs=[('/','Home'),('/what-to-build/','What to build')])
 # ---------- guides
+_guide_css='<style>'+open('scripts/lesson.css').read()+'</style><script>'+open('scripts/lesson.js').read()+'</script>'
 for g in GUIDES:
-  b=''
-  for h,t,x in g['body']:
-    b+=f'<h2>{E(h)}</h2><p>{E(t)}</p>'
-    if isinstance(x,str): b+=f'<pre class=sh><code>{E(x)}</code></pre>'
-    elif x: b+='<ul>'+''.join(f'<li><a href="{u}">{E(n)}</a></li>' for n,u in x)+'</ul>'
-  page(f"/how-to-build/{g['slug']}/",g['title']+' | Sol.College',g['title']+': a practical guide with links to the official Solana and Anchor docs.',f'<article class=lesson><h1>{E(g["title"])}</h1>{b}<p class=docs>Commands and APIs change, so the official <a href="https://solana.com/docs">Solana docs</a> and <a href="https://www.anchor-lang.com/docs">Anchor docs</a> are the source of truth.</p></article>',
+  page(f"/how-to-build/{g['slug']}/",g['title']+' | Sol.College',g['title']+': a practical guide with links to the official Solana and Anchor docs.',_guide_css+guide_article(g),
   ld=[{"@type":"HowTo","name":g['title'],"step":[{"@type":"HowToStep","name":h,"text":t} for h,t,_ in g['body']]}],crumbs=[('/','Home'),('/how-to-build/','How to build'),(f"/how-to-build/{g['slug']}/",g['title'])])
 page('/how-to-build/','How to build on Solana: setup, Anchor, testing, deploy, security','Practical Solana guides: environment setup, Anchor workflow, testing, deploying to devnet and mainnet, and a security checklist.',
-'<h1>How to build</h1><div class=grid>'+''.join(f'<article class=card><h3><a href="/how-to-build/{g["slug"]}/">{E(g["title"])}</a></h3><p>{E(g["body"][0][1][:140])}…</p></article>' for g in GUIDES)+'</div>',crumbs=[('/','Home'),('/how-to-build/','How to build')])
+'<h1>How to build</h1>'+guide_index(GUIDES),crumbs=[('/','Home'),('/how-to-build/','How to build')])
 # ---------- changelog of published fork pages
 prev=prev or []
 known={x['path'] for x in prev if x.get('type')!='updated'}; now=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
