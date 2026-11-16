@@ -9,28 +9,33 @@
   const narrow = () => window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
   const ctx = canvas.getContext('2d', { alpha: false });
 
-  // Ring centers are fractions of the still. face is the mouth, just under the ring.
+  // Ring centers are fractions of the still, measured on the halo itself.
+  // s is the icon diameter as a fraction of the still width, sized to the
+  // opening inside the ring so the colored halo stays the frame.
   const WIDE = [
-    { x: 0.506, y: 0.286, icon: '/assets/marks/poe-solana.jpg' },
-    { x: 0.598, y: 0.270, icon: '/assets/marks/orrery.jpg' },
-    { x: 0.672, y: 0.258, icon: '/assets/marks/trustlock.jpg' },
-    { x: 0.786, y: 0.276, icon: '/assets/marks/picassol-hackathon.jpg' },
-    { x: 0.878, y: 0.296, icon: '/assets/marks/hydra.jpg' },
+    { x: 0.481, y: 0.284, s: 0.014, icon: '/assets/marks/poe-solana.jpg' },
+    { x: 0.574, y: 0.278, s: 0.014, icon: '/assets/marks/orrery.jpg' },
+    { x: 0.672, y: 0.286, s: 0.014, icon: '/assets/marks/trustlock.jpg' },
+    { x: 0.797, y: 0.280, s: 0.014, icon: '/assets/marks/picassol-hackathon.jpg' },
+    { x: 0.882, y: 0.300, s: 0.014, icon: '/assets/marks/hydra.jpg' },
   ];
   const TALL = [
-    { x: 0.198, y: 0.258, icon: '/assets/marks/poe-solana.jpg' },
-    { x: 0.366, y: 0.266, icon: '/assets/marks/orrery.jpg' },
-    { x: 0.498, y: 0.274, icon: '/assets/marks/trustlock.jpg' },
-    { x: 0.720, y: 0.274, icon: '/assets/marks/picassol-hackathon.jpg' },
-    { x: 0.848, y: 0.268, icon: '/assets/marks/hydra.jpg' },
+    { x: 0.181, y: 0.252, s: 0.024, icon: '/assets/marks/poe-solana.jpg' },
+    { x: 0.354, y: 0.262, s: 0.024, icon: '/assets/marks/orrery.jpg' },
+    { x: 0.503, y: 0.261, s: 0.024, icon: '/assets/marks/trustlock.jpg' },
+    { x: 0.656, y: 0.261, s: 0.024, icon: '/assets/marks/picassol-hackathon.jpg' },
+    { x: 0.800, y: 0.257, s: 0.024, icon: '/assets/marks/hydra.jpg' },
   ];
   const BEATS = [
     { key: 'a', who: [0, 1] },
     { key: 'b', who: [2, 3] },
     { key: 'c', who: [4, 3] },
   ];
-  const HOLD = 2.4;
-  const FADE = 0.38;
+  // A beat rests, then the heads ease into the next turn. The old 0.38s
+  // linear swap snapped. The fade stays shorter than the hold so two
+  // poses only overlap while a head is actually turning.
+  const HOLD = 7.2;
+  const FADE = 1.35;
 
   const icons = {};
   function image(url) {
@@ -107,16 +112,21 @@
     return { dx: dx, dy: dy, dw: dw, dh: dh, t: t, live: live, phone: phone };
   }
 
+  function ease(u) {
+    u = Math.max(0, Math.min(1, u));
+    return u * u * (3 - 2 * u);
+  }
+
   function talkAlpha(local) {
-    if (local < FADE) return local / FADE;
-    if (local > HOLD - FADE) return (HOLD - local) / FADE;
+    if (local < FADE) return ease(local / FADE);
+    if (local > HOLD - FADE) return ease((HOLD - local) / FADE);
     return 1;
   }
 
   function drawIcon(box, p, emphasis) {
     const img = iconFor(p.icon);
     if (!img.complete || !img.naturalWidth) return;
-    const s = box.dw * 0.031 * (1 + 0.14 * emphasis);
+    const s = box.dw * p.s * (1 + 0.04 * emphasis);
     const sx = box.dx + p.x * box.dw;
     const sy = box.dy + p.y * box.dh;
     ctx.save();
