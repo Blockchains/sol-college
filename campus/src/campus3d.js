@@ -190,6 +190,7 @@ export function mountCampus(container, data, opts = {}) {
 
   // glowing front edge of the floor (Solana gradient), like a stage lip
   const lip = new Mesh(new BoxGeometry(totalW + 1, 0.06, 0.06), new MeshBasicMaterial({ map: gradientTexture(), toneMapped: false })); lip.position.set(0, 0.03, LIP_Z); scene.add(lip);
+  if (opts.hero) lip.visible = false;
 
   // bookshelf back wall (one long wall) and side walls
   const shelves = bookshelfTextures(low);
@@ -443,14 +444,14 @@ export function mountCampus(container, data, opts = {}) {
     const crowded = viewIdx > 0 && sidesFor(v.room) === 2;
     const heroRoom = opts.hero && viewIdx > 0;
     // Look past the room centre so the left of the frame is shelves and the agents sit on the right.
-    if (heroRoom) goal.tx = v.x + (portrait ? 5.2 : 3.8);
+    if (heroRoom) goal.tx = v.x + (portrait ? 5.7 : 3.8);
     goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : opts.hero ? 0.52 : 0.78)))
-      : heroRoom ? (portrait ? 5.4 : 7.4)
+      : heroRoom ? (portrait ? 7.2 : 7.4)
       : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.2, tableLen(v.room) + 0.5) : ROOM_W * (crowded ? 1.05 : 0.9)));
-    goal.pitch = viewIdx === 0 ? (opts.hero ? 0.34 : 0.3) : heroRoom ? (portrait ? 0.34 : 0.18) : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
-    goal.ty = heroRoom ? (portrait ? -0.1 : 1.25) : crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4;
-    goal.tz = heroRoom ? (portrait ? 0.35 : 0.55) : (viewIdx === 0 ? 0 : 0.2);
-    goal.yaw = heroRoom ? (portrait ? 0 : -0.5) : 0;
+    goal.pitch = viewIdx === 0 ? (opts.hero ? 0.34 : 0.3) : heroRoom ? (portrait ? 0.16 : 0.18) : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
+    goal.ty = heroRoom ? (portrait ? 0.48 : 1.25) : crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4;
+    goal.tz = heroRoom ? (portrait ? 0.15 : 0.55) : (viewIdx === 0 ? 0 : 0.2);
+    goal.yaw = heroRoom ? (portrait ? 0.08 : -0.5) : 0;
     if (instant) Object.assign(rig, goal);
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === viewIdx)));
     if (ready) wake();
