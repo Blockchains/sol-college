@@ -78,7 +78,9 @@ function init() {
     const c = navigator.connection || {};
     return c.saveData === true || /(^|-)2g$/.test(c.effectiveType || '') || (navigator.deviceMemory || 8) < 1 || (navigator.hardwareConcurrency || 8) < 2;
   };
-  const quality = () => (mq('(pointer: coarse)') || mq('(max-width: 760px)') || (navigator.hardwareConcurrency || 8) <= 4 || (navigator.deviceMemory || 8) <= 4 ? 'low' : 'high');
+  // The landing hero is the picture, so it renders at high quality (antialias, finer meshes, full resolution).
+  // Save-Data and very small devices stay on the lighter path. The frame loop still drops resolution if it cannot keep up.
+  const quality = () => (mq('(prefers-reduced-data: reduce)') || (navigator.deviceMemory || 8) <= 2 ? 'low' : 'high');
   const webgl = () => { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); } catch { return false; } };
   const why = () => (reduced() ? 'reduced motion is on' : lowPower() ? 'data saver or a low-power device' : !webgl() ? 'WebGL is not available' : '');
 
