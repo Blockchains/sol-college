@@ -1355,7 +1355,7 @@ section.band h2 { letter-spacing: -0.02em; }
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(90deg, rgba(247, 244, 251, 0.94) 0%, rgba(247, 244, 251, 0.72) 18%, rgba(247, 244, 251, 0.28) 36%, rgba(247, 244, 251, 0) 58%);
+  background: linear-gradient(90deg, rgba(247, 244, 251, 0.94) 0%, rgba(247, 244, 251, 0.78) 22%, rgba(247, 244, 251, 0.2) 38%, rgba(247, 244, 251, 0) 48%);
 }
 .stage-hero::after {
   content: "";
@@ -1364,8 +1364,8 @@ section.band h2 { letter-spacing: -0.02em; }
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(closest-side at 30% 40%, rgba(20, 241, 149, 0.16), transparent 72%),
-    radial-gradient(closest-side at 78% 30%, rgba(153, 69, 255, 0.22), transparent 70%);
+    radial-gradient(closest-side at 30% 40%, rgba(20, 241, 149, 0.07), transparent 72%),
+    radial-gradient(closest-side at 78% 30%, rgba(153, 69, 255, 0.09), transparent 70%);
   animation: campus-glow 16s ease-in-out infinite;
   mix-blend-mode: multiply;
 }
@@ -1460,7 +1460,7 @@ section.band h2 { letter-spacing: -0.02em; }
   width: min(440px, calc(100% - 36px));
   bottom: 28px;
   z-index: 5;
-  display: flex;
+  display: none !important;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
@@ -1592,15 +1592,15 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
   .stage-hero .campus-hero,
   .stage-hero .ch-stage,
   .stage-hero .ch-canvas {
-    top: 58px;
+    top: 56px;
     bottom: auto;
-    height: 38svh !important;
+    height: 48svh !important;
     overflow: visible;
   }
   .stage-veil { display: none; }
   .stage-copy {
     width: auto;
-    margin: 0 16px 156px;
+    margin: 0 16px 20px;
     text-align: center;
   }
   .stage-hero .audience {
@@ -1629,15 +1629,6 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
   .stage-hero .lead { font-size: 0.92rem; max-width: 34ch; }
   .stage-hero .cta-row { flex-wrap: nowrap; justify-content: center; gap: 8px; margin-top: 0.8rem; }
   .stage-hero .cta-row .btn { flex: 1 1 0; min-height: 48px; font-size: 0.92rem; padding-inline: 8px; }
-  .stage-hero .ch-rooms {
-    left: 12px;
-    right: 12px;
-    bottom: calc(86px - 62svh);
-    width: auto;
-    max-height: 132px;
-  }
-  .stage-hero .ch-list { flex-wrap: wrap; }
-  .stage-hero .ch-avatar { font-size: 0.75rem; padding: 4px 8px; }
 }
 
 /* The page under the campus is a light sheet. The hero keeps its own type colors. */
@@ -1677,3 +1668,26 @@ footer { color: #5c5478; background: #f7f4fb; border-top-color: rgba(22, 14, 46,
 footer nav a { color: #3c3558; }
 footer nav a:hover { color: #160e2e; }
 .close-bg { opacity: 0.55; }
+
+/* Light page type. The old palette was written for a dark background, so muted and white text vanished on the sheet. */
+section.band :is(.lead, p, li, .honest, .disclaimer, .card p, .feature p, .principle p, .brief-item p, .find-card p, .loop-copy p, .path-card ul) {
+  color: #2a2442;
+}
+section.band :is(h3, h3 a, .card h3, .card h3 a) { color: #160e2e; }
+section.band :is(.meta, .card .meta, small) { color: #4e4668; }
+section.band a:hover { color: #3a1d8f; }
+.compare-wrap.glass { background: #fff; }
+.compare th, .compare td {
+  color: #241c3a;
+  border-bottom-color: rgba(22, 14, 46, 0.12);
+}
+.compare thead th { color: #160e2e; background: #efe8fb; }
+.compare tbody th { color: #fff; background: #1b1530; }
+.compare td { color: #2a2344; background: #fff; }
+.compare thead th:last-child,
+.compare td:last-child { background: #dcffe9; color: #053224; }
+@media (max-width: 760px) {
+  .compare tbody th,
+  .compare td:first-child { background: #1b1530; color: #fff; }
+  .compare thead th:first-child { background: #efe8fb; color: #160e2e; }
+}
