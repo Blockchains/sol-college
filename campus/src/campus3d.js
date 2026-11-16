@@ -163,8 +163,9 @@ export function mountCampus(container, data, opts = {}) {
 
   const scene = new Scene(); scene.background = new Color(INK); scene.fog = new FogExp2(INK, low ? 0.03 : 0.024);
   const camera = new PerspectiveCamera(48, w0 / h0, 0.1, 120);
-  scene.add(new HemisphereLight(0x9d8bff, 0x8a5a2a, 1.1));
-  scene.add(new AmbientLight(0x3a2d8a, 0.7));
+  const hemi = new HemisphereLight(0x9d8bff, 0x8a5a2a, 1.1);
+  const amb = new AmbientLight(0x3a2d8a, 0.7);
+  scene.add(hemi, amb);
 
   const sectors = data.sectors.map((s) => s.id);
   const nRooms = sectors.length || 3;
@@ -178,13 +179,16 @@ export function mountCampus(container, data, opts = {}) {
   const floor = new Mesh(new PlaneGeometry(opts.hero ? totalW + 28 : totalW + 1, floorDepth), new MeshStandardMaterial({ map: wood, roughness: 0.42, metalness: 0.08, color: 0xf3d2a6 }));
   floor.rotation.x = -Math.PI / 2; floor.position.z = FLOOR_FRONT - floorDepth / 2; scene.add(floor);
   if (opts.hero) {
-    renderer.toneMappingExposure = 1.9;
-    scene.background = new Color(0x120a28);
-    scene.fog = new FogExp2(0x140c28, low ? 0.018 : 0.012);
-    const pad = new Mesh(new PlaneGeometry(160, 160), new MeshStandardMaterial({ color: 0xd7b48a, roughness: 0.8 }));
+    renderer.toneMappingExposure = 1.15;
+    scene.background = new Color(0xf4ecff);
+    scene.fog = new FogExp2(0xf7f2ff, 0.008);
+    hemi.color.set(0xfff8f2); hemi.groundColor.set(0xffe7cf); hemi.intensity = 2.1;
+    amb.color.set(0xfff6ee); amb.intensity = 0.85;
+    const pad = new Mesh(new PlaneGeometry(160, 160), new MeshStandardMaterial({ color: 0xf6d7b0, roughness: 0.86 }));
     pad.rotation.x = -Math.PI / 2; pad.position.y = -0.04; scene.add(pad);
-    const key = new PointLight(0xfff4e0, 26, 42, 1.4); key.position.set(-6, 6.5, 9); scene.add(key);
-    const fill = new PointLight(0xb9a6ff, 16, 36, 1.5); fill.position.set(10, 4.2, 7); scene.add(fill);
+    const key = new PointLight(0xfff6ea, 34, 48, 1.15); key.position.set(-4, 7.2, 10); scene.add(key);
+    const fill = new PointLight(0xffc4e8, 18, 40, 1.4); fill.position.set(12, 4.6, 8); scene.add(fill);
+    const rim = new PointLight(0x9dffd8, 14, 28, 1.6); rim.position.set(8, 3.2, 2); scene.add(rim);
   }
   wood.repeat.set((totalW + 1) / 5, floorDepth / 5);
 
@@ -200,9 +204,20 @@ export function mountCampus(container, data, opts = {}) {
   back.position.set(0, WALL_H / 2, -ROOM_D / 2); scene.add(back);
   const sideMat = shelfMat.clone(); sideMat.map = shelves.map.clone(); sideMat.emissiveMap = shelves.emap.clone();
   sideMat.map.repeat.set(ROOM_D / 7, 1); sideMat.emissiveMap.repeat.set(ROOM_D / 7, 1); sideMat.map.needsUpdate = sideMat.emissiveMap.needsUpdate = true;
+  const sideWalls = [];
   for (const sgn of [-1, 1]) {
     const side = new Mesh(new PlaneGeometry(ROOM_D, WALL_H), sideMat);
-    side.position.set(sgn * (totalW / 2), WALL_H / 2, 0); side.rotation.y = -sgn * Math.PI / 2; scene.add(side);
+    side.position.set(sgn * (totalW / 2), WALL_H / 2, 0); side.rotation.y = -sgn * Math.PI / 2; scene.add(side); sideWalls.push(side);
+  }
+  if (opts.hero) {
+    back.visible = false;
+    sideWalls.forEach((s) => { s.visible = false; });
+    const paint = new MeshStandardMaterial({ color: 0xfff7f1, roughness: 0.94 });
+    const wall = new Mesh(new PlaneGeometry(totalW + 10, WALL_H + 2.4), paint);
+    wall.position.set(0, (WALL_H + 2.4) / 2 - 0.2, -ROOM_D / 2 + 0.02); scene.add(wall);
+    const windowMat = new MeshBasicMaterial({ color: 0xfff3fb, toneMapped: false });
+    const win = new Mesh(new PlaneGeometry(16, 7), windowMat);
+    win.position.set(roomX(nRooms - 1) + 5.4, 3.1, -ROOM_D / 2 + 0.08); scene.add(win);
   }
   // room dividers: low glass partitions with a Solana-gradient top rail
   const grad = gradientTexture();
@@ -213,13 +228,15 @@ export function mountCampus(container, data, opts = {}) {
     const glass = new Mesh(new PlaneGeometry(ROOM_D * 0.75, 2.2), glassMat); glass.rotation.y = Math.PI / 2; glass.position.set(x, 1.1, -ROOM_D * 0.125); scene.add(glass);
   }
   // LED strip along the bottom of the walls + uplight washes
-  const strip = new Mesh(new BoxGeometry(totalW, 0.05, 0.05), new MeshBasicMaterial({ color: 0x6a4bff, toneMapped: false }));
+  const strip = new Mesh(new BoxGeometry(totalW, 0.05, 0.05), new MeshBasicMaterial({ color: opts.hero ? 0xffd7a8 : 0x6a4bff, toneMapped: false }));
   strip.position.set(0, 0.04, -ROOM_D / 2 + 0.05); scene.add(strip);
-  const upTex = uplightTexture();
-  const upMat = new MeshBasicMaterial({ map: upTex, color: 0x5a3cff, transparent: true, opacity: low ? 0.55 : 0.45, blending: AdditiveBlending, depthWrite: false, toneMapped: false });
-  const ups = Math.round(totalW / 2.6);
-  for (let i = 0; i < ups; i++) {
-    const p = new Mesh(new PlaneGeometry(1.6, WALL_H * 0.9), upMat); p.position.set(-totalW / 2 + (i + 0.5) * (totalW / ups), WALL_H * 0.45, -ROOM_D / 2 + 0.03); scene.add(p);
+  if (!opts.hero) {
+    const upTex = uplightTexture();
+    const upMat = new MeshBasicMaterial({ map: upTex, color: 0x5a3cff, transparent: true, opacity: low ? 0.55 : 0.45, blending: AdditiveBlending, depthWrite: false, toneMapped: false });
+    const ups = Math.round(totalW / 2.6);
+    for (let i = 0; i < ups; i++) {
+      const p = new Mesh(new PlaneGeometry(1.6, WALL_H * 0.9), upMat); p.position.set(-totalW / 2 + (i + 0.5) * (totalW / ups), WALL_H * 0.45, -ROOM_D / 2 + 0.03); scene.add(p);
+    }
   }
   // signage
   const sign = new Mesh(new PlaneGeometry(6.8, 1.7), new MeshBasicMaterial({ map: signTexture(maxAniso), transparent: true, depthWrite: false, toneMapped: false }));
@@ -229,7 +246,7 @@ export function mountCampus(container, data, opts = {}) {
   // shared geometries
   const glowTex = glowTexture();
   const legGeo = new BoxGeometry(0.12, 0.72, 1.3);
-  const tableMat = new MeshStandardMaterial({ color: 0x2a1810, roughness: 0.28, metalness: 0.25 });
+  const tableMat = new MeshStandardMaterial({ color: opts.hero ? 0xf3d2b0 : 0x2a1810, roughness: opts.hero ? 0.55 : 0.28, metalness: opts.hero ? 0.04 : 0.25 });
   const velvet = new MeshStandardMaterial({ color: 0x5226b8, roughness: 0.85, metalness: 0, emissive: 0x1a0a52, emissiveIntensity: 0.55 });
   const screenBack = new MeshStandardMaterial({ color: 0x0a0a14, roughness: 0.5 });
 
@@ -330,7 +347,7 @@ export function mountCampus(container, data, opts = {}) {
     const warm = new PointLight(0xffb36b, low ? 7 : 9, 9, 1.4); warm.position.set(cx, 3.1, 0.6); room.add(warm);
     for (const lx of [-2.2, 0, 2.2]) {
       const cord = new Mesh(new CylinderGeometry(0.01, 0.01, 1.4, 4), screenBack); cord.position.set(cx + lx, WALL_H - 0.7, 0); room.add(cord);
-      const shade = new Mesh(new CylinderGeometry(0.12, 0.34, 0.3, low ? 10 : 18, 1, true), new MeshStandardMaterial({ color: 0x1a1430, roughness: 0.4, metalness: 0.6, side: DoubleSide })); shade.position.set(cx + lx, WALL_H - 1.45, 0); room.add(shade);
+      const shade = new Mesh(new CylinderGeometry(0.12, 0.34, 0.3, low ? 10 : 18, 1, true), new MeshStandardMaterial({ color: opts.hero ? 0xfff1df : 0x1a1430, roughness: 0.4, metalness: opts.hero ? 0.05 : 0.6, side: DoubleSide })); shade.position.set(cx + lx, WALL_H - 1.45, 0); room.add(shade);
       const bulb = new Mesh(new SphereGeometry(0.09, 10, 8), new MeshBasicMaterial({ color: 0xffd29a, toneMapped: false })); bulb.position.set(cx + lx, WALL_H - 1.56, 0); room.add(bulb);
       const halo = new Sprite(new SpriteMaterial({ map: glowTex, color: 0xffb36b, transparent: true, opacity: 0.55, blending: AdditiveBlending, depthWrite: false })); halo.scale.set(1.3, 1.3, 1); halo.position.copy(bulb.position); room.add(halo);
     }
@@ -360,6 +377,7 @@ export function mountCampus(container, data, opts = {}) {
       const body = new Mesh(new CapsuleGeometry(0.32, 0.55, low ? 4 : 8, low ? 10 : 18), bodyMat); body.position.y = 0.95;
       const head = new Mesh(new SphereGeometry(0.3, low ? 14 : 24, low ? 10 : 18), bodyMat); head.position.y = 1.72;
       const visor = new Mesh(new BoxGeometry(0.42, 0.1, 0.05), new MeshBasicMaterial({ color: dimAccent, toneMapped: false })); visor.position.set(0, 1.74, -0.27);
+      if (opts.hero) visor.visible = false;
       const halo = new Mesh(new TorusGeometry(0.42, 0.025, 8, low ? 24 : 48), new MeshBasicMaterial({ color: accent, transparent: true, opacity: paused ? 0 : 0.9, toneMapped: false })); halo.rotation.x = Math.PI / 2; halo.position.y = 2.15; halo.visible = !paused;
       const glow = new Sprite(new SpriteMaterial({ map: glowTex, color: dimAccent, transparent: true, opacity: paused ? 0.12 : 0.5, blending: AdditiveBlending, depthWrite: false })); glow.scale.set(2.2, 2.2, 1); glow.position.y = 1.3;
       // laptop on the table in front of the avatar
@@ -372,6 +390,7 @@ export function mountCampus(container, data, opts = {}) {
       const base = new Mesh(new TorusGeometry(0.55, 0.03, 6, low ? 24 : 40), new MeshBasicMaterial({ color: dimAccent, transparent: true, opacity: paused ? 0.35 : 0.8, toneMapped: false })); base.rotation.x = Math.PI / 2; base.position.y = 0.03;
       if (opts.hero) base.visible = false;
       const scarfCols = [0x14f195, 0xffb36b, 0x22c8ff, 0xff6b9a, 0xc9b8ff, 0x9945ff];
+      if (opts.hero && !paused) visor.material.color.setHex(scarfCols[j % scarfCols.length]);
       const scarfMat = paused ? new MeshBasicMaterial({ color: 0x4a4468 }) : opts.hero ? new MeshBasicMaterial({ color: scarfCols[j % scarfCols.length], toneMapped: false }) : new MeshBasicMaterial({ map: grad, toneMapped: false });
       const scarf = new Mesh(new TorusGeometry(0.3, 0.06, 8, low ? 16 : 28), scarfMat); scarf.rotation.x = Math.PI / 2; scarf.position.y = 1.42;
       const hit = new Mesh(new CylinderGeometry(0.75, 0.75, 2.6, 8), new MeshBasicMaterial({ visible: false })); hit.position.y = 1.2; // generous tap target
@@ -383,26 +402,42 @@ export function mountCampus(container, data, opts = {}) {
     });
   });
 
-  // floating glow orbs (echoing the purple orbs of the coffee-bar graphics)
+  // floating glow orbs. On the landing hero only a few stay, high over the cast, so the headline stays clear.
   const orbs = [];
+  const heroSeals = [];
   const orbCols = [0x9945ff, 0x6b5bff, 0x14f195, 0xc46bff, 0x4b3bff, 0x9945ff, 0x22c8ff];
+  const heroX = roomX(Math.max(0, nRooms - 1));
   for (let i = 0; i < (low ? 5 : 9); i++) {
     const r0 = 0.12 + (i % 3) * 0.07, col = orbCols[i % orbCols.length];
     const o = new Mesh(new SphereGeometry(r0, 16, 12), new MeshBasicMaterial({ color: col, transparent: true, opacity: 0.9, toneMapped: false }));
     const g = new Sprite(new SpriteMaterial({ map: glowTex, color: col, transparent: true, opacity: 0.6, blending: AdditiveBlending, depthWrite: false })); g.scale.set(r0 * 9, r0 * 9, 1); o.add(g);
     o.position.set(-totalW / 2 + (i + 0.5) * (totalW / (low ? 5 : 9)), 3.4 + (i % 2) * 0.6, -2.8 + (i % 3) * 1.2);
-    if (opts.hero) o.visible = false;
+    if (opts.hero) {
+      if (i > 5) o.visible = false;
+      else {
+        o.scale.setScalar(1.7);
+        o.position.set(heroX + 2.2 + (i % 3) * 1.9, 1.5 + (i % 2) * 1.8, -0.2 + (i % 3) * 0.85);
+      }
+    }
     o.userData.y0 = o.position.y; o.userData.ph = i * 1.3; scene.add(o); orbs.push(o);
+  }
+  if (opts.hero) {
+    [[2.2, 0x14f195], [3.4, 0xb06bff], [4.6, 0x22c8ff]].forEach(([rad, col], i) => {
+      const seal = new Mesh(new TorusGeometry(rad, 0.02, 8, low ? 48 : 96), new MeshBasicMaterial({ color: col, transparent: true, opacity: 0.4, toneMapped: false }));
+      seal.rotation.x = Math.PI / 2; seal.position.set(heroX + 5.6, 0.02 + i * 0.01, 1.15); scene.add(seal); heroSeals.push(seal);
+    });
   }
 
   // particles (floating dust in the LED light)
-  const nP = reducedMotion ? 0 : low ? 260 : 900;
+  const nP = reducedMotion ? 0 : opts.hero ? (low ? 90 : 240) : low ? 260 : 900;
   let particles = null;
   if (nP) {
     const pos = new Float32Array(nP * 3), col = new Float32Array(nP * 3), rr = rng(3);
     const cA = new Color(VIOLET), cB = new Color(0x14f195), cC = new Color(0x8fa0ff);
     for (let i = 0; i < nP; i++) {
-      pos[i * 3] = (rr() - 0.5) * totalW; pos[i * 3 + 1] = rr() * WALL_H; pos[i * 3 + 2] = (rr() - 0.5) * (ROOM_D + 2);
+      pos[i * 3] = opts.hero ? heroX + 2 + rr() * 7 : (rr() - 0.5) * totalW;
+      pos[i * 3 + 1] = opts.hero ? 0.3 + rr() * 4.4 : rr() * WALL_H;
+      pos[i * 3 + 2] = opts.hero ? -1.2 + rr() * 3.2 : (rr() - 0.5) * (ROOM_D + 2);
       const c = rr() < 0.12 ? cB : rr() < 0.5 ? cA : cC; col.set([c.r, c.g, c.b], i * 3);
     }
     const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(pos, 3)); g.setAttribute('color', new Float32BufferAttribute(col, 3));
@@ -439,19 +474,29 @@ export function mountCampus(container, data, opts = {}) {
     // portrait: lens shift so the room sits lower in the frame (the space above the bookshelves is otherwise empty)
     // hero: the landing page uses the campus as a full-bleed background, so the wide overview fills the frame
     const W = container.clientWidth || 1, H = container.clientHeight || 1;
+    const band = opts.hero && H < 520;
     if (portrait && viewIdx > 0 && !opts.hero) camera.setViewOffset(W, H, 0, -H * 0.07, W, H);
     else camera.clearViewOffset();
     const crowded = viewIdx > 0 && sidesFor(v.room) === 2;
     const heroRoom = opts.hero && viewIdx > 0;
     // Look past the room centre so the left of the frame is shelves and the agents sit on the right.
-    if (heroRoom) goal.tx = v.x + (portrait ? 5.7 : 3.8);
+    if (heroRoom) goal.tx = v.x + (band ? 5.55 : portrait ? 5.55 : 4.6);
     goal.dist = viewIdx === 0 ? Math.max(10, fitDist(totalW * (portrait ? 0.62 : opts.hero ? 0.52 : 0.78)))
-      : heroRoom ? (portrait ? 7.2 : 7.4)
+      : heroRoom ? (band ? 6.8 : portrait ? 7.4 : 9.2)
       : Math.max(6.5, fitV(crowded ? 8.5 : 6.2), fitDist(portrait ? Math.max(6.2, tableLen(v.room) + 0.5) : ROOM_W * (crowded ? 1.05 : 0.9)));
-    goal.pitch = viewIdx === 0 ? (opts.hero ? 0.34 : 0.3) : heroRoom ? (portrait ? 0.16 : 0.18) : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
-    goal.ty = heroRoom ? (portrait ? 0.48 : 1.25) : crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4;
-    goal.tz = heroRoom ? (portrait ? 0.15 : 0.55) : (viewIdx === 0 ? 0 : 0.2);
-    goal.yaw = heroRoom ? (portrait ? 0.08 : -0.5) : 0;
+    goal.pitch = viewIdx === 0 ? (opts.hero ? 0.34 : 0.3) : heroRoom ? (band ? 0.1 : portrait ? 0.16 : 0.14) : crowded ? (portrait ? 0.36 : 0.42) : (portrait ? 0.34 : 0.22);
+    goal.ty = heroRoom ? (band ? 0.72 : portrait ? 1.05 : 0.95) : crowded ? (portrait ? 1.6 : 1.2) : portrait ? 1.45 : 1.4;
+    goal.tz = heroRoom ? (band ? 1.15 : portrait ? 0.55 : 0.9) : (viewIdx === 0 ? 0 : 0.2);
+    goal.yaw = heroRoom ? (band ? 0.04 : portrait ? 0.08 : -0.36) : 0;
+    if (opts.hero && band) fov = 46;
+    if (camera.fov !== fov) { camera.fov = fov; camera.updateProjectionMatrix(); }
+    if (opts.hero) {
+      const fit = band ? 0.8 : 1;
+      for (const a of avatars) {
+        if (a.group.userData.heroScale == null) a.group.userData.heroScale = a.group.userData.base;
+        a.group.userData.base = a.group.userData.heroScale * fit;
+      }
+    }
     if (instant) Object.assign(rig, goal);
     chips.forEach((c, k) => c.setAttribute('aria-pressed', String(k === viewIdx)));
     if (ready) wake();
@@ -592,18 +637,25 @@ export function mountCampus(container, data, opts = {}) {
     if (auto && !opts.hero && tour.length > 1 && now > nextTour && !selected) { tourPos = (tourPos + 1) % tour.length; setView(tour[tourPos]); nextTour = now + 9000; }
     if (!auto) nextTour = Math.max(nextTour, idleUntil + 4000);
     const k = 1 - Math.pow(0.0025, dt); // smooth follow
-    const yawAuto = auto && !opts.hero ? Math.sin(t * 0.12) * 0.32 : 0;
-    rig.yaw += (goal.yaw + yawAuto - rig.yaw) * k; rig.pitch += (goal.pitch - rig.pitch) * k; rig.dist += (goal.dist - rig.dist) * k;
+    const live = opts.hero && auto && !reducedMotion;
+    const yawAuto = live ? Math.sin(t * 0.32) * 0.14 : (auto && !opts.hero ? Math.sin(t * 0.12) * 0.32 : 0);
+    const pitchAuto = live ? Math.sin(t * 0.24) * 0.035 : 0;
+    const distAuto = live ? Math.sin(t * 0.18) * 0.45 : 0;
+    rig.yaw += (goal.yaw + yawAuto - rig.yaw) * k; rig.pitch += (goal.pitch + pitchAuto - rig.pitch) * k; rig.dist += (goal.dist + distAuto - rig.dist) * k;
     rig.tx += (goal.tx - rig.tx) * k; rig.tz += (goal.tz - rig.tz) * k; rig.ty += (goal.ty - rig.ty) * k;
     camPos.set(rig.tx + Math.sin(rig.yaw) * Math.cos(rig.pitch) * rig.dist, rig.ty + Math.sin(rig.pitch) * rig.dist, rig.tz + Math.cos(rig.yaw) * Math.cos(rig.pitch) * rig.dist);
     camera.position.copy(camPos); camera.lookAt(rig.tx, rig.ty, rig.tz - 0.6);
     for (const a of avatars) {
       const want = Math.max(a.target, hovered === a.slug ? 0.7 : 0);
       a.hover += (want - a.hover) * Math.min(1, dt * 10);
-      const bob = reducedMotion ? 0 : Math.sin(t * 1.6 + a.phase) * 0.04;
+      if (a.group.userData.rotY == null) a.group.userData.rotY = a.group.rotation.y;
+      const sway = opts.hero && !reducedMotion ? Math.sin(t * 0.9 + a.phase) * 0.22 : 0;
+      a.group.rotation.y = a.group.userData.rotY + sway;
+      const bob = reducedMotion ? 0 : Math.sin(t * (opts.hero ? 1.35 : 1.6) + a.phase) * (opts.hero ? 0.11 : 0.04);
       a.group.position.y = bob; a.group.scale.setScalar(a.group.userData.base * (1 + a.hover * 0.12));
       a.bodyMat.emissiveIntensity = a.base + a.hover * (a.paused ? 0.35 : 0.9);
-      a.halo.rotation.z = t * 0.8 + a.phase; a.halo.material.opacity = 0.6 + a.hover * 0.4;
+      a.halo.rotation.z = t * (opts.hero ? 1.4 : 0.8) + a.phase; a.halo.material.opacity = 0.6 + a.hover * 0.4;
+      if (opts.hero && !reducedMotion) { const pulse = 1 + Math.sin(t * 1.7 + a.phase) * 0.12; a.halo.scale.set(pulse, pulse, 1); }
       a.glow.material.opacity = (a.paused ? 0.1 : 0.35) + a.hover * 0.5 + (reducedMotion || a.paused ? 0 : Math.sin(t * 2 + a.phase) * 0.06);
     }
     if (particles) {
@@ -611,8 +663,9 @@ export function mountCampus(container, data, opts = {}) {
       for (let i = 0; i < arr.length; i += 3) { arr[i + 1] += dt * (0.06 + (i % 7) * 0.012); arr[i] += Math.sin(t * 0.3 + i) * dt * 0.02; if (arr[i + 1] > WALL_H) arr[i + 1] = 0; }
       p.needsUpdate = true;
     }
-    if (!reducedMotion) for (const o of orbs) o.position.y = o.userData.y0 + Math.sin(t * 0.6 + o.userData.ph) * 0.25;
-    for (let i = 0; i < roomLights.length; i++) roomLights[i].intensity = (low ? 10 : 14) * (reducedMotion ? 1 : 0.9 + Math.sin(t * 0.7 + i * 2) * 0.1);
+    if (!reducedMotion) for (const o of orbs) o.position.y = o.userData.y0 + Math.sin(t * (opts.hero ? 0.9 : 0.6) + o.userData.ph) * (opts.hero ? 0.35 : 0.25);
+    if (!reducedMotion) heroSeals.forEach((s, i) => { s.rotation.z = t * (i % 2 ? -0.42 : 0.62); s.material.opacity = 0.34 + Math.sin(t * 1.5 + i) * 0.16; });
+    for (let i = 0; i < roomLights.length; i++) roomLights[i].intensity = (low ? 10 : 14) * (reducedMotion ? 1 : 0.85 + Math.sin(t * (opts.hero ? 1.5 : 0.7) + i * 2) * (opts.hero ? 0.32 : 0.1));
     // converged and nothing animating: allow the loop to idle (reduced motion)
     const moving = Math.abs(goal.yaw - rig.yaw) + Math.abs(goal.dist - rig.dist) + Math.abs(goal.tx - rig.tx) + Math.abs(goal.pitch - rig.pitch) > 0.002 || avatars.some((a) => Math.abs(a.hover - Math.max(a.target, hovered === a.slug ? 0.7 : 0)) > 0.01);
     still = moving ? 0 : still + 1;
