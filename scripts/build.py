@@ -454,7 +454,7 @@ for l in legacy+['edge-ai']:
   if not os.path.exists(fp): continue
   t=open(fp,encoding='utf-8',errors='surrogateescape').read()
   t=re.sub(r'((?:rel="canonical" href|property="og:url" content)="https://sol\.college/[^"]*?[^/"])"',r'\1/"',t)
-  LT={'about':'About SOL.COLLEGE: solar-powered AI infrastructure','contact':'Contact SOL.COLLEGE: nodes, courses and pilots','edge-ai':'SOL.COLLEGE: solar-powered AI edge nodes and training','learn':'Solar, storage and local AI courses | SOL.COLLEGE'}
+  LT={'about':'About the solar-powered AI programme | Sol.College','contact':'Contact the solar-powered AI programme | Sol.College','edge-ai':'Solar-powered AI edge nodes | Sol.College','learn':'Solar, storage and local AI courses | Sol.College'}
   if l in LT: t=re.sub(r'<title>[^<]*</title>',f'<title>{LT[l]}</title>',t,1)
   t=re.sub(r'(<meta name="description" content=")([^"]*)"',lambda m:m.group(1)+(m.group(2) if len(html.unescape(m.group(2)))<=158 else E(fit(html.unescape(m.group(2)),158)))+'"',t,1)
   if l=='auth': t=t.replace('<head>','<head><meta name="robots" content="noindex"/>',1)

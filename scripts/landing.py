@@ -33,11 +33,11 @@ WAITLIST_HUNT = WAITLIST + '&role=Bug+bounty+hunter'
 PROJECT = 'https://github.com/Blockchains/sol-college/issues/new?template=project-partnership.yml'
 COMMIT = 'https://github.com/Blockchains/sol-college/issues/new?template=commit-suggestion.yml'
 
-TITLE = 'Sol.College — Learn on real Solana dApps. Help make them better.'
+TITLE = 'Sol.College — Learn, Test and Improve Real Solana dApps'
 DESCRIPTION = (
-    'Build your development and security skills inside live, hands-on environments '
-    'based on participating Solana projects. Explore how real applications work, '
-    'test their limits, discover issues and turn your findings into useful improvements.'
+    'Learn on real Solana applications, turn findings into patches, and offer those '
+    'improvements back to the original projects. Practice environments are independent '
+    'forks we ran on devnet, not a claim that the original team is a partner.'
 )
 
 # Core-flow failures documented in dapps/live.json limits / negative (2026-11-13).
@@ -96,7 +96,7 @@ ICO = {
 
 FAQ = [
     ('What do you mean by a live fork?',
-     'An interactive, isolated environment based on a participating project’s application or codebase—not simply a screenshot, video or static code example. The exact components, network, dependencies and available features are specified for each environment. A fork may differ from the production application, and findings may need further validation by the project team.'),
+     'An interactive, isolated environment: an open-source Solana application redeployed on devnet, not a screenshot or a static code sample. Unless a project is recorded as an official participant, the fork is an independent practice environment. It is not an endorsement, and it is not evidence of a partnership. A fork may differ from the production application.'),
     ('Do I need to be an experienced Solana developer?',
      'The pathway should match your starting point. Some challenges focus on understanding application flows and testing user journeys; others require programming knowledge or security research experience. Each challenge states its prerequisites so you can choose work that is appropriate for you.'),
     ('Am I testing the project’s production application?',
@@ -121,15 +121,48 @@ def load_live():
     return json.loads(p.read_text(encoding='utf-8'))
 
 
-def lesson_functional(slug):
-    """Read dapps/lessons/<slug>.json 'functional' if present."""
+def lesson_doc(slug):
     fp = ROOT / 'dapps' / 'lessons' / f'{slug}.json'
     if not fp.exists():
-        return None
+        return {}
     try:
-        return json.loads(fp.read_text(encoding='utf-8')).get('functional')
+        return json.loads(fp.read_text(encoding='utf-8'))
     except Exception:
-        return None
+        return {}
+
+
+def lesson_functional(slug):
+    """Read dapps/lessons/<slug>.json 'functional' if present."""
+    return lesson_doc(slug).get('functional')
+
+
+def ownership_by_slug(root=None):
+    root = Path(root) if root else ROOT
+    out = {}
+    for f in (root / 'config' / 'projects').glob('*.json'):
+        try:
+            c = json.loads(f.read_text(encoding='utf-8'))
+        except Exception:
+            continue
+        if c.get('slug'):
+            out[str(c['slug'])] = str(c.get('ownership') or '')
+    return out
+
+
+def pr_slugs(prs):
+    """Slugs whose evidence records an opened upstream pull request."""
+    found = set()
+    for p in prs:
+        src = str(p.get('source') or '').replace('\\', '/')
+        if src.startswith('live.json:'):
+            found.add(src.split(':', 1)[1])
+            continue
+        parts = src.split('/')
+        if 'patches' in parts:
+            i = parts.index('patches')
+            if i + 1 < len(parts):
+                found.add(parts[i + 1])
+    return found
 
 
 def is_fully_functional(x):
@@ -253,34 +286,126 @@ def marquee_html(apps):
     )
 
 
-def live_cards(apps):
-    marks = HERE / 'marks'
-    out = []
-    for x in apps:
-        sl = E(x['slug'])
-        name = E(display_name(x))
-        learn = E(first_sentence(x.get('learn') or ''))
-        verified = E(fmt_date(x.get('verified') or ''))
-        mark = ''
-        if (marks / f'{x["slug"]}.jpg').is_file():
-            mark = (
-                f'<a class="mark-stage" href="/dapps/{sl}/" tabindex="-1" aria-hidden="true">'
-                f'<img class="mark" src="/assets/marks/{sl}.jpg" alt="" width="640" height="640">'
-                f'</a>'
-            )
-        out.append(
-            f'<article class="glass card" data-slug="{sl}">'
-            f'{mark}'
-            f'<div class="card-body">'
-            f'<p class="meta"><span class="live-dot" aria-hidden="true"></span>Verified on devnet {verified}</p>'
-            f'<h3><a href="/dapps/{sl}/">{name}</a></h3>'
-            f'<p class="pitch">{learn}</p>'
-            f'<p class="links"><a class="app" href="/dapps/{sl}/">Open the app</a>'
-            f'<a class="lesson" href="/lessons/{sl}/">Take the lesson</a></p>'
-            f'</div>'
-            f'</article>'
+def plain_pitch(x):
+    """One sentence a newcomer can read. The lesson summary is that sentence; the instruction list stays on the lesson page."""
+    doc = lesson_doc(x.get('slug'))
+    return first_sentence(doc.get('summary') or x.get('learn') or '', 160)
+
+
+def relation_html(slug, ownership, submitted):
+    if ownership.get(slug) == 'participating-project':
+        kind = 'Official project participant'
+    else:
+        kind = 'Independent practice fork'
+    bits = [f'<span class="rel">{E(kind)}</span>']
+    if slug in submitted:
+        bits.append('<span class="rel pr">Upstream PR submitted</span>')
+    return f'<p class="rels">{"".join(bits)}</p>'
+
+
+def card_article(x, ownership, submitted, marks):
+    sl = E(x['slug'])
+    name = E(display_name(x))
+    pitch = E(plain_pitch(x))
+    verified = E(fmt_date(x.get('verified') or ''))
+    level = str(lesson_doc(x['slug']).get('difficulty') or '').strip()
+    level_html = f'<span class="level">{E(level)}</span>' if level else ''
+    mark = ''
+    if (marks / f'{x["slug"]}.jpg').is_file():
+        mark = (
+            f'<a class="mark-stage" href="/dapps/{sl}/" tabindex="-1" aria-hidden="true">'
+            f'<img class="mark" src="/assets/marks/{sl}.jpg" alt="" width="640" height="640">'
+            f'</a>'
         )
-    return '\n'.join(out)
+    return (
+        f'<article class="glass card" data-slug="{sl}">'
+        f'{mark}'
+        f'<div class="card-body">'
+        f'<p class="meta">{level_html}<span class="live-dot" aria-hidden="true"></span>Devnet verification {verified}</p>'
+        f'{relation_html(x["slug"], ownership, submitted)}'
+        f'<h3><a href="/dapps/{sl}/">{name}</a></h3>'
+        f'<p class="pitch">{pitch}</p>'
+        f'<p class="links"><a class="app" href="/dapps/{sl}/">Open the environment</a>'
+        f'<a class="lesson" href="/lessons/{sl}/">Start the lesson</a>'
+        f'<a class="evidence" href="/live/#{sl}">View evidence</a></p>'
+        f'</div>'
+        f'</article>'
+    )
+
+
+def live_cards(apps, ownership=None, submitted=None):
+    marks = HERE / 'marks'
+    ownership = ownership if ownership is not None else ownership_by_slug()
+    submitted = submitted if submitted is not None else set()
+    return '\n'.join(card_article(x, ownership, submitted, marks) for x in apps)
+
+
+FEATURED = ('poe-solana', 'mandatekey', 'sentient-send')
+
+
+def featured_html(apps, ownership, submitted):
+    by = {x['slug']: x for x in apps}
+    marks = HERE / 'marks'
+    cards = []
+    for slug in FEATURED:
+        x = by.get(slug)
+        if not x or not is_fully_functional(x):
+            continue
+        cards.append(card_article(x, ownership, submitted, marks))
+    if not cards:
+        return ''
+    return '\n'.join(cards)
+
+
+def results_html(bugs, prs, sec_findings):
+    sec_prs = _findings.total_prs(sec_findings)
+    sec_merged = sum(_findings.stats(d)['merged'] for d in sec_findings)
+    rows = (
+        ('Functional bugs in the practice forks', len(bugs), len(prs), 0),
+        ('Security remediation', len(sec_findings), sec_prs, sec_merged),
+    )
+    body = ''.join(
+        f'<tr><th scope="row">{E(name)}</th>'
+        f'<td data-label="Findings">{found}</td>'
+        f'<td data-label="PRs submitted">{submitted}</td>'
+        f'<td data-label="Recorded as merged">{merged}</td></tr>'
+        for name, found, submitted, merged in rows
+    )
+    return (
+        '<div class="results">'
+        '<table class="results-table">'
+        '<thead><tr><th scope="col">Work</th><th scope="col">Findings</th>'
+        '<th scope="col">PRs submitted</th><th scope="col">Recorded as merged</th></tr></thead>'
+        f'<tbody>{body}</tbody>'
+        '<caption>Recorded results. Counts come from the evidence files, not from a separate headline.</caption>'
+        '</table>'
+        '<p class="honest">Functional findings are explicit Bug records in the devnet notes. '
+        'Security remediation is the public finding record: one review, with a pull request counted only when that record links one. '
+        '“Recorded as merged” counts only pull requests whose stored state is merged. '
+        'An opened pull request with no recorded decision stays in submitted. The original team accepts or declines.</p>'
+        '</div>'
+    )
+
+
+def example_html(prs):
+    hit = next((p for p in prs if p.get('url') == 'https://github.com/berkaycirak/gifter-escrow/pull/1'), None)
+    if not hit:
+        return ''
+    url = E(hit['url'])
+    return (
+        '<section class="band" id="example"><div class="inner">'
+        '<p class="eyebrow">One complete pass</p>'
+        '<h2>A broken swap, a regression test, an opened pull request.</h2>'
+        '<p class="lead">Gifter escrow is an independent practice fork. This is the recorded path. It is not a claim that the original team has accepted the change.</p>'
+        '<ol class="example-steps">'
+        '<li><strong>Finding.</strong> <span>take_and_close aborted with an access violation, so a taker could not finish the swap.</span></li>'
+        '<li><strong>Regression test.</strong> <span>The patch records a test that opens an escrow, runs take_and_close, and checks both token balances and that the accounts close.</span></li>'
+        '<li><strong>Patch.</strong> <span>The fix removes an invalid println and binds the PDA seed bytes in the handler.</span></li>'
+        f'<li><strong>Pull request.</strong> <span><a href="{url}">Opened upstream</a>. Recorded as submitted, not as merged.</span></li>'
+        '</ol>'
+        '<p class="links-inline"><a href="/live/#gifter-escrow">View the evidence</a> · <a href="/lessons/gifter-escrow/">Read the lesson</a></p>'
+        '</div></section>'
+    )
 
 
 def findings_html(apps):
@@ -562,20 +687,27 @@ def campus_hero_html(projects: list[dict]) -> str:
     n = len(projects)
     n_act = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'active')
     n_pau = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'paused')
+    n_env = sum(1 for x in load_live() if is_fully_functional(x))
     count = f'{n} project{"" if n == 1 else "s"} on campus' + (f' ({n_act} active CTO agent{"" if n_act == 1 else "s"}, {n_pau} paused)' if n_pau else '')
+    explain = (
+        f'Environment verification records completed test runs ({n_env} environments). '
+        f'The campus is the public room list ({n} projects). '
+        'Paused means that project’s CTO agent is not producing work. It does not mean the practice app is unavailable. '
+        'A project with no CTO agent is still a practice fork.'
+    )
     active_line = f'{n_act} active CTO agent{"" if n_act == 1 else "s"}'
     data = json.dumps(projects, ensure_ascii=False).replace('<', '\\u003c')
     return (
         '<section class="campus-hero" id="campus-hero" aria-labelledby="ch-title">\n'
         '  <div class="ch-head">\n'
-        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2></div>\n'
+        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2>'
+        f'<p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each project is an independent practice fork unless its record says it is an official participant. A place on the campus is not an endorsement and not a partnership. {E(count)}. {E(explain)}</p></div>\n'
         '    <a class="btn ghost ch-explore" href="/campus/">Explore campus</a>\n'
         '  </div>\n'
         '  <div class="ch-stage" id="ch-stage" data-mode="2d">\n'
         '    <div class="ch-poster" aria-hidden="true"><span class="ch-shelf"></span><span class="ch-table"></span><span class="ch-load">Loading the live 3D campus…</span></div>\n'
         f'    <ul class="ch-rooms" aria-label="Campus rooms">{"".join(rooms)}</ul>\n'
         '  </div>\n'
-        f'  <p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each avatar is a participating project and its Sol.College CTO agent. {E(count)}.</p>\n'
         '  <p class="ch-note" id="ch-note">Select a project to see its details. Coordination is asynchronous through GitHub; nothing here starts a chat or calls an agent.</p>\n'
         '  <dialog class="ch-dialog" id="ch-dialog" aria-labelledby="ch-dialog-title"><div id="ch-dialog-body"></div>'
         '<form method="dialog"><button class="btn ch-close" value="close">Close</button></form></dialog>\n'
@@ -591,6 +723,8 @@ def write_home(site='site'):
     functional = [x for x in apps if is_fully_functional(x)]
     bugs = explicit_bugs(apps)
     fix_prs = opened_fix_prs(apps)
+    ownership = ownership_by_slug()
+    submitted = pr_slugs(fix_prs)
     try:
         sec_findings = _findings.load()
     except SystemExit:
@@ -625,7 +759,10 @@ def write_home(site='site'):
         'BUG_COUNT': str(len(bugs)),
         'FIX_CARD': fix_card_html(fix_prs) + _findings.proof_card(sec_findings),
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
-        'LIVE_CARDS': live_cards(functional),
+        'RESULTS': results_html(bugs, fix_prs, sec_findings),
+        'FEATURED': featured_html(functional, ownership, submitted),
+        'EXAMPLE': example_html(fix_prs),
+        'LIVE_CARDS': live_cards(functional, ownership, submitted),
         'ORBIT': orbit_html(functional),
         'MARQUEE': marquee_html(functional),
         'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),

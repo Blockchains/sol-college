@@ -70,7 +70,6 @@
   <div class="film-hero" aria-hidden="true">
     <canvas id="film-stage"></canvas>
   </div>
-  {{CAMPUS_HERO}}
   <div class="stage-veil" aria-hidden="true"></div>
   <div class="stage-copy" id="learn">
     <div class="audience" role="tablist" aria-label="Choose your starting point">
@@ -79,12 +78,12 @@
     </div>
 
     <div id="hero-learn" class="hero-panel" role="tabpanel" aria-labelledby="tab-learn">
-      <h1>A living campus for <em>Solana</em>.</h1>
-      <p class="hero-promise">{{LIVE_COUNT}} practice apps, already running.</p>
-      <p class="lead">Open a lesson and work the program on devnet. Forks we ran ourselves, not a claim that the original team is a partner.</p>
+      <h1>Learn on real Solana dApps.</h1>
+      <p class="hero-promise">Help make them better.</p>
+      <p class="lead">Work a real application, turn a finding into a patch, and offer that improvement back. These are forks we ran ourselves, not a claim that the original team is a partner.</p>
       <p class="cta-row">
-        <a class="btn" href="{{START_LESSON}}">Start the first lesson</a>
-        <a class="btn ghost" href="/campus/">Walk the campus</a>
+        <a class="btn" href="{{START_LESSON}}">Start a lesson</a>
+        <a class="btn ghost" href="{{PROJECT}}">Bring your project</a>
       </p>
     </div>
 
@@ -108,8 +107,28 @@
       {{FIX_CARD}}
       <a class="proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons</span><small>Each one is built to end in a commit suggestion.</small></a>
     </div>
+    {{RESULTS}}
     {{MARQUEE}}
     <p class="hero-quiet">Lessons are open now. <a href="{{WAITLIST}}">Join a cohort</a>, <a href="{{PROJECT}}">bring a dApp</a>, or <a href="/lessons/path/">follow the path</a>.</p>
+  </div>
+</section>
+
+<section class="band" id="featured">
+  <div class="inner">
+    <p class="eyebrow">Start here</p>
+    <h2>Three environments, three starting points.</h2>
+    <p class="lead">A plain-language summary first. The instruction-level detail stays on the lesson page. The level is the one recorded for that lesson.</p>
+    <div class="grid feature-grid">
+      {{FEATURED}}
+    </div>
+  </div>
+</section>
+
+{{EXAMPLE}}
+
+<section class="band" id="campus">
+  <div class="inner">
+    {{CAMPUS_HERO}}
   </div>
 </section>
 
@@ -161,7 +180,7 @@
       <div>
         <p class="eyebrow">Live environments now</p>
         <h2>{{LIVE_COUNT}} practice environments</h2>
-        <p class="lead honest">Practice environments: open-source Solana dApps redeployed on devnet. This list includes only environments whose core flows we ran to completion. Access to a practice fork is not permission to test the original application, its users or any connected third-party service, and it is not evidence that the original team is a participating partner.</p>
+        <p class="lead honest">Practice environments: open-source Solana dApps redeployed on devnet. This list includes only environments whose core flows we ran to completion. Each one is labelled from its record. Independent practice fork means we redeployed it ourselves. Official project participant appears only when that project’s record says so. Upstream PR submitted means a pull request URL is in the evidence. None of those labels is an endorsement, and access to a fork is not permission to test the original application, its users, or a connected third-party service.</p>
       </div>
     </div>
     <div class="grid">
@@ -192,7 +211,7 @@
     <p class="eyebrow">Beyond tutorials</p>
     <h2>Inside real applications.</h2>
     <p class="lead">Tutorials show how something should work. A live practice fork shows what happens when the program actually runs.</p>
-    <p>At Sol.College, you learn through live, isolated forks of participating Solana dApps. Work through guided challenges, investigate how features behave and explore the engineering decisions behind an actual product.</p>
+    <p>At Sol.College, you learn through live, isolated forks of open-source Solana dApps. Work through guided challenges, investigate how features behave and explore the engineering decisions behind an actual product. A fork is an independent practice environment unless that project is recorded as an official participant.</p>
     <p>You are not just following instructions to recreate another demo. You are learning to understand, test and improve the applications people build.</p>
     <div class="principles">
       <article class="glass principle">
@@ -213,7 +232,7 @@
       <article class="glass principle">
         <div class="ico" aria-hidden="true">{{ICO_CONTRIBUTE}}</div>
         <h3>Contribute something useful</h3>
-        <p>Deliver structured feedback, test cases, issue reports and proposed improvements that participating teams can review.</p>
+        <p>Deliver structured feedback, test cases, issue reports and proposed improvements. The original project decides whether to review them.</p>
       </article>
     </div>
     <p class="cta-row"><a class="btn ghost" href="#pathways">Explore the learning pathways</a></p>
@@ -293,7 +312,7 @@
         <span class="num" aria-hidden="true">02</span>
         <div>
           <h3>Enter the project environment</h3>
-          <p>Access an isolated fork of a participating Solana application, together with its learning brief, documentation and permitted testing scope.</p>
+          <p>Open an isolated fork of an open-source Solana application, together with its learning brief, documentation and permitted testing scope.</p>
           <p>Understand what you can test, what you cannot test and what a useful contribution looks like.</p>
         </div>
       </li>
@@ -450,7 +469,7 @@
 <section class="band" id="brief">
   <div class="inner">
     <h2>A brief you define</h2>
-    <p class="lead">For participating projects, we define the work before participants begin.</p>
+    <p class="lead">When a project joins as an official participant, the brief is agreed before anyone begins.</p>
     <div class="briefs">
       <article class="glass brief-item">
         <h3>The environment</h3>
@@ -486,7 +505,7 @@
   <div class="inner">
     <h2>Controlled environments</h2>
     <p class="lead">Learning on real software should not mean experimenting on someone else’s production system.</p>
-    <p>Sol.College’s model centres on participating projects and isolated testing environments. Access to a fork is not permission to test the original application, its users or any connected third-party service.</p>
+    <p>Sol.College’s model centres on independent practice forks. An official participant is a separate, recorded agreement. Access to a fork is not permission to test the original application, its users or any connected third-party service.</p>
     <p>Every project environment needs explicit scope and testing rules.</p>
     <div class="rules">
       <p class="glass rule">{{ICO_X}} No unauthorised production testing.</p>
@@ -502,7 +521,7 @@
     <h2>Questions</h2>
     <details>
       <summary>What do you mean by a live fork?</summary>
-      <p>An interactive, isolated environment based on a participating project’s application or codebase—not simply a screenshot, video or static code example.</p>
+      <p>An interactive, isolated environment: an open-source application redeployed on devnet, not a screenshot or a static code sample. Unless the record says official participant, it is an independent practice fork.</p>
       <p>The exact components, network, dependencies and available features are specified for each environment. A fork may differ from the production application, and findings may need further validation by the project team.</p>
     </details>
     <details>
