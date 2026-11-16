@@ -19,6 +19,22 @@ PATH=json.load(open('dapps/lessons/path.json')) if os.path.exists('dapps/lessons
 TERMS={t['id']:t for t in GLOSS.get('terms',[])}
 TX=lambda s:f'https://explorer.solana.com/tx/{s}?cluster=devnet'; AD=lambda a:f'https://explorer.solana.com/address/{a}?cluster=devnet'
 SITE='https://sol.college'
+_BLOB=re.compile(r'^https://github.com/([^/]+/[^/]+)/blob/([0-9a-f]{7,40})/(.+?)(?:#L(\d+)(?:-L(\d+))?)?$')
+def ref_of(r):
+  """A code reference is either {path,a,b} or [github blob url, note] from a newer lesson file."""
+  if isinstance(r,dict) and r.get('path') and r.get('a'): return r
+  url=note=''
+  if isinstance(r,(list,tuple)) and r:
+    url,note=str(r[0]),(str(r[1]) if len(r)>1 else '')
+  elif isinstance(r,str) and r.startswith('http'): url=r
+  elif isinstance(r,dict):
+    url,note=str(r.get('url') or ''),str(r.get('note') or '')
+  else: return None
+  m=_BLOB.match(url)
+  if not m: return dict(url=url,note=note)
+  d=dict(repo=m[1],ref=m[2],path=m[3],note=note,url=url)
+  if m[4]: d['a'],d['b']=int(m[4]),int(m[5] or m[4])
+  return d
 def lines(repo,ref,path):
   k=f'{repo}@{ref}:{path}'
   if k not in CACHE:
@@ -26,9 +42,19 @@ def lines(repo,ref,path):
     CACHE[k]=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'sol-college'}),timeout=30).read().decode('utf-8','replace').split('\n')
   return CACHE[k]
 def code(x,r):
-  """r: {path, a, b, [repo, ref], [note]} -> <figure> with the real lines and a permalink."""
-  repo=r.get('repo') or x['fork'][19:]; ref=r.get('ref') or x['commit']; L=lines(repo,ref,r['path']); a,b=r['a'],r['b']
-  body=''.join(f'<span class=ln data-n={n}>{E(L[n-1])}</span>' for n in range(a,min(b,len(L))+1))
+  """r: {path, a, b, [repo, ref], [note]} or [blob url, note] -> <figure> with the real lines and a permalink."""
+  r=ref_of(r)
+  if not r: return ''
+  if not r.get('a') or not r.get('path'):
+    url=r.get('url') or ''
+    label=r.get('note') or r.get('path') or url
+    return f'<p><a href="{E(url)}"><code>{E(label)}</code></a></p>' if url else ''
+  repo=r.get('repo') or x['fork'][19:]; ref=r.get('ref') or x['commit']; a,b=r['a'],r['b']
+  try: L=lines(repo,ref,r['path'])
+  except Exception:
+    url=r.get('url') or f'https://github.com/{repo}/blob/{ref}/{r["path"]}#L{a}-L{b}'
+    return f'<p><a href="{E(url)}"><code>{E(r["path"])} L{a}–L{b}</code></a></p>'
+  body=''.join(f'<span class=ln data-n={n}>{E(L[n-1])}</span>' for n in range(a,min(b,len(L))+1) if 1<=n<=len(L))
   url=f'https://github.com/{repo}/blob/{ref}/{r["path"]}#L{a}-L{b}'
   cap=f'<a href="{E(url)}"><code>{E(r["path"])}</code> L{a}–L{b}</a> · {E(repo)} @ <code>{E(ref[:7])}</code>'+(f' · {E(r["note"])}' if r.get('note') else '')
   return f'<figure class=excerpt><figcaption>{cap}</figcaption><pre>{body}</pre></figure>'
@@ -57,10 +83,67 @@ def dchip(level):
 def concept_chip(cid):
   t=TERMS.get(cid); name=t['name'] if t else cid
   return f'<a class=chip href="/lessons/glossary/#{E(cid)}">{E(name)}</a>'
+def ran_pairs(ran):
+  """Recorded runs are either [label, signature] pairs or a prose note from a newer lesson file.
+  A note is not a transaction, so it is not turned into an Explorer link."""
+  if not ran: return []
+  if isinstance(ran,str): return [(ran,'')]
+  out=[]
+  for item in ran if isinstance(ran,list) else []:
+    if isinstance(item,str): out.append((item,''))
+    elif isinstance(item,(list,tuple)):
+      if len(item)>=2: out.append((str(item[0]),str(item[1] or '')))
+      elif len(item)==1: out.append((str(item[0]),''))
+    elif isinstance(item,dict):
+      out.append((str(item.get('do') or item.get('label') or ''), str(item.get('sig') or item.get('signature') or '')))
+  return out
+def _row(r):
+  if isinstance(r,str): return [r,'','']
+  if isinstance(r,(list,tuple)):
+    cells=[str(c) for c in r]
+    return cells if len(cells)>=3 else cells+['']*(3-len(cells))
+  return [str(r),'','']
+def normalize(L):
+  """Accept both the full lesson schema and the shorter files written for newer devnet apps."""
+  L=dict(L)
+  ins=L.get('instructions') or []
+  if isinstance(ins,str): ins=[ins]
+  L['instructions']=[i if isinstance(i,dict) else dict(name=str(i),steps=[],refs=[]) for i in ins]
+  acc=L.get('accounts') or []
+  if isinstance(acc,str): acc=[acc]
+  L['accounts']=[_row(r) for r in acc] if isinstance(acc,list) else []
+  inn=L.get('innovation')
+  if isinstance(inn,str): L['innovation']=dict(text=inn,refs=[])
+  elif not isinstance(inn,dict): L['innovation']=dict(text='',refs=[])
+  fe=L.get('frontend')
+  if isinstance(fe,str): L['frontend']=[dict(title='Frontend',steps=[fe],refs=[])] if fe else []
+  elif not isinstance(fe,list): L['frontend']=[]
+  else: L['frontend']=[f if isinstance(f,dict) else dict(title=str(f),steps=[],refs=[]) for f in fe]
+  ex=L.get('exercises') or []
+  if isinstance(ex,str): ex=[ex]
+  nex=[]
+  for e in ex if isinstance(ex,list) else []:
+    if isinstance(e,str): nex.append(dict(title=e,steps=[],expect='Use the recorded devnet transactions on this page. This exercise does not add a result that was not recorded.'))
+    elif isinstance(e,dict):
+      e=dict(e); e.setdefault('title','Exercise'); e.setdefault('steps',[]); e.setdefault('expect','')
+      nex.append(e)
+  L['exercises']=nex
+  steps=L.get('try_steps') or []
+  L['try_steps']=[s if isinstance(s,dict) else dict(do=str(s)) for s in steps] if isinstance(steps,list) else []
+  L.setdefault('what', L.get('summary') or '')
+  L.setdefault('title','')
+  b=L.get('build')
+  if isinstance(b,str): L['build']=dict(note=b)
+  elif b is not None and not isinstance(b,dict): L['build']=None
+  cs=L.get('commit_suggestion')
+  if isinstance(cs,str): L['commit_suggestion']=dict(finding=cs)
+  elif cs is not None and not isinstance(cs,dict): L['commit_suggestion']=None
+  return L
 _LC={}
 def lesson_of(x):
   if x['slug'] not in _LC:
-    f=f'dapps/lessons/{x["slug"]}.json'; _LC[x['slug']]=json.load(open(f)) if os.path.exists(f) else auto_lesson(x)
+    f=f'dapps/lessons/{x["slug"]}.json'; raw=json.load(open(f)) if os.path.exists(f) else auto_lesson(x)
+    _LC[x['slug']]=normalize(raw)
   return _LC[x['slug']]
 def path_sorted(items):
   return sorted(items, key=lambda x: (lesson_of(x).get('path_order') or 1000, x.get('verified') or '', x['slug']))
@@ -123,7 +206,11 @@ def render(x,L,n):
   pre=[dict(do='Install [Phantom](https://phantom.com) (or Solflare). In Phantom open Settings → Developer Settings, turn on Testnet Mode and pick Solana Devnet.',see='The wallet shows a devnet badge. Devnet SOL is free and worthless.'),
        dict(do='Copy your wallet address and request devnet SOL at [faucet.solana.com](https://faucet.solana.com).',see='About 1 SOL arrives within a few seconds. That covers every step below.')]
   def ev(s):
-    r=''.join(f'<br><span class=ran>✅ {md(a)}: <a href="{TX(g)}"><code>{E(g[:16])}…</code></a></span>' for a,g in s.get('ran',[]))
+    bits=[]
+    for a,g in ran_pairs(s.get('ran')):
+      if g: bits.append(f'<br><span class=ran>✅ {md(a)}: <a href="{TX(g)}"><code>{E(g[:16])}…</code></a></span>')
+      else: bits.append(f'<br><span class=ran>✅ {md(a)}</span>')
+    r=''.join(bits)
     return r+(f'<br><span class=notran>◻️ {md(s["ran_note"])}</span>' if s.get('ran_note') else '')
   st=''.join(f'<li>{md(s["do"])}'+(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')+ev(s)+'</li>' for s in pre+L['try_steps'])
   h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>Each step says what to do and what you should see. ✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><ol class=steps>{st}</ol>')
@@ -156,7 +243,7 @@ def render(x,L,n):
     h.extend(code(x,r) for r in cs.get('refs',[]))
     if cs.get('test'): h.append(f'<p><b>Regression test.</b> {md(cs["test"])}</p>')
     if cs.get('retest'):
-      items=''.join((f'<li>✅ {md(a)}<br><a href="{TX(s)}"><code>{E(s)}</code></a></li>' if s else f'<li>{md(a)}</li>') for a,s in cs['retest'])
+      items=''.join((f'<li>✅ {md(a)}<br><a href="{TX(s)}"><code>{E(s)}</code></a></li>' if s else f'<li>{md(a)}</li>') for a,s in ran_pairs(cs['retest']))
       h.append(f'<p><b>Retest on devnet.</b></p><ul class=sigs>{items}</ul>')
     links=[]
     if cs.get('fork_commit'):
