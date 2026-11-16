@@ -152,15 +152,16 @@ def is_fully_functional(x):
     return x.get('slug') not in CORE_BROKEN
 
 
-def first_sentence(text, n=150):
+def first_sentence(text, n=112):
     t = ' '.join(str(text or '').split())
     if not t:
         return ''
     m = re.match(r'(.{1,' + str(n) + r'}?(?:\.(?=\s)|$))', t)
     s = (m.group(1) if m else t[:n]).strip()
-    if len(t) > len(s):
-        if not s.endswith('.'):
-            s = s.rstrip('.,;:') + '…'
+    if len(t) > len(s) and not s.endswith('.'):
+        if ' ' in s:
+            s = s.rsplit(' ', 1)[0]
+        s = s.rstrip('.,;:—-') + '…'
     return s
 
 
@@ -253,19 +254,30 @@ def marquee_html(apps):
 
 
 def live_cards(apps):
+    marks = HERE / 'marks'
     out = []
     for x in apps:
         sl = E(x['slug'])
         name = E(display_name(x))
         learn = E(first_sentence(x.get('learn') or ''))
         verified = E(fmt_date(x.get('verified') or ''))
+        mark = ''
+        if (marks / f'{x["slug"]}.jpg').is_file():
+            mark = (
+                f'<a class="mark-stage" href="/dapps/{sl}/" tabindex="-1" aria-hidden="true">'
+                f'<img class="mark" src="/assets/marks/{sl}.jpg" alt="" width="640" height="640">'
+                f'</a>'
+            )
         out.append(
             f'<article class="glass card" data-slug="{sl}">'
+            f'{mark}'
+            f'<div class="card-body">'
             f'<p class="meta"><span class="live-dot" aria-hidden="true"></span>Verified on devnet {verified}</p>'
             f'<h3><a href="/dapps/{sl}/">{name}</a></h3>'
-            f'<p>{learn}</p>'
-            f'<p class="links"><a href="/dapps/{sl}/">Open the app</a>'
-            f'<a href="/lessons/{sl}/">Take the lesson</a></p>'
+            f'<p class="pitch">{learn}</p>'
+            f'<p class="links"><a class="app" href="/dapps/{sl}/">Open the app</a>'
+            f'<a class="lesson" href="/lessons/{sl}/">Take the lesson</a></p>'
+            f'</div>'
             f'</article>'
         )
     return '\n'.join(out)
@@ -654,6 +666,12 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing-film.js', assets / 'landing-film.js')
     shutil.copy(HERE / 'hero-wide.jpg', assets / 'hero-wide.jpg')
     shutil.copy(HERE / 'hero-tall.jpg', assets / 'hero-tall.jpg')
+    marks = HERE / 'marks'
+    if marks.is_dir():
+        dest = assets / 'marks'
+        dest.mkdir(exist_ok=True)
+        for img in marks.glob('*.jpg'):
+            shutil.copy(img, dest / img.name)
     _findings.write_pages(site, page_shell(site), sec_findings)
     print(
         'landing: wrote', site / 'index.html',
