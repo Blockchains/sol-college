@@ -20,7 +20,7 @@
 <meta name="twitter:title" content="{{TITLE}}">
 <meta name="twitter:description" content="{{DESCRIPTION}}">
 <meta name="twitter:image" content="https://sol.college/og.png">
-<meta name="theme-color" content="#07060f">
+<meta name="theme-color" content="#f7f4fb">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -43,26 +43,24 @@
   <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
   <nav id="site-nav" aria-label="Main">
     <a href="/lessons/">Lessons</a>
-    <a href="/live/">Live</a>
     <a href="/campus/">Campus</a>
+    <a href="#loop">How it works</a>
     <a href="#for-teams">For teams</a>
     <details class="nav-fold">
       <summary>More</summary>
       <div>
+        <a href="/live/">Live apps</a>
         <a href="/lessons/path/">Learning path</a>
         <a href="#pathways">Pathways</a>
-        <a href="#loop">The loop</a>
         <a href="/lessons/glossary/">Glossary</a>
         <a href="#faq">FAQ</a>
-        <a href="/explore/">Source library (not yet live)</a>
+        <a href="{{PROJECT}}">Bring a dApp</a>
       </div>
     </details>
     <a class="btn nav-cta" href="{{START_LESSON}}">Start a lesson</a>
-    <a class="btn ghost nav-cta" href="{{PROJECT}}">Bring your dApp</a>
   </nav>
   <div class="top-cta">
     <a class="btn" href="{{START_LESSON}}">Start a lesson</a>
-    <a class="btn ghost" href="{{PROJECT}}">Bring your dApp</a>
   </div>
 </header>
 <main id="main">
@@ -76,7 +74,7 @@
     </div>
 
     <div id="hero-learn" class="hero-panel" role="tabpanel" aria-labelledby="tab-learn">
-      <h1>Learn on <em>real</em> Solana.</h1>
+      <h1>A living campus for <em>Solana</em>.</h1>
       <p class="hero-promise">{{LIVE_COUNT}} practice apps, already running.</p>
       <p class="lead">Open a lesson and work the program on devnet. Forks we ran ourselves, not a claim that the original team is a partner.</p>
       <p class="cta-row">
@@ -87,7 +85,7 @@
 
     <div id="hero-teams" class="hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
       <p class="eyebrow">For Solana teams</p>
-      <h1>Testing that comes back as <em>a patch</em>.</h1>
+      <h1>Your dApp comes back as <em>a patch</em>.</h1>
       <p class="lead">An isolated devnet fork. Learners test it. You get a reproducible finding and a commit suggestion. You accept or decline.</p>
       <p class="cta-row">
         <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
@@ -106,16 +104,16 @@
       <a class="proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>step-by-step lessons</span><small>Each one is built to end in a commit suggestion.</small></a>
     </div>
     {{MARQUEE}}
-    <p class="hero-quiet"><a href="{{WAITLIST}}">Join the learner waitlist</a> if you want a cohort. The lessons are open now. Teams can <a href="{{PROJECT}}">bring a project</a>. Or <a href="/lessons/path/">follow the path</a>.</p>
+    <p class="hero-quiet">Lessons are open now. <a href="{{WAITLIST}}">Join a cohort</a>, <a href="{{PROJECT}}">bring a dApp</a>, or <a href="/lessons/path/">follow the path</a>.</p>
   </div>
 </section>
 
 <section class="band" id="loop">
   <div class="inner">
     <div class="loop-head">
-      <p class="eyebrow">The improvement loop</p>
-      <h2>Learn. Test. Debug. Improve. Suggest a commit. Retest.</h2>
-      <p class="lead">Sol.College is a flywheel for how fast a Solana dApp can improve. A lesson or a finding is meant to end in something a repository can take: a patch or pull request against the working practice fork, with a regression test, then a retest on devnet. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</p>
+      <p class="eyebrow">How the campus works</p>
+      <h2>Learn it. Test it. Leave a patch.</h2>
+      <p class="lead">A lesson ends as a patch on the practice fork, with a regression test, then a retest on devnet. Verified fixes are opened as pull requests to the original project. The team accepts or declines.</p>
     </div>
     <div class="flywheel-wrap">
       <div class="flywheel" role="img" aria-label="The Sol.College improvement flywheel, in seven steps from your dApp through an isolated fork, testing, findings, suggested commits, review, and retest.">
@@ -157,7 +155,7 @@
     <div class="env-head">
       <div>
         <p class="eyebrow">Live environments now</p>
-        <h2>{{LIVE_COUNT}} fully working practice environments</h2>
+        <h2>{{LIVE_COUNT}} practice environments</h2>
         <p class="lead honest">Practice environments: open-source Solana dApps redeployed on devnet. This list includes only environments whose core flows we ran to completion. Access to a practice fork is not permission to test the original application, its users or any connected third-party service, and it is not evidence that the original team is a participating partner.</p>
       </div>
     </div>
@@ -175,7 +173,7 @@
 <section class="band" id="findings">
   <div class="inner">
     <p class="eyebrow">Found in the forks</p>
-    <h2>Real bugs, found while running the practice environments</h2>
+    <h2>Bugs we found in the forks</h2>
     <p class="lead">These are issues we reproduced on devnet in the isolated forks — not claims about any project’s production system. Findings like these are exactly what the loop is for: a reproducible report, then a suggested commit with a regression test. Security findings from our automated repository review are labelled as such and link to their public record.</p>
     <div class="findings">
       {{FINDINGS}}
@@ -187,9 +185,8 @@
 <section class="band" id="beyond">
   <div class="inner">
     <p class="eyebrow">Beyond tutorials</p>
-    <h2>Beyond tutorials. Inside real applications.</h2>
-    <p class="lead">Tutorials teach you how something should work.</p>
-    <p class="kicker">Real applications teach you what happens when users, code and assumptions collide.</p>
+    <h2>Inside real applications.</h2>
+    <p class="lead">Tutorials show how something should work. A live practice fork shows what happens when the program actually runs.</p>
     <p>At Sol.College, you learn through live, isolated forks of participating Solana dApps. Work through guided challenges, investigate how features behave and explore the engineering decisions behind an actual product.</p>
     <p>You are not just following instructions to recreate another demo. You are learning to understand, test and improve the applications people build.</p>
     <div class="principles">
@@ -221,7 +218,7 @@
 <section class="band" id="pathways">
   <div class="inner">
     <p class="eyebrow">Pathways</p>
-    <h2>One environment. Different ways to go deeper.</h2>
+    <h2>Ways to go deeper</h2>
     <div class="pathways">
       <article class="glass path-card">
         <p class="who">For developers</p>
@@ -278,7 +275,7 @@
 <section class="band" id="how">
   <div class="inner">
     <p class="eyebrow">How it works</p>
-    <h2>How Sol.College works</h2>
+    <h2>How it works</h2>
     <ol class="steps-how">
       <li>
         <span class="num" aria-hidden="true">01</span>
@@ -323,7 +320,7 @@
 
 <section class="band" id="work">
   <div class="inner">
-    <h2>Your learning becomes a body of work.</h2>
+    <h2>A body of work</h2>
     <p class="lead">A completed lesson shows that you reached the end.</p>
     <p class="kicker">A well-documented investigation shows how you think.</p>
     <p>Build a record of the work you have actually done: the application flows you understand, the tests you designed, the issues you reproduced and the improvements you proposed.</p>
@@ -345,12 +342,9 @@
 <section class="band" id="for-teams">
   <div class="inner">
     <p class="eyebrow">For Solana teams</p>
-    <h2>For Solana teams: turn hands-on learning into actionable feedback.</h2>
-    <h3>Let builders learn from your product—and help you see it more clearly.</h3>
-    <p class="lead">Your team knows the application you intended to build.</p>
-    <p>A fresh set of developers, testers and researchers can help reveal where the experience is confusing, where assumptions break and where further investigation is needed.</p>
-    <p>Sol.College gives participating projects a structured way to connect practical education with product feedback, QA and authorised security research.</p>
-    <p class="cta-row"><a class="btn purple" href="{{PROJECT}}">Bring your dApp</a> <a class="btn ghost" href="{{PROJECT}}">Discuss a project partnership</a></p>
+    <h2>For teams</h2>
+    <p class="lead">Learners work an isolated devnet fork. You get a finding and a commit suggestion. You accept or decline.</p>
+    <p class="cta-row"><a class="btn purple" href="{{PROJECT}}">Bring your dApp</a> <a class="btn ghost" href="#loop">See the loop</a></p>
 
     <h3>What your team gets</h3>
     <div class="gets">
@@ -450,7 +444,7 @@
 
 <section class="band" id="brief">
   <div class="inner">
-    <h2>More useful feedback starts with a better brief.</h2>
+    <h2>A brief you define</h2>
     <p class="lead">For participating projects, we define the work before participants begin.</p>
     <div class="briefs">
       <article class="glass brief-item">
@@ -485,7 +479,7 @@
 
 <section class="band" id="controlled">
   <div class="inner">
-    <h2>Real applications. Controlled environments.</h2>
+    <h2>Controlled environments</h2>
     <p class="lead">Learning on real software should not mean experimenting on someone else’s production system.</p>
     <p>Sol.College’s model centres on participating projects and isolated testing environments. Access to a fork is not permission to test the original application, its users or any connected third-party service.</p>
     <p>Every project environment needs explicit scope and testing rules.</p>
@@ -500,7 +494,7 @@
 
 <section class="band" id="faq">
   <div class="inner faq">
-    <h2>Frequently asked questions</h2>
+    <h2>Questions</h2>
     <details>
       <summary>What do you mean by a live fork?</summary>
       <p>An interactive, isolated environment based on a participating project’s application or codebase—not simply a screenshot, video or static code example.</p>
@@ -544,14 +538,11 @@
 <section class="band close" id="close">
   <div class="close-bg" aria-hidden="true"></div>
   <div class="inner">
-    <h2>Build the skills. Do the work. Make a contribution.</h2>
-    <p>For developers who want to understand real Solana applications.</p>
-    <p>For researchers who want to investigate responsibly.</p>
-    <p>For teams who want clearer feedback and better-tested products.</p>
-    <h3>Welcome to Sol.College.</h3>
+    <h2>Come build on the campus.</h2>
+    <p>Learn on a live practice fork. Or bring a dApp and get the work back as a patch.</p>
     <p class="cta-row">
       <a class="btn" href="{{WAITLIST}}">Join the learner waitlist</a>
-      <a class="btn purple" href="{{PROJECT}}">Become a project partner</a>
+      <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
     </p>
     <p class="tagline">Learn on real applications. Leave something better behind.</p>
   </div>
