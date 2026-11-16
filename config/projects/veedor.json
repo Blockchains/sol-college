@@ -3,7 +3,7 @@
   "projectId": "sc-demo-veedor",
   "slug": "veedor",
   "displayName": "Veedor Settlement (Sol.College demonstration)",
-  "description": "Attestation-gated SPL escrow for agent jobs on Solana devnet (Anchor 0.32.1). create_job, fund, submit_evidence and release were verified end-to-end: 1_000_000 lab tokens were locked in a job escrow ATA, the provider submitted evidence, a release without an Ed25519 precompile was rejected (MissingEd25519Instruction), and a lab verifier signature over the canonical attestation message released the 1_000_000 tokens to the provider (escrow ATA ended at 0).",
+  "description": "Attestation-gated SPL escrow for agent jobs on Solana devnet (Anchor 0.32.1). create_job, fund, submit_evidence and release were verified: 1_000_000 lab tokens locked in the job escrow, evidence submitted, a release without an Ed25519 precompile rejected (MissingEd25519Instruction), and a lab verifier signature released the tokens so the escrow ATA ended at 0.",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration of JuanMarchetto/veedor. The lab tree is branch sol-college-devnet of Blockchains/veedor. The lab changed declare_id to a unique Sol.College devnet program and pointed the Anchor.toml program id at that key. The hosted IDL is a hand-derived subset covering create_job, fund, submit_evidence, release, resolve and crank_timeout; discriminators were confirmed by the verifying transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
