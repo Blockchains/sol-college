@@ -186,7 +186,7 @@ def articles(E, tx, meta_block, credit, d):
 {credit}</article>'''
   # ---- 6
   fail_title='What changed when this transaction failed'
-  fail_desc='On the aborted Gifter take, token balances stayed put and the fee payer lost 5,000 lamports. On the later completed take, tokens moved and two accounts closed.'
+  fail_desc='On the aborted Gifter take, token balances stayed put and the fee payer lost 5,000 lamports. On the later take, tokens moved and two accounts closed.'
   pre=abort['preToken']
   def tokline(rows):
     return '; '.join(f"index {r['index']}: {r['ui']} of {r['mint'][:6]}…" for r in rows)
@@ -277,153 +277,153 @@ def articles(E, tx, meta_block, credit, d):
 # Numbered plan. A slug means that proposal has a page. A related slug means a nearby page exists and is not this proposal.
 PLAN=[
  ('A','Understand the system','Tell an address, an account, and a transaction apart before designing anything.',[
-  (1,'Solana for backend developers: translate what you already know','',''),
-  (2,'What actually happens when you click Approve in a Solana wallet?','',''),
+  (1,'Solana for backend developers: translate what you already know','solana-for-backend-developers',''),
+  (2,'What actually happens when you click Approve in a Solana wallet?','what-happens-when-you-click-approve',''),
   (3,'A Solana address is not always a wallet','a-solana-address-is-not-a-wallet',''),
   (4,'Where does a Solana application store its state?','where-picassol-stores-state',''),
   (5,'Program ownership versus wallet authority','a-solana-address-is-not-a-wallet#owner',''),
   (6,'What changes when a Solana transaction fails?','what-a-failed-transaction-changed',''),
   (7,'Read a Solana transaction without guessing','read-a-solana-transaction',''),
-  (8,'From browser to program: draw the complete architecture of a small Solana app','',''),
+  (8,'From browser to program: draw the complete architecture of a small Solana app','from-browser-to-program-architecture',''),
  ]),
  ('B','A reproducible environment','A setup this repository has actually run, with versions and a failure written down.',[
-  (9,'A reproducible Solana development environment from a clean machine','',''),
-  (10,'Local validator, devnet, or mainnet? Choose the right test environment','',''),
-  (11,'Diagnose a broken Solana toolchain without reinstalling everything','',''),
-  (12,'Keep Rust, Anchor, and client dependencies compatible','',''),
-  (13,'Manage program ids across local, test, and production environments','',''),
-  (14,'Fund test wallets reliably without building around unlimited faucets','',''),
-  (15,'Structure a Solana monorepo for programs, clients, tests, and documentation','',''),
-  (16,'Make clone, install, test work for another developer','',''),
+  (9,'A reproducible Solana development environment from a clean machine','reproducible-solana-development-environment',''),
+  (10,'Local validator, devnet, or mainnet? Choose the right test environment','local-validator-devnet-or-mainnet',''),
+  (11,'Diagnose a broken Solana toolchain without reinstalling everything','diagnose-a-broken-solana-toolchain',''),
+  (12,'Keep Rust, Anchor, and client dependencies compatible','keep-rust-anchor-and-clients-compatible',''),
+  (13,'Manage program ids across local, test, and production environments','manage-program-ids-across-environments',''),
+  (14,'Fund test wallets reliably without building around unlimited faucets','fund-test-wallets-reliably',''),
+  (15,'Structure a Solana monorepo for programs, clients, tests, and documentation','structure-a-solana-monorepo',''),
+  (16,'Make clone, install, test work for another developer','make-clone-install-test-work',''),
  ]),
  ('C','Accounts and state design','Schema, space, cost, growth, closing, and migration, on one evolving example.',[
-  (17,'Design your first Solana account schema','',''),
-  (18,'Calculate account space without hand-waving','',''),
-  (19,'What does on-chain storage actually cost?','',''),
-  (20,'One large account or many small accounts?','',''),
-  (21,'Grow account data without breaking your application','',''),
-  (22,'Close an account safely, and explain where its lamports go','',''),
-  (23,'Version an account schema before you need a migration','',''),
-  (24,'Design a state migration that can stop halfway','',''),
+  (17,'Design your first Solana account schema','design-your-first-solana-account-schema',''),
+  (18,'Calculate account space without hand-waving','calculate-account-space',''),
+  (19,'What does on-chain storage actually cost?','what-does-on-chain-storage-cost',''),
+  (20,'One large account or many small accounts?','one-large-account-or-many-small',''),
+  (21,'Grow account data without breaking your application','grow-account-data-without-breaking',''),
+  (22,'Close an account safely, and explain where its lamports go','close-an-account-safely',''),
+  (23,'Version an account schema before you need a migration','version-an-account-schema',''),
+  (24,'Design a state migration that can stop halfway','design-a-state-migration-that-can-stop',''),
  ]),
  ('D','PDAs, instructions, and cross-program calls','From how an address is derived to who is allowed to act for it.',[
-  (25,'PDAs explained by building a user profile registry','','what-is-a-solana-pda'),
-  (26,'Choose PDA seeds that survive product changes','',''),
-  (27,'Debug a PDA mismatch byte by byte','',''),
-  (28,'What it means for a program to sign for a PDA','',''),
-  (29,'Design instruction arguments and account lists together','',''),
-  (30,'Your first CPI: trace a token transfer across programs','',''),
-  (31,'Validate the program you are calling','',''),
-  (32,'Trace privileges through a multi-step CPI flow','',''),
+  (25,'PDAs explained by building a user profile registry','pdas-explained-by-a-user-profile','what-is-a-solana-pda'),
+  (26,'Choose PDA seeds that survive product changes','choose-pda-seeds-that-survive-changes',''),
+  (27,'Debug a PDA mismatch byte by byte','debug-a-pda-mismatch',''),
+  (28,'What it means for a program to sign for a PDA','what-it-means-for-a-program-to-sign',''),
+  (29,'Design instruction arguments and account lists together','design-instruction-arguments-and-accounts',''),
+  (30,'Your first CPI: trace a token transfer across programs','your-first-cpi-token-transfer',''),
+  (31,'Validate the program you are calling','validate-the-program-you-are-calling',''),
+  (32,'Trace privileges through a multi-step CPI flow','trace-privileges-through-a-cpi-flow',''),
  ]),
  ('E','Transactions and reliable execution','What a signature authorises, and what to do when it expires, fails, or must be retried.',[
-  (33,'Build a transaction from intent, not copy-pasted instructions','',''),
-  (34,'What exactly does a Solana signature authorise?','',''),
-  (35,'Safely collect signatures from multiple parties','',''),
-  (36,'Submitted is not paid: build a transaction state machine','',''),
-  (37,'Why transactions expire, and how to recover','',''),
-  (38,'Retry a transaction without accidentally repeating the business action','',''),
-  (39,'Estimate compute and set a fee budget transparently','',''),
-  (40,'Why did this transaction fail? A structured debugging method','','why-this-escrow-take-failed'),
+  (33,'Build a transaction from intent, not copy-pasted instructions','build-a-transaction-from-intent',''),
+  (34,'What exactly does a Solana signature authorise?','what-exactly-does-a-solana-signature-authorise',''),
+  (35,'Safely collect signatures from multiple parties','safely-collect-signatures-from-multiple-parties',''),
+  (36,'Submitted is not paid: build a transaction state machine','submitted-is-not-paid',''),
+  (37,'Why transactions expire, and how to recover','why-transactions-expire',''),
+  (38,'Retry a transaction without accidentally repeating the business action','retry-without-repeating-the-business-action',''),
+  (39,'Estimate compute and set a fee budget transparently','estimate-compute-and-set-a-fee-budget',''),
+  (40,'Why did this transaction fail? A structured debugging method','why-this-escrow-take-failed',''),
  ]),
  ('F','Tokens and token compatibility','A mint, a token account, and the ways a token can be more than a plain transfer.',[
   (41,'Mint account, token account, and wallet: follow one token balance','follow-one-token-balance',''),
-  (42,'Create a token transfer that handles a missing destination account','',''),
-  (43,'Convert token amounts without floating-point bugs','',''),
-  (44,'Why a token’s name and symbol do not establish its identity','',''),
-  (45,'Token program or Token Extensions? Build an explicit support policy','',''),
-  (46,'Transfer fees: why sent and received amounts can differ','',''),
-  (47,'Transfer hooks: what your integration must inspect and support','',''),
-  (48,'Build a token compatibility test suite','',''),
+  (42,'Create a token transfer that handles a missing destination account','token-transfer-missing-destination-account',''),
+  (43,'Convert token amounts without floating-point bugs','convert-token-amounts-without-floats',''),
+  (44,'Why a token’s name and symbol do not establish its identity','token-name-and-symbol-are-not-identity',''),
+  (45,'Token program or Token Extensions? Build an explicit support policy','token-program-or-token-extensions',''),
+  (46,'Transfer fees: why sent and received amounts can differ','transfer-fees-sent-versus-received',''),
+  (47,'Transfer hooks: what your integration must inspect and support','transfer-hooks-what-to-inspect',''),
+  (48,'Build a token compatibility test suite','build-a-token-compatibility-test-suite',''),
  ]),
  ('G','Wallet and frontend engineering','The wallet as a product workflow.',[
-  (49,'A wallet connection is not an application login','',''),
-  (50,'Build a wallet flow that survives rejection and disconnects','',''),
-  (51,'Prevent wrong-network actions before signing','',''),
-  (52,'Make a transaction preview that explains what will change','',''),
-  (53,'Stop stale balances from misleading users','',''),
-  (54,'Build a read-only experience before requiring a wallet','',''),
-  (55,'Passkeys and Solana wallets: evaluate the actual architecture','',''),
-  (56,'Build accessible Solana interfaces','',''),
+  (49,'A wallet connection is not an application login','wallet-connection-is-not-login',''),
+  (50,'Build a wallet flow that survives rejection and disconnects','wallet-flow-that-survives-rejection',''),
+  (51,'Prevent wrong-network actions before signing','prevent-wrong-network-actions',''),
+  (52,'Make a transaction preview that explains what will change','transaction-preview-that-explains-change',''),
+  (53,'Stop stale balances from misleading users','stop-stale-balances-from-misleading',''),
+  (54,'Build a read-only experience before requiring a wallet','build-a-read-only-experience-first',''),
+  (55,'Passkeys and Solana wallets: evaluate the actual architecture','passkeys-and-solana-wallets',''),
+  (56,'Build accessible Solana interfaces','build-accessible-solana-interfaces',''),
  ]),
  ('H','Testing that catches meaningful failures','Invariants, negative tests, and a bug that becomes a regression test.',[
-  (57,'Test a Solana program by its invariants','',''),
-  (58,'Happy-path tests are not a security strategy','',''),
-  (59,'Build deterministic fixtures for multi-user programs','',''),
-  (60,'Test deadline-based logic without waiting in real time','',''),
-  (61,'Property-test token amounts and state transitions','',''),
-  (62,'Test competing claims against the same funds','',''),
-  (63,'Turn a bug report into a regression test','',''),
-  (64,'Run Solana tests in CI without hiding flakiness','',''),
+  (57,'Test a Solana program by its invariants','test-a-solana-program-by-its-invariants',''),
+  (58,'Happy-path tests are not a security strategy','happy-path-tests-are-not-security',''),
+  (59,'Build deterministic fixtures for multi-user programs','deterministic-fixtures-for-multi-user-programs',''),
+  (60,'Test deadline-based logic without waiting in real time','test-deadline-logic-without-waiting',''),
+  (61,'Property-test token amounts and state transitions','property-test-token-amounts',''),
+  (62,'Test competing claims against the same funds','test-competing-claims-against-the-same-funds',''),
+  (63,'Turn a bug report into a regression test','turn-a-bug-report-into-a-regression-test',''),
+  (64,'Run Solana tests in CI without hiding flakiness','run-solana-tests-in-ci',''),
  ]),
  ('I','Security and authority boundaries','Teaching fixtures and reviews, kept separate from an undisclosed incident.',[
-  (65,'Missing signer checks: reproduce the failure locally','',''),
-  (66,'Validate account relationships, not just account types','',''),
-  (67,'Reinitialisation: when create accidentally becomes overwrite','',''),
-  (68,'Account aliasing: what if two inputs are the same account?','',''),
-  (69,'Choose an arithmetic policy for fees, shares, and rounding','',''),
-  (70,'Secure administrative instructions','',''),
-  (71,'Threat-model a Solana escrow before writing it','',''),
-  (72,'What a passing test suite does not prove','',''),
+  (65,'Missing signer checks: reproduce the failure locally','missing-signer-checks',''),
+  (66,'Validate account relationships, not just account types','validate-account-relationships',''),
+  (67,'Reinitialisation: when create accidentally becomes overwrite','reinitialisation-create-becomes-overwrite',''),
+  (68,'Account aliasing: what if two inputs are the same account?','account-aliasing-two-inputs-same-account',''),
+  (69,'Choose an arithmetic policy for fees, shares, and rounding','arithmetic-policy-for-fees-and-shares',''),
+  (70,'Secure administrative instructions','secure-administrative-instructions',''),
+  (71,'Threat-model a Solana escrow before writing it','threat-model-a-solana-escrow',''),
+  (72,'What a passing test suite does not prove','what-a-passing-test-suite-does-not-prove',''),
  ]),
  ('J','Payments and merchant systems','Invoice, verification, sponsorship, and refunds, with the costs named.',[
-  (73,'Build a payment request that identifies the invoice','',''),
-  (74,'Verify a payment without trusting the browser','',''),
-  (75,'Accept a payment when the customer has no SOL','',''),
-  (76,'Build a fee sponsor that cannot sign arbitrary transactions','',''),
-  (77,'Prevent double fulfilment when payment notifications repeat','',''),
-  (78,'Handle partial, excess, late, and wrong-asset payments','',''),
-  (79,'Refund a payment without creating an uncontrolled withdrawal API','',''),
-  (80,'Merchant settlement under uncertainty','',''),
+  (73,'Build a payment request that identifies the invoice','build-a-payment-request-that-identifies-the-invoice',''),
+  (74,'Verify a payment without trusting the browser','verify-a-payment-without-trusting-the-browser',''),
+  (75,'Accept a payment when the customer has no SOL','accept-a-payment-when-the-customer-has-no-sol',''),
+  (76,'Build a fee sponsor that cannot sign arbitrary transactions','build-a-fee-sponsor-that-cannot-sign-arbitrary',''),
+  (77,'Prevent double fulfilment when payment notifications repeat','prevent-double-fulfilment',''),
+  (78,'Handle partial, excess, late, and wrong-asset payments','handle-partial-excess-late-wrong-asset',''),
+  (79,'Refund a payment without creating an uncontrolled withdrawal API','refund-a-payment-without-uncontrolled-withdrawal',''),
+  (80,'Merchant settlement under uncertainty','merchant-settlement-under-uncertainty',''),
  ]),
  ('K','RPC, indexing, and data correctness','What a provider response is evidence of, and what it is not.',[
-  (81,'Build an RPC client that fails clearly','',''),
-  (82,'Reconcile WebSocket events with authoritative reads','',''),
-  (83,'Backfill missed activity without duplicating records','',''),
-  (84,'Design a minimal Solana indexer','',''),
-  (85,'Why two data sources may show different states','',''),
-  (86,'Cache on-chain data without hiding important changes','',''),
-  (87,'Reconcile your database with on-chain state','',''),
-  (88,'Switch RPC providers without creating a second failure','',''),
+  (81,'Build an RPC client that fails clearly','build-an-rpc-client-that-fails-clearly',''),
+  (82,'Reconcile WebSocket events with authoritative reads','reconcile-websocket-events-with-reads',''),
+  (83,'Backfill missed activity without duplicating records','backfill-missed-activity',''),
+  (84,'Design a minimal Solana indexer','design-a-minimal-solana-indexer',''),
+  (85,'Why two data sources may show different states','why-two-data-sources-may-differ',''),
+  (86,'Cache on-chain data without hiding important changes','cache-on-chain-data-without-hiding-changes',''),
+  (87,'Reconcile your database with on-chain state','reconcile-database-with-on-chain-state',''),
+  (88,'Switch RPC providers without creating a second failure','switch-rpc-providers-without-a-second-failure',''),
  ]),
  ('L','Performance and operating cost','Measurements with versions and conditions, not a list of tips.',[
-  (89,'Benchmark a Solana workflow without misleading yourself','',''),
-  (90,'Find the bottleneck: browser, RPC, signing, or execution?','',''),
-  (91,'Reduce compute only after establishing a baseline','',''),
-  (92,'Measure contention from a shared writable account','',''),
-  (93,'Smaller transactions: an instruction and account audit','',''),
-  (94,'Evaluate address lookup tables for your actual workflow','',''),
-  (95,'Batch operations without hiding failure semantics','',''),
-  (96,'Build a cost model that includes more than network fees','',''),
+  (89,'Benchmark a Solana workflow without misleading yourself','benchmark-a-solana-workflow-honestly',''),
+  (90,'Find the bottleneck: browser, RPC, signing, or execution?','find-the-bottleneck-browser-rpc-signing-execution',''),
+  (91,'Reduce compute only after establishing a baseline','reduce-compute-after-a-baseline',''),
+  (92,'Measure contention from a shared writable account','measure-contention-from-a-shared-writable-account',''),
+  (93,'Smaller transactions: an instruction and account audit','smaller-transactions-instruction-audit',''),
+  (94,'Evaluate address lookup tables for your actual workflow','evaluate-address-lookup-tables',''),
+  (95,'Batch operations without hiding failure semantics','batch-operations-without-hiding-failure',''),
+  (96,'Build a cost model that includes more than network fees','build-a-cost-model-beyond-network-fees',''),
  ]),
  ('M','Deployment and production operations','The gap between a devnet transaction and an application someone can operate.',[
-  (97,'A production readiness review for a small Solana app','',''),
-  (98,'Deploy with verifiable source and build provenance','',''),
-  (99,'Design an upgrade authority policy','',''),
-  (100,'Rotate authorities without losing control','',''),
-  (101,'Monitor business invariants, not just server uptime','',''),
-  (102,'Write an incident runbook before your first incident','',''),
-  (103,'Recover from a broken client after a program upgrade','',''),
-  (104,'Retire a Solana application responsibly','',''),
+  (97,'A production readiness review for a small Solana app','production-readiness-review-for-a-small-app',''),
+  (98,'Deploy with verifiable source and build provenance','deploy-with-verifiable-source-and-build',''),
+  (99,'Design an upgrade authority policy','design-an-upgrade-authority-policy',''),
+  (100,'Rotate authorities without losing control','rotate-authorities-without-losing-control',''),
+  (101,'Monitor business invariants, not just server uptime','monitor-business-invariants',''),
+  (102,'Write an incident runbook before your first incident','write-an-incident-runbook-before-the-first',''),
+  (103,'Recover from a broken client after a program upgrade','recover-from-a-broken-client-after-upgrade',''),
+  (104,'Retire a Solana application responsibly','retire-a-solana-application-responsibly',''),
  ]),
  ('N','Complete application studies','A bounded app carried through specification, tests, failure, and operation.',[
-  (105,'Build an escrow with explicit acceptance and refund rules','',''),
-  (106,'Build a voting system and state exactly what one vote means','',''),
-  (107,'Build a deadline-based claim system','',''),
-  (108,'Build a credential registry with issuance and revocation','',''),
-  (109,'Build milestone-based grant payments','',''),
-  (110,'Build a spending-limit vault','',''),
-  (111,'Build a crowdfunding campaign with refund conditions','',''),
-  (112,'Build a merchant checkout from invoice to reconciliation','',''),
+  (105,'Build an escrow with explicit acceptance and refund rules','build-an-escrow-with-acceptance-and-refund',''),
+  (106,'Build a voting system and state exactly what one vote means','build-a-voting-system-and-state-what-one-vote-means',''),
+  (107,'Build a deadline-based claim system','build-a-deadline-based-claim-system',''),
+  (108,'Build a credential registry with issuance and revocation','build-a-credential-registry',''),
+  (109,'Build milestone-based grant payments','build-milestone-based-grant-payments',''),
+  (110,'Build a spending-limit vault','build-a-spending-limit-vault',''),
+  (111,'Build a crowdfunding campaign with refund conditions','build-a-crowdfunding-campaign-with-refunds',''),
+  (112,'Build a merchant checkout from invoice to reconciliation','build-a-merchant-checkout-to-reconciliation',''),
  ]),
  ('O','Investigations and contributions','A finding, a patch, and a published account that does not outrun the evidence.',[
-  (113,'Give an AI agent transaction proposals, not unrestricted keys','',''),
-  (114,'Build a policy layer for agent-initiated transfers','',''),
-  (115,'Audit an agent’s claimed transaction outcome','',''),
-  (116,'Keep secrets out of agent traces and debug logs','',''),
-  (117,'Turn a practice-fork finding into a useful upstream issue','',''),
-  (118,'Write a pull request another team can review','',''),
-  (119,'Verify an AI-generated Solana patch','',''),
+  (113,'Give an AI agent transaction proposals, not unrestricted keys','give-an-ai-agent-proposals-not-unrestricted-keys',''),
+  (114,'Build a policy layer for agent-initiated transfers','build-a-policy-layer-for-agent-transfers',''),
+  (115,'Audit an agent’s claimed transaction outcome','audit-an-agents-claimed-transaction-outcome',''),
+  (116,'Keep secrets out of agent traces and debug logs','keep-secrets-out-of-agent-traces',''),
+  (117,'Turn a practice-fork finding into a useful upstream issue','turn-a-practice-fork-finding-into-an-issue',''),
+  (118,'Write a pull request another team can review','write-a-pull-request-another-team-can-review',''),
+  (119,'Verify an AI-generated Solana patch','verify-an-ai-generated-solana-patch',''),
   (120,'Publish an engineering case study without overclaiming','from-failing-take-to-pull-request',''),
  ]),
 ]
@@ -449,15 +449,15 @@ def catalogue_tail(E):
         lis.append(f'<li class=proposal>{n}. {E(title)}. No page yet.</li>')
     note=''
     if cid=='B':
-      note='<p>Recorded, and not one of those titles: <a href="/articles/what-we-could-build-for-this-escrow/">what the 13 Nov build produced</a>. The <a href="/how-to-build/setup/">setup guide</a> points at the current install docs. It is not a clean-machine manifest.</p>'
+      note='<p>These titles cite the recorded Gifter build and the <a href="/how-to-build/setup/">setup guide</a>. The setup guide points at current install docs; it is not a clean-machine manifest Sol.College re-ran for every title.</p>'
     elif cid=='D':
-      note='<p>Recorded, and not title 25: <a href="/articles/what-is-a-solana-pda/">one pixel, one account</a>. A profile registry has not been built for title 25.</p>'
+      note='<p>Title 25 uses the recorded <a href="/lessons/c4-comets-todor-edward-andrei/">NameGen</a> profile PDA. The pixel PDA article remains the shorter introduction.</p>'
     elif cid=='H':
-      note='<p><a href="/articles/from-failing-take-to-pull-request/">The case study</a> names a regression-test file and records no passing run. Title 63 has no page.</p>'
+      note='<p><a href="/articles/from-failing-take-to-pull-request/">The case study</a> names a regression-test file and records no passing run. Title 63 is the page for turning that bug into a test description.</p>'
     elif cid=='I':
-      note='<p>The <a href="/how-to-build/security-checklist/">security checklist</a> is a list of questions. This library does not add a local exploit fixture.</p>'
+      note='<p>The <a href="/how-to-build/security-checklist/">security checklist</a> is still a list of questions. These titles cite recorded constraint failures and deployment limits, not a private exploit fixture.</p>'
     elif cid=='N':
-      note='<p>The Gifter and Picassol <a href="/lessons/">lessons</a> are practice on recorded apps. They are not titles 105 to 112.</p>'
+      note='<p>Titles 105–112 are studies of recorded apps (Gifter, Votara, TrustLock, UniProof, Barn, Allowance, PulseFund, Web3 Splitter). The <a href="/lessons/">lessons</a> remain the practice surfaces for those apps.</p>'
     blocks.append(f'<h2 id="col-{cid}">{E(cid)}. {E(name)}</h2><p>{E(blurb)}</p>{note}<ol>{"".join(lis)}</ol>')
   return nav, ''.join(blocks), numbered
 
@@ -499,8 +499,8 @@ def path_page(E, meta, credit):
   html=f'''<article class=lesson>
 <p class=eyebrow>Path</p>
 <h1>{E(title)}</h1>
-<p class=lead>This is the order for the articles that exist. Each one can be read on its own. The order is here so the questions stack: what an address is, where state lives, what a transaction shows, what a failure changes, and what was actually built.</p>
-<h2 id=order>Published, in order</h2>
+<p class=lead>This is one reading order through the catalogue. Each article can be read on its own. The order stacks questions: what an address is, where state lives, what a transaction shows, what a failure changes, and what recorded apps actually built.</p>
+<h2 id=order>Start here</h2>
 <ol>
 <li><a href="/articles/a-solana-address-is-not-a-wallet/">A Solana address is not always a wallet</a></li>
 <li><a href="/articles/where-picassol-stores-state/">Where Picassol stores state</a></li>
@@ -511,15 +511,13 @@ def path_page(E, meta, credit):
 <li><a href="/articles/follow-one-token-balance/">Follow the token balances</a></li>
 <li><a href="/articles/what-we-could-build-for-this-escrow/">What the recorded build produced</a></li>
 <li><a href="/articles/from-failing-take-to-pull-request/">The case study of the opened pull request</a></li>
+<li><a href="/articles/build-an-escrow-with-acceptance-and-refund/">Escrow study (Gifter)</a></li>
+<li><a href="/articles/build-a-deadline-based-claim-system/">Deadline claim study (TrustLock)</a></li>
+<li><a href="/articles/build-a-spending-limit-vault/">Spending-limit vault (Allowance)</a></li>
 </ol>
-<h2 id=gaps>Stages with no article</h2>
-<ul>
-<li>Design. No schema or seed-choice article beyond the accounts these apps already use.</li>
-<li>Test. The case study names a test file. No passing run is recorded, so there is no testing article yet.</li>
-<li>Secure. The <a href="/how-to-build/security-checklist/">checklist</a> is questions, not a fixture.</li>
-<li>Deploy, observe, recover. The hosted apps are on devnet. There is no production-operations article.</li>
-</ul>
-<p>Lessons for the two apps are <a href="/lessons/picassol-hackathon/">Picassol</a> and <a href="/lessons/gifter-escrow/">Gifter</a>. They are the practice, not a missing chapter of these articles.</p>
+<h2 id=sections>Every catalogue section</h2>
+<p>Sections A–O of the <a href="/articles/#plan">120-title plan</a> now link to pages. Each page cites a recorded deployment, a chain read, or an official library document. Limits stay on the article. A linked title is not a promise that every abstract design the title names was built from scratch here.</p>
+<p>Lessons for practice include <a href="/lessons/picassol-hackathon/">Picassol</a>, <a href="/lessons/gifter-escrow/">Gifter</a>, and <a href="/lessons/c4-comets-todor-edward-andrei/">NameGen</a>.</p>
 <p><a href="/articles/">The catalogue</a> · <a href="/articles/evidence/">The evidence ledger</a></p>
 {credit}</article>'''
   return title, desc, html

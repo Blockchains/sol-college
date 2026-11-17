@@ -343,8 +343,23 @@ def reading_path(slug):
   return os.path.join(READING_DIR, slug + '.json')
 
 def _deepen_reading(data, paper=None):
-  """Add a closing depth section without inventing measurements or copying the file."""
+  """Replace extract stubs with honest coverage notes and add a closing depth section."""
   sections = list(data.get('sections') or [])
+  stub_needle = 'the extract did not yield a full sentence'
+  fixed = []
+  for sec in sections:
+    paras = list(sec.get('paragraphs') or [])
+    if paras and all(stub_needle in str(p).lower() for p in paras):
+      heading = sec.get('heading') or 'Untitled section'
+      paras = [
+        'Section “%s” is present in the retrieved file, but the automatic extract could not form a full prose sentence from it — usually because the section is mostly tables, code, headings, or short labels. '
+        'That is a parser limit, not evidence the section is empty or unimportant.'
+        % heading,
+        'For this section, open the source file at the catalogue link and read the original lines. '
+        'This reading note does not invent paragraph text to fill a gap the extract could not paraphrase without copying.',
+      ]
+    fixed.append(dict(sec, paragraphs=paras))
+  sections = fixed
   if any(s.get('heading') == 'Reading limits and citation use' for s in sections):
     data = dict(data)
     data['sections'] = sections
