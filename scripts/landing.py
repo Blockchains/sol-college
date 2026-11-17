@@ -377,13 +377,21 @@ def results_html(bugs, prs, sec_findings):
         '<thead><tr><th scope="col">Work</th><th scope="col">Findings</th>'
         '<th scope="col">PRs submitted</th><th scope="col">Recorded as merged</th></tr></thead>'
         f'<tbody>{body}</tbody>'
-        '<caption>Recorded results. Counts come from the evidence files, not from a separate headline.</caption>'
         '</table>'
-        '<p class="honest">Functional findings are explicit Bug records in the devnet notes. '
+        '<p class="results-more"><a href="/live/#counts">How these counts are recorded</a></p>'
+        '</div>'
+    )
+
+
+def counts_note_html():
+    """The counting rules live on the evidence page, not under the homepage table."""
+    return (
+        '<h2 id="counts" style="scroll-margin-top:88px">How the homepage counts are recorded</h2>'
+        '<p>The homepage table is filled from the evidence files, not from a separate headline.</p>'
+        '<p>Functional findings are explicit Bug records in the devnet notes. '
         'Security remediation is the public finding record: one review, with a pull request counted only when that record links one. '
         '“Recorded as merged” counts only pull requests whose stored state is merged. '
         'An opened pull request with no recorded decision stays in submitted. The original team accepts or declines.</p>'
-        '</div>'
     )
 
 

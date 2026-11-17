@@ -1914,7 +1914,8 @@ section.band a:hover { color: #3a1d8f; }
 .results-table thead th:first-child, .results-table tbody th { text-align: left; }
 .results-table tbody th { background: #1b1530; color: #fff; font-weight: 650; }
 .results-table td { background: #fff; font-variant-numeric: tabular-nums; font-weight: 700; }
-.results .honest { margin: 14px 0 0; max-width: 68ch; }
+.results-more { margin: 12px 0 0; }
+.results-more a { font-weight: 750; }
 @media (max-width: 760px) {
   .results { overflow: visible; }
   .results-table { min-width: 0; }
