@@ -81,6 +81,8 @@ pre.diagram,pre.sh{position:relative}
 .proposal a{color:var(--a)}
 .cat-nav{display:flex;flex-wrap:wrap;gap:6px 14px;max-width:68ch}
 .workflow{white-space:pre-wrap;max-width:40ch}
+.jss h2,.jss h3{scroll-margin-top:88px}
+.jss .status-panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:16px 0}
 .lib-page .finder input{font-size:16px}
 .lib-item{margin:12px 0}
 .lib-item h3{word-break:break-word}
