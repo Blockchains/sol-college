@@ -1,0 +1,185 @@
+{
+ "slug": "kamino-lend-litepaper",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "As published in October 2023",
+   "where": "docs page intro",
+   "paragraphs": [
+    "The page is marked as published in October 2023. It introduces Kamino Lend (Klend) as a peer-to-pool borrow primitive meant as base infrastructure for leveraged, automated financial products, and as a decentralized matcher linking supply and demand. Klend is the foundation under Kamino 2.0, described as a fully integrated dApp that unifies borrowers, lenders, and LPs so users can express more market views and take part across market-cycle phases.",
+    "Listed capabilities include one shared liquidity pool design, Elevation Mode (also called eMode), concentrated-liquidity LP tokens usable as collateral, multi-segment interest curves, collateral that can be marked protected, automatic deleveraging, asset tiers, a real-time risk simulator, an advanced oracle risk engine, soft liquidations, and dynamic liquidations. Each major feature is expanded in the sections that follow through Dynamic Liquidation Penalties and the Instant and Eventual examples."
+   ]
+  },
+  {
+   "heading": "Unified Liquidity Market",
+   "where": "docs page",
+   "paragraphs": [
+    "Klend runs one shared liquidity market instead of many isolated pools, and adds an eMode path for higher leverage when lending and borrowing stay inside a chosen asset grouping. Multi-pool layouts are said to split liquidity and push utilization and lender yields down; their main practical upside is custom parameters per isolated pool while fencing risk from the main market. Klend’s risk engine is claimed to isolate risk even inside one shared market, while eMode supplies customized asset parameters inside that market."
+   ]
+  },
+  {
+   "heading": "Elevation Mode",
+   "where": "docs page",
+   "paragraphs": [
+    "Elevation Mode, first seen in Aave V3 as Efficiency Mode, lets users borrow closely related or soft-pegged assets under a more capital-efficient LTV. Inside Klend’s shared market, assets can sit in elevation groups (eGroups), each with customized LTV parameters and liquidation thresholds, unlocking higher leverage and tailored liquidation parameters. Elevation groups live inside the main liquidity market, so all users still tap shared liquidity while eMode raises capital efficiency for grouped assets.",
+    "As an instance, if every SOL and SOL LST token joins an eGroup whose max LTV is \"95%\", those tokens take \"95%\" as their new max LTV, allowing increased leverage between them. Combined with Kamino’s automation infrastructure, eMode is said to enable stronger looping products than exist elsewhere on Solana. That comparative claim is the page’s assertion."
+   ]
+  },
+  {
+   "heading": "CLMM LP Tokens as Collateral (kTokens)",
+   "where": "docs page",
+   "paragraphs": [
+    "As Uni V3-style concentrated liquidity became DeFi’s main LP model, leveraged LPing nearly stalled, because CLMM LP positions are non-fungible and hard to post as collateral or to lever. Kamino’s automated liquidity stack already wraps CLMM LP positions into kTokens, described as fungible, easily liquidatable SPL tokens. Klend accepts those kTokens as collateral so users can borrow against or loop their LP positions."
+   ]
+  },
+  {
+   "heading": "Poly-linear Interest Rate Curve",
+   "where": "docs page",
+   "paragraphs": [
+    "Interest-rate curves map utilization to supply and borrow rates so markets stay near equilibrium while lenders can still withdraw. A curve with many knots is said to change rates more gradually than a short piecewise curve. Klend’s write-up allows as many as \"11\" knots on that curve and contrasts that shape with the common \"3\"-point curves used elsewhere. Borrowers, on this account, meet steeper rates more slowly before they repay. Those knot counts are the page’s design claims from the October 2023 litepaper."
+   ]
+  },
+  {
+   "heading": "Protected Collateral",
+   "where": "docs page",
+   "paragraphs": [
+    "Users can choose to keep deposited collateral from being borrowed by others, shielding those assets from borrower default risk. Such Protected Collateral can still back the depositor’s own borrows but does not earn interest, and it can be withdrawn at any time. The page states that tradeoff without additional numeric yield figures."
+   ]
+  },
+  {
+   "heading": "Risk Management",
+   "where": "docs page",
+   "paragraphs": [
+    "Risk Management is a parent heading for deposit caps, borrow caps, auto-deleverage, asset tiers, borrow factors, the risk simulator, and oracle controls that follow. The parent label itself does not add separate quantitative claims beyond introducing that risk toolkit."
+   ]
+  },
+  {
+   "heading": "Deposit Caps",
+   "where": "docs page",
+   "paragraphs": [
+    "Each asset carries a deposit cap so the system holds a safe quantity based on an asset risk score that weighs market liquidity, volatility, security risk, and similar metrics. Caps are watched continuously and may be retuned when needed. No fixed numeric caps are printed in this prose section."
+   ]
+  },
+  {
+   "heading": "Borrow Caps",
+   "where": "docs page",
+   "paragraphs": [
+    "Borrow caps likewise constrain how much of each asset can be borrowed, using the same style of asset risk score, and are reassessed whenever conditions warrant. As with deposit caps, the page does not list concrete per-asset numeric limits in this stretch."
+   ]
+  },
+  {
+   "heading": "Auto-Deleveraging",
+   "where": "docs page",
+   "paragraphs": [
+    "Auto-deleverage cuts deposit and/or borrow caps of an asset to a level deemed safe under current market conditions, triggering an automated unwind. If auto-deleverage fires on USDH deposits, for example, users hear about it through Kamino’s channels and receive a set window to adjust positions that use USDH as collateral. After that window, the system starts partial deleveraging of USDH-backed loans, beginning with loans nearest liquidation.",
+    "Loans that are deleveraged face a small liquidation penalty that climbs continuously toward a maximum until the target collateral or borrow level is hit. Affected users see a proportional cut in the target asset and matching tokens in the position, generally leaving a healthier Loan-to-Value ratio. Exact maximum penalty values for this path are not numbered in this subsection beyond that escalating description."
+   ]
+  },
+  {
+   "heading": "Asset Tiers",
+   "where": "docs page",
+   "paragraphs": [
+    "A shared market helps borrowers and lenders but can let risk spill across assets and raise bad-debt risk. Klend introduces Asset Tiers so users can borrow and lend many Solana tokens without splitting liquidity into isolated pools. Kamino’s Risk Council grades each asset into Isolated Debt, Isolated Collateral, or General, deciding how the asset may be used. The three tier definitions follow as their own sections."
+   ]
+  },
+  {
+   "heading": "Isolated Debt",
+   "where": "docs page",
+   "paragraphs": [
+    "Isolated Debt assets may be borrowed only alone, not mixed with other debts. They cannot serve as collateral, yet they can be supplied to earn lending yield. That isolation is the tier’s stated constraint within the unified market design, separating borrow risk for these assets from multi-asset positions elsewhere on Klend."
+   ]
+  },
+  {
+   "heading": "Isolated Collateral",
+   "where": "docs page",
+   "paragraphs": [
+    "Isolated Collateral assets may back borrows only by themselves, never mixed with other collateral. Isolated Debt cannot be taken against Isolated Collateral. The page presents that pairing ban as the risk boundary for this tier so isolated collateral risk does not combine with isolated debt in one loan."
+   ]
+  },
+  {
+   "heading": "General",
+   "where": "docs page",
+   "paragraphs": [
+    "General assets may collateralize borrows of other assets and may themselves be borrowed beside other general assets. This tier typically covers the network’s most liquid tokens, per the page’s description, and is the flexible bucket compared with the two isolated tiers above."
+   ]
+  },
+  {
+   "heading": "Borrow Factors",
+   "where": "docs page",
+   "paragraphs": [
+    "Borrow factors (BFs) assign risk-adjusted borrow values to each asset, limiting how much debt of that asset a loan may hold given its Asset Risk Score. They sit beside LTVs, which limit borrowing from the collateral side. Klend blends LTV and BF into a weighted borrowing capacity from position composition, and liquidation points likewise mix LTV with borrow factor.",
+    "In the worked example, post \"$100\" of SOL and choose USDC or BONK as the debt. SOL’s maximum LTV is \"80%\". USDC has Borrow Factor \"1\"; BONK has Borrow Factor \"2\". Borrow capacity is \"(Collateral Amount * Collateral LTV) / Borrow Factor\". USDC capacity against SOL is (\"$100\" * \"80%\") / \"1\" = \"$80\". For BONK, with BF \"2\", capacity is up to \"$40\"."
+   ]
+  },
+  {
+   "heading": "Risk Simulator",
+   "where": "docs page",
+   "paragraphs": [
+    "Unlike TradFi tooling norms, DeFi platforms often give users limited ways to model position risk. Kamino built a Risk Simulator so Klend users can inspect risk and run what-if market moves. Outputs include effects on portfolio value, LTV, liquidation delta, and related metrics. No numeric backtest results are attached to this feature description."
+   ]
+  },
+  {
+   "heading": "Oracles",
+   "where": "docs page",
+   "paragraphs": [
+    "Price oracles are described as the historical attack surface most often abused in DeFi exploits. Klend’s oracle risk engine mixes practices such as heuristic and EWMA prices and keeps its own oracles alongside outside providers. Child subsections cover TWAP and EWMA prices, price bands, and multiple providers."
+   ]
+  },
+  {
+   "heading": "TWAP and EWMA Prices",
+   "where": "docs page",
+   "paragraphs": [
+    "Time Weighted Average Prices and Exponentially Weighted Moving Average prices are said to resist manipulation by tracking an average price across time. Because Klend uses TWAPs and EWMAs, sharp short-lived price spikes are rejected, protecting against flash loans and flash crashes. Exploiting via price manipulation is described as expensive because an attacker must hold a fake price across the TWAP or EWMA window, not merely spike it once."
+   ]
+  },
+  {
+   "heading": "Price Bands",
+   "where": "docs page",
+   "paragraphs": [
+    "Each stable or soft-pegged asset has an allowed price range the contract expects, called the price band, which together with TWAP and EWMA helps block flash-crash and flash-loan style exploits. As an illustration, dollar stables such as USDC and USDH could allow a \"1%\" band around \"$1\"; a print above \"$1.01\" would be rejected. For SOL-pegged assets, bands are expressed relative to the SOL price."
+   ]
+  },
+  {
+   "heading": "Multiple Providers",
+   "where": "docs page",
+   "paragraphs": [
+    "Klend cross-checks oracles from both Pyth and Switchboard, plus Switchboard feeds Kamino operates itself that pull from assorted ledger and external sources. For kTokens, Kamino prices on-chain atomically from several price sources and the live strategy state, avoiding a single external oracle for those positions."
+   ]
+  },
+  {
+   "heading": "Liquidations",
+   "where": "docs page",
+   "paragraphs": [
+    "Klend revises liquidation to invite more liquidator participation while easing pressure on borrowers. Partial liquidations and dynamic penalties are detailed next, including Instant and Eventual examples with the page’s numeric illustrations for \"2%\" to \"10%\" penalties and \"80%\" / \"90%\" LTV cases."
+   ]
+  },
+  {
+   "heading": "Partial Liquidations",
+   "where": "docs page",
+   "paragraphs": [
+    "Rather than wiping a borrower’s whole position, as an illustration, Klend allows soft liquidations that settle, \"20%\" of a user’s debt. Users only slightly past the liquidation LTV are not hit hard, whereas users far above the liquidation LTV may be liquidated more deeply. The \"20%\" figure is the page’s illustrative soft-liquidation share."
+   ]
+  },
+  {
+   "heading": "Dynamic Liquidation Penalties",
+   "where": "docs page",
+   "paragraphs": [
+    "The page says DeFi liquidation fees have often been steep because settlement was slow, gas was costly, and prices moved quickly; a liquidator who cannot exit in time loses money, so fees in that telling often sat in a \"5%\" to \"10%\" band or higher. Klend’s scheme starts fees at \"2%\" and caps them at \"10%\". When the fastest liquidators act at once, borrowers meet only the \"2%\" fee. As loan LTV climbs, the fee climbs until the loan is cleared. Those percentages are the litepaper’s stated schedule."
+   ]
+  },
+  {
+   "heading": "Example: Instant Liquidation",
+   "where": "docs page",
+   "paragraphs": [
+    "In the Instant Liquidation worked example, User A’s loan reaches an \"80%\" liquidation LTV. A liquidator acts soon after the loan qualifies, covers \"20%\" of the debt, and takes \"20.4%\" of User A’s collateral, which the page writes as \"0.2\" times \"0.02\". User A then holds less collateral and less debt, with a healthier LTV, and the loan remains open. The arithmetic belongs to the page’s example, not to a liquidation observed for this catalogue."
+   ]
+  },
+  {
+   "heading": "Example: Eventual Liquidation",
+   "where": "docs page",
+   "paragraphs": [
+    "In the Eventual Liquidation worked example, User B’s loan reaches an \"80%\" LTV liquidation line. The liquidator delays, and the fee rises to \"10%\" once the loan reaches \"90%\" LTV. The liquidator then covers \"20%\" of the debt and takes \"22%\" of User B’s collateral, written as \"0.2\" times \"0.1\". Those figures close the published litepaper stretch covered here and are not a live liquidation log."
+   ]
+  }
+ ]
+}

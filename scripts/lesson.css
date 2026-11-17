@@ -89,7 +89,13 @@ pre.diagram,pre.sh{position:relative}
 .lib-item .labels{display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:8px 0;list-style:none}
 .lib-item .labels li{border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:13px;color:#fff}
 .lib-page :focus-visible{outline:2px solid var(--a);outline-offset:2px}
-.lib-page h2,.lib-page .room{scroll-margin-top:88px}
+.lib-page h2,.lib-page .room,.lib-page .paper-section{scroll-margin-top:88px}
+.paper-reading{max-width:68ch;margin:28px 0}
+.paper-reading > .meta{color:var(--mut);font-size:14px}
+.paper-section{margin:22px 0 28px;padding-top:4px;border-top:1px solid var(--line)}
+.paper-section h3{margin:12px 0 6px;font-size:1.15rem}
+.paper-section .meta{color:var(--mut);font-size:13px;margin:0 0 10px}
+.paper-section p{max-width:68ch}
 @media (prefers-reduced-motion: reduce){
  .readbar>span{transition:none}
 }

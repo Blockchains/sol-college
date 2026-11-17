@@ -1,0 +1,216 @@
+{
+ "slug": "mango-markets-litepaper",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Litepaper",
+   "where": "md front matter / title",
+   "paragraphs": [
+    "The markdown file is titled Litepaper. Its YAML description calls the document an early draft outlining Mango’s aims and provisional plans. The draft then walks through vision, success arguments, margin and perps notes, token distribution, sale mechanics, governance, and a project roadmap. Ambitions stated throughout are the draft’s claims rather than measured results."
+   ]
+  },
+  {
+   "heading": "The Mango Vision",
+   "where": "md body",
+   "paragraphs": [
+    "Mango’s stated aim is to blend CeFi-like depth and ease of use with DeFi’s permissionless inventiveness while charging end users less than either side does today. Toward that aim, Mango offers margin trading and perpetual futures plus decentralized governance for later evolution. Medium-term, the draft’s ambition to match centralized venues on volume is labeled ambitious, yet the authors see no hard blockers for Mango Markets. Long-term, the draft claims open ecosystems will spawn innovations that overtake centralized finance."
+   ]
+  },
+  {
+   "heading": "Why Mango Markets Will Succeed",
+   "where": "md body",
+   "paragraphs": [
+    "Three ingredients are named as necessary for the vision: short latency, cheap transactions, and complete decentralization. The draft says viability needs all three, and that Solana finally supplies them. The subsections that follow expand each ingredient and then discuss token governance without a presale."
+   ]
+  },
+  {
+   "heading": "Latency",
+   "where": "md body",
+   "paragraphs": [
+    "Solana is said to deliver block times near one second. One second is still noticeable, yet Solana’s intended \"400ms\" latency target is described as nearing the edge of human perception. Short latency is cast as improving usability by cutting wait anxiety, and also as tightening spreads because market makers must widen quotes when quote updates are slow. At the then-current one-second latency, the draft believes raw bid-ask spreads can compete with centralized exchanges."
+   ]
+  },
+  {
+   "heading": "Transaction Costs",
+   "where": "md body",
+   "paragraphs": [
+    "Cheap transactions are called finance’s reason for being and an innovation must cut those costs to count as a full upgrade. Therefore, per-trade cost on Mango tools is said to match or undercut CeFi. Fees cannot vanish because liquidators, the insurance fund, and developers still need pay, but Mango will lean toward lower fees. That cost posture is presented as a long-run competitive edge."
+   ]
+  },
+  {
+   "heading": "Decentralization",
+   "where": "md body",
+   "paragraphs": [
+    "The draft argues that chasing speed and cost by centralizing pieces such as the orderbook will fail over time. Any centralized piece is a security risk and badly harms composability, because the operator decides who may integrate and lacks incentive or bandwidth to admit everyone. Giving up permissionless upside is rejected; Mango Markets is said to keep that upside."
+   ]
+  },
+  {
+   "heading": "No Presales, Decentralized Governance",
+   "where": "md body",
+   "paragraphs": [
+    "Protocol control sits with the Mango Token. Most MANGO is locked in the DAO treasury for release per token-holder wishes. Governance ought to reward service providers such as liquidity providers and oracles, and builders of new services such as developers and other contributors. Steering the largest share of DAO power and wealth toward future contributors is meant to attract skilled builders. Consistent with open crypto norms, there will be no token presale.",
+    "In sum, Mango aims to win finance’s long contest: short latency for usability, rock-bottom fees for competitiveness, decentralization against centralized failure or malice, open governance that funnels power liberally to builders, and permissionless experiments that yield transformative tools. The authors say they are driven to build to that vision and invite others to join."
+   ]
+  },
+  {
+   "heading": "Margin Protocol",
+   "where": "md body",
+   "paragraphs": [
+    "This heading introduces the margin product. Detailed highlights, design notes, and risk subsections follow immediately under it. The parent heading itself frames the margin protocol as a core offering without adding separate quantitative claims beyond those listed in the child sections."
+   ]
+  },
+  {
+   "heading": "Highlights",
+   "where": "md body (Margin Protocol)",
+   "paragraphs": [
+    "Margin protocol bullets in the draft are: zero fees; cross-margined accounts; limit orders allowed on margin; interest paid on margin positions; and pooled SRM for fee cuts. Those bullets are product claims of the draft rather than measured trading statistics."
+   ]
+  },
+  {
+   "heading": "Design",
+   "where": "md body",
+   "paragraphs": [
+    "The first margin build layers borrow-and-lend atop Serum Dex v3. Each user owns a margin account tied to a Serum Dex open-orders account per market in the group. Users may deposit any tokens in the group; value in the quote currency, typically USDT, comes from an oracle and sets borrow capacity. Because margin-trade positions also count as deposits, leverage may reach \"5x\". Per the draft, Mango Markets charges no fees."
+   ]
+  },
+  {
+   "heading": "Risks",
+   "where": "md body",
+   "paragraphs": [
+    "The Risks heading groups four named risk discussions that follow: negative equity and socialization of losses, oracle error, illiquid deposits, and smart-contract exploit. Each named risk is covered in its own section object below; this parent heading only announces that risk inventory."
+   ]
+  },
+  {
+   "heading": "Negative equity accounts and socialization of losses",
+   "where": "md body",
+   "paragraphs": [
+    "If collateral crashes fast enough or borrowed-token prices spike fast enough, an account may slip under a \"100%\" collateral ratio before any liquidator acts. Then lending pools are tapped to lift the account to a \"101%\" collateral ratio. The shortfall is shared among every lender, which can set off a chain of liquidations when many lenders themselves sit near the brink. The draft presents this path as a structural risk of the pooled design."
+   ]
+  },
+  {
+   "heading": "Oracle error",
+   "where": "md body",
+   "paragraphs": [
+    "The Solana Flux Aggregator is described as brand new on Solana and possibly buggy, and centralized exchanges feeding prices may also err. Because all oracle publishers watch the same centralized exchanges, price errors would hit all of them and could trigger bad liquidations. No separate numeric error bound is given beyond that qualitative warning."
+   ]
+  },
+  {
+   "heading": "Illiquid deposits",
+   "where": "md body",
+   "paragraphs": [
+    "A user may be unable to pull deposits because they are out on loan, which hurts anyone who needs cash immediately. The same issue hits lent positions: closing may be impossible if utilization sits at \"100%\". While waiting, the protocol is said to guarantee a \"100%\" APY. That APY figure is the draft’s stated guarantee in this risk note."
+   ]
+  },
+  {
+   "heading": "Smart contract exploit",
+   "where": "md body",
+   "paragraphs": [
+    "Volunteers have reviewed the code, yet no formal audit has occurred. Bounties exist for responsible vulnerability disclosure, but attackers might still prefer a profitable exploit over the bounty. The draft records that residual smart-contract risk explicitly and treats it as an open residual hazard for early users."
+   ]
+  },
+  {
+   "heading": "Perpetual Futures (WIP)",
+   "where": "md body",
+   "paragraphs": [
+    "Perpetual futures are marked work in progress in the draft. The subsection lists product highlights rather than a finished specification or live market metrics. Those highlights that follow are treated as draft ambitions for the perps product on Solana, consistent with the file’s opening note that this is a rough draft of objectives and tentative plans."
+   ]
+  },
+  {
+   "heading": "Highlights",
+   "where": "md body (Perpetual Futures)",
+   "paragraphs": [
+    "Perps bullets claimed in the draft are: the deepest perp book on Solana; cross margin with Serum Dex for easy spot hedges; a simple familiar UI; an on-chain CLOB; and funding driven by mark versus index, paid continuously. Liquidity leadership and UX claims here are the draft’s ambitions, not measured market shares."
+   ]
+  },
+  {
+   "heading": "Token Distribution",
+   "where": "md body",
+   "paragraphs": [
+    "Once the initial allocation is done, further releases require DAO governance proposals alone. The intent is generous, transparent distribution of Mango Token to protocol builders, liquidity providers, and other contributors. Max supply is stated as \"10,000,000,000\". Initial circulating supply is stated as \"2,000,000,000\".",
+    "Creators receive \"5%\" for building Mango Markets. An Insurance Fund Sale of \"5%\" lands straight in the DAO treasury to backstop perps when extreme volatility leaves bankrupt accounts and excess losses; sale mechanics appear later. A Temporary Governance Fund of \"10%\" bridges until full governance launches; it cannot vote, and leftovers return to the DAO treasury. That fund is intentionally larger than the creators’ share because exceptional builders are expected soon.",
+    "The DAO holds \"80%\". Those tokens unlock only via holder votes. The draft proposes a logarithmic release reminiscent of Bitcoin but with halvings every two years: \"50%\" released in the first two years, \"75%\" by year four, \"87.5%\" by year six, and so on. The DAO need not follow that proposal."
+   ]
+  },
+  {
+   "heading": "Token Sale",
+   "where": "md body",
+   "paragraphs": [
+    "The Token Sale heading introduces the insurance-fund sale mechanics that fund the DAO treasury for perps backstops. Child subsections cover the timed mechanism, an explanation of pro-rata pricing and design rationale against other sale styles, and a short source-code openness note. Quantitative sale parameters such as the \"48\" hour window and \"500,000,000\" token vault appear under Mechanism and Explanation."
+   ]
+  },
+  {
+   "heading": "Mechanism",
+   "where": "md body",
+   "paragraphs": [
+    "The sale spans \"48\" hours: an unrestricted half of \"24\" hours, 000, then a withdraw-only half of \"24\" hours. The contract holds two vaults—one with \"500, 000\" Mango Token and one starting at \"0\" USDC. In the unrestricted window any Solana user may add or remove USDC out for the sale vault. After \"24\" hours only USDC withdrawals remain. At close, each USDC depositor receives Mango Token in proportion toward their USDC contribution, and that USDC is moved into the Mango DAO treasury."
+   ]
+  },
+  {
+   "heading": "Explanation",
+   "where": "md body",
+   "paragraphs": [
+    "Everyone clears at one shared pro-rata price at the end. Sale price per token is \"(total USDC in vault) / (500, 000 Mango Token)\". That price moves across the \"48\" hour window as USDC enters and leaves, 000, but during the final \"24\" hours only withdrawals are allowed so the sale price can only fall. The withdraw-only window exists so a large last-second deposit in the unrestricted period cannot trap other buyers at a spiked price.",
+    "The authors want sales that stay simple, fully transparent, and free of engineered luck. Simple mechanisms are easier to build and harder to exploit; transparency raises participation; luck-based designs hand value randomly or to people willing to do empty tasks. Surplus value should accrue to DAO token holders, and dropping casino elements selectively draws long-term contributors.",
+    "Other mechanisms are rejected against that standard: bonding curves that favor millisecond timing luck; capped fixed-price sales with similar issues; opaque market-maker allocations; and complex \"fair\" launches such as a Mesa Offering that are hard to build. Those comparisons are the draft’s evaluative claims."
+   ]
+  },
+  {
+   "heading": "Source Code",
+   "where": "md body",
+   "paragraphs": [
+    "Mango developers, including community contributors, will create the contracts and the interface. All code used will stay open source so later projects may reuse it freely as they wish. No license name beyond that open-source commitment appears in this short note."
+   ]
+  },
+  {
+   "heading": "Governance",
+   "where": "md body",
+   "paragraphs": [
+    "Above all, Mango Token is a governance instrument. Collectively, holders can upgrade the protocol under DAO checks and balances, and can craft incentives that reward participation and usage. The COMP governance model is treated as a gold standard; Mango mainly reworked initial distribution for an open DAO inception and adapted mechanics to Solana’s programming model.",
+    "Anyone staking \"0.1%\" of Mango Token may submit a governance action: simple or complex sets such as listing an asset, retuning a collateral factor or rate model, or changing any other admin-controllable parameter. Proposals ship as runnable code rather than advice for a team, and they reach every protocol the DAO creates, including Margin and Perp protocols shipped at launch.",
+    "Votes last \"3\" days; any staker may vote for or against. If a majority plus at least \"2%\" of total supply support the proposal, it enters the Timelock and may execute after \"2\" days. Until the on-chain voting UI is ready, core contributors will make critical calls from the project vision and informal Discord input, intentionally keeping early governance nimble."
+   ]
+  },
+  {
+   "heading": "Project Status & Roadmap",
+   "where": "md body",
+   "paragraphs": [
+    "The roadmap heading introduces dated alpha and beta phases for margin and perps, then a DAO launch. Specific timing and scope bullets appear under the named phase headings that follow. Dates and sequencing below are the draft’s planned claims."
+   ]
+  },
+  {
+   "heading": "Mango Margin \"closed alpha\"",
+   "where": "md body",
+   "paragraphs": [
+    "Closed alpha is planned for the first weeks of March in the draft roadmap. It enforces strict borrow limits for every account during that window. The liquidator and Solana program remain closed source at this stage. Third-party liquidators begin implementing their strategies while the core programs stay closed."
+   ]
+  },
+  {
+   "heading": "Mango Margin \"public beta\"",
+   "where": "md body",
+   "paragraphs": [
+    "Public beta is slated to start in mid-March 2021 and continue for several months. Borrow caps give way as partial liquidations arrive. The margin trading UI is heavily revised from alpha feedback. More trading pairs ship. Open-source drops proceed step-wise as independent reviews finish."
+   ]
+  },
+  {
+   "heading": "Mango Perp \"closed alpha\"",
+   "where": "md body",
+   "paragraphs": [
+    "Perp closed alpha is set for early June 2021 and lasts a few weeks per the roadmap. Market makers can integrate and test during that window. No further product metrics, fee schedules, or volume targets are listed under this roadmap bullet beyond that integration and testing focus."
+   ]
+  },
+  {
+   "heading": "Mango Perp \"public beta\"",
+   "where": "md body",
+   "paragraphs": [
+    "Perp public beta, includes a sale of tokens that go directly intoward the insurance fund and introduces the governance token. Those two bullets are the draft’s stated contents for the public-beta phase for perps, as drafted, tying the insurance-fund sale described earlier to the governance rollout."
+   ]
+  },
+  {
+   "heading": "Mango DAO Launch",
+   "where": "md body",
+   "paragraphs": [
+    "DAO launch brings formal on-chain governance, a website and forums for participation, and further proposals to reward contributors. The markdown file ends after those roadmap bullets. Ambitions throughout this litepaper draft are the document’s claims rather than measured outcomes."
+   ]
+  }
+ ]
+}

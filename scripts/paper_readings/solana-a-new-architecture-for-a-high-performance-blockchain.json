@@ -1,0 +1,470 @@
+{
+ "slug": "solana-a-new-architecture-for-a-high-performance-blockchain",
+ "pages": 32,
+ "sections": [
+  {
+   "heading": "Abstract",
+   "where": "Title page",
+   "paragraphs": [
+    "The design centers on Proof of History, a record that lets others check both the order of events and how much time passed between them. That record is written into an append-only ledger, so the passage of time does not depend on trusting a participant's clock. Paired with a consensus method such as Proof of Work or Proof of Stake, the construction is argued to cut the messages exchanged inside a replicated state machine that tolerates Byzantine faults, and to bring finality below one second.",
+    "Two further procedures use that timekeeping. One is a Proof of Stake rule that can regain control after a partition of any size. The other is a streaming Proof of Replication. Together, replication and history are offered as protection against a ledger forged in its time ordering and against a ledger forged in storage. The analysis is set on a 1 gbps network and concludes that throughput as high as 710k transactions per second is possible on hardware the text treats as current."
+   ]
+  },
+  {
+   "heading": "1 Introduction",
+   "where": "Page 2",
+   "paragraphs": [
+    "A blockchain is presented as one way to build a fault-tolerant replicated state machine. Public chains already in view either do not use time or rest on a weak assumption that participants can keep it, a point tied to citations 4 and 5. Each node ordinarily consults only its local clock and has no view of anyone else's clock. When a message is kept or dropped according to the time written on it, nothing forces every participant to reach one shared decision. Proof of History is meant to produce a ledger whose durations between events and whose message order can be checked. The hope is that every node can rely on the time recorded there and need not trust a separate clock."
+   ]
+  },
+  {
+   "heading": "2 Outline",
+   "where": "Page 2",
+   "paragraphs": [
+    "The remainder of the article is organized by section number. Section 3 describes the system as a whole. Section 4 gives the detailed account of Proof of History. Section 5 develops, at length, the stake consensus being put forward. Section 6 develops, at length, the fast replication proof being put forward. Section 7 analyzes the system architecture and the bounds on performance. Inside that last part, section 7.5 describes a smart-contract engine intended to suit a GPU."
+   ]
+  },
+  {
+   "heading": "3 Network Design",
+   "where": "Pages 2–3",
+   "paragraphs": [
+    "Figure 1 carries a caption about how transactions move through the network. Nothing in the extract describes the drawing's pixels. The account beside it names one Leader at a time, and that node is the one producing the history sequence. From the sequence the rest of the network gets a single order in which reads are consistent, plus a passage of time that outsiders can check. The Leader arranges user messages so the other machines can handle them quickly and so the system can keep throughput high. Execution uses the state that sits in RAM. What is sent on to the replicating Verifiers is the set of transactions together with a signature over the state those transactions left behind.",
+    "Verifiers repeat that execution on the copies they hold and then publish the signature their own execution produced. Consensus reads those publications as votes. Outside a partition there is only one Leader. Hardware on a Verifier is assumed to match a Leader's, and a Verifier can be promoted by the stake elections that section 5.6 describes. On the CAP tradeoff, a partition is met by keeping consistency and dropping availability in nearly every case. The text also sketches how control could be taken back after a split whose surviving piece may be of any size, and it sends that sketch to section 5.12."
+   ]
+  },
+  {
+   "heading": "4 Proof of History",
+   "where": "Pages 3–4",
+   "paragraphs": [
+    "Proof of History is an iterated computation whose purpose is to let anyone check, by cryptographic means, the time that separates two events. The function being iterated is secure in a narrow sense: the input does not reveal the output, and the function must run to the end before an output exists. Iteration stays on one core, and each result is fed back in as the next input. From time to time the latest result is written down along with the call count reached so far. A later machine need not repeat the chain on a single core. It can give each segment its own core and recompute the segments together.",
+    "An event receives a time stamp when its bytes, or a digest of those bytes, are mixed into the function's state. The stored triple — state, index, and mixed-in material — places the event earlier than the hash that the sequence produces next. The same opening also says generators can multiply sideways. They stay aligned by folding each generator's state into the sequences the others are building. That arrangement is developed in section 4.4."
+   ]
+  },
+  {
+   "heading": "4.1 Description",
+   "where": "Pages 4–5",
+   "paragraphs": [
+    "The concrete setup uses a cryptographic hash whose result is unknown until the function runs. SHA-256 and RIPEMD are the named examples. The hash is started from a random string, and the text's illustration of such a string is the day's New York Times headline. Each output is passed straight back in as the next input, and every call stores both the call count and the output. A three-row sample starts at index 1 by hashing an arbitrary initial string into hash1, continues at index 2 by hashing hash1 into hash2, and finishes at index 3 by hashing hash2 into hash3. The label hashN stands for the real digest produced at that step.",
+    "Publishing every intermediate digest is unnecessary. A subset of the hashes and their indices, taken at an interval, is enough. A second sample keeps index 1, then shows index 200 as the hash of the digest at 199, and index 300 as the hash of the digest at 299. If the chosen hash resists collisions, that series can be produced only by one thread, in order. Nothing reveals the digest at index 300 without running the function 300 times from the start. The structure is therefore read as evidence that real time elapsed from index 0 through index 300.",
+    "Figure 2 is captioned as a Proof of History sequence. Apart from two labeled samples, the extracted text does not describe the figure's pixels. The samples are the digest 62f51643c1 produced at count 510144806912 and the digest c43d862d88 produced at count 510146904064. The same sequential property is taken to mean that real time passed between those two counts."
+   ]
+  },
+  {
+   "heading": "4.2 Timestamp for Events",
+   "where": "Pages 5–7",
+   "paragraphs": [
+    "The hash chain can also record that some data existed before a particular index was generated. A mixing operation, called \"combine\", folds the data together with whatever hash the chain holds at that step. The data may be only a cryptographically unique hash of an arbitrary event. Combine may be a simple append, or any other operation that resists collisions. The next hash is the data's timestamp, because that hash could have been produced only after the specific data was inserted.",
+    "Before any insertion, the sample rows are again index 1 from an arbitrary start, index 200 from the preceding digest, and index 300 from the digest at 299. An external event then occurs, illustrated as a photograph being taken or as any other digital data being created. At index 336 the operation appends the SHA-256 of the photograph to hash335 and hashes that concatenation, producing hash336. The index and the photograph's digest are kept in the sequence output so a later checker can rebuild the modification. Parallel checking of that change is left to section 4.3.",
+    "Table 1 is titled as a Proof of History sequence with two events and lengthens the same pattern. After the rows at indices 1, 200, and 300, index 336 appends the first photograph's digest to hash335. Indices 400 and 500 continue the unmixed chain, hashing the digests at 399 and 499. Index 600 appends the second photograph's digest to hash599, and index 700 hashes the digest at 699. Because the process remains sequential, an insertion must have happened sometime before the later digest was computed. On this table the first photograph precedes hash336 and the second precedes hash600.",
+    "Inserting data changes every subsequent value. While the hash resists collisions and the data was appended, no future stretch of the sequence can be precomputed from advance knowledge of what will be mixed in. The mixed material may be the raw data, or only a hash of the data together with metadata. Figure 3 is captioned as inserting data into Proof of History. The prose says an input beginning cfd40df8 was inserted at count 510145855488, that the state at insertion was 3d039eef3, and that a change of color marks the later hashes altered by that insertion. The remaining pixels are not described in the extracted text. Every observing node can read the order of the insertions and can estimate the real time between them."
+   ]
+  },
+  {
+   "heading": "4.3 Verification",
+   "where": "Pages 8–9",
+   "paragraphs": [
+    "A computer with many cores can confirm the sequence much sooner than the original generation finished. In the sample division, the first core covers index 200, where hash199 is hashed into hash200, through index 300, where hash299 is hashed into hash300. The second core covers index 300 through index 400, where hash399 is hashed into hash400. Given a core count such as 4000 on a contemporary GPU, the checker splits the hashes and their indices into 4000 slices and confirms every slice, from its first hash to its last, at the same time.",
+    "The time expected for generation is the total number of hashes divided by the number of hashes one core produces in a second. The time expected for checking is the total number of hashes divided by the product of the per-core hash rate and the number of cores available to verify. Figure 4 is captioned as verification using multiple cores. The prose adds that each core checks its slice in parallel, that every input string is recorded with the counter and the state it was appended to so each slice can be reproduced on its own, and that red hashes mark where an insertion modified the sequence. Further pixel detail is absent from the extracted text."
+   ]
+  },
+  {
+   "heading": "4.4 Horizontal Scaling",
+   "where": "Pages 9–10",
+   "paragraphs": [
+    "Sideways growth comes from running several history generators and folding each one's latest state into the others. The generators scale while the ledger stays unsharded. Putting the full event order back together requires every generator's output, not one of them alone. A four-step picture has A emit hash1a, then hash2a with hash1b attached as data, then hash3a and hash4a, while B emits hash1b, then hash2b with hash1a attached, then hash3b and hash4b.",
+    "When A receives hash1b, the packet contains B's last state and the last state of A that B had observed. A's following state hash therefore depends on B's state, which places hash1b sometime before hash3a. The dependence is transitive. Three generators linked as A with B and B with C still yield a traceable order between A and C even though those two never synchronized directly. If the generators mix on a period, each can take a portion of external traffic, so the system tracks more events, while true time accuracy suffers from the network delay between them. A global order is still available inside a synchronization window by applying some deterministic rule, for example by sorting those events according to hash value.",
+    "Figure 5's caption describes two generators synchronizing. Around the figure, the prose says each generator writes the other's output into its own chain and records the operation. Color is said to change where the peer's data altered the chain, and hashes that crossed between the streams are called out in bold. Events at A and events at C still have an order that can be proved, by way of B. Pixels beyond those remarks are not in the extract. Availability is the price, and the arithmetic is specific. Ten links of 1 gbps, each available 0.999 of the time, compound as 0.999 to the 10th power, which equals 0.99."
+   ]
+  },
+  {
+   "heading": "4.5 Consistency",
+   "where": "Pages 10–13",
+   "paragraphs": [
+    "Users are expected to enforce consistency on the sequence they accept, and to resist attacks, by inserting into their input the last output they observed from the sequence they treat as valid. The attack picture sets sequence A against a hidden sequence B. At indices 10, 20, 30, and 40, A holds hash10a, then Event1 with hash20a, Event2 with hash30a, and Event3 with hash40a. Hidden B holds hash10b, then Event3, Event2, and Event1 at those same indices. A malicious generator that already possesses every event, or that can build a faster hidden sequence, could emit the events in reverse order.",
+    "The defense puts inside each client-generated event the latest hash that client has seen on the sequence it considers valid. Forming the first event then appends that observed hash to the event data. In the repaired rows, index 10 is hash10a, index 20 appends the first event's data to hash10a, index 30 appends the second event's data to hash20a, and index 40 appends the third event's data to hash30a. When the sequence is published, the third event refers to hash30a. If that digest does not appear earlier in the sequence, consumers can treat the sequence as invalid. Any partial reordering is thereby limited to the hashes produced between the moment the client observed an event and the moment the event was entered. Client software is expected to avoid assuming that order is settled across that short span of hashes.",
+    "Clients can also stop a hostile generator from replacing the hashes inside their events. What they submit is not the raw payload. It is a signature under the client's private key, covering both the payload and the hash the client had most recently seen. The sample signs all three events that way, at indices 20, 30, and 40. A checker has two jobs: test that signature, and find the cited hash somewhere earlier in the chain. For the third event the signature, the public key, hash30a, and the payload are taken to constitute the event. The signature is checked against the public key, and hash30a is then sought in the history sequence.",
+    "Figure 6 is captioned as input with a back reference. The prose says the user-supplied input depends on a hash written as 0xdeadbeef, shown only by that prefix, must already occur in that sequence at an earlier count than the insertion. The client's message is valid only in a sequence that contains that hash. A blue arrow at the upper left indicates the backward reference, and red coloring indicates that the client's data modified the sequence. The extracted text does not describe the remaining pixels."
+   ]
+  },
+  {
+   "heading": "4.6 Overhead",
+   "where": "Page 13",
+   "paragraphs": [
+    "At 4000 hashes per second, the overhead account adds 160 kilobytes of data. Checking it calls for a 4000-core GPU and takes roughly 0.25 to 0.75 milliseconds. Those three figures, the hash rate, the added bytes, and the sub-millisecond window on 4000 cores, are the whole quantitative content of this short section."
+   ]
+  },
+  {
+   "heading": "4.7 Attacks",
+   "where": "Page 13",
+   "paragraphs": [
+    "The attacks heading under Proof of History is a grouping label rather than a separate argument. Three numbered cases follow it: reversal of event order, a difference in speed between generators, and long-range attacks that reuse old keys. The heading itself states no hash count, no timeout, no processor speed, and no availability figure. Whatever quantities those cases use are written under their own titles."
+   ]
+  },
+  {
+   "heading": "4.7.1 Reversal",
+   "where": "Page 13",
+   "paragraphs": [
+    "Producing an order that runs backward requires the attacker to start the malicious sequence only after the second event. That delay is what should give non-malicious peer-to-peer nodes time to communicate the original order to one another. The subsection names no hash count, no millisecond limit, and no size of the peer network. The protection it claims is the honest communication that the forced wait makes possible."
+   ]
+  },
+  {
+   "heading": "4.7.2 Speed",
+   "where": "Page 14",
+   "paragraphs": [
+    "Several generators, rather than one, are offered as a way to make attacks harder. One of them can favor bandwidth and fold a large volume of arriving events into its chain. Another can favor speed, keep bandwidth low, and only occasionally fold its state together with the busy generator. Anyone trying to reverse history would then have a second chain, the fast one, to undo as well. Neither role is given a numeric rate."
+   ]
+  },
+  {
+   "heading": "4.7.3 Long Range Attacks",
+   "where": "Page 14",
+   "paragraphs": [
+    "Citation 10 is the reference attached to long-range attacks. The pattern is that client private keys, already discarded, are obtained later and used to fabricate a ledger. History proofs are said to blunt that pattern. Whoever holds the old keys must build a replacement past, and computing that past lasts as long as computing the past being imitated. The processor doing the imitation has to outrun the processor the network's design assigns. If it does not, the fake history never grows as long as the real one.",
+    "Because every participant is supposed to share one record of what happened, one common time source is also said to simplify the replication proof left to section 6. Joined together, that replication proof and the history proof are meant to block a forged ledger on two axes: how the bytes are stored, and the order in which entries were timed."
+   ]
+  },
+  {
+   "heading": "5 Proof of Stake Consensus",
+   "where": "Page 14",
+   "paragraphs": [
+    "This chapter heading opens the stake-based consensus design and does not yet state its rules. The numbered parts that follow are a description, terminology, bonding, voting, unbonding, elections, election triggers, slashing, secondary elections, availability, recovery, finality, and attacks. No timeout length, bond fraction, or vote threshold is given at the chapter title. Those claims begin in the subsections."
+   ]
+  },
+  {
+   "heading": "5.1 Description",
+   "where": "Page 14",
+   "paragraphs": [
+    "This particular Proof of Stake is built for three purposes: quick confirmation of the sequence the Proof of History generator is currently producing, voting and selection of the next generator, and punishment of validators that misbehave. The algorithm depends on messages eventually arriving at every participating node, and on that arrival happening within a certain timeout. This subsection does not yet give the timeout a number of milliseconds or a number of hashes."
+   ]
+  },
+  {
+   "heading": "5.2 Terminology",
+   "where": "Page 15",
+   "paragraphs": [
+    "The terminology subsection fixes three words. A \"bond\" is explained by analogy with capital in Proof of Work, where a miner purchases machines and power and then ties that spending to one branch. Here the collateral is coin, posted by a validator for the period in which that validator is checking transactions. \"Slashing\", with citation 7, is the response offered to nothing-at-stake. If evidence is published that a validator backed another branch, the branch that was cheated can wipe out the posted coin. The wipe is an economic push against confirming more than one branch.",
+    "A \"super majority\" means two thirds of the validators once each validator is weighted by the coin it posted. A vote that reaches that share is what counts as consensus. Overturning the branch would have required malicious ballots from at least one third of the network. Priced that way, the attack costs one third of the coin's market capitalization."
+   ]
+  },
+  {
+   "heading": "5.3 Bonding",
+   "where": "Page 15",
+   "paragraphs": [
+    "Bonding is a transaction that shifts some quantity of coin into an account held under the user's identity and reserved for the bond. Spending out of that account is forbidden. The coin stays until the user withdraws it, and the only coin that may be withdrawn is coin a timeout has already marked stale. The bond counts as valid once stakeholders who are current have confirmed the sequence at super-majority weight. No coin quantity and no timeout length are named."
+   ]
+  },
+  {
+   "heading": "5.4 Voting",
+   "where": "Page 15",
+   "paragraphs": [
+    "On a cadence fixed ahead of time, the history generator is expected to be able to sign the state and put that signature out. Every identity that holds a bond must answer, and the answer is a signature of its own over the state, which it publishes. Ballots affirm only. A rejection ballot is not part of the scheme. The branch counts as valid once bonded identities answering inside the timeout reach a super majority. Neither the cadence nor the timeout is given a duration here."
+   ]
+  },
+  {
+   "heading": "5.5 Unbonding",
+   "where": "Page 16",
+   "paragraphs": [
+    "Coins turn stale, and lose the right to vote, after N votes have been missed. Taking them out is a later transaction the user sends for that purpose. N is not a constant. It follows the ratio of votes that have gone stale to votes that are still active, and it rises when stale votes become more numerous. In a large partition that movement is what lets the bigger side become usable again sooner than the smaller side. No particular integer is filled in for N."
+   ]
+  },
+  {
+   "heading": "5.6 Elections",
+   "where": "Page 16",
+   "paragraphs": [
+    "Failure of the history generator opens an election for a replacement. The winner is the validator whose voting power is greatest, and a tie in voting power goes to the public key that ranks highest. The replacement sequence is established only when confirmations reach a super majority. If the new leader stops before those confirmations exist, the validator next in rank is taken instead, and confirmations must be gathered again. A validator may change its vote only by voting at a higher sequence counter, and the new ballot has to embed the ballots it replaces. Omitting them makes the second ballot slashable. Switches are expected only at a height where a super majority is not yet present.",
+    "Once some generator holds office, a Secondary may be chosen to carry transaction processing. If that Secondary is already in place, a Primary failure makes it the successor. Rank moves up by design: the Secondary steps into the Primary role, and generators further down the list advance, either because an exception was observed or because a preset schedule said they should."
+   ]
+  },
+  {
+   "heading": "5.7 Election Triggers",
+   "where": "Page 16",
+   "paragraphs": [
+    "Election triggers is a heading over three conditions, and it does not define an algorithm by itself. The following subsections take the conditions one at a time: a forked Proof of History generator, a runtime exception, and a network timeout. No counter value, bond weight, or millisecond limit is attached at this heading. Each trigger's detection rule and consequence is written underneath its own number."
+   ]
+  },
+  {
+   "heading": "5.7.1 Forked Proof of History generator",
+   "where": "Page 16",
+   "paragraphs": [
+    "Proof of History generators are given an identity that signs the sequence they generate. Under this trigger a fork can occur only when that identity has been compromised. Detection is the publication of two different historical records on the same Proof of History identity. The subsection adds no timeout, no hash distance, and no bond penalty beyond recognizing the fork from those two records."
+   ]
+  },
+  {
+   "heading": "5.7.2 Runtime Exceptions",
+   "where": "Page 17",
+   "paragraphs": [
+    "The generator may suffer a hardware fault, hit a bug, or emit an error on purpose. Any of those can leave it signing a state that disagrees with the state a local validator computed. Validators answer by gossiping the signature they believe is right, and the disagreement opens a fresh election. A validator that accepts the bad state loses its bond. The subsection counts neither the gossip messages nor the length of the round."
+   ]
+  },
+  {
+   "heading": "5.7.3 Network Timeouts",
+   "where": "Page 17",
+   "paragraphs": [
+    "This subsection states a single trigger: a network timeout would start an election. It does not define the timeout in milliseconds, in missed messages, or in hashes, and it does not describe how the replacement generator is selected. The claim recorded here is only that the timeout itself is enough to open the election."
+   ]
+  },
+  {
+   "heading": "5.8 Slashing",
+   "where": "Page 17",
+   "paragraphs": [
+    "Slashing follows when a validator has voted for two sequences that differ. Proof of the double vote pulls the bonded coin out of circulation and places it in the mining pool. One shape of second vote is excluded from that proof: a ballot that already carries the earlier ballot from the competing sequence. Such a ballot does not cost the bond. What it does is cancel the vote currently recorded against the competing sequence.",
+    "There is a further slashing case. A ballot that supports a hash the history generator emitted, when that hash is not a valid one, is slashed. The generator is expected to emit a bad state by chance, and that emission is what forces fallback onto the Secondary. How often those chance failures are inserted is not said."
+   ]
+  },
+  {
+   "heading": "5.9 Secondary Elections",
+   "where": "Pages 17–18",
+   "paragraphs": [
+    "Generators ranked below the primary, the Secondary first among them, can be named in a proposal and then approved. The proposal is written onto the sequence the primary is already producing, and it includes a timeout. If the vote reaches a super majority before the timeout expires, the Secondary is elected and later assumes the duties the schedule names. The primary may hand over gently, by writing into its sequence a message that announces the coming handover. It may also force the issue, writing an invalid state so the network drops back to the Secondary.",
+    "If a Secondary has been elected and the primary then fails, the Secondary is considered the first fallback during the election. The proposal's timeout is not given a numeric length, and the text does not fix how many lower ranks may be lined up behind the Secondary."
+   ]
+  },
+  {
+   "heading": "5.10 Availability",
+   "where": "Page 18",
+   "paragraphs": [
+    "CAP systems that meet a partition have to choose. The choice described here lands on availability in the end, while consistency is what holds across timeouts a person would find reasonable, because time can be read off the ledger objectively. A stake verifier locks some coin and with that lock, gains a vote on one chosen set of transactions. The lock is itself a transaction on a history stream. Casting the vote means signing the state hash obtained after every transaction up to one chosen ledger position has been applied, and the vote is written onto the stream as well. From the ledger a reader can see the time separating votes and in a partition, how long each verifier has been gone.",
+    "How quickly an absent verifier loses its stake depends on how many verifiers remain. When that count is high and sits above two thirds, removal can be quick: only a short run of new hashes must be written before the missing stake is fully withdrawn and stops counting toward consensus. When the count sits under two thirds but still over one half, the timer is slower, and a longer run of hashes is required before those missing verifiers drop out.",
+    "If the partition is missing one half of the verifiers or more, withdrawal of stake is called very slow. The stream may still take transactions, and verifiers who remain may still vote, yet agreement at a full two thirds does not return until an enormous run of hashes has been written and the absentees have lost their stake. Customers are expected to use that difference in recovery time, on a human scale, to decide which side of the split they will keep."
+   ]
+  },
+  {
+   "heading": "5.11 Recovery",
+   "where": "Pages 18–19",
+   "paragraphs": [
+    "No failure is treated as final for the ledger. A reader anywhere may begin at a position chosen at random, extend the chain with fresh hashes, attach fresh transactions, and still have a valid fork. Should every verifier be absent from that fork, further bonds take a very long time to become valid, and a two-thirds super majority takes a very long time to form.",
+    "Starting with zero validators available, restoration therefore means writing a very large suffix of hashes. New bonds are not permitted to validate the ledger until every absent validator has been unstaked. The wait is left in qualitative language, very large and very long, with no hash total and no clock time filled in."
+   ]
+  },
+  {
+   "heading": "5.12 Finality",
+   "where": "Page 19",
+   "paragraphs": [
+    "Verifiers can look backward through the history and attach some confidence to when earlier events took place. While the generator is emitting its message stream, each verifier has 500 milliseconds to turn in a signature of the state. Network conditions may justify making that bound tighter. Because the submissions are written into the stream, any participant can test the deadline from the record and need not have watched the ballots arrive."
+   ]
+  },
+  {
+   "heading": "5.13 Attacks",
+   "where": "Page 19",
+   "paragraphs": [
+    "The attacks heading in the stake chapter is a container for five cases and does not argue them itself. The cases are a tragedy of the commons, collusion with the Proof of History generator, censorship, long-range attacks, and ASIC attacks. The 500 millisecond example, the bond shares, and the rule for comparing two ledgers appear inside those cases rather than under this heading."
+   ]
+  },
+  {
+   "heading": "5.13.1 Tragedy of Commons",
+   "where": "Page 19",
+   "paragraphs": [
+    "Stake verifiers, on this account, do nothing more than confirm the state hash the history generator publishes. Payoffs then tempt them to skip the computation and rubber-stamp every hash that appears. The countermeasure is that the generator should insert a bad hash at intervals chosen at random. A ballot for that bad hash is slashed. As soon as the bad hash appears, the Secondary generator already elected should be promoted without delay.",
+    "Replies are due inside a short window, illustrated as 500 milliseconds. The window is meant to be tight enough that a cheating verifier seldom manages to see another verifier's ballot and still land its own ballot on the stream in time. No numeric chance is attached to that race."
+   ]
+  },
+  {
+   "heading": "5.13.2 Collusion with the PoH generator",
+   "where": "Page 19",
+   "paragraphs": [
+    "A verifier working with the history generator learns the moment of the bad hash ahead of time and simply withholds its ballot. The text treats that pact as nothing other than the generator's identity already controlling a larger share of verifier stake. Computing the state hash remains work the generator cannot skip. The case adds no extra slash, no extra timeout, and no extra stake cutoff."
+   ]
+  },
+  {
+   "heading": "5.13.3 Censorship",
+   "where": "Page 20",
+   "paragraphs": [
+    "Censorship, also described as denial of service, is the case in which bond holders amounting to one third refuse to validate any sequence that carries new bonds. The protocol answers by changing, as conditions change, the speed at which bonds age into staleness. In such a denial the larger side is supposed to split away and exclude the Byzantine holders. That larger side returns as the excluded bonds age, while the smaller Byzantine side cannot advance for a longer stretch.",
+    "The steps are these. A majority that the network still has elects a replacement Leader, and that Leader bars the Byzantine holders from taking part. The history generator keeps extending its sequence, so that elapsed time stays provable, until enough of those bonds have aged that the bigger side holds a super majority. Aging speeds up or slows down with the share of bonds that are still active, and for that reason the minority fork waits much longer than the majority fork before a super majority returns. Once it has returned, slashing is available as a permanent penalty on the Byzantine holders."
+   ]
+  },
+  {
+   "heading": "5.13.4 Long Range Attacks",
+   "where": "Page 20",
+   "paragraphs": [
+    "Long-range attacks meet what the text presents as an inherent obstacle in Proof of History. Reviving the ledger from an arbitrary earlier point requires the attacker to pull ahead of the genuine ledger by computing faster than the generator. Consensus adds another obstacle: the attack has to last longer than it takes to unstake every validator who is still valid. The same rule leaves a gap of availability somewhere in the ledger's past.",
+    "When two ledgers of the same height are compared, the ledger whose maximum partition is the smaller one can be considered, on an objective basis, the valid ledger. This subsection does not quantify the generator's speed or the unstaking time beyond that comparison of partitions."
+   ]
+  },
+  {
+   "heading": "5.13.5 ASIC Attacks",
+   "where": "Pages 20–21",
+   "paragraphs": [
+    "Two openings for an ASIC are named. One appears while the network is partitioned. The other cheats the deadlines attached to finality. In the partition opening, stake is withdrawn at a rate that is not a straight line. Where the partition is large, that rate is described as orders of magnitude below the gain an ASIC attack would be expected to capture.",
+    "On finality, Byzantine validators who already hold bonded coin can wait until other nodes have confirmed, then insert their ballots with help from a generator that is cooperating. A faster ASIC lets that generator produce a run of hashes amounting to 500 milliseconds in less wall-clock time, which leaves room for messages between the generator and the nodes helping it. A generator that is itself Byzantine need not rely on the speedup: it can simply name the counter at which it plans to plant the failure. The text judges this the same situation as one shared identity, set against a single pooled stake that uses only one hardware bundle."
+   ]
+  },
+  {
+   "heading": "6 Streaming Proof of Replication",
+   "where": "Page 21",
+   "paragraphs": [
+    "Streaming Proof of Replication is the chapter title for a replication proof that can be checked as a stream. The subsections that follow give the purpose, the encryption and sampling algorithm, the cost of verification, key rotation, hash selection, how a proof is accepted, and the attacks that are considered. No byte width, core count, or time fraction is stated before the first of those subsections."
+   ]
+  },
+  {
+   "heading": "6.1 Description",
+   "where": "Page 21",
+   "paragraphs": [
+    "Filecoin's replication proof, cited as reference 6, is the starting point, but the aim here is narrower: checks should be fast and should run as a stream, which a history sequence makes possible by keeping time. The proof is not put forward as the network's agreement rule. It is a way to account for what it costs to keep chain history, or chain state, stored so that it stays highly available."
+   ]
+  },
+  {
+   "heading": "6.2 Algorithm",
+   "where": "Pages 21–22",
+   "paragraphs": [
+    "Figure 7's caption names sequential CBC encryption, and the extract gives no further description of the drawing's pixels. The steps beside it encrypt one block after another, and each new plaintext block is combined by XOR with the ciphertext of the block just finished. A replication identity builds its key by signing a hash taken out of a history sequence. That signature binds the key to the identity and to that particular sequence. Hashes that are allowed to be used are restricted; the restriction is section 6.5.",
+    "The data set is encrypted in full before a proof is built. The key seeds a generator of pseudorandom numbers, and that generator pulls 32 bytes, chosen at random, from every block. Each slice is prefixed with the history hash that was selected, and a Merkle hash is computed over the slices. The items published are the Merkle root, the key, and the hash that had been selected.",
+    "The replicating node owes a further proof before the history generator has emitted another N hashes. N is about half of however long the encryption takes. Hashes reserved for these proofs are issued by the generator on a fixed cadence, and the replicator has to take the next one of them when it builds the proof. It signs that hash and again draws random slices so it can form a Merkle root. After N proofs have been produced, encryption starts over under a different CBC key."
+   ]
+  },
+  {
+   "heading": "6.3 Verification",
+   "where": "Page 22",
+   "paragraphs": [
+    "Each of N cores can take one identity and stream that identity's encryption. Memory comes to two blocks per core, because the ciphertext just produced is required in order to form the next one. A core can then derive every proof that rests on the ciphertext block it holds. The time expected for the whole check matches the time encryption itself required. Proofs read only a handful of randomly chosen bytes, so the bytes that have to be hashed are far fewer than a full ciphertext block.",
+    "Identities in flight at one moment cannot exceed the cores on hand. A current GPU is credited with 3500 cores or above, though each of those cores ticks at half to a third of a CPU's clock. Figure 8's caption calls the drawing a fast Proof of Replication. The extract does not describe the drawing's pixels."
+   ]
+  },
+  {
+   "heading": "6.4 Key Rotation",
+   "where": "Page 23",
+   "paragraphs": [
+    "If the key never changes, one encrypted copy can cheaply support proofs aimed at many different history sequences. Rotation on a period closes that off. Every replica is encrypted again, and the replacement key is bound to a single history sequence. The period must remain long enough that checking stays practical on a GPU, whose individual cores are slower than CPU cores. No hash count and no fraction of encryption time is assigned to the period."
+   ]
+  },
+  {
+   "heading": "6.5 Hash Selection",
+   "where": "Pages 23–24",
+   "paragraphs": [
+    "The history generator issues one hash that every participant uses. It is the hash under which replication proofs are encrypted, and it also seeds the pseudorandom draw of bytes inside the fast proofs. The issue falls on a repeating counter, placed near half the time required to encrypt the data set. No identity may substitute a private hash. All of them use this common one, and the signature over it serves either as the seed for choosing bytes or as the encryption key.",
+    "Proofs must also show up on a cadence shorter than encryption. A longer gap would let a replicator encrypt progressively and throw the ciphertext away once each proof was finished. A hostile generator has a related move: insert data ahead of the scheduled hash and thereby steer which digest comes out. That move is taken up in section 5.13.2."
+   ]
+  },
+  {
+   "heading": "6.6 Proof Validation",
+   "where": "Page 24",
+   "paragraphs": [
+    "Validating the replication proofs that arrive is not work the history node is expected to perform. What it tracks, for each replicator identity, is the count of proofs still waiting and the count already accepted. Acceptance is expected once the replicator has collected signatures from validators who amount to a super majority.",
+    "Those signatures travel over peer-to-peer gossip, and the replicator then submits them together, in one packet, from a super majority of validators. The packet attests the proofs that come before one chosen hash in the history sequence. Several replicator identities may be covered by the same packet."
+   ]
+  },
+  {
+   "heading": "6.7 Attacks",
+   "where": "Page 24",
+   "paragraphs": [
+    "The attacks heading under streaming replication groups five cases and states none of their arithmetic. The cases are spam of many identities, partial erasure of stored data, collusion with the Proof of History generator, denial of service, and a tragedy of the commons. Sampling probabilities, core counts, and the split of mining payout are given only inside those subsections."
+   ]
+  },
+  {
+   "heading": "6.7.1 Spam",
+   "where": "Page 24",
+   "paragraphs": [
+    "Spam, in this subsection, is the creation of many replicator identities that then flood the network with proofs which fail. A node asking to be checked must hand over the ciphertext and the full Merkle tree, which is how the rest of the network can check quickly. Once that material is present, later proofs add no storage and are inexpensive to check. Encryption time is still spent, at one core for each identity.",
+    "How large a replication target to aim for should stop at the number of cores operators can readily obtain. GPUs described as current ship with 3500 cores or more, and that figure is the only capacity number this subsection supplies."
+   ]
+  },
+  {
+   "heading": "6.7.2 Partial Erasure",
+   "where": "Pages 24–25",
+   "paragraphs": [
+    "A replicator might delete some of the bytes instead of retaining the whole state. Difficulty is supposed to come from how many proofs are required and from how unpredictable the seed is. The example stores 1 terabyte and deletes one byte inside every block of 1 megabyte. One proof that reads a single byte from each of those megabytes is given a chance of hitting some deleted byte equal to 1 minus (1 minus 1/1,000,000) raised to the 1,000,000 power, and that value is set at 0.63.",
+    "After 5 proofs that likelihood is given as 0.99. The example uses those two results, 0.63 for one pass over the terabyte of one-byte holes and 0.99 after five passes, and it does not analyze a larger or smaller sample than 1 byte per megabyte."
+   ]
+  },
+  {
+   "heading": "6.7.3 Collusion with PoH generator",
+   "where": "Page 25",
+   "paragraphs": [
+    "The sample is seeded from the signed hash. A replicator that knew the hash early could delete every byte the sample will not touch. Working with the history generator provides that preview: the identity inserts a chosen transaction near the end of the sequence, just before the hash that will drive which bytes are drawn. With cores enough, the attacker could search until the digest favored that identity.",
+    "The attack could benefit only a single replicator identity. All identities have to use the same hash, and that hash is signed with ECDSA or an equivalent algorithm. Under that signature scheme each replicator identity gets a distinct, collision-resistant result. One identity would therefore obtain only marginal gains. The subsection does not say how many cores count as enough for the search."
+   ]
+  },
+  {
+   "heading": "6.7.4 Denial of Service",
+   "where": "Page 25",
+   "paragraphs": [
+    "Standing up one more replicator identity is expected to cost about as much as the storage underneath it. Adding the compute that checks every identity is expected to cost about one CPU core, or one GPU core, for each identity. The opening that creates is a flood of identities that are actually valid.",
+    "The bound suggested for that flood lives in the consensus rules. Those rules can name how much replication they want, and they can pay the proofs that show the traits they care about. Traits listed are reachability on the network, bandwidth, and location, with room for others. No numeric floor is set for any of them."
+   ]
+  },
+  {
+   "heading": "6.7.5 Tragedy of Commons",
+   "where": "Page 25",
+   "paragraphs": [
+    "Stake verifiers might approve a replication proof while skipping the actual check. Incentives are supposed to push them to perform that check, by splitting the mining payout between the Proof of Stake verifiers and the Proof of Replication nodes. The subsection names no ratio, coin amount, or schedule for that split.",
+    "A further guard lets the replication verifiers file a proof they know is bogus, and only for a small share of proofs. They demonstrate the fake by revealing the function that manufactured the bad data. A stake verifier who confirmed one of those fakes is slashed. The share is described as small and is never given a numeral."
+   ]
+  },
+  {
+   "heading": "7 System Architecture",
+   "where": "Page 26",
+   "paragraphs": [
+    "The last numbered chapter is the system architecture. Immediately before the heading, Figure 9 is captioned as the system architecture, and the extracted text does not describe that figure's pixels. The numbered parts then cover components, network limits, computational limits, memory limits, and a high-performance smart-contract engine. Byte sizes, transaction rates, and machine assumptions are not stated at the chapter heading itself."
+   ]
+  },
+  {
+   "heading": "7.1 Components",
+   "where": "Page 26",
+   "paragraphs": [
+    "Components is a heading over four roles, each given its own subsection. They are the Leader in its role as Proof of History generator, the state tables, the Verifier in its role as state replication, and the Validators. The heading states no table width, no minimum bond, and no bandwidth budget. Those quantities, where the text gives them, appear under the role that uses them or in the later limit sections."
+   ]
+  },
+  {
+   "heading": "7.1.1 Leader, Proof of History generator",
+   "where": "Page 26",
+   "paragraphs": [
+    "Leadership is the history generator the election has seated. Users' transactions, of any kind, are taken in and the output is a history sequence that includes every one of them. That sequence is what gives the system one global order and no other. At the end of a batch the Leader also signs the state produced by running the batch in the recorded order, using the Leader's identity for the signature. How many transactions sit in a batch is not fixed."
+   ]
+  },
+  {
+   "heading": "7.1.2 State",
+   "where": "Page 27",
+   "paragraphs": [
+    "Accounts sit in a plain hash table keyed by user address. A cell keeps that address in full, plus the memory the account's computation requires. The sample transaction row is ruled in bits, from a start at 0 to an end at 255, with ticks at 31 and 63, then at 95 and 127, then at 159 and 191, and finally at 223. The fields across the row are a RIPEMD of the user's public key, an account value, and unused room. The row totals 32 bytes.",
+    "The Proof of Stake bond table is drawn on the same bit columns. Its fields are a RIPEMD of the user's public key, the bond, the last vote, and unused space, and the row is 64 bytes long. The text gives those two totals and the shared column labels, and it does not further divide either row into per-field byte widths."
+   ]
+  },
+  {
+   "heading": "7.1.3 Verifier, State Replication",
+   "where": "Page 27",
+   "paragraphs": [
+    "Verifiers hold copies of chain state so the state stays highly available. How much replication to aim for is decided by consensus. Validators taking part in that consensus then choose replication nodes and vote for the ones they accept, judging by criteria set outside the chain. One possible configuration sets a floor on the stake bond and allows a single replicator identity for each bond. The floor is not given as a number of coins."
+   ]
+  },
+  {
+   "heading": "7.1.4 Validators",
+   "where": "Page 27",
+   "paragraphs": [
+    "Validators are the consumers of bandwidth that Verifiers supply. They are described as virtual nodes. A Validator may share a machine with the Verifiers, share a machine with the Leader, or sit on hardware of its own chosen for the consensus algorithm this network is set up to run. No bandwidth figure and no count of nodes per machine are given."
+   ]
+  },
+  {
+   "heading": "7.2 Network Limits",
+   "where": "Pages 27–30",
+   "paragraphs": [
+    "User packets arrive at the leader, which is expected to sort them so they run efficiently and then fold the sorted stream into a history sequence for Verifiers further along. Efficiency is a matter of how transactions touch memory: the ordering should cut faults and should give prefetching as much consecutive work as it can. Figure 10's caption refers to the limits of the generator's network, and the extract does not describe the drawing. Those limits are the sizes and the throughput arithmetic below.",
+    "Before a transfer payload, an incoming packet is drawn on a bit ruler that starts at 0 and ends at 255. Ticks sit at 31 and 63, at 95 and 127, at 159 and 191, and at 223. Labels are the last valid hash, a counter, a short mark printed as us, a fee, and a from field, gathered under a bracket labeled signed, then signature 1 of 2 and signature 2 of 2. The total is 148 bytes, assembled from a 20-byte piece, an 8-byte piece, a 16-byte piece, another 8-byte piece, and three 32-byte pieces.",
+    "The smallest transfer the format allows names a single destination account, and that packet is at least 176 bytes. The layout that includes a payload adds a to field and an amount, shows a counter and a fee beside the from field, keeps the signed grouping, and again ends with signature 1 of 2 and signature 2 of 2. The minimum size with payload is stated a second time as 176 bytes.",
+    "A separate packet is the history checkpoint. It carries the hash at that moment, the counter, a digest of every new message just folded into the sequence, and a signature over state after those messages have been applied. It goes out once a group of N broadcast messages has accumulated, not on every message. The drawing lists current hash, counter, a hash of the messages, and the state hash, marks that group signed, and ends with the two signature halves. The smallest such output is 132 bytes. N is not replaced by a number.",
+    "The throughput ceiling assumes a 1 gbps link. Dividing 1 gigabit per second by the 176-byte minimum yields 710k transactions per second at the top. Ethernet framing is expected to remove 1 to 4 percent of that. Room left above whatever target the network has set can be spent on availability, by applying Reed-Solomon coding to the output and spreading the coded shares across the downstream Verifiers that are up."
+   ]
+  },
+  {
+   "heading": "7.3 Computational Limits",
+   "where": "Page 30",
+   "paragraphs": [
+    "Every transaction includes a check of a digest. The check reads no memory beyond the message that holds the transaction, and separate checks do not wait on one another, so the machine's core count is the expected ceiling. GPU servers that verify ECDSA are cited, as reference 9, at 900k operations a second. This subsection does not add a core count of its own."
+   ]
+  },
+  {
+   "heading": "7.4 Memory Limits",
+   "where": "Page 30",
+   "paragraphs": [
+    "Keep state in a simple hashtable, occupy it only halfway, and give each account 32 bytes, and the analysis fits 10 billion accounts in 640 gigabytes. Random access once that table is in a steady state is put at 1.1 × 10^7 operations a second, whether the operation is a write or a read.",
+    "A transaction is taken to touch that table four times, twice to read and twice to write. On that basis the same access rate supports 2.75 million transactions a second. The machine named for the rate is an Amazon Web Services instance of the 1TB x1.16xlarge class. The halfway fill is not varied, and no other machine is introduced."
+   ]
+  },
+  {
+   "heading": "7.5 High Performance Smart Contracts",
+   "where": "Pages 30–31",
+   "paragraphs": [
+    "A smart contract widens what a transaction can be. It is a program every node executes, and running it changes state. The bytecode is extended Berkeley Packet Filter, chosen as fast and straightforward to inspect, and the contracts are also described as JIT bytecode. Calling out of a contract is claimed to cost nothing. Functions the platform implements directly, called intrinsics, are available to these programs. An intrinsic call pauses the caller and places the work on a server built for high speed. Paused calls are grouped so a GPU can run them side by side.",
+    "The worked case has a pair of user programs invoke one shared intrinsic, and neither program resumes until that group of intrinsic calls has finished. An ECDSA check is the intrinsic used as the illustration. Running those checks as a GPU batch is said to multiply throughput by thousands. Figure 11's caption concerns the execution of BPF programs, and past the two-program example the extract does not describe the drawing. The trampoline does not switch the context of a native operating-system thread, because BPF already fixes the memory context it will use.",
+    "LLVM has included an eBPF backend from 2015 onward, so a contract may be authored in any language that already has an LLVM front end. The Linux kernel has carried this bytecode since the same year, and the bytecode's earliest forms reach back to about 1992. One forward scan can decide that an eBPF program is well formed, can bound how long it runs and how much memory it needs, and can lower it to x86."
+   ]
+  }
+ ]
+}

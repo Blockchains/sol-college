@@ -1,0 +1,214 @@
+{
+ "slug": "ephemeral-rollups-are-all-you-need",
+ "pages": 18,
+ "sections": [
+  {
+   "heading": "Ephemeral Rollups are All you Need",
+   "where": "p. 1",
+   "paragraphs": [
+    "The title page gives the paper as Ephemeral Rollups are All you Need, by Gabriele Picco and Andrea Fortugno. The header identifies the preprint as arXiv:2311.02650v4 in the category cs.DC, dated 14 Feb 2025, and prints the site www.magicblock.gg. Those lines identify the document; the argument begins in the abstract."
+   ]
+  },
+  {
+   "heading": "Abstract",
+   "where": "p. 1",
+   "paragraphs": [
+    "The abstract pictures open, composable gaming platforms where users expand, create, and immerse themselves in entertainment. Fully on-chain games, with both state and logic on the blockchain, are offered as a promising route because they maximize composability. The authors say that route still faces limits and trade-offs, especially cost and scalability. The paper proposes a framework that uses the Solana Virtual Machine to scale those games without fragmenting state and without weakening the trust assumptions.",
+    "The framework is said to discover, use, and publish modular pieces of logic as components rooted in the entity-component-system pattern. For scale and resource use, the authors introduce ephemeral rollups, dedicated runtimes meant to overcome the trade-offs of horizontal scaling on a second layer. Those runtimes can be customized for higher operational speed, a configurable ticking mechanism, provable sessions, and gasless transactions, which the abstract says can be had without a trade-off between composability and scalability."
+   ]
+  },
+  {
+   "heading": "1 Introduction",
+   "where": "pp. 1-2",
+   "paragraphs": [
+    "Fully on-chain games are described as binding digital experience to a decentralized immutable ledger. Any participant may add content, logic, or modifications without the original creator's consent, which the text calls permissionless modding, or may take part in creating autonomous worlds, described as unstoppable digital worlds. Because smart contracts enforce the substrate, the authors say these worlds cannot be unplugged the way a traditional game server can. Once deployed, a fully on-chain game will run forever. That persistence is said to make games places to play, socialize, work, and trade inside a more pervasive way.",
+    "Following definitions the paper cites, a game counts as fully on-chain only if it has three attributes. The blockchain is the single source of truth: both state and logic reside there, the chain is a transparent store of all meaningful data, logic executes without trust in an operator, and the game is client-agnostic. Composability is permissionless: new extensions, logic, or components can be added without the creator's explicit permission, and trustless computation makes every enhancement reachable, a condition the text sums up by calling everything a public application programming interface. Not every plug-in will be used, but anyone may contribute one. Persistency means resilience with no single point of failure. Servers or centralized pieces may improve performance or playability, yet the world must be able to continue without them.",
+    "The authors' conviction is that fully on-chain games will drive new platforms and self-reliant ecosystems, evolving according to consumers and communities aligned in that creative effort. They say the concept can move past games and soften the boundary that separates virtual life from physical life."
+   ]
+  },
+  {
+   "heading": "1.1 Game Logic, State, and Transactions",
+   "where": "p. 2",
+   "paragraphs": [
+    "In a fully on-chain game, logic lives in smart contracts on the blockchain, so it is transparent and immutable. That logic comprises the rules, the player interactions, and the other behaviors that define the experience. State is the real-time status and attributes of game elements, stored on chain so every player shares a consistent, synchronized environment. It reflects the current situation—player positions, assets, scores, and similar fields. Transactions are the interactions and exchanges inside the game. Player actions, asset transfers, and other activities are state transitions recorded on chain, so they have integrity and a permanent record. Decentralization is said to make those interactions transparent, verifiable, and immutable."
+   ]
+  },
+  {
+   "heading": "1.2 Outline",
+   "where": "pp. 2-3",
+   "paragraphs": [
+    "The outline says the coming sections numbered 2 and 4 introduce a performant, scalable framework, based on the Solana virtual machine, for fully on-chain games plus autonomous worlds. It promises attention to scalability and to efficient reuse of resources and on-chain building blocks. An overview of emerging gaming frameworks and their limits is deferred to Appendix A. An overview of common scalability solutions, with their limits and trade-offs, is deferred to Appendix B."
+   ]
+  },
+  {
+   "heading": "2 Framework Architecture",
+   "where": "p. 3",
+   "paragraphs": [
+    "Building multiplayer games is called complex even in ordinary settings, and fully on-chain games intensify that difficulty because every interaction must be registered on chain, which limits both scale and cost. Those limits are traced to decentralization and to the consensus mechanisms in use. The paper then states a simple scenario. A game with 1000 players, each position updating every 100 milliseconds, results in 10,000 transactions per second. Scaling the same pattern to 100,000 players leaps, in the paper's words, to one million TPS—volume the authors say no chain can then support.",
+    "Even a high-speed chain such as Solana, which the text says might manage such traffic in the future, is described as quickly overwhelmed once many games and still larger player counts are considered. On cost, Solana's localized fee market is said to ease one worry by stopping a single game from changing fee costs for other games, a situation the paper calls the noisy-neighbor problem. Even so, if each fee is low, the cumulative cost of so many transactions can become untenable for one fee payer, identified as the game developer."
+   ]
+  },
+  {
+   "heading": "2.1 SVM runtime",
+   "where": "pp. 3-4",
+   "paragraphs": [
+    "Scalability on Solana is tied to how it stores and manages state, which the text distinguishes from other virtual machines such as the Ethereum one. On Solana, everything is an account. An account may hold any data, and it may hold native SOL. Accounts fall into two broad categories. Executable program accounts are likened to smart contracts: they house code and are often called programs. Non-executable data accounts can store tokens or data and cannot execute code.",
+    "The account model is said to let programs create and oversee particular accounts, so developers can set custom rules for how those accounts are governed. The paper calls these special accounts program-derived addresses. Through them, a program can endorse on-chain actions on an account's behalf, and the network will recognize those actions, without a private key being required. Another core feature is parallel transaction processing. The machine identifies non-overlapping parts of a transaction and processes them together, so hardware is used more fully. The text contrasts this with chains that track global state in a Merkle tree and process transactions one after another. Solana's Sealevel, it says executes transactions concurrently and thereby boosts throughput and scalability. This subsection states that qualitative claim and does not attach a transactions-per-second figure to Sealevel."
+   ]
+  },
+  {
+   "heading": "2.2 Ephemeral Rollups",
+   "where": "pp. 4-6",
+   "paragraphs": [
+    "The core idea is that the account structure and the parallelization just described can split an application or game state into clusters. Users lock one or more accounts and temporarily transfer that state to an auxiliary layer that the paper names the ephemeral rollup: a tunable runtime dedicated to that work. While the delegation holds the sequencer may modify accounts inside the rollup. If constraints are not met, the state is forcibly reverted and unlocked on the base layer, with the mechanism pointed to a later security section. Delegated accounts can still be read on the base layer. Accounts that were not delegated stay modifiable and are otherwise unaffected.",
+    "The rollup is a specialized Solana-virtual-machine runtime for high throughput and low latency. It can be customized for gasless transactions, a quicker block time, and a ticking mechanism, described as an integrated scheduler in the manner of Clockwork, operated without fees. A specialized remote-procedure-call provider routes transactions to the base layer and to one or more rollups in parallel during a session, and the process is said to be transparent to the end user.",
+    "A figure summarizes the architecture. A program holds executable logic, and its state is spread across accounts. For a game, program-derived addresses might store player positions, and another account might be a chest that distributes rewards. The program can call programs already on the base layer, such as a ready-made leaderboard, a contract that mints a non-fungible token, or an energy system. Provisioning then follows six steps stated in the text. The program asks the delegation program for an ephemeral rollup, specifying lifetime, how often the base layer is updated, a target transactions-per-second rate, and block time. Something monitoring that delegation program sees the request and immediately launches the matching runtime. The program delegates accounts to the delegation program, which then has authority to update and settle state, and from that moment those accounts can be updated only inside the rollup. This third step may run in parallel with the launch, or even before it.",
+    "Clients that want to transact or to read data send their requests to a router. The router forwards each request to the base layer or to one of the rollups according to the accounts involved. Periodically, or when the rollup ends, the sequencer updates state on the base layer. When the rollup concludes, or when the game program forces closure, control of the accounts returns back to the owner program, and the provisioner shuts down the rollup. The figure caption adds that the provisioner watches the delegation program, launches a Solana-virtual-machine runtime tuned to parameters such as block time and ticking, accelerates transactions that use the delegated accounts, and after validation, updates and finalizes account state on the base layer.",
+    "A practical example follows. A game might award a non-fungible token when a player reaches a marked area. Position accounts can be updated often inside the rollup, supporting a low-latency multiplayer session among players who are in it. When a player hits the reward location, the client submits the transaction in the usual way. If the sequencer is not updating quickly enough, the user may first submit an optional request to settle state. Behind the scenes the router sends that transaction to the base layer. The game program there can process it and dispense the reward, because the position account is read-only and already shows the updated location, while the reward is written to an account that was not delegated."
+   ]
+  },
+  {
+   "heading": "2.2.1 Avoiding Fragmentation and Benefits",
+   "where": "pp. 6-7",
+   "paragraphs": [
+    "The benefit claimed here is that programs and assets stay on the base layer. Transactions can still be accelerated in ephemeral rollups, which are said to be compatible with the Solana virtual machine down to the bytecode. Improvements on the base layer are immediately available, and programs do not have to be modified or deployed again. Developers deploy to the base layer, with Solana given as the example, rather than to a separate chain as with ordinary rollups. Programs can interact with existing protocols and assets. The rollups are said not to fragment the ecosystem: targeted operations speed up without an isolated environment.",
+    "Users, developers, and programs can use Solana's infrastructure, including languages, libraries, testing tools, client software, and deployment infrastructure. The specialized runtime can hold game-specific customizations, such as ticking or passive events, which the text contrasts with the event-driven runtime of blockchains, and those customizations need not be paid for in gas. The approach is said to launch rollups on demand and to scale horizontally, automatically, so that millions of transactions can be handled without the trade-offs the paper associates with traditional second layers. The subsection closes by saying ephemeral rollups let fully on-chain games scale while composability on the base layer remains intact."
+   ]
+  },
+  {
+   "heading": "2.2.2 Reading and Modifying the state",
+   "where": "pp. 7-8",
+   "paragraphs": [
+    "State is kept in accounts, and those accounts can exist at the same time on the base layer and inside an ephemeral rollup. They can be read from either layer. They can be modified from the base layer or from the rollup, under rules the subsection then spells out. If a client reads an account, the newest data may still sit in the rollup when it has not yet been settled on the base layer. The example is a game client using a WebSocket connection to show other players on a map while position accounts are delegated. A WebSocket to the rollup would then stream transactions with latency and block time on par with a classic multiplayer server, which the paper states as typically between 10 and 100 milliseconds.",
+    "A remote-procedure-call router, shown in a second figure, hides the choice of where to submit and where to read. The figure routes both HTTPS and WebSocket requests to the base-layer endpoint or the rollup endpoint according to the accounts being used. Clients subscribe and send transactions to the router as they would to an ordinary endpoint.",
+    "For reads, a request that touches accounts delegated to a rollup is relayed to that rollup's endpoint. Otherwise the base layer handles it. For transactions being sent, if every writable account is delegated to the rollup, and readable accounts may come from either layer, the transaction goes to the rollup. If no writable account is delegated, and readable accounts may again come from either layer, the transaction goes to the base layer. A harder case is a transaction that tries to modify accounts in both places. The paper offers two resolutions. One resolution forces a settlement onto the base layer in the middle of the flow, returns the accounts from delegation, and only then submits through the base endpoint. The other is to discard the transaction as invalid. Which choice is preferred depends on the use case.",
+    "The router also supplies the correct blockhash for transactions. The text calls that hash a fundamental piece of how Solana provides security and prevents double spending, and it cites the Solana architecture paper for the point rather than explaining the mechanism in this subsection."
+   ]
+  },
+  {
+   "heading": "2.2.3 Account/programs lazy loading and Data Availability",
+   "where": "p. 8",
+   "paragraphs": [
+    "Ephemeral rollups can lazily load the accounts and programs a transaction uses. If a transaction reads state or logic that lives on the main layer, the rollup can copy that account when it is needed, and it does not have to stand up a full copy of the main chain first. Records of transactions stay readable for a limited interval. They may also be kept without an end time, either inside a compressed Solana account or on an outside availability layer such as Celestia. They persist after the rollup has closed, which the text says makes it easier to verify that the computation was correct."
+   ]
+  },
+  {
+   "heading": "2.3 Security and Computation Trustworthiness",
+   "where": "pp. 8-9",
+   "paragraphs": [
+    "Two security problems are named. Delegated accounts must not stay locked indefinitely, and state must not be left compromised. The rollup's computation must also be agreed and verified. The first problem is handled by the temporary nature of the construct. Anyone can ask for accounts to be undelegated when the rollup's life ends, by calling the program on the base layer. The program that performed the delegation can revoke it, or can request settlement, at any time, and that request forces the rollup to close.",
+    "The second problem is called common to rollup designs and is usually met with optimistic rollups or zero-knowledge rollups. The paper points to outside descriptions of both, to a comparison, and to zero-knowledge channels as a related idea for games. Transaction history remains available in a compressed account on Solana or on an external layer such as Celestia. The proposed combination is to compute optimistically at first, for speed, and then to produce a zero-knowledge proof, with RISC Zero given as an example, that can be checked on the base layer inside one transaction. Anyone may become a provisioner by locking a preset token amount into the rollup program, which the text describes as creating decentralized-physical-infrastructure-style capacity. Participants in a session may themselves act as what the paper calls diet clients of the Solana virtual machine, which is said to raise the trustworthiness of the network."
+   ]
+  },
+  {
+   "heading": "3 SVM as a Multiplayer Game Server",
+   "where": "pp. 9-10",
+   "paragraphs": [
+    "The architecture is said to address handling millions of transactions across arbitrarily many games. Traffic is scaled horizontally across multiple ephemeral rollups that run the Solana virtual machine, which the text says yields high throughput and low latency while composability on the base layer stays intact, making the design suitable for multiplayer games. Estimating a theoretical throughput is called complex because it depends on how many rollups exist and on the sharding strategy. As a benchmark for comparison, the paper points to a multiplayer server, Nakama. Citing that project's documentation, it says Nakama is known for low latency, often close to 50 milliseconds, and for backing thousands of simultaneous players in real time games. Those Nakama figures are presented as a cited comparison, not as a measurement the authors report from their own system.",
+    "As of the time of writing, the paper says Sealevel throughput sits between 50,000 transactions per second and 65,000. The span is tied to a citation of a public Solana performance page. The paper does not present that span as a measurement it performed itself. Newer runtimes such as Firedancer are anticipated, again by citation, to boost throughput to more than 100,000 transactions per second. The paper calls the cited Sealevel level already substantial, and says an ephemeral rollup can raise throughput further alongside arbitrarily many dedicated runtimes.",
+    "On latency, it states that Solana produces blocks approximately every 400 milliseconds, while the customizable rollup runtime can decrease that time to between 10 and 50 milliseconds. It adds that the reported Solana performance figures are based on a network of around 2,000 nodes. The section closes by calling the Solana virtual machine, with its transaction processing and its support for decentralized applications, promising infrastructure for hosting multiplayer game servers."
+   ]
+  },
+  {
+   "heading": "4 ECS, Mapping and Registry",
+   "where": "pp. 10-11",
+   "paragraphs": [
+    "The framework standardizes game logic with the entity-component-system pattern, which the text says is common in the game industry and is also used in most on-chain engines it cites. The pattern separates logic from state, which allows performance and scalability to be improved, and its modular form supports reuse and extension, two properties the authors treat as necessary for games that live fully on chain and for autonomous worlds. Solana's virtual machine is said to use a similar split: state is the accounts and logic is the programs. That separation is called the key both to Solana's parallelism and to the scalability design in the earlier architecture section.",
+    "Mapped onto Solana, an entity is a general-purpose object, usually a unique identifier. It holds no data or behavior itself; it identifies a bag of components. Entities can be registered in a world-instance account and could also be individual accounts. A component is a raw data structure for one aspect of an entity. A position component, for example, might hold only coordinates named x, y, and z, which the text likens to how accounts work. A system performs logic by acting on entities that have particular components, much as programs define logic and operate on specific accounts. Program-derived addresses are said to store and retrieve components efficiently, in a way that mimics a hash table. An example implementation of the pattern on Solana is cited."
+   ]
+  },
+  {
+   "heading": "4.1 Mapping and State listening",
+   "where": "p. 11",
+   "paragraphs": [
+    "The standardized pattern is said to make it easy to connect game components to a rendering engine that draws the interface. The framework can be viewed as an open, permissionless alternative to a backend that would otherwise be a multiplayer game server. For display, existing engines such as Unity, Unreal Engine, and Phaser, among others, can be used. Because components have a standard shape, their properties and those of entities can be mapped automatically, with serialization and deserialization abstracted in a way the text likens to the Anchor framework on Solana. State updates can be executed and watched through a mechanism similar to the observer pattern, so rendering can follow changes in state."
+   ]
+  },
+  {
+   "heading": "4.2 Public Components Registry",
+   "where": "p. 11",
+   "paragraphs": [
+    "A registry is described as complementary infrastructure for an architecture that uses the entity-component-system pattern or the Solana account model more generally. It lets people publish, discover, and reuse logic pieces—systems and shared data structures—usable across applications and games. Any Solana-deployed program can be read as a system that states logic and receives accounts as the input to a computation. For games, the authors envision a registry of ordinary development pieces: collision handling, energy accounting, movement updates, and similar modules found in traditional engines. Developers can discover, publish, and use those systems and components, and can assemble games quickly without rewriting the underlying logic from scratch."
+   ]
+  },
+  {
+   "heading": "4.3 Game Loops, Ticking and FRP",
+   "where": "pp. 11-12",
+   "paragraphs": [
+    "Typical game engines include a game loop that keeps updating state, sometimes called ticking. The loop processes input and then processes state updates such as physics, artificial intelligence, and object positions. Client engines would also render. Continuous updates can be obtained from a transaction scheduler such as Clockwork, as the architecture section already noted. The text says that approach still has problems: fees cost money, and the exact block or timestamp of execution is uncertain. Those problems recede in ephemeral rollups. A transaction that updates state can be made free of cost, and the interval between blocks can be set anywhere from 1 millisecond to 50. That configured range is the claim in this subsection; it is distinct from the 10-to-50-millisecond decrease stated earlier for the rollup runtime and from the 10-to-100-millisecond comparison with a traditional server.",
+    "The authors also note less explored alternatives to loops. Haskell engines such as Yampa, and functional asynchronous entity-component systems such as Apecs, compute a value from a function. They do not step state forward in a loop driven by input, by the clock, or by some further source. One illustration is energy tied to time: the function adds a single point of energy each time 30 seconds pass. The text says this fits a blockchain, where transactions are inherently asynchronous and a game instance may live forever, changing as time passes. The idea is likened to functional reactive programming and to functional reactive animation, which deal with asynchronous streams and with data changing over time.",
+    "A pure engine of that kind is called theoretically possible. In practice, combining loops and derived values allows more configuration and lets the mechanic pick the paradigm. One non-player character might have its position updated in a loop, while the positions of any number of others are derived. The framework is said to be evolving so that it supports both paradigms."
+   ]
+  },
+  {
+   "heading": "5 Conclusion",
+   "where": "p. 12",
+   "paragraphs": [
+    "The conclusion says the article has presented the design of ephemeral rollups as a performant, scalable answer for games and autonomous worlds that run entirely on chain. The entity-component-system architecture is meant to make on-chain components and logic easier to create and reuse. Using the Solana virtual machine's account layout, delegated account edits, and parallel execution, the framework offers ephemeral rollups as a path to scale those games. The design is said to provide fast, specialized runtimes that scale horizontally with demand and do not create isolated environments. Composability with existing protocols, tooling, and later runtime advances on the base layer is retained, and state is not fragmented. Although the design targets fully on-chain games, the mechanism can be applied broadly to other use cases."
+   ]
+  },
+  {
+   "heading": "References",
+   "where": "pp. 12-14",
+   "paragraphs": [
+    "The reference list records the works cited in the body and the appendices, including notes on game engines, explanations of rollups, Solana documentation, rendering tools, and cryptographic descriptions. Those citations were not treated as findings. The comparative claims about other engines appear in the appendices themselves and are read there."
+   ]
+  },
+  {
+   "heading": "A Emerging gaming frameworks",
+   "where": "p. 15",
+   "paragraphs": [
+    "The appendix says several frameworks have recently appeared to simplify this new kind of game. Each on-chain game engine has distinct features and a different approach to creating and managing fully on-chain games, and each has its own trade-offs. The section promises a technical comparison. The numbered subsections then take up Ethereum-virtual-machine frameworks, frameworks outside that machine, one further design, and a closing judgment."
+   ]
+  },
+  {
+   "heading": "A.1 EVM frameworks",
+   "where": "pp. 15-16",
+   "paragraphs": [
+    "MUD is called among the earliest on-chain gaming frameworks. Lattice, the company behind it, is said to have been first to put the entity-component-system pattern on chain. MUD is currently on Optimism. It tries to meet the limits of the Ethereum virtual machine with an opinionated database that indexes game state off the chain and can be queried like an ordinary relational database, so the table of components that make up an autonomous-world instance can be reached faster than by reading state directly from the chain. The focus is modularity, through libraries and plug-ins. The biggest limitation named here is scaling or customizing at the runtime layer. If MUD scales games with a third-layer rollup, the paper says it would fragment game state across new rollups.",
+    "Keystone, by Curio, is described as a similar engine derived from the OP stack, a rollup framework that improves Ethereum-virtual-machine performance. Curio is focusing on more responsive games by introducing ticks, defined as atomic units of time, so the game feels and looks more responsive. As with MUD, every game on Keystone must deploy its own independent rollup, with the same problem of isolated state. LootChain is another low-block-time, customizable second layer, deployed with Caldera, developed by the Loot community, and using ADGL for gas. Beyond that shorter block interval, the paper says it does not solve fragmentation across games, nor gas congestion from the noisy-neighbor problem."
+   ]
+  },
+  {
+   "heading": "A.2 Non-EVM frameworks",
+   "where": "pp. 15-16",
+   "paragraphs": [
+    "Dojo is an open-source framework by Cartridge and other contributors on Starknet. Its main advantage, as stated here, is the Starknet prover: game sessions can be proved with zero-knowledge computation, and state differences can be posted instead of entire state updates. The focus is on moving intense computation, with physics given as the example, off chain and proving that computation on chain. Like other engines, Dojo proposes an entity-component system, plus tools for scaffolding, indexing, and local nodes. With Madara, described as a fast third layer, the paper says Dojo makes explicit that its path to scale has the same trade-offs as the other solutions.",
+    "The Paima engine, from Paima Studio, supports fully on-chain games on Cardano, Polkadot, Algorand, and Ethereum-virtual-machine chains. It emphasizes cross-chain development. At the core, a state machine replays the contract logic and ships the update onto a sovereign rollup. The paper says Paima explicitly trades away composability in order to gain higher scalability and parallelization in that state machine. Each game deploys on its own sovereign rollup. even a simple global leaderboard spanning games built this way becomes complicated, if it is possible at all."
+   ]
+  },
+  {
+   "heading": "A.3 Other frameworks",
+   "where": "p. 16",
+   "paragraphs": [
+    "World Engine, by Argus Labs, is presented as an attempt to solve performance, to add a ticking mechanic, and to keep composability in mind. Argus is said to acknowledge that atomic composability is not necessarily a prerequisite for games, with flash-loan-like dynamics given as something games may not need. The proposal is an Ethereum-virtual-machine second layer with sharded execution environments and customizable runtimes. Gaming runtimes are described as different from blockchains because they can have passive events, such as day and night cycles or energy regeneration, which are not generated from user input. The architecture is called loop-driven, as opposed to event-driven. The paper says this looks promising on paper, while Argus is in effect bootstrapping a new blockchain from scratch.",
+    "Infrastructure, tools, and contracts that already exist do not run unchanged on shards outside the Ethereum machine, and the Argus ecosystem does not directly gain from wider progress or activity on the base layer. The authors believe autonomous worlds, because they give play a new level of significance, are more likely to succeed where global payments settle, users and liquidity are abundant, and protocols are inventing new primitives. They also say atomic composability can improve experience or unlock uses that are not obvious. In an esports example, an on-chain bot might borrow a strong item from a non-fungible-token marketplace just before a critical hit, finish a high-stakes fight and repay using the prize. In one atomic transaction a user might bring in fiat, exchange it for SOL, open a wallet that uses account abstraction, and enter a prize pool."
+   ]
+  },
+  {
+   "heading": "A.4 Considerations",
+   "where": "pp. 16-17",
+   "paragraphs": [
+    "In their different ways, every framework discussed is trying to improve block time and throughput, and in doing so introduces trade-offs in composability and in network effects. Isolated application chains and the current style of horizontal scaling are called short-sighted, because they fragment state and reduce synergies with other protocols on the base layer. If autonomous worlds really do give games a new significance and become avenues for commerce, play, and work, the authors believe a better fit is a blockchain that settles a large volume of real-world economic activity, that hosts consumer-facing applications and decentralized physical infrastructure, and that synchronizes state globally at low latency."
+   ]
+  },
+  {
+   "heading": "B Scalability Approaches",
+   "where": "p. 17",
+   "paragraphs": [
+    "A prevalent answer to scale is a second layer, a protocol on top of the base chain that raises transaction speed and lowers cost, together with sharding, which partitions traffic into isolated segments. The paper says the two methods are alike: both scale by separating state and computation into independent layers or shards. Multiplayer games often do something similar, with several server instances managing traffic, for example by geographic zone, whether the zone is virtual or in the real world. Layers and shards must interoperate. A player moving from one map area to another is effectively moving between shards. Most of the game engines in the previous appendix incorporate this method, directly or indirectly. Taken to an extreme, it leads to application-specific third layers, which the text calls an emerging strategy for games on the Dojo and MUD engines.",
+    "The technique inherently fragments state and complicates composability among games, applications, and other protocols. Bridges can address that and the paper says they have historically been unreliable, have added interface complexity, and have been a source of bugs. Atomic transactions, which either run completely or do not run at all, cannot be executed across the split, and the text says atomicity can be essential for some game mechanics, especially when a game has economic effects or talks to protocols that require atomicity.",
+    "Both approaches can also use a faster runtime. Two kinds are identified. The first stays compliant with the parent virtual machine. It may be faster because the implementation is more efficient, with an optimized Rust implementation contrasted with a Python one for the Ethereum machine, or because security and decentralization assumptions differ, for example a more centralized consensus or a runtime that produces a zero-knowledge proof and separates computation from verification. The second kind uses a distinct state machine, free of the base machine's limits, as with Paima and World Engine, the latter using Go and Nakama as a multiplayer server. That machine defines its own state transitions and eventually, consensus and settlement on the base layer.",
+    "Both kinds fall under rollups, further sorted into zero-knowledge, optimistic, smart-contract, and sovereign rollups according to how they handle execution, settlement, consensus, and data availability. The paragraph ends by pointing the reader to a more detailed description in a section whose number is printed as a pair of question marks, so the target of that cross-reference is not readable."
+   ]
+  },
+  {
+   "heading": "B.1 Scalability vs Composability",
+   "where": "p. 18",
+   "paragraphs": [
+    "Throughput of the execution layer is constrained by the virtual or state machine and by its runtime, meaning the implementation. A clear advantage of a runtime that stays compliant with the virtual machine is compatibility with the base layer. For the Ethereum machine, protocols and technology stacks are typically reusable, or deployable without modification, across compatible chains and across second and third layers. That compatibility is said to help an ecosystem grow quickly, to let innovations from different ecosystems be integrated, and to let users and products move among compatible chains. The downside is architectural limits that come from blockchain priorities—security, decentralization, immutability, and consensus.",
+    "A custom or pre-existing state machine that was not built for a blockchain can be optimized for performance, latency, and throughput. The paper says it also hurts composability and usually weakens trust and security assumptions. Protocols and products that depend on that machine cannot be moved between ecosystems, which increases fragmentation. The authors say their own framework obtains both benefits and minimizes the trade-off between scale and composability. By using features of the Solana virtual machine, which the appendix says are described in subsequent sections, the framework can accommodate any runtime for that machine and scale it horizontally, while still interacting with protocols and components on the base layer, including atomically."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,80 @@
+{
+ "slug": "pyth-network-a-first-party-financial-oracle",
+ "pages": 6,
+ "sections": [
+  {
+   "heading": "PYTH NETWORK: A FIRST-PARTY FINANCIAL ORACLE",
+   "where": "p. 1 (title)",
+   "paragraphs": [
+    "The cover presents a first-party financial oracle under the Pyth name, credits the Pyth Data Association, and labels the document version 2.0 dated September 28, 2023. Early prose says traditional venues keep tight hold of live and historical quotes, while crypto markets are still comparatively open without any promise that openness lasts. Pyth’s stated aim is to surface that market information for DeFi and for the public by paying trading desks, liquidity providers, and venues to release prices they already observe in the course of business. Those first-party inputs are combined and posted on-chain for programs and for off-chain readers.",
+    "A note says the earlier whitepaper centered on Solana alone. Version 2.0 revises the design for the ecosystem as it stands now and explains a cross-chain delivery path that carries prices onto many target ledgers. The Association, working with the participant community, issued the paper to document that updated status."
+   ]
+  },
+  {
+   "heading": "1 overview",
+   "where": "pp. 1-2",
+   "paragraphs": [
+    "The overview says the protocol pays people to keep refreshing quotes for products such as BTC/USD. Every product feed carries both a spot value and a confidence band for estimated uncertainty. As an illustration, the paper writes that BTC/USD might show \"$65000 ± $50\". An on-chain program merges publishers’ individual feeds into the product feed that consumers then read, whether those consumers are contracts on various ledgers or off-chain software. Publishers are cast as first-party sources able to supply timely, high-quality marks.",
+    "Two roles are defined. Publishers post feeds and collect fees; they are typically market actors with accurate, timely information. Consumers pull feeds into contracts or applications and pay protocol fees for access. Fees are described as a fixed charge per refresh on a destination ledger, with the example \"0.0001 ETH\" for one update. Consumers may sit on many chains that wire Pyth into their market-data path.",
+    "Reaching many consumers requires a multi-chain setup. Feed state lives on an appchain named Pythnet, a proof-of-authority network where each publisher also validates. Aggregated marks leave Pythnet toward destination ledgers through messaging fabrics such as Wormhole. That broadcast path is presented as how Pyth can serve many destinations so users can consume data wherever they build. Interaction then splits into aggregation that runs on Pythnet and governance that sets high-level parameters.",
+    "Hardening against manipulation is treated as a core design problem. One threat is publishers who join only to skew the oracle; aggregation is said to cap any small cohort’s influence, and the community may restrict who may publish. Another threat is actors who shove venue prices to move the aggregate; a diverse publisher set sourcing from different venues, plus robust aggregation, is said to blunt that path."
+   ]
+  },
+  {
+   "heading": "2 cross-chain architecture",
+   "where": "pp. 2-4",
+   "paragraphs": [
+    "Publishers write prices on Pythnet, aggregation forms a single mark, and that mark is sent onward so consumers elsewhere can use it. Pythnet is purpose-built: its programs and traffic concern only publishing, combining quotes, and starting outbound transfers. The paper states that Pythnet consensus and runtime follow Solana’s corresponding designs.",
+    "Four goals frame the cross-chain path: hold down fees when feeds must exist on many ledgers; keep updates frequent and low-latency; reach many blockchains that differ in runtime, consensus, and gas; and support many crypto and non-crypto symbols. The architecture is labeled a \"pull\" oracle and is explained as a three-stage workflow.",
+    "First, permissioned publishers post free updates on Pythnet with a valid mark and confidence into the oracle program, which stores them and aggregates when called. Second, after combining feeds touched in a slot, the oracle hands aggregates to a message buffer; validators assemble a merkle tree whose leaves are those prices and send the root through a messaging protocol such as Wormhole. Broadcast is meant to track Pythnet block time, producing attested roots plus tree bodies that remain readable on Pythnet across a sliding history of slots.",
+    "Third, every destination ledger hosts a Pyth receiver that stores one price per feed and exposes a permissionless refresh taking an attested root, a leaf update, and the merkle path. Valid refreshes replace the stored mark. Consumers must pull a refresh before use if the stored mark is stale; integrating protocols may cap allowed age. Consumers therefore pay destination gas only when they need a price, which the paper presents as meeting its cost and scale goals while the broadcast itself can stream many feeds without destination fees."
+   ]
+  },
+  {
+   "heading": "2.1 Update Fees",
+   "where": "p. 4",
+   "paragraphs": [
+    "Anyone who calls the refresh on a Pyth receiver must pay an update fee into the protocol. The subsection states that the fee is taken in whatever native coin the destination ledger uses. Earlier overview text gave a fixed-rate example of \"0.0001 ETH\" per refresh; this subsection does not repeat a numeric rate and instead fixes the currency as the destination’s native asset."
+   ]
+  },
+  {
+   "heading": "2.2 Comparison: Pull vs. Push",
+   "where": "p. 4",
+   "paragraphs": [
+    "Most oracles, the paper says have used a push pattern in which the oracle posts and may aggregate on a general-purpose chain and must keep sending refresh transactions. Gas then scales with refresh rate, feed count, chain count, and possibly publisher count, and updates fight other traffic so congestion can stall freshness. Pyth’s pull pattern instead publishes and aggregates on a cheap chain: Pythnet is described as a Solana fork that allows low-latency, high-frequency updates, with free publisher transactions that cut operating cost.",
+    "Outbound messaging still costs gas, but only when consumers demand a refresh, so spend is more targeted. The paper claims this yields more frequent updates and scaling to more feeds and chains than push oracles, and that congestion on a destination does not stop publishing on Pythnet while motivated users can still pull by paying enough fee. Stateful work such as exponentially-weighted moving averages is given as another advantage: push oracles with coarse samples struggle with such combinations, while Pyth is said to see marks every \"400 ms\" on Pythnet, which the paper says readily supports EMAs and related temporal blends."
+   ]
+  },
+  {
+   "heading": "3 price aggregation",
+   "where": "pp. 4-5",
+   "paragraphs": [
+    "Aggregation merges each publisher’s mark and confidence into one aggregate mark and confidence. As an illustration, one publisher may report \"$52000 ± 10\" and another \"$53000 ± 20\", with aggregation possibly producing \"$52500 ± 500\". The logic lives in the on-chain program and fires when publishers submit: the first submit in a slot combines prices from the prior slot. Three properties are required: resistance to accidental or intentional publisher skew; sensible weighting of sources with uneven accuracy; and an aggregate confidence that reflects disagreement across publishers and venue spreads.",
+    "Skew resistance is illustrated with most publishers near \"$100\" and one at \"$80\", with the aggregate staying near \"$100\". Accuracy weighting is illustrated with \"$101 ± 1\" versus \"$110 ± 10\", with the aggregate nearer \"$101\". Confidence is said to capture venue gaps and spread limits; Figure 1 is referenced for scenarios (a)–(d), though the figure itself is missing from the text extract aside from a caption about publisher bars and a bold aggregate bar.",
+    "Aggregation is described as a stake-weighted median variant. Each publisher carries a stake weight, initially uniform, with later community mechanisms such as the earlier whitepaper’s data-staking idea left open. A publisher contributes three marks: the reported price and the same price shifted up and down by its confidence width. The aggregate price is the stake-weighted median of those marks. Aggregate confidence is the larger distance from that median to the stake-weighted lower-quartile and upper-quartile marks among the same votes (the text names the \"25th\" and \"75th\" percentiles). The objective is written as a blend of ordinary median distance and an extra penalty only when the candidate lies outside a publisher’s confidence interval. Those formulas are the document’s design; no live feed was queried for this reading."
+   ]
+  },
+  {
+   "heading": "4 governance",
+   "where": "p. 6",
+   "paragraphs": [
+    "On-chain governance is expected to choose update-fee size, how publisher rewards are shared, and which software patches ship to programs on the various ledgers. It is also expected to decide listing rules and reference metadata such as decimal places and reference venues, and how publishers gain permission to feed a symbol. The subsection lists those duties without further procedural detail in this whitepaper version."
+   ]
+  },
+  {
+   "heading": "5 token distribution",
+   "where": "p. 6",
+   "paragraphs": [
+    "Table 1 splits locked and unlocked PYTH. The paper states there are \"10,000,000,000\" PYTH units and that total supply will not grow. It further states that \"85%\" of units begin contractually locked, unlocking at \"6\", \"18\", \"30\", and \"42\" months after launch to produce a gradual unlock, with the remaining \"15%\" unlocked at the start.",
+    "Allocation rows in the table, as percentages of supply, are: Publisher Rewards unlocked \"0.5\", locked \"21.5\", total \"22\"; Ecosystem Growth unlocked \"7\", locked \"45\", total \"52\"; Protocol Development unlocked \"1.5\", locked \"8.5\", total \"10\"; Community and Launch unlocked \"6\", locked \"0\", total \"6\"; Private Sales unlocked \"0\", locked \"10\", total \"10\"; and a Total row of unlocked \"15\", locked \"85\", total \"100\". The caption repeats that locked units unlock at those four month marks after launch."
+   ]
+  },
+  {
+   "heading": "6 conclusion",
+   "where": "p. 6",
+   "paragraphs": [
+    "The closing section summarizes an oracle meant to place accurate, fine-grained financial market data on-chain through a self-funding decentralized network that coordinates publishers and consumers. It says the design draws publishers who hold high-quality pricing and pays them from consumer fees. Defenses are said to make it harder for attackers to twist the system for gain, including by twisting the reported price. No further quantitative claims appear in this closing section."
+   ]
+  }
+ ]
+}

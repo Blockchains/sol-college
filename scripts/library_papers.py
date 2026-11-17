@@ -1,12 +1,15 @@
 """White papers and design notes in the Solana Library.
 
 A page exists only for a document that was retrieved on 17 Nov 2026.
-The page is a reading note. It is not a copy of the paper, and a figure
-in the paper is not a Sol.College measurement.
+White papers and litepapers carry a full section-by-section reading of the
+retrieved file. That reading is original prose. It is not a verbatim copy
+of the paper, and a figure in the paper is not a Sol.College measurement.
 """
 import html, json, os, re, unicodedata, urllib.parse
 CHECKED = '2026-11-17'
 ISSUE = 'https://github.com/Blockchains/sol-college/issues/new'
+READING_DIR = os.path.join(os.path.dirname(__file__), 'paper_readings')
+READING_TYPES = ('White paper', 'Litepaper', 'Language edition')
 
 def E(s):
   return html.escape(str(s if s is not None else ''), quote=True)
@@ -129,20 +132,20 @@ def papers():
       doc_type='White paper', version='v0.8.14', authors='Anatoly Yakovenko', language='English',
       topics=['protocol', 'consensus'], names_solana=True, bytes=625176,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-en.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF in solana-labs/whitepaper, 625,176 bytes. The title page was read. solana.com/solana-whitepaper.pdf returned HTTP 429 from this machine, so that URL is not the copy that was read.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF in solana-labs/whitepaper, 625,176 bytes, 32 pages. The full text was read for the section-by-section reading on this page. solana.com/solana-whitepaper.pdf returned HTTP 429 from this machine, so that URL is not the copy that was read.',
       scope='The title page calls this a white paper. The abstract proposes Proof of History as a record of order and of the passage of time, to be used with a consensus algorithm, and it also proposes a proof-of-stake algorithm and a streaming proof of replication. The same abstract says the protocol is analyzed on a 1 gbps network and states a throughput of 710,000 transactions per second for that analysis.',
       solana='The paper is the Solana architecture paper. The title page also says it is not an offer to sell tokens and not a guarantee of how the network or any token will develop.',
-      limits='The 710,000 figure is the paper’s analysis. Sol.College did not rerun it, and it is not a measurement of the live network. Later components such as Turbine, Gulf Stream, Sealevel, and Alpenglow are not this version’s claims unless the text says so.',
+      limits='The 710,000 figure is the paper’s analysis. Sol.College did not rerun it, and it is not a measurement of the live network. Later components such as Turbine, Gulf Stream, Sealevel, and Alpenglow are not this version’s claims unless the text says so. The reading note is not a verbatim copy of the PDF.',
       keywords='Solana white paper Proof of History PoH Yakovenko v0.8.14 710000',
       desc='Solana white paper v0.8.14 by Anatoly Yakovenko, read from the project repository. The throughput figure was not rerun.'),
     _paper(slug='solana-une-nouvelle-architecture-pour-une-blockchain-haute-performance', legacy='solana-whitepaper-fr', stable_id='paper-solana-whitepaper-fr', project='Solana', title='Solana : Une nouvelle architecture pour une blockchain haute performance',
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='French',
       topics=['protocol'], names_solana=True, bytes=817398,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-fr.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 817,398 bytes. The title page was read. The body was not compared with the English file.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 817,398 bytes, 34 pages. The full French text was read for the section-by-section reading on this page. That reading is English paraphrase of this PDF, not a line-by-line translation check against the English file.',
       scope='The title page is the French edition of the same repository’s white paper, version v0.8.14, with the same author name.',
       solana='The title names Solana. This record does not establish that every sentence matches the English PDF.',
-      limits='A translation is not a second design. The body was not checked sentence by sentence.',
+      limits='A translation is not a second design. The reading note is not a sentence-by-sentence equivalence proof against the English PDF.',
       keywords='Solana livre blanc français Yakovenko v0.8.14',
       desc='French edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
       related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
@@ -150,10 +153,10 @@ def papers():
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='Italian',
       topics=['protocol'], names_solana=True, bytes=630897,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-it.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 630,897 bytes. The title page was read. The body was not compared with the English file.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 630,897 bytes, 34 pages. The full Italian text was read for the section-by-section reading on this page. That reading is English paraphrase of this PDF, not a line-by-line translation check against the English file.',
       scope='The title page is the Italian edition of the same repository’s white paper, version v0.8.14, with the same author name.',
       solana='The title names Solana. This record does not establish that every sentence matches the English PDF.',
-      limits='A translation is not a second design. The body was not checked sentence by sentence.',
+      limits='A translation is not a second design. The reading note is not a sentence-by-sentence equivalence proof against the English PDF.',
       keywords='Solana libro bianco italiano Yakovenko v0.8.14',
       desc='Italian edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
       related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
@@ -161,10 +164,10 @@ def papers():
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='Japanese',
       topics=['protocol'], names_solana=True, bytes=1109316,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-ja.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 1,109,316 bytes. The title page was read. The body was not compared with the English file.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 1,109,316 bytes, 32 pages. The full Japanese text was read for the section-by-section reading on this page. That reading is English paraphrase of this PDF, not a line-by-line translation check against the English file.',
       scope='The title page is the Japanese edition of the same repository’s white paper, version v0.8.14, with the same author name.',
       solana='The title names Solana. This record does not establish that every sentence matches the English PDF.',
-      limits='A translation is not a second design. The body was not checked sentence by sentence.',
+      limits='A translation is not a second design. The reading note is not a sentence-by-sentence equivalence proof against the English PDF.',
       keywords='Solana ホワイトペーパー 日本語 Yakovenko v0.8.14',
       desc='Japanese edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
       related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
@@ -173,10 +176,10 @@ def papers():
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=583928,
       source='https://github.com/rogerANZA/Alpenglow-White-Paper/blob/main/Alpenglow-v1.0.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 583,928 bytes. The title page and abstract were read. The repository README calls this the original paper, dated 19 May 2025, which matches the title page.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 583,928 bytes, 48 pages. The full text was read for the section-by-section reading on this page. The repository README calls this the original paper, dated 19 May 2025, which matches the title page.',
       scope='The abstract describes Alpenglow as a proof-of-stake consensus protocol. It says Votor can finalize in one voting round if 80 percent of stake is participating, and in two rounds if 60 percent is responsive, and that Rotor distributes blocks with erasure coding in proportion to stake. It states a “20+20” resilience: an adversary with 20 percent of stake, plus another 20 percent offline under stronger network assumptions.',
       solana='The title is “Solana Alpenglow Consensus”, and the affiliation on the title page is Anza.',
-      limits='Those percentages are the paper’s claims. Sol.College did not rerun the proofs or the simulations. This version is not evidence of what a cluster runs.',
+      limits='Those percentages are the paper’s claims. Sol.College did not rerun the proofs or the simulations. This version is not evidence of what a cluster runs. The reading note is not a verbatim copy of the PDF.',
       keywords='Alpenglow Votor Rotor Anza consensus 20+20 v1',
       desc='Alpenglow white paper v1, 19 May 2025, read from the Anza repository. The resilience claims were not rerun.'),
     _paper(slug='solana-alpenglow-consensus-v1-1', legacy='alpenglow-v1-1', stable_id='paper-alpenglow-v1-1', project='Anza', title='Solana Alpenglow Consensus',
@@ -184,10 +187,10 @@ def papers():
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=600847,
       source='https://github.com/rogerANZA/Alpenglow-White-Paper/blob/main/Alpenglow-v1.1.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 600,847 bytes. The title page says White Paper v1.1, July 22, 2025. SIMD-0326 points at https://www.anza.xyz/alpenglow-1-1, which returned an HTML page, not this PDF.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 600,847 bytes, 52 pages. The full text was read for the section-by-section reading on this page. The title page says White Paper v1.1, July 22, 2025. SIMD-0326 points at https://www.anza.xyz/alpenglow-1-1, which returned an HTML page, not this PDF.',
       scope='The abstract’s voting and resilience description matches the wording on the v1 title page: one round at 80 percent participation, two rounds at 60 percent, Rotor for block distribution, and “20+20” resilience. This record does not list every change from v1.',
       solana='The title is “Solana Alpenglow Consensus”, affiliation Anza. SIMD-0326 names this version as its companion paper and then lists sections it does not cover.',
-      limits='The abstract is the paper’s claim. Activation on a cluster is not established by the PDF. Sol.College did not compare v1 and v1.1 line by line.',
+      limits='The abstract is the paper’s claim. Activation on a cluster is not established by the PDF. Sol.College did not compare v1 and v1.1 line by line. The reading note is not a verbatim copy of the PDF.',
       keywords='Alpenglow v1.1 Votor Rotor SIMD-0326 Anza',
       desc='Alpenglow white paper v1.1, 22 July 2025. Activation on a cluster is not established by the PDF.',
       related=['solana-alpenglow-consensus-v1', 'simd-0326-alpenglow']),
@@ -196,10 +199,10 @@ def papers():
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=800667,
       source='https://drive.google.com/file/d/1RPJ9OyohFMuFfLmTB5ydPYlrKTIlUxq9/view',
-      retrieval='The PDF was downloaded on 17 Nov 2026 from the Google Drive file linked by Quentin Kniep on anza-xyz/agave pull request 14122, 800,667 bytes. The title page says White Paper v1.2, July 29, 2026. The Anza blog post “Alpenglow: A New Consensus for Solana” names that version and that date. The blog HTML that was fetched did not include the Drive link.',
-      scope='The abstract’s description of Votor, Rotor, and “20+20” resilience matches the wording on the v1.1 title page. The comments on the pull request point at pages 41 onward of this version for a proof about block limits. Those pages were not checked for this record.',
+      retrieval='The PDF was downloaded on 17 Nov 2026 from the Google Drive file linked by Quentin Kniep on anza-xyz/agave pull request 14122, 800,667 bytes, 81 pages. The full text was read for the section-by-section reading on this page, including the block-storage proof on pages 41–44. The title page says White Paper v1.2, July 29, 2026. The Anza blog post “Alpenglow: A New Consensus for Solana” names that version and that date. The blog HTML that was fetched did not include the Drive link.',
+      scope='The abstract’s description of Votor, Rotor, and “20+20” resilience matches the wording on the v1.1 title page. This version adds material beyond v1.1, including a bounded-state argument and a Quantumglow section; those are the PDF’s own sections.',
       solana='The title is “Solana Alpenglow Consensus”, affiliation Anza.',
-      limits='A matching title page is not a diff against v1.1. The proofs were not rerun. This file was not retrieved from an anza.xyz URL.',
+      limits='A matching title page is not a diff against v1.1. The proofs were not rerun. This file was not retrieved from an anza.xyz URL. The reading note is not a verbatim copy of the PDF.',
       keywords='Alpenglow v1.2 July 2026 Votor Rotor Anza',
       desc='Alpenglow white paper v1.2, 29 July 2026, from the Drive file named on the Agave pull request. Proofs were not rerun.',
       related=['solana-alpenglow-consensus-v1-1']),
@@ -220,10 +223,10 @@ def papers():
       authors='Pyth Data Association', language='English',
       topics=['oracle'], names_solana=True, bytes=172342,
       source='https://pythdataassociation.com/whitepaper.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026, 172,342 bytes. The title page and the start of the overview were read. A request for legacy.pyth.network/whitepaper.pdf was served the v2 file, so a distinct first-version PDF was not retrieved.',
+      retrieval='HTTP 200 on 17 Nov 2026, 172,342 bytes, 6 pages. The full text was read for the section-by-section reading on this page. A request for legacy.pyth.network/whitepaper.pdf was served the v2 file, so a distinct first-version PDF was not retrieved.',
       scope='Version 2.0, dated 28 September 2023, says the network publishes prices from trading firms, market makers, and exchanges, with a confidence interval. The overview uses a BTC/USD price of 65,000 plus or minus 50 as an example of what a feed can say.',
       solana='The introduction says the original white paper proposed a design focused on Solana, and that this version describes a cross-chain way to deliver prices.',
-      limits='The example price is an illustration in the paper, not a live price. The first-version PDF was not in hand. Sol.College did not call a Pyth feed.',
+      limits='The example price is an illustration in the paper, not a live price. The first-version PDF was not in hand. Sol.College did not call a Pyth feed. The reading note is not a verbatim copy of the PDF.',
       keywords='Pyth oracle white paper v2 Solana first party 2023',
       desc='Pyth Network white paper version 2.0, 28 September 2023. The example price is not a live price.',
       related=[]),
@@ -231,30 +234,30 @@ def papers():
       doc_type='Litepaper', version='v0, part 1', authors='Solayer Team', language='English',
       topics=['restaking'], names_solana=True, bytes=553383,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-litepaper-v0.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 553,383 bytes. The title page and the start of the introduction were read.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 553,383 bytes, 5 pages. The full text was read for the section-by-section reading on this page.',
       scope='The abstract describes a restaking market on Solana for what it calls endogenous actively validated services, aimed at on-chain applications rather than at securing a separate chain. It says delegated stake can be used with Solana’s stake-weighted quality of service so an application can seek block space.',
       solana='The title and the abstract name Solana. The introduction attributes the restaking idea to EigenLayer and contrasts that design’s use of Ethereum stake.',
-      limits='“Part 1” and “v0” are the paper’s own labels. Yield, conversion, and slippage claims in the abstract were not checked. This is not evidence of a deployment.',
+      limits='“Part 1” and “v0” are the paper’s own labels. Yield, conversion, and slippage claims in the abstract were not checked. This is not evidence of a deployment. The reading note is not a verbatim copy of the PDF.',
       keywords='Solayer restaking AVS Solana litepaper stake weighted QoS',
       desc='Solayer restaking litepaper, v0 part 1, read from the project repository. Deployment was not checked.'),
     _paper(slug='solayer-usd-yield-bearing-real-world-assets-backed-synthetic-stablecoin', legacy='solayer-usd', stable_id='paper-solayer-usd', project='Solayer', title='Solayer USD: Yield-bearing Real World Assets Backed Synthetic Stablecoin',
       doc_type='Litepaper', version='v0, part 1', authors='Solayer Team', language='English',
       topics=['stablecoin'], names_solana=True, bytes=2614802,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-USD-litepaper-v0.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 2,614,802 bytes. The title page and the start of the manifesto were read.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 2,614,802 bytes, 5 pages. The full text was read for the section-by-section reading on this page.',
       scope='The abstract describes sUSD as a dollar-pegged token backed by a basket of real-world assets, and says yield is applied by changing a Token-2022 balance multiplier rather than by changing the token amount. It also describes a request-for-quote path for subscription and redemption.',
       solana='The abstract says sUSD uses Solana’s Token-2022 extension and speaks of the Solana ecosystem. A 4 to 5 percent yield, a 170 billion dollar stablecoin market, and a 2.6 trillion dollar settlement figure appear as the paper’s citations. They were not checked.',
-      limits='Those market and yield figures are the paper’s statements. Sol.College did not inspect a reserve, a multiplier, or an issuer.',
+      limits='Those market and yield figures are the paper’s statements. Sol.College did not inspect a reserve, a multiplier, or an issuer. The reading note is not a verbatim copy of the PDF.',
       keywords='Solayer sUSD stablecoin Token-2022 RWA litepaper',
       desc='Solayer USD litepaper, v0 part 1. The yield and market figures were not checked.'),
     _paper(slug='solayer-bridge-canonical-bridge-between-svms', legacy='solayer-bridge', stable_id='paper-solayer-bridge', project='Solayer', title='Solayer Bridge: Canonical Bridge Between SVMs',
       doc_type='White paper', version='Not stated on the title page', authors='Solayer Team', language='English',
       topics=['bridging', 'svm'], names_solana=True, bytes=594192,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-bridge.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 594,192 bytes. The title page and the first section were read.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 594,192 bytes, 6 pages. The full text was read for the section-by-section reading on this page.',
       scope='The abstract describes a bridge for moving assets and calling across SVM environments, starting with Solana and Solayer. It names on-chain programs, a guardian quorum, threshold signatures, and two finality paths.',
       solana='The first section is titled as a bidirectional bridge between Solayer and Solana. It cites Wormhole, LayerZero, and Hyperlane as generic bridges it is not trying to be.',
-      limits='The design is the paper’s design. Sol.College did not send a transaction across it and did not review the guardian set.',
+      limits='The design is the paper’s design. Sol.College did not send a transaction across it and did not review the guardian set. The reading note is not a verbatim copy of the PDF.',
       keywords='Solayer bridge sBridge SVM Solana guardian',
       desc='Solayer bridge paper for SVM environments, starting with Solana. No transfer was sent.'),
     _paper(slug='solayer-chain-infinitely-scalable-hardware-accelerated-svm-network', legacy='solayer-chain', stable_id='paper-solayer-chain', project='Solayer', title='Solayer Chain: Infinitely Scalable Hardware-Accelerated SVM Network',
@@ -262,20 +265,20 @@ def papers():
       authors='Jason Li, Chaofan Shou, Qi Su, Chaz Cui, Tony Ke', language='English',
       topics=['svm', 'execution'], names_solana=True, bytes=605925,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer_infinisvm_litepaper.pdf',
-      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 605,925 bytes. The title page was read. The date on that page is 6 January 2025.',
+      retrieval='HTTP 200 on 17 Nov 2026 from the raw PDF, 605,925 bytes, 12 pages. The full text was read for the section-by-section reading on this page. The date on the title page is 6 January 2025.',
       scope='The abstract describes one global state machine split across microservices and hardware, with speculative execution before a sequencer and a hybrid proof-of-authority and proof-of-stake finality. It names InfiniBand RDMA and a shared-nothing key-value store.',
       solana='The title calls the network an SVM network. The abstract’s performance targets, including 1 million transactions per second and 100 Gbps, are the paper’s targets.',
-      limits='A target in an abstract is not a benchmark Sol.College ran. “Infinitely scalable” is the title’s phrase, not a finding.',
+      limits='A target in an abstract is not a benchmark Sol.College ran. “Infinitely scalable” is the title’s phrase, not a finding. The reading note is not a verbatim copy of the PDF.',
       keywords='Solayer Chain InfiniSVM SVM litepaper January 2025',
       desc='Solayer Chain litepaper, 6 January 2025. The throughput target was not benchmarked here.'),
     _paper(slug='magicblock-whitepaper', project='MagicBlock', title='MagicBlock Whitepaper',
       doc_type='White paper', version='Docs page', authors='Gabriele Picco, Andrea Fortugno', language='English',
       topics=['svm', 'games'], names_solana=True, bytes=834,
       source='https://docs.magicblock.gg/pages/overview/additional-information/whitepaper',
-      retrieval='HTTP 200 on 17 Nov 2026 for the docs page. The Markdown source in magicblock-labs/docs is 834 bytes and was read in full. It cites arXiv:2311.02650.',
+      retrieval='HTTP 200 on 17 Nov 2026 for the docs page. The Markdown source in magicblock-labs/docs is 834 bytes and was read in full for the reading on this page. It cites arXiv:2311.02650.',
       scope='The page says it proposes a framework that uses the Solana Virtual Machine to scale fully on-chain applications, and it introduces ephemeral rollups: dedicated runtimes, a configurable tick, provable sessions, and gasless transactions.',
       solana='The page names the Solana Virtual Machine. The longer argument is the arXiv paper it cites, which has its own record.',
-      limits='This page is the short document the docs call a white paper. It is not the arXiv PDF, and it does not by itself show that a game is deployed.',
+      limits='This page is the short document the docs call a white paper. It is not the arXiv PDF, and it does not by itself show that a game is deployed. The reading note is not a verbatim copy of the docs page.',
       keywords='MagicBlock ephemeral rollup SVM white paper Picco Fortugno',
       desc='MagicBlock’s short white paper page on its docs site. It is not the arXiv PDF.',
       related=['ephemeral-rollups-are-all-you-need']),
@@ -284,10 +287,10 @@ def papers():
       authors='Gabriele Picco, Andrea Fortugno', language='English',
       topics=['svm', 'games'], names_solana=True, bytes=1322608,
       source='https://arxiv.org/pdf/2311.02650',
-      retrieval='HTTP 200 on 17 Nov 2026 from arXiv, 1,322,608 bytes. The title page says version 4, 14 February 2025, and prints www.magicblock.gg. The abstract was read. The MagicBlock docs page cites this identifier.',
+      retrieval='HTTP 200 on 17 Nov 2026 from arXiv, 1,322,608 bytes, 18 pages. The full text was read for the section-by-section reading on this page. The title page says version 4, 14 February 2025, and prints www.magicblock.gg. The MagicBlock docs page cites this identifier.',
       scope='The abstract proposes a framework for fully on-chain games that uses the Solana Virtual Machine so that scaling does not fragment state. It says both game state and game logic would live on the chain.',
       solana='The abstract names the Solana Virtual Machine. The paper’s claims about cost and trust were not remeasured.',
-      limits='Reading the title page and abstract is not a review of the proofs or of a live game. arXiv listing is not peer review.',
+      limits='The reading note is not a review of the proofs or of a live game. arXiv listing is not peer review. The reading note is not a verbatim copy of the PDF.',
       keywords='ephemeral rollups arXiv 2311.02650 SVM MagicBlock Picco Fortugno',
       desc='Ephemeral Rollups are All you Need, arXiv:2311.02650v4. An arXiv listing is not peer review.',
       related=['magicblock-whitepaper']),
@@ -295,10 +298,10 @@ def papers():
       doc_type='White paper', version='Not stated on the pages read', authors='Kento Inami', language='English',
       topics=['stablecoin'], names_solana=False, bytes=68001,
       source='https://docs.uxd.fi/uxdprotocol/resources/whitepaper',
-      retrieval='The docs page titled Whitepaper was fetched on 17 Nov 2026 and links a PDF. That PDF was downloaded, HTTP 200, 68,001 bytes, and the text was read. The PDF has no calendar date on the pages that were read.',
+      retrieval='The docs page titled Whitepaper was fetched on 17 Nov 2026 and links a PDF. That PDF was downloaded, HTTP 200, 68,001 bytes, and the full text was read for the section-by-section reading on this page. The PDF has no calendar date on the pages that were read.',
       scope='The abstract proposes a stablecoin backed by a delta-neutral position in perpetual swaps, so that a user can mint and redeem against a crypto asset at par. The body uses bitcoin and the US dollar as the running example and says other assets could be substituted.',
       solana='The PDF does not contain the word Solana. The project’s docs present this file as the white paper. That presentation is not a sentence in the PDF.',
-      limits='Nothing in the PDF establishes a chain, a deployment, a reserve, or a redemption that was observed. The chain is not filled in from outside knowledge.',
+      limits='Nothing in the PDF establishes a chain, a deployment, a reserve, or a redemption that was observed. The chain is not filled in from outside knowledge. The reading note is not a verbatim copy of the PDF.',
       keywords='UXD stablecoin delta neutral perpetual Inami',
       desc='UXD Protocol white paper by Kento Inami. The PDF does not contain the word Solana.',
       related=[]),
@@ -319,6 +322,68 @@ def corpus():
     return []
   data = json.load(open(path, encoding='utf-8'))
   return [_paper(**row) for row in data]
+
+def reading_path(slug):
+  return os.path.join(READING_DIR, slug + '.json')
+
+def load_reading(slug):
+  path = reading_path(slug)
+  if not os.path.exists(path):
+    return None
+  data = json.load(open(path, encoding='utf-8'))
+  if data.get('slug') != slug:
+    raise SystemExit('paper reading slug mismatch ' + slug)
+  sections = data.get('sections') or []
+  if not sections:
+    raise SystemExit('paper reading empty ' + slug)
+  for sec in sections:
+    if not sec.get('heading') or not sec.get('paragraphs'):
+      raise SystemExit('paper reading broken section ' + slug)
+  return data
+
+def reading_words(data):
+  return sum(len(str(p).split()) for sec in data['sections'] for p in sec['paragraphs'])
+
+def reading_search_text(slug):
+  data = load_reading(slug)
+  if not data:
+    return ''
+  parts = []
+  for sec in data['sections']:
+    parts.append(sec['heading'])
+    parts.extend(sec['paragraphs'])
+  return ' '.join(parts)
+
+def reading_html(p):
+  if p['doc_type'] not in READING_TYPES:
+    return ''
+  data = load_reading(p['slug'])
+  if not data:
+    raise SystemExit('paper reading missing for ' + p['slug'])
+  blocks = [
+    '<section class="paper-reading" id="full-reading">',
+    '<h2>Full reading of the retrieved document</h2>',
+    '<p>This section walks the retrieved file section by section in the file’s own order. '
+    'The prose is a Sol.College reading note. It is not a verbatim copy of the source, not a peer review, '
+    'and not a measurement of a live cluster. Figures that appear only as images in the file are noted from their captions. '
+    'The source file stays at the link above.</p>',
+    '<p class="meta">Reading covers %s page%s as stored for this record, across %s section%s (%s words of reading note).</p>' % (
+      E(data.get('pages') or p.get('bytes') or '?'),
+      '' if data.get('pages') == 1 else 's',
+      E(len(data['sections'])),
+      '' if len(data['sections']) == 1 else 's',
+      E(format(reading_words(data), ','))),
+  ]
+  for sec in data['sections']:
+    blocks.append('<section class="paper-section">')
+    blocks.append('<h3>%s</h3>' % E(sec['heading']))
+    if sec.get('where'):
+      blocks.append('<p class="meta">%s</p>' % E(sec['where']))
+    for para in sec['paragraphs']:
+      blocks.append('<p>%s</p>' % E(para))
+    blocks.append('</section>')
+  blocks.append('</section>')
+  return '\n'.join(blocks)
 
 NOT_LISTED = [
  ('Helium white paper, release 0.4.2 (14 November 2018)',
@@ -398,6 +463,11 @@ def page_html(p, by_slug):
   rel_html = '<ul>' + ''.join(rels) + '</ul>' if rels else '<p>None recorded.</p>'
   report = ISSUE + '?title=' + urllib.parse.quote('Paper correction: ' + p['title']) + '&body=' + urllib.parse.quote('Record: ' + p['id'] + '\n\nWhat is wrong:\n\nWhat the source says:\n\n')
   named = 'The file contains the word Solana.' if p['names_solana'] else 'The file does not contain the word Solana.'
+  reading = reading_html(p)
+  outline = ''
+  if p.get('outline') and p['doc_type'] not in READING_TYPES:
+    outline = ('<h2>Heading outline</h2><p>These headings are the file’s own. The text under them was not copied onto this page.</p><ol>'
+      + ''.join(f'<li>{E(h)}</li>' for h in p.get('outline') or []) + '</ol>')
   return f'''<article class="lesson lib-page">
 <nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <a href="/library/papers/">White papers</a> / <span>{E(p["title"])}</span></nav>
 <p class=eyebrow>{E(p["project"])} · {E(p["doc_type"])}</p>
@@ -418,7 +488,8 @@ def page_html(p, by_slug):
 </dl>
 <h2>What the document says it is</h2>
 <p>{E(p["scope"])}</p>
-{('<h2>Heading outline</h2><p>These headings are the file’s own. The text under them was not copied onto this page.</p><ol>' + ''.join(f'<li>{E(h)}</li>' for h in p.get('outline') or []) + '</ol>') if p.get('outline') else ''}
+{outline}
+{reading}
 <h2>Solana, as this document states it</h2>
 <p>{E(p["solana"])}</p>
 <h2>What this record does not establish</h2>
@@ -439,7 +510,7 @@ def index_html(rows):
   for p in rows:
     blob = ' '.join([p['title'], p['project'], p['doc_type'], p['authors'], p['version'], p['date'],
       p['scope'], p['solana'], p['limits'], p['keywords'], ' '.join(p['topics']), p['language'],
-      ' '.join(p.get('outline') or [])]).lower()
+      ' '.join(p.get('outline') or []), reading_search_text(p['slug'])]).lower()
     cards.append(f'''<article class="card paper" data-project="{E(p["project"])}" data-type="{E(p["doc_type"])}" data-topics="{E(" ".join(p["topics"]))}" data-lang="{E(p["language"])}" data-solana="{"yes" if p["names_solana"] else "no"}" data-search="{E(blob)}">
 <h3><a href="{E(p["path"])}">{E(p["title"])}</a></h3>
 <p class=meta>{E(p["project"])} · {E(p["doc_type"])} · {E(p["version"])} · {E(p["language"])}</p>
@@ -455,8 +526,8 @@ def index_html(rows):
 <nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <span>White papers</span></nav>
 <p class=eyebrow>Solana Library</p>
 <h1>White papers</h1>
-<p class=lead>Retrieved white papers, SIMDs, and design proposals. One page each. The URL is the document’s title. The file itself stays at the source.</p>
-<p>Search matches the words on these pages. It does not answer from outside the catalogue, and it does not decide which paper is right when two of them disagree. A document that was not retrieved is not given a page.</p>
+<p class=lead>Retrieved white papers, SIMDs, and design proposals. One page each. White papers and litepapers carry a full section-by-section reading of the retrieved file. The URL is the document’s title. The file itself stays at the source.</p>
+<p>Search matches the words on these pages, including the reading notes. It does not answer from outside the catalogue, and it does not decide which paper is right when two of them disagree. A document that was not retrieved is not given a page. A reading note is not a verbatim copy of the paper.</p>
 <form id=paper-form class=finder role=search>
 <label>Search titles, authors, and what the paper says
 <input id=paper-q type=search placeholder="Proof of History, Pyth, Votor, sUSD" autocomplete=off>
