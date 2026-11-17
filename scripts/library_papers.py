@@ -4,21 +4,32 @@ A page exists only for a document that was retrieved on 17 Nov 2026.
 The page is a reading note. It is not a copy of the paper, and a figure
 in the paper is not a Sol.College measurement.
 """
-import html, json, os, re, urllib.parse
+import html, json, os, re, unicodedata, urllib.parse
 CHECKED = '2026-11-17'
 ISSUE = 'https://github.com/Blockchains/sol-college/issues/new'
 
 def E(s):
   return html.escape(str(s if s is not None else ''), quote=True)
 
+def slugify(title):
+  s = unicodedata.normalize('NFKD', str(title))
+  s = s.encode('ascii', 'ignore').decode().lower()
+  s = re.sub(r'[^a-z0-9]+', '-', s).strip('-')
+  return re.sub(r'-{2,}', '-', s)[:90].strip('-')
+
 def _paper(**kw):
+  legacy = kw.pop('legacy', None)
+  stable = kw.pop('stable_id', None)
+  outline = kw.pop('outline', None) or []
   row = dict(version='Not stated on the pages read', date='Not stated on the pages read',
     authors='Not named in the file', language='English', topics=[], names_solana=True,
     related=[], bytes=None)
   row.update(kw)
   if not re.fullmatch(r'[a-z0-9-]+', row['slug']):
     raise SystemExit('paper: bad slug ' + row['slug'])
-  row['id'] = 'paper-' + row['slug']
+  row['id'] = stable or ('paper-' + row['slug'])
+  row['legacy'] = legacy
+  row['outline'] = [str(h) for h in outline][:30]
   row['path'] = '/library/papers/' + row['slug'] + '/'
   if len(row['desc']) > 158:
     raise SystemExit('paper: description over 158 ' + row['slug'] + ' ' + str(len(row['desc'])))
@@ -99,7 +110,7 @@ def worms():
   rows = []
   for fn, slug, title, nbytes, names, scope, solana, keys in WORMS:
     rows.append(_paper(
-      slug=slug, project='Wormhole', title=title, doc_type='Design note',
+      slug=slugify(title), legacy=slug, stable_id='paper-' + slug, project='Wormhole', title=title, doc_type='Design note',
       version='Not a numbered paper version', date='Not stated in the file',
       authors='Not named in the file', language='English', topics=['bridging'],
       names_solana=names, bytes=nbytes,
@@ -109,12 +120,12 @@ def worms():
       limits='This is the file’s design. It is not evidence of what the deployed bridge does, and it is not a security review. Sol.College did not run the protocol.',
       keywords=keys,
       desc=title + ', a Wormhole design note read from the project repository. Not a security review.',
-      related=['wormhole-generic-message-passing'] if slug != 'wormhole-generic-message-passing' else []))
+      related=['generic-message-passing'] if slugify(title) != 'generic-message-passing' else []))
   return rows
 
 def papers():
   rows = [
-    _paper(slug='solana-whitepaper', project='Solana', title='Solana: A new architecture for a high performance blockchain',
+    _paper(slug='solana-a-new-architecture-for-a-high-performance-blockchain', legacy='solana-whitepaper', stable_id='paper-solana-whitepaper', project='Solana', title='Solana: A new architecture for a high performance blockchain',
       doc_type='White paper', version='v0.8.14', authors='Anatoly Yakovenko', language='English',
       topics=['protocol', 'consensus'], names_solana=True, bytes=625176,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-en.pdf',
@@ -124,7 +135,7 @@ def papers():
       limits='The 710,000 figure is the paper’s analysis. Sol.College did not rerun it, and it is not a measurement of the live network. Later components such as Turbine, Gulf Stream, Sealevel, and Alpenglow are not this version’s claims unless the text says so.',
       keywords='Solana white paper Proof of History PoH Yakovenko v0.8.14 710000',
       desc='Solana white paper v0.8.14 by Anatoly Yakovenko, read from the project repository. The throughput figure was not rerun.'),
-    _paper(slug='solana-whitepaper-fr', project='Solana', title='Solana : Une nouvelle architecture pour une blockchain haute performance',
+    _paper(slug='solana-une-nouvelle-architecture-pour-une-blockchain-haute-performance', legacy='solana-whitepaper-fr', stable_id='paper-solana-whitepaper-fr', project='Solana', title='Solana : Une nouvelle architecture pour une blockchain haute performance',
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='French',
       topics=['protocol'], names_solana=True, bytes=817398,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-fr.pdf',
@@ -134,8 +145,8 @@ def papers():
       limits='A translation is not a second design. The body was not checked sentence by sentence.',
       keywords='Solana livre blanc français Yakovenko v0.8.14',
       desc='French edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
-      related=['solana-whitepaper']),
-    _paper(slug='solana-whitepaper-it', project='Solana', title='Solana: Una nuova architettura per una blockchain ad alte prestazioni',
+      related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
+    _paper(slug='solana-una-nuova-architettura-per-una-blockchain-ad-alte-prestazioni', legacy='solana-whitepaper-it', stable_id='paper-solana-whitepaper-it', project='Solana', title='Solana: Una nuova architettura per una blockchain ad alte prestazioni',
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='Italian',
       topics=['protocol'], names_solana=True, bytes=630897,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-it.pdf',
@@ -145,8 +156,8 @@ def papers():
       limits='A translation is not a second design. The body was not checked sentence by sentence.',
       keywords='Solana libro bianco italiano Yakovenko v0.8.14',
       desc='Italian edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
-      related=['solana-whitepaper']),
-    _paper(slug='solana-whitepaper-ja', project='Solana', title='Solana: 高パフォーマンスなブロックチェーンを実現する新しいアーキテクチャ',
+      related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
+    _paper(slug='solana-high-performance-blockchain-japanese', legacy='solana-whitepaper-ja', stable_id='paper-solana-whitepaper-ja', project='Solana', title='Solana: 高パフォーマンスなブロックチェーンを実現する新しいアーキテクチャ',
       doc_type='Language edition', version='v0.8.14', authors='Anatoly Yakovenko', language='Japanese',
       topics=['protocol'], names_solana=True, bytes=1109316,
       source='https://github.com/solana-labs/whitepaper/blob/master/solana-whitepaper-ja.pdf',
@@ -156,8 +167,8 @@ def papers():
       limits='A translation is not a second design. The body was not checked sentence by sentence.',
       keywords='Solana ホワイトペーパー 日本語 Yakovenko v0.8.14',
       desc='Japanese edition of the Solana white paper, v0.8.14. The body was not compared with the English text.',
-      related=['solana-whitepaper']),
-    _paper(slug='alpenglow-v1-0', project='Anza', title='Solana Alpenglow Consensus',
+      related=['solana-a-new-architecture-for-a-high-performance-blockchain']),
+    _paper(slug='solana-alpenglow-consensus-v1', legacy='alpenglow-v1-0', stable_id='paper-alpenglow-v1-0', project='Anza', title='Solana Alpenglow Consensus',
       doc_type='White paper', version='v1', date='19 May 2025',
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=583928,
@@ -168,7 +179,7 @@ def papers():
       limits='Those percentages are the paper’s claims. Sol.College did not rerun the proofs or the simulations. This version is not evidence of what a cluster runs.',
       keywords='Alpenglow Votor Rotor Anza consensus 20+20 v1',
       desc='Alpenglow white paper v1, 19 May 2025, read from the Anza repository. The resilience claims were not rerun.'),
-    _paper(slug='alpenglow-v1-1', project='Anza', title='Solana Alpenglow Consensus',
+    _paper(slug='solana-alpenglow-consensus-v1-1', legacy='alpenglow-v1-1', stable_id='paper-alpenglow-v1-1', project='Anza', title='Solana Alpenglow Consensus',
       doc_type='White paper', version='v1.1', date='22 July 2025',
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=600847,
@@ -179,8 +190,8 @@ def papers():
       limits='The abstract is the paper’s claim. Activation on a cluster is not established by the PDF. Sol.College did not compare v1 and v1.1 line by line.',
       keywords='Alpenglow v1.1 Votor Rotor SIMD-0326 Anza',
       desc='Alpenglow white paper v1.1, 22 July 2025. Activation on a cluster is not established by the PDF.',
-      related=['alpenglow-v1-0', 'simd-0326-alpenglow']),
-    _paper(slug='alpenglow-v1-2', project='Anza', title='Solana Alpenglow Consensus',
+      related=['solana-alpenglow-consensus-v1', 'simd-0326-alpenglow']),
+    _paper(slug='solana-alpenglow-consensus-v1-2', legacy='alpenglow-v1-2', stable_id='paper-alpenglow-v1-2', project='Anza', title='Solana Alpenglow Consensus',
       doc_type='White paper', version='v1.2', date='29 July 2026',
       authors='Quentin Kniep, Jakub Sliwinski, Roger Wattenhofer', language='English',
       topics=['consensus'], names_solana=True, bytes=800667,
@@ -191,7 +202,7 @@ def papers():
       limits='A matching title page is not a diff against v1.1. The proofs were not rerun. This file was not retrieved from an anza.xyz URL.',
       keywords='Alpenglow v1.2 July 2026 Votor Rotor Anza',
       desc='Alpenglow white paper v1.2, 29 July 2026, from the Drive file named on the Agave pull request. Proofs were not rerun.',
-      related=['alpenglow-v1-1']),
+      related=['solana-alpenglow-consensus-v1-1']),
     _paper(slug='simd-0326-alpenglow', project='Solana', title='SIMD-0326 Alpenglow',
       doc_type='SIMD', version='Created 25 July 2025', date='25 July 2025',
       authors='Quentin Kniep, Kobi Sliwinski, Roger Wattenhofer', language='English',
@@ -200,11 +211,11 @@ def papers():
       retrieval='HTTP 200 on 17 Nov 2026 from the raw proposal, 10,330 bytes. The front matter and the summary were read. The front matter spells the second author Kobi Sliwinski. The white paper title page spells that name Jakub Sliwinski. Both spellings are kept.',
       scope='The summary says the proposal changes core consensus from Proof of History and Tower BFT to the Votor parts of Alpenglow. The front matter sets status to Review, category Standard, type Core, and leaves the feature key as a placeholder.',
       solana='It is a Solana Improvement Document. It says the companion paper is Alpenglow v1.1, and that Rotor, smart sampling, and lazy execution are outside this SIMD.',
-      limits='Status Review is not acceptance and not activation. The rest of the SIMD repository is still one library record, not one page per proposal.',
+      limits='Status Review is not acceptance and not activation. Every other proposal file that was retrieved has its own page. The status on that page is the label in that file.',
       keywords='SIMD-0326 Alpenglow Votor Tower BFT Proof of History Review',
       desc='SIMD-0326, status Review, proposes Alpenglow’s Votor in place of Tower BFT. Review is not activation.',
-      related=['alpenglow-v1-1']),
-    _paper(slug='pyth-whitepaper-v2', project='Pyth', title='Pyth Network: A First-Party Financial Oracle',
+      related=['solana-alpenglow-consensus-v1-1']),
+    _paper(slug='pyth-network-a-first-party-financial-oracle', legacy='pyth-whitepaper-v2', stable_id='paper-pyth-whitepaper-v2', project='Pyth', title='Pyth Network: A First-Party Financial Oracle',
       doc_type='White paper', version='2.0', date='28 September 2023',
       authors='Pyth Data Association', language='English',
       topics=['oracle'], names_solana=True, bytes=172342,
@@ -216,7 +227,7 @@ def papers():
       keywords='Pyth oracle white paper v2 Solana first party 2023',
       desc='Pyth Network white paper version 2.0, 28 September 2023. The example price is not a live price.',
       related=[]),
-    _paper(slug='solayer-restaking', project='Solayer', title='Solayer: Endogenous AVS on Solana Powered by Restaking',
+    _paper(slug='solayer-endogenous-avs-on-solana-powered-by-restaking', legacy='solayer-restaking', stable_id='paper-solayer-restaking', project='Solayer', title='Solayer: Endogenous AVS on Solana Powered by Restaking',
       doc_type='Litepaper', version='v0, part 1', authors='Solayer Team', language='English',
       topics=['restaking'], names_solana=True, bytes=553383,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-litepaper-v0.pdf',
@@ -226,7 +237,7 @@ def papers():
       limits='“Part 1” and “v0” are the paper’s own labels. Yield, conversion, and slippage claims in the abstract were not checked. This is not evidence of a deployment.',
       keywords='Solayer restaking AVS Solana litepaper stake weighted QoS',
       desc='Solayer restaking litepaper, v0 part 1, read from the project repository. Deployment was not checked.'),
-    _paper(slug='solayer-usd', project='Solayer', title='Solayer USD: Yield-bearing Real World Assets Backed Synthetic Stablecoin',
+    _paper(slug='solayer-usd-yield-bearing-real-world-assets-backed-synthetic-stablecoin', legacy='solayer-usd', stable_id='paper-solayer-usd', project='Solayer', title='Solayer USD: Yield-bearing Real World Assets Backed Synthetic Stablecoin',
       doc_type='Litepaper', version='v0, part 1', authors='Solayer Team', language='English',
       topics=['stablecoin'], names_solana=True, bytes=2614802,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-USD-litepaper-v0.pdf',
@@ -236,7 +247,7 @@ def papers():
       limits='Those market and yield figures are the paper’s statements. Sol.College did not inspect a reserve, a multiplier, or an issuer.',
       keywords='Solayer sUSD stablecoin Token-2022 RWA litepaper',
       desc='Solayer USD litepaper, v0 part 1. The yield and market figures were not checked.'),
-    _paper(slug='solayer-bridge', project='Solayer', title='Solayer Bridge: Canonical Bridge Between SVMs',
+    _paper(slug='solayer-bridge-canonical-bridge-between-svms', legacy='solayer-bridge', stable_id='paper-solayer-bridge', project='Solayer', title='Solayer Bridge: Canonical Bridge Between SVMs',
       doc_type='White paper', version='Not stated on the title page', authors='Solayer Team', language='English',
       topics=['bridging', 'svm'], names_solana=True, bytes=594192,
       source='https://github.com/solayer-labs/solayer-improvement-proposal/blob/main/whitepapers/solayer-bridge.pdf',
@@ -246,7 +257,7 @@ def papers():
       limits='The design is the paper’s design. Sol.College did not send a transaction across it and did not review the guardian set.',
       keywords='Solayer bridge sBridge SVM Solana guardian',
       desc='Solayer bridge paper for SVM environments, starting with Solana. No transfer was sent.'),
-    _paper(slug='solayer-chain', project='Solayer', title='Solayer Chain: Infinitely Scalable Hardware-Accelerated SVM Network',
+    _paper(slug='solayer-chain-infinitely-scalable-hardware-accelerated-svm-network', legacy='solayer-chain', stable_id='paper-solayer-chain', project='Solayer', title='Solayer Chain: Infinitely Scalable Hardware-Accelerated SVM Network',
       doc_type='Litepaper', version='Not stated on the title page', date='6 January 2025',
       authors='Jason Li, Chaofan Shou, Qi Su, Chaz Cui, Tony Ke', language='English',
       topics=['svm', 'execution'], names_solana=True, bytes=605925,
@@ -267,8 +278,8 @@ def papers():
       limits='This page is the short document the docs call a white paper. It is not the arXiv PDF, and it does not by itself show that a game is deployed.',
       keywords='MagicBlock ephemeral rollup SVM white paper Picco Fortugno',
       desc='MagicBlock’s short white paper page on its docs site. It is not the arXiv PDF.',
-      related=['ephemeral-rollups']),
-    _paper(slug='ephemeral-rollups', project='MagicBlock', title='Ephemeral Rollups are All you Need',
+      related=['ephemeral-rollups-are-all-you-need']),
+    _paper(slug='ephemeral-rollups-are-all-you-need', legacy='ephemeral-rollups', stable_id='paper-ephemeral-rollups', project='MagicBlock', title='Ephemeral Rollups are All you Need',
       doc_type='White paper', version='arXiv:2311.02650v4', date='14 February 2025',
       authors='Gabriele Picco, Andrea Fortugno', language='English',
       topics=['svm', 'games'], names_solana=True, bytes=1322608,
@@ -280,7 +291,7 @@ def papers():
       keywords='ephemeral rollups arXiv 2311.02650 SVM MagicBlock Picco Fortugno',
       desc='Ephemeral Rollups are All you Need, arXiv:2311.02650v4. An arXiv listing is not peer review.',
       related=['magicblock-whitepaper']),
-    _paper(slug='uxd-whitepaper', project='UXD Protocol', title='UXD Protocol: An Algorithmic Stablecoin 100% Backed by a Delta Neutral Position',
+    _paper(slug='uxd-protocol-an-algorithmic-stablecoin-100-backed-by-a-delta-neutral-position', legacy='uxd-whitepaper', stable_id='paper-uxd-whitepaper', project='UXD Protocol', title='UXD Protocol: An Algorithmic Stablecoin 100% Backed by a Delta Neutral Position',
       doc_type='White paper', version='Not stated on the pages read', authors='Kento Inami', language='English',
       topics=['stablecoin'], names_solana=False, bytes=68001,
       source='https://docs.uxd.fi/uxdprotocol/resources/whitepaper',
@@ -293,7 +304,21 @@ def papers():
       related=[]),
   ]
   rows.extend(worms())
+  rows.extend(corpus())
+  slugs = [r['slug'] for r in rows]
+  if len(slugs) != len(set(slugs)):
+    raise SystemExit('paper: duplicate slug')
+  ids = [r['id'] for r in rows]
+  if len(ids) != len(set(ids)):
+    raise SystemExit('paper: duplicate id')
   return rows
+
+def corpus():
+  path = os.path.join(os.path.dirname(__file__), 'paper_corpus.json')
+  if not os.path.exists(path):
+    return []
+  data = json.load(open(path, encoding='utf-8'))
+  return [_paper(**row) for row in data]
 
 NOT_LISTED = [
  ('Helium white paper, release 0.4.2 (14 November 2018)',
@@ -338,6 +363,8 @@ def records():
     'protocol': ['research'], 'consensus': ['research', 'validators'], 'bridging': ['research'],
     'oracle': ['research', 'defi'], 'restaking': ['research', 'defi'], 'stablecoin': ['research', 'defi', 'tokens'],
     'svm': ['research'], 'execution': ['research'], 'games': ['research', 'games'],
+    'lending': ['research', 'defi'], 'trading': ['research', 'defi'], 'networking': ['research', 'validators'],
+    'token': ['research', 'tokens'],
   }
   for p in papers():
     subs = []
@@ -357,7 +384,7 @@ def records():
       origin='external', language=p['language'],
       licence='Link only. The paper was not copied into this catalogue.',
       learn='What the retrieved document says it is, and which facts it does not establish.',
-      why=p['solana'], limits=p['limits'], keywords=p['keywords'] + ' ' + p['project'] + ' ' + p['doc_type'],
+      why=p['solana'], limits=p['limits'], keywords=p['keywords'] + ' ' + p['project'] + ' ' + p['doc_type'] + ' ' + ' '.join(p.get('outline') or []),
       labels=['source-checked'], discovery='Retrieved by Sol.College on 17 Nov 2026. ' + p['retrieval'],
       verification='The source file was read on 17 Nov 2026. The protocol was not run.',
       relationships=rels, reviewed=CHECKED))
@@ -391,6 +418,7 @@ def page_html(p, by_slug):
 </dl>
 <h2>What the document says it is</h2>
 <p>{E(p["scope"])}</p>
+{('<h2>Heading outline</h2><p>These headings are the file’s own. The text under them was not copied onto this page.</p><ol>' + ''.join(f'<li>{E(h)}</li>' for h in p.get('outline') or []) + '</ol>') if p.get('outline') else ''}
 <h2>Solana, as this document states it</h2>
 <p>{E(p["solana"])}</p>
 <h2>What this record does not establish</h2>
@@ -410,7 +438,8 @@ def index_html(rows):
   cards = []
   for p in rows:
     blob = ' '.join([p['title'], p['project'], p['doc_type'], p['authors'], p['version'], p['date'],
-      p['scope'], p['solana'], p['limits'], p['keywords'], ' '.join(p['topics']), p['language']]).lower()
+      p['scope'], p['solana'], p['limits'], p['keywords'], ' '.join(p['topics']), p['language'],
+      ' '.join(p.get('outline') or [])]).lower()
     cards.append(f'''<article class="card paper" data-project="{E(p["project"])}" data-type="{E(p["doc_type"])}" data-topics="{E(" ".join(p["topics"]))}" data-lang="{E(p["language"])}" data-solana="{"yes" if p["names_solana"] else "no"}" data-search="{E(blob)}">
 <h3><a href="{E(p["path"])}">{E(p["title"])}</a></h3>
 <p class=meta>{E(p["project"])} · {E(p["doc_type"])} · {E(p["version"])} · {E(p["language"])}</p>
@@ -426,7 +455,7 @@ def index_html(rows):
 <nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <span>White papers</span></nav>
 <p class=eyebrow>Solana Library</p>
 <h1>White papers</h1>
-<p class=lead>Project papers and design notes, one page each, only where the file was retrieved.</p>
+<p class=lead>Retrieved white papers, SIMDs, and design proposals. One page each. The URL is the document’s title. The file itself stays at the source.</p>
 <p>Search matches the words on these pages. It does not answer from outside the catalogue, and it does not decide which paper is right when two of them disagree. A document that was not retrieved is not given a page.</p>
 <form id=paper-form class=finder role=search>
 <label>Search titles, authors, and what the paper says
@@ -526,4 +555,19 @@ def write_pages(S, page, css):
     data['about'] = about
     lib.write_page(S, page, css, p['path'], p['title'], p['desc'], page_html(p, by_slug), data)
     paths.append(p['path'])
+    if p.get('legacy') and p['legacy'] != p['slug']:
+      old = '/library/papers/' + p['legacy'] + '/'
+      note = f'''<article class="lesson lib-page">
+<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <a href="/library/papers/">White papers</a></nav>
+<h1>This record moved</h1>
+<p>The page for {E(p["title"])} is now <a href="{E(p["path"])}">{E(p["path"])}</a>. The address is the document’s title.</p>
+</article>'''
+      lib.write_page(S, page, css, old, p['title'], 'This record moved. The text was not copied.', note,
+        lib.ld(p['title'], 'This record moved.', old))
+      dest = S + old + 'index.html'
+      html_page = open(dest, encoding='utf-8').read()
+      if 'noindex' not in html_page.lower():
+        html_page = html_page.replace('</head>', '<meta name=robots content="noindex,follow"></head>', 1)
+        open(dest, 'w', encoding='utf-8').write(html_page)
+      paths.append(old)
   return paths
