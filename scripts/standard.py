@@ -111,7 +111,7 @@ def box(title, text):
   return f'<aside class=box><p class=label>{E(title)}</p><p>{text}</p></aside>'
 
 NOTE = box('What this package contains',
-  'The charter, the policies, the founding editorial, the desk descriptions, and an assignment board. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
+  'The charter, the policies, the style book, the founding editorial, the desk standards, and an assignment board. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
 
 def home_page():
   items = [
@@ -121,6 +121,7 @@ def home_page():
     ('/degen/desks/', 'The seven desks', 'Beats and questions. No story is filed.'),
     ('/degen/assignments/', 'Assignment board', 'Ten commissions and a cover question. Not reported.'),
     ('/degen/templates/', 'Templates', 'How a report, an opinion, an investigation, and a satire are labelled.'),
+    ('/degen/style/', 'Style book', 'How a number, a response, and a deck are allowed to sound. No story uses it yet.'),
     ('/degen/noticeboard/', 'Campus noticeboard', 'No event is posted.'),
     ('/degen/letters/', 'Letters', 'How to send one. None has been published.'),
     ('/degen/corrections/', 'Corrections', 'The log. No correction has been issued.'),
@@ -199,6 +200,14 @@ EDITORIAL = '''<p>Sol.College exists to teach people how to understand and build
 <p>We will not mistake cynicism for intelligence or enthusiasm for evidence.</p>
 <p>We will question projects, influencers, institutions, and this college. We will publish disagreement without pretending every claim is equally supported. When we get something wrong, we will correct it.</p>
 <p>This is not a publication about pretending the ecosystem is respectable. It is a publication about taking its consequences seriously.</p>
+<h2>What “question the chain” asks a writer to do</h2>
+<p>Name the decision. Name who can make it. Name who is paid if a reader does what the screen suggests. Then say which of those three the piece has actually checked. A piece that has checked none of them is a mood. The paper can publish a mood only as opinion, and only with the word Opinion where a reader cannot miss it.</p>
+<p>A price is not a question. A ticker is not a method. The paper does not show token prices, flashing gains, or a list of coins. A market story, when one exists, will be about a mechanism: a fee, a liquidation rule, an allocation, a disclosure. No market story exists in this package.</p>
+<h2>What the paper will not borrow</h2>
+<p>It will not borrow the authority of the <a href="/journal/">Journal of Solana Studies</a>. That journal has published no study. It will not borrow the authority of the <a href="/library/">library</a>. A catalogue record is a pointer, not a quote from a scene the paper attended. It will not turn a lesson-completion tick into a student’s experience. A tick records a step. It does not record a person.</p>
+<p>It will not invent a student, a source, or a trip in order to have a dateline. The dateline on these pages is the day the page was published. It is not the day a reporter went somewhere.</p>
+<h2>How a reader should hold this package</h2>
+<p>Read the editorial as a promise about future pieces, not as news of past ones. Read the desks as rules for work that has not been filed. Read the assignment board as questions the paper is not yet allowed to answer. When a report does appear, the <a href="/degen/templates/">templates</a> say what it has to carry, and the <a href="/degen/style/">style book</a> says how a number, a response, and a deck are allowed to sound.</p>
 <p>Welcome to The Degen.</p>
 <p>Question the chain.</p>'''
 
@@ -255,7 +264,7 @@ def charter_page():
 <p>The aim is a student editor, a managing editor, a technical editor, contributors for news, investigations, culture, and campus, and an adviser. The adviser supports safety and standards. The adviser does not pre-approve criticism of the college.</p>
 <p>None of those seats is filled. A name goes on the masthead only after that person agrees. Writing the aim down does not appoint anyone.</p>
 <p>A weekly edition is the aim once there is checked work to print. There is no quota, and there is no continuous newsroom behind this package.</p>
-<p>The rules for interests, trading, reporting, promotion, students, and disputes are on the <a href="/degen/policies/">policies</a> page. The labels a future story has to carry are on the <a href="/degen/templates/">templates</a> page.</p>
+<p>The rules for interests, trading, reporting, promotion, students, and disputes are on the <a href="/degen/policies/">policies</a> page. The labels a future story has to carry are on the <a href="/degen/templates/">templates</a> page. How a number, a response, and a deck are allowed to sound is in the <a href="/degen/style/">style book</a>.</p>
 {foot()}
 </article>'''
 
@@ -289,14 +298,24 @@ def policies_page():
 </article>'''
 
 def desks_page():
+  import standard_depth as depth
   blocks = []
   for d in DESKS:
+    more = depth.DESK_MORE[d['id']]
     beats = ''.join(f'<li>{E(b)}</li>' for b in d['beats'])
+    show = ''.join(f'<li>{E(b)}</li>' for b in more['show'])
+    refuse = ''.join(f'<li>{E(b)}</li>' for b in more['refuse'])
     blocks.append(f'''<section id={d["id"]}>
 <h2>{E(d["title"])}</h2>
 <p class=deck>{E(d["question"])}</p>
 <p>{E(d["standard"])}</p>
+<h3>Beats</h3>
 <ul>{beats}</ul>
+<h3>What a piece on this desk has to show</h3>
+<ul>{show}</ul>
+<h3>What this desk will not print</h3>
+<ul>{refuse}</ul>
+<p>{E(more['specimen'])}</p>
 <p class=kind>No story is filed on this desk.</p>
 </section>''')
   return f'''<article class=tds>
@@ -312,9 +331,17 @@ def desks_page():
 def assignments_page():
   cover = box('Cover commission',
     'Everyone says “early.” Who gets to be early, and who arrives to provide the exit? The question is a commission for a reported feature about launch access, allocations, promotion, and ordinary participation. No reporting has been done. The conclusion is not written. It has to follow the reporting. This is not an allegation about any organisation.')
-  rows = ''.join(
-    f'<li><h3>{E(title)}</h3><p>{E(why)}</p><p class=kind>Assignment. Not reported. No finding.</p></li>'
-    for title, why in ASSIGNMENTS)
+  import standard_depth as depth
+  rows = []
+  for title, why in ASSIGNMENTS:
+    brief = depth.BRIEFS[title]
+    rows.append(f'''<li><h3>{E(title)}</h3>
+<p>{E(why)}</p>
+<p><b>Records to seek.</b> {E(brief['seek'])}</p>
+<p><b>The question to answer.</b> {E(brief['ask'])}</p>
+<p><b>The sentence this assignment must not print early.</b> {E(brief['trap'])}</p>
+<p class=kind>Assignment. Not reported. No finding.</p></li>''')
+  rows = ''.join(rows)
   return f'''<article class=tds>
 {crumbs('Assignments')}
 {mast(False)}
@@ -368,6 +395,32 @@ def templates_page():
 <p>A made-up headline would go here. This box is the specimen, not a joke about a real party. Nothing in this box happened.</p>
 </aside>
 <p>If a joke resembles a real allegation, the satire label has to be unmistakable. A clever tone is not a label. No satire is published in this release.</p>
+{foot()}
+</article>'''
+
+def style_page():
+  return f'''<article class=tds>
+{crumbs('Style')}
+{mast(False)}
+<p class=label>Style book</p>
+<h1>How a piece is allowed to sound</h1>
+<p class=deck>Rules for the writing. They do not describe a published story, because no report has been published. A specimen below is a writing exercise. It names no one.</p>
+<h2>A number</h2>
+<p>A number needs a definition in the same piece. “A million wallets” is not a count of people unless the piece says how a person was distinguished from a wallet, and the paper has not done that count. A fee needs the unit and the action it is charged for. A percentage needs the denominator. A number copied from a dashboard is attributed to the dashboard. It is not upgraded into the paper’s own measurement.</p>
+<p>Specimen, not a report: “The site says 80 percent voted.” The style book requires the next sentence to say 80 percent of what. This page does not have a vote.</p>
+<h2>A response</h2>
+<p>A serious criticism of a person or an organisation waits for a meaningful chance to respond. The piece records what was asked, when, and what came back, including a refusal and including silence. Silence is not agreement. A response is not edited into a confession.</p>
+<p>No one is in a position to be asked. No criticism of a named party is in this package. The rule is here so that a later piece cannot skip it.</p>
+<h2>A deck</h2>
+<p>The deck under a headline may say what the reporting establishes only after the reporting exists and has been checked. Until then the deck says what kind of page the reader is on. The founding editorial’s deck says it is not a report. An assignment’s label says it is not a finding.</p>
+<p>Specimen, not a report: “An investigation found that ordinary buyers arrived last.” That deck would be legal only after the reporting. It is printed here as an example of a deck the paper must not use yet.</p>
+<h2>A quote</h2>
+<p>A quote comes from a person who said it, and who can be accounted for. The paper does not write the sentence it wishes a student, a trader, or a founder had said. A paraphrase is labelled as a paraphrase. A quote is not shortened so that it says the opposite of what the person said.</p>
+<h2>A scene</h2>
+<p>The paper does not describe a room it did not enter, a screen it did not open, or a transaction it did not read. “Imagine” belongs in a method illustration in the <a href="/journal/">journal</a>, where it is labelled as an illustration. It does not belong in a Degen lead.</p>
+<h2>What automation may not supply</h2>
+<p>Automation must not manufacture an interview, a quote, an eyewitness, an anonymous source, a student experience, or the appearance of a reporting trip. These pages were prepared with automated assistance. They report no observation. A fluent paragraph is not a source.</p>
+<p><a href="/degen/templates/">Templates</a> · <a href="/degen/policies/">Policies</a></p>
 {foot()}
 </article>'''
 
@@ -459,6 +512,7 @@ def write(S, page, css):
     ('/degen/desks/', 'Desks', 'Seven desks for The Degen. Each one states its question. No story is filed.', desks_page()),
     ('/degen/assignments/', 'Assignment board', 'Cover commission and ten assignments. None has been reported. None is an allegation.', assignments_page()),
     ('/degen/templates/', 'Story templates', 'How a report, an opinion, an investigation, and a satire have to be labelled. The forms are empty.', templates_page()),
+    ('/degen/style/', 'Style book', 'How a number, a response, a deck, and a quote are allowed to sound. No report uses these rules yet.', style_page()),
     ('/degen/corrections/', 'Corrections', 'The corrections log of The Degen. No correction has been issued.', corrections_page()),
     ('/degen/letters/', 'Letters', 'How to send a letter to The Degen. None has been published. The issue is public.', letters_page()),
     ('/degen/tips/', 'Send a tip', 'Tips to The Degen go to a public GitHub issue. It is not a confidential tip line.', tips_page()),
