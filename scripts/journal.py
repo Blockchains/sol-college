@@ -278,7 +278,7 @@ def home_page():
 </aside>
 <p class=cta><a class=btn href="/journal/programme/">Read the protocols</a> <a class="btn ghost" href="/journal/call/#submit">Submit a proposal</a></p>
 <h2>How a journal paper differs</h2>
-<p>A long tutorial is not research. A technical article is not peer reviewed. This journal is meant to publish fewer pieces than the articles list, and to require more evidence from each one. The articles list is at <a href="/articles/">Articles</a>. Practice is at <a href="/lessons/">Lessons</a>. Finding a source belongs in the <a href="/library/">Solana Library</a>. Reporting of what is happening belongs in <a href="/standard/">The Degen Standard</a>.</p>
+<p>A long tutorial is not research. A technical article is not peer reviewed. This journal is meant to publish fewer pieces than the articles list, and to require more evidence from each one. The articles list is at <a href="/articles/">Articles</a>. Practice is at <a href="/lessons/">Lessons</a>. Finding a source belongs in the <a href="/library/">Solana Library</a>. Reporting of what is happening belongs in <a href="/degen/">The Degen</a>.</p>
 <table><thead><tr><th>Publication</th><th>Purpose</th><th>Standard</th></tr></thead><tbody>{kind_rows}</tbody></table>
 <h2 id=latest>Latest publications</h2>
 <p>There are no completed publications. A protocol is not a paper. Review status for each item below is: not peer reviewed.</p>

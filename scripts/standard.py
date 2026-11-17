@@ -1,4 +1,4 @@
-"""The Degen Standard: the student newspaper of Sol.College.
+"""The Degen: the student newspaper of Sol.College.
 
 This release is the charter, the policies, one editorial, and an assignment board.
 It is not a news edition. No story has been reported. No student is named.
@@ -14,11 +14,11 @@ def E(s):
 def issue(title, body):
   return ISSUE + '?title=' + urllib.parse.quote(title) + '&body=' + urllib.parse.quote(body)
 
-LETTER = issue('Letter to The Degen Standard',
+LETTER = issue('Letter to The Degen',
   'Your letter:\n\nThis issue is public. Do not include private keys, recovery phrases, or anything you need kept private. A letter is edited before it is published. Sending one does not mean it will be published.\n')
-TIP = issue('Tip for The Degen Standard',
+TIP = issue('Tip for The Degen',
   'What you want the paper to know:\n\nThis issue is public. It is not a confidential tip line. Do not include private keys, recovery phrases, unpublished vulnerability details, or anything that has to stay private. If it cannot be public, do not send it.\n')
-CORRECTION = issue('Correction for The Degen Standard',
+CORRECTION = issue('Correction for The Degen',
   'Page:\n\nWhat is wrong:\n\nWhat the source says:\n\n')
 COMPLAINT = issue('Complaint about Sol.College coverage',
   'What the paper, or the college, got wrong:\n\nThis issue is public. The publisher can edit any page that results. There is no separate editor who can overrule Sol.College.\n')
@@ -62,7 +62,7 @@ FEATURES = [
  ('The Other Side', 'A serious response from someone who disagrees.'),
  ('Office Hours', 'Students ask uncomfortable, useful questions.'),
  ('Campus Dispatch', 'Projects, opportunities, meetings, and student concerns.'),
- ('Letters to the Standard', 'Reader correspondence, edited before it is published.'),
+ ('Letters to The Degen', 'Reader correspondence, edited before it is published.'),
  ('Corrections Desk', 'A correction, in public, with the explanation.'),
  ('Exit Liquidity', 'Satire and cartoons. The label has to be unmistakable, especially when the joke resembles an allegation.'),
 ]
@@ -81,10 +81,10 @@ ASSIGNMENTS = [
 ]
 
 def desks_nav():
-  return ''.join(f'<a href="/standard/desks/#{d["id"]}">{E(d["nav"])}</a>' for d in DESKS)
+  return ''.join(f'<a href="/degen/desks/#{d["id"]}">{E(d["nav"])}</a>' for d in DESKS)
 
 def mast(home):
-  name = '<h1>The Degen Standard</h1>' if home else '<p class=papername><a href="/standard/">The Degen Standard</a></p>'
+  name = '<h1>The Degen</h1>' if home else '<p class=papername><a href="/degen/">The Degen</a></p>'
   return f'''<header class=mast>
 <p class=dateline>Founding package · 17 Nov 2026 · Not a news edition</p>
 {name}
@@ -94,18 +94,18 @@ def mast(home):
 
 def foot():
   return f'''<nav class=paperfoot aria-label=Paper>
-<a href="/standard/letters/">Letters</a>
-<a href="/standard/corrections/">Corrections</a>
-<a href="/standard/tips/">Send a tip</a>
-<a href="/standard/assignments/">Assignments</a>
-<a href="/standard/charter/">Charter</a>
-<a href="/standard/policies/">Policies</a>
-<a href="/standard/templates/">Templates</a>
+<a href="/degen/letters/">Letters</a>
+<a href="/degen/corrections/">Corrections</a>
+<a href="/degen/tips/">Send a tip</a>
+<a href="/degen/assignments/">Assignments</a>
+<a href="/degen/charter/">Charter</a>
+<a href="/degen/policies/">Policies</a>
+<a href="/degen/templates/">Templates</a>
 </nav>
 <p class=colophon>Reading is free. There is no subscription, no payment, and no fund. Prepared with automated assistance and published by Sol.College on 17 Nov 2026. No page in this release reports an interview, a quote, a site visit, or an observation.</p>'''
 
 def crumbs(here):
-  return f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/standard/">The Degen Standard</a> / <span>{E(here)}</span></nav>'
+  return f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/degen/">The Degen</a> / <span>{E(here)}</span></nav>'
 
 def box(title, text):
   return f'<aside class=box><p class=label>{E(title)}</p><p>{text}</p></aside>'
@@ -115,16 +115,16 @@ NOTE = box('What this package contains',
 
 def home_page():
   items = [
-    ('/standard/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'Editorial. A statement of intent, not a report.'),
-    ('/standard/charter/', 'Editorial charter', 'What the paper is for, and what it refuses to pretend.'),
-    ('/standard/policies/', 'Policies', 'Interests, trading, reporting, promotion, students, and disputes.'),
-    ('/standard/desks/', 'The seven desks', 'Beats and questions. No story is filed.'),
-    ('/standard/assignments/', 'Assignment board', 'Ten commissions and a cover question. Not reported.'),
-    ('/standard/templates/', 'Templates', 'How a report, an opinion, an investigation, and a satire are labelled.'),
-    ('/standard/noticeboard/', 'Campus noticeboard', 'No event is posted.'),
-    ('/standard/letters/', 'Letters', 'How to send one. None has been published.'),
-    ('/standard/corrections/', 'Corrections', 'The log. No correction has been issued.'),
-    ('/standard/tips/', 'Tips', 'A public issue. Not a confidential line.'),
+    ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'Editorial. A statement of intent, not a report.'),
+    ('/degen/charter/', 'Editorial charter', 'What the paper is for, and what it refuses to pretend.'),
+    ('/degen/policies/', 'Policies', 'Interests, trading, reporting, promotion, students, and disputes.'),
+    ('/degen/desks/', 'The seven desks', 'Beats and questions. No story is filed.'),
+    ('/degen/assignments/', 'Assignment board', 'Ten commissions and a cover question. Not reported.'),
+    ('/degen/templates/', 'Templates', 'How a report, an opinion, an investigation, and a satire are labelled.'),
+    ('/degen/noticeboard/', 'Campus noticeboard', 'No event is posted.'),
+    ('/degen/letters/', 'Letters', 'How to send one. None has been published.'),
+    ('/degen/corrections/', 'Corrections', 'The log. No correction has been issued.'),
+    ('/degen/tips/', 'Tips', 'A public issue. Not a confidential line.'),
   ]
   listing = ''.join(
     f'<li data-paper="{E(title + " " + kind)}"><a href="{href}">{E(title)}</a> <span class=kind>{E(kind)}</span></li>'
@@ -141,17 +141,17 @@ def home_page():
 <div class=cols>
 <div>
 <p class=label>Lead · Editorial, not an investigation</p>
-<h2><a href="/standard/editorial/the-chain-needs-a-student-paper/">The Chain Needs a Student Paper</a></h2>
+<h2><a href="/degen/editorial/the-chain-needs-a-student-paper/">The Chain Needs a Student Paper</a></h2>
 <p class=deck>The paper states what it will cover and what it will not pretend. The text does not establish a fact about a market, a person, or an incident.</p>
 <p class=byline>By Sol.College · 17 Nov 2026 · Editorial</p>
-<p><a class=ink href="/standard/editorial/the-chain-needs-a-student-paper/">Read the editorial</a></p>
+<p><a class=ink href="/degen/editorial/the-chain-needs-a-student-paper/">Read the editorial</a></p>
 </div>
 <aside>
 <h2>Latest reporting</h2>
-<p>No report has been published. The cover investigation, “Everyone says early”, is a commission. It is on the <a href="/standard/assignments/">assignment board</a>. It is not a story.</p>
+<p>No report has been published. The cover investigation, “Everyone says early”, is a commission. It is on the <a href="/degen/assignments/">assignment board</a>. It is not a story.</p>
 <h2>Campus noticeboard</h2>
 <p>No verified event, meeting, club, election, or opening is posted. The <a href="/campus/">campus</a> and the <a href="/lessons/">lessons</a> are the college’s practice pages. They are not news reports.</p>
-<p><a href="/standard/noticeboard/">The noticeboard</a></p>
+<p><a href="/degen/noticeboard/">The noticeboard</a></p>
 </aside>
 </div>
 <hr class=rule>
@@ -199,7 +199,7 @@ EDITORIAL = '''<p>Sol.College exists to teach people how to understand and build
 <p>We will not mistake cynicism for intelligence or enthusiasm for evidence.</p>
 <p>We will question projects, influencers, institutions, and this college. We will publish disagreement without pretending every claim is equally supported. When we get something wrong, we will correct it.</p>
 <p>This is not a publication about pretending the ecosystem is respectable. It is a publication about taking its consequences seriously.</p>
-<p>Welcome to The Degen Standard.</p>
+<p>Welcome to The Degen.</p>
 <p>Question the chain.</p>'''
 
 def editorial_page():
@@ -218,7 +218,7 @@ def editorial_page():
 <dt>Published</dt><dd>17 Nov 2026. That is the page date. It is not an edition date.</dd>
 <dt>Sources</dt><dd>None. The editorial does not cite an event, a document, or a person.</dd>
 <dt>Disclosure</dt><dd>The publisher wrote the page and can change it. No holding is disclosed, because no person is named. That absence is not a claim that nobody at Sol.College holds a token.</dd>
-<dt>Corrections</dt><dd>None. <a href="/standard/corrections/">The log</a>.</dd>
+<dt>Corrections</dt><dd>None. <a href="/degen/corrections/">The log</a>.</dd>
 </dl>
 </aside>
 {EDITORIAL}
@@ -230,15 +230,15 @@ def charter_page():
 <tr><td><a href="/articles/">Articles</a></td><td>Can someone explain this clearly?</td><td>A lesson in prose, from a recorded example.</td></tr>
 <tr><td><a href="/lessons/">Lessons</a></td><td>Can I learn to do it?</td><td>Practice on a live fork.</td></tr>
 <tr><td><a href="/journal/">Journal of Solana Studies</a></td><td>What does a specified investigation establish?</td><td>A research record, with a method. Not this paper.</td></tr>
-<tr><td>The Degen Standard</td><td>What is happening, who benefits, and what should we question?</td><td>This paper. Fewer pieces than the articles list, and a different job from the journal.</td></tr>'''
+<tr><td>The Degen</td><td>What is happening, who benefits, and what should we question?</td><td>This paper. Fewer pieces than the articles list, and a different job from the journal.</td></tr>'''
   return f'''<article class=tds>
 {crumbs('Charter')}
 {mast(False)}
 <p class=label>Charter</p>
 <h1>What the paper is for</h1>
-<p class=deck>The Degen Standard is the student newspaper of Sol.College. Degen is the cultural voice. Standard is the counterweight. The voice is not permission to print a rumour.</p>
+<p class=deck>The Degen is the student newspaper of Sol.College. The name is the cultural voice. It is not permission to print a rumour.</p>
 <h2>About</h2>
-<p>The Degen Standard covers the people, markets, technology, politics, and culture surrounding Solana, from memecoin launches and perpetual futures to governance disputes, engineering failures, and student life.</p>
+<p>The Degen covers the people, markets, technology, politics, and culture surrounding Solana, from memecoin launches and perpetual futures to governance disputes, engineering failures, and student life.</p>
 <p>The paper is curious about experimentation and sceptical of easy money. It separates reporting from opinion, discloses relevant interests, and corrects mistakes. It covers Sol.College with the same scrutiny it applies to everyone else.</p>
 <p>Independent-minded describes the stance the paper wants. It does not mean editorial independence is established. No editor stands between a story and the publisher. Sol.College can change any page.</p>
 {NOTE}
@@ -255,7 +255,7 @@ def charter_page():
 <p>The aim is a student editor, a managing editor, a technical editor, contributors for news, investigations, culture, and campus, and an adviser. The adviser supports safety and standards. The adviser does not pre-approve criticism of the college.</p>
 <p>None of those seats is filled. A name goes on the masthead only after that person agrees. Writing the aim down does not appoint anyone.</p>
 <p>A weekly edition is the aim once there is checked work to print. There is no quota, and there is no continuous newsroom behind this package.</p>
-<p>The rules for interests, trading, reporting, promotion, students, and disputes are on the <a href="/standard/policies/">policies</a> page. The labels a future story has to carry are on the <a href="/standard/templates/">templates</a> page.</p>
+<p>The rules for interests, trading, reporting, promotion, students, and disputes are on the <a href="/degen/policies/">policies</a> page. The labels a future story has to carry are on the <a href="/degen/templates/">templates</a> page.</p>
 {foot()}
 </article>'''
 
@@ -387,7 +387,7 @@ def letters_page():
 {crumbs('Letters')}
 {mast(False)}
 <p class=label>Letters</p>
-<h1>Letters to the Standard</h1>
+<h1>Letters to The Degen</h1>
 <p>No letter has been published. A letter is edited for length, clarity, and evidence. Sending one does not mean it will run. A letter is not a report, and it is labelled as correspondence.</p>
 <p><a href="{LETTER}">Send a letter</a>. The issue is public. Do not include a private key, a recovery phrase, or anything you need kept private. This is not a confidential letter.</p>
 {foot()}
@@ -435,11 +435,11 @@ def ld(title, desc, path):
     'description': desc,
     'datePublished': PUBLISHED,
     'url': SITE + path,
-    'isPartOf': {'@type': 'WebSite', 'name': 'The Degen Standard', 'publisher': {'@type': 'Organization', 'name': 'Sol.College', 'url': SITE}},
+    'isPartOf': {'@type': 'WebSite', 'name': 'The Degen', 'publisher': {'@type': 'Organization', 'name': 'Sol.College', 'url': SITE}},
   }
 
 def write_page(S, page, css, path, title, desc, main, data):
-  doc = 'The Degen Standard | Sol.College' if title == 'The Degen Standard' else title + ' | The Degen Standard'
+  doc = 'The Degen | Sol.College' if title == 'The Degen' else title + ' | The Degen'
   html_page = page(css + main, doc, desc, path)
   blob = json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
   html_page = html_page.replace('</head>', '<script type="application/ld+json">' + blob + '</script></head>', 1)
@@ -450,23 +450,35 @@ def write_page(S, page, css, path, title, desc, main, data):
   return path
 
 def write(S, page, css):
-  home_desc = 'The Degen Standard is the student newspaper of Sol.College. This package is the charter, the policies, and one editorial. No report has been published.'
+  home_desc = 'The Degen is the student newspaper of Sol.College. This package is the charter, the policies, and one editorial. No report has been published.'
   pages = [
-    ('/standard/', 'The Degen Standard', home_desc, home_page()),
-    ('/standard/charter/', 'Editorial charter', 'What The Degen Standard is for, how it differs from the articles and the journal, and which seats are empty.', charter_page()),
-    ('/standard/policies/', 'Newspaper policies', 'Interest disclosures, a trading rule, reporting standards, a ban on paid tips, student protection, and the limit on disputes with the college.', policies_page()),
-    ('/standard/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'The founding editorial. A statement of intent by Sol.College. It does not report an event.', editorial_page()),
-    ('/standard/desks/', 'Desks', 'Seven desks for The Degen Standard. Each one states its question. No story is filed.', desks_page()),
-    ('/standard/assignments/', 'Assignment board', 'Cover commission and ten assignments. None has been reported. None is an allegation.', assignments_page()),
-    ('/standard/templates/', 'Story templates', 'How a report, an opinion, an investigation, and a satire have to be labelled. The forms are empty.', templates_page()),
-    ('/standard/corrections/', 'Corrections', 'The corrections log of The Degen Standard. No correction has been issued.', corrections_page()),
-    ('/standard/letters/', 'Letters', 'How to send a letter to The Degen Standard. None has been published. The issue is public.', letters_page()),
-    ('/standard/tips/', 'Send a tip', 'Tips to The Degen Standard go to a public GitHub issue. It is not a confidential tip line.', tips_page()),
-    ('/standard/noticeboard/', 'Campus noticeboard', 'The campus noticeboard. No event, club, election, or opening is listed.', noticeboard_page()),
+    ('/degen/', 'The Degen', home_desc, home_page()),
+    ('/degen/charter/', 'Editorial charter', 'What The Degen is for, how it differs from the articles and the journal, and which seats are empty.', charter_page()),
+    ('/degen/policies/', 'Newspaper policies', 'Interest disclosures, a trading rule, reporting standards, a ban on paid tips, student protection, and the limit on disputes with the college.', policies_page()),
+    ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'The founding editorial. A statement of intent by Sol.College. It does not report an event.', editorial_page()),
+    ('/degen/desks/', 'Desks', 'Seven desks for The Degen. Each one states its question. No story is filed.', desks_page()),
+    ('/degen/assignments/', 'Assignment board', 'Cover commission and ten assignments. None has been reported. None is an allegation.', assignments_page()),
+    ('/degen/templates/', 'Story templates', 'How a report, an opinion, an investigation, and a satire have to be labelled. The forms are empty.', templates_page()),
+    ('/degen/corrections/', 'Corrections', 'The corrections log of The Degen. No correction has been issued.', corrections_page()),
+    ('/degen/letters/', 'Letters', 'How to send a letter to The Degen. None has been published. The issue is public.', letters_page()),
+    ('/degen/tips/', 'Send a tip', 'Tips to The Degen go to a public GitHub issue. It is not a confidential tip line.', tips_page()),
+    ('/degen/noticeboard/', 'Campus noticeboard', 'The campus noticeboard. No event, club, election, or opening is listed.', noticeboard_page()),
   ]
   paths = []
   for path, title, desc, main in pages:
     paths.append(write_page(S, page, css, path, title, desc, main, ld(title, desc, path)))
+    old = path.replace('/degen/', '/standard/', 1)
+    moved = f'''<article class=tds>
+<p class=label>Moved</p>
+<h1>This page moved</h1>
+<p>The paper is <a href="{path}">The Degen</a>.</p>
+</article>'''
+    moved_html = page(css + moved, 'The Degen | Sol.College', 'The student newspaper is The Degen.', old)
+    moved_html = moved_html.replace(f'<link rel=canonical href="{SITE}{old}"', f'<link rel=canonical href="{SITE}{path}"', 1)
+    moved_html = moved_html.replace(f'<meta property=og:url content="{SITE}{old}"', f'<meta property=og:url content="{SITE}{path}"', 1)
+    moved_html = moved_html.replace('</head>', f'<meta name=robots content=noindex><meta http-equiv=refresh content="0;url={path}"></head>', 1)
+    os.makedirs(S + old, exist_ok=True)
+    open(S + old + 'index.html', 'w').write(moved_html)
   blob = '\n'.join(open(S + p + 'index.html').read() for p in paths)
   checks = [
     ('No report has been published.', 'home'),
@@ -492,10 +504,14 @@ def write(S, page, css):
     raise SystemExit('standard: a desk is missing its empty-file line')
   if blob.count('Assignment. Not reported. No finding.') < len(ASSIGNMENTS):
     raise SystemExit('standard: an assignment is missing its label')
+  if 'The Degen Standard' in blob:
+    raise SystemExit('standard: old name remains')
   llms = f'{S}/llms.txt'
   if os.path.exists(llms):
-    block = '\n## The Degen Standard\n' + ''.join(f'- [{t}]({SITE}{p}): {d}\n' for p, t, d, _m in pages)
-    text = re.sub(r'\n## The Degen Standard\n.*?(?=\n## |\Z)', '', open(llms).read(), flags=re.S)
+    block = '\n## The Degen\n' + ''.join(f'- [{t}]({SITE}{p}): {d}\n' for p, t, d, _m in pages)
+    text = open(llms).read()
+    text = re.sub(r'\n## The Degen Standard\n.*?(?=\n## |\Z)', '', text, flags=re.S)
+    text = re.sub(r'\n## The Degen\n.*?(?=\n## |\Z)', '', text, flags=re.S)
     open(llms, 'w').write(text.rstrip() + '\n' + block)
   print('standard:', len(paths), 'pages')
   return paths
