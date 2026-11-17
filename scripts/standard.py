@@ -86,7 +86,7 @@ def desks_nav():
 def mast(home):
   name = '<h1>The Degen</h1>' if home else '<p class=papername><a href="/degen/">The Degen</a></p>'
   return f'''<header class=mast>
-<p class=dateline>Founding package · 17 Nov 2026 · Not a news edition</p>
+<p class=dateline>Reading edition · 17 Nov 2026 · Not a news edition</p>
 {name}
 <p class=motto>Question the chain.</p>
 <nav class=desknav aria-label=Desks>{desks_nav()}</nav>
@@ -94,6 +94,7 @@ def mast(home):
 
 def foot():
   return f'''<nav class=paperfoot aria-label=Paper>
+<a href="/degen/readings/">Readings</a>
 <a href="/degen/letters/">Letters</a>
 <a href="/degen/corrections/">Corrections</a>
 <a href="/degen/tips/">Send a tip</a>
@@ -102,7 +103,7 @@ def foot():
 <a href="/degen/policies/">Policies</a>
 <a href="/degen/templates/">Templates</a>
 </nav>
-<p class=colophon>Reading is free. There is no subscription, no payment, and no fund. Prepared with automated assistance and published by Sol.College on 17 Nov 2026. No page in this release reports an interview, a quote, a site visit, or an observation.</p>'''
+<p class=colophon>Reading is free. There is no subscription, no payment, and no fund. Prepared with automated assistance and published by Sol.College on 17 Nov 2026. No page in this release reports an interview, a site visit, or an observation. Where a sentence is quoted, it is from a public page retrieved that day, and the reading says so.</p>'''
 
 def crumbs(here):
   return f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/degen/">The Degen</a> / <span>{E(here)}</span></nav>'
@@ -111,10 +112,13 @@ def box(title, text):
   return f'<aside class=box><p class=label>{E(title)}</p><p>{text}</p></aside>'
 
 NOTE = box('What this package contains',
-  'The charter, the policies, the style book, the founding editorial, the desk standards, and an assignment board. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
+  'The charter, the policies, the style book, the founding editorial, the desk standards, an assignment board, and a reading edition of public pages. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
 
 def home_page():
+  import degen_edition as edition
+  rows = edition.readings()
   items = [
+    ('/degen/readings/', 'Readings', 'Document readings of public pages. Not reports.'),
     ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'Editorial. A statement of intent, not a report.'),
     ('/degen/charter/', 'Editorial charter', 'What the paper is for, and what it refuses to pretend.'),
     ('/degen/policies/', 'Policies', 'Interests, trading, reporting, promotion, students, and disputes.'),
@@ -130,6 +134,9 @@ def home_page():
   listing = ''.join(
     f'<li data-paper="{E(title + " " + kind)}"><a href="{href}">{E(title)}</a> <span class=kind>{E(kind)}</span></li>'
     for href, title, kind in items)
+  reading_items = ''.join(
+    f'<li data-paper="{E(r["title"] + " " + r["deck"] + " " + r["desk_name"] + " " + r["feature"])}"><a href="{r["path"]}">{E(r["title"])}</a> <span class=kind>{E(r["feature"])} · document reading · not a report</span></li>'
+    for r in rows)
   assigns = ''.join(
     f'<li data-paper="{E(title + " assignment")}"><span class=kind>Assignment · not reported</span> {E(title)}</li>'
     for title, _why in ASSIGNMENTS)
@@ -163,18 +170,21 @@ def home_page():
 </section>
 <section>
 <h2>The Fine Print</h2>
-<p>No product term has been examined.</p>
+<p>Fee schedules, leverage caps, and custody terms are read in the <a href="/degen/readings/">reading edition</a>. A reading quotes a public page. It is not a trade, and it does not describe a screen the paper opened.</p>
 <h2>Claim Check</h2>
-<p>No public claim has been checked.</p>
+<p>Where two public pages disagree, the reading prints both and does not pick a winner. No interview and no on-chain balance has been added to those readings.</p>
 </section>
 </div>
 <h2>Recurring features</h2>
-<p>These are formats. None of them has an edition.</p>
+<p>These are formats. The reading edition uses The Fine Print, Who Gets Paid?, Claim Check, and Chain of Events as readings of public pages. The other formats have no edition.</p>
 <ul class=features>{''.join(f'<li><b>{E(n)}.</b> {E(d)}</li>' for n, d in FEATURES)}</ul>
 <h2>Masthead</h2>
-<p>No student editor, managing editor, technical editor, contributor, or adviser has agreed to be named. A name is added only after that person agrees. Sol.College can edit every page. Nothing separates that edit from the publisher. A weekly edition is the aim once there is checked work to print. This package is not that edition, and this is not a continuous newsroom.</p>
+<p>No student editor, managing editor, technical editor, contributor, or adviser has agreed to be named. A name is added only after that person agrees. Sol.College can edit every page. Nothing separates that edit from the publisher. A weekly news edition is the aim once there is checked reporting to print. The <a href="/degen/readings/">reading edition</a> is not that news edition, and this is not a continuous newsroom.</p>
 <h2 id=index>In this package</h2>
 <ul class=index>{listing}</ul>
+<h2 id=readings>Reading edition</h2>
+<p>{len(rows)} document readings. Each one is a close reading of a public page retrieved on 17 Nov 2026. None of them is a report. The <a href="/degen/readings/">index</a> searches the full text.</p>
+<ul class=index>{reading_items}</ul>
 <h2>Assignments, not stories</h2>
 <ul class=index>{assigns}</ul>
 {foot()}
@@ -231,6 +241,7 @@ def editorial_page():
 </dl>
 </aside>
 {EDITORIAL}
+<p>The <a href="/degen/readings/">reading edition</a> examines public pages about fees, leverage, launches, and custody. Those pages are readings. They are not market stories, and they are not reports.</p>
 {foot()}
 </article>'''
 
@@ -299,12 +310,20 @@ def policies_page():
 
 def desks_page():
   import standard_depth as depth
+  import degen_edition as edition
   blocks = []
   for d in DESKS:
     more = depth.DESK_MORE[d['id']]
     beats = ''.join(f'<li>{E(b)}</li>' for b in d['beats'])
     show = ''.join(f'<li>{E(b)}</li>' for b in more['show'])
     refuse = ''.join(f'<li>{E(b)}</li>' for b in more['refuse'])
+    reads = edition.for_desk(d['id'])
+    if reads:
+      filed = '<h3>Document readings, not stories</h3><ul>' + ''.join(
+        f'<li><a href="{r["path"]}">{E(r["title"])}</a> <span class=kind>Document reading · not a story</span></li>'
+        for r in reads) + '</ul>'
+    else:
+      filed = '<p>No document reading is filed on this desk.</p>'
     blocks.append(f'''<section id={d["id"]}>
 <h2>{E(d["title"])}</h2>
 <p class=deck>{E(d["question"])}</p>
@@ -317,6 +336,7 @@ def desks_page():
 <ul>{refuse}</ul>
 <p>{E(more['specimen'])}</p>
 <p class=kind>No story is filed on this desk.</p>
+{filed}
 </section>''')
   return f'''<article class=tds>
 {crumbs('Desks')}
@@ -503,7 +523,7 @@ def write_page(S, page, css, path, title, desc, main, data):
   return path
 
 def write(S, page, css):
-  home_desc = 'The Degen is the student newspaper of Sol.College. This package is the charter, the policies, and one editorial. No report has been published.'
+  home_desc = 'The Degen is Sol.College’s student newspaper: a charter, an assignment board, and readings of public pages. No report has been published.'
   pages = [
     ('/degen/', 'The Degen', home_desc, home_page()),
     ('/degen/charter/', 'Editorial charter', 'What The Degen is for, how it differs from the articles and the journal, and which seats are empty.', charter_page()),
@@ -519,8 +539,12 @@ def write(S, page, css):
     ('/degen/noticeboard/', 'Campus noticeboard', 'The campus noticeboard. No event, club, election, or opening is listed.', noticeboard_page()),
   ]
   paths = []
-  for path, title, desc, main in pages:
+  import degen_edition as edition
+  reading_pages = edition.pages(mast, foot, crumbs)
+  for path, title, desc, main in pages + reading_pages:
     paths.append(write_page(S, page, css, path, title, desc, main, ld(title, desc, path)))
+    if not path.startswith('/degen/') or path.startswith('/degen/readings/'):
+      continue
     old = path.replace('/degen/', '/standard/', 1)
     moved = f'''<article class=tds>
 <p class=label>Moved</p>
@@ -562,7 +586,8 @@ def write(S, page, css):
     raise SystemExit('standard: old name remains')
   llms = f'{S}/llms.txt'
   if os.path.exists(llms):
-    block = '\n## The Degen\n' + ''.join(f'- [{t}]({SITE}{p}): {d}\n' for p, t, d, _m in pages)
+    listed = pages + reading_pages
+    block = '\n## The Degen\n' + ''.join(f'- [{t}]({SITE}{p}): {d}\n' for p, t, d, _m in listed)
     text = open(llms).read()
     text = re.sub(r'\n## The Degen Standard\n.*?(?=\n## |\Z)', '', text, flags=re.S)
     text = re.sub(r'\n## The Degen\n.*?(?=\n## |\Z)', '', text, flags=re.S)
