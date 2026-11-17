@@ -136,8 +136,15 @@ pre.diagram,pre.sh{position:relative}
 .tds input[type=search]{font:inherit;font-size:16px;background:#fff;color:#1c140c;border:1px solid #1c140c;border-radius:0;padding:8px 10px;width:min(100%,28rem);margin-left:8px}
 .tds a:focus-visible,.tds input:focus-visible{outline:2px solid #1c140c;outline-offset:2px}
 .tds h2,.tds section{scroll-margin-top:88px}
+.tds .edition{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 32px;margin:8px 0 28px}
+.tds .edition article{border-top:4px solid #1c140c;padding-top:10px}
+.tds .edition h3{font-size:1.15rem;text-transform:none;letter-spacing:0;line-height:1.25}
+.tds .edition p{margin:.4em 0}
+.tds select{font:inherit;font-size:16px;background:#fff;color:#1c140c;border:1px solid #1c140c;border-radius:0;padding:8px 10px}
+.tds .filters{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:end;margin:8px 0 18px;background:transparent;border:0;border-radius:0;padding:0;color:#1c140c}
+.tds .filters label{font-family:Arial,Helvetica,sans-serif;font-weight:700;font-size:16px;color:#1c140c;flex:1 1 220px}
 @media(max-width:800px){
- .tds .cols,.tds .facts{grid-template-columns:1fr}
+ .tds .cols,.tds .facts,.tds .edition{grid-template-columns:1fr}
  .tds input[type=search]{display:block;width:100%;margin:6px 0 0}
 }
 @media(max-width:900px){
