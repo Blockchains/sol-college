@@ -54,8 +54,8 @@ class SeoTests(unittest.TestCase):
     def test_descriptions_stay_within_the_snippet_limit(self):
         home = ('Learn on Solana apps and offer patches back. Practice environments are independent '
                 'forks we ran on devnet, not a claim that the original team is a partner.')
-        journal = ('Journal of Solana Studies: the charter, the policies, six prospective protocols '
-                   'and twelve sketches. No study has been completed and nothing is peer reviewed.')
+        journal = ('Journal of Solana Studies: charter, protocols, sketches, and appraisals of retrieved '
+                   'documents. No study is complete and nothing is peer reviewed.')
         campus = ('Campus rooms for DeFi, DePIN and DeAI. Each project has a CTO agent and open assignments. '
                   'Credentials here are platform records, not accreditations.')
         for text in (home, journal, campus, seo.MAP_DESC):
