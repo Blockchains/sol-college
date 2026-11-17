@@ -557,7 +557,7 @@ import standard as _standard
 STANDARD_PATHS=_standard.write(S, page, CSS)
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
-NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/articles/">Articles</a><a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/standard/">The Standard</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
+NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/articles/">Articles</a><a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/degen/">The Degen</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
 for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if '/dapps/' in fp or '/legacy/' in fp: continue
   if os.path.normpath(fp)==os.path.normpath(f'{S}/index.html'): continue
