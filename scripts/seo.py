@@ -15,11 +15,18 @@ import datetime, glob, html, json, os, re, sys
 SITE = 'https://sol.college'
 ORG = SITE + '/#org'
 TODAY = datetime.date.today().isoformat()
-MAP_DESC = 'Every public Sol.College page: lessons, articles, the library, the journal, The Degen, and the source library.'
+MAP_DESC = 'Every public Sol.College page: lessons, the calendar, articles, the library, the journal, The Degen, and the source library.'
 STYLE = '<style id=sc-seo>.seo-sections{margin:12px 0 0;font-size:14px;line-height:1.7}.seo-sections a{white-space:nowrap}nav.crumbs{font-size:13px;margin:0 0 12px}body:has(.dock-pin) footer{padding-bottom:96px}@media(max-width:700px){body:has(.dock-pin) footer{padding-bottom:220px}}</style>'
 SKIP_DIRS = {'dapps', 'legacy', 'node_modules', '.git'}
 LABELS = {
-    'lessons': 'Lessons', 'articles': 'Articles', 'library': 'Library', 'journal': 'Journal',
+    'lessons': 'Lessons', 'events': 'Events', 'articles': 'Articles', 'library': 'Library', 'journal': 'Journal',
+    'cities': 'Cities', 'countries': 'Countries', 'archive': 'Archive', 'submit': 'Submit',
+    'queue': 'Queue', 'coverage': 'Coverage', 'sources': 'Sources', 'college': 'Sol.College',
+    'series': 'Series', 'london': 'London', 'dubai': 'Dubai', 'belgrade': 'Belgrade',
+    'melbourne': 'Melbourne', 'narashino': 'Narashino', 'abu-dhabi': 'Abu Dhabi',
+    'berlin': 'Berlin', 'sharjah': 'Sharjah', 'united-kingdom': 'United Kingdom',
+    'united-arab-emirates': 'United Arab Emirates', 'serbia': 'Serbia', 'australia': 'Australia',
+    'japan': 'Japan', 'germany': 'Germany', 'canada': 'Canada',
     'degen': 'The Degen', 'campus': 'Campus', 'live': 'Live apps', 'how-to-build': 'How to build',
     'explore': 'Source library', 'findings': 'Findings', 'faq': 'FAQ', 'glossary': 'Glossary',
     'topics': 'Topics', 'learn-solana': 'Learn Solana', 'learn-by-example': 'Concept walkthroughs',
@@ -34,12 +41,12 @@ LABELS = {
     'for-teams': 'For teams',
 }
 SECTIONS = [
-    ('/', 'Home'), ('/lessons/', 'Lessons'), ('/articles/', 'Articles'), ('/library/', 'Library'),
+    ('/', 'Home'), ('/lessons/', 'Lessons'), ('/events/', 'Events'), ('/articles/', 'Articles'), ('/library/', 'Library'),
     ('/journal/', 'Journal'), ('/degen/', 'The Degen'), ('/campus/', 'Campus'), ('/live/', 'Live apps'),
     ('/how-to-build/', 'How to build'), ('/explore/', 'Source library'), ('/findings/', 'Findings'),
     ('/faq/', 'FAQ'), ('/map/', 'All pages'),
 ]
-ORDER = ['Home', 'Lessons', 'Articles', 'Library', 'Journal', 'The Degen', 'Campus', 'Live apps',
+ORDER = ['Home', 'Lessons', 'Events', 'Articles', 'Library', 'Journal', 'The Degen', 'Campus', 'Live apps',
          'How to build', 'Findings', 'FAQ', 'Glossary', 'Topics', 'Learn Solana', 'Concept walkthroughs',
          'What to build', 'Legal', 'New', 'Edge AI', 'Source library', 'Other']
 PAGE_TYPES = r'WebPage|Article|TechArticle|FAQPage|Course|CollectionPage|LearningResource|SoftwareSourceCode|DefinedTermSet'
@@ -440,7 +447,7 @@ def section_of(path):
         return 'Home'
     seg = path.strip('/').split('/')[0]
     return {
-        'lessons': 'Lessons', 'articles': 'Articles', 'library': 'Library', 'journal': 'Journal',
+        'lessons': 'Lessons', 'events': 'Events', 'articles': 'Articles', 'library': 'Library', 'journal': 'Journal',
         'degen': 'The Degen', 'campus': 'Campus', 'live': 'Live apps', 'how-to-build': 'How to build',
         'explore': 'Source library', 'findings': 'Findings', 'faq': 'FAQ', 'glossary': 'Glossary',
         'topics': 'Topics', 'learn-solana': 'Learn Solana', 'learn-by-example': 'Concept walkthroughs',
