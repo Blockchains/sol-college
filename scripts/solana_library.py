@@ -146,7 +146,7 @@ def hand_records():
     external('ext-simd', 'Solana Improvement Documents', 'The repository of proposed and accepted changes to the Solana protocol.',
       'Research archive', ['research'], ['evidence', 'explain'], 'https://github.com/solana-foundation/solana-improvement-documents',
       'The repository description says SIMDs describe proposed and accepted changes. That is the research collection’s primary source.',
-      'SIMD-0326 has its own page because that file cites the Alpenglow white paper. The other proposals are not each catalogued. Discussion status, acceptance, implementation, and activation are not established for the repository as a whole. A proposal is not proof a feature is active.',
+      'Each proposal file that was retrieved has its own page. The status printed there is the label in that file. A proposal is not proof a feature is active on a cluster.',
       'Where protocol proposals are tracked, and what this record does not establish.', 'SIMD proposal accepted research', 'solana-foundation', 'Solana Foundation repository', OK_DISC),
     external('ext-anchor', 'Anchor documentation', 'The Anchor docs home. The page title read on 17 Nov 2026 was Introduction.',
       'Framework reference', ['programs', 'prerequisites'], ['build'], 'https://www.anchor-lang.com/docs',
@@ -455,7 +455,7 @@ ROOMS = [
   'The network hub is the official map. Sol.College has not operated a validator, and the child links were not opened.',
   ['ext-network', 'ext-tools']),
  ('research', 'Research and protocol', 'What is proposed, implemented, or still debated?',
-  'The SIMD repository holds proposed and accepted documents. SIMD-0326 is catalogued on its own because it cites the Alpenglow paper. White papers that were retrieved have their own pages. A mention of a SIMD number is not activation evidence.',
+  'The SIMD repository holds proposed and accepted documents. Each retrieved proposal has its own page, and so does each retrieved white paper. A mention of a SIMD number is not activation evidence.',
   ['ext-simd', 'paper-solana-whitepaper', 'paper-alpenglow-v1-1', 'ext-core']),
  ('agents', 'AI and agents', 'How do I control permissions and verify outcomes?',
   'The developer-resources page has an AI-tools heading. Those child pages were not opened. Article titles 113 to 116 have no page.',
@@ -521,7 +521,7 @@ def inventory(records, counts):
     ('Complete lessons', str(counts['guided']), 'Guided lessons: a written walkthrough of an app recorded as working.'),
     ('Debug challenges', str(counts['challenge']), 'Deployed, and a core flow does not complete. Not counted as complete lessons.'),
     ('Project previews', str(counts['preview']), 'Teaching sequence not written.'),
-    ('Research records', str(n(lambda r: 'research' in r['subjects'])), 'Includes the white-paper shelf and SIMD-0326. The SIMD repository remains one record. Other individual proposals were not catalogued.'),
+    ('Research records', str(n(lambda r: 'research' in r['subjects'])), 'Includes the white-paper shelf. Each retrieved SIMD has its own page. The status on that page is the file’s label, not a cluster observation.'),
     ('White papers and design notes', str(n(lambda r: r['id'].startswith('paper-'))), 'One retrieved document each. A French, Italian, or Japanese edition is a separate URL and not a second design. A docs homepage is not in this count.'),
     ('Historical records', str(n(lambda r: r['historical'])), 'None in this release. Past failures that still matter are inside current articles.'),
     ('Languages', str(len({r['language'] for r in records if r['id'].startswith('paper-')} | {'English'})), 'English, plus any language edition whose file was read. Those editions were not compared line by line. No other translation is catalogued.'),
@@ -822,7 +822,7 @@ def policy_html():
 </aside>
 <p>A working link is not evidence the workflow still works.</p>
 <h2 id=proposals>Proposals</h2>
-<p>The SIMD repository contains proposed and accepted changes. SIMD-0326 is catalogued because the file cites the Alpenglow white paper, and its front matter says Review. For every other proposal this catalogue does not establish discussion status, acceptance, implementation, activation, or the client and network. The same rule applies to announcements and roadmaps.</p>
+<p>Each SIMD file that was retrieved is catalogued on its own page. The status there is the label in that file. It does not establish that a client or a network is running the change. The same limit applies to announcements and roadmaps.</p>
 <h2 id=papers>White papers</h2>
 <p>A white paper page exists only when the file was retrieved. The page records the title, the version, the date if the file states one, and what the opening says the document is for. It does not copy the paper. A figure in a paper is the paper’s figure. A translation is its own URL and is not counted as a second design. A docs page with no link to a paper is named on the <a href="/library/papers/">white paper catalogue</a> as a page that was checked, not as a holding.</p>
 <h2 id=not-checked>Pages named in the plan that are not records</h2>
