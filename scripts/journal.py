@@ -71,20 +71,6 @@ PROTOCOLS = [
   contribution='Evidence about teaching, if the study is run. Completion rates are not that evidence.',
   ethics='No participant has been recruited. No consent form exists. No ethics review is recorded. The study does not start until those exist. This page is not that protocol.'),
 ]
-BACKLOG = [
- ('RPC observation under failure', 'How do provider and connection failures affect application interpretations?'),
- ('Shared writable state and contention', 'What trade-offs emerge between account layouts under a controlled workload?'),
- ('The cost of a payment', 'Which costs are omitted when a system reports only the transaction fee?'),
- ('Reproducible Solana builds', 'What prevents independent reproduction of selected public builds?'),
- ('Indexer recovery after interruption', 'How reliably do ingestion strategies recover missing activity?'),
- ('Stale frontend state', 'Which interface patterns cause users to misunderstand a pending or completed operation?'),
- ('Upgrade authority disclosure', 'Can users identify who can change an application’s behaviour?'),
- ('AI-generated program patches', 'Which evaluation methods detect errors that a plausible patch introduces?'),
- ('Benchmarking benchmarks', 'Which reporting omissions make a published performance comparison unreliable?'),
- ('Evidence quality in security claims', 'How consistently do public reports distinguish suspected, reproduced, fixed, and deployed issues?'),
- ('Wallet preview comprehension', 'Which representations help users identify a destination and an asset change?'),
- ('Application retirement', 'What technical and governance duties remain when a project stops operating?'),
-]
 SECTIONS = [
  ('Protocol and runtime', 'What behaviour follows from a particular execution rule or implementation?'),
  ('Transactions and reliability', 'How do submission, confirmation, retry, and recovery behave under stated conditions?'),
@@ -120,45 +106,83 @@ def crumbs(items):
   return '<nav class=crumbs aria-label=Breadcrumb>' + ' / '.join(parts) + '</nav>'
 def shell(kicker, title, lead, body, trail):
   return f'{crumbs(trail)}<article class="lesson jss"><p class=eyebrow>{E(kicker)}</p><h1>{E(title)}</h1><p class=lead>{lead}</p>{body}</article>'
+def _lis(items):
+  return ''.join(f'<li>{E(x)}</li>' for x in items)
 def protocol_page(p):
-  comps = ''.join(f'<li>{E(x)}</li>' for x in p['comparisons'])
-  outs = ''.join(f'<li>{E(x)}</li>' for x in p['outputs'])
+  import journal_depth as depth
+  extra = depth.DEPTH[p['slug']]
+  comps = _lis(p['comparisons'])
+  outs = _lis(p['outputs'])
   body = f'''{status_panel('Research protocol. Not a completed study.')}
-<p><b>This abstract is prospective.</b> It states the question and the method that would be used. It does not state a result. No number in a later paper may be copied back onto this page unless the study has been run and checked.</p>
+<p><b>This page is prospective.</b> It states the question, the terms a study would have to fix, and the records it would keep. It does not state a result. No observations have been collected. No number in a later paper may be copied back onto this page unless the study has been run and checked.</p>
 <h2>Research question</h2>
 <p>{E(p['question'])}</p>
 <h2>Why this matters</h2>
 <p>{E(p['why'])}</p>
-<h2>Prior work and existing evidence</h2>
-<p>Not yet surveyed. A completed paper would name the work it uses. This protocol does not invent that survey.</p>
-<h2>Hypotheses</h2>
-<p>Exploratory. No hypothesis is registered. The write-up, if the study is run, has to stay labelled as exploratory unless a question is fixed before the data are collected.</p>
-<h2>Proposed method</h2>
-<p>The comparison conditions below are the brief. The sample, the environment, and the analysis have not been chosen.</p>
+<h2>Terms to fix before any collection</h2>
+<p>A later paper that uses these words with a different meaning is not a run of this protocol. The definitions are part of the design. They are not findings.</p>
+<ul>{_lis(extra['terms'])}</ul>
+<h2>Observation and interpretation</h2>
+<p>{E(extra['split'])}</p>
+<h2>How the study would be built</h2>
+<ul>{_lis(extra['design'])}</ul>
+<h2>Comparison conditions</h2>
+<p>These are the arms. The sample, the cluster, and the analysis have not been chosen.</p>
 <ul>{comps}</ul>
-<h2>System and environment</h2>
-<p>Not chosen. Versions, clusters, and client libraries are not established.</p>
-<h2>Sampling or workload</h2>
-<p>Not chosen.</p>
+<h2>Illustration, not data</h2>
+<p>{E(extra['illustration'])}</p>
+<h2>What a negative result would mean</h2>
+<p>{E(extra['negative'])}</p>
+<h2>Prior work</h2>
+<p>Not yet surveyed. A completed paper would name the work it uses and say what this study adds. This protocol does not invent that survey, and it does not cite a paper it has not read.</p>
+<h2>Hypotheses</h2>
+<p>Exploratory. No hypothesis is registered. If the study is run without a question fixed first, the write-up stays labelled as exploratory.</p>
+<h2>System, sample, and analysis</h2>
+<p>Not chosen. Versions, clusters, client libraries, the workload, the exclusions, and the analysis are not established. “Not chosen” is a fact about this page. It is not a suggestion that any convenient choice will do after the data exist.</p>
 <h2>Primary outcome</h2>
 <p>The question names what a result would have to speak to. No outcome has been measured.</p>
-<h2>Collection and analysis</h2>
-<p>Not started. No observations have been collected.</p>
-<h2>Exclusions and missing data</h2>
-<p>Not specified.</p>
 <h2>Ethical and security considerations</h2>
 <p>{E(p['ethics'])}</p>
 <h2>Expected artifacts</h2>
 <ul>{outs}</ul>
+<p>An artifact that does not exist is not listed as available. The four labels on the <a href="/journal/methods/#artifacts">methods page</a> stay separate: available, inspected, reproduced, replicated.</p>
 <h2>Known threats to validity</h2>
-<p>The cases are not selected. Until they are, the study cannot support a claim about Solana applications in general. A result, if one is later published, will be limited to the conditions that were actually run.</p>
+<p>The cases are not selected. Until they are, the study cannot support a claim about Solana applications in general. A result, if one is later published, will be limited to the conditions that were actually run. A clean result on a convenience sample is still a convenience sample.</p>
 <h2>What this page is not</h2>
 <p>It is not peer-reviewed research. It is not a preprint of findings. The potential contribution, if the work is done carefully, would be: {E(p['contribution'])}</p>
-<p><a href="/journal/programme/">Back to the programme</a> · <a href="/journal/policies/#integrity">Research integrity</a></p>'''
+<p><a href="/journal/programme/">Back to the programme</a> · <a href="/journal/methods/">How to read a protocol</a> · <a href="/journal/policies/#integrity">Research integrity</a></p>'''
   title = p['title']
   desc = 'Prospective protocol. ' + p['question']
   html = shell('Protocol · Volume 1 · not started', title, E(p['subtitle']), body, [f'<span>{E(title)}</span>'])
   return p['slug'], title, desc, html
+def sketch_page(s):
+  body = f'''{status_panel('Research sketch. Not a full protocol. Not a completed study.')}
+<p><b>This is a sketch.</b> It names the question, the terms, and the records a study would keep. It is not a protocol a team could run tomorrow: the sample, the environment, and the analysis are not specified. No observations have been collected.</p>
+<h2>Research question</h2>
+<p>{E(s['question'])}</p>
+<h2>Why this matters</h2>
+<p>{E(s['why'])}</p>
+<h2>Terms to fix first</h2>
+<ul>{_lis(s['terms'])}</ul>
+<h2>Observation and interpretation</h2>
+<p>{E(s['split'])}</p>
+<h2>Illustration, not data</h2>
+<p>{E(s['illustration'])}</p>
+<h2>What a negative result would mean</h2>
+<p>{E(s['negative'])}</p>
+<h2>What is still missing before this is a protocol</h2>
+<ul>
+<li>A named system, with versions.</li>
+<li>A sample or a workload chosen before the run.</li>
+<li>Exclusion rules and a primary outcome written tightly enough to score.</li>
+<li>An ethics note where people or valuable assets would be involved. Several of these sketches must not recruit anyone until that note exists.</li>
+</ul>
+<p>It is not peer-reviewed research. A sketch that sounds specific is still a sketch.</p>
+<p><a href="/journal/programme/#sketches">Back to the programme</a> · <a href="/journal/methods/">How to read a protocol</a></p>'''
+  title = s['title']
+  desc = 'Research sketch, not a study. ' + s['question']
+  html = shell('Sketch · not a protocol · not started', title, 'A question with its terms. Not a method a team can run, and not a result.', body, [f'<span>{E(title)}</span>'])
+  return s['slug'], title, desc, html
 def policies_page():
   body = f'''{status_panel('Journal policy.')}
 <p>These are the rules for a journal that has not yet accepted a paper. They bind the pages published now. They are not a claim that a review process is running.</p>
@@ -196,7 +220,7 @@ def policies_page():
 <p>Reviewer reports will not be invented. An automated comment is not an independent expert review. Offering to review, through the public issue tracker, does not appoint anyone.</p>
 <h2 id=integrity>Research integrity</h2>
 <p>The journal will not publish an invented measurement, a fabricated participant, a fictitious reviewer report, or a manufactured citation. Observations and interpretation stay apart. Exploratory work is labelled exploratory.</p>
-<p>A numerical result goes in an abstract only after it exists and has been checked. The six protocols in this release have no results.</p>
+<p>A numerical result goes in an abstract only after it exists and has been checked. The protocols and the sketches in this release have no results. An illustration on a protocol page is a writing device. It is not a log.</p>
 <h2 id=data>Data and code</h2>
 <p>Where a study can share its materials, the package is part of the publication: a readme, an environment manifest, lockfiles, source, build and test instructions, the experiment configuration, the data that can be shared, analysis scripts, expected outputs, known limits, a licence, and checksums or release identifiers.</p>
 <p>Four labels stay separate. Artifacts available means the materials can be fetched. Artifacts inspected means a reviewer looked at the documentation. Results reproduced means an independent evaluator got the stated result. Independently replicated means a separate study tested the finding with its own approach. A repository link is not any of the last three.</p>
@@ -221,7 +245,7 @@ def call_page():
 <p>The Journal of Solana Studies invites original research into the reliability, security, performance, usability, and operation of Solana systems.</p>
 <p>We welcome empirical studies, reproducible systems papers, replication work, negative results, research artifacts, and critical reviews.</p>
 <p>Submissions should state a clear research question, explain their methods, distinguish observations from interpretation, and provide the materials necessary to evaluate their claims wherever that is ethically and technically possible.</p>
-<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, and developer education. Those six items are protocols on this site. They are not findings.</p>
+<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, and developer education. Those six items are protocols on this site. Twelve further questions are sketches. None of them is a finding.</p>
 <p>The journal does not publish promotional investment material, unsupported performance claims, or work whose conclusion is fixed by a sponsor.</p>
 <p>Review status, conflicts, funding, artifact availability, and material limits will be disclosed for every publication. Today those disclosures are: not reviewed, no named author, no external funding, no artifacts, and no completed study.</p>
 </blockquote>
@@ -238,15 +262,18 @@ def programme_page():
   cards = ''.join(
     f'<a class=card href="/journal/protocols/{E(p["slug"])}/"><p class=eyebrow>Protocol {p["n"]} · not started</p><h3>{E(p["title"])}</h3><p>{E(p["question"])}</p></a>'
     for p in PROTOCOLS)
-  backlog = ''.join(f'<tr><td>{E(t)}</td><td>{E(q)}</td><td>Protocol not written. No data.</td></tr>' for t, q in BACKLOG)
+  import journal_depth as depth
+  sketches = ''.join(
+    f'<a class=card href="/journal/sketches/{E(s["slug"])}/"><p class=eyebrow>Sketch · {E(s["section"])}</p><h3>{E(s["title"])}</h3><p>{E(s["question"])}</p></a>'
+    for s in depth.SKETCHES)
   body = f'''{status_panel('Research programme. Not an issue of papers.')}
 <p>Volume 1 is the name of this programme: reliability, authority, and evidence. It is not a bound issue. No paper has been accepted into it. The aim is six studies that are actually run, not sixty titles.</p>
-<p>Each abstract below stays prospective until the research has been performed.</p>
+<p>Each protocol below says how a study would have to define its terms and which records it would keep. The sample is still not chosen. No observations have been collected.</p>
 <div class=hub-grid>{cards}</div>
-<h2>After those six</h2>
-<p>Each row is a question. None of them has a protocol. None of them has a result.</p>
-<table><thead><tr><th>Question area</th><th>Central question</th><th>Status</th></tr></thead><tbody>{backlog}</tbody></table>
-<p><a href="/journal/call/">Call for papers</a></p>'''
+<h2 id=sketches>Twelve sketches</h2>
+<p>A sketch is a question with its terms. It is not yet a protocol: the system, the sample, and the analysis are missing. None of them has a result.</p>
+<div class=hub-grid>{sketches}</div>
+<p><a href="/journal/methods/">How to read a protocol</a> · <a href="/journal/call/">Call for papers</a></p>'''
   return shell('Volume 1', 'Reliability, authority, and evidence',
     'Six proposed studies. None has been run.',
     body, ['<span>Programme</span>'])
@@ -274,7 +301,7 @@ def home_page():
 <p>Reproducible experiments, systems research, replication studies, negative results, and critical investigations are in scope. The purpose is to improve understanding. It is not to promote a token, a project, or a conclusion chosen in advance.</p>
 <p>Every publication is supposed to state what was investigated, how the evidence was obtained, what the evidence supports, and what remains uncertain. The pages in this release cannot do the middle two of those, because no study has been run.</p>
 <aside class=status-panel>
-<p><b>What this release contains.</b> The charter, the policies, the call for papers, and six prospective protocols. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
+<p><b>What this release contains.</b> The charter, the policies, the call for papers, a methods note, six prospective protocols, and twelve sketches. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
 </aside>
 <p class=cta><a class=btn href="/journal/programme/">Read the protocols</a> <a class="btn ghost" href="/journal/call/#submit">Submit a proposal</a></p>
 <h2>How a journal paper differs</h2>
@@ -284,7 +311,7 @@ def home_page():
 <p>There are no completed publications. A protocol is not a paper. Review status for each item below is: not peer reviewed.</p>
 <div class=hub-grid>{cards}</div>
 <h2 id=programme>Current research programme</h2>
-<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Six questions. No data.</p>
+<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Six protocols and twelve sketches. No data. <a href="/journal/methods/">How to read them</a>.</p>
 <h2 id=scope>Scope</h2>
 <p>Sections open when there is a credible study and someone competent to review it. Opening a row here does not open a section.</p>
 <table><thead><tr><th>Section</th><th>The sort of question</th><th>Publications</th></tr></thead><tbody>{sections}</tbody></table>
@@ -297,6 +324,7 @@ def home_page():
 <li><a href="/journal/policies/#corrections">Corrections</a></li>
 <li><a href="/journal/policies/#ai">Automated tools</a></li>
 <li><a href="/journal/policies/#fees">Fees</a></li>
+<li><a href="/journal/methods/">How to read a protocol</a></li>
 <li><a href="/journal/call/">Founding call for papers</a></li>
 </ul>
 <h2>Citation</h2>
@@ -305,6 +333,41 @@ def home_page():
   return shell('JSS · Published by Sol.College', 'Journal of Solana Studies',
     'Advance understanding of Solana through evidence that others can inspect, question, and reproduce.',
     body, [])
+def methods_page():
+  body = f'''{status_panel('Methods note. Not a study.')}
+<p>This page is how to read the rest of the journal. It is not a result, and it is not a textbook of the Solana protocol. No observations have been collected.</p>
+<h2>What a protocol is for</h2>
+<p>A protocol is a promise about the records a study will keep, written before those records exist. It fixes the words, the comparison, and the difference between a stored response and a sentence about that response. A protocol that is written after the numbers is a description of a result, and this journal would label it as one.</p>
+<p>The six founding protocols are detailed enough to argue with. They are not detailed enough to run: versions, samples, and analyses are deliberately still open, and the page says so. Filling those blanks after seeing the data would be a different study.</p>
+<h2>What a sketch is for</h2>
+<p>A sketch holds the question and the terms so the question does not get replaced by a vaguer one later. It is missing the sample, the system, and the scoring rule. Treating a sketch as a method is the mistake the label is there to prevent.</p>
+<h2>Observation and interpretation</h2>
+<p>An observation is a record the harness stored: bytes, a signature status, an account read, a reviewer’s mark on a fixture whose expected answer was written first, a learner’s answer against a rubric. An interpretation is a sentence that says what those records mean. The journal keeps them in different paragraphs because the sentence can be wrong while the record is intact, and the record can be missing while the sentence sounds finished.</p>
+<p>An illustration on a protocol page is neither. It is a picture used to show which two columns the study would need. It is not a log from a cluster, and it must not be quoted as one.</p>
+<h2 id=artifacts>Four artifact labels</h2>
+<p>These words are not synonyms.</p>
+<ul>
+<li><b>Available.</b> A reader can fetch the materials.</li>
+<li><b>Inspected.</b> A reviewer looked at the documentation and says what they looked at.</li>
+<li><b>Reproduced.</b> An independent evaluator got the stated result from those materials.</li>
+<li><b>Replicated.</b> A separate study tested the finding with its own approach.</li>
+</ul>
+<p>A repository link is only a candidate for the first. Nothing in this release has any of the four, because nothing has been run.</p>
+<h2>What this journal will not count</h2>
+<ul>
+<li>A completion tick, as evidence a person understood a different transaction.</li>
+<li>A function name, as evidence of who can move an asset.</li>
+<li>A client’s success callback, as evidence a payment settled.</li>
+<li>A second signature, as evidence a second business act was intended, or that it was not.</li>
+<li>A SIMD number mentioned on a docs page, as evidence the change is active. The <a href="/library/">library</a> states the same limit on the SIMD repository.</li>
+<li>A benchmark number without the workload, as a measurement.</li>
+</ul>
+<h2>Where the neighbouring publications stop</h2>
+<p>The <a href="/library/">library</a> points at sources. The <a href="/articles/">articles</a> explain a recorded case. The <a href="/degen/">Degen</a> is for reporting and argument about what is happening. A journal page that wants to be news, or a news page that wants to be a study, has to move. This release has no study and no report.</p>
+<p><a href="/journal/programme/">The programme</a> · <a href="/journal/policies/">Policies</a></p>'''
+  return shell('Methods', 'How to read a protocol',
+    'Terms, records, and the difference between an illustration and a result.',
+    body, ['<span>Methods</span>'])
 def ld(title, desc, path):
   return {'@context': 'https://schema.org', '@type': 'WebPage', 'headline': title, 'description': desc,
     'datePublished': PUBLISHED, 'dateModified': PUBLISHED,
@@ -322,7 +385,7 @@ def write_page(S, page, css, path, title, desc, main, data):
 def write(S, page, css):
   pages = []
   home = home_page()
-  desc = 'The Journal of Solana Studies. This release is the charter, the policies, and six prospective protocols. No study has been completed and nothing is peer reviewed.'
+  desc = 'The Journal of Solana Studies. This release is the charter, the policies, six prospective protocols, and twelve sketches. No study has been completed and nothing is peer reviewed.'
   write_page(S, page, css, '/journal/', 'Journal of Solana Studies', desc, home, ld('Journal of Solana Studies', desc, '/journal/'))
   pages.append(('/journal/', 'Journal of Solana Studies', desc))
   pol = policies_page()
@@ -337,6 +400,16 @@ def write(S, page, css):
   gdesc = 'Volume 1 proposes six studies of reliability, authority, and evidence. None has been run.'
   write_page(S, page, css, '/journal/programme/', 'Reliability, authority, and evidence', gdesc, prog, ld('Reliability, authority, and evidence', gdesc, '/journal/programme/'))
   pages.append(('/journal/programme/', 'Reliability, authority, and evidence', gdesc))
+  import journal_depth as depth
+  meth = methods_page()
+  mdesc = 'How to read a Journal of Solana Studies protocol: terms, records, illustrations, and the four artifact labels. No study has been run.'
+  write_page(S, page, css, '/journal/methods/', 'How to read a protocol', mdesc, meth, ld('How to read a protocol', mdesc, '/journal/methods/'))
+  pages.append(('/journal/methods/', 'How to read a protocol', mdesc))
+  for s in depth.SKETCHES:
+    slug, title, pdesc, html = sketch_page(s)
+    path = f'/journal/sketches/{slug}/'
+    write_page(S, page, css, path, title, pdesc, html, ld(title, pdesc, path))
+    pages.append((path, title, pdesc))
   for p in PROTOCOLS:
     slug, title, pdesc, html = protocol_page(p)
     path = f'/journal/protocols/{slug}/'

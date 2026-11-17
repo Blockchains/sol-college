@@ -686,7 +686,7 @@ def page_html(records, counts):
   rooms = []
   for rid, name, question, intro, ids in ROOMS:
     lis = ''.join(f'<li><a href="{E(by_id[i]["href"])}">{E(by_id[i]["title"])}</a></li>' for i in ids)
-    rooms.append(f'<section class=room id="room-{rid}"><h3>{E(name)}</h3><p><b>{E(question)}</b></p><p>{E(intro)}</p><ol>{lis}</ol></section>')
+    rooms.append(f'<section class=room id="room-{rid}"><h3>{E(name)}</h3><p><b>{E(question)}</b></p><p>{E(intro)}</p><p><a href="/library/guides/{rid}/">Read the guide</a>. The guide teaches only what these records support. It does not add a measurement.</p><ol>{lis}</ol></section>')
   subject_map = []
   for sid, name, coverage in SUBJECTS:
     rows = [r for r in records if sid in r['subjects']]
@@ -899,6 +899,25 @@ def write_page(S, page, css, path, title, desc, main, data):
     raise SystemExit('library: page has no h1 ' + path)
   if 'world’s largest' in html_page or "world's largest" in html_page:
     raise SystemExit('library: size claim slipped into ' + path)
+def guide_html(g, by_id):
+  paras = ''.join(f'<p>{E(p)}</p>' for p in g['paras'])
+  items = []
+  for i, label in g['next']:
+    if i not in by_id:
+      raise SystemExit('library: guide link missing ' + i)
+    r = by_id[i]
+    items.append(f'<li><a href="/library/#r-{E(i)}">{E(label)}</a>. Catalogue title: <a href="{E(r["href"])}">{E(r["title"])}</a>.</li>')
+  return f'''<article class="lesson lib-page">
+<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <span>{E(g["title"])}</span></nav>
+<p class=eyebrow>Reading guide</p>
+<h1>{E(g["title"])}</h1>
+<p class=lead>{E(g["question"])}</p>
+{paras}
+<h2>Records this guide uses</h2>
+<ul>{''.join(items)}</ul>
+<p>A guide is not an extra holding. The counts on the <a href="/library/#inventory">inventory</a> do not include it. Nothing in this guide was executed for the guide itself. Where a figure appears, it is attributed to the page that states it.</p>
+<p><a href="/library/#rooms">All reading rooms</a> · <a href="/library/policy/">Maintenance policy</a></p>
+</article>'''
 def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one_line):
   records = hand_records()
   guides, guide_slugs = guide_records()
@@ -908,14 +927,23 @@ def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one
   counts['lessons'] = len(live)
   records.extend(lessons)
   validate(records, counts, guide_slugs)
+  import library_guides as guides
+  by_id = dict((r['id'], r) for r in records)
+  guide_paths = []
+  for g in guides.GUIDES:
+    path = f'/library/guides/{g["slug"]}/'
+    gdesc = g['question'] + ' A reading guide. It is not an additional holding and it reports no new measurement.'
+    write_page(S, page, css, path, g['title'], gdesc, guide_html(g, by_id), ld(g['title'], gdesc, path))
+    guide_paths.append(path)
   desc = 'A catalogue of Solana explanations, lessons, and official references. Search does not require a wallet. Holdings are counted in public.'
   write_page(S, page, css, '/library/', 'The Solana Library', desc, page_html(records, counts), ld('The Solana Library', desc, '/library/'))
   policy = 'Labels, counting rules, and the GitHub issues used to suggest a resource or report an error.'
   write_page(S, page, css, '/library/policy/', 'Library maintenance policy', policy, policy_html(), ld('Library maintenance policy', policy, '/library/policy/'))
   llms = f'{S}/llms.txt'
   if os.path.exists(llms):
-    block = '\n## Library\n- [The Solana Library](' + SITE + '/library/): Catalogue of original pages and source-checked references.\n- [Library maintenance](' + SITE + '/library/policy/): Labels, counting rules, and corrections.\n'
+    guide_lines = ''.join(f'- [{g["title"]}]({SITE}/library/guides/{g["slug"]}/): {g["question"]}\n' for g in guides.GUIDES)
+    block = '\n## Library\n- [The Solana Library](' + SITE + '/library/): Catalogue of original pages and source-checked references.\n- [Library maintenance](' + SITE + '/library/policy/): Labels, counting rules, and corrections.\n' + guide_lines
     text = re.sub(r'\n## Library\n.*?(?=\n## |\Z)', '', open(llms).read(), flags=re.S)
     open(llms, 'w').write(text.rstrip() + '\n' + block)
-  print('library:', len(records), 'records;', counts)
-  return ['/library/', '/library/policy/']
+  print('library:', len(records), 'records;', len(guide_paths), 'guides;', counts)
+  return ['/library/', '/library/policy/'] + guide_paths
