@@ -1,6 +1,7 @@
 """Articles: explanations of recorded Sol.College work. A lesson is the practice; an article answers a question.
 Run from core_lessons.py. Nothing here is a keyword page, and no claim is added that the deployment record does not already make."""
 import html, json, os, re
+import article_library as library
 SITE='https://sol.college'
 PUBLISHED='2026-11-17'
 ROOT=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,8 +30,8 @@ def meta_block(rows):
 def shell(crumbs, kicker, title, lead, body):
   crumb='<nav class=crumbs aria-label=Breadcrumb>'+' / '.join(crumbs)+'</nav>'
   return f'{crumb}<article class=lesson><p class=eyebrow>{E(kicker)}</p><h1>{E(title)}</h1><p class=lead>{lead}</p>{body}</article>'
-def ld(title, desc, path):
-  return {'@context':'https://schema.org','@type':'Article','headline':title,'description':desc,
+def ld(title, desc, path, kind='Article'):
+  return {'@context':'https://schema.org','@type':kind,'headline':title,'description':desc,
     'datePublished':PUBLISHED,'dateModified':PUBLISHED,
     'author':{'@type':'Organization','name':'Sol.College','url':SITE+'/'},
     'publisher':{'@type':'Organization','name':'Sol.College','url':SITE+'/'},
@@ -42,8 +43,14 @@ def write_page(S, page, css, path, title, desc, main, data):
   os.makedirs(os.path.dirname(f'{S}{path}index.html'), exist_ok=True)
   open(f'{S}{path}index.html','w').write(html_page)
 RELATED={
-  'picassol-hackathon':[('what-is-a-solana-pda','Read the explanation of this pixel account before you paint one.')],
+  'picassol-hackathon':[
+    ('a-solana-address-is-not-a-wallet','Read which address on this canvas is a wallet, which is the program, and which is the pixel account.'),
+    ('where-picassol-stores-state','Read where a painted pixel is stored, and why the points counter stays at 0.'),
+    ('what-is-a-solana-pda','Read the explanation of this pixel account before you paint one.'),
+  ],
   'gifter-escrow':[
+    ('what-a-failed-transaction-changed','Read what the aborted take changed, and what the completed take changed.'),
+    ('follow-one-token-balance','Read the mint, the token accounts, and the wallets on the completed take.'),
     ('why-this-escrow-take-failed','Read why an earlier take aborted, and which program this hosted app uses now.'),
     ('from-failing-take-to-pull-request','Read the case study of the pull request that was opened for that failure.'),
   ],
@@ -245,13 +252,22 @@ def write(S, page, CSS):
     ('/articles/what-we-could-build-for-this-escrow/', build_title, build_desc, build, 'Practical guide'),
     ('/articles/from-failing-take-to-pull-request/', case_title, case_desc, case, 'Case study'),
   ]
+  reads=library.load_reads()
+  pages.extend((p, t, d, art(t)+b, a) for p, t, d, b, a in library.articles(E, tx, meta_block, credit, reads))
   def card(path, title, area, desc):
     return f'<a class=card href="{path}"><p class=eyebrow>{E(area)}</p><h3>{E(title)}</h3><p>{E(desc)}</p></a>'
+  nav, plan_html, _numbered=library.catalogue_tail(E)
+  linked=sum(1 for _c,_n,_b,items in library.PLAN for _n,_t,slug,_r in items if slug)
   index=home+f'''<article class=lesson>
 <p class=eyebrow>Solana development, from working examples</p>
 <h1>Articles</h1>
-<p class=lead>An article answers a question from work already recorded here. A lesson is where you practise that same thing. These are not two copies of one page.</p>
-<p>There are {len(pages)} articles. Each one cites a deployment record, a commit, or a pull-request note in this repository. A page is added when a recorded run can support it. Reading them does not require a wallet.</p>
+<p class=lead>Understand the system. Reproduce the behaviour. Build something that survives failure. An article answers one question from a recorded run. A lesson is where you practise. These are not two copies of one page.</p>
+<p>There are {len(pages)} articles. {linked} of the 120 planned titles link to a page. Titles 3 and 5 share one page. A title with no link has no URL. Reading a published page does not require a wallet.</p>
+<ol class=workflow>
+<li>Understand</li><li>Design</li><li>Build</li><li>Test</li><li>Secure</li><li>Deploy</li><li>Observe</li><li>Recover</li><li>Improve</li>
+</ol>
+<p>The published pages start at Understand. One recorded build and one case study are included. There is no article yet for a passing test suite, a security fixture, or production operations.</p>
+<p><a href="/articles/paths/understand-reproduce-build/">Read the published pages in order</a> · <a href="/articles/evidence/">The evidence ledger</a></p>
 <h2 id=hubs>Start with a topic</h2>
 <div class=hub-grid>
 <a class=card href="/articles/accounts/"><h3>Accounts, ownership, signers, and PDAs</h3><p>Where state lives, and how a program picks an address.</p></a>
@@ -259,8 +275,11 @@ def write(S, page, CSS):
 <a class=card href="/articles/transactions/"><h3>Signing, confirmation, and a failed transaction</h3><p>What a signature proves, and what an abort looks like.</p></a>
 <a class=card href="/articles/testing/"><h3>Tests, failures, and contributions</h3><p>A recorded build, a regression test, and an opened pull request.</p></a>
 </div>
-<h2 id=library>The articles</h2>
+<h2 id=library>Published</h2>
 <div class=hub-grid>{''.join(card(p,t,a,d) for p,t,d,_,a in pages)}</div>
+<h2 id=plan>The 120-title plan</h2>
+<p class=cat-nav>{nav}</p>
+{plan_html}
 <p class=note>The <a href="/lessons/">lessons</a> are the practice. The <a href="/lessons/glossary/">glossary</a> is the short definition. The <a href="/explore/">source library</a> is generated from code that has not been deployed, so it is not part of this set.</p>
 </article>'''
   def lesson_link(slug, note):
@@ -275,6 +294,8 @@ def write(S, page, CSS):
   ('Reading order','The explanation, then one pixel account, then a poll, a SOL lock, and a token vault.')])}
 <h2 id=order>Read, then practise</h2>
 <ol>
+<li><a href="/articles/a-solana-address-is-not-a-wallet/">A Solana address is not always a wallet</a> Which of these addresses signs, which is a program, and which holds state.</li>
+<li><a href="/articles/where-picassol-stores-state/">Where Picassol stores state</a> The pixel account, and the counter that is not one.</li>
 <li><a href="/articles/what-is-a-solana-pda/">What is a Solana PDA?</a> The pixel account, with the recorded create.</li>
 {lesson_link('picassol-hackathon', learn(pic))}
 {lesson_link('poe-solana', learn(poe))}
@@ -292,6 +313,7 @@ def write(S, page, CSS):
   ('Reading order','The failure and the later successful take, then the lesson, then a mint that creates one token.')])}
 <h2 id=order>Read, then practise</h2>
 <ol>
+<li><a href="/articles/follow-one-token-balance/">Follow one token balance</a> Mint, token account, and authority on the completed take.</li>
 <li><a href="/articles/why-this-escrow-take-failed/">Why this escrow take failed</a></li>
 <li><a href="/articles/from-failing-take-to-pull-request/">From the failing take to the opened pull request</a></li>
 {lesson_link('gifter-escrow', 'Create, the completed take, and refund. The earlier abort is kept beside them.')}
@@ -308,8 +330,9 @@ def write(S, page, CSS):
   ('Reading order','One click that landed, then one instruction that aborted, then the lesson that holds both Gifter signatures.')])}
 <h2 id=order>Read, then practise</h2>
 <ol>
-<li><a href="/articles/what-is-a-solana-pda/">A create_pixel that landed from the hosted canvas</a></li>
-<li><a href="/articles/why-this-escrow-take-failed/">A take that aborted, and the later take that completed</a></li>
+<li><a href="/articles/read-a-solana-transaction/">Read the pixel create field by field</a></li>
+<li><a href="/articles/what-a-failed-transaction-changed/">What the aborted take changed, and what the completed take changed</a></li>
+<li><a href="/articles/why-this-escrow-take-failed/">Why the take aborted</a></li>
 {lesson_link('picassol-hackathon', 'The click is the practice. The article is the account.')}
 {lesson_link('gifter-escrow', 'Proof lists the completed take and the refunds. The article keeps the earlier abort next to them.')}
 </ol>
@@ -339,18 +362,26 @@ def write(S, page, CSS):
     ('/articles/testing/','Tests, failures, and contributions','A recorded Anchor build, a regression test in an opened pull request, and no recorded merge.', testing),
   ]
   paths=['/articles/']
-  desc='Explanations of recorded Solana development work: PDAs, an escrow take that aborted, a build log, and an opened pull request. Lessons are the practice.'
-  write_page(S, page, CSS, '/articles/', 'Articles', desc, index, ld('Articles', desc, '/articles/'))
+  desc='Recorded Solana articles, plus the 120-title plan. A title has a page only when a recorded run or a chain read can carry it.'
+  write_page(S, page, CSS, '/articles/', 'Articles', desc, index, ld('Articles', desc, '/articles/', 'WebPage'))
   for path, title, description, body in ((p,t,d,b) for p,t,d,b,_ in pages):
     write_page(S, page, CSS, path, title, description, body, ld(title, description, path))
     paths.append(path)
   for path, title, description, body in hubs:
-    write_page(S, page, CSS, path, title, description, body, ld(title, description, path))
+    write_page(S, page, CSS, path, title, description, body, ld(title, description, path, 'WebPage'))
     paths.append(path)
+  ev_title, ev_desc, ev_html=library.evidence_page(E, tx, meta_block, credit, reads)
+  write_page(S, page, CSS, '/articles/evidence/', ev_title, ev_desc, art(ev_title)+ev_html, ld(ev_title, ev_desc, '/articles/evidence/', 'WebPage'))
+  paths.append('/articles/evidence/')
+  path_title, path_desc, path_html=library.path_page(E, meta_block, credit)
+  write_page(S, page, CSS, '/articles/paths/understand-reproduce-build/', path_title, path_desc, art(path_title)+path_html, ld(path_title, path_desc, '/articles/paths/understand-reproduce-build/', 'WebPage'))
+  paths.append('/articles/paths/understand-reproduce-build/')
   attach(S)
   llms=f'{S}/llms.txt'
   if os.path.exists(llms):
     block='\n## Articles\n'+''.join(f'- [{t}]({SITE}{p}): {d}\n' for p,t,d,_,_ in pages)
+    block+=f'- [Evidence for the articles]({SITE}/articles/evidence/): The reads and records behind the claims.\n'
+    block+=f'- [Understand, reproduce, then build]({SITE}/articles/paths/understand-reproduce-build/): The published articles in order.\n'
     block+='\n## Article topics\n'+''.join(f'- [{t}]({SITE}{p}): {d}\n' for p,t,d,_ in hubs)
     text=open(llms).read()
     text=re.sub(r'\n## Articles\n.*?(?=\n## |\Z)','',text,flags=re.S)
