@@ -50,6 +50,29 @@ button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
 pre.diagram,pre.sh{position:relative}
 .copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}
 .copy:hover,.copy:focus-visible{color:#06110c;background:var(--a)}
+.next-step,.choose{margin:22px 0}
+.next-step{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+.next-step h2{margin:4px 0 10px}
+.counts{max-width:62ch}
+.path-picks{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.path-pick{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.path-pick b{color:#fff;font-size:1.02rem}
+.card h3{font-size:1.12rem;line-height:1.35;color:#fff}
+.card h3 a{color:#fff}
+.card .project{color:#fff;font-weight:700}
+.card .limit,.lesson .limit{color:#ffe1bf}
+.lesson .status,.lesson .limit{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-width:68ch}
+.card.ready-preview{border-style:dashed}
+.card.ready-challenge{border-color:#6a4a28}
+.eyebrow.status-guided{color:var(--a)}
+.eyebrow.status-challenge{color:#ffd7a8}
+.eyebrow.status-preview{color:#c9c6e8}
+#next,#browse,#paths,.path-stage{scroll-margin-top:88px}
+.cta .btn{margin:0 8px 8px 0}
+.resume{font-size:1rem}
+@media (prefers-reduced-motion: reduce){
+ .readbar>span{transition:none}
+}
 @media(max-width:900px){
  .lesson-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"rail" "main"}
  .rail{position:sticky;top:7.5rem;z-index:4;flex-direction:row;max-height:none;width:100%;overflow-x:auto;gap:6px;padding:8px 0;background:rgba(11,10,20,.94);border-bottom:1px solid var(--line)}
