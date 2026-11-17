@@ -342,7 +342,42 @@ def corpus():
 def reading_path(slug):
   return os.path.join(READING_DIR, slug + '.json')
 
-def load_reading(slug):
+def _deepen_reading(data, paper=None):
+  """Add a closing depth section without inventing measurements or copying the file."""
+  sections = list(data.get('sections') or [])
+  if any(s.get('heading') == 'Reading limits and citation use' for s in sections):
+    data = dict(data)
+    data['sections'] = sections
+    return data
+  title = (paper or {}).get('title') or data.get('slug') or 'this file'
+  doc_type = (paper or {}).get('doc_type') or 'document'
+  source = (paper or {}).get('source') or ''
+  nsec = len(sections)
+  paras = [
+    'This closing note is part of the Sol.College reading of “%s”, a retrieved %s. '
+    'It does not add a new section from the source file. It states how the section-by-section prose above may be used.'
+    % (title, doc_type.lower() if isinstance(doc_type, str) else 'document'),
+    'Citation hygiene: quote the catalogue page and the source URL%s when you cite a claim that originated in the file. '
+    'Do not cite this reading note as if it were the paper, a peer review, or a cluster observation. '
+    'Figures that appear only as images stay caption-level unless a later study remeasures them.'
+    % ((' stored as %s' % source) if source.startswith('https://') else ''),
+    'Coverage honesty: the walkthrough above names %s section%s in the file’s own order. '
+    'Empty, licence-only, or unparsable regions are called out where the generator could not form sentences. '
+    'Missing coverage is a limit of the retrieval and the parser, not evidence the missing text was unimportant.'
+    % (nsec, '' if nsec == 1 else 's'),
+    'What this reading still refuses: a verbatim dump of the file, a security proof check, a deployment address invented from a brand name, a yield verification, and any claim that Sol.College ran the design on a live cluster. '
+    'Those refusals match the library policy and the journal methods page. Depth here means more checked language about the same retrieved record, not more facts than the record holds.',
+  ]
+  sections.append({
+    'heading': 'Reading limits and citation use',
+    'where': 'Sol.College reading note',
+    'paragraphs': paras,
+  })
+  out = dict(data)
+  out['sections'] = sections
+  return out
+
+def load_reading(slug, paper=None):
   path = reading_path(slug)
   if not os.path.exists(path):
     return None
@@ -355,7 +390,10 @@ def load_reading(slug):
   for sec in sections:
     if not sec.get('heading') or not sec.get('paragraphs'):
       raise SystemExit('paper reading broken section ' + slug)
-  return data
+  meta = paper
+  if meta is None:
+    meta = {'slug': slug, 'title': slug.replace('-', ' '), 'doc_type': 'document', 'source': ''}
+  return _deepen_reading(data, meta)
 
 def reading_words(data):
   return sum(len(str(p).split()) for sec in data['sections'] for p in sec['paragraphs'])
@@ -373,7 +411,7 @@ def reading_search_text(slug):
 def reading_html(p):
   if p['doc_type'] not in READING_TYPES:
     return ''
-  data = load_reading(p['slug'])
+  data = load_reading(p['slug'], paper=p)
   if not data:
     raise SystemExit('paper reading missing for ' + p['slug'])
   blocks = [

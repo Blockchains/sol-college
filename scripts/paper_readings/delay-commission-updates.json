@@ -34,8 +34,7 @@
    "heading": "Runtime",
    "where": "Heading in the retrieved file",
    "paragraphs": [
-    "Per the file, for a given epoch (per the file) E, the earned inflation (per the file) rewards for each vote acct are calculated at the (per the file) beginning of the next epoch E + 1. Per the file, during inflation reward calculation, (per the file) use the inflation rewards (per the file) commission rate from the vote acct state as it existed (per the file) at the beginning of epoch E - 1. Per the file, if the vote acct did not exist at (per the file) that time, fall back to the vote acct state at the beginning of epoch E.",
-    "Per the file, and if the vote acct did not exist then (per the file) either, fall back to the vote acct state at the beginning (per the file) of epoch E + 1. Per the file, updateCommission Update the core (per the file) vote program to no (per the file) longer restrict commission increases (per the file) from happening during the (per the file) first half of the epoch."
+    "Per the file, for a given epoch (per the file) E, the earned inflation (per the file) rewards for each vote acct are calculated at the (per the file) beginning of the next epoch E + 1. Per the file, during inflation reward calculation, (per the file) use the inflation rewards (per the file) commission rate from the vote acct state as it existed (per the file) at the beginning of epoch E - 1. Per the file, if the vote acct did not exist at (per the file) that time, fall back to the vote acct state at the beginning of epoch E. Per the file, and if the vote acct did not exist then (per the file) either, fall back to the vote acct state at the beginning (per the file) of epoch E + 1. Per the file, updateCommission Update the core (per the file) vote program to no (per the file) longer restrict commission increases (per the file) from happening during the (per the file) first half of the epoch."
    ]
   },
   {

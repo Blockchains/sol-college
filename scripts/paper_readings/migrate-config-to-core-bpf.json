@@ -34,8 +34,7 @@
    "heading": "Detailed Design",
    "where": "Heading in the retrieved file",
    "paragraphs": [
-    "Per the file, the Config program is to be reimplemented so as to be compiled to (per the file) BPF and executed by the BPF loader. Per the file, the reimplemented program's ABI (per the file) will exactly match that of the original. Per the file, the reimplemented program's functionality (per the file) will exactly match that of (per the file) the original, differing only in compute usage. Per the file, instead it will have (per the file) dynamic compute usage based (per the file) on the VM's compute unit meter.",
-    "Per the file, the program is to be migrated to Core (per the file) BPF using the procedure (per the file) outlined in SIMD 0088. Per the file, the program will have no upgrade authority. Per the file, if changes are required, (per the file) for essential network operations, the program is to be updated using feature-gates."
+    "Per the file, the Config program is to be reimplemented so as to be compiled to (per the file) BPF and executed by the BPF loader. Per the file, the reimplemented program's ABI (per the file) will exactly match that of the original. Per the file, the reimplemented program's functionality (per the file) will exactly match that of (per the file) the original, differing only in compute usage. Per the file, instead it will have (per the file) dynamic compute usage based (per the file) on the VM's compute unit meter. Per the file, the program is to be migrated to Core (per the file) BPF using the procedure (per the file) outlined in SIMD 0088. Per the file, the program will have no upgrade authority. Per the file, if changes are required, (per the file) for essential network operations, the program is to be updated using feature-gates."
    ]
   },
   {

@@ -34,8 +34,7 @@
    "heading": "Reduction Schedule",
    "where": "Heading in the retrieved file",
    "paragraphs": [
-    "Per the file, the incremental percentage represents (per the file) the portion of the (per the file) total target reduction (6264 (per the file) lamports, from 6960 to (per the file) 696) applied at each step.",
-    "Per the file, the target lamports_per_byte values (per the file) are derived by applying the cumulative (per the file) percentage reduction to the total reduction (per the file) amount and truncating the result to (per the file) the nearest integer. | Step | Target | Incr (per the file) % | Cumul % | Eff Reduc | |------|---------------|--------|---------|-----------| | 1 | 6333 | 10% (per the file) | 10% | 9% | | 2 | 5080 | 20% | 30% (per the file) | 27% | | 3 | 2575 | 40% | 70% | 63% (per the file) | | 4 | 1322 | 20% | 90% | 81% | | 5 (per the file) | 696 | 10% | 100% | 90%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+    "Per the file, the incremental percentage represents (per the file) the portion of the (per the file) total target reduction (6264 (per the file) lamports, from 6960 to (per the file) 696) applied at each step. Per the file, the target lamports_per_byte values (per the file) are derived by applying the cumulative (per the file) percentage reduction to the total reduction (per the file) amount and truncating the result to (per the file) the nearest integer. | Step | Target | Incr (per the file) % | Cumul % | Eff Reduc | |------|---------------|--------|---------|-----------| | 1 | 6333 | 10% (per the file) | 10% | 9% | | 2 | 5080 | 20% | 30% (per the file) | 27% | | 3 | 2575 | 40% | 70% | 63% (per the file) | | 4 | 1322 | 20% | 90% | 81% | | 5 (per the file) | 696 | 10% | 100% | 90%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
    ]
   },
   {

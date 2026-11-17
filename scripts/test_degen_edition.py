@@ -12,11 +12,11 @@ def page(body, title, desc, path):
 CHARTER_WORDS = 4121
 
 class Readings(unittest.TestCase):
-  def test_ten_times_the_charter_and_the_empty_newsroom(self):
+  def test_thirty_times_the_charter_and_the_empty_newsroom(self):
     rows = edition.readings()
     self.assertGreaterEqual(len(rows), 50)
     self.assertEqual(len(rows), len({r['slug'] for r in rows}))
-    self.assertGreaterEqual(edition.word_count(), CHARTER_WORDS * 10)
+    self.assertGreaterEqual(edition.word_count(), CHARTER_WORDS * 30)
     blob = '\n'.join(r['search'] for r in rows).lower()
     for phrase in ('award-winning', 'sources told', 'we interviewed', 'a student said', 'hot coin'):
       self.assertNotIn(phrase, blob)
