@@ -1,0 +1,108 @@
+{
+  "slug": "solayer-usd-yield-bearing-real-world-assets-backed-synthetic-stablecoin",
+  "pages": 5,
+  "sections": [
+    {
+      "heading": "Solayer USD: Yield-bearing Real World Assets Backed Synthetic Stablecoin",
+      "where": "p. 1 (title)",
+      "paragraphs": [
+        "The cover names Solayer USD and describes a synthetic stablecoin that bears yield while resting on real-world assets. Authorship is the Solayer Team, and the version line reads \"v0, Part 1\". Market-cap and yield figures do not appear on the title block; they arrive first in the Abstract and Manifesto."
+      ]
+    },
+    {
+      "heading": "Abstract",
+      "where": "p. 1",
+      "paragraphs": [
+        "The abstract introduces Solayer USD (sUSD) as a stablecoin tied to the dollar and secured by a basket of low-risk real-world instruments such as U.S. Treasuries, bonds, and gold. It claims a secure \"4-5%\" yearly yield for holders via T-Bill interest at the start. Leveraging Solana\u2019s Token-2022 tooling, the design is said to adjust balance multipliers instead of raw token counts so holders see growth without minting into every wallet.",
+        "A decentralized request-for-quote layer is said to route user assets among liquidity providers via matching engines that streamline subscriptions and redemptions. Beyond RWA yield, sUSD may be delegated to modular AVSs so holders help secure decentralized systems while earning further returns. Transparency, on-chain checks, and security measures are listed as peg and safety safeguards. The abstract frames sUSD as pushing Solana toward a bankless, decentralized economy."
+      ]
+    },
+    {
+      "heading": "1 Solayer USD Manifesto",
+      "where": "p. 1",
+      "paragraphs": [
+        "The manifesto cites a stablecoin market cap of \"$170B\" and says stablecoins moved over \"$2.6 trillion\" in the first half of 2024, presenting those cited figures as market opportunity. It argues that most stablecoins stay welded to traditional banking and that many issuers behave like banks collecting interest on user deposits. It further cites \"over $2B\" of stablecoin inflows onto Solana from outside ecosystems over the prior year as a sign of rapid growth and confidence.",
+        "Against that backdrop, Solayer USD is introduced as a native Solana yield-bearing, dollar-pegged stablecoin meant to hand RWA interest back to users. The vision stated is a foundation for a bankless economy and stronger decentralized systems, with RWA-backed stablecoins as a new pattern giving anyone online a dollar-denominated instrument. The section closes by saying sUSD strengthens Solana stability and growth while paving toward more connected financial infrastructure."
+      ]
+    },
+    {
+      "heading": "2 sUSD: A Stable Gateway to Real World Infrastructure",
+      "where": "pp. 1-2",
+      "paragraphs": [
+        "sUSD is cast as Solana\u2019s first yield-bearing dollar stablecoin, with collateral drawn from real-economy instruments such as Treasuries, bonds, and gold. The paper claims a \"1:1\" dollar peg while producing a \"4-5%\" yield through T-bills at the outset. Serving as a sample implementation of Token-2022\u2019s interest-bearing extension, sUSD is said to reinforce that peg and make yield easier to reach in the stablecoin stack.",
+        "Because Solana\u2019s account model makes minting to every holder awkward, the interest-bearing extension changes a \"multiplier\" on holdings rather than the raw amount; the shown balance is scale times holdings, so wallets can grow like a bank account that accrues interest. Automatic balance updates are said to let holders gather about \"4-5%\" yearly from RWA yield, initially from T-bills, simply by holding sUSD.",
+        "Holders may optionally point sUSD at exogenous AVSs running beside Solana, keeping intrinsic RWA-backed yield while adding exposure from securing modular pieces including oracles, bridges, extensions, and rollups. The section envisions open access to the dollar and on-chain dollar yield for anyone, with sUSD becoming an open on-chain liquidity layer that joins fiat rails to a bankless economy."
+      ]
+    },
+    {
+      "heading": "3 sUSD\u2019s Decentralised Request-for-quote Protocol",
+      "where": "p. 2",
+      "paragraphs": [
+        "sUSD is cast as a decentralized stablecoin through Solayer\u2019s RFQ marketplace matching engine. That marketplace clears USDC quotes against qualified tokenizers, seeking optimized interest via matching. The interface is described as a non-custodial, fully automated contract for minting, redemption, and order matching, so users reach many real-world asset providers through one path instead of many platforms."
+      ]
+    },
+    {
+      "heading": "3.1 Subscription Process",
+      "where": "p. 2",
+      "paragraphs": [
+        "The user first locks USDC in the protocol, creating a quote that lists USDC size, expiry, and commission. A qualified liquidity provider fills the buy by sending in wrapped T-Bill as proof and taking USDC out. The RFQ layer then hands the wrapped T-Bill to the minting program, which locks that proof and issues sUSD from its value while keeping a \"1:1\" peg versus USDC. Users may optionally point sUSD at exogenous AVSs when that path launches. Figure 1 is captioned as the Solayer USD Subscription Process; the figure itself is not in the extract."
+      ]
+    },
+    {
+      "heading": "3.2 Redemption Process",
+      "where": "p. 3",
+      "paragraphs": [
+        "Redemption starts when users pull sUSD back from exoAVSs, then return sUSD to the mint program, which figures the corresponding wrapped T-Bill quantity, routes it into RFQ, and opens a redeem order. Qualified liquidity providers fill that order by sending USDC in and taking the wrapped T-Bill out. The RFQ then finishes by sending USDC to users. Figure 2 is captioned as the Solayer USD Redemption Process; only the caption appears in the text extract."
+      ]
+    },
+    {
+      "heading": "4 Transparency and Security",
+      "where": "p. 3",
+      "paragraphs": [
+        "Section 4 groups transparency and security topics and then splits into on-chain verifiability, liquidity-provider checks, program security, and interest-rate stability. The parent heading itself states the theme without separate quantitative claims; those appear under the numbered subsections that follow."
+      ]
+    },
+    {
+      "heading": "4.1 On-Chain Verifiability and Attestation",
+      "where": "p. 3",
+      "paragraphs": [
+        "Because the RFQ path is fully decentralized and ledgers are public, the paper says each transfer and each wrapped T-Bill balance is written on-chain into an immutable record. It states that there is no off-chain custody of that kind at any moment. While users\u2019 USDC is later turned into USD and used to buy T-Bills off-chain, liquidity providers must mint wrapped T-Bill as on-chain proof, and anyone holding that token can redeem USDC. At writing time, the wrapped T-Bill token is said to sit with the RFQ protocol at a named account (the extract does not print a distinct address string beyond that claim)."
+      ]
+    },
+    {
+      "heading": "4.2 Liquidity Provider Legitimacy",
+      "where": "p. 3",
+      "paragraphs": [
+        "The team says it runs strict diligence on liquidity providers, covering fund process, subscription and redemption time SLAs, legal compliance, and smart-contract security, among other checks. It is adding more providers so users can chase yield across venues and spread risk. No numeric SLA or yield figures appear in this subsection."
+      ]
+    },
+    {
+      "heading": "4.3 On-Chain Program Security",
+      "where": "p. 3",
+      "paragraphs": [
+        "The paper states that the project completed an audit with Halborn and intends further audits later. It also states that multisig committees control the on-chain program, with more detail deferred to project docs. No audit report identifiers or committee thresholds appear in this litepaper subsection."
+      ]
+    },
+    {
+      "heading": "4.4 sUSD Interest Rate Stability",
+      "where": "pp. 3-4",
+      "paragraphs": [
+        "sUSD uses Solana Token-2022\u2019s interest-bearing extension so the unit stays pegged at \"1\" USD. The Solayer team monitors and adjusts the interest rate so it follows the underlying wrapped T-Bill exchange rate, and users can read the updated total including interest at any moment. Guardrails listed include blocking large drifts from a rolling-average exchange rate during mint and redeem; an off-chain rate program synced to wrapped T-Bill interest; algorithms that ease the actual rate toward the token scale; hourly checks to limit overshoot; and rate-update authority held by the Solayer team."
+      ]
+    },
+    {
+      "heading": "5 Conclusion",
+      "where": "pp. 4-5",
+      "paragraphs": [
+        "The conclusion presents sUSD as a major step that brings a yield-bearing, RWA-backed model native to Solana, giving users passive yield while joining traditional assets to decentralized rails. The RFQ path and modular AVS layer are said to support efficient liquidity, transparency, and security. As a liquidity layer on Solana, sUSD is cast as preferring holder yield instead of issuer profits while backing a bankless economy with more resilient finance. No new market-cap or yield figures appear beyond those already claimed earlier."
+      ]
+    },
+    {
+      "heading": "References",
+      "where": "p. 5",
+      "paragraphs": [
+        "The bibliography points to Blockworks reporting, Castle Island Ventures materials, DefiLlama Solana stablecoin pages, Forbes market-cap listings, and Solana Token-2022 extension docs. Those bibliographic citations were not treated as findings in this reading; market figures above are used only as the paper itself cites them."
+      ]
+    }
+  ]
+}

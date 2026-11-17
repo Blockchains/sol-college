@@ -1,0 +1,157 @@
+{
+ "slug": "solayer-chain-infinitely-scalable-hardware-accelerated-svm-network",
+ "pages": 12,
+ "sections": [
+  {
+   "heading": "SOLAYER CHAIN: Infinitely Scalable Hardware-Accelerated SVM Network",
+   "where": "p. 1",
+   "paragraphs": [
+    "The title is Solayer Chain: Infinitely Scalable Hardware-Accelerated SVM Network. The phrase infinitely scalable is the title's phrase. Authors listed are Jason Li together with Chaofan Shou, alongside Qi Su, Chaz Cui, plus Tony Ke, with the addresses grouped as lxj, shou, and changzecui at berkeley.edu, qisu at cs.ucsb.edu, and tonyke at fuzz.land, and it dates the litepaper January 6, 2025. The title states an ambition for the design. It does not, by itself, report a completed benchmark."
+   ]
+  },
+  {
+   "heading": "Abstract",
+   "where": "p. 1",
+   "paragraphs": [
+    "The abstract introduces Solayer Chain as a next-generation architecture that scales one global state machine, seeking throughput, latency, and composability beyond what it calls the usual results. It distinguishes the design from conventional vertical scaling and from sharded rollups. Atomic state transitions are kept by spreading work across microservices and specialized hardware accelerators. Signature verification, tx filtering, speculative pre-execution, scheduling, plus storage each move onto a scalable cluster tuned for that job. Transactions are speculatively executed before they reach the sequencer, then finalized by a hybrid PoA-plus-stake consensus.",
+    "InfiniBand remote direct memory access is said to give near-microsecond communication between nodes, and concurrency control is said to cut re-runs; a shared-nothing KV store spread over nodes supports arbitrarily large account data and balances load. The abstract says the chain pushes performance toward hardware limits, targeting more than 1 million transactions per second and more than 100 gigabits per second of network bandwidth. Those figures are stated as targets, not as a benchmark the paper reports having measured. The same paragraph offers a path for applications that need high throughput, low fees, and a composable environment. Hooks let developers embed logic after a transaction, with arbitrage, liquidations, and accounting as examples. Oversized txs, bridging calls and built-in OAuth are said to improve the experience of developers and users.",
+    "A disclaimer printed with the abstract says the litepaper is provided for information and research only. It does not offer advice of any kind, whether about investing, about finance, or about trading. Implementation details may change and can diverge from the description given in the paper."
+   ]
+  },
+  {
+   "heading": "1 Introduction",
+   "where": "pp. 2-3",
+   "paragraphs": [
+    "Scalability is called a foundational challenge: rising volume demands faster processing, larger storage, and robust consensus, while security and decentralization are to be kept. High-performance chains are said to shorten transaction times, lower fees, improve experience, and open large-scale applications. As the industry matures, demand for block space keeps rising. On Ethereum, the paper says higher demand raises gas fees because of fee auctions; Solana under flood can drop or expire transactions. Transactions per second illuminate throughput, yet chains now run Turing-complete contracts and more complex functions, so block space and state have to be rethought.",
+    "Horizontal scaling, exemplified by Ethereum's second-layer rollups, moves processing off the main chain into separately updated states and posts results back. Throughput rises, and a once-unified global state is fragmented, which the paper says weakens composability, atomic transitions, and liquidity. An asset divided among pools that sit on separate rollups can in the paper's example, trade at a worse price than it would inside one shared pool, because the swap that crosses rollups incurs higher slippage. Vertical scaling, exemplified by Solana, tries to maximize throughput inside a single state machine by making the virtual machine execute work in parallel, by writing software for speed, and by using strong hardware of a consumer grade. Atomicity is preserved and execution stays coordinated, so composability remains. Solana's success at hosting many token launches and large on-chain trading volumes is offered as a reflection of that design's power.",
+    "The paper then says Solana's approach now meets hardware ceilings to match today's throughput; validators already need central processors exceeding 3.1 gigahertz, more than 500 gigabytes of high-speed memory, and at least 2.5 terabytes of high-throughput NVMe storage. With processor utilization hovering around 30 percent under heavy load, further gains from software alone are limited, so acceleration such as offloading work to field-programmable gate arrays becomes essential. Account data keeps growing, and the text says ordinary consumer hardware will be replaced by specialized storage such as NVMe over Fabrics if low latency is to survive that growth. Peer-to-peer communication already consumes around 0.8 gigabits per second per validator, with a risk of passing the 1 gigabit-per-second internet limits the paper calls typical of consumer networking if throughput keeps rising. These are the document's claims about today's validators, not a measurement added here.",
+    "The response is a multi-executor, hardware-accelerated network running the Solana virtual machine. A figure captioned as the system architecture is indicated; the drawing is not in the text extract. The prose says the design scales a single-state blockchain infinitely by distributing work across specialized hardware and clusters while a global atomic state is preserved. Infinitely, in this sentence, is the paper's design claim and matches the title's phrase. It is not presented as a measured result.",
+    "Later sections are previewed as microservices for non-atomic stages such as ingress and state publishing, hardware acceleration aimed at scheduling and locking, a sharded database, and a hybrid consensus based on Solana that is said to provide both security and low latency. Usability additions include hooks, cross-chain calls oversized transactions, seamless wallets, and OAuth-based signers. The chain aims to be the most user-friendly chain, with more than 1 million transactions per second and more than 100 gigabits per second of bandwidth. That pair is again an aim, not a reported benchmark."
+   ]
+  },
+  {
+   "heading": "2 Background",
+   "where": "p. 4",
+   "paragraphs": [
+    "The background heading says the following subsections introduce technology the chain uses. It does not itself state mechanisms, measurements, or performance numbers. Those appear under the numbered treatments of Solana and its virtual machine, of remote direct memory access and InfiniBand, and of software-defined networking."
+   ]
+  },
+  {
+   "heading": "2.1 Solana and SVM",
+   "where": "p. 4",
+   "paragraphs": [
+    "Solana is described as departing from traditional consensus through proof of history and a parallel execution environment. The virtual machine uses a shared-nothing architecture: each transaction's read set and write set are known before execution, so the runtime can build a dependency graph that runs as much as possible in parallel and still guarantees serializability. Unlike the Ethereum virtual machine's sequential model, non-conflicting transactions run concurrently across available processor cores. Memory uses multi-version concurrency control, keeping several versions so reads can proceed together while writes stay in a strict order taken from the proof-of-history sequence.",
+    "The two machines are presented as contrasting concurrency styles. The Ethereum machine uses optimistic control: transactions run together on the assumption that conflicts are rare, but because they do not declare state access in advance, a clash, such as two transactions changing the same state, is found only while they run, and the work is rolled back and retried. The Solana machine uses pessimistic control: transactions must declare access patterns first. Sealevel can then run non-overlapping transactions at the same time and avoid those conflicts. The subsection says that explicit declarations, together with the memory and execution models, let Solana reach what the paper calls unparalleled scalability and efficiency. That judgment is the background section's claim. It is not accompanied by a transactions-per-second measurement."
+   ]
+  },
+  {
+   "heading": "2.2 RDMA and Infiniband",
+   "where": "pp. 4-5",
+   "paragraphs": [
+    "Remote direct memory access is described as zero-copy transfer between the memory of applications on systems joined by a network. Modern implementations use specialized interface cards that perform both the transport protocol and the memory operations in hardware. The operating system's network stack is bypassed, so context switches and processor cost tied to network input and output disappear. The protocol suite includes a connection-oriented mode, reliable connected, which guarantees in-order delivery, and a connectionless mode, unreliable datagram, which favors low latency when the application can tolerate lost packets. Remote memory operations finish without interrupting the remote processor. The paper states that in deployments which have been tuned, a small message can finish its trip from end to end in under one microsecond. Memory regions must be registered with the card, which keeps page tables that translate virtual addresses to physical ones.",
+    "InfiniBand is called a prominent implementation, aimed at high-performance computing and data centers. Host channel adapters offload protocol processing and address translation, reducing the processor's role in transfers. The paper states data rates from 10 gigabits per second, called single data rate, up to 100 gigabits per second per port, over copper or optical fiber, and end-to-end latencies as low as 600 nanoseconds. Those rates and latencies are presented as properties of InfiniBand, not as measurements of Solayer Chain. The text says the combination suits rapid exchange in artificial intelligence and high-performance computing, and that efficiency and scale have led to wide use in distributed ML and other data-heavy work."
+   ]
+  },
+  {
+   "heading": "2.3 Software-defined Network",
+   "where": "p. 5",
+   "paragraphs": [
+    "Software-defined networking splits control-plane duties from the data plane and steers behavior through a logically centralized controller. The paper describes a three-tier model. The data plane is programmable forwarding elements that handle packets by match-action rules. The control plane holds network policy and computes paths. The management plane orchestrates the network at a high level. Forwarding has moved from fixed match-action tables to pipelines programmable in languages such as P4, so custom protocols and complex header changes can run at line rate. Controllers use distributed consensus to keep state consistent across replicas, and northbound interfaces hide network complexity from applications. Packets cross several match-action stages, each able to change headers and keep local state. That programmability is said to place load balancing, traffic engineering, and network virtualization in the data plane while line-rate performance continues."
+   ]
+  },
+  {
+   "heading": "3 Scaling Transaction Processing",
+   "where": "pp. 5-6",
+   "paragraphs": [
+    "The overall pipeline is tied to the architecture figure. Each transaction hits an ingress that checks signatures and performs a local deduplication step, which the extract prints as deduplification. The verified transaction goes to a pre-execution cluster, discussed in the next subsection. Effects and intermediate snapshots travel to the sequencer over InfiniBand. Using a software-defined switch and an additional field-programmable gate array, the sequencer chooses a simple path or a complex path. On the simple path, every account the transaction touches is already at the latest version from pre-execution, and the state change is applied directly by remote direct memory access, with a local cache on the switch. On the complex path, at least one account carries a newer version, and the transaction enters a local mempool whose processing speed the paper states as sub-millisecond.",
+    "The sequencer schedules that mempool for fair and optimal parallel execution, with the algorithm left to the scheduling subsection and account storage left to the database subsection. After execution and after the state write, the transaction is propagated through what the text calls a global PoPs. The abbreviation is not expanded in the extract. A second figure is captioned as the amount of transactions that need re-execution against how far the executor lags. The drawing is not in the extract. The numerical claim attached to it appears in the following subsection."
+   ]
+  },
+  {
+   "heading": "3.1 Microservice Pipeline",
+   "where": "pp. 6-7",
+   "paragraphs": [
+    "The pipeline is said to mirror some of Solana's stages: signature verification, deduplication, scheduling, banking, and storage. Banking is inherently sequential, needing coarse locks or a single thread to stay consistent. Solana runs these stages in one monolithic architecture. The paper's observation is that signature checks, deduplication, and storage can be split apart and spread out. Solayer Chain turns them into independent microservices on an elastic compute fabric. A feedback-driven control plane watches ingress rates and scales capacity.",
+    "A key claim is that many transactions can be pre-executed on their own when they have no read-write dependence on accounts that concurrent transactions also touch, which the text calls the absence of a dirty read. Referring to the lag figure, the paper reports a simulation that pre-executes transactions drawn from 1,000 slots beginning at slot 304992000. In that simulation, only 2 percent of transactions needed re-execution because of a dirty read, even when the executor lagged the chain by a large amount. That 2 percent is the document's report of its simulation, not a figure computed for this reading. The graphic itself is not in the text file.",
+    "A simulation stage is inserted before scheduling and can be scaled across nodes. It speculatively executes against the newest committed state on the node and records both the transaction's effects and intermediate snapshots at the boundaries where accounts are accessed. Some transactions still conflict because their account sets overlap. The non-conflicting majority can be pre-executed in parallel. Transactions that only read can be fully validated and confirmed out at the edge, skipping the central banking stage.",
+    "To thin out conflicts further, transactions that touch hot accounts can be pre-executed for every possibility of those accounts' future values. each account carries a short-horizon prediction model, Winter-Holt double exponential smoothing, applied to each byte. Depending on how often an account is accessed, the operator of a pre-execution node may inject a more accurate model, and a transaction may be simulated millions of times against different possible account data. For transactions that still conflict, a subscriber of the simulation results can rebuild the correct state from the nearest valid snapshot, so the whole transaction need not be run again. The design is said to cut the computing cost of banking while strict consistency remains."
+   ]
+  },
+  {
+   "heading": "3.2 Transaction Semantic Aware Scheduling",
+   "where": "pp. 7-8",
+   "paragraphs": [
+    "Solana's scheduler is described as using account-level access patterns to batch transactions and to prevent dirty reads by strict isolation. Batches follow the declared access patterns, and execution inside a batch during banking needs no locks. The paper calls that approach conservative, because every account access inside a transaction is treated as concurrent. Solayer Chain adds a finer prediction of the order of reads and writes. By looking at when each account is touched inside a transaction, the system builds a locking schedule that lets transactions sharing accounts run together when their real read/write sequences fail to clash. Lock contention falls, and serializability is kept.",
+    "The simulation stage supplies estimated read-write sequences before scheduling. For a transaction, the execution trace is a sequence of triples: an operation that is either a read or a write, the account touched, and a predicted time cost until the next operation. For two transactions whose account sets overlap, each shared account has a temporal sequence of operations with relative timestamps. The gap after an operation is that predicted cost multiplied by an average instruction time. The two transactions may run in parallel when for every shared account, the sequences have no write-write conflict, and when any read in one and write in the other are separated by a gap larger than a tunable error term that stands for how far the simulation's estimate may be wrong. The goal is a schedule without locks, yet a lock is still taken during execution because the schedule is an estimate and may be wrong.",
+    "Finding the optimal schedule is likened to bin packing and is called NP-hard. To produce a schedule at a sub-millisecond scale, the paper uses shortest-makespan-first, a greedy method it says is widely used in database systems, and accepts a near-optimal result. A parallel ensemble tries several strategies at once. Solana's original account-based partitioning algorithms are included as a baseline, along with the greedy method. Each candidate schedule carries an estimated time cost, and the scheduler picks the smallest cost."
+   ]
+  },
+  {
+   "heading": "3.3 Sharding Database with RDMA",
+   "where": "pp. 8-9",
+   "paragraphs": [
+    "Growing state is called a scalability problem. The paper's example is that Ethereum's state currently exceeds 1.1 terabytes. Keeping that data in memory matters for low latency, and a single server's memory is not enough, so the store is distributed. Solayer Chain shards a key-value store that maps 32-byte account addresses to state. Unlike Solana, which the paper says imposes a 10 megabyte limit on account data, this chain supports an arbitrary size per account.",
+    "Each database node holds one shard and has three parts. A memory-resident jump table maps an account address to a memory address, a data length, and a version, defined as how often that account has been written. A contiguous region stores the account state together with synchronization primitives and metadata. The paper observes that most state changes on Solana do not change the length of the account's data. When the size does change, which it calls rare, the data may leave contiguous memory and is later moved back during routine rebalancing. A local cache keeps frequently used accounts under a least-recently-used eviction rule, to avoid network round trips for popular accounts.",
+    "Executors reach other nodes through InfiniBand remote direct memory access. The advantages listed are latency at nanosecond scale, no operating-system overhead, less processor use during transfer, and zero-copy movement. The paper says performance stays high when data must be fetched remotely, so transaction speed stays consistent across the distributed system. Load is rebalanced in the background during quiet network periods. The process watches access patterns and historical memory footprints and moves data to improve locality and to reduce cross-node fetches for common transaction patterns. It considers access frequency, data size, network topology, node capacity, and the current load, so data that is often used together tends to sit on the same node."
+   ]
+  },
+  {
+   "heading": "4 Scaling Consensus",
+   "where": "pp. 9-10",
+   "paragraphs": [
+    "Existing rollup designs, the paper says push verification onto many commodity validators that must rebuild or dispute transactions posted on a base layer. Verifying a transaction stream at 1 gigabit per second is beyond most commodity nodes, and posting 1 gigabit of data on any availability layer or base chain is called prohibitively expensive, saturating bandwidth and raising fees. The alternative is named proof of authority and stake, with an explicit warning not to confuse it with proof of stake and authority or with the abbreviation PoSA. A trusted entity is the sequencer, or leader, and publishes shreds, defined as a set of transactions in the block. Every prover stakes and votes on whether a shred is acceptable. Solana is the fallback consensus venue when the sequencer behaves maliciously.",
+    "Transactions are batched into shreds. Each shred carries a slot number, a vector of transactions, version metadata for the accounts that were accessed, and linkage hashes, with the last shred's version given as an example. Account versions matter because they state the exact state context in which the sequencer executed the transactions. A node that receives the shred can rebuild the relevant ledger portion and compute an effect hash, the digest of the states after the transactions. Only a minimal pair, the effect hash and the shred hash, is published on Solana for availability. The bulk of the data goes to each prover. On-chain overhead is capped, and the base layer is not saturated.",
+    "A prover that receives a shred checks whether its local ledger has the right account version. If not, it asks the leader for the missing shreds needed to build that state, then re-executes every transaction in the shred and derives the effect hash. If the local hash matches the hash embedded in the shred, the prover votes to accept it on Solayer Chain. Once votes arrive from 51 percent from the chosen provers, the sequencer builds a proof and marks the shred finalized if every earlier shred is already finalized.",
+    "Honest provers vote against invalid or malicious shreds when the expected and computed effect hashes disagree. The paper says the sequencer cannot itself carry a transaction that fails validity. If the bad proposals continue, the sequencer is marked offline and fail over to a backup from a proof-of-authority set. Re-election happens on Solana, because a down sequencer means Solayer Chain can no longer process transactions. Honest provers vote, and they advance once the vote reaches two thirds. If two thirds of the provers are not malicious, the paper says re-election can finish in seconds.",
+    "To deter dishonest or idle provers, the sequencer periodically broadcasts shreds it knows are invalid. A prover that votes for such a shred without checking is slashed and excluded from later rounds, so passive acceptance is deterred and each prover is pushed to re-execute. If the sequencer repeatedly ignores a transaction, any user can place that transaction into a future shred by sending its data on Solana to the relevant program. Refusal to accept a transaction on Solana likewise marks the sequencer unresponsive or malicious.",
+    "Because provers are not expected to run costly high-performance hardware and accelerators for every shred, the sequencer uses round-robin to select, at random, only two thirds of the online prover set for a given shred. Those provers split the task across their own nodes, again by round-robin. The paper states that if a prover runs 10 nodes, each node needs to handle one fifteenth of all shreds. Provers may add cloud nodes as traffic grows. Reaching a 51 percent vote requires only four fifths of the selected provers to vote, which allows some downtime. If more than one fifth of the selected provers are down, the sequencer should add more provers. Failing to do so marks the sequencer down. The paper says the sequencer has no incentive to deny service by always picking the same provers, because a sequencer that cannot finalize blocks is marked down.",
+    "Provers are paid fees from processed shreds and inflationary rewards in the token written as $LAYER. Malicious behavior or repeated failure to process shreds brings tiered slashing and eviction from the prover set until a manual return. The first violation in an epoch forfeits fees accrued during that epoch. A second violation in the same epoch slashes 1 percent of staked tokens. Each further violation in that epoch slashes 5 percent of stake."
+   ]
+  },
+  {
+   "heading": "5 Improving User Experience",
+   "where": "p. 10",
+   "paragraphs": [
+    "This heading introduces improvements to user experience and has no paragraph of its own before the subsections begin. Wallet-agnostic integration, hooks, cross-chain contract calls jumbo transactions, and login based on zero-knowledge proofs are the five numbered parts that specify those improvements."
+   ]
+  },
+  {
+   "heading": "5.1 Wallet-agnostic and DApp-first integration",
+   "where": "p. 10",
+   "paragraphs": [
+    "Traditional integrations, the paper says need support in both the wallet and the application. On Ethereum second layers that is because EIP-155 requires the chain identifier inside the signature payload, which wallets enforce. Signatures on the Solana virtual machine do not include a chain identifier. Each transaction carries a recent block hash, and replaying it on another chain simply causes rejection. In Ethereum ecosystems the wallet broadcasts the transaction. In the Solana virtual machine the application does. Using Solayer Chain's software kit, an application can let users create transactions on this chain with any Solana-compatible wallet, without the wallet having explicit support for the chain. Direct wallet support is still desirable so assets display seamlessly, and it is not required for execution or for onboarding."
+   ]
+  },
+  {
+   "heading": "5.2 Hooks",
+   "where": "pp. 10-11",
+   "paragraphs": [
+    "Re-executing transactions off chain to find later openings—arbitrage, liquidations, or live indexing—is called expensive. Hooks run user-defined logic automatically, right after a transaction touches one or more on-chain programs. The paper describes them as a built-in layer for following a transaction: once a targeted program has updated state, hooks can check for arbitrage, trigger a liquidation, do accounting, or serve any other use that needs timely awareness of state. A hook has the same shape as a transaction. The user supplies accounts and data, and gas is charged to a designated account each time the hook runs. After three occasions when the fee payer lacks funds for gas, the hook can be disabled.",
+    "A precompile registers hooks and takes bids. Users bid to attach hooks to specific programs, in a model the paper likens to a Dutch auction. the highest 16 bids per program qualify in the following epoch. If one transaction touches several programs that have hooks, only 16 hooks run in total, ordered by descending bid. After the transaction, those hooks are called in sequence. Each hook's bid is split 40 percent to the transaction's initiator, 40 percent to the program owner, and 20 percent to the network.",
+    "The split is said to lower the cost of exhaustive replay and to encourage participants to add hooks. Initiators and program owners benefit from higher bids, and the network's share offsets extra on-chain work. Putting hooks in the execution pipeline is also said to reduce spam and off-chain extraction of value, because real-time logic is available to anyone willing to bid. The subsection calls this a fair, performance-oriented way to automate post-transaction actions without overloading the core network."
+   ]
+  },
+  {
+   "heading": "5.3 Cross-chain Contract Calls",
+   "where": "pp. 11-12",
+   "paragraphs": [
+    "A native bridge in both directions sits inside the sequencer and relays messages and assets from Solana to Solayer Chain. The bridge ignores a Solana reorganization by keeping an insurance fund that automatically covers loss from that reorganization. If the total value of an asset, measured through an oracle, that is relayed before finalization is lower than the fund, the asset becomes available on Solayer Chain immediately. Otherwise it becomes available after the transaction is finalized. Any message can be relayed at once, ignoring reorganization, or after finalization, according to a flag on the transaction. When the message becomes available, a receiver hook runs automatically and may call further programs.",
+    "A second bridge mirrors accounts so each Solayer Chain program and account has a matching program-derived address on Solana mainnet. The instruction named MainnetCall, handled by a built-in system program, is presented as support for atomic cross-chain work. When a Solayer Chain program invokes that instruction, the transaction routes instructions to the associated address on Solana. Programs on Solayer Chain can therefore read and write Solana accounts through that path. The document adds that only the Solana-side transaction still has to be broadcast on Solana itself. That workflow is the litepaper’s design sketch, not a transfer observed for this catalogue."
+   ]
+  },
+  {
+   "heading": "5.4 Jumbo Transaction",
+   "where": "p. 12",
+   "paragraphs": [
+    "Jumbo transactions are introduced to support complex logic, especially the logic inside hooks. The new type significantly raises the size limit of a transaction and allows more calls across programs. Fees grow exponentially as the size grows. The paper says one such transaction may touch thousands of accounts, whether to read them or to write them, may run thousands of instructions, and may place more than one program. Those are statements of what the type is meant to allow. They are not presented as a measured throughput benchmark of the chain."
+   ]
+  },
+  {
+   "heading": "5.5 ZK-Login",
+   "where": "p. 12",
+   "paragraphs": [
+    "Users can treat Google, X, Reddit, or any service that supports OAuth as a wallet. The chain has native support for transactions signed with OAuth. The text says the underlying workflow resembles Sui's zkLogin. It does not spell out the proof steps, the circuits, or the identity checks in this litepaper."
+   ]
+  }
+ ]
+}

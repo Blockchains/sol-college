@@ -1,0 +1,220 @@
+{
+ "slug": "doublezero-protocol",
+ "pages": 20,
+ "sections": [
+  {
+   "heading": "DoubleZero Protocol",
+   "where": "p. 0",
+   "paragraphs": [
+    "The cover is dated December 2, 2024, and names Austin Federa, Andrew McConnell, and Mateo Ward, with the addresses austin@doublezero.xyz, andrew@malbeclabs.com, and mateo@malbeclabs.com. Thanks are given to Dr. Nihar Shah and Chris Remus, and also to Malbec Labs, Dr. Kevin Bowers, plus the Firedancer group. The banner says the work accelerates communication in high-performance distributed systems so that bandwidth can rise and latency can fall."
+   ]
+  },
+  {
+   "heading": "Abstract",
+   "where": "p. 0",
+   "paragraphs": [
+    "The abstract presents the DoubleZero protocol as a decentralized framework for building and running high-performance networks that anyone may join, tuned for distributed systems such as blockchains. It says unused private fiber can be contributed without permission, forming a network that grows and changes. A low-level permissionless design is described as able to join dissimilar networks into one meshed transport layer. That layer filters traffic and carries it on routes chosen for low latency and high bandwidth, so a distributed system can send and receive information efficiently.",
+    "A controller that anyone may use, living on a public blockchain, is said to draw in new contributions with incentives and to retune configuration and routing when demand spikes, outages, or other disruptions occur. The abstract claims this infrastructure lets systems such as Layer 1 blockchains leave communication bottlenecks behind and approach the highest performance physics allows. It closes by calling the DoubleZero network a new internet optimized for distributed systems."
+   ]
+  },
+  {
+   "heading": "Introduction",
+   "where": "pp. 1-3",
+   "paragraphs": [
+    "The introduction says throughput and latency in decentralized systems are not improving fast enough for developers and users. It locates the gap most clearly in Layer 1 blockchains, and also in Layer 2 networks and in distributed systems that are not blockchains. A footnote says the field has gained a fresh wave of high-throughput validator clients, with Firedancer and Reth given as examples, and a fresh wave of high-throughput chains, with Sui and Monad given as examples, improving on older systems by what the footnote calls a literal order of magnitude. The file does not attach those client or chain names to any further network identity in this passage. The main text says individual validators have gained substantial computing power, yet the systems are increasingly limited by bandwidth and by latency that varies between validators, rather than by compute inside a validator.",
+    "The protocol is presented as a way to optimize data flows. Individually contributed fiber links are combined into one synchronized network that filters spam, raises bandwidth, lowers latency, and removes jitter, defined in the text as random variation in latency. The stated aim is better reliability and scalability for blockchains and for decentralized distributed systems generally. The introduction says the physical network layer blockchains use has not changed since Bitcoin began, and that this underdevelopment limits both scalability and decentralization, leaving performant chains more centralized and more inefficient. Hardware needed to absorb the inbound transaction firehose is said to escalate quickly. Consensus is described as slow because blocks are proposed and votes travel on public internet paths with high jitter and inconsistent routing.",
+    "Against the public internet, the text offers two improvements. Inbound transactions can be edge-filtered, with spam and duplicates removed, by specialized hardware before they enter the DoubleZero network, so a chain can share filtration resources instead of making every validator provision enough of its own. Outbound messages can be routed, tracked, and prioritized explicitly, letting validators control latency and reduce jitter while they reach consensus. Together, the network is said to reach performance that would otherwise require centralized co-location.",
+    "The architecture is mapped to two concentric rings. An outer ingress and egress ring meets the public internet. Devices there, FPGAs among them, blunt distributed denial-of-service attacks, check signatures, and drop duplicate transactions. Servers on the inner ring then assemble consensus from the traffic that remains, using dedicated bandwidth chosen for the path. The two rings are called a scalable, permissionless information service. The same network is offered for any distributed system. The text says blockchain is not alone in being limited by data entering and leaving, rather than by the work itself, and it names remote-procedure-call nodes, maximal-extractable-value systems, and Layer 2 chains inside the blockchain world, plus content delivery networks, games, large language models, and enterprise users outside it. For many of those uses, high-priority traffic is said to share the public internet with traffic that is not time sensitive.",
+    "A later stretch of the introduction presents an economic model. Private businesses can earn from underused links they bought or leased from a telecommunications or network-service provider, while users get private-network behavior without a central operator or a long contract, and can keep tuning throughput, topology, and priority. Individual links are described as fixed in route, limited in reach, and lacking global redundancy, a poor match for systems that want flexibility, reach, and resiliency. The protocol is said to stitch those links into one expansive system and to draw on the same network effects that shaped the internet.",
+    "Independent contributors are treated as a strength, because the whole is said to be worth more than the parts. The protocol is called the first of its kind among N1\", defined there as a base layer of neutral, performant physical infrastructure, on which distributed systems and applications, including network-related ones such as \"N2\" systems, can be built. A closing belief says abundance breeds innovation, and that each large jump in availability, or each corresponding drop in latency, opens new kinds of applications. From that principle the project sets a north star of more bandwidth and less latency for distributed systems worldwide, in support of a fairer and more open future for software."
+   ]
+  },
+  {
+   "heading": "System Architecture",
+   "where": "pp. 4-7",
+   "paragraphs": [
+    "The architecture section opens with a proposal: a node operator, whether a validator, a remote-procedure-call node, or a similar role, would no longer be solely responsible for taking data in and sending it out. Filtration and verification would be separated from transaction inclusion, block production, and execution, creating what the text calls a parallel and protected transaction flow so operators can optimize network operations. A figure titled as the existing proof-of-stake validation process is indicated, though the picture itself is not present in the text extract.",
+    "The text splits a validator's familiar role into two steps—producing a block and reaching consensus for it. Production starts once a flood of raw inbound data arrives. The validator deduplicates, filters, and checks signatures, shrinking the pool, then chooses a subset, builds the block, and sends the proposal to other validators. Those validators either approve and append the block or reject it and continue. A footnote says the mechanical difference between leader-based and leaderless chains, especially around ordering, can be ignored here. Another figure, captioned as data flow drawn as rings, is indicated without the drawing.",
+    "On most networks today, the text says these steps are handled by the resources of one x86 machine. A footnote adds that even proposer-builder separation consumes only one x86 machine's resources at once. Cores on that CPU are linked by an on-chip network. The proposal is to expand that pattern into a global DoubleZero network. FPGA appliances at key edge ingress points filter inbound traffic and act as a common shield for local validators, meaning validators downstream of devices connected to the inner ring.",
+    "Compared with validators, those appliances are said to handle orders of magnitude more traffic while they remove spam, deduplicate a transaction set, and verify signatures, using open-source software that can be inspected so inbound transactions are treated fairly. Downstream validators then receive a much smaller set and only re-check signatures on transactions that were included in the final block, which the text says preserves the chain's security. Their usual single x86 machine is described as freed for block production, execution, indexing, and similar work. Separating the filter ring from the execution ring is presented as a way to place ingress resources more flexibly, more efficiently, and more resiliently. Sharing means each validator no longer has to be sized for global demand; the text says aggregate resources can be far smaller. A figure captioned as separating those two rings is indicated.",
+    "A further optimization is multicast on the inner ring, described as one network domain under the common control of protocol participants. Block or shred propagation can be added through multicast. A footnote defines shreds, for networks that use them, as pieces of a block sent before the full block is built. Low-latency access to the newest state is said to advantage demanding applications. A DoS campaign under this model would the text claims, need many terabits per second striking many geographically distributed sites at once. It would be an attack on hundreds of data centers and internet service providers around the world, and would be several orders of magnitude harder and more resource-intensive. The section treats that difficulty as evidence that shared infrastructure is more robust. A figure captioned as a distributed denial-of-service attack on the network is indicated without the drawing."
+   ]
+  },
+  {
+   "heading": "The Physical DoubleZero Network",
+   "where": "p. 8",
+   "paragraphs": [
+    "This heading introduces the physical layer as the network's foundation and is followed immediately by a subtitle about permissionless global connectivity for blockchain traffic. The extract places the detailed account of devices, exchanges, and underlay links under that subtitle, so this heading functions as the section title for the physical foundation rather than as a separate technical argument."
+   ]
+  },
+  {
+   "heading": "Permissionless Global Connectivity for Blockchain Traffic",
+   "where": "p. 8",
+   "paragraphs": [
+    "The physical layer is said to rest on two components: network devices at important ingress and egress points, and bandwidth provisioned across the network. Together they form the mesh. Individual contributions power the network, while orchestration technology aggregates contributions that are not alike. The text says this lets the network take the unified standard of private networks whose reach is limited, together with the wide reach of public networks, which must negotiate many standards.",
+    "Software-abstracted global networks that anyone may join are called familiar, with BitTorrent and the Tor browser named as examples. Abstraction lets those protocols run over the internet, and the text says that is also their main limit: they remain software networks on the public internet and inherit its constraints. DoubleZero's architecture is described as connecting validators, remote-procedure-call nodes, and other edge systems to a core underlay joined at DoubleZero Exchange points. Those points are said to link multiple data centers inside a metro area in a way comparable to public internet exchanges. Contributors supply the underlay links, which are the protocol's core transit layer. Inner-ring exchange points are said to allow global interconnection no matter how many contributors take part."
+   ]
+  },
+  {
+   "heading": "Network Devices",
+   "where": "pp. 8-9",
+   "paragraphs": [
+    "Devices are given two jobs. They let links contributed by people and organizations behave as one network that can prioritize traffic, and they carry out filtration, verification, and spam protection. Contributors may use any suitable hardware, while the network is said to hold itself to high standards. At launch, the text says commercially available FPGAs are used to balance performance, speed, and cost, running integrated appliances that both filter and route. One sample deployment is said to handle deduplication, filtering, and signature verification for multiple gigabits per second of inbound data, and the devices also connect downstream validators and other clients.",
+    "Putting advanced filtration and signature checks into data centers and validator facilities is described as an improvement by itself. The proposal goes further: a fresh permissionless transport layer aimed at blockchains and distributed systems, fully integrated with the filtration service. That layer is said to run on a variety of hardware and to expand as the network grows."
+   ]
+  },
+  {
+   "heading": "Fiber Links",
+   "where": "p. 9",
+   "paragraphs": [
+    "Fiber links are described as the low-latency, high-bandwidth paths between points on the globe. Contributors provision the connections and encode a service-level agreement for quality. A link may be owned by the contributor or leased from a major network-service provider. Once added, the commitment states the main characteristics: endpoint locations, bandwidth, latency, and a compliant maximum transmission unit size. As an illustration, the text says a contributor on a Los Angeles to Singapore link may commit to 10 GBps at 85 ms latency with a 1600 MTU. The network monitors and tests links. Compliant links may earn rewards. Links that miss the commitment may be disqualified from rewards and potentially removed.",
+    "Project participants are said to believe the fiber market has substantial spare capacity, for three reasons given in the text. A modern terrestrial or subsea fiber link can carry hundreds of terabits per second. There is also substantial dark fiber, defined as fiber already installed yet not in operation. The Federal Communications Commission publication cited as 2007 is presented as estimating, in its last publication, that only 35 percent of fiber installed in the United States is utilized and 65 percent remains unutilized.",
+    "The paper then says fiber capacity has grown dramatically since that estimate, from reaching 15 percent to 46 percent of United States locations between 2015 and 2023, citing the 2023 Fiber Deployment Annual Report, reaching 70 percent of EU39 households per FTTH Council Europe figures for 2024. Third, many enterprises over-provision, building for the worst case rather than the routine case. The text treats that spare as capacity contributors could repurpose.",
+    "The paper rejects the idea that data centers in a city or region sit apart from one another. Short-haul fiber and other routing services are said to connect them, allowing direct connections, which helps the network expand, weakens the incentive to co-locate, and widens geographic reach. Fiber is the core focus. Contributors may still attach other services, such as microwave or satellite, as an application, which the text calls an \"N2\"."
+   ]
+  },
+  {
+   "heading": "Community Governed and Operated Networks",
+   "where": "pp. 9-10",
+   "paragraphs": [
+    "The text says even strong physical networks occasionally fail, and it places a streamlined operating process as the remaining piece of the system. Contributors would gather to diagnose and repair a network-wide problem, while users retreat to the public Internet. A failure that sits inside one contributor's own infrastructure remains that contributor's job and does not require community-level operations.",
+    "Centralized systems are described as generally advantaged during failures: they have more single points of failure, yet they can gather technical resources quickly. Decentralized networks such as blockchains are described as more resilient, while needing many unaffiliated parties to coordinate troubleshooting. In a mature state, DoubleZero contributors are expected to commit similar resources to route around disruptions and keep the network coherent. As the network grows, the aim is to narrow that operational gap by using established practices, building comparable procedures, and simulating failures from the start. Consortium submarine-cable systems are named as existing models of many operators maintaining international networks together."
+   ]
+  },
+  {
+   "heading": "Network Creation",
+   "where": "p. 10",
+   "paragraphs": [
+    "Network creation is presented as a fresh economic model for filtration and routing over global networks. In the protocol, those services can be both supplied and used without permission, through a blockchain smart contract that checks the integrity of the interactions. The text says today's solutions act for a specific customer in business-to-business relationships and do not raise the aggregate performance of the distributed system. The flexible model is called the key to network effects. The protocol is said to turn separate contributions automatically into one network worth more than the parts. A provider may contribute a single link, even a redundant one, with little value alone and high value beside other links. The federated character of the project is called its core strength."
+   ]
+  },
+  {
+   "heading": "Smart Contract-Defined Network",
+   "where": "pp. 10-11",
+   "paragraphs": [
+    "The protocol is said to organize itself with verified data stored in on-chain smart contracts. A distributed control plane uses that information to agree on routing and priority. Contributors and users are promised a transparent experience that does not require permission. A contributor connects, sets a service-level agreement in a contract covering endpoint locations, bandwidth, latency, plus a compliant MTU size, and sends those details plus how long the contribution initially lasts for the contract. Validators and other users may opt into preset services and routes—for example one Layer-1's traffic plus state propagation plus its validator set—or else author a custom contract that defines a routing request.",
+    "As inputs arrive, the distributed controller uses the contract data to choose a network configuration. One key part of that configuration is the price: users pay in proportion to the demand their request places on the system, and providers earn in proportion to the value of the links they contribute. The project aspires to tiered pricing, with priority access or base access on a given route, so the network can be used more efficiently. The text says the network seeks to give operators deep customization and control and to pass the surplus back to providers. It calls that a major edge versus the public Internet, where traffic is mixed together regardless of priority."
+   ]
+  },
+  {
+   "heading": "Incentives and Alignment",
+   "where": "p. 11",
+   "paragraphs": [
+    "The open character of the project is said to depend on contributors meeting their service-level agreements and on incentives to catch others who defect. Checks and balances, grounded in the same cryptoeconomic values the text says secure proof-of-stake networks today, are meant to favor cooperation. Links that perform below their stated agreements are penalized and cannot earn rewards, and may eventually be excluded. Links that meet the obligations can earn rewards. The text contrasts this setting with blockchains: a block can be checked for correctness by any node anywhere, while a physical network lacks that abstract verifiability. Integrity checks need physical peer connections, which the paper says is possible today only with redundant physical connections. It states that DoubleZero will require new innovation for verification at a single point."
+   ]
+  },
+  {
+   "heading": "Network Effects",
+   "where": "pp. 11-12",
+   "paragraphs": [
+    "The project is distinguished from a marketplace where a provider and a user negotiate one deal at a time. Each link is said to be worth more inside the whole than it would be alone. A provider with a few disconnected links, representing unused internal capacity, could sell those routes one by one, but each sale would need buyers and contracts, and each link would serve only one route. Offering the same links to DoubleZero is given two benefits. Adding a contribution is easy and standardized: the text says one installs and configures a few switches, with little overhead. More importantly, a link gains value from neighboring links. A disconnected link can become highly connected and therefore much more valuable.",
+    "Airlines are the comparison. A route between two cities is rarely sold alone, because demand for that isolated pair is unlikely to be large. Routes are bundled through a carrier's hubs, and they become still more valuable when the carrier joins an alliance and ties its routes to routes elsewhere. DoubleZero is described as the platform that turns individual routes into a cross-connected network. Redundant links, short links, and low-performance links can still help, because the text says they add redundancy, capacity, and interconnectedness, letting providers earn from capacity that would have almost no value alone. Taken together, contributors of unused capacity face lower transaction friction and create more user surplus than they would by selling that capacity in isolation, and the network is said to pass that surplus on to the providers."
+   ]
+  },
+  {
+   "heading": "Blockchain Use Cases",
+   "where": "p. 12",
+   "paragraphs": [
+    "Blockchains are called the highest-profile kind of distributed system and taken as a whole, the strongest use case. The text says a chain's twin aims, to be public and to be performant, often work against each other in the status quo. Across Layer 1 chains, remote-procedure-call nodes, maximal-extractable-value systems, and Layer 2 chains, the network is presented as a way to move toward both aims at once. A figure captioned as a conceptual map of the network is indicated; the drawing is not in the extract."
+   ]
+  },
+  {
+   "heading": "Layer 1 Blockchains",
+   "where": "pp. 13-14",
+   "paragraphs": [
+    "A Layer 1 chain is said to gain the most. As things stand, every validator is hit by a flood of incoming transactions, spam and duplicates included, and agreement is slow because proposals and votes cross public paths that jitter and that do not route consistently. Users are said to suffer, whether they compete with spam or wait for delayed finality. Even the most performant chains of the present, the text says fall short of the web-style experiences users expect and of the experience of a professional trader at a central venue.",
+    "Existing industry responses are listed with disadvantages the paper assigns to them. Mempools hold transactions centrally and lighten ingestion for each validator, while adding latency and broadcasting intentions well before inclusion. Quality-of-service approaches have been tested on blockchains like Solana, the only place this file uses the name Solana. In that description, validators accept transactions predominantly from parties who have staked capital. The paper says this excludes parties without enough stake from full participation fails to guarantee economic efficiency and adds latency from the proxy step. The file does not state any throughput, validator count, or other Solana measurement here. Spending more on validator hardware is said to keep pace for that operator while making a diverse, decentralized validator set harder to develop, and it does not address aggregate network performance.",
+    "The network's answer has two parts. Filtering hardware running open-source code takes inbound public-internet traffic, blunts DDoS campaigns, checks signatures, and strips duplicates. Separating filtration, deduplication, and signature checks from block production, execution, and consensus is said to free substantial resources for producing blocks. The text calls this cooperative infrastructure sharing: the system shares resources instead of requiring every validator to hold them. A footnote names mobile networking, tower companies, and submarine fiber consortia as other examples of that sharing. Second, filtered traffic—user transactions, blocks, or consensus votes—is routed to the validator set over dedicated bandwidth with minimal latency and jitter, so blocks can be built, shared, and ratified quickly. High-performance validator clients or consensus algorithms are said to come much closer to their theoretical maximums under this pattern. Multicast, which the network is expected to support, is described as a further optimization for propagating state transitions, blocks, and shreds.",
+    "A last stated advantage is traceability. Packets on the network should remain traceable, so users can check whether they were included in or left out of communication among validators. For systems concerned about censorship, the paper calls that transparency a beneficial by-product of explicit routing."
+   ]
+  },
+  {
+   "heading": "RPC Nodes",
+   "where": "p. 14",
+   "paragraphs": [
+    "Remote procedure call nodes are said to face especially severe filtration and communication problems because they are the main interface between users and the chain. They receive inbound user transactions and forward them to the leader or to the chain's mempool. Their secondary role is an updated view of the chain for downstream applications, with decentralized-finance applications, block explorers, and gas estimators named. The text calls them non-voting validators: they track state transitions and do not take part in consensus.",
+    "Three challenges are tied to the protocol. These nodes sit directly on user traffic surges, particularly around community events such as airdrops or non-fungible-token mints, and because that flow arrives on the public internet they are especially exposed to distributed denial-of-service attacks. They must also deliver transactions to the leader or the mempool, which matters intensely when the highest-value transactions, with arbitrages given as the example, are competitive and time sensitive. Resilient, low-latency links to the leader or mempool are said to help.",
+    "Third, they return chain information to users, wallets, and applications, from wallet balances to liquidity available for a trading pair on an exchange, so ingestion, checking, and indexing of those changes have to happen nearly as soon as the changes occur. Low-latency paths back from validators are said to keep those views current. The protocol is presented as a way to make this ecosystem more competitive, because these operators already compete on how timely their information is in both directions, and the network opens a further avenue to improve that service."
+   ]
+  },
+  {
+   "heading": "Maximal Extractable Value",
+   "where": "pp. 14-15",
+   "paragraphs": [
+    "The network is offered as support for a fairer and more open maximal-extractable-value ecosystem. These systems are described as extremely sensitive to latency, so that even small gains in latency and deliverability can add value. The term is defined as value block producers can capture by ordering transactions inside a block, for example by adding a transaction that closes a price gap created by a large trade. In practice, mature systems of this kind typically sit beside validators. They take proposals from external traders, whom the text calls \"searchers\", choose a profitable order, and forward that order to the block leader together with an additional payment.",
+    "Reliability and latency matter on two dimensions given in the text. A more real-time view of network state lets these systems build more profitable orderings and more efficient blocks. Even if the set of opportunities stays fixed, relaying proposals to validators quickly leaves extra time to search for better orderings. Block construction is called a complex combinatorial problem that needs approximation and simulation to find local optima, so extra time lets those algorithms run longer. Put in the paper's framing, the systems benefit from faster reads of data and from quicker delivery of blocks or bundles toward the current leader. Raising bandwidth and lowering latency is said to improve both."
+   ]
+  },
+  {
+   "heading": "Layer 2 Blockchains",
+   "where": "p. 15",
+   "paragraphs": [
+    "Layer 2 chains that use one central sequencer or a distributed set are said to be able to use the network as well. In the typical pattern given here, one sequencer posts inbound transactions onto a layer-1 chain, and a set of Layer 2 validators then updates chain state from those posts. Standard uses named in the text include filtering transactions on the way to the sequencer, posting to or reading from the Layer 1 without the latency penalty the paper associates with ordinary paths, and checking updated state among the validators quickly.",
+    "Two further benefits are called more critical. Most Layer 2 chains, the text says want several sequencers, posting in rotation or at the same time, to reduce centralization, censorship, and liveness risk. That shift needs substantial coordination so the Layer 1 and the Layer 2 validator set do not waste computation, and the network is offered as a way to smooth sequencer-to-sequencer communication. Many Layer 2 chains also want to scale through availability layers that keep three kinds of data on separate systems and hand it over when asked: the transactions, the smart-contract data, and material that lives off the chain. The paper says the value of that modular split is limited by the bandwidth between the modules, and that low-bandwidth links can become new bottlenecks in the underlying chain. The network is presented as a way for those availability layers to keep pace with the Layer 2 chains."
+   ]
+  },
+  {
+   "heading": "Other Blockchain Contexts",
+   "where": "pp. 15-16",
+   "paragraphs": [
+    "Further blockchain settings named here are state sync, indexers, multiple leaders, and network extensions. New validator nodes on a high-throughput chain must catch present state by replaying transactions out of the start, a requirement the text attributes to an outline in MegaETH's 2024 material. The paper says that replay can press existing resources such as bandwidth too hard, because the new node must ingest substantially faster than the chain's current speed in order to catch up. High-bandwidth connections are offered as a way past that constraint, and the same idea is said to help a validator that has fallen behind return online.",
+    "As chains scale, indexers become more important. Like remote-procedure-call nodes, they need fresh state so their users can decide quickly. Propagation through the network is said to shorten the delay before fresh data is indexed and to help distributed indexer instances stay current. Many Layer 1 chains want several leaders producing blocks at once across distant regions without tight coordination, the text warns of redundant or outdated transactions and wasted compute. The need is compared to multiple sequencers on a Layer 2: rapid global state synchronization, which the network is said to facilitate better than the public internet.",
+    "A further class of services fits neither the Layer 1 nor the Layer 2 label. The text says these are sometimes called \"network extensions\". Nearly every network, it says has a compute operation that runs on only a subset of validators because it needs specialized hardware or software. Zero-knowledge provers, written in the extract as proovers, graphics-processing workloads, and asynchronous execution platforms are all said to benefit from the higher bandwidth and lower latency the links provide."
+   ]
+  },
+  {
+   "heading": "Other Use Cases",
+   "where": "p. 16",
+   "paragraphs": [
+    "The network is given uses beyond blockchains: any setting where distributed systems must communicate quickly, precisely, and in large volume is said to be able to benefit. The section announces four further examples, which the following headings take up one at a time: content delivery, online games, training of large language models, and enterprise networking."
+   ]
+  },
+  {
+   "heading": "Content Delivery Networks",
+   "where": "pp. 16-17",
+   "paragraphs": [
+    "At a high level, content delivery networks are said to resemble DoubleZero. They make delivery more efficient by filtering public requests and routing them through their own network, and local caches hold content so a web application feels reliable and fast. A new network of this kind could use DoubleZero to start more quickly and stay on its core skill. The paper says these operators are good at forecasting demand and placing content accordingly, yet today they must also filter traffic and build low-latency, high-bandwidth networks. A footnote says incumbents such as Akamai and Cloudflare mostly structure their networks with long-term leases from network-service providers. A new delivery network built on the protocol could leave filtering and routing to DoubleZero and return to forecasting and placement.",
+    "Existing delivery networks can use the protocol as well. Flexibility is called a major advantage: users need not sign broad, long leases, and can instead choose specific routes and time intervals. An operator that already has its own network, but lacks coverage in some regions or needs more bandwidth on central corridors, can add DoubleZero for those gaps, which the text says improves user experience and eases strain. Multicast, once it arrives, is described as especially useful for delivering content more efficiently."
+   ]
+  },
+  {
+   "heading": "Online Gaming",
+   "where": "p. 17",
+   "paragraphs": [
+    "Latency is said to make or break online games. Even mild lag ruins the experience and confines players to simple turn-based games. Traditional developers are described as using peer-to-peer links or a central server, and the network is offered as an augmentation of both. In the peer-to-peer pattern, players connect directly over the public internet. A footnote points to a 2024 description of Splatoon as a detailed example. The pattern is called relatively efficient when few players are involved, and directly constrained by public-internet latency, bandwidth limits, and jitter. Dedicated links and a flexible usage model are said to steady those connections.",
+    "Other games use a central server, particularly when many players join. Historically they have been built on cloud providers. The paper says those providers give stable performance to players near the edges of their network, while players far from those edges again meet public-internet limits, and the developer takes on substantial counterparty risk. A footnote offers Epic Games as an example: Fortnite runs on Amazon Web Services, and the company is also described as fighting a lawsuit against Apple over exclusion from the App Store, illustrating what the paper calls a delicate balance with hyperscale providers. DoubleZero is said to improve both reach and risk. Links from a diverse set of contributors are intended to reach wider than a network built by one cloud provider, and a permissionless decentralized network is said to limit counterparty risk to the underlying user."
+   ]
+  },
+  {
+   "heading": "Training Large Language Models",
+   "where": "pp. 17-18",
+   "paragraphs": [
+    "As large language models have grown in popularity, the text says new training architectures have been proposed, in particular distributing training across many data centers. Co-locating large numbers of graphics processors in one facility and lining up their spare capacity is called difficult. Large technology firms are said to have designed systems that coordinate asynchronous, distributed resources so they can train one model, with Gangidi and coauthors in 2024 given as the example. Bandwidth is named as a frequent limit, following Patel and coauthors in 2024, especially when training is deeply distributed, or even only mildly concurrent,.",
+    "The network is presented as a way to ease that limit. Models could be trained across a range of facilities and processor availability, with the network carrying or duplicating snapshots of the model so spare compute does not idle while snapshots move slowly over the public internet. Because of the open design, the text says the system can help an organization speed its own distributed fleet and help an organization that rents machines from independent fleets, and in that way support faster innovation in the field."
+   ]
+  },
+  {
+   "heading": "Enterprise Usage",
+   "where": "p. 18",
+   "paragraphs": [
+    "Private networking for enterprises is described as long established. Network-service providers lease bandwidth for internal operations so companies can bypass public-internet limits, and the paper says many connections it anticipates for DoubleZero will have that same underlying relationship. The existing business model is called inflexible: bandwidth is sold in fixed sizes and for long stretches leases must be negotiated, and new customers face slow onboarding. That fits poorly with enterprise demand that moves, such as an unexpected surge of traffic. Cloud providers meet the need for flexibility more readily, and the text lists their downsides as high cost, limited network reach, congestion where data enters and leaves major data centers, and lock-in to one ecosystem.",
+    "The protocol is offered as another path. Users can shift latency, throughput, and duration, and they can buy and use bandwidth without permission and without a locked lease or contract. The paper says that fit is better for a fast-moving marketplace. It also says DoubleZero can act as a buffer around leases a company already holds so the enterprise can respond quickly when conditions change."
+   ]
+  },
+  {
+   "heading": "Conclusion",
+   "where": "pp. 18-19",
+   "paragraphs": [
+    "The closing section compares fast centralized machines with fast decentralized systems at the hardware layer. It asks the reader to picture a modern x86 processor that exposes twenty-four cores, an integrated graphics processor, and specialized execution silicon. The chip still presents one interface while its silicon stays spread out: those twenty-four cores handle separate tasks, and specialized units sit beside them. The analogy is meant to make a permissionless fiber network feel less alien. No throughput number in that analogy was measured for this catalogue entry.",
+    "The same chip is offered as a warning. Performance is almost never limited by the cores. What limits the chip is how data moves among them. Twice as many cores do not produce twice the performance if the on-chip interconnect, the memory controllers, and the other paths that move data fail to become more efficient in step. Without those gains, each core is said to waste more cycles waiting for instructions than it spends processing them. Decentralized applications are described as increasingly hitting the same kind of data-flow bottleneck. DoubleZero, with the filtering, configurable routing, and bandwidth the paper has argued for is presented as the way to release them. The close calls it the new internet for modern distributed systems, and restates the work in the cover's terms: increase bandwidth, reduce latency."
+   ]
+  },
+  {
+   "heading": "References",
+   "where": "p. 19",
+   "paragraphs": [
+    "The last page lists the works named in the body, among them a federal carrier-statistics volume, fiber-deployment reports, a European household-coverage notice, papers on distributed training, a MegaETH research note, a game-netcode essay, and a proof-of-stake timing preprint. Those citations were not treated as findings."
+   ]
+  }
+ ]
+}

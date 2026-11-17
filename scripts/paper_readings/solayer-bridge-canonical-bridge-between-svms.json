@@ -1,0 +1,115 @@
+{
+ "slug": "solayer-bridge-canonical-bridge-between-svms",
+ "pages": 6,
+ "sections": [
+  {
+   "heading": "Solayer Bridge: Canonical Bridge Between SVMs",
+   "where": "p. 1 (title)",
+   "paragraphs": [
+    "The cover names the Solayer Bridge and frames a canonical link across SVM environments. Authorship is the Solayer Team. The abstract that follows defines sBridge as an SVM-native bridge for transferring assets and executing cross-chain actions among SVM settings, with Solana and Solayer as the first pair. In contrast to broad multichain bridges, sBridge is said to hug SVM execution rules, joining on-chain programs to a guardian quorum that coordinates through a leader–follower pattern and threshold signature aggregation.",
+    "Listed innovations include indexing transactions by polling, bridge proofs stored in PDAs, dynamic finality with fast and slow paths, and cross-chain call execution. The modular layout is said to support wrapped assets, rotating validators, and adaptive risk controls. Drawings beyond captions are absent from the text extract."
+   ]
+  },
+  {
+   "heading": "1 Bidirectional Bridge Between Solayer and Solana",
+   "where": "p. 1",
+   "paragraphs": [
+    "The two-way path among SVM environments is presented as a shared messaging and asset fabric for safe transfers and preauthorized runs across heterogeneous SVM runtimes, with Solana and Solayer as the starting pair. In contrast to broad bridges such as Wormhole, LayerZero, or Hyperlane that chase multichain breadth, sBridge is said to raise capital efficiency and interchain operability by coupling tightly to SVM semantics.",
+    "The team built the bridge in-house because outside options missed the flexibility, latency SLAs, and protocol control their domain required. Mixing on-chain duplicate guards, subscription by polling, automatic guardian failover, and dual-mode finality (fast optimistic plus slow finalized) is claimed to deliver low-latency, highly available bridging without giving up safety. Cross-chain call is said to unlock interchain operability by letting a user bundle a two-chain trade inside one origin transaction. The design is described as extensible for dynamic validator sets, new message kinds, and programmable minting."
+   ]
+  },
+  {
+   "heading": "2 sBridge Architecture",
+   "where": "pp. 1-2",
+   "paragraphs": [
+    "Figure 1 is captioned Solayer Bridge Architecture; the drawing itself is missing from the extract. The two-way bridge has three core layers: chain1 as origin, an off-chain guardian multi-sig network, and chain2 as destination. A user starts an asset move or cross-chain execution on chain1 via the Bridge Program, which derives a deterministic PDA serving as cryptographic intent proof. Several RPC providers index that transaction for a decentralized guardian set.",
+    "Each guardian independently pulls transactions from RPC, checks them, and signs a canonical digest that includes the chain identifier together with sender, recipient, mint, amount, nonce, and source transaction ID. Once the quorum threshold is met, the leading guardian combines those signatures and forwards the package onto the destination ledger. On that destination, the Bridge Program relies on Solana’s ed25519 precompile for multi-sig verification, blocks replays via the bridge-proof PDA, and dispatches the token. For a cross-chain call, the leading guardian decodes and broadcasts the transaction on chain2."
+   ]
+  },
+  {
+   "heading": "3 sBridge On-chain Program",
+   "where": "p. 2",
+   "paragraphs": [
+    "The program is deployed on both ledgers and performs asset transfers and arbitrary cross-chain calls once a decentralized guardian quorum supplies validated multi-sig proofs. Through a bridge-proof PDA, it blocks double handling, stops replays, and keeps proofs checkable on-chain. An auto-incrementing nonce raises uniqueness per user action and can act as a cutoff: for example, a bridge action with a nonce below N could be dropped safely once the last processed action exceeds \"5N\", freeing rent on related PDAs. Subsections 3.1 and 3.2 detail the asset-bridge and cross-chain-call modules."
+   ]
+  },
+  {
+   "heading": "3.1 Asset Bridge",
+   "where": "p. 2",
+   "paragraphs": [
+    "The asset module handles canonical and wrapped token transfers across Solana and Solayer via two entry points. \"bridgeAssetSourceChain\" runs on the origin: it pulls the bridged amount from the user, splitting a fee into the handler fee vault and locking the rest in the bridge vault, bumps a nonce, and stores a PDA built from sender, recipient, mint, amount, nonce, and txId as proof of the request.",
+    "\"bridgeAssetTargetChain\" runs on the destination after guardians validate and submit aggregated signatures. The program then checks that multi-sig using Solana’s ed25519 precompile, confirms the bridge-proof PDA is absent on the destination (to stop double processing), then delivers funds to the recipient account. When the asset lacks a native presence there, a wrapped token is minted under the bridge handler’s authority. Threshold signature checks, configurable guardian sets, and careful accounting are said to keep the bridge safe and live."
+   ]
+  },
+  {
+   "heading": "3.2 Cross-Chain Call",
+   "where": "pp. 2-3",
+   "paragraphs": [
+    "The call module allows authenticated execution of pre-authorized destination instructions, especially when multi-chain actions need a set order. On the origin, the user serializes a destination transaction, encodes it as base58, and submits that payload through the crossChainCall method. Next, the leader guardian off-chain decodes the base58 blob, simulates it, and dispatches it to the destination. After success, the leader invokes the on-chain bridge program, which writes a bridge-proof PDA from (sender, calldata, nonce, sourceTxId) to mark completion."
+   ]
+  },
+  {
+   "heading": "4 sBridge Off-chain Guardian",
+   "where": "p. 3",
+   "paragraphs": [
+    "The off-chain guardian network is the verification layer for all bridge activity across chains. Guardians separately retrieve origin-ledger transactions from varied sources, then validate them, emit cryptographic attestations, and keep coordinating until a threshold multi-signature authorizes destination execution. This tier aims at decentralization, fault tolerance, and deterministic correctness so interoperability stays trust-minimized. Detailed mechanics follow in the leader–follower, subscription, multi-sig, and failure-recovery subsections."
+   ]
+  },
+  {
+   "heading": "4.1 Leader and Follower Network Model",
+   "where": "pp. 3-4",
+   "paragraphs": [
+    "The guardian set uses a Leader–Follower pattern to organize signature collection and relay under partial synchrony. Figure 2 is captioned Solayer Bridge Guardian Network; the figure itself is absent beyond that caption. Guardians gossip over a private channel configured through an internal DERP server. Each guardian fetches, validates, and attests source transactions, then locally signs a canonical hash of the payload as its commitment.",
+    "A single leader is chosen deterministically at the start and rotates after processing N transactions on a round-robin schedule. The leader collects signatures until a pre-set threshold (for example, t of n) is met, may prompt followers if waiting too long, then submits the aggregated multi-signature to the destination. Followers avoid direct peer coordination and instead gossip their signed attestations toward the leader plus optional fallback peers, preserving redundancy if the leader fails.",
+    "After aggregating and relaying a batch, the leader broadcasts a commit acknowledgment so every guardian stores the newest processed transaction signature as a local checkpoint watermark. That shared checkpoint supports consistent fault recovery and smooth leader rotation so any follower can resume leadership without redoing already-committed work."
+   ]
+  },
+  {
+   "heading": "4.2 Transaction Subscription",
+   "where": "p. 4",
+   "paragraphs": [
+    "Each guardian uses a dedicated RPC endpoint and continuously polls fresh bridge-program transactions on the source ledger. For both Solana and Solayer, each guardian periodically calls getSignaturesForAddress against the bridge program ID, beginning at the latest processed signature kept in a durable local file. Signatures arrive newest-first and are resolved to full transactions with getTransaction. The same polling path supports crash recovery and new-guardian catch-up when the local file is intact.",
+    "To keep exactly-once behavior, guardians keep an in-memory de-duplication set and persistently record the top processed transaction signature. That combination is said to stop reprocessing from retries, even after a partial crash or concurrent recovery. The durable high-water mark therefore anchors both live polling and catch-up after interruption."
+   ]
+  },
+  {
+   "heading": "4.3 Multi-Sig Aggregation",
+   "where": "p. 4",
+   "paragraphs": [
+    "After validating a transaction, each guardian builds a deterministic hash over the bridge payload. For BridgeAsset, H covers sender, recipient, mint, amount, nonce, and sourceTxId. For CrossChainCall, H covers sender, calldata, nonce, and sourceTxId. Each guardian signs via a hardware security module that never exposes the private key in memory. The designated leader gathers signatures until threshold \"t\" out of \"n\" is reached, with the paper’s example \"t = 5, n = 7\". Once quorum is met, the leader packages the multi-sig into a canonical payload and submits it to the destination. The scheme allows both fixed validator sets and live reconfiguration, with verification keys kept on-chain for ed25519 checks."
+   ]
+  },
+  {
+   "heading": "4.4 Failure Recovery",
+   "where": "pp. 4-5",
+   "paragraphs": [
+    "Under Failure Retry, bridge execution failures that are transient use a fault-tolerant redrive: the lead guardian scans cached transaction sessions and processes each by status. Each retry verifies the transaction has not already executed on-chain by checking PDA proof existence, giving at-least-once delivery without compromising determinism or off-chain duplicity protection.",
+    "Under Guardian Leader Failover, leader outages from partition or crash are handled via rotating leader election. Guardians exchange heartbeats, and if the leader is unresponsive past a timeout, a new leader is elected deterministically, for example round-robin by guardian ID. Any follower should rotate quickly using an up-to-date local checkpoint. During processing, the leader broadcasts the highest processed signature after a batch; even if the checkpoint lags slightly, the new leader can catch up by checking destination bridge-proof PDAs and skipping already-committed transactions."
+   ]
+  },
+  {
+   "heading": "5 Double-Handling Prevention",
+   "where": "p. 5",
+   "paragraphs": [
+    "The protocol applies strict double-handling guards both on-chain and off-chain for correctness under retries, partial failures, and reordering. On-chain, each operation is identified uniquely via a deterministic PDA built from immutable parameters discussed with the multi-sig hashes. Before executing, the target Bridge Program checks PDA existence and aborts if it already exists, so the same logical transaction cannot run twice.",
+    "Off-chain, each guardian maintains a durable log of seen and signed source transactions keyed by sourceTxId and checks that log before signing again, which limits redundant signatures across leader rotation or recovery. Each guardian also records a per-direction nonce watermark for both bridge directions; any inbound transaction whose nonce sits below that watermark is rejected as stale. That watermark also supports compact garbage collection when purging logs or reclaiming PDA rent.",
+    "During recovery after crash or restart, guardians reload the high-water mark from durable storage and continue polling from the last acknowledged signature. Because critical paths are gated by PDA existence and signature logs, retries and duplicates are said not to compromise safety or introduce non-determinism. The text relates these mechanisms to exactly-once semantics and to replay-resistance ideas in systems such as Cosmos IBC and LayerZero Ultra Light Nodes."
+   ]
+  },
+  {
+   "heading": "6 Dynamic Finality",
+   "where": "pp. 5-6",
+   "paragraphs": [
+    "Dynamic Finality balances bridging latency against economic security. Rather than depending only on ledger consensus finality, the system uses two confirmation modes: optimistic fast-path execution and slow-path finality-enforced execution, chosen by transaction value and context. For inexpensive transfers under a configured dollar-value risk cutoff, guardians may sign and relay after seeing the transfer inside recently confirmed source blocks (for example, confirmationStatus = confirmed on Solana RPC). That optimistic path assumes probabilistic finality and bounded loss covered by the bridge fee if a reorg occurs.",
+    "For high-value transactions above the threshold, guardians wait to sign until the source chain reaches irreversible finality so costly operations cannot be reverted or front-run. Each guardian enforces finality rules locally; signing a fast-path transaction that later fails finalization may be marked as misbehavior and depending on deployment, can trigger reputation loss, quorum exclusion, or economic penalties through bonded collateral. All guardians must persist finality status per transaction, and during multi-sig aggregation the leader is required to keep everyone’s behavior aligned."
+   ]
+  },
+  {
+   "heading": "References",
+   "where": "p. 6",
+   "paragraphs": [
+    "The closing bibliography points to a blockchain interoperability survey and to Wormhole, Hyperlane, and LayerZero documentation cited in the architecture discussion. Those bibliographic citations were not treated as findings in this reading; only the paper’s own descriptive claims about sBridge were used."
+   ]
+  }
+ ]
+}

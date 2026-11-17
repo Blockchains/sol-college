@@ -1,0 +1,141 @@
+{
+ "slug": "uxd-protocol-an-algorithmic-stablecoin-100-backed-by-a-delta-neutral-position",
+ "pages": 5,
+ "sections": [
+  {
+   "heading": "UXD Protocol An Algorithmic Stablecoin 100% Backed by a Delta Neutral Position",
+   "where": "p. 1 (title)",
+   "paragraphs": [
+    "The title page names UXD Protocol and states that the stablecoin is fully collateralized by a delta-neutral position. Authorship is given as Kento Inami with the contact kento.inami@uxd.fi. The extract does not name a chain on this cover; a later note records that the PDF text never uses the word Solana."
+   ]
+  },
+  {
+   "heading": "Abstract",
+   "where": "p. 1",
+   "paragraphs": [
+    "The abstract proposes an algorithmic stablecoin fully collateralized by a delta-neutral perpetual-swap hedge so people and organizations can settle in a familiar unit of account without touching banks. The coin stays tied to fiat by linking to a derivatives dex, with arbitrage keeping its price from drifting. Anyone may mint and redeem against a decentralized cryptocurrency at par. Reserves can be checked on-chain against circulating supply. Because collateral is not held by a centralized custodian, it is said not to face seizure by a hostile third party. The design aims to combine cryptocurrency’s censorship resistance with fiat price stability."
+   ]
+  },
+  {
+   "heading": "Introduction",
+   "where": "p. 1",
+   "paragraphs": [
+    "The introduction surveys circulating stablecoins such as Tether, USD Coin, Paxos Standard, and Dai. Fiat-backed designs are said to face censorship and audit issues; crypto-backed designs waste capital and can wobble in extreme volatility; algorithmic designs can lose holder confidence and suffer runs. UXD Protocol proposes to fix those problems by skipping fiat conversion and staying stable through any market move, while using capital more tightly than over-collateralized crypto-backed alternatives.",
+    "Explanations in the paper use bitcoin and USD as the running example, with an explicit note that other cryptocurrencies and other fiat units can be substituted in the same structure. Several cryptocurrencies are said to be usable as collateral, and additional fiat-denominated stablecoins will be issued under the same design. That framing keeps the later numeric walkthroughs illustrative rather than exclusive to a single asset pair."
+   ]
+  },
+  {
+   "heading": "Flow of Funds",
+   "where": "pp. 1-2",
+   "paragraphs": [
+    "This heading introduces the numbered issuance and redemption path that follows as Step1 through Step7. The section title itself does not add separate mechanics beyond framing that flow; the steps that follow carry the deposit, mint, hedge, redeem, unwind, and burn sequence described under each step heading."
+   ]
+  },
+  {
+   "heading": "Step1",
+   "where": "p. 1",
+   "paragraphs": [
+    "In Step1, so issuance amount tracks the oracle-valued deposit rather than a fixed coin count of BTC., the user deposits BTC worth \"100\" USD intoward the vault of UXD Protocol. the document states that an oracle is used to calculate the price of BTC for that deposit. The \"100\" USD figure is the document’s worked example that sets the one-to-one relationship using the stablecoins minted in the following step"
+   ]
+  },
+  {
+   "heading": "Step2",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step2, UXD Protocol mints \"100\" stablecoins, written as \"100\" UXD in the example. The paper states that deposited BTC’s USD value equals how many UXD units the user receives. That equality is the par-issuance rule for this walkthrough: oracle-valued collateral in equals UXD out, without the excess over-collateralization the introduction attributes to other cryptocurrency-backed designs."
+   ]
+  },
+  {
+   "heading": "Step3",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step3, users can transact with UXD after it has been issued. The paper says holders may move, trade, or hold UXD freely at this stage of the flow. No further quantitative claim appears in this step; it simply establishes that minted UXD is usable as a transferrable unit before the protocol moves the deposited BTC into the hedge described next."
+   ]
+  },
+  {
+   "heading": "Step4",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step4, UXD Protocol sends the BTC to a derivatives dex and opens a delta-neutral hedge. That hedge is the mechanism later sections say protects the backing from BTC price moves while UXD remains in circulation. The step does not add numeric sizes beyond the deposit already established; sizing details appear in the Delta Neutral Position example that uses \"$10,000\", \"$20,000\", and \"$5,000\" illustrations."
+   ]
+  },
+  {
+   "heading": "Step5",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step5, the user returns \"100\" UXD to the protocol vault seeking \"100\" USD worth of BTC. Returning UXD at par begins the unwind path that continues with closing the hedge and ends with burning UXD and withdrawing BTC to the user. The matched \"100\" figures keep redemption aligned with the earlier issuance example in the Flow of Funds."
+   ]
+  },
+  {
+   "heading": "Step6",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step6, the delta-neutral hedge is closed on the derivatives dex and the BTC returns to the UXD Protocol vault. Closing the hedge restores BTC inventory that the vault needs so the protocol can complete the user’s redemption in the following step. The paper presents this unwind as the necessary counterpart to the short opened when UXD was minted against deposited BTC."
+   ]
+  },
+  {
+   "heading": "Step7",
+   "where": "p. 2",
+   "paragraphs": [
+    "In Step7, UXD Protocol burns the returned UXD and sends matching BTC to the user’s wallet. After the numbered steps, the text adds that users may also acquire UXD via CEX venues, DEX venues, and other third-party services, and that circulating UXD can be traded freely thereafter. A Flow of Funds Diagram is indicated; the figure itself is not present in the text extract."
+   ]
+  },
+  {
+   "heading": "Delta Neutral Position",
+   "where": "pp. 2-3",
+   "paragraphs": [
+    "So issuance and redemption can stay at par, the protocol opens short BTC/USD perpetuals on a derivatives dex sized to match circulating UXD. The resulting book is delta neutral, so the protocol is shielded from BTC price swings. The following example subsection walks through concrete dollar levels used as illustrations in the paper."
+   ]
+  },
+  {
+   "heading": "Example",
+   "where": "p. 3",
+   "paragraphs": [
+    "Take a market where UXD/USD sits at \"0.99\". A trader can buy UXD with USD and redeem that UXD for bitcoin worth \"1\" USD, keeping a \"0.01\" USD edge. When UXD/USD instead sits at \"1.01\", the trader can mint UXD against bitcoin and sell those units at \"1.01\" USD, again keeping a \"0.01\" USD edge. The document claims such risk-free trades clear quickly and hold UXD to the USD. Those prices are worked examples in the PDF, not observed market prints for this reading. The PDF still does not name Solana.",
+    "If BTC rises to \"$20,000\", collateral climbs from \"$10,000\" to \"$20,000\" (PnL \"$10,000\") while the short’s PnL is \"1\" BTC times (\"$10,000\" minus \"$20,000\"), or \"-$10,000\", for total PnL \"$0\". If BTC falls to \"$5,000\", collateral drops from \"$10,000\" to \"$5,000\" (PnL \"-$5,000\") while the short’s PnL is \"1\" BTC times (\"$10,000\" minus \"$5,000\"), or \"$5,000\", again totaling PnL \"$0\"."
+   ]
+  },
+  {
+   "heading": "Interest Payments",
+   "where": "p. 3",
+   "paragraphs": [
+    "When funding is positive, that income accrues to the insurance fund. When funding is negative, the insurance fund pays the cost. No numeric funding-rate values are given in this short section beyond that directional rule linking funding sign to whether the fund receives or pays."
+   ]
+  },
+  {
+   "heading": "Insurance Fund",
+   "where": "p. 3",
+   "paragraphs": [
+    "The insurance fund exists so UXD holders need not pay interest when funding turns negative. Let INSusd be the fund’s USD value. If INSusd is greater than \"0\", negative funding can be paid from the fund. If INSusd is less than \"0\", the protocol auctions governance tokens (UXP) publicly and refills until INSusd exceeds \"0\". Besides auctions, positive funding continuously feeds the fund, because that income is routed there."
+   ]
+  },
+  {
+   "heading": "Arbitrage",
+   "where": "pp. 3-4",
+   "paragraphs": [
+    "If the stablecoin’s price drifts from fiat, arbitrageurs mint or redeem for a risk-free profit, which the paper says restores the peg. The example that follows supplies the \"0.99\" and \"1.01\" illustrations used in the document."
+   ]
+  },
+  {
+   "heading": "Example",
+   "where": "p. 4",
+   "paragraphs": [
+    "Take a market where UXD/USD sits at \"0.99\". A trader can buy UXD with USD and redeem that UXD for bitcoin worth \"1\" USD, keeping a \"0.01\" USD edge. When UXD/USD instead sits at \"1.01\", the trader can mint UXD against bitcoin and sell those units at \"1.01\" USD, again keeping a \"0.01\" USD edge. The document claims such risk-free trades clear quickly and hold UXD to the USD. Those prices are worked examples in the PDF, not observed market prints for this reading. The PDF still does not name Solana."
+   ]
+  },
+  {
+   "heading": "Verifiable",
+   "where": "p. 4",
+   "paragraphs": [
+    "Circulating stablecoin supply and the bitcoin that backs it can be checked on the blockchain. The paper states that this equality always holds: bitcoin collateral in USD terms plus the delta-neutral position’s USD value equals total UXD outstanding. Consequently, holders are described as always able to swap UXD back into bitcoin."
+   ]
+  },
+  {
+   "heading": "Conclusion",
+   "where": "p. 5",
+   "paragraphs": [
+    "UXD Protocol is summarized as an algorithmic stablecoin with censorship resistance, price stability, and capital efficiency. Holders of UXD are said to receive interest from the funding rate, making UXD an attractive store of value as well. People shut out of banking are said to be able to hold and spend a stable unit without censorship. The source PDF text does not contain the word Solana; this reading does not invent a chain beyond what the document states."
+   ]
+  }
+ ]
+}

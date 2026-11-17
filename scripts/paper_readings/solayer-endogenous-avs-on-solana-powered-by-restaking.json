@@ -1,0 +1,95 @@
+{
+ "slug": "solayer-endogenous-avs-on-solana-powered-by-restaking",
+ "pages": 5,
+ "sections": [
+  {
+   "heading": "Solayer: Endogenous AVS on Solana Powered by Restaking",
+   "where": "p. 1 (title)",
+   "paragraphs": [
+    "The cover names Solayer and frames endogenous actively validated services on Solana through restaking. Authorship is the Solayer Team, and the version line reads \"v0, Part 1\". The title page itself carries no further quantitative claims before the Abstract block."
+   ]
+  },
+  {
+   "heading": "Abstract",
+   "where": "p. 1",
+   "paragraphs": [
+    "The abstract presents Solayer as a restaking venue built for endogenous Actively Validated Services on Solana. Restaking, attributed first to Eigenlayer, is described as letting stakers reuse bonded assets to underwrite external software modules atop Ethereum. Solayer adapts that idea into a Solana-focused marketplace aimed at endogenous AVSs that directly aid on-chain dApps. Drawing on Solana’s stake-weighted quality-of-service machinery, Solayer is said to let dApps lock block space and rank transactions according to stake pointed at the dApp.",
+    "The abstract also introduces an AVS Token that offers users Solana proof-of-stake yield plus what it calls \"super liquidity\" via a pooled design, framed as easing conversion delay and slippage. Those liquidity and yield points are product aims in the abstract, not measured outcomes in this reading."
+   ]
+  },
+  {
+   "heading": "1 Introduction to Restaking",
+   "where": "p. 1",
+   "paragraphs": [
+    "Restaking is introduced as an idea Eigenlayer popularised. Stakers reuse bonded assets on Ethereum as security for other proof-of-stake modules called Actively Validated Services, which the text says stretches bonded-asset utility and can raise ecosystem safety and efficiency. Extra rewards may include proof-of-stake yield of secured AVSs, bridge fees, or both. In Eigenlayer’s model, AVSs keep off-chain networks and lean on the base ledger either through slashing that needs a quorum or through proofs that can be checked on-chain; examples named are bridges across chains, shared sequencers, and oracle networks. Such systems are labeled exogenous AVSs.",
+    "Solayer is presented as a restaking marketplace on Solana that unlike Eigenlayer’s exogenous focus, aims first at on-chain dApps. The goal stated is a greater chance that those dApps obtain block space and preferred inclusion. Those on-chain targets are labeled endogenous AVSs."
+   ]
+  },
+  {
+   "heading": "2 Solana’s Stake-weighted Quality of Service",
+   "where": "p. 1",
+   "paragraphs": [
+    "Stake-weighted quality of service is defined as handing out capacity—block space and transaction-processing power—in proportion to stake held by validators or stakers. Under that model, the paper states that a validator with \"1%\" stake may send up to \"1%\" of packets toward the epoch leader and can push back Sybil pressure from everyone else. Citing a Solana blog, the text says commercial RPC operators and parties that run their own validator plus RPC nodes gain most, because RPC nodes that peer with validators can land more transactions, while validators can monetize spare capacity sold to RPC nodes."
+   ]
+  },
+  {
+   "heading": "3 Endogenous AVS: The Stake-weighted Quality of Service Infrastructure for dApps",
+   "where": "p. 2",
+   "paragraphs": [
+    "The section envisions dApps reserving and steering processing capacity by staking at the application layer into validators, so larger total stake yields more influence and steadier inclusion for user traffic. Large user stakes are said to unlock more transaction processing units without paying extra premiums to RPC operators. Solayer is cast as an end-to-end trustless restaking marketplace where dApps demand stake and Solana stakers supply it, obtaining proportional provisioning from validators.",
+    "Unlike Eigenlayer’s initial exogenous focus, Solayer starts with native Solana on-chain dApps as endogenous AVSs and helps them reserve block space and prioritize inclusion based on delegated stake. Stake pointed at on-chain dApps may later be re-delegated to secure exogenous AVSs. Figure 1 is captioned as Solayer as the restaking marketplace for endogenous AVS; the drawing itself is missing from the text extract."
+   ]
+  },
+  {
+   "heading": "3.1 Solayer Endogenous AVS Token",
+   "where": "p. 2",
+   "paragraphs": [
+    "dApps can spin up their own AVS liquid staking token through Solayer. Those tokens carry Solana’s native staking yield as a floor plus additional MEV yields, per the paper’s description. Solayer is said to chase higher staking yield by routing to the strongest-yielding validators and to operate its own validator build that supports app-level stake-weighted QoS provisioning. dApps may receive a slice of staking commission and later, pick operators for stake routing. The Solayer AVS Token is defined as a delegated representation of sSOL, the Solayer-managed LST on Solana.",
+    "Looking ahead, the text envisions dApps choosing which validators receive the underlying SOL and tuning required stake-weighted QoS with pricing that moves with network load. No measured yield percentages, fee splits, or latency figures appear in this subsection beyond those qualitative future controls."
+   ]
+  },
+  {
+   "heading": "3.2 Solayer Stake Delegation Flow",
+   "where": "pp. 2-3",
+   "paragraphs": [
+    "The path begins when users turn SOL into its natively staked form, sSOL, with that stake routed to validators Solayer recommends. Users then point that stake at an endogenous dApp AVS on Solayer, which turns sSOL into a delegated representation. After that conversion, the marketplace issues AVS tokens that later serve as proof to reclaim staked SOL and claim rewards. Figure 2 is captioned as the Solayer stake delegation flow; only the caption appears in the extract."
+   ]
+  },
+  {
+   "heading": "3.3 Solayer AVS Transaction Prioritization Flow",
+   "where": "p. 3",
+   "paragraphs": [
+    "When sending traffic, dApps push transactions to RPC nodes Solayer names, carrying extra server-side signatures. Those RPC nodes forward the traffic to delegated validators. After checking who sent the traffic, validators favor such transactions according to delegated stake weight when building blocks or forwarding toward the epoch leader, with a citation to Solana’s stake-weighted QoS material. Figure 3 is captioned as the Solayer AVS transaction prioritization flow; the drawing is absent from the text extract."
+   ]
+  },
+  {
+   "heading": "3.4 Solayer Unstake and Rewards Collection",
+   "where": "p. 3",
+   "paragraphs": [
+    "On withdrawal requests, Solayer AVS converts AVS tokens back to sSOL. Users may then claim SOL from Solayer together with staking rewards, covering both Solana staking rewards and AVS rewards. The paper states that Solayer will share some of the Solana staking commission with dApps, while users keep most of the staking rewards. No numeric split is given. Figure 4 is captioned as the Solayer unstake and rewards collection flow; only the caption is in the extract."
+   ]
+  },
+  {
+   "heading": "3.5 Super Liquidity",
+   "where": "p. 4",
+   "paragraphs": [
+    "Liquidity is called the decisive factor for asset adoption, with conversion delay and slippage named as two key worries. The text sketches an ideal of zero slippage and instant conversion so users would prefer yield-bearing LSTs over raw SOL, and says what blocks that ideal is LST liquidity needing deep pools, low swap fees, and meaningful volume to cover LP capital costs. Those framing claims are design arguments in the paper, not measurements treated as findings here.",
+    "Solayer’s answer is \"Superior Liquidity\" for AVS Tokens via a pooled design. Solayer AVS LST units can be unwrapped or undelegated at once back to underlying sSOL. Rather than a multi-LST pool where each LST’s depth depends on its own LP pool, Solayer gathers liquidity for Solayer AVS Tokens through the \"sSOL-SOL\" pair. The paper claims this yields markedly smaller price impact and markedly better liquidity; those comparative claims are the document’s assertions, not independent measurements. Figure 5 is captioned as the Solayer single LST pool."
+   ]
+  },
+  {
+   "heading": "4 Conclusion",
+   "where": "p. 5",
+   "paragraphs": [
+    "The conclusion says Solayer introduces endogenous AVS and lets dApps tap stake-weighted quality of service, removing the need for a middleman RPC marketplace that can centralize, and allocating transaction processing units efficiently. AVS Tokens are said to offer a shared yield layer and to ease liquidity by tackling conversion delay and slippage. Overall, the design is presented as raising operational efficiency and user experience on Solana and as opening a path to wider LST adoption with stronger QoS guarantees. Those outcomes are stated as the paper’s aims rather than as empirical results."
+   ]
+  },
+  {
+   "heading": "References",
+   "where": "p. 5",
+   "paragraphs": [
+    "The bibliography points to Eigenlayer materials, the Ethereum white paper, Solana’s architecture paper, and a Solana guide on stake-weighted quality of service with an access date noted there. Those bibliographic citations were not treated as findings in this reading; only Solayer’s own descriptive claims were used."
+   ]
+  }
+ ]
+}

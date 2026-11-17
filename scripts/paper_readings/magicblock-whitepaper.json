@@ -1,0 +1,27 @@
+{
+  "slug": "magicblock-whitepaper",
+  "pages": 1,
+  "sections": [
+    {
+      "heading": "MagicBlock Whitepaper",
+      "where": "docs page title / front matter",
+      "paragraphs": [
+        "This reading covers the short docs page titled MagicBlock Whitepaper, not the full arXiv PDF. The page front matter sets sidebarTitle to Whitepaper and describes the work as Ephemeral Rollups Are All You Need, citing arXiv:2311.02650 via https://arxiv.org/abs/2311.02650. That citation identifies the longer paper; the body below is only the short docs summary."
+      ]
+    },
+    {
+      "heading": "Authors",
+      "where": "docs page",
+      "paragraphs": [
+        "Authors are listed as Gabriele Picco and Andrea Fortugno. The page then offers an SVM-based framework meant to scale fully on-chain applications while avoiding state fragmentation and weakened trust assumptions. That Solana Virtual Machine framing is the docs page\u2019s central technical claim before the Ephemeral Rollups bullets."
+      ]
+    },
+    {
+      "heading": "Ephemeral Rollups (ERs)",
+      "where": "docs page",
+      "paragraphs": [
+        "For scalability and resource efficiency, the page introduces Ephemeral Rollups (ERs) with these bullets: dedicated runtimes that can be tuned for higher operational speed; ticking mechanisms that are configurable; sessions that are provable along with gasless transactions; and scale gains that keep composability intact. A closing note says this whitepaper outlines MagicBlock\u2019s architectural foundations and proposed solutions for fully on-chain ecosystems. Again, that statement refers to this short docs page rather than a full dump of arXiv:2311.02650."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,440 @@
+{
+ "slug": "solana-high-performance-blockchain-japanese",
+ "pages": 32,
+ "sections": [
+  {
+   "heading": "要約",
+   "where": "Title page (Japanese edition v0.8.14)",
+   "paragraphs": [
+    "This reading covers the Japanese edition of Solana's white paper on a high-performance blockchain architecture, version v0.8.14. The body paragraphs were written from the Japanese PDF text extract alone and were not compared sentence-by-sentence with the English edition for translation accuracy. Anatoly Yakovenko is credited as author. The legal disclaimer states the paper is not a token sale offer and is published to collect public comments.",
+    "The Japanese abstract proposes a Proof of History architecture that records and proves event ordering and elapsed time on a trustless network using an append-only ledger that cannot rewrite committed entries. Combined with Proof of Work or Proof of Stake, PoH is said to cut overhead in Byzantine fault-tolerant state sharing and shorten time to finality. Two algorithms showcase PoH timekeeping: a Proof of Stake rule that can recover from partitions of any size, and an efficient streaming Proof of Replication. PoRep with PoH counters forgery of time ordering and stored data. Assuming modern hardware and a 1 Gbps network, the protocol analysis shows up to 710,000 TPS throughput."
+   ]
+  },
+  {
+   "heading": "1 はじめに",
+   "where": "Page 2",
+   "paragraphs": [
+    "Blockchain is an implementation of a fault-tolerant replicated state machine. Algorithms behind publicly available blockchains today either do not depend on time or do not assume network participants manage accurate time. Each node refers only to local time and does not mind other nodes' local clocks. Without a trusted time standard, using timestamps to accept or reject messages does not guarantee every node will judge a message the same way. PoH as introduced here offers a ledger that can serve as the network's time reference—meaning elapsed time between events and message order—so every node on a trustless network can rely on time recorded in the PoH ledger."
+   ]
+  },
+  {
+   "heading": "2 本文の構成",
+   "where": "Page 2",
+   "paragraphs": [
+    "The document is organized as follows. Section 3 sketches the overall system design. Section 4 details Proof of History. Section 5 presents the proposed Proof of Stake consensus algorithm. Section 6 explains the fast Proof of Replication mechanism in depth. Section 7 analyzes system architecture and performance ceilings. Section 7.5 examines a high-performance smart-contract engine oriented toward GPU computation."
+   ]
+  },
+  {
+   "heading": "3 ネットワークデザイン",
+   "where": "Pages 2–3",
+   "paragraphs": [
+    "Figure 1 designates a Leader that produces Proof of History so every vantage point shares one consistent time axis. To maximize throughput the Leader orders user messages, executes transactions against RAM-held state, and hands signed results to approver nodes. Those nodes replay the transactions from their own RAM state and attach signatures; the signed results become votes for choosing the canonical history under the consensus algorithm.",
+    "While the network is not partitioned there is exactly one Leader. Approver nodes are expected to match Leader hardware and may be elected Leader under Proof of Stake, with that election algorithm detailed in Section 5.6. CAP reasoning prefers consistency over availability during partitions, and recovery from a partition of any size is explained with an explicit cross-reference to Section 5.10."
+   ]
+  },
+  {
+   "heading": "4 Proof of History",
+   "where": "Pages 3–4",
+   "paragraphs": [
+    "Proof of History is an iterated computation meant to let anyone cryptographically check how much time separates two events. It uses a secure function whose output cannot be guessed from the input and that must run to completion before any digest is produced. The loop remains pinned to a single core: each prior output becomes the next input, and the current output plus call count are recorded periodically. Outside machines can recompute and check the chain in parallel by assigning each segment to its own core.",
+    "Events are stamped by mixing data, or a digest of data, into the function state. Recording state, index, and appended material places the event before the next hash in the sequence. Multiple generators can scale sideways by folding each other's state into their sequences, a topic returned to in Section 4.4."
+   ]
+  },
+  {
+   "heading": "4.1 概要説明",
+   "where": "Pages 4–5",
+   "paragraphs": [
+    "The construction starts from a cryptographic hash such as sha256 or ripemd whose result cannot be known before the function runs. From a random seed the function is applied repeatedly, feeding each digest into the next call, while recording call counts and outputs. The seed may be any public string; the text mentions a newspaper headline as an example of an acceptable starting value.",
+    "Because predicting the next digest without running the prior step is infeasible, the recorded sequence is offered as evidence that real time passed between recorded indices. Verification does not need a single serial replay: given recorded checkpoints, many cores can recompute disjoint intervals at once and confirm that each segment matches the published hashes. The same section stresses that the generator runs serially on one core while verification fans out, which is why a comparatively slow producer can still be audited quickly by well-equipped verifiers."
+   ]
+  },
+  {
+   "heading": "4.2 イベントのタイムスタンプ",
+   "where": "Pages 5–8",
+   "paragraphs": [
+    "Any event can be mixed into the running state so that the next hash commits to that event's presence at that index. Clients may insert raw bytes or a digest of larger payloads. Table 1 in the text illustrates two photograph digests inserted at distinct counters so later readers see a forced ordering between those events.",
+    "Once an event's digest is inside the sequence, every later hash depends on it. Claiming the event happened after a later index would require finding a colliding continuation of the hash chain, which the paper treats as intractable for the chosen function.",
+    "Observers who hold the recorded checkpoints can argue both that some real work separated two indices and that a named event sat between them. Soft clients are warned not to assume perfect ordering inside the short window between the last hash they observed and the moment their own event is included.",
+    "The section also notes that signed client payloads can bind an event to the last observed hash so a malicious generator cannot quietly rewrite client-submitted digests without breaking signatures. Verification then checks both the signature and that the referenced prior hash actually appears earlier in the published sequence."
+   ]
+  },
+  {
+   "heading": "4.3 検証",
+   "where": "Pages 8–9",
+   "paragraphs": [
+    "Verification splits the published sequence into contiguous segments whose endpoints are known hashes and counters. Each segment is assigned to a separate core or GPU lane. Modern GPU examples in the text cite on the order of four thousand cores, so a long serial production run can be checked in a small fraction of the production time.",
+    "Correctness requires every segment to recompute to the published terminal hash. A single mismatched segment falsifies the whole claim for that interval. The text present this parallel check as the practical reason Proof of History can be produced slowly yet audited quickly across the network."
+   ]
+  },
+  {
+   "heading": "4.4 平行スケーリング",
+   "where": "Pages 9–10",
+   "paragraphs": [
+    "Several Proof of History generators may run at once if they periodically mix observed hashes from peer generators into their own sequences. After such a mix, events in one stream gain a cryptographic before-or-after relation to events in another through the shared mixed state. Synchronization is described as transitive: if A mixes with B and B mixes with C, then A and C obtain a provable event order through B. Bold highlighting in the figures marks the mixed hashes that create those bridges.",
+    "The cost of this fan-out is availability. The paper's worked arithmetic says ten independent 1 gbps links each at 0.999 availability would compound to roughly 0.999 to the tenth, or about 0.99 overall, when the design requires all paths. Horizontal scaling therefore trades connectivity risk for higher aggregate sequencing capacity across synchronized generators."
+   ]
+  },
+  {
+   "heading": "4.5 一貫性",
+   "where": "Pages 10–13",
+   "paragraphs": [
+    "Clients strengthen consistency by embedding the latest hash they accept as valid into the events they submit. A malicious generator that holds every pending event could otherwise build a hidden alternate sequence that reverses order, especially if it can compute a hidden chain faster than the public one.",
+    "By forcing Event1 to cite hash10a, Event2 to cite the hash after Event1, and so on consumers who later see a published stream can reject any rearrangement that breaks those back-references. Partial reordering attacks then shrink to the short hash window between observation and inclusion.",
+    "Clients may further sign the concatenation of event data and the last observed hash. Verification then checks the signature under the client's key and looks up the cited prior hash inside the official sequence, blocking silent rewrite of client digests by the generator. Figure 6 sketches inputs that carry those back references, and the surrounding prose treats this client-assisted binding as the main consistency tool against a dishonest PoH producer."
+   ]
+  },
+  {
+   "heading": "4.6 オーバーヘッド",
+   "where": "Pages 13–14",
+   "paragraphs": [
+    "Recording checkpoints and mixing peer hashes adds modest computational and bandwidth cost relative to bare hashing. The text place the practical overhead discussion next to GPU verification figures on the order of 0.25–0.75 milliseconds when thousands of cores recompute segments, presenting that cost as acceptable beside the messaging savings claimed for consensus."
+   ]
+  },
+  {
+   "heading": "4.7 攻撃",
+   "where": "Page 14",
+   "paragraphs": [
+    "The attack subsection enumerates ways an adversary might try to reverse event order, outrun honest generators, or rebuild history from a distant past. Each named attack is answered with a short mitigation that leans on the hash-chain properties, client back-references, or the stake and replication layers introduced later."
+   ]
+  },
+  {
+   "heading": "4.7.1 順序の逆転",
+   "where": "Page 14",
+   "paragraphs": [
+    "A reversal attack tries to publish events in an order different from the one clients experienced. Because honest clients embed recent hashes into signed submissions, a reordered stream fails lookup checks when cited predecessors are missing. The residual risk is limited to the brief interval of hashes produced while a client's event was in flight."
+   ]
+  },
+  {
+   "heading": "4.7.2 速度",
+   "where": "Page 14",
+   "paragraphs": [
+    "If an attacker can evaluate the hash function faster than the elected generator, a hidden faster chain becomes possible. The paper answers that verification is parallel and that consensus stake, not raw hash speed alone, elects who may publish the authoritative stream, so a faster ASIC does not automatically win leadership without stake and votes."
+   ]
+  },
+  {
+   "heading": "4.7.3 ロングレンジアタック",
+   "where": "Pages 14–15",
+   "paragraphs": [
+    "A long-range rewrite would start from an old checkpoint and attempt to grow an alternate history faster than the honest chain. Because each step is sequential and unpredictable, catching up requires sustained hashing faster than the live generator over the entire gap. The text treats that requirement as economically and practically hard when the live stream keeps advancing and when stake-weighted votes continually ratify recent hashes, leaving long-range forks recognizable as slower or unsupported histories."
+   ]
+  },
+  {
+   "heading": "5 Proof of Stake による合意形成",
+   "where": "Page 15",
+   "paragraphs": [
+    "Proof of Stake here elects and disciplines the Proof of History generator using bonded capital. Validators lock stake, vote on state hashes carried in the PoH stream, and risk slashing when they support contradictory or invalid histories. The chapter also covers elections, secondary generators, availability under partition, recovery, and finality."
+   ]
+  },
+  {
+   "heading": "5.1 概要説明",
+   "where": "Page 15",
+   "paragraphs": [
+    "Validators bond tokens to gain voting weight proportional to stake. They watch the Leader's PoH stream, recompute state, and publish votes that confirm particular state hashes at particular PoH indices. Supermajority confirmation is what advances the canonical branch; conflicting votes against the same stake invite slashing penalties described later."
+   ]
+  },
+  {
+   "heading": "5.2 用語の説明",
+   "where": "Pages 15–16",
+   "paragraphs": [
+    "Bonding locks stake behind a validator identity for a period. Voting is a signed statement that a named state hash is correct at a PoH counter. Unbonding starts a delay before stake can exit so that slashable misbehavior discovered after the fact can still be punished. Branches are competing PoH histories; the heaviest confirmed branch is preferred. Secondary and lower generators are standby identities that may take over if the active PoH identity fails or forks. Election triggers, timeouts, and slashing conditions are defined so validators know when to switch allegiance and when bonds are forfeit."
+   ]
+  },
+  {
+   "heading": "5.3 ボンディング",
+   "where": "Pages 15–16",
+   "paragraphs": [
+    "To join consensus a validator submits a bonding transaction that locks stake and announces a voting identity. Bonds remain active until an unbonding flow completes. Active bonds grant vote weight and also expose that stake to slashing if the validator confirms mutually inconsistent or demonstrably false state hashes."
+   ]
+  },
+  {
+   "heading": "5.4 投票",
+   "where": "Page 16",
+   "paragraphs": [
+    "Votes are ordinary transactions inside the PoH stream. A validator signs the state hash that results after replaying all transactions up to a chosen index and publishes that signature. Looking at consecutive votes in the ledger shows how much PoH time separates confirmations, which later sections use when arguing about finality and timeouts."
+   ]
+  },
+  {
+   "heading": "5.5 アンボンディング",
+   "where": "Page 16",
+   "paragraphs": [
+    "Unbonding begins when a validator signals exit. Stake stays locked through a delay measured in PoH time so that evidence of prior double-voting or confirmation of invalid hashes can still slash the bond. Only after the delay and any pending challenges clear does the capital become transferable again."
+   ]
+  },
+  {
+   "heading": "5.6 選挙",
+   "where": "Pages 16–17",
+   "paragraphs": [
+    "A new PoH generator is elected when failure of the current one is detected. The validator with the greatest voting power, or the next according to the stated tie rules, becomes the new generator. Changing a prior vote requires casting a replacement on a higher PoH sequence and including the votes being superseded. Once a generator is established, validators may also designate an alternate that stands ready under the secondary-election rules. Scheduled or exception-driven handoffs keep a successor identity ready without waiting for a full cold start after every fault."
+   ]
+  },
+  {
+   "heading": "5.7 選挙の開催条件",
+   "where": "Page 17",
+   "paragraphs": [
+    "Elections fire when the active generator's identity publishes conflicting histories, when runtime exceptions show the producer is faulty, or when network timeouts indicate the stream has stalled. Each trigger is expanded in the following subsections so operators can automate failover."
+   ]
+  },
+  {
+   "heading": "5.7.1 PoH 生成者の分断",
+   "where": "Page 17",
+   "paragraphs": [
+    "PoH generators sign their sequences under a durable identity. A fork appears when two different historical records are published under that same identity, which the paper says can happen only if the signing key is compromised. Validators who see divergent signed streams treat that as an immediate election trigger."
+   ]
+  },
+  {
+   "heading": "5.7.2 実行系の例外",
+   "where": "Page 17",
+   "paragraphs": [
+    "Hardware faults, bugs, or intentional misbehavior inside the generator can emit invalid hashes or crash the producer. Validators gossip the correct signatures they compute locally; persistent mismatch or crash evidence elevates the elected secondary and starts a new primary election under the stake rules."
+   ]
+  },
+  {
+   "heading": "5.7.3 ネットワークのタイムアウト",
+   "where": "Page 17",
+   "paragraphs": [
+    "If votes or PoH packets stop arriving within the configured timeout measured against local observation of the stream, validators conclude the leader is unreachable. They then open an election for a replacement generator according to stake ranking so the network can resume producing a signed Proof of History sequence without waiting indefinitely on a silent primary."
+   ]
+  },
+  {
+   "heading": "5.8 スラッシング",
+   "where": "Page 17",
+   "paragraphs": [
+    "Slashing burns or locks bonded stake when a validator confirms contradictory branches or endorses an invalid hash that the PoH generator planted as a trap. Evidence is itself a transaction that points at the conflicting signed votes. The design expects random invalid hashes from the honest generator so idle validators who rubber-stamp without checking lose stake, which underpins the tragedy-of-the-commons defense developed later in the chapter."
+   ]
+  },
+  {
+   "heading": "5.9 副系の選挙",
+   "where": "Pages 17–18",
+   "paragraphs": [
+    "Secondary and lower-ranked generators can be nominated and confirmed in advance so failover is orderly. When the primary fails, stake weight already pointing at the secondary shortens the window without a live PoH stream. Secondaries still must produce valid sequences once elevated; failing that the next ranked candidate is elected under the same fork, exception, and timeout triggers that apply to the primary."
+   ]
+  },
+  {
+   "heading": "5.10 可用性",
+   "where": "Pages 18–19",
+   "paragraphs": [
+    "Availability discusses how the network keeps a usable ledger when many validators disappear. Votes that confirm state hashes continue as PoH transactions, and observers can measure gaps between votes directly from counters in the stream. Large partitions may leave only a minority online; the paper argues that time kept inside PoH still lets the surviving set reason about how long the minority has been confirming a branch before wider reunification. Configuration knobs such as minimum bond sizes and replication identity rules further shape how much capital must remain online for the partition to keep finalizing under the stated thresholds."
+   ]
+  },
+  {
+   "heading": "5.11 復旧",
+   "where": "Page 19",
+   "paragraphs": [
+    "Recovery explains how control returns after partitions of arbitrary size. Validators compare PoH-backed histories, slash contradictory bonds where evidence exists, and converge on the branch that gathers supermajority stake once communication resumes. Full restoration with zero validators initially available is described as taking a sequence of bonding and confirmation steps until stake weight again crosses the finality threshold on one history."
+   ]
+  },
+  {
+   "heading": "5.12 状態確定",
+   "where": "Page 19",
+   "paragraphs": [
+    "Finality arrives when a supermajority of bonded stake has confirmed a state hash at a PoH index and conflicting votes would be slashable. Because PoH orders the votes themselves, observers can see confirmation accumulate in time rather than waiting on unbounded message rounds alone."
+   ]
+  },
+  {
+   "heading": "5.13 攻撃",
+   "where": "Page 19",
+   "paragraphs": [
+    "The consensus attack catalog covers free-riding validators, collusion with the PoH producer, censorship of users or voters, long-range history rewrites, and ASIC-assisted leadership grabs. Each subsection pairs the threat with an economic or cryptographic countermeasure already embedded in bonding, voting, or PoH."
+   ]
+  },
+  {
+   "heading": "5.13.1 コモンズの悲劇",
+   "where": "Pages 19–20",
+   "paragraphs": [
+    "Validators might skip verifying state and simply echo the leader's hashes to save work. The countermeasure is random invalid hashes inserted by the PoH generator; anyone who votes for them is slashable, and the network should immediately promote the elected secondary generator. That random trap creates a private incentive to verify even when public goods alone would under-provide checking effort across the bonded set."
+   ]
+  },
+  {
+   "heading": "5.13.2 PoH 生成者との談合",
+   "where": "Page 20",
+   "paragraphs": [
+    "A validator who colludes with the generator might learn when invalid trap hashes will appear. The paper equates that advantage with the generator itself holding large verifier stake: the producer must still compute honest state hashes for the rest of the stream, and stake-weighted votes remain visible and slashable if they endorse contradictions."
+   ]
+  },
+  {
+   "heading": "5.13.3 検閲",
+   "where": "Page 20",
+   "paragraphs": [
+    "A censoring leader could omit disfavored transactions or votes from the PoH stream. Clients and validators detect censorship when messages that gossip successfully never appear after enough PoH time, which becomes grounds to favor a secondary generator who includes them. Because votes travel as transactions, censoring votes is visible as missing confirmations relative to stake that is known to be online, accelerating election triggers against the censoring identity."
+   ]
+  },
+  {
+   "heading": "5.13.4 ロングレンジアタック",
+   "where": "Pages 20–21",
+   "paragraphs": [
+    "Long-range attackers try to rebuild from old stake distributions. PoH forces them to hash sequentially from the fork point; without outrunning the live generator they cannot present a denser time record. Slashable bonds and delayed unbonding further shrink the set of stake that could be reused quietly in a rewritten past while honest voters keep confirming the live tip."
+   ]
+  },
+  {
+   "heading": "5.13.5 ASIC 攻撃",
+   "where": "Page 21",
+   "paragraphs": [
+    "ASIC risk appears when specialized hardware could dominate hash production during partitions or elections. The protocol answers by separating verification, which parallelizes on commodity GPUs, from leadership, which requires stake-weighted votes rather than raw hash power alone. Even a fast ASIC identity still needs bonded capital and confirmations; producing a longer hidden chain without votes does not by itself move finality under the stated rules."
+   ]
+  },
+  {
+   "heading": "6 ストリーミング形式の Proof of Replication",
+   "where": "Page 21",
+   "paragraphs": [
+    "Streaming Proof of Replication proves that replicas store ledger data without forcing slow interactive challenges. Combined with PoH it aims to defend both the time ordering of the ledger and the claim that historical bytes remain stored. The chapter covers the CBC-CBC-style construction, verification, key rotation, hash selection, validation, and attacks."
+   ]
+  },
+  {
+   "heading": "6.1 概要説明",
+   "where": "Page 21",
+   "paragraphs": [
+    "Replicas encrypt or encode ledger slices under keys tied to their identity and must stream proofs that specific chunks remain retrievable. PoH timestamps when proofs were generated so verifiers can demand fresh evidence rather than accepting precomputed answers prepared offline at leisure."
+   ]
+  },
+  {
+   "heading": "6.2 アルゴリズム",
+   "where": "Pages 21–23",
+   "paragraphs": [
+    "The algorithm seals data in layers so that opening a proof requires touching storage in a prescribed order. Keys derive from replica identity and PoH-linked material, binding proofs to both who claims storage and when the proof was built. Streaming means proofs can be emitted continuously as the ledger grows instead of waiting for rare audit epochs. Validators sample proofs as transactions or gossip payloads and reject replicas that cannot answer within the expected PoH window. Specific sealing steps follow the Filecoin-influenced Proof of Replication lineage cited in the references, adapted so challenges align with counters already present in the Solana PoH stream."
+   ]
+  },
+  {
+   "heading": "6.3 承認",
+   "where": "Page 23",
+   "paragraphs": [
+    "Verifiers recompute the cheap open steps of a submitted proof and check them against the sealed commitment and the PoH time when the challenge was issued. Failed proofs slash or disqualify the replica under the consensus configuration. Because challenges reference recent PoH hashes, proofs generated long in advance cannot satisfy fresh challenges without holding the data at challenge time, which is the property that makes streaming audits meaningful."
+   ]
+  },
+  {
+   "heading": "6.4 鍵のローテーション",
+   "where": "Page 23",
+   "paragraphs": [
+    "Replica keys rotate on a PoH-driven schedule so that compromising an old key does not let an attacker keep answering new challenges forever. Rotation forces resealing or re-encoding under the new key within a bounded number of counters, limiting how long stolen credentials remain useful for forging storage proofs against live challenges."
+   ]
+  },
+  {
+   "heading": "6.5 ハッシュ値の選択",
+   "where": "Pages 23–24",
+   "paragraphs": [
+    "Challenges pick hash locations using entropy from the PoH stream so neither the replica nor a colluding leader can predict distant future sample points. Unpredictable selection undercuts grinding for easy blocks. Selection coverage is argued to make partial storage statistically visible once enough challenges accumulate against a replica that has erased cold chunks."
+   ]
+  },
+  {
+   "heading": "6.6 証拠の検証",
+   "where": "Page 24",
+   "paragraphs": [
+    "Validation accepts a proof only if cryptographic checks pass and the proof cites a sufficiently recent PoH hash. Stale proofs are ignored even if otherwise well-formed. Consensus validators record validation outcomes so replication targets that miss too many challenges lose approval and where configured, stake tied to those identities."
+   ]
+  },
+  {
+   "heading": "6.7 攻撃",
+   "where": "Page 24",
+   "paragraphs": [
+    "Replication attacks include spam floods of fake proofs, erasing only part of stored data, colluding with the PoH leader to learn challenges early, denial-of-service against honest replicas, and tragedy-of-the-commons laziness among validators who skip checking proofs. Each named case receives a dedicated countermeasure in the subsections that follow."
+   ]
+  },
+  {
+   "heading": "6.7.1 スパム",
+   "where": "Pages 24–25",
+   "paragraphs": [
+    "Spam submits many proofs to exhaust verifier bandwidth. Mitigation ties proof submission to bonded identities and rate limits derived from stake or minimum bond configuration so unbound floods are cheap to ignore. Invalid proofs that still consume CPU are discouraged by requiring cheap preliminary checks before heavier validation work begins."
+   ]
+  },
+  {
+   "heading": "6.7.2 部分消去",
+   "where": "Page 25",
+   "paragraphs": [
+    "An adversary may delete rarely sampled chunks while keeping hot pieces. Random PoH-driven sampling makes long-term partial erasure detectable with high probability as challenges continue. Once a missing chunk is proven, the replica can be slashed or voted out of the approved replication set so it no longer earns credit for storage it does not hold."
+   ]
+  },
+  {
+   "heading": "6.7.3 PoH 生成者との談合",
+   "where": "Page 25",
+   "paragraphs": [
+    "Collusion might leak upcoming challenge hashes to a replica so it materializes only those blocks. Frequent key rotation and binding challenges to hashes the colluding leader cannot uniquely predict far ahead shrink that window. Validators can also demand occasional false proofs for short periods and slash Proof of Stake confirmers who accept them, as the text describes near the close of the attack discussion."
+   ]
+  },
+  {
+   "heading": "6.7.4 DoS",
+   "where": "Pages 25–26",
+   "paragraphs": [
+    "Flooding replicas or verifiers with traffic can stall honest proofs. Diversified replication targets and Reed-Solomon striping mentioned in the network-limits chapter give alternate paths for ledger data when some nodes are saturated. Stake-weighted approval of replication identities lets the network drop targets that stay unreachable beyond PoH timeouts."
+   ]
+  },
+  {
+   "heading": "6.7.5 コモンズの悲劇",
+   "where": "Page 26",
+   "paragraphs": [
+    "Validators might accept replication proofs without checking. The paper's counter is economic: false proofs can be revealed by showing the function that generated fake data, and any Proof of Stake validator who confirmed a false proof is slashed. Random false-proof drills further keep validators honest about performing validation work rather than free-riding on others' diligence."
+   ]
+  },
+  {
+   "heading": "7 システムアーキテクチャ",
+   "where": "Page 26",
+   "paragraphs": [
+    "Section 7 inventories the deployed roles—Leader, state tables, Verifiers, and Validators—then analyzes network, compute, and memory ceilings that motivate the headline throughput numbers. The chapter closes with the extended Berkeley Packet Filter smart-contract engine aimed at GPU-friendly batch execution of intrinsics."
+   ]
+  },
+  {
+   "heading": "7.1 構成要素",
+   "where": "Page 26",
+   "paragraphs": [
+    "Components are the Leader PoH generator, the in-memory state tables indexed by user addresses, Verifier nodes that replicate state, and Validator nodes that consume verifier bandwidth for consensus voting. Each role can colocate or run on separate machines depending on configuration."
+   ]
+  },
+  {
+   "heading": "7.1.1 リーダー、Proof of History 生成者",
+   "where": "Pages 26–27",
+   "paragraphs": [
+    "The Leader is the elected Proof of History generator. It consumes arbitrary user transactions, emits a PoH sequence that fixes a unique global order, and after each batch publishes a signature of the resulting state under the Leader identity so Verifiers can compare results."
+   ]
+  },
+  {
+   "heading": "7.1.2 状態",
+   "where": "Page 27",
+   "paragraphs": [
+    "State is a simple hash table keyed by user address. Each cell stores the full user address material needed for the computation. The transaction table example packs a RIPEMD digest of the account public key with account fields into thirty-two bytes altogether. The Proof of Stake bond table stores a RIPEMD digest of the account holder's public key together with bond amount and most recent vote, occupying 64 bytes in the layout the text diagrams."
+   ]
+  },
+  {
+   "heading": "7.1.3 承認者、状態の複製",
+   "where": "Page 27",
+   "paragraphs": [
+    "Verifier nodes replicate blockchain state for high availability. The consensus algorithm selects replication targets, and consensus validators vote for Proof of Replication nodes they approve using off-chain criteria. Networks may set a minimum Proof of Stake bond size and require a unique replicator identity per bond."
+   ]
+  },
+  {
+   "heading": "7.1.4 検証者",
+   "where": "Page 27",
+   "paragraphs": [
+    "Validators consume bandwidth from Verifiers. They are virtual nodes that may run on the same machines as Verifiers or the Leader, or on separate machines dedicated to the consensus algorithm configured for that network, depending on how operators choose to colocate roles."
+   ]
+  },
+  {
+   "heading": "7.2 ネットワーク帯域の制約",
+   "where": "Pages 27–30",
+   "paragraphs": [
+    "The Leader must ingest user packets, order them for favorable memory access to cut faults and improve prefetching, and publish them in a Proof of History sequence to downstream Verifiers. Incoming packet layouts enumerate fields for last valid hash, counter, fees, source, and signatures. Without payload the signed packet size is given as 20 + 8 + 16 + 8 + 32 + 32 + 32 = 148 bytes. The minimum supported payload with one destination account is 176 bytes, which becomes the denominator in the throughput arithmetic.",
+    "The Proof of History output packet carries the current hash, counter, hash of newly added messages, and the signed state after processing, sent once every N messages. Its minimum size is listed as 132 bytes. On a 1 gbps link the maximum transaction count is computed as 1 gigabit per second divided by 176 bytes, equaling 710k tps maximum. About 1–4% loss is expected from Ethernet framing. Spare capacity beyond the target payload can raise availability by Reed-Solomon encoding outputs and striping them across available downstream Verifiers."
+   ]
+  },
+  {
+   "heading": "7.3 計算能力の制約",
+   "where": "Page 30",
+   "paragraphs": [
+    "Each transaction needs a signature digest check that touches little memory beyond the message and parallelizes freely, so throughput is bounded by available cores. GPU-based ECDSA verification servers are cited with experimental results around 900k operations per second, which the analysis treats as evidence that signature checking need not be the binding constraint beside the network arithmetic."
+   ]
+  },
+  {
+   "heading": "7.4 メモリ容量の制約",
+   "where": "Pages 30–31",
+   "paragraphs": [
+    "A naive half-full hash table with 32-byte entries could theoretically hold 10 billion accounts in 640 GB. Steady random access to that table is measured at 1.1 times 10 to the seventh reads or writes per second. At two reads and two writes per transaction, memory can sustain about 2.75 million transactions per second on the measured Amazon Web Services 1 TB x1.16xlarge-class instance named in the text."
+   ]
+  },
+  {
+   "heading": "7.5 高パフォーマンスなスマートコントラクト",
+   "where": "Page 31",
+   "paragraphs": [
+    "Smart contracts generalize transactions into programs every node runs to mutate state. The design uses extended Berkeley Packet Filter bytecode for speed and analyzability, with JIT bytecode as the contract language, and claims zero-cost foreign-function calls into platform intrinsics. Calling an intrinsic suspends the user program and schedules the intrinsic on a high-performance server; intrinsics are batched for parallel GPU execution.",
+    "Two user programs may call the same intrinsic and both stay paused until the batch finishes. ECDSA verification is the worked intrinsic, with GPU batching claimed to multiply throughput by thousands. Figure 11 concerns BPF program execution. The trampoline needs no native OS thread context switch because BPF already defines its memory context.",
+    "An eBPF LLVM backend has existed since 2015, so any LLVM frontend language can author contracts; Linux has carried the bytecode since 2015, with earlier forms dating to 1992. A single pass can check eBPF correctness, settle runtime and memory needs, and lower it to x86 instructions for execution on ordinary validators."
+   ]
+  }
+ ]
+}
