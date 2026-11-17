@@ -226,7 +226,7 @@ def editorial_page():
 </article>'''
 
 def charter_page():
-  rows = '''<tr><td>The Solana Library</td><td>Where can I find a source?</td><td>A catalogue of explanations, references, and records. Not this paper.</td></tr>
+  rows = '''<tr><td><a href="/library/">The Solana Library</a></td><td>Where can I find a source?</td><td>A catalogue of explanations, references, and records. Not this paper.</td></tr>
 <tr><td><a href="/articles/">Articles</a></td><td>Can someone explain this clearly?</td><td>A lesson in prose, from a recorded example.</td></tr>
 <tr><td><a href="/lessons/">Lessons</a></td><td>Can I learn to do it?</td><td>Practice on a live fork.</td></tr>
 <tr><td>Journal of Solana Studies</td><td>What does a specified investigation establish?</td><td>A research record, with a method. Not this paper.</td></tr>

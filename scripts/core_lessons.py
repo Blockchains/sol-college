@@ -445,7 +445,7 @@ finder='''<div class=finder id=browse><label>Search lessons <input id=lesson-q t
 </div>
 <p class=meta id=lesson-count></p></div>
 <p class=meta id=lesson-empty hidden>No lesson matches that search.</p>'''
-intro='<p>A guided lesson is a written walkthrough of an app whose core flow we recorded as working. A debug challenge is an app that is deployed but does not complete a core flow. A project preview has the app and the recorded proof, and the teaching sequence is still being written. The <a href="/articles/">articles</a> explain the same recorded work without asking you to practise it. The <a href="/lessons/glossary/">glossary</a> explains the terms. You can read any lesson without a wallet. The wallet is needed only when a step asks you to send a transaction.</p>'
+intro='<p>A guided lesson is a written walkthrough of an app whose core flow we recorded as working. A debug challenge is an app that is deployed but does not complete a core flow. A project preview has the app and the recorded proof, and the teaching sequence is still being written. The <a href="/articles/">articles</a> explain the same recorded work without asking you to practise it. The <a href="/library/">library</a> is the catalogue of those pages, the lessons, and the official references that were checked. The <a href="/lessons/glossary/">glossary</a> explains the terms. You can read any lesson without a wallet. The wallet is needed only when a step asks you to send a transaction.</p>'
 idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav>{CSS}'
   f'<h1>Learn Solana by making real things work.</h1>'
   f'<p class=lead>Run a transaction on a devnet app, see what changed, and check it against the recorded proof.</p>'
@@ -549,11 +549,13 @@ def write_guides():
 GUIDE_PATHS=write_guides()
 import articles as _articles
 ARTICLE_PATHS=_articles.write(S, page, CSS)
+import solana_library as _solib
+LIBRARY_PATHS=_solib.write(S, page, CSS, LIVE, lesson_of, functional_of, readiness, limit_of, one_line)
 import standard as _standard
 STANDARD_PATHS=_standard.write(S, page, CSS)
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
-NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/articles/">Articles</a><a href="/standard/">The Standard</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
+NAV='<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/articles/">Articles</a><a href="/library/">Library</a><a href="/standard/">The Standard</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></nav>'
 for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if '/dapps/' in fp or '/legacy/' in fp: continue
   if os.path.normpath(fp)==os.path.normpath(f'{S}/index.html'): continue
@@ -570,7 +572,7 @@ for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if t!=o: open(fp,'w').write(t)
 sm=f'{S}/sitemap.xml'
 if os.path.exists(sm):
-  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS+ARTICLE_PATHS+STANDARD_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
+  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS+ARTICLE_PATHS+LIBRARY_PATHS+STANDARD_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])
