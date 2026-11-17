@@ -212,6 +212,32 @@ def _answer_blurb(E, n, title, name, area):
   )
 
 
+def _proof_steps_html(E, tx, x):
+  bits = []
+  for step in (x.get('steps') or [])[:12]:
+    if not isinstance(step, (list, tuple)) or len(step) < 2:
+      continue
+    label, sig = step[0], step[1]
+    sig_s = str(sig)
+    if len(sig_s) > 40 and ' ' not in sig_s and not sig_s.startswith('(no'):
+      bits.append(f'<li>{E(label)} — {tx(sig_s)}</li>')
+    else:
+      bits.append(f'<li>{E(label)} — <span class=meta>{E(sig_s)}</span></li>')
+  if not bits:
+    return '<p>The deployment record does not list proof steps on this page. See the lesson for the proof list.</p>'
+  return '<ol class=steps>' + ''.join(bits) + '</ol>'
+
+
+def _negatives_html(E, x):
+  neg = x.get('negative') or []
+  if not neg:
+    return (
+      '<p>No separate negative cases are listed on this deployment card. '
+      'Absence of a listed rejection is not evidence every bad input was tried.</p>'
+    )
+  return '<ul>' + ''.join(f'<li>{E(n)}</li>' for n in neg[:8]) + '</ul>'
+
+
 def _article(E, tx, meta_block, credit, n, title, area, app, official):
   live = _live()
   x = live[app]
@@ -220,11 +246,14 @@ def _article(E, tx, meta_block, credit, n, title, area, app, official):
   learn = x.get('learn') or ''
   verified = x.get('verified') or ''
   program = x.get('program') or ''
-  commit = (x.get('commit') or '')[:7]
+  commit = (x.get('commit') or '')
+  commit7 = commit[:7]
   app_url = x.get('app') or ''
   name = x.get('name') or app
+  fork = x.get('fork') or ''
+  flow = x.get('flow') or ''
   source_bits = []
-  for label, url in (x.get('source') or [])[:3]:
+  for label, url in (x.get('source') or [])[:8]:
     source_bits.append(f'<li><a href="{E(url)}">{E(label)}</a></li>')
   sources = '<ul>' + ''.join(source_bits) + '</ul>' if source_bits else '<p>Source links are on the deployment record.</p>'
   off_html = ''
@@ -232,50 +261,90 @@ def _article(E, tx, meta_block, credit, n, title, area, app, official):
     oname, ourl, _lib = OFFICIAL[official]
     off_html = (
       f'<p>Official page cited beside this record: <a href="{E(ourl)}">{E(oname)}</a>. '
-      'That page was retrieved for the Solana Library. Sol.College did not remeasure its figures.</p>'
+      'That page was retrieved for the Solana Library. Sol.College did not remeasure its figures. '
+      'Where the official page and the deployment disagree, the deployment wins for what Sol.College ran, '
+      'and the official page remains a reference — not a silent upgrade of the record.</p>'
     )
   sig_html = (
-    f'<p>One recorded signature from the deployment proof is {tx(sig)}.</p>'
+    f'<p>One recorded signature from the deployment proof is {tx(sig)}. '
+    'More proof steps are listed below. A signature shows those instructions were processed on devnet. '
+    'It does not, by itself, show that you can explain every account.</p>'
     if sig else
     '<p>The deployment record lists the proof steps on the lesson page. This article does not invent a signature.</p>'
   )
+  fork_html = (
+    f'<p>Working fork: <a href="{E(fork)}"><code>{E(fork)}</code></a> @ <code>{E(commit7)}</code>. '
+    f'The verification script path on the record is <code>{E(flow)}</code>.</p>'
+    if fork else ''
+  )
+  n_steps = len(x.get('steps') or [])
+  functional = str(x.get('functional') or 'recorded')
   desc = (
-    f'From the recorded {name} deployment on {verified}. Not a generic tutorial and not a mainnet measurement.'
+    f'Deep study of {name} for catalogue #{n}. From the {verified} devnet record — not a generic tutorial.'
   )
   if len(desc) > 158:
     desc = desc[:155].rsplit(' ', 1)[0] + '…'
+  if not re.search(r'\b(not|no|never|without)\b', desc, re.I):
+    desc = desc.rstrip('.') + ' Not a mainnet measurement.'
+    if len(desc) > 158:
+      desc = 'From the recorded ' + name + ' deployment. Not a generic tutorial or mainnet measurement.'
+      if len(desc) > 158:
+        desc = desc[:155].rsplit(' ', 1)[0] + '…'
   body = f'''<article class=lesson>
 <p class=eyebrow>{E(area)} · Catalogue #{n}</p>
 <h1>{E(title)}</h1>
-<p class=lead>This page answers the catalogue question with one recorded Sol.College deployment: <b>{E(name)}</b>. It is not a rewrite of every possible design. Numbers and instructions below come from that record, or from an official page the library already retrieved.</p>
+<p class=lead>This page answers the catalogue question with a deep pass over one recorded Sol.College deployment: <b>{E(name)}</b>. 
+It walks what the app does, which proof steps were stored, which negative cases were listed, and which limits still bind a citation. 
+It is not a rewrite of every possible design, and it does not invent steps that were not run.</p>
 {meta_block([
   ('Who this is for', 'A reader who wants the catalogue title answered from evidence, not from a keyword outline.'),
-  ('What you will learn', 'What the recorded app actually does, which accounts and instructions the record names, and which limits still apply.'),
+  ('What you will learn', 'The recorded mechanism, the proof list, the listed failures, and how far the title may be stretched.'),
   ('Prerequisites', 'None to read. A wallet is needed only if you open the practice lesson.'),
-  ('Record', f'Devnet, verified {verified}. Program <code>{E(program)}</code>. Commit <code>{E(commit)}</code>.'),
+  ('Record', f'Devnet, verified {verified}. Program <code>{E(program)}</code>. Commit <code>{E(commit7)}</code>. {n_steps} proof steps on the card.'),
   ('Author', 'Sol.College, from that deployment record. No separate reviewer is named.'),
 ])}
 <h2 id=record>The recorded app</h2>
 <p>{E(learn)}</p>
-<p>Hosted at <a href="{E(app_url)}"><code>{E(app_url)}</code></a>. Functional mark on the live-apps ledger: <code>{E(str(x.get("functional") or "recorded"))}</code>.</p>
+<p>Hosted at <a href="{E(app_url)}"><code>{E(app_url)}</code></a>. Functional mark on the live-apps ledger: <code>{E(functional)}</code>. 
+A <code>full</code> mark means the core flow on the card completed in the recorded run. A <code>partial</code> mark means the card itself says a core path is incomplete or misleading — read the limits before you treat the app as a finished specimen.</p>
+{fork_html}
 {sig_html}
+<h2 id=proof>Proof steps on the card</h2>
+<p>These lines are copied from the deployment record’s proof list. They are not a second run performed for this article.</p>
+{_proof_steps_html(E, tx, x)}
+<h2 id=negatives>Listed rejections and negative cases</h2>
+{_negatives_html(E, x)}
 <h2 id=sources>Source the record points at</h2>
 {sources}
 {off_html}
-  <h2 id=answer>How this answers the catalogue title</h2>
+<h2 id=answer>How this answers the catalogue title</h2>
 <p>{_answer_blurb(E, n, title, name, area)}</p>
-<p>Where the title sounds like a how-to for an unbuilt system, this article still stays inside the deployment. Extra steps that were not run are not filled in from memory.</p>
+<p>Where the title sounds like a how-to for an unbuilt system, this article still stays inside the deployment. 
+Extra steps that were not run are not filled in from memory. 
+If you need a different specimen — another escrow, another vault, another agent policy — open that app’s lesson and its own catalogue page rather than stretching this one.</p>
+<h2 id=reading>How to read the evidence without overclaiming</h2>
+<p>Start with the lesson’s accounts table and instruction sections when they exist. 
+Then open one success signature and one listed failure (if any) on a devnet explorer. 
+Ask three questions the journal methods page also asks in other words: what moved, who had to sign, and which limit on the card still applies. 
+A green badge on an explorer is not a security review. A partial functional mark is not a mystery to smooth over in a tutorial voice.</p>
+<p>Articles and The Degen are different jobs. This page explains a recorded build. 
+It does not ask who benefits from a fee schedule on a public trading site. For that, use the <a href="/degen/readings/">reading edition</a>.</p>
 <h2 id=practice>Practice</h2>
-<p>Open the lesson for this app when you want the click-through: <a href="/lessons/{E(app)}/">{E(name)}</a>. The lesson is the practice. This page is the explanation tied to the same record.</p>
+<p>Open the lesson for this app when you want the click-through: <a href="/lessons/{E(app)}/">{E(name)}</a>. 
+The lesson is the practice. This page is the explanation tied to the same record. 
+A browser tick on a lesson step means that step was checked in that browser. It does not mean a second machine, a second wallet, or a mainnet deployment was proven.</p>
 <h2 id=limits>Limitations</h2>
 <p>{E(lim)}</p>
-<p>This article is not peer-reviewed research, not a security audit of the upstream project, and not a claim that the original maintainers endorsed Sol.College’s fork. Devnet behaviour is not a mainnet measurement.</p>
+<p>This article is not peer-reviewed research, not a security audit of the upstream project, and not a claim that the original maintainers endorsed Sol.College’s fork. 
+Devnet behaviour is not a mainnet measurement. 
+Automated assistance helped assemble the catalogue page; it did not create observations the deployment record does not contain.</p>
 <h2 id=next>Continue</h2>
 <ul class=continue-list>
 <li><a href="/articles/">Articles catalogue</a></li>
 <li><a href="/articles/evidence/">Evidence ledger</a></li>
 <li><a href="/lessons/{E(app)}/">Lesson: {E(name)}</a></li>
 <li><a href="/library/">Solana Library</a></li>
+<li><a href="/degen/editorial/">The Degen editorials</a></li>
 </ul>
 {credit}</article>'''
   path = f'/articles/{FILL[n][0]}/'

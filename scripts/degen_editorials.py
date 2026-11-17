@@ -1,0 +1,243 @@
+"""Document-based editorials for The Degen.
+
+These are arguments that cite public pages already retrieved for the reading
+edition. They are not reports, interviews, or market stories. No prices, no
+invented students, no tip lines.
+"""
+from __future__ import annotations
+
+EDITORIALS = [
+ dict(
+  slug='leverage-is-a-disclosure-not-a-dare',
+  title='Leverage Is a Disclosure, Not a Dare',
+  desc='An editorial on Degen Mode and high leverage as document language, not a trade tip. Not a report.',
+  deck='When a docs page starts a slider at 125×, the paper’s job is to name the disclosure — not to cheer the multiple.',
+  paragraphs=[
+   'The Fine Print readings already show what Flash Trade’s Degen Mode page says: the slider can start at 125 times, and related pages describe caps that climb into the hundreds. Jupiter’s perps docs sit in the same package of retrieved pages. Those sentences are public. They are not a Sol.College trade.',
+   'An editorial has a different job from a reading. A reading restates what a page says and what it does not settle. An editorial says what the paper thinks a reader should do with that kind of language. The paper’s answer is narrow: treat the multiple as a disclosure about a product’s risk surface, not as a dare, not as a ranking, and not as a recommendation.',
+   'College newspapers used to print sports odds next to lectures. Crypto interfaces print leverage next to a wallet connect button. The temptation is the same — to treat the number as atmosphere. The Degen refuses that atmosphere. The style book already refuses live price chrome on these pages. This editorial extends the ban to the mood that treats max leverage as culture.',
+   'Who is paid if a reader accepts the slider? The Who Gets Paid? readings name fees, maintenance margins, and pool shares where the docs do. Who decides whether the door stays open? Keeper and oracle pages in the reading edition name co-signers and volatility flags. An editorial that ignored those desks would be a mood piece. This one points at them and stops.',
+   'What the paper will not do is invent a liquidated student, a profitable trader, or a night on a trading floor. No interview was conducted. No account was funded by the paper. No position was opened to “test” the slider. The founding editorial said a price is not a question. A multiple without a named fee path and a named failure mode is not a question either.',
+   'If a future report ever covers a liquidation, it will need a template: who lost what, under which rule, on which retrieved page, with which disclosure. Until that report exists, the reading edition is the evidence, and this editorial is the stance: do not confuse a documented risk control with an invitation.',
+   'The College Rule reading already sits Jupiter’s perps language next to Flash’s Degen Mode and the publisher’s own policies. That adjacency is the editorial’s exhibit: the same package that teaches a multiple also states what Sol.College will not promote. A reader should feel the friction on purpose.',
+   'Assignment briefs that ask for “early” narratives without fee paths are still on the board as commissions. They are not licenses to preview a tip. When those commissions are written, they inherit this editorial’s sequencing: mechanism first, culture second, never a multiple alone.',
+   'If a contributor later wants to argue that high leverage is a feature for hedgers, the Opinion template still requires the fee line and the failure mode. Enthusiasm without those lines remains a mood, and moods stay labelled.',
+  ],
+  sources=[
+   dict(label='Flash Trade — Degen Mode', url='https://docs.flash.trade/flash-trade/getting-started/degen-mode.md', note='Retrieved for the reading edition, 17 Nov 2026.'),
+   dict(label='Jupiter — perps user docs', url='https://docs.jup.ag/user-docs/trade/perps', note='Retrieved for the reading edition, 17 Nov 2026.'),
+   dict(label='The Degen policies', url='https://sol.college/degen/policies/', note='Publisher rules for trading and promotion.'),
+  ],
+  related=['degen-mode-starts-the-slider-at-125-times', 'five-hundred-times-and-the-orders-turned-off', 'the-college-rule-sits-next-to-the-multiple'],
+ ),
+ dict(
+  slug='hardware-wallet-is-a-marketing-category',
+  title='“Hardware Wallet” Is a Marketing Category Until the Doc Says Otherwise',
+  desc='Editorial on Seed Vault and phone custody language. Document-based. Not a teardown. Not a report.',
+  deck='A product page can say hardware wallet. A developer page can say system service. The paper prints both and refuses the upgrade.',
+  paragraphs=[
+   'Solana Mobile’s public pages call Seeker’s custody story a hardware wallet in places and describe Seed Vault as a system service and secure execution environment in others. The reading edition already pairs those sentences. This editorial states the paper’s rule for that pair.',
+   'Marketing categories travel faster than mechanism descriptions. “Hardware wallet” suggests a dedicated device whose only job is keys. A phone that also runs apps, a browser, and a store is a different object even when a secure element or TEE is involved. The developer docs the paper retrieved do not erase the product-page wording. They constrain what a careful citation is allowed to upgrade.',
+   'The paper will not appoint itself a lab. No teardown was performed. No secure-element certificate was verified by Sol.College. No student was asked to migrate a seed. The Claim Check reading that follows the non-transferable token language on related pages is the model: print the claim, print the mechanism page, refuse the silent upgrade.',
+   'Power and culture desks both touch this story. Power asks who can change the mint and anti-sybil rules around mobile campaigns. Culture asks what bargain a user thinks they accepted when they typed an old seed into a new phone. Neither desk has a filed story. Both have document readings. The editorial’s job is to keep the label “hardware wallet” from doing unearned work in a headline.',
+   'When Sol.College hosts a lesson on a practice fork, a completion tick still is not a custody review. The founding editorial already said a tick is not a person. This editorial adds: a product adjective is not a laboratory result. Readers who need a laboratory should look for a lab. Readers who need a newspaper should get one that refuses to cosplay as a lab.',
+   'Eight-seeds language and Saga references in the mobile readings show how product history leaks into present copy. Continuity of brand is not continuity of threat model. A careful page names which generation of device and which API surface it actually read.',
+   'Android prompt readings in the edition show another mismatch pattern: help text that describes what a platform “cannot see” while another surface draws a prompt anyway. Custody adjectives fail the same way marketing adjectives fail — by outrunning the mechanism sentence.',
+   'Lessons that ask a learner to approve a transaction on a phone are practice, not a Seed Vault audit. Keep the genres apart on the syllabus card the same way this editorial keeps them apart in the paper.',
+  ],
+  sources=[
+   dict(label='Seed Vault docs', url='https://docs.solanamobile.com/solana-mobile-stack/seed-vault', note='Retrieved for the reading edition, 17 Nov 2026.'),
+   dict(label='Solana Mobile site', url='https://solanamobile.com', note='Product language retrieved for related readings.'),
+   dict(label='Wallet help', url='https://wallet-help.solanamobile.com', note='Help pages cited in mobile readings.'),
+  ],
+  related=['the-phone-that-calls-itself-a-hardware-wallet', 'seed-vault-is-a-system-service-not-a-second-gadget', 'an-old-seed-typed-into-a-new-phone'],
+ ),
+ dict(
+  slug='when-two-docs-disagree-the-paper-does-not-pick-a-winner',
+  title='When Two Docs Disagree, the Paper Does Not Pick a Winner',
+  desc='Editorial on Claim Check method for disagreeing public pages. Not a report and not a verdict.',
+  deck='Raydium’s LaunchLab pages are the specimen. The method is the point: print both, name the gap, refuse the silent patch.',
+  paragraphs=[
+   'One Raydium page in the reading edition describes a bonding curve in one mathematical language; another page in the same product family uses different wording. The Claim Check reading prints both. It does not declare which page a trader should trust. This editorial defends that refusal as policy, not as indecision.',
+   'A newspaper that “resolves” a documentation conflict without a method invents authority. It can interview an engineer, retrieve a third primary source, or watch a deployment — and then it must say which of those it did. The Degen has done none of those for LaunchLab. The package therefore has no winner to announce.',
+   'The same method applies to oracle language that claims to remove a spread while another page still names a vault, and to wallet posts that stack three cards as if they were three verified stories. Claim Check is not a genre for dunking. It is a filing rule: disagreement on public pages stays visible until reporting earns a finding.',
+   'Assignments on the board ask for cases for and against memecoins. Those assignments are not this editorial. When they are written, they will need disclosures and sources. Until then, the paper’s published stance on conflicting docs is procedural: do not launder a preference into a fact.',
+   'Readers who want a trade recommendation are in the wrong building. Readers who want to know whether two official pages match can use the reading edition. Readers who want the paper’s opinion on what to do with a mismatch are reading this page: hold the mismatch open.',
+   'Claim Check is expensive in pride and cheap in honesty. It costs the paper the pleasure of a clean take. It saves the paper from laundering a preference into a “clarification.”',
+   'When Mintlify mirrors and primary docs hosts both appear in the edition, the paper treats host diversity as a retrieval fact, not as a hierarchy of truth. Hierarchy needs a method.',
+   'Future letters that demand the paper “just say which page is right” will get this editorial in reply until reporting earns a finding.',
+  ],
+  sources=[
+   dict(label='Raydium LaunchLab overview', url='https://docs.raydium.io/products/launchlab/overview', note='Retrieved for the reading edition, 17 Nov 2026.'),
+   dict(label='Raydium bonding curve', url='https://docs.raydium.io/products/launchlab/bonding-curve', note='Retrieved for the reading edition, 17 Nov 2026.'),
+  ],
+  related=['one-raydium-page-says-quadratic-another-says-constant-product', 'three-cards-on-a-wallet-post-are-not-three-stories'],
+ ),
+ dict(
+  slug='proposals-without-a-vote-are-not-governance-theatre-we-endorse',
+  title='Proposals Without a Vote Are Not Governance Theatre We Endorse',
+  desc='Editorial on MetaDAO-style proposal counts without votes. Document-based. Not a report.',
+  deck='Ninety-six proposals on a docs page is a filing fact. It is not a mandate, and the paper will not narrate it as one.',
+  paragraphs=[
+   'A MetaDAO governance overview retrieved for the reading edition supports a Claim Check about many proposals and no vote in the sense the reading records. The number is whatever that page said on the retrieval day. This editorial is about the temptation to turn a count into a story of democratic energy.',
+   'Crypto governance marketing loves activity metrics: proposals filed, forums filled, “community” as a noun that never has to show a voter. A student paper should be allergic to that move. Activity without a decision rule is bureaucracy, not self-rule. The paper can describe the bureaucracy. It should not clap for it.',
+   'Power desk readings also cover FAFtarchy markets and keeper sets a reader cannot join. Those pages matter because they name who decides. A proposal list that never reaches a vote leaves the decision elsewhere — with a team, a market, a pause switch, or an undefined future. An editorial that ignores “who decides” fails the founding test.',
+   'No MetaDAO insider was interviewed. No proposal was submitted by the paper. No token-weighted tally was recomputed. If a future investigation maps who can pause or migrate a market, it will need documents and a method. This page only refuses the soft headline that treats a proposal counter as participation.',
+   'FAFtarchy readings that send decisions to a market are the contrasting case: they at least name a decision machine. A proposal counter without a decision machine names activity. Activity is not consent.',
+   'Student government analogies fail when the ballot box is optional and the treasury move is not. Print the treasury path before the forum vibe.',
+   'The paper will cover governance fights when documents and disclosures support a template. It will not cover vibes of “engagement.”',
+  ],
+  sources=[
+   dict(label='MetaDAO governance overview', url='https://docs.metadao.fi/governance/overview', note='Retrieved for the reading edition, 17 Nov 2026.'),
+  ],
+  related=['ninety-six-proposals-and-no-vote', 'faftarchy-sends-the-decision-to-a-market'],
+ ),
+ dict(
+  slug='a-fork-inherits-the-pause',
+  title='A Fork Inherits the Pause',
+  desc='Editorial on Velocity’s Drift migration docs. Not a tech review. Not a report of an outage.',
+  deck='When a migration page says it forked a paused system, the inheritance is the story — not the brand refresh.',
+  paragraphs=[
+   'Velocity’s developer migration page, as retrieved for the reading edition, states a relationship to Drift and that Drift is paused. The Claim Check reading holds that wording. This editorial says what the paper thinks “fork” should mean in a headline.',
+   'Fork is a word that sounds like rebirth. Pause is a word that sounds like temporary. Together they can smuggle continuity of risk without continuity of scrutiny. A student paper should ask which rules moved, which oracles moved, which insurance language moved, and which failure modes were renamed rather than removed.',
+   'The reading edition already pairs pages that say no insurance fund is needed with pages that still name a vault. That pattern is the editorial’s exhibit B: vocabulary changes faster than mechanisms. A fork announcement is a vocabulary event until the docs show the mechanism event.',
+   'The paper did not run Velocity. It did not run Drift. It did not time an outage. It will not speculate about why a pause happened. It will insist that migration marketing answer to the same Claim Check standard as any other two-page disagreement.',
+   'Liquidation-as-inherited-position language in Velocity readings is the kind of sentence a fork announcement should have to survive. If the inheritance is the product, say so above the fold.',
+   'Builder fees that sit on top of a stack, and bits that can switch them off, are also inheritance. Renaming the stack does not zero the fee path.',
+   'A migration doc that cannot answer “what paused, what moved, what still can pause” is unfinished public writing. The paper will say unfinished when the page is unfinished.',
+  ],
+  sources=[
+   dict(label='Velocity — migrate from Drift', url='https://docs.velocity.exchange/developers/migrate-from-drift.md', note='Retrieved for the reading edition, 17 Nov 2026.'),
+   dict(label='Velocity llms.txt', url='https://docs.velocity.exchange/llms.txt', note='Retrieved for the reading edition, 17 Nov 2026.'),
+  ],
+  related=['velocity-says-it-forked-drift-and-that-drift-is-paused', 'one-page-needs-no-insurance-fund-another-still-names-the-vault'],
+ ),
+ dict(
+  slug='who-gets-paid-when-the-pool-is-the-other-side',
+  title='Who Gets Paid When the Pool Is the Other Side',
+  desc='Editorial on pool-as-counterparty fee language in retrieved docs. Not a fee schedule. Not a report.',
+  deck='If the pool is the other side of every trade, the fee page is the politics page.',
+  paragraphs=[
+   'Several Who Gets Paid? readings rest on a simple geometry: the pool is the counterparty; fees and residual risk land somewhere. Flash and related docs in the package describe meme pools, maintenance margins, and fee splits. This editorial names the political reading of that geometry.',
+   'A newspaper that only prints APY vibes is a brochure. A newspaper that only prints liquidation horror without fee paths is horror fiction. The Degen’s middle path is the fee path: who collects, who is left with inventory, who can change the schedule.',
+   '“Other side of every trade” is not an insult. It is a structural fact when the docs say so. Readers deserve that fact above the fold when a product sells excitement. The paper’s Opinion label is here because we are arguing for a filing habit, not announcing a scandal.',
+   'No pool was joined. No LP position was opened. No fee was paid by the paper to “feel” the UX. The sources are the same HTTPS pages the reading edition already filed. The stance is: put the counterparty in the sentence before the adjective.',
+   'Tips that can be spent on the wrong leader are a reminder that “paid” is not only a pool fee. Routing and timing are payment politics too.',
+   'Maintenance margin that is not returned is a residual story. Residuals belong in the nut graf of any piece that sells upside.',
+   'The editorial’s test for a draft: if you delete the counterparty sentence and the piece still sounds complete, the piece is incomplete.',
+  ],
+  sources=[
+   dict(label='Flash Trade docs host', url='https://docs.flash.trade/flash-trade/getting-started/degen-mode.md', note='Entry page for related fee and leverage readings.'),
+   dict(label='Jito docs', url='https://docs.jito.wtf', note='Host present in the reading edition’s tip and leader fee readings.'),
+  ],
+  related=['the-pool-is-the-other-side-of-every-trade', 'the-maintenance-margin-is-not-returned', 'a-tip-can-be-spent-on-the-wrong-leader'],
+ ),
+ dict(
+  slug='session-keys-are-not-a-small-permission',
+  title='Session Keys Are Not a Small Permission',
+  desc='Editorial on trading session keys that cannot withdraw. Document-based. Not a security audit.',
+  deck='A key that can trade and cannot withdraw is still a key that can lose the tradeable float.',
+  paragraphs=[
+   'Chain Watch readings describe session keys that can trade within limits and cannot withdraw. That split is better than an unbounded export of seed material. It is not “safe” as a vibe word. This editorial refuses the vibe.',
+   'Permissions are economics. A session that can open leverage can crystallize losses even when it cannot sweep a vault. The Fine Print pages that describe keepers, volatility flags, and wide bands are part of the same permission story. Split the authority; do not shrink the consequence.',
+   'Wallet UX will keep offering “connect once” convenience. The paper’s job is to keep the sentence complete: what the session can do, what it cannot do, and which losses remain possible. Convenience copy that stops at “cannot withdraw” fails the completeness test.',
+   'No session key was issued to Sol.College. No bot was run. No keeper set was joined. The editorial cites the reading edition’s mechanism language and stops before a lab claim.',
+   'Wide bands counted against the trader, volatility flags that close doors, and keepers that co-sign later are the rest of the permission graph. A session key sits inside that graph, not beside it.',
+   'Product copy that says “cannot withdraw” and stops is incomplete the way “non-custodial” is incomplete without a threat model. Completeness is the editorial standard.',
+   'Campus agent lessons that grant scoped authorities should teach the same completeness habit. A scoped key is still a key.',
+  ],
+  sources=[
+   dict(label='Flash / related trading docs', url='https://docs.flash.trade/flash-trade/getting-started/degen-mode.md', note='Related session and leverage readings pull from this docs host.'),
+  ],
+  related=['a-session-key-that-can-trade-and-cannot-withdraw', 'a-keeper-co-signs-or-comes-back-later', 'a-volatility-flag-can-close-the-door'],
+ ),
+ dict(
+  slug='what-sol-college-should-publish-about-itself',
+  title='What Sol.College Should Publish About Itself',
+  desc='Editorial answering the self-transparency assignment from published policies. Not a report. Not independence.',
+  deck='The assignment board asked. The publisher answers as Opinion: publish the limits in the same place as the pride.',
+  paragraphs=[
+   'One assignment on the board asks what Sol.College should publish about itself. The founding editorial did not answer it. This page does, as an editorial by the publisher, with the same honesty rules as every other Degen page.',
+   'First: say who can change the page. Sol.College can. No student editor stands between a draft and the live tree. “Independent-minded” is a stance word. Editorial independence is not established. Repeating that sentence is not self-owning for sport; it is the minimum label.',
+   'Second: say what the college has actually recorded. Live apps, lessons, articles, library readings, and journal protocols are different genres. A completion tick is not a testimonial. A campus “paused” agent is not a student scandal. A finding on a practice fork is not an upstream confession.',
+   'Third: publish the refusals next to the demos. The policies page already bans paid tips and states trading rules for named contributors — when contributors exist. Until names exist, the publisher should not imply a newsroom roster.',
+   'Fourth: correct in public. The corrections log is empty because no correction has been issued. An empty log is honest only if the paper would use it. The commitment is the log’s existence, not a performance of remorse.',
+   'This editorial cites the college’s own Degen policies and charter pages. It does not cite a private meeting. It does not invent a whistleblower. It is the publisher talking about the publisher — labelled as such — which is the least bad way to answer the assignment without pretending a student staff filed it.',
+   'Publish the empty seats. A masthead with no names is clearer than a masthead with decorative roles.',
+   'Publish the difference between a practice-fork finding and an upstream incident. The Gifter pull-request article already models the difference; the paper should not blur it for drama.',
+   'Publish when automated assistance wrote a page. This package already says so in the colophon. Keep saying so when the voice sounds more human than the pipeline.',
+   'The assignment is not closed forever. A future student editor can reopen it with a byline that is not the publisher. Until then, this is the publisher’s answer, labelled as such.',
+  ],
+  sources=[
+   dict(label='The Degen policies', url='https://sol.college/degen/policies/', note='Publisher rules.'),
+   dict(label='The Degen charter', url='https://sol.college/degen/charter/', note='What the paper is for.'),
+   dict(label='Founding editorial', url='https://sol.college/degen/editorial/the-chain-needs-a-student-paper/', note='Statement of intent, 17 Nov 2026.'),
+  ],
+  related=['the-college-rule-sits-next-to-the-multiple'],
+ ),
+ dict(
+  slug='the-reading-edition-is-not-a-newsroom',
+  title='The Reading Edition Is Not a Newsroom',
+  desc='Editorial on what document readings are for. Not a report. Not a claim of continuous coverage.',
+  deck='Fifty-six close readings are a library of mechanisms. They are not a week of scoops.',
+  paragraphs=[
+   'Home page copy already says no report has been published. Readers still arrive from search expecting a feed. This editorial is the paper talking to that expectation.',
+   'A reading has a retrieved URL, a retrieval day, and a list of limits. A report would need a method for people, places, or balances the paper actually checked. Conflating the two lets a docs paraphrase wear a reporter’s coat. The coat stays in the closet.',
+   'The reading edition is still journalism-adjacent work: it is adversarial toward marketing language, careful about fees, and unwilling to invent a scene. It is not “coverage” of an event. When an event is covered, the templates page says how it must be labelled.',
+   'Desks remain empty of stories on purpose. Assignments remain commissions. Letters and corrections remain process pages. Inflating those empties with AI atmosphere would be the one sin this package was built to refuse.',
+   'If you came for a tip, you are early and in the wrong room. If you came to see how a fee sentence is taken apart, the readings index is the door. If you came to see what the publisher thinks the paper is for, you are on an editorial — and you should leave knowing it is not a newsroom diary.',
+   'Search engines will still title these pages like news. The on-page label has to work harder for that reason. “Document reading” and “Editorial · not reporting” are load-bearing strings, not decoration.',
+   'A weekly edition remains the aim once checked reporting exists. Aim is not inventory. Inventory today is charter, policies, editorials, desks, assignments, and readings.',
+   'If a reader only has time for one distinction, take this one: a retrieved docs paraphrase is not a reporter’s notebook.',
+  ],
+  sources=[
+   dict(label='The Degen home', url='https://sol.college/degen/', note='Package status.'),
+   dict(label='Readings index', url='https://sol.college/degen/readings/', note='Document readings, not reports.'),
+   dict(label='Story templates', url='https://sol.college/degen/templates/', note='Empty forms for future reports.'),
+  ],
+  related=[],
+ ),
+ dict(
+  slug='graduation-is-not-a-fairy-tale',
+  title='Graduation Is Not a Fairy Tale',
+  desc='Editorial on launchpad graduation language from retrieved Raydium pages. Not a report of a launch.',
+  deck='When a pool “graduates,” ask who moved the keys — and whether the curve language still matches.',
+  paragraphs=[
+   'Chain of Events and Fine Print readings around LaunchLab describe graduation without a soft fallback in the sense the retrieved pages support. Migration wallets and curve descriptions sit nearby in the edition. This editorial is about the story shape those words invite.',
+   'Graduation is a school metaphor attached to a market mechanism. Metaphors smuggle moral arcs: struggle, ascent, arrival. A bonding curve that hands off to a different pool is a handoff. The paper should prefer handoff nouns to graduation adjectives when the docs name a wallet that executes the move.',
+   'Who Gets Paid? already asks who the migration wallet is. That question is the editorial’s spine. If the answer is a named authority on a public page, print it. If the answer is missing, print the absence. Do not fill the absence with a triumph narrative.',
+   'No launch was attended. No pool was migrated by the paper. No creator was interviewed. The stance is linguistic and procedural: retire the fairy tale until the mechanism sentence is complete.',
+   'Curves that do not ask the creator for both sides, and migrations that do not fall back, are mechanism facts when the pages say so. Build the nut graf from those facts.',
+   'Culture coverage of memes can wait until the fee and migration sentences are on the page. The order is the ethics.',
+   'Creators who want a triumph narrative can buy ads elsewhere. This paper sells scrutiny.',
+  ],
+  sources=[
+   dict(label='Raydium LaunchLab overview', url='https://docs.raydium.io/products/launchlab/overview', note='Retrieved for the reading edition, 17 Nov 2026.'),
+  ],
+  related=['graduation-does-not-fall-back', 'the-migration-wallet-is-who-graduates-the-pool'],
+ ),
+ dict(
+  slug='meme-markets-need-the-fee-line-first',
+  title='Meme Markets Need the Fee Line First',
+  desc='Editorial on meme-market fee and open-fee language in retrieved docs. Not a memecoin case. Not a report.',
+  deck='Before culture, print the open fee. Before the joke, print who keeps the residual.',
+  paragraphs=[
+   'Culture and money desks both touch memes. The assignment board still holds separate cases for and against memecoins. This editorial does not complete those assignments. It states a filing order for when meme markets appear in docs the paper retrieves.',
+   'Order one: the open fee and any special pool share. Order two: whether the pool is the counterparty. Order three: what happens on failure or graduation. Order four: culture. Reverse that order and you get a comedy page with a fee surprise.',
+   'The paper’s humour, when it exists, will be labelled. Satire that resembles an allegation must be unmistakable. No satire is published in this release. Until it is, the fee line is the serious joke: markets that sell vibes still settle in accounting.',
+   'Sources are the fee and pool readings already in the edition. No token is named here as a pick. No chart is reprinted. The editorial is a sequence rule for future pages, including future Opinion pages that finally take the memecoin assignments.',
+   '“The meme is not where the multiple lives” is already a Claim Check title in the edition. This editorial is the filing rule that generalizes it.',
+   'Open fees that differ for meme markets are not trivia. They are the first politics sentence.',
+   'When the memecoin assignments are finally written, they should open with the fee line even if the rest of the piece is culture. Especially if the rest of the piece is culture.',
+  ],
+  sources=[
+   dict(label='Flash Trade — Degen Mode', url='https://docs.flash.trade/flash-trade/getting-started/degen-mode.md', note='Related meme fee readings share this docs host.'),
+   dict(label='Raydium docs', url='https://docs.raydium.io/products/launchlab/overview', note='Launch and graduation context.'),
+  ],
+  related=['meme-markets-pay-a-different-open-fee', 'the-meme-pool-keeps-a-larger-share-of-the-fee', 'the-meme-is-not-where-the-multiple-lives'],
+ ),
+]
+
+
+def all_editorials():
+  return list(EDITORIALS)
