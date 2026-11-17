@@ -77,6 +77,10 @@ pre.diagram,pre.sh{position:relative}
 .hub-grid a.card{text-decoration:none;color:inherit;display:block}
 .hub-grid a.card h3{margin-top:0}
 .continue-list{max-width:68ch}
+.proposal{color:var(--mut)}
+.proposal a{color:var(--a)}
+.cat-nav{display:flex;flex-wrap:wrap;gap:6px 14px;max-width:68ch}
+.workflow{white-space:pre-wrap;max-width:40ch}
 @media (prefers-reduced-motion: reduce){
  .readbar>span{transition:none}
 }
