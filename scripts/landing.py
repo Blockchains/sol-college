@@ -35,8 +35,7 @@ COMMIT = 'https://github.com/Blockchains/sol-college/issues/new?template=commit-
 
 TITLE = 'Sol.College — Learn, Test and Improve Real Solana dApps'
 DESCRIPTION = (
-    'Learn on real Solana applications, turn findings into patches, and offer those '
-    'improvements back to the original projects. Practice environments are independent '
+    'Learn on Solana apps and offer patches back. Practice environments are independent '
     'forks we ran on devnet, not a claim that the original team is a partner.'
 )
 

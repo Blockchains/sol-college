@@ -932,7 +932,10 @@ def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one
   guide_paths = []
   for g in guides.GUIDES:
     path = f'/library/guides/{g["slug"]}/'
-    gdesc = g['question'] + ' A reading guide. It is not an additional holding and it reports no new measurement.'
+    limit = ' It is not an additional holding and it reports no new measurement.'
+    gdesc = g['question'].strip() + limit
+    if len(gdesc) > 158:
+      raise SystemExit('library: guide description is over 158 characters ' + g['slug'])
     write_page(S, page, css, path, g['title'], gdesc, guide_html(g, by_id), ld(g['title'], gdesc, path))
     guide_paths.append(path)
   desc = 'A catalogue of Solana explanations, lessons, and official references. Search does not require a wallet. Holdings are counted in public.'
