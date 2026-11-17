@@ -81,6 +81,13 @@ pre.diagram,pre.sh{position:relative}
 .proposal a{color:var(--a)}
 .cat-nav{display:flex;flex-wrap:wrap;gap:6px 14px;max-width:68ch}
 .workflow{white-space:pre-wrap;max-width:40ch}
+.lib-page .finder input{font-size:16px}
+.lib-item{margin:12px 0}
+.lib-item h3{word-break:break-word}
+.lib-item .labels{display:flex;flex-wrap:wrap;gap:6px;padding:0;margin:8px 0;list-style:none}
+.lib-item .labels li{border:1px solid var(--line);border-radius:999px;padding:2px 8px;font-size:13px;color:#fff}
+.lib-page :focus-visible{outline:2px solid var(--a);outline-offset:2px}
+.lib-page h2,.lib-page .room{scroll-margin-top:88px}
 @media (prefers-reduced-motion: reduce){
  .readbar>span{transition:none}
 }
