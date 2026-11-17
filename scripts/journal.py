@@ -108,6 +108,24 @@ def shell(kicker, title, lead, body, trail):
   return f'{crumbs(trail)}<article class="lesson jss"><p class=eyebrow>{E(kicker)}</p><h1>{E(title)}</h1><p class=lead>{lead}</p>{body}</article>'
 def _lis(items):
   return ''.join(f'<li>{E(x)}</li>' for x in items)
+def meta_line(prefix, question):
+  """A snippet that stays under 158 characters and keeps the page's limit."""
+  full = prefix + question
+  if len(full) <= 158:
+    return full
+  tail = ' No observations have been collected.'
+  room = 158 - len(prefix) - len(tail)
+  short = question.strip().rstrip('?.')
+  if room >= 24:
+    short = short[:room].rsplit(' ', 1)[0]
+  stop = {'a', 'an', 'the', 'that', 'to', 'of', 'and', 'or', 'for', 'with', 'its', 'their', 'which', 'when', 'than', 'into', 'from', 'by', 'as', 'at', 'on', 'in'}
+  while short and short.split()[-1].lower().strip(',;:.') in stop:
+    short = short.rsplit(' ', 1)[0]
+  short = short.rstrip(' ,;:.')
+  text = prefix + short + '.' + tail
+  if len(text) > 158:
+    raise SystemExit('journal: meta description is over 158 characters')
+  return text
 def protocol_page(p):
   import journal_depth as depth
   extra = depth.DEPTH[p['slug']]
@@ -152,7 +170,7 @@ def protocol_page(p):
 <p>It is not peer-reviewed research. It is not a preprint of findings. The potential contribution, if the work is done carefully, would be: {E(p['contribution'])}</p>
 <p><a href="/journal/programme/">Back to the programme</a> · <a href="/journal/methods/">How to read a protocol</a> · <a href="/journal/policies/#integrity">Research integrity</a></p>'''
   title = p['title']
-  desc = 'Prospective protocol. ' + p['question']
+  desc = meta_line('Prospective protocol. ', p['question'])
   html = shell('Protocol · Volume 1 · not started', title, E(p['subtitle']), body, [f'<span>{E(title)}</span>'])
   return p['slug'], title, desc, html
 def sketch_page(s):
@@ -180,7 +198,7 @@ def sketch_page(s):
 <p>It is not peer-reviewed research. A sketch that sounds specific is still a sketch.</p>
 <p><a href="/journal/programme/#sketches">Back to the programme</a> · <a href="/journal/methods/">How to read a protocol</a></p>'''
   title = s['title']
-  desc = 'Research sketch, not a study. ' + s['question']
+  desc = meta_line('Research sketch, not a study. ', s['question'])
   html = shell('Sketch · not a protocol · not started', title, 'A question with its terms. Not a method a team can run, and not a result.', body, [f'<span>{E(title)}</span>'])
   return s['slug'], title, desc, html
 def policies_page():
@@ -385,7 +403,7 @@ def write_page(S, page, css, path, title, desc, main, data):
 def write(S, page, css):
   pages = []
   home = home_page()
-  desc = 'The Journal of Solana Studies. This release is the charter, the policies, six prospective protocols, and twelve sketches. No study has been completed and nothing is peer reviewed.'
+  desc = 'Journal of Solana Studies: the charter, the policies, six prospective protocols and twelve sketches. No study has been completed and nothing is peer reviewed.'
   write_page(S, page, css, '/journal/', 'Journal of Solana Studies', desc, home, ld('Journal of Solana Studies', desc, '/journal/'))
   pages.append(('/journal/', 'Journal of Solana Studies', desc))
   pol = policies_page()

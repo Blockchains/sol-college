@@ -341,7 +341,8 @@ def page(main,title,desc,path):
 n=len(LIVE); cards=[]
 for x in PATH_LIVE:
   L=lesson_of(x); sl=x['slug']; body=render(x,L,n)
-  desc=(L.get('summary') or L['what'])[:155]
+  raw=' '.join(str(L.get('summary') or L['what']).split())
+  desc=raw if len(raw)<=158 else raw[:157].rsplit(' ',1)[0].rstrip(',;:.')+'…'
   pg=page(body,f'{L["title"]}: step-by-step Solana lesson, live on devnet | Sol.College',desc,f'/lessons/{sl}/')
   os.makedirs(f'{S}/lessons/{sl}',exist_ok=True); open(f'{S}/lessons/{sl}/index.html','w').write(pg)
   os.makedirs(f'{S}/explore/{sl}',exist_ok=True); open(f'{S}/explore/{sl}/index.html','w').write(pg)
@@ -504,7 +505,7 @@ gloss_body=f'''<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a
 <dl class=gloss>{''.join(gloss_item(t) for t in GLOSS.get("terms",[]))}</dl>
 <p class=note>These are the terms the <a href="/lessons/path/">core lessons</a> use. For a broader list that also covers the source library, see the site <a href="/glossary/">glossary</a>.</p>'''
 os.makedirs(f'{S}/lessons/glossary',exist_ok=True)
-open(f'{S}/lessons/glossary/index.html','w').write(page(gloss_body,'Solana developer glossary: PDAs, CPIs, rent, has_one and more | Sol.College','Plain-English Solana and Anchor terms — PDAs, CPIs, rent, account constraints, bonding curves — each linked to the live Sol.College lesson that shows it in real code.','/lessons/glossary/'))
+open(f'{S}/lessons/glossary/index.html','w').write(page(gloss_body,'Solana developer glossary: PDAs, CPIs, rent, has_one and more | Sol.College','Plain-English Solana and Anchor terms, each linked to the live lesson that shows the term in real code.','/lessons/glossary/'))
 # ---- how to use a lesson, and the how-to-build guides (incremental deploys skip build.py)
 def _guide_page(body, title, desc, path):
   return page(CSS+body, title, desc, path)
@@ -585,3 +586,5 @@ print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'fu
 _landing.START_LESSON=f'/lessons/{first["slug"]}/'
 _landing.write_home(S)
 _landing.enrich_lessons(S)
+import seo as _seo
+_seo.apply(S)
