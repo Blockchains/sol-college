@@ -1,0 +1,93 @@
+{
+ "slug": "solana-abi-management-process",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "The file proposes the Solana ABI management process. Per the file, the ABI management process (per the file) is an engineering practice (per the file) and a supporting technical (per the file) framework to avoid introducing (per the file) unintended incompatible ABI changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Problem",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana ABI (binary (per the file) interface to the cluster) (per the file) is currently only defined (per the file) implicitly by the implementation and calls for a very careful eye (per the file) to notice breaking changes. Per the file, this makes it extremely (per the file) difficult to upgrade the (per the file) software on an existing (per the file) cluster without rebooting the ledger. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Requirements and objectives",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, unintended ABI changes may be detected as CI failures mechanically. Per the file, newer implementation has to be able to process (per the file) the oldest data (since (per the file) genesis) once we go mainnet. Per the file, the objective of this (per the file) proposal is to protect (per the file) the ABI while sustaining (per the file) rather rapid development by (per the file) opting for a mechanical (per the file) process rather than a (per the file) very long human-driven auditing process.",
+    "Per the file, once signed cryptographically, data blob has to be identical, so no (per the file) in-place data format update (per the file) is possible regardless of inbound (per the file) and outbound of the online system. Per the file, also, considering the sheer volume of txs we're aiming to handle, (per the file) retrospective in-place update is undesirable (per the file) at best."
+   ]
+  },
+  {
+   "heading": "Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, instead of natural human's (per the file) eye due-diligence, which ought to be assumed to fail regularly, we (per the file) need a systematic assurance of not (per the file) breaking the cluster when changing the (per the file) source code. Per the file, for that purpose, we (per the file) introduce a mechanism of (per the file) marking every ABI-related things (per the file) in source code (structs, enums) with the new #[frozen_abi] attribute. Per the file, this takes hard-coded digest (per the file) value derived from types of (per the file) its fields via ser::Serialize.",
+    "Per the file, and the attribute automatically (per the file) generates a unit test (per the file) to try to detect (per the file) any unsanctioned changes to (per the file) the marked ABI-related things. Per the file, however, the detection cannot (per the file) be complete; no matter (per the file) how hard we statically (per the file) analyze the source code, (per the file) it's still possible to break ABI. Per the file, for example, this includes not-derived hand-written ser::Serialize, underlying library's implementation (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) changes (as an illustration bincode), CPU architecture differences. Per the file, the detection of these (per the file) possible ABI incompatibilities is (per the file) out-of-scope for this ABI management."
+   ]
+  },
+  {
+   "heading": "Definitions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, aBI item/type: various types (per the file) to be used for serialization, (per the file) which collectively comprises the whole (per the file) ABI for any system components. Per the file, for example, those types include structs and enums. Per the file, aBI item digest: Some (per the file) fixed hash derived from (per the file) type information of ABI item's fields. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Example",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Developer's workflow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to know the digest (per the file) for new ABI items, (per the file) developers can add frozen_abi (per the file) with a random digest value (per the file) and run the unit tests (per the file) and replace it with the (per the file) correct digest from the assertion (per the file) test error message. Per the file, run unit tests using (per the file) the following command to generate digest values: In general, once we (per the file) add frozen_abi and its (per the file) change is published in the (per the file) stable release channel, its digest (per the file) should never change.",
+    "Per the file, if such a change (per the file) is needed, we should (per the file) opt for defining a (per the file) new struct like FooV1. Per the file, and special release flow like hard forks ought to be approached. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation remarks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we use some degree (per the file) of macro machinery to (per the file) automatically generate unit tests (per the file) and calculate a digest from ABI items. Per the file, this is doable by (per the file) clever use of serde::Serialize (per the file) ([1]) and any::type_name ([2]). Per the file, for a precedent for (per the file) similar implementation, ink from (per the file) the Parity Technologies [3] could be informational. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation details",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the implementation's goal is (per the file) to detect unintended ABI changes (per the file) automatically as much as possible. Per the file, to that end, the (per the file) digest of structural ABI (per the file) information is calculated with (per the file) best-effort accuracy and stability. Per the file, when the ABI digest (per the file) check is run, it (per the file) dynamically computes an ABI (per the file) digest by recursively digesting (per the file) the ABI of fields (per the file) of the ABI item, (per the file) by re-using the serde's (per the file) serialization functionality, proc macro and generic specialization.",
+    "Per the file, and then, the check (per the file) assert!s that its finalized (per the file) digest value is identical as (per the file) what is specified in the (per the file) frozen_abi attribute. Per the file, to realize that, it (per the file) creates an example instance (per the file) of the type and (per the file) a custom Serializer instance (per the file) for serde to recursively (per the file) traverse its fields as (per the file) if serializing the example for real.",
+    "Per the file, this traversing has to be done via serde (per the file) to really capture what (per the file) kinds of data actually (per the file) would be serialized by (per the file) serde, even considering custom non-derived Serialize trait implementations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "The ABI digesting process",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this part is a bit complex. Per the file, there is three inter-depending (per the file) parts: AbiExample, AbiDigester and AbiEnumVisitor. Per the file, first, the generated test (per the file) creates an example instance (per the file) of the digested type (per the file) with a trait called AbiExample, which ought to be implemented for all (per the file) of digested types like (per the file) the Serialize and return (per the file) Self like the Default trait. Per the file, usually, it's provided via (per the file) generic trait specialization for most (per the file) of common types.",
+    "Per the file, also it is possible (per the file) to derive for struct and enum and may be hand-written if needed. Per the file, the custom Serializer is called AbiDigester. Per the file, and when it's called (per the file) by serde to serialize some (per the file) data, it recursively collects ABI (per the file) information as much as possible. Per the file, abiDigester's internal state for (per the file) the ABI digest is updated (per the file) differentially depending on the type of data.",
+    "Per the file, this logic is specifically (per the file) redirected via with a (per the file) trait called AbiEnumVisitor for each enum type. Per the file, as the name suggests, (per the file) there is no need (per the file) to implement AbiEnumVisitor for other types. Per the file, to summarize this interplay, (per the file) serde handles the recursive (per the file) serialization control flow in tandem with AbiDigester. Per the file, the initial entry point (per the file) in tests and child AbiDigesters use AbiExample recursively to (per the file) create an example object hierarchical graph.",
+    "Per the file, and AbiDigester uses AbiEnumVisitor (per the file) to inquiry the actual (per the file) ABI information using the constructed sample. Per the file, default isn't enough for AbiExample. Per the file, various collection's ::default() is (per the file) empty, yet, we want to (per the file) digest them with actual items. Per the file, and, ABI digesting can't (per the file) be realized only with AbiEnumVisitor. Per the file, abiExample is required because (per the file) an actual instance of (per the file) type is needed to (per the file) actually traverse the data via serde.",
+    "Per the file, on the other hand, (per the file) ABI digesting can't be (per the file) done only with AbiExample, either. Per the file, abiEnumVisitor is required because (per the file) all variants of an (per the file) enum cannot be traversed (per the file) just with a single (per the file) variant of it as a ABI example.",
+    "Per the file, digestible information: rust's type (per the file) name serde's data type name (per the file) all fields in struct all variants (per the file) in enum struct: normal(struct {...}) and tuple-style (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (struct(...)) enum: normal variants and struct- and tuple- styles. attributes: serde(serialize_with=...) and serde(skip) Not digestible information: Any custom serialize code path not touched by the sample provided by AbiExample. Per the file, (technically not possible) generics (has to be a concrete type; (per the file) use frozen_abi on concrete type aliases)."
+   ]
+  },
+  {
+   "heading": "References",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file ends with citations or licence text. Those lines were not treated as findings for this reading note."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,63 @@
+{
+ "slug": "disable-rent-fees-collection",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a new feature (per the file) to disable rent fees collections. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on solana network, (Rent) (per the file) [https://solana.com/docs/intro/rent] was introduced to (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) acct for the storage costs of an acct initially. Per the file, however, as the disks (per the file) become cheaper and cheaper. Per the file, the cost of storing the acct becomes negligible. Per the file, furthermore, today it is (per the file) no longer possible to (per the file) create any new rent-paying accts on the network.",
+    "Per the file, any attempt to create a rent-paying accts will result a tx error. Per the file, the total number of rent-paying accts on solana network is phasing out. Per the file, therefore, when all the rent-paying accts are gone in the network, (per the file) we would like to disable (per the file) rent fee collection on the (per the file) network completely through a feature. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when the feature \"disable (per the file) rent fees collections\" is (per the file) activated, rent will no (per the file) longer be collected from accts, nor will the collected (per the file) rent fees be distributed to nodes. Per the file, note that this does (per the file) **not** change the requirement (per the file) that existing rent-paying accts need to be made rent-exempt (per the file) first, before any withdrawals may be made, should there be any (per the file) such rent-paying accts."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the main impact of (per the file) this SIMD is to simply the node design. Per the file, rent collection code is (per the file) a non-trivial piece of (per the file) code inside the bank. Per the file, by removing it, we (per the file) simply the overall code (per the file) of bank, and we (per the file) no longer need to (per the file) maintain it in existing node client code. Per the file, this will also help (per the file) to simplify the development of other node client implementations, which don't (per the file) need to replicate the rent collection logic."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is to be no more rent-paying accts before this feature is activated. Per the file, it is already impossible (per the file) to create any new rent-paying accts on the network, there ought to be no security issues. Per the file, however, if for some reason rent-paying accts still exist or are created (per the file) in the network, when the (per the file) feature is activated, the network (per the file) will still work as expected. Per the file, the only difference is (per the file) that rent fees will (per the file) no longer be collected or distributed."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

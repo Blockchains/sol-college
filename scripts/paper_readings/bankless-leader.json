@@ -1,0 +1,79 @@
+{
+ "slug": "bankless-leader",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, a bankless leader does (per the file) the minimum amount of (per the file) work to produce a valid block. Per the file, the leader is tasked with ingress txs, sorting and filtering valid txs, arranging them into entries, (per the file) shredding the entries and broadcasting the shreds. Per the file, while a node only needs to reassemble (per the file) the block and replay (per the file) execution of well formed entries. Per the file, the leader does 3x (per the file) more memory operations before (per the file) any bank execution than the node per processed tx. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rationale",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, normal bank operation for (per the file) a spend needs to (per the file) do 2 loads and 2 stores. Per the file, with this design leader (per the file) just does 1 load. (per the file) so 4x less account_db (per the file) work before generating the block. Per the file, the store operations are (per the file) likely to be more expensive than reads. Per the file, when replay stage starts processing the same txs, it can assume that (per the file) PoH is valid, and (per the file) that all the entries (per the file) are safe for parallel execution.",
+    "Per the file, the fee accts that have been loaded (per the file) to produce the block (per the file) are likely to still (per the file) be in memory, so the additional load ought to be warm and the (per the file) cost is likely to be amortized. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Fee Account",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the fee acct pays for the tx to be included in the block. Per the file, the leader only needs (per the file) to validate that the fee acct has the balance to (per the file) pay for the fee. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Balance Cache",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for the duration of (per the file) the leaders consecutive blocks, (per the file) the leader maintains a (per the file) temporary balance cache for (per the file) all the processed fee accts. Per the file, the cache is a (per the file) map of pubkeys to lamports. Per the file, at the start of (per the file) the first block the (per the file) balance cache is empty. Per the file, at the end of (per the file) the last block the cache is destroyed.",
+    "Per the file, the balance cache lookups (per the file) must reference the same (per the file) base fork for the (per the file) entire duration of the cache. Per the file, at the block boundary, the cache may be reset along with (per the file) the base fork after (per the file) replay stage finishes verifying the previous block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Balance Check",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, prior to the balance (per the file) check, the leader validates (per the file) all the signatures in the tx. Per the file, verify the accts are not in use (per the file) and BlockHash is valid. Per the file, check if the fee acct is present in the (per the file) cache, or load the acct from accounts_db and store (per the file) the lamport balance in the cache. Per the file, if the balance is (per the file) less than the fee, drop the tx.",
+    "Per the file, subtract the fee from the balance. Per the file, for all the keys in the tx that are Credit-Debit and (per the file) are referenced by an instruction, (per the file) reduce their balance to 0 (per the file) in the cache. Per the file, the acct fee is declared as (per the file) Credit-Debit, but as long (per the file) as it is not used (per the file) in any instruction its balance (per the file) will not be reduced to 0."
+   ]
+  },
+  {
+   "heading": "Leader Replay",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, leaders will need to (per the file) replay their blocks as (per the file) part of the standard replay stage operation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Leader Replay With Consecutive Blocks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a leader may be scheduled to produce (per the file) multiple blocks in a row. Per the file, in that scenario the (per the file) leader is likely to (per the file) be producing the next (per the file) block while the replay (per the file) stage for the first block is playing. Per the file, when the leader finishes (per the file) the replay stage it (per the file) can reset the balance (per the file) cache by clearing it, (per the file) and set a new (per the file) fork as the base (per the file) for the cache which (per the file) can become active on the next block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Resetting the Balance Cache",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at the start of (per the file) the block, if the (per the file) balance cache is uninitialized, (per the file) set the base fork (per the file) for the balance cache (per the file) to be the parent (per the file) of the block and (per the file) create an empty cache. if the cache is (per the file) initialized, check if block's (per the file) parents has a new frozen (per the file) bank that is newer than (per the file) the current base fork for (per the file) the balance cache. if a parent newer than (per the file) the cache's base fork exist, (per the file) reset the cache to the parent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact on Clients",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the same fee acct may be reused many times (per the file) in the same block (per the file) until it is used (per the file) once as Credit-Debit by an instruction. Per the file, clients that transmit a large number of txs per second should use a dedicated fee acct that is not used (per the file) as Credit-Debit in any instruction. Per the file, once an acct fee is used as (per the file) Credit-Debit, it will fail (per the file) the balance check until the (per the file) balance cache is reset."
+   ]
+  },
+  {
+   "heading": "Check out the [SIMD here to contribute](https://github.com/solana-foundation/solana-improvement-documents/pull/5)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

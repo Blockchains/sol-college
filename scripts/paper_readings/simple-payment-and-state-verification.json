@@ -1,0 +1,92 @@
+{
+ "slug": "simple-payment-and-state-verification",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, it is often useful (per the file) to allow low resourced (per the file) clients to participate in a Solana cluster. Per the file, be this participation economic (per the file) or contract execution, verification (per the file) that a client's activity (per the file) has been accepted by the (per the file) network is typically expensive. The file lays out a mechanism (per the file) for such clients to (per the file) confirm that their actions (per the file) have been committed to (per the file) the ledger state with (per the file) minimal resource expenditure and third-party trust. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "A Naive Approach",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators store the signatures of recently confirmed txs for a short period (per the file) of time to ensure (per the file) that they are not (per the file) processed more than once. Per the file, validators provide a JSON (per the file) RPC endpoint, which clients (per the file) can use to query (per the file) the cluster if a tx has been recently processed. Per the file, validators also provide a (per the file) PubSub notification, whereby a (per the file) client registers to be (per the file) notified when a given (per the file) signature is observed by the node.",
+    "Per the file, while these two mechanisms (per the file) allow a client to (per the file) verify a payment, they (per the file) are not a proof (per the file) and rely on completely trusting a node. Per the file, we will describe a (per the file) way to minimize this (per the file) trust using Merkle Proofs to anchor the node's response in the ledger, (per the file) allowing the client to confirm (per the file) on their own that a (per the file) sufficient number of their preferred nodes have confirmed a tx. Per the file, requiring multiple node attestations further reduces trust in the node, as it increases both (per the file) the technical and economic (per the file) difficulty of compromising several other network participants."
+   ]
+  },
+  {
+   "heading": "Light Clients",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a 'light client' is (per the file) a cluster participant that fails to itself run a node. Per the file, this light client would (per the file) provide a level of (per the file) security greater than trusting a remote node, without requiring the light (per the file) client to spend a (per the file) lot of resources verifying the ledger. Per the file, rather than providing tx signatures directly to a light client, the node instead generates a Merkle Proof from the tx of interest to the (per the file) root of a Merkle Tree of all txs in the including block.",
+    "Per the file, this Merkle Root is (per the file) stored in a ledger (per the file) entry which is voted on by nodes, providing it consensus legitimacy. Per the file, the additional level of (per the file) security for a light (per the file) client depends on an (per the file) initial canonical set of nodes the light client considers (per the file) to be the stakeholders of the cluster. Per the file, as that set is (per the file) changed, the client can (per the file) update its internal set of known nodes with receipts.",
+    "Per the file, this may become challenging (per the file) with a large number of delegated stakes. Per the file, validators themselves may want (per the file) to use light client (per the file) APIs for performance reasons. Per the file, for example, during the (per the file) initial launch of a node, the node may use a cluster (per the file) provided checkpoint of the (per the file) state and verify it with a receipt. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Receipts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a receipt is a (per the file) minimal proof that; a tx has been included in (per the file) a block, that the (per the file) block has been voted (per the file) on by the client's (per the file) preferred set of nodes and that the votes have (per the file) reached the desired confirmation depth. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Transaction Inclusion Proof",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a tx inclusion proof is a (per the file) data structure that contains (per the file) a Merkle Path from a tx, through an Entry-Merkle to (per the file) a Block-Merkle, which is included (per the file) in a Bank-Hash with the required (per the file) set of node votes. Per the file, a chain of PoH Entries containing subsequent node votes, deriving from the (per the file) Bank-Hash, is the proof of confirmation. Per the file, transaction Merkle An Entry-Merkle (per the file) is a Merkle Root including all txs in a given entry, sorted by signature.",
+    "Per the file, each tx in an entry is (per the file) already merkled here: https://github.com/solana-labs/solana/blob/b6bfed64cb159ee67bb6bdbaefc7f833bbed3563/ledger/src/entry.rs#L205. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, this means we can show a tx T was included in an entry E. Per the file, a Block-Merkle is the (per the file) Merkle Root of all the (per the file) Entry-Merkles sequenced in the block.",
+    "Per the file, together the two merkle proofs show a tx T was included in (per the file) a block with bank hash B. Per the file, an Accounts-Hash is the (per the file) hash of the concatenation of (per the file) the state hashes of each acct modified during the current slot. Per the file, transaction status is necessary (per the file) for the receipt because (per the file) the state receipt is (per the file) constructed for the block.",
+    "Per the file, two txs over the same state (per the file) can appear in the (per the file) block, and therefore, there (per the file) is no way to (per the file) infer from just the state whether a tx that is committed to (per the file) the ledger has succeeded (per the file) or failed in modifying the intended state. Per the file, it may not be (per the file) necessary to encode the (per the file) full status code, but (per the file) a single status bit to indicate the tx's success.",
+    "Per the file, currently, the Block-Merkle is (per the file) not implemented, so to verify (per the file) E was an entry in (per the file) the block with bank hash (per the file) B, we would need to (per the file) provide all the entry hashes (per the file) in the block. Per the file, ideally this Block-Merkle would (per the file) be implemented, as the alternative (per the file) is very inefficient.",
+    "Per the file, block Headers In order to verify tx inclusion proofs, light clients (per the file) need to be able (per the file) to infer the topology (per the file) of the forks in (per the file) the network More specifically, (per the file) the light client will (per the file) need to track incoming (per the file) block headers such that (per the file) given two bank hashes (per the file) for blocks A and (per the file) B, they can determine (per the file) whether A is an (per the file) ancestor of B (Below (per the file) section on Optimistic Confirmation Proof explains why!). Per the file, contents of header are (per the file) the fields necessary to (per the file) compute the bank hash.",
+    "Per the file, a Bank-Hash is the (per the file) hash of the concatenation of (per the file) the Block-Merkle and Accounts-Hash described (per the file) in the Transaction Merkle section above. Per the file, in the code: https://github.com/solana-labs/solana/blob/b6bfed64cb159ee67bb6bdbaefc7f833bbed3563/runtime/src/bank.rs#L3468-L3473 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) A good place to implement this logic along existing streaming logic in the node's replay logic: https://github.com/solana-labs/solana/blob/b6bfed64cb159ee67bb6bdbaefc7f833bbed3563/core/src/replay_stage.rs#L1092-L1096 Optimistic Confirmation Proof Currently optimistic confirmation is detected via a listener that monitors gossip and the replay pipeline for votes: https://github.com/solana-labs/solana/blob/b6bfed64cb159ee67bb6bdbaefc7f833bbed3563/core/src/cluster_info_vote_listener.rs#L604-L614.",
+    "Per the file, each vote is a signed tx that includes the bank (per the file) hash of the block the node voted for, i.e. the (per the file) B from the Transaction Merkle section above. Per the file, once a certain threshold (per the file) T of the network (per the file) has voted on a (per the file) block, the block is considered optimistically confirmed. Per the file, the votes made by (per the file) this group of T nodes is needed to show (per the file) the block with bank (per the file) hash B was optimistically confirmed.",
+    "Per the file, however other than some (per the file) metadata, the signed votes (per the file) themselves are not currently (per the file) stored anywhere, so they (per the file) can't be retrieved on demand. Per the file, these votes probably need (per the file) to be persisted in (per the file) Rocksdb database, indexed by (per the file) a key (Slot, Hash, (per the file) Pubkey) which represents the (per the file) slot of the vote, (per the file) bank hash of the vote, and vote acct pubkey responsible for the vote.",
+    "Per the file, together, the tx merkle and optimistic confirmation proofs may be provided over RPC (per the file) to subscribers by extending (per the file) the existing signature subscription logic. Per the file, clients who subscribe to (per the file) the \"Confirmed\" confirmation level (per the file) are already notified when (per the file) optimistic confirmation is detected, a flag may be provided to signal (per the file) the two proofs above (per the file) should also be returned. Per the file, it is important to (per the file) note that optimistically confirming (per the file) B also implies that (per the file) all ancestor blocks of (per the file) B are also optimistically (per the file) confirmed, and also that not all blocks is to be optimistically confirmed.",
+    "Per the file, so in the example (per the file) above if a block (per the file) B' is optimistically confirmed, (per the file) then so is B. Per the file, thus if a tx was in block B, the tx merkle in the proof is to be for block B, (per the file) but the votes presented in the proof is to be for block B'. Per the file, this is why the (per the file) headers in the Block (per the file) headers section above are (per the file) important, the client will (per the file) need to verify that (per the file) B is indeed an ancestor of B'.",
+    "Per the file, proof of Stake Distribution (per the file) Once presented with the tx merkle and optimistic confirmation (per the file) proofs above, a client can verify a tx T was optimistically confirmed (per the file) in a block with bank hash B. Per the file, the last missing piece (per the file) is how to verify (per the file) that the votes in (per the file) the optimistic proofs above (per the file) actually constitute the valid (per the file) T percentage of the (per the file) stake necessary to uphold (per the file) the safety guarantees of \"optimistic confirmation\".",
+    "Per the file, one way to approach (per the file) this might be for (per the file) every epoch, when the (per the file) stake set changes, to (per the file) write all the stakes to a system acct, and then have nodes subscribe to that system acct. Per the file, full nodes can then (per the file) provide a merkle proving that the system acct state was updated in (per the file) some block B, and (per the file) then show that the (per the file) block B was optimistically confirmed/rooted. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Account State Verification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an acct's state (balance or other data) may be verified by submitting a tx with a **_TBD_** Instruction to the cluster. Per the file, the client can then (per the file) use a Transaction Inclusion Proof to (per the file) verify whether the cluster agrees that the acct has reached the expected state. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Votes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, leaders should coalesce the node votes by stake weight (per the file) into a single entry. Per the file, this will reduce the (per the file) number of entries necessary (per the file) to create a receipt. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Chain of Entries",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a receipt has a (per the file) PoH link from the (per the file) payment or state Merkle (per the file) Path root to a (per the file) list of consecutive validation votes. Per the file, it contains the following: (per the file) Transaction -&gt; Entry-Merkle -&gt; (per the file) Block-Merkle -&gt; Bank-Hash And a (per the file) vector of PoH entries: Validator vote entries (per the file) Ticks Light entries The light entries are reconstructed from Entries (per the file) and simply show the entry Merkle Root (per the file) that was mixed in to the PoH (per the file) hash, instead of the full tx set.",
+    "Per the file, clients fail to need the starting vote state. Per the file, the fork selection algorithm is defined such (per the file) that only votes that appear after the tx provide finality for the tx, and finality is independent (per the file) of the starting state. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Verification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a light client that (per the file) is aware of the supermajority set nodes can verify a receipt (per the file) by following the Merkle (per the file) Path to the PoH chain. Per the file, the Block-Merkle is the (per the file) Merkle Root and will appear (per the file) in votes included in an Entry. Per the file, the light client can simulate fork selection for the consecutive votes (per the file) and verify that the (per the file) receipt is confirmed at (per the file) the desired lockout threshold. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Synthetic State",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, synthetic state ought to be computed into the (per the file) Bank-Hash along with the (per the file) bank generated state. Per the file, for example: Epoch node accts and their stakes and weights. Per the file, computed fee rates These (per the file) values should have an (per the file) entry in the Bank-Hash. Per the file, they should live under known accts, and therefore have an (per the file) index into the hash concatenation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "slug": "solana-commitment-status",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Commitment metric",
+   "where": "Docs design note",
+   "paragraphs": [
+    "The retrieved page says the commitment metric gives clients a standard measure of network confirmation for the block. Clients can then use that information to derive their own measures of commitment. The page’s front matter lists processed, confirmed, and finalized among the keywords, together with stake level, block, and blockhash. Those definitions are the page’s. This reading is not a confirmation log from a wallet or RPC session."
+   ]
+  },
+  {
+   "heading": "Three statuses and the property table",
+   "where": "Docs design note",
+   "paragraphs": [
+    "Three specific commitment statuses are named: Processed, Confirmed, and Finalized. A property table in the file marks which properties hold at each status. All three statuses are marked for having received the block, for the block being on the majority fork, and for the block containing the target transaction. Confirmed and Finalized are marked for 66%+ stake having voted on the block; Processed is not. Only Finalized is marked for 31 or more confirmed blocks built atop the block. Those cells are the document’s claims. Sol.College did not re-derive the percentages or the thirty-one-block figure from cluster observation for this catalogue record."
+   ]
+  }
+ ]
+}

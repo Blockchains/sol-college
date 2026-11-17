@@ -1,0 +1,57 @@
+{
+ "slug": "stop-special-casing-of-vote-cu-cost",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file removes the use of (per the file) statically defined compute unit (per the file) (CU) costs for Simple Vote txs and instead accts for them in the (per the file) same way as normal txs when enforcing block CU limits. Per the file, this also renders the (per the file) Vote CU limit obsolete. Per the file, because this change affects consensus behavior, it has to be gated behind a feature flag. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, simple Vote txs currently reserve a fixed, (per the file) statically defined number of (per the file) compute units for cost (per the file) tracking, based on the (per the file) assumption that the Vote (per the file) program, as a builtin (per the file) program, has a static execution CU cost. Per the file, however, SIMD-0387 specifies that (per the file) the Vote program is to be removed from builtin cost modeling. Per the file, as a result, the (per the file) cost of Simple Vote txs should no longer rely (per the file) on static CU assumptions (per the file) and should instead be (per the file) calculated in the same manner as other txs."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, stop using statically defined (per the file) CU values for Simple Vote txs. Per the file, calculate the cost of Simple Vote txs using the same cost (per the file) model and accounting path as normal txs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the impact on cost (per the file) consuming/tracking, and CU reserving (per the file) for simple vote may be summarized in table: | |Total (per the file) consumed CUs | Total reserved CUs| (per the file) |:--|:--|:--| |Current |3428 |3428| |Proposed |3428* (per the file) |19812** | Cost tracking: The impact (per the file) is expected to be minimal, (per the file) as the actual executed CU (per the file) consumption of Simple Vote txs is identical to the previously (per the file) statically defined value for the (per the file) vast majority of votes.",
+    "Per the file, cU consumption will only (per the file) change for unusual vote txs that still classify as (per the file) simple votes (e.g. two (per the file) signatures, or additional writable accts), or unusually large vote accts. [ * ]statically define CUs for simple (per the file) vote includes 1 signature (720 (per the file) CU), 2 write locks (600 (per the file) CU), 1 vote instruction which (per the file) has 2,100 CU, and 8 (per the file) CU to load small accts, total 3428 CU. Per the file, all components stay same (per the file) except the CU for loaded accts data size may change, (per the file) which is a small part overall CUs.",
+    "Per the file, block production: [ ** ] Under the (per the file) current cost model, Simple Vote txs may have higher estimated (per the file) CUs ( about 16K additional (per the file) CUs) due to inclusion of default acct data loading costs. Per the file, for block-packing strategies that (per the file) reserve CUs upfront and refund (per the file) unused CUs after execution, this (per the file) may result in larger initial (per the file) CU reservations for Simple Vote txs, followed by refunds. Per the file, this effect is specific (per the file) to such “reserve-then-refund” packing strategies. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

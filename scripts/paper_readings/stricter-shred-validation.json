@@ -1,0 +1,105 @@
+{
+ "slug": "stricter-shred-validation",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, shred validation currently lets certain shreds that seem like they ought to be invalid. Per the file, this leads to lots (per the file) of corner cases when (per the file) a new client bases (per the file) their behavior on what Agave implicitly lets rather than easily specified behavior. The file supplies the spec. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in the course of (per the file) Firedancer development, we discovered (per the file) several cases of questionable-seeming (per the file) shreds that Agave accepts. Per the file, both development teams have (per the file) agreed that the best (per the file) course of action is (per the file) to simplify the protocol (per the file) by rejecting these shreds. Per the file, none of these shreds (per the file) would ever be produced (per the file) by a sane leader. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on The, SIMD-0317, Enforce, This, SIMD-0337, Markers, Alpenglow, Fast, Leader, 0317, 32, 0337. Those labels are the document’s. They are not a Sol.College measurement. The file’s claim in this section turns on Per, SIMD, SIMD-0317, SIMD-0337, 0317, 0337. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file defines the constant MAX_SHREDS_PER_SLOT (per the file) which is currently set to 32,768 = 2^15. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, this constant itself is (per the file) not new, but this (per the file) SIMD gives it a protocol-level name."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces two families of constraints for shreds. Per the file, the first family is (per the file) specific to a single shred. Per the file, any shred failing to (per the file) satisfy the constraints in (per the file) the first family MUST (per the file) be ignored or discarded, (per the file) and MUST NOT be (per the file) used for replay, equivocation (per the file) proofs, or any other protocol purpose. Per the file, the second family is (per the file) specific to a whole FEC set. Per the file, a node MUST NOT vote for (per the file) a block containing a (per the file) FEC set failing to (per the file) satisfy the second family of constraints."
+   ]
+  },
+  {
+   "heading": "Family 1: Shred-level checks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the checks performed on (per the file) a shred are revised to the following: The shred is validly signed shred_index < MAX_SHREDS_PER_SLOT fec_set_index <= shred_index < fec_set_index + 32 fec_set_index is a multiple (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) of 32 fec_set_index <= MAX_SHREDS_PER_SLOT - 32 variant is chained (0x9 and 0x6) or chained-resigned (0xB and 0x7) Merkle height MUST be equal to 6 For data shreds: data_flags & 0xC0 != 0x80 (block complete implies batch complete) If data_flags has batch complete, then shred_index % 32 == 31 parent_offset <= slot For slot 0 only, parent_offset MUST be equal to 0.",
+    "Per the file, otherwise, parent_offset MUST NOT (per the file) be equal to 0. Per the file, the size field in (per the file) the data header, must (per the file) satisfy one of the (per the file) following: for chained data (per the file) shreds, 88 <= size <= 1051; (per the file) for chained-resigned data shreds, (per the file) 88 <= size <= 987.",
+    "Per the file, for coding shreds: position < 32 position <= shred_index num_data_shreds == 32 and num_coding_shreds == 32 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) position == shred_index - fec_set_index Any shred that fails to satisfy all of these constraints MUST be immediately ignored or discarded. Per the file, for reference, the existing (per the file) checks are the following, (per the file) with differences from the (per the file) new checks noted at the end.",
+    "Per the file, the shred is validly signed shred_index < MAX_SHREDS_PER_SLOT fec_set_index <= shred_index < fec_set_index + 32 fec_set_index is a multiple (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) of 32 fec_set_index <= MAX_SHREDS_PER_SLOT - 32 variant is chained (0x9 and 0x6) or chained-resigned (0xB and 0x7) *This point intentionally left blank to align existing checks with new checks.* For data shreds: data_flags & 0xC0 != 0x80 (block complete implies batch complete) If data_flags has batch complete, then shred_index % 32 == 31 parent_offset <= slot For slot 0 only, parent_offset MUST be equal to 0. Per the file, otherwise, parent_offset MUST NOT (per the file) be equal to 0.",
+    "Per the file, for chained data shreds, (per the file) 88 <= size <= 1171 - 20*Merkle height. Per the file, for chained-resigned data shreds, (per the file) 88 <= size <= 1107 - 20*Merkle height. Per the file, for coding shreds: position < 32 position <= shred_index num_data_shreds == 32 and num_coding_shreds == 32 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) shred_index - position <= MAX_SHREDS_PER_SLOT - 32 Note: A proof that the existing checks, excluding the signature check, are equivalent (necessary and sufficient) to those enforced by the combination of Agave's must_discard_shred and shred sanitization is available here.",
+    "Per the file, check 12 is just (per the file) updated with the fixed Merkle height. Per the file, check 16 is new, (per the file) but combined with check (per the file) 5 implies the old check 16. Per the file, check 5 is implied (per the file) by a combination of (per the file) checks 2, 3, and (per the file) 4, but is included explicitly for clarity. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Family 2: FEC-level checks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, below, a FEC set (per the file) is identified by the Merkle root.",
+    "Per the file, all shreds in a (per the file) FEC set MUST have (per the file) the same chained Merkle root All shreds in a (per the file) FEC set MUST have (per the file) the same shred type All shreds in a (per the file) FEC set MUST have the same slot All shreds in a (per the file) FEC set MUST have (per the file) the same shred version All shreds in a (per the file) FEC set MUST have (per the file) the same fec_set_index All data shreds in a FEC (per the file) set MUST have the same parent_offset If any data shred fails to have the maximum value of the size (per the file) field as determined by check 12 in (per the file) the first family, then all shreds in (per the file) the same FEC set with a larger (per the file) shred_index MUST have the minimum value of (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) size (as determined by check 12), and the flags field of final shred in the FEC set MUST have the batch complete bit set.",
+    "Per the file, all shreds in a (per the file) FEC set MUST satisfy (per the file) all the constraints in (per the file) Family 1 Under TowerBFT, a node MUST NOT vote for (per the file) a block containing any (per the file) FEC set unless it (per the file) satisfies all of these checks. Per the file, under Alpenglow, a node MUST vote skip for (per the file) a block containing an (per the file) FEC set that fails (per the file) to satisfy all of these checks.",
+    "Per the file, a node SHOULD NOT replay the txs in a FEC set (per the file) unless it satisfies all of these checks. Per the file, other than as specified (per the file) by the Family 1 restrictions, a node SHOULD use these shreds (per the file) for constructing equivocation proofs, (per the file) and they SHOULD be (per the file) served over repair or retransmitted via Turbine. Per the file, note: A node MUST be able to (per the file) process FEC sets where (per the file) shreds have different but (per the file) valid signatures for the same Merkle root."
+   ]
+  },
+  {
+   "heading": "A note on recovery",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the checks in Family (per the file) 2 apply to both (per the file) received and recovered shreds. Per the file, this implies that even if a node receives all needed data (per the file) shreds it MUST ensure (per the file) the coding shreds are (per the file) also valid according to (per the file) this SIMD, and it (per the file) MUST NOT vote on (per the file) the block if the (per the file) FEC set fails the check in family This extra work is (per the file) necessary to eliminate the (per the file) possibility of divergence based on whether a node received or recovered a shred."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the main alternative is (per the file) to specify carefully exactly (per the file) what shreds a conforming node should accept and reject. Per the file, this seems more prone to mistakes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The proposal will not impact normal leaders. Per the file, blocks produced by malicious or extremely buggy nodes may become invalid. Per the file, this will simplify the (per the file) protocol for core contributors."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, overall, this SIMD should (per the file) make security easier by (per the file) removing corner cases from the specification. Per the file, the fact that behavior (per the file) is changing means that (per the file) all clients will need (per the file) to implement it exactly. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there's a standard philosophy (per the file) in computing that software ought to be maximally conservative in what (per the file) it produces and maximally liberal (per the file) in what it accepts. The file goes against that, but (per the file) I think that maxim fails to apply when multiple implementations (per the file) need to match exactly (per the file) in what they accept. Per the file, extra validation could have (per the file) a minor performance impact. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, certain shreds (and thus (per the file) blocks) that were previously (per the file) accepted will now be rejected. Per the file, this calls for a feature gate. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

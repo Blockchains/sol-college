@@ -1,0 +1,55 @@
+{
+ "slug": "governance-messaging",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Cross-Chain Governance Decision Messaging",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, establish a protocol for (per the file) wormhole core implementations and (per the file) modules on different chains (per the file) to communicate governance decisions/instructions (per the file) with each other. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, define a messaging protocol (per the file) for global and chain-specific governance actions. Per the file, a message should carry (per the file) all required information required (per the file) for an implementation to implement it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, define the governance processes (per the file) itself (staking, voting etc.). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, governance happens in a (per the file) smart contract on Solana (to be specified). Per the file, this contract passes VAAs (per the file) with finalized decisions to the Wormhole. Per the file, implementations on other chains (per the file) have the address of (per the file) that contract hardcoded and (per the file) accept a set of (per the file) VAAs for governance actions from that contract. Per the file, all governance VAAs follow the GovernancePacket structure. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "General Packet Structure",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, module is the component (per the file) this governance VAA is targeting. Per the file, this could be the (per the file) core bridge contract but (per the file) any program (e.g. a (per the file) Wormhole extension module) can use (per the file) the governance contract and governance (per the file) messaging by picking a unique identifier. Per the file, action is a unique (per the file) action ID that identify (per the file) different governance message payloads of a module. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Specified Governance VAAs",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following VAAs are (per the file) example governance VAAs of (per the file) the core Wormhole contract. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "slug": "sets-rent-epoch-to-a-constant-in-the-vm",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, set the value of (per the file) rent_epoch—as serialized into the (per the file) VM for tx processing—to a constant. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the rent_epoch field on an acct is no longer meaningful. Per the file, this is because all accts has to be rent exempt, and (per the file) rent fees collection has (per the file) been disabled (see SIMD-84). Per the file, with this in mind, (per the file) it would be beneficial (per the file) to remove rent_epoch from (per the file) the computation of a single acct's hash. Per the file, however, before we can (per the file) remove the rent_epoch from the acct hash computation, we must set (per the file) the value of rent_epoch—as serialized (per the file) into the VM for tx processing—to a constant.",
+    "Per the file, if we did not do this, different nodes could have different values (per the file) for rent_epoch passed into (per the file) the VM, which could result in different tx results and thus cluster divergence."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the value of the (per the file) rent_epoch field serialized into (per the file) the VM per acct shall be set to the (per the file) constant used to denote a rent-exempt acct. Per the file, this value is u64::MAX, (per the file) aka 0xFFFF_FFFF_FFFF_FFFF. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the rent_epoch field in an acct may be deprecated. Per the file, this lets reclaiming and reusing these (per the file) bytes for other purposes in the future. Per the file, in certain rare cases (per the file) the serialized rent_epoch of an acct may previously have been 0 (per the file) and will now be u64::MAX. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

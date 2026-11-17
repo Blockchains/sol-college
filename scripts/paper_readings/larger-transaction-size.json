@@ -1,0 +1,76 @@
+{
+ "slug": "larger-transaction-size",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, historically, messages transmitted over (per the file) the network must not (per the file) exceed the IPv6 MTU (per the file) size to ensure a (per the file) fast and reliable network delivery. Per the file, solana has used a (per the file) conservative MTU size of (per the file) 1280 bytes, which after (per the file) accounting for some of (per the file) the overhead, leaves a maximum tx size of 1232 bytes (per the file) for data in the payload. Per the file, with QUIC, we can (per the file) now use a larger tx size than the original 1280 bytes. The file presents a new tx size of 4096 bytes."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current tx size limit of 1232 (per the file) bytes is too small (per the file) for many developer use cases. Per the file, while there have been (per the file) some attempts to artificially (per the file) increase the size capacity (per the file) with address lookup tables, (per the file) the current cap still (per the file) is artificially limiting the (per the file) number of signatures and (per the file) size of other data. Per the file, use cases that are (per the file) currently limited by the tx size include: ZK proofs including what is used within Confidential Balances Untruncated Winternitz one-time signatures (per the file) Nested Multisig used by corporations (per the file) under Squads Onchain cryptography signature (per the file) schemes without precompiles including BLS and many more.",
+    "Per the file, a larger tx size would also help (per the file) remove the need for (per the file) address lookup tables, which (per the file) have been a source (per the file) of complexity on the node client and also a frictional developer experience for many developers. Per the file, a number of developers (per the file) have also resorted to (per the file) using Jito bundles to (per the file) artificially increase the size of their txs. Per the file, this is a current (per the file) workaround that developers are using, but it fails to have the same guarantees as a tx does on the protocol (per the file) level, namely that bundles (per the file) are not guaranteed to (per the file) be atomic like singular txs.",
+    "Per the file, for these reasons, increasing the current tx size limit would enable (per the file) developers to create new (per the file) applications and use cases (per the file) that were previously unfeasible. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increasing the tx size limit above the (per the file) current MTU max size (per the file) is possible with the use of QUIC. Per the file, qUIC's RFC 9000 specification fails to have an explicit maximum stream (per the file) size, allowing for larger txs to be sent. Per the file, the larger tx size would only be (per the file) supported by the v1 tx format as described in SIMD-0385. Per the file, clients will need to (per the file) support accepting the larger tx sizes on their network (per the file) ports and not reject (per the file) the larger size during replay."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, alternative designs considered: Having a tx loading feature that would (per the file) allow developers to load the tx parts in a buffer (per the file) and then be able (per the file) to execute them at the end. Per the file, this method is no (per the file) longer considered as it calls for a much higher level (per the file) of latency on the (per the file) application level and a (per the file) decent amount of complexity within the node Bundles at the protocol level.",
+    "Per the file, this would not solve (per the file) all problems that are solved by larger tx sizes. Per the file, bundles would still limit (per the file) the ability for developers (per the file) to use cryptographic signature (per the file) schemes that have large proof sizes."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, developers would have to (per the file) update with applications to use the new tx format designed in SIMD-0385 (per the file) to take advantage of the larger tx size. Per the file, those developers that had (per the file) previously been using address (per the file) lookup tables would be (per the file) required to update the new txs with the full address (per the file) list instead of the (per the file) address lookup table and its indices. Per the file, in consideration of what size the new tx size limit should increase (per the file) to, Jito's bundle sizes that were used to increase the overall tx size ought to be considered.",
+    "Per the file, the following is the (per the file) rough distribution of the tx sizes: 2048 bytes or (per the file) lower - 50% of bundles (per the file) 6144 bytes or lower (per the file) = 65% of all bundles (per the file) 9216 bytes or lower (per the file) = 100% of all bundles (per the file) In consideration of the (per the file) above, the use cases (per the file) mentioned within the motivation (per the file) section, and the current (per the file) page size for managing memory within a node, a new tx size limit of 4096 bytes is proposed.",
+    "Per the file, this new limit should (per the file) cover a majority of (per the file) use cases mentioned within (per the file) the motivation section, and also enable most of the (per the file) developers using Jito bundles for larger txs to migrate to the new tx format. Per the file, similarly, since the new (per the file) limit proposed can accommodate the max accts used in ALTs directly in the tx, developers are able to migrate from v0 txs to v1 txs.",
+    "Per the file, a number of changes (per the file) are required to be made to the node to support the new tx size limit. Per the file, consensus would need to (per the file) be updated to support the larger tx size, as larger txs included in a block (per the file) would be marked as (per the file) invalid by the cluster today. Per the file, the scheduler would also (per the file) need to be modified (per the file) to support the larger tx sizes.",
+    "Per the file, while this proposal fails to introduce a new fee (per the file) structure around bytes in a tx, the scheduler should prioritize larger txs differently, requiring developers to (per the file) pay a higher priority (per the file) fee to land their tx. Per the file, testing for this new tx size limit ought to be done extensively to (per the file) ensure that performance on (per the file) the cluster is not adversely affected. Per the file, this testing should include (per the file) the different use cases (per the file) mentioned within the motivation section, and also the different sizes of txs that are currently being (per the file) used by developers on the network."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, larger tx sizes could results in (per the file) a number of bandwidth (per the file) issues on the cluster (per the file) than need to be (per the file) tested thoroughly to ensure (per the file) that performance is not adversely affected."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is an argument (per the file) to be made that (per the file) an increase in the tx size limit above the (per the file) max MTU packet size (per the file) would incur some network (per the file) overhead due to fragmentation retransmits. Per the file, for a node, this could mean maintaining (per the file) in-memory buffers for larger txs compared to just receiving and (per the file) processing a single UDP packet. Per the file, these issues will need (per the file) to be addressed in (per the file) the scheduler and how (per the file) priority fees for larger txs are handled. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as all of these (per the file) changes are implemented with the v1 tx format, the increase on the tx size limit fails to affect or break v0 or legacy txs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,83 @@
+{
+ "slug": "return-data-from-sbf-programs",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Return data from SBF programs",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Problem",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in the Solidity language (per the file) it is permitted to (per the file) return any number of (per the file) values from a function, as an illustration a variable length string may be returned: Multiple values, arrays and (per the file) structs are permitted too. Per the file, all the return values (per the file) are eth abi encoded (per the file) to a variable-length byte array. Per the file, on ethereum errors may be returned too: These errors help the (per the file) developer debug any issue (per the file) they are having, and (per the file) can also be caught (per the file) in a Solidity try .. catch block. Per the file, outside of a try (per the file) .. catch block, any of (per the file) these would cause the tx or rpc to fail. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Existing solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing solution that (per the file) Solang uses, writes the (per the file) return data to the callee acct data. Per the file, the caller's acct cannot be used, since the (per the file) callee may not be the (per the file) same SBF program, so it (per the file) will not have permission to (per the file) write to the callee's acct data. Per the file, another solution would be (per the file) to have a single return data acct which is passed around through CPI.",
+    "Per the file, again this fails to work for CPI as (per the file) the callee may not (per the file) have permission to write to it. Per the file, the problem with this solution is: It fails to work for RPC calls (per the file) It is very racey; (per the file) a client has to (per the file) submit the Tx and then retrieve the acct data. Per the file, this is not atomic (per the file) so the return data may be overwritten by another tx."
+   ]
+  },
+  {
+   "heading": "Requirements for Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it must work for: RPC: An RPC ought to be able to return (per the file) any number of values without writing to acct data Transaction: An tx ought to be able to return (per the file) any number of values (per the file) without needing to write them acct data CPI: The callee (per the file) must \"set\" return value, and the caller has to be able to retrieve it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Review of other chains",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Ethereum (EVM)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the RETURN opcode lets a contract to set (per the file) a buffer as a returndata. Per the file, this opcode takes a (per the file) pointer to memory and a size. Per the file, the REVERT opcode works (per the file) similarly but signals that (per the file) the call failed, and all acct data changes has to be reverted. Per the file, for CPI, the caller (per the file) can retrieve the returned (per the file) data of the callee (per the file) using the RETURNDATASIZE opcode (per the file) which returns the length, (per the file) and the RETURNDATACOPY opcode, (per the file) which takes a memory (per the file) destination pointer, offset into (per the file) the returndata, and a length argument. Per the file, ethereum stores the returndata in blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Parity Substrate",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the return data may be set using the (per the file) seal_return(u32 flags, u32 pointer, (per the file) u32 size) syscall. Per the file, flags may be 1 for revert, (per the file) 0 for success (nothing else defined) Function fails to return CPI: The seal_call() (per the file) syscall takes pointer to buffer (per the file) and pointer to buffer size (per the file) where return data goes There (per the file) is a 32KB limit for return data. Per the file, parity Substrate fails to write the return data to blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rejected Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the concept of ephemeral accts has been proposed a solution for this. Per the file, this would certainly work (per the file) for the CPI case, (per the file) but this would not (per the file) work RPC or Transaction case."
+   ]
+  },
+  {
+   "heading": "Proposed Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the callee can set (per the file) the return data using (per the file) a new system call (per the file) sol_set_return_data(buf: *const u8, length: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) u64). Per the file, there is a limit (per the file) of 1024 bytes for the returndata. Per the file, this function may be called multiple times, (per the file) and will simply overwrite (per the file) what was written in the last call.",
+    "Per the file, the return data may be retrieved with sol_get_return_data(buf: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) *mut u8, length: u64, program_id: *mut Pubkey) -> u64. Per the file, this function copies the (per the file) return buffer, and the (per the file) program_id that set the (per the file) return data, and returns the (per the file) length of the return data, (per the file) or 0 if no return (per the file) data is set.",
+    "Per the file, in this case, program_id (per the file) is not set. Per the file, when an instruction calls (per the file) sol_invoke(), the return data (per the file) of the callee is copied (per the file) into the return data of (per the file) the current instruction. Per the file, this means that any (per the file) return data is automatically (per the file) passed up the call (per the file) stack, to the callee (per the file) of the current instruction (per the file) (or the RPC call).",
+    "Per the file, note that sol_invoke() clears (per the file) the returns data before invoking (per the file) the callee, so that any (per the file) return data from a previous (per the file) invoke is not reused if (per the file) the invoked fails to set (per the file) a return data. Per the file, for example: A invokes (per the file) B Before entry to (per the file) B, return data is (per the file) cleared.0 B sets some (per the file) return data and returns A (per the file) invokes C Before entry to (per the file) C, return data is cleared.",
+    "Per the file, c fails to set return data and (per the file) returns A checks return (per the file) data and finds it (per the file) empty Another scenario to (per the file) consider: A invokes B (per the file) B invokes C C (per the file) sets return data and returns B fails to touch return data and (per the file) returns A gets return (per the file) data from C A fails to touch return data Return data from tx is what C set. Per the file, the compute costs are (per the file) calculated for getting and (per the file) setting the return data using the syscalls.",
+    "Per the file, for a normal RPC (per the file) or Transaction, the returndata (per the file) is base64-encoded and stored (per the file) along side the sol_log strings (per the file) in the stable log. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Note on returning errors",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, solidity on Ethereum lets the contract to return (per the file) an error in the return data. Per the file, in this case, all the acct data changes for the acct ought to be reverted. Per the file, on Solana, any non-zero (per the file) exit code for a SBF (per the file) program means the entire tx fails. Per the file, we fail to wish to support an (per the file) error return by returning (per the file) success and then returning (per the file) an error in the return data.",
+    "Per the file, this would mean we (per the file) would have to support reverting the acct data changes; this too (per the file) expensive both on the (per the file) VM side and the SBF contract side. Per the file, errors is to be reported via sol_log. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

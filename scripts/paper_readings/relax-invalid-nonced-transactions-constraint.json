@@ -1,0 +1,78 @@
+{
+ "slug": "relax-invalid-nonced-transactions-constraint",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file relaxes the handling of invalid durable nonce txs during block replay. Per the file, instead of rejecting the (per the file) entire block when an (per the file) invalid nonce is encountered, the tx ought to be marked as failed, (per the file) skipped for state modifications, (per the file) but still committed to (per the file) the block without charging a tx fee. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current consensus behavior (per the file) specifies that invalid durable nonce txs should result in block failure during replay. Per the file, this behavior hinders forward (per the file) compatibility with asynchronous block execution. Per the file, the goal is to (per the file) align invalid nonce handling (per the file) with the treatment of other soft tx failures (e.g., relax fee (per the file) payer, relax ALT, etc). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Current Behavior",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a tx using a durable nonce (per the file) fails block replay (causing (per the file) the entire block to (per the file) be rejected) if any (per the file) of the following occurs: The nonce acct is not a statically included acct. Per the file, the nonce acct fails to exist. Per the file, the nonce acct is not properly initialized. Per the file, the stored nonce fails to match the tx's recent blockhash. Per the file, the tx fails to advance the nonce."
+   ]
+  },
+  {
+   "heading": "Proposed Change",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, update replay logic to handle invalid nonce txs differently: For failure that may be checked without accessing acct state, namely: The nonce acct is not a statically included acct. Per the file, replay logic remains unchanged (per the file) - entire block is rejected; For failures require acct state to verify, namely: The nonce acct fails to exist. Per the file, the nonce acct is not properly initialized. Per the file, the stored nonce fails to match the tx's recent blockhash. Per the file, the tx fails to advance the nonce.",
+    "Per the file, replay treats these txs as non-state-modifying and non-fee-charging (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) failures, as follows: The tx is not executed. Per the file, the tx is not included in status cache. Per the file, the tx’s non-execution CU cost (i.e., tx's static CUs, plus actual CUs for loading (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) accts) still applies to the block limit.",
+    "Per the file, the tx is recorded in the (per the file) block (marked as failed). Per the file, no acct state is modified, including the nonce acct (i.e., nonce is not (per the file) advanced) and fee payer acct (it is not charged with the tx's fee). Per the file, the block is not (per the file) rejected as long as all other txs replay successfully."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, invalid nonce txs may be included in (per the file) multiple blocks but will (per the file) not be charged fees. Per the file, the inclusion of the same nonce tx in multiple blocks may affect RPC behavior, including querying a tx by signature. Per the file, the exact handling of (per the file) this is outside the (per the file) scope of this proposal."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the relaxed model still (per the file) prevents nonce reuse and (per the file) enforces single-use semantics, as the tx fails to advance the nonce if it fails. Per the file, there is no impact (per the file) on replay safety, and (per the file) the ledger remains consistent across nodes."
+   ]
+  },
+  {
+   "heading": "Backward Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is **not (per the file) backward compatible** with current node behavior. Per the file, it has to be activated via a (per the file) feature gate and coordinated (per the file) with a network upgrade."
+   ]
+  }
+ ]
+}

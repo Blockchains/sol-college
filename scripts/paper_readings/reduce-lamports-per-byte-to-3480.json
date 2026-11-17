@@ -1,0 +1,62 @@
+{
+ "slug": "reduce-lamports-per-byte-to-3480",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reduce lamports_per_byte by 50% (per the file) to 3480, which is equivalent to (per the file) reducing the rent-exempt minimum balance by (per the file) half for all new and existing accts. Per the file, requires SIMD-0392: Relaxation of (per the file) post-execution min_balance check, to allow (per the file) for subsequent rent increases if necessary. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, minimum acct balance depends on an (per the file) arbitrary constant set years (per the file) ago that has since (per the file) increased significantly in real (per the file) terms due to increases (per the file) in the SOL price. Per the file, this has made state (per the file) allocation cost more expensive (per the file) on mainnet beta than (per the file) on competitors, with no (per the file) compelling justification provided by real resource costs."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on feature activation, set (per the file) the effective lamports_per_byte to (per the file) 3480 in the bank and rent (per the file) sysvar (SysvarRent111111111111111111111111111111111), followed by updating DEFAULT_LAMPORTS_PER_BYTE (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) in all relevant SDKs post-activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file is the first step (per the file) towards further rent reduction (per the file) and doesn't prevent adoption (per the file) of alternative solutions like a (per the file) supervisory controller (SIMD-0389). Per the file, a 2x reduction is (per the file) picking the low hanging (per the file) fruit by modestly reducing (per the file) the extremely inflated rent (per the file) cost on mainnet beta today. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, lower rent for app developers. Per the file, existing accts and programs using the higher rent value is to be unaffected, besides being (per the file) allowed to reduce the (per the file) balance to the new minimum. Per the file, validators: a potential increase in state growth. Per the file, in the unlikely case (per the file) of excessive state growth, rent may be increased back to (per the file) the legacy value (0392 lets this without significant disruption to existing accts.). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rent reduction is strictly (per the file) a relaxation of existing (per the file) constraints so all existing (per the file) program logic will continue (per the file) to work as before. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

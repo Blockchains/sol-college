@@ -1,0 +1,20 @@
+{
+ "slug": "instruction-introspection",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Problem",
+   "where": "Design note body",
+   "paragraphs": [
+    "The note says some smart-contract programs may want to verify that another instruction is present in a given message, because that other instruction could be performing a verification of certain data in a precompiled function. It points at secp256k1_instruction as an example. That motivation is the file’s. It is not evidence of a deployed program that performed that check for this reading."
+   ]
+  },
+  {
+   "heading": "Solution",
+   "where": "Design note body",
+   "paragraphs": [
+    "The proposed answer is a new sysvar at the address written as Sysvar1nstructions1111111111111111111111111. A program would reference that sysvar, receive the message’s instruction data inside it, and also receive the index of the current instruction. Two helpers are named: load_current_index_checked on instruction bytes returning a u16, and load_instruction_at_checked on an index and AccountInfo returning a Result of Instruction. The runtime is said to recognize the special instruction, serialize the message’s instruction data, write the current instruction index, and let the BPF program extract what it needs. A note says custom serialization is used because bincode is about 10× slower in native code and exceeds then-current SBF instruction limits. Those claims are the design note’s. Sol.College did not call the sysvar on a cluster for this page."
+   ]
+  }
+ ]
+}

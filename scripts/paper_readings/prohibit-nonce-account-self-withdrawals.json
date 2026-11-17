@@ -1,0 +1,56 @@
+{
+ "slug": "prohibit-nonce-account-self-withdrawals",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reject a System Program (per the file) WithdrawNonceAccount instruction when the nonce acct and recipient resolve to the same address. Per the file, after validating the instruction accts and nonce state, the (per the file) System Program returns InvalidArgument (per the file) when the addresses match. Per the file, other nonce withdrawals are unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, a System Program (per the file) WithdrawNonceAccount instruction may use the same acct as the nonce acct and recipient. Per the file, self-withdrawals from uninitialized nonce accts and zero or partial self-withdrawals (per the file) from initialized nonce accts that pass existing checks subtract and (per the file) then restore the requested lamports, making (per the file) them no-ops. Per the file, a full self-withdrawal from (per the file) an initialized nonce acct that passes the existing checks behaves differently. Per the file, it deinitializes the nonce acct, subtracts its full balance, (per the file) and restores the lamports to the same acct.",
+    "Per the file, this leaves a funded, (per the file) System Program-owned, uninitialized nonce acct. Per the file, initializeNonceAccount fails to require the nonce acct or new authority to sign. Per the file, another party can initialize the acct with themselves as the (per the file) new nonce authority and (per the file) control the retained balance. Per the file, initiating the self-withdrawal calls for the existing nonce authority, making (per the file) this an operator footgun. Per the file, self-withdrawals have no known use case. Per the file, the [Stake Program] rejects (per the file) them with InvalidArgument, and (per the file) [SIMD-0609] proposes the same (per the file) rule for Vote Program withdrawals."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, system Program WithdrawNonceAccount processes (per the file) an instruction in this order: Validate the instruction acct count and sysvars, require (per the file) a writable source, and (per the file) decode the nonce state. Per the file, compare the addresses of the nonce acct and recipient. Per the file, if the addresses match, return InvalidArgument. Per the file, if the addresses differ, (per the file) continue existing withdrawal processing. Per the file, the new comparison runs (per the file) before the initialized and (per the file) uninitialized state branches and (per the file) their checks for balance, (per the file) rent, nonce expiration, and required signers. Per the file, it therefore applies to (per the file) zero, partial, full-balance, and (per the file) over-balance withdrawals. Per the file, the instruction data and acct interface fail to change. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reject only full self-withdrawals (per the file) from initialized nonce accts. Per the file, this prevents deinitialization but (per the file) preserves other no-op self-withdrawals. Per the file, skip deinitialization for full self-withdrawals. Per the file, this makes them no-ops (per the file) and leaves a special case (per the file) that future changes must continue (per the file) to handle safely. Per the file, reject self-withdrawals only in (per the file) the SDK and CLI. Per the file, custom tx builders can bypass client-side (per the file) checks, so this fails to enforce the invariant. Per the file, keep the existing behavior. Per the file, this preserves the footgun."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after activation, nonce acct self-withdrawals that reach the (per the file) address check fail with InvalidArgument. Per the file, non-self withdrawals, instruction encoding, and acct lists are unchanged. Per the file, because the System Program (per the file) is a native builtin, node clients must implement the (per the file) same feature-gated behavior before activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, n/A [SIMD-0609]: https://github.com/solana-foundation/solana-improvement-documents/pull/609 [Stake (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Program]: https://github.com/solana-program/stake/pull/96. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

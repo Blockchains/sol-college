@@ -1,0 +1,110 @@
+{
+ "slug": "solana-proposal-process",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "What is a Proposal?",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a proposal is a (per the file) design document describing a (per the file) new feature for Solana (per the file) or its processes or (per the file) environment. The proposal should document (per the file) the rationale for the (per the file) feature and enough documentation (per the file) to understand the implementation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rationale",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a proposal is intended (per the file) to be reviewed by (per the file) core engineering and community (per the file) members keeping in mind (per the file) security concerns, tradeoffs, and backwards compatibility. Per the file, having a proposal process (per the file) helps identify design issues (per the file) early, alert the community (per the file) on a change, helps (per the file) scale newer contributors on (per the file) the architecture, and acts (per the file) as a historical record (per the file) of the design decisions (per the file) that have gone into Solana. Per the file, for implementors, the proposal (per the file) is a blueprint for (per the file) the feature and helps (per the file) track the development of a feature. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "When you need to follow this process",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, you need to follow (per the file) this process if you (per the file) intend to make \"substantial\" (per the file) changes to the Validator, (per the file) RPC, consensus, or a (per the file) change to the proposal process itself.",
+    "Per the file, what constitutes a \"substantial\" (per the file) change is evolving based (per the file) on community norms and (per the file) varies depending on what (per the file) part of the ecosystem (per the file) you are proposing to (per the file) change, but may include (per the file) the following: A change (per the file) in format of a (per the file) RPC API method Networking interface changes between nodes Compute requirement changes on (per the file) the runtime Some changes fail to require a proposal: Rephrasing, (per the file) reorganizing, refactoring, or otherwise \"changing shape fails to change meaning\". Per the file, additions that strictly improve (per the file) objective, numerical quality criteria (per the file) (warning removal, speedup, better (per the file) platform coverage, more parallelism, (per the file) trap more errors, etc.). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proposal Types",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there are three types (per the file) of proposals: A **Standard** (per the file) Proposal describes any change (per the file) that affects most or all Solana implementations, including a change to the (per the file) network protocol, consensus, proposed (per the file) application standards/conventions, block or tx validity, or any change or (per the file) addition that affects the interoperability (per the file) of applications using Solana. Per the file, standard proposals may be broken down into (per the file) the following categories: **Core**: (per the file) Anything that affects consensus (per the file) or substantial changes to the node. **Networking**: Changes or substantial (per the file) improvements to network protocol (per the file) specifications. **Interfaces**: Breaking changes (per the file) around the client JSON (per the file) RPC API specifications and standards.",
+    "Per the file, a **Meta** Proposal describes (per the file) a process surrounding Solana (per the file) or proposes a change (per the file) to (or an event in) a process. Per the file, process Proposals are like (per the file) Standard Proposals but apply (per the file) to areas other than (per the file) the Solana protocol itself. Per the file, they may propose an (per the file) implementation, but not to (per the file) Solana's codebase; they often (per the file) require community consensus and users (per the file) are typically not free to ignore them.",
+    "Per the file, examples include procedures, guidelines, (per the file) changes to the decision-making (per the file) process, and changes to the (per the file) tools or environment used in Solana development. Per the file, any meta-SIMD is also (per the file) considered a Process Proposals. Per the file, an **Advisory** Proposal is (per the file) one that gives clarifying (per the file) information about protocol features (per the file) or notice of upcoming (per the file) changes that don't require (per the file) protocol breaking consensus like a (per the file) Standard Proposal does. Per the file, examples include errata and deprecation notices. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proposal Lifecycle",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the stages in a (per the file) lifecycle of a proposal (per the file) are as follows: Idea (per the file) Draft Review Accepted Living (per the file) Stagnant Withdrawn Implemented Activated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Idea",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at the idea stage, (per the file) parties involved in the (per the file) proposal are you -- the (per the file) champion or proposal author (per the file) -- the reviewers, and the Solana Core Contributors. Per the file, before you begin writing (per the file) a formal proposal, you (per the file) should vet your idea. Per the file, ask the Solana core (per the file) community first if an (per the file) idea is original to (per the file) avoid wasting time on something that is to be rejected based on prior research. Per the file, be sure to post (per the file) your ideas to the (per the file) SIMD ideas discussion page and gather feedback before (per the file) making your formal Proposal. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Draft",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to begin drafting the (per the file) proposal, do the following: (per the file) Fork the proposal repository (per the file) Copy XXXX-template.md to proposals/XXXX-my-feature.md (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (where \"my-feature\" is descriptive) Fill in the proposal. Per the file, put care into the details: proposals that fail to present convincing motivation, demonstrate (per the file) lack of understanding of (per the file) the design's impact, or (per the file) are disingenuous about the drawbacks (per the file) or alternatives tend to be poorly received.",
+    "Per the file, low quality proposals with limited engagement is to be closed by SIMD repository maintainers. Per the file, proposal titles ought to be concise and descriptive. Per the file, now that your proposal (per the file) has an open pull (per the file) request, use the issue (per the file) number of the PR (per the file) to update the XXXX- (per the file) prefix to the number. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Review",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, during review, the owner (per the file) of the proposal is (per the file) in charge of gathering and integrating feedback. Per the file, the most relevant core (per the file) contributors to the proposal ought to be included in the review process. Per the file, review will take place (per the file) completely through Github so (per the file) that all comments are collected and documented. Per the file, once consensus is met (per the file) by the core contributors, (per the file) the proposal can either (per the file) be accepted or withdrawn.",
+    "Per the file, this step is typically (per the file) taken when enough tradeoffs (per the file) have been considered for (per the file) the core contributors to make a decision. Per the file, it is not necessary (per the file) for all participants to reach consensus. Per the file, however, there should not (per the file) be a strong consensus (per the file) against the proposal outside (per the file) of the core contributors."
+   ]
+  },
+  {
+   "heading": "Accepted",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, some accepted proposals represent vital features that may be implemented right away. Per the file, other accepted proposals can (per the file) wait until some arbitrary (per the file) core contributor feels like doing the work. Per the file, every accepted proposal should (per the file) have an associated tracking (per the file) issue in the Solana repository. Per the file, if the implementation calls for the feature to be (per the file) activated using the feature (per the file) activation program, a feature-gate (per the file) issue for tracking across clusters (per the file) should also be created.",
+    "Per the file, while it is not (per the file) *necessary* for the proposal (per the file) author to also write (per the file) the implementation, it is (per the file) by far the most (per the file) effective way to see (per the file) a proposal through to (per the file) completion: authors should not (per the file) expect that other project (per the file) developers will take on (per the file) responsibility for implementing their accepted feature."
+   ]
+  },
+  {
+   "heading": "Implemented",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when all relevant teams (per the file) have completed development of (per the file) the SIMD's feature, the (per the file) SIMD is \"Implemented\". Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Activated",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a proposal will have (per the file) the status Activated once (per the file) it has been implemented, (per the file) tested, and finally activated on mainnet beta. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Living",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a special status for (per the file) SIMDs that are designed (per the file) to be continually updated (per the file) and not reach a state of finality. Per the file, this includes most notably SIMD-1. Per the file, this status must undergo (per the file) extra scrutiny and review (per the file) when updating the status (per the file) from review to living."
+   ]
+  },
+  {
+   "heading": "Stagnant",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if a proposal reaches (per the file) 6 months without activity, the proposal is to be marked as stale to be closed. Per the file, a new proposal may be opened if the (per the file) proposal is closed and (per the file) has a chance of reaching consensus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Withdrawn",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the author has withdrawn the proposal. Per the file, this state has finality (per the file) and can no longer be resurrected. Per the file, if the idea is (per the file) pursued at a later (per the file) date it is considered a new proposal."
+   ]
+  }
+ ]
+}

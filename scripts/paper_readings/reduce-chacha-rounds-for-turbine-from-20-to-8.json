@@ -1,0 +1,55 @@
+{
+ "slug": "reduce-chacha-rounds-for-turbine-from-20-to-8",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reduce the number of (per the file) ChaCha rounds for turbine (per the file) weighted shuffle calculation from 20 to 8 so as to reduce the amount (per the file) of compute time spent on this. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, cheap, easy performance win for Turbine. Per the file, this doesn't need to (per the file) be ultra secure. Per the file, just needs to be (per the file) random enough to prevent (per the file) malicious nodes from censoring blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a feature for (per the file) controlling switching to 8 ChaCha rounds. Per the file, pull feature state to (per the file) determine if we should (per the file) perform 20 rounds (legacy) (per the file) or 8 rounds (after (per the file) feature activation) of ChaCha (per the file) Broadcast stage Retransmit stage (per the file) Retransmit signature check Use (per the file) the specified ChaCha rounds (per the file) for computing turbine tree (per the file) weighted shuffle of staked (per the file) peers before determining parent/children. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, what alternative designs were (per the file) considered and what pros/cons (per the file) does this feature have relative to them?. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, should be unnoticeable by most. Per the file, small performance improvement in (per the file) ability to send block data out. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if someone could predictably (per the file) grind and influence turbine (per the file) tree to ensure some (per the file) malicious minority of stake (per the file) could censor unrecoverable portions (per the file) of a block, this (per the file) would be a problem. Per the file, today, the grinding may be done, which means (per the file) further ChaCha rounds provide (per the file) very limited beenfit, but (per the file) the ability to influence (per the file) the generated tree is (per the file) clamped down because the (per the file) input data includes: shred (per the file) index shred slot shred (per the file) type (coding or data) leader node. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

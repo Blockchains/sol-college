@@ -1,0 +1,64 @@
+{
+ "slug": "programify-feature-gate-program",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file suggests replacing the non-existent (per the file) native program at address Feature111111111111111111111111111111111111 (per the file) with a Core BPF Program, (per the file) as described in SIMD 0088. Per the file, feature accts are already assigned the (per the file) owner program address Feature111111111111111111111111111111111111. Per the file, deploying a Core BPF (per the file) program at this address (per the file) would provide engineers with (per the file) the capability to revoke (per the file) pending feature activations. **Note:** (per the file) The process by which (per the file) core contributors *activate* features (per the file) would remain completely unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, a feature is (per the file) queued for activation by (per the file) a keypair holder creating an empty acct and assigning it to the Feature111111111111111111111111111111111111 program. Per the file, because there is no (per the file) actual program implementation at (per the file) this address, the queuing (per the file) is irreversible; if the (per the file) runtime knows about a (per the file) feature gate at some (per the file) address, it will activate (per the file) it at the next epoch boundary.",
+    "Per the file, this means there is (per the file) no recourse in the (per the file) case of a mistaken (per the file) queuing, discovery of a (per the file) bug, or simply a (per the file) desire to manage the (per the file) cadence and schedule of activations. Per the file, a fully-implemented Core BPF (per the file) program would take ownership of those accts and support revoking queued features, (per the file) giving engineers more flexibility and safeguards."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Feature Gate program (per the file) could instead be implemented (per the file) as a built-in native (per the file) program, rather than a Core BPF program. Per the file, however, this would mean (per the file) any changes to the (per the file) program would need to (per the file) be implemented by all node clients in coordination. Per the file, this makes upgrading the program cumbersome. Per the file, with the Feature Gate (per the file) program instead implemented as (per the file) a Core BPF program, (per the file) any changes need only (per the file) be done once, eliminating (per the file) this duplication of work. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, feature Gate program: The (per the file) Core BPF program that all feature accts is to be assigned to, with address Feature111111111111111111111111111111111111. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a Core BPF program (per the file) - the Feature Gate program (per the file) - shall be placed at (per the file) the address of Feature111111111111111111111111111111111111 (per the file) using the process outlined in SIMD 0088. Per the file, the program will have no upgrade authority. Per the file, if changes are required, (per the file) for essential network operations, the program is to be updated using feature-gates. Per the file, the program shall initially (per the file) be designed to support one instruction: RevokePendingActivation.",
+    "Per the file, any other instructions or (per the file) functionality this program may (per the file) support in the future is to be proposed and discussed separately. Per the file, when this instruction is (per the file) invoked by a feature (per the file) key-holder, the program will reallocate the acct to zero, assign it back (per the file) to the System Program, and (per the file) defund its lamports balance. Per the file, as a result, the (per the file) runtime will no longer (per the file) recognize this feature as (per the file) pending, since it will (per the file) no longer be owned by Feature111111111111111111111111111111111111. Per the file, the creation of this (per the file) program will not change (per the file) the existing feature activation process."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, core contributors are positively (per the file) impacted by this change, (per the file) since the ability to (per the file) revoke pending feature activations (per the file) is a significant security advantage. Per the file, there is otherwise no (per the file) change to the activation process whatsoever. Per the file, this includes queuing features (per the file) for activation with the (per the file) CLI and the timing (per the file) of their activation by the runtime."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently the accts used for feature-gating are (per the file) owned by a program ID that fails to have any implementation. Per the file, this means that there (per the file) is no on-chain authority (per the file) that can modify feature accts once they've been created under Feature111111111111111111111111111111111111. Per the file, this lets the runtime to confidently (per the file) update their state upon activation. Per the file, with this proposal, a (per the file) live BPF program - which (per the file) can accept instructions from (per the file) anyone and execute code - is to be the owner of these accts. Per the file, this introduces new risks that has to be mitigated through careful (per the file) implementation of Feature Gate program functionality."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is 100% (per the file) backwards compatible with the (per the file) existing feature activation process. Per the file, it *only* adds the (per the file) ability to revoke pending activations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

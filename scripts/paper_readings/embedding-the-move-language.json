@@ -1,0 +1,47 @@
+{
+ "slug": "embedding-the-move-language",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "This document is outdated and a new approach to support 'move' is in the works.",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Problem",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, solana makes possible developers to write on-chain (per the file) programs in general purpose programming languages including C or Rust, but those (per the file) programs contain Solana-specific mechanisms. Per the file, for example, there isn't (per the file) another chain that asks developers (per the file) to create a Rust module (per the file) with a process_instruction(KeyedAccounts) function. Per the file, whenever practical, Solana should (per the file) offer application developers more portable options. Per the file, until just recently, no (per the file) popular blockchain offered a (per the file) language that could expose (per the file) the value of Solana's (per the file) massively parallel runtime.",
+    "Per the file, solidity contracts, as an illustration, fail to separate references to shared (per the file) data from contract code, (per the file) and therefore need to (per the file) be executed serially to ensure deterministic behavior. Per the file, in practice we see (per the file) that the most aggressively (per the file) optimized EVM-based blockchains all (per the file) seem to peak out around (per the file) 1,200 TPS - a small fraction (per the file) of what Solana can do. Per the file, the Libra project, on (per the file) the other hand, designed (per the file) an on-chain programming language (per the file) called Move that is more (per the file) suitable for parallel execution.",
+    "Per the file, like Solana's runtime, Move (per the file) programs depend on accts for all shared state. Per the file, the biggest design difference (per the file) between Solana's runtime and (per the file) Libra's Move VM is how (per the file) they manage safe invocations between modules. Per the file, solana took an operating (per the file) systems approach and Libra (per the file) took the domain-specific language approach. Per the file, in the runtime, a (per the file) module must trap back (per the file) into the runtime to (per the file) ensure the caller's module (per the file) did not write to data (per the file) owned by the callee.",
+    "Per the file, likewise, when the callee (per the file) completes, it must again (per the file) trap back to the (per the file) runtime to ensure the (per the file) callee did not write (per the file) to data owned by the caller. Per the file, move, on the other (per the file) hand, includes an advanced type system that lets these checks to be (per the file) run by its bytecode verifier. Per the file, because Move bytecode may be verified, the cost (per the file) of verification is paid (per the file) just once, at the (per the file) time the module is loaded on-chain.",
+    "Per the file, in the runtime, the (per the file) cost is paid each time a tx crosses between modules. Per the file, the difference is similar (per the file) in spirit to the (per the file) difference between a dynamically-typed (per the file) language like Python versus a (per the file) statically-typed language like Java. Per the file, solana's runtime lets applications to be written in (per the file) general purpose programming languages, but (per the file) that comes with the cost (per the file) of runtime checks when jumping between programs.",
+    "The file attempts to define a (per the file) way to embed the (per the file) Move VM such that: (per the file) cross-module invocations within Move fail to require the runtime's cross-program runtime (per the file) checks Move programs can leverage functionality in (per the file) other Solana programs and vice versa Solana's (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) runtime parallelism is exposed to batches of Move and non-Move txs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proposed Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Move VM as a Solana loader",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Move VM shall (per the file) be embedded as a (per the file) Solana loader under the (per the file) identifier MOVE_PROGRAM_ID, so that (per the file) Move modules may be marked as executable with the (per the file) VM as its owner. Per the file, this will allow modules (per the file) to load module dependencies, and also allow for parallel execution of Move scripts. Per the file, all data accts owned by Move modules (per the file) must set their owners (per the file) to the loader, MOVE_PROGRAM_ID.",
+    "Per the file, since Move modules encapsulate their acct data in the same (per the file) way Solana programs encapsulate (per the file) theirs, the Move module owner ought to be embedded in the acct data. Per the file, the runtime will grant (per the file) write access to the (per the file) Move VM, and Move (per the file) grants access to the module accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Interacting with Solana programs",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to invoke instructions in (per the file) non-Move programs, Solana would (per the file) need to extend the Move (per the file) VM with a process_instruction() system call. Per the file, it would work the (per the file) same as process_instruction() Rust SBF programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

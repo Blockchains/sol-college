@@ -1,0 +1,112 @@
+{
+ "slug": "partitioned-epoch-rewards-distribution-simd-0015",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new way to (per the file) distribute epoch rewards across (per the file) multiple blocks is proposed (per the file) to address the current (per the file) performance problems associated with (per the file) epoch reward distribution in (per the file) a first block of a new epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the distribution of epoch (per the file) rewards at the start (per the file) block of an epoch (per the file) becomes a significant bottleneck (per the file) due to the rising number of stake accts and voting nodes on the network. Per the file, to address this bottleneck, (per the file) we propose a new (per the file) approach for distributing the (per the file) epoch rewards over multiple blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rewards calculation: calculate the (per the file) epoch rewards for all active stake accts rewards distribution: distribute the (per the file) epoch rewards for the active stake accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we have discussed the following alternative approaches. Per the file, simply set a threshold (per the file) on stake balance, and (per the file) limit the epoch rewards to the accts with stake balance above the threshold. Per the file, this will effectively reduce (per the file) the number of stake (per the file) rewards to be distributed, (per the file) and reduce reward distribution (per the file) time at the epoch boundary. Per the file, however, this will impact stake accts with small balance.",
+    "Per the file, to receive rewards, the small stake accts is to be forced to join (per the file) stake pools, which some (per the file) may be hesitant to do. Per the file, handle reward distributions through txs with specialized native reward programs. Per the file, while this approach is optimal, it calls for significant modifications and doesn't (per the file) align with the current reward code. Per the file, a completely asynchronous epoch (per the file) rewards calculation and distribution, (per the file) in which both reward (per the file) computation and rewards distribution are asynchronous.",
+    "Per the file, this is the most general approach. Per the file, however, it is also (per the file) the most complex approach. Per the file, the reward computation states (per the file) would have to be (per the file) maintained across multiple blocks. Per the file, the transition between the (per the file) reward calculation and reward (per the file) distribution would need to (per the file) be synchronized across the cluster. Per the file, and cluster restart during (per the file) reward computation would have (per the file) to be handled specially.",
+    "Per the file, an other approach is (per the file) similar to the current (per the file) proposal with additional per-block (per the file) reward reserve sysvar accts. Per the file, those sysvar accts are introduced to track (per the file) and verify the rewards distributed per block. Per the file, the per-block reward reserve sysvar accts add additional checks and safety (per the file) for reward distribution. Per the file, however, they also add (per the file) addition cost to block (per the file) processing, especially for the (per the file) first block in the epoch.",
+    "Per the file, the first block is (per the file) already computationally heavily - it (per the file) is responsible for processing (per the file) all the reward computation. Per the file, the additional cost of (per the file) those sysvars puts more (per the file) burden onto that block (per the file) and hurt the timing for it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the major bottleneck for (per the file) epoch reward distribution is (per the file) to distribute rewards to stake accts. Per the file, at the time of (per the file) writing, there are approximately 550K active stake accts and 1.5K vote accts on Solana Mainnet Beta. Per the file, given the relatively small number of vote accts, it makes sense to (per the file) keep vote rewards distribution mechanism unchanged. Per the file, they can still be (per the file) distributed efficiently at the (per the file) first block of the epoch boundary.",
+    "Per the file, this reduces the impact (per the file) of rewards for vote acct and also simplifies the overall changes. Per the file, it also lets us (per the file) focus on solving the (per the file) primary bottleneck - Stake Rewards. Per the file, only Stake rewards are (per the file) going to be distributed (per the file) out over multiple blocks.",
+    "Per the file, in the new stake (per the file) rewards distribution approach, we (per the file) will separate the computation (per the file) of rewards from the (per the file) actual distribution of rewards (per the file) at the epoch boundary (per the file) by dividing the process (per the file) into two distinct phases: rewards calculation phase - during (per the file) which the epoch rewards (per the file) for all activate stake accts are computed and distribution chunks are scheduled. rewards distribution phase - during (per the file) which the calculated epoch (per the file) rewards for the active stake accts are distributed. Per the file, to help maintain the (per the file) total capital balance and (per the file) track/verify the reward distribution (per the file) during rewarding phases, a new sysvar acct, EpochRewards, is proposed. Per the file, the EpochRewards sysvar holds (per the file) the balance of the (per the file) rewards that are pending for distribution. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rewards Calculation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reward calculation phase computes (per the file) all the rewards that (per the file) need to be distributed (per the file) for the active stake accts, and partitions the reward (per the file) into a number of (per the file) chunks for distribution in the next phase. Per the file, currently, on Solana Mainnet (per the file) Beta with ~550K active stake accts, it shows that epoch (per the file) reward calculation takes around (per the file) 10 seconds on average. Per the file, this will make it (per the file) impossible to perform rewards (per the file) computation synchronous within one block.",
+    "Per the file, however, there are quite (per the file) a few promising optimizations (per the file) that can cut down (per the file) the reward computation time. Per the file, an experiment for reward (per the file) calculation optimization (https://github.com/solana-labs/solana/pull/31193) showed (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) that we can cut the reward calculation time plus vote reward distribution time to around 1s.",
+    "Per the file, this makes synchronous reward (per the file) computation and asynchronous reward (per the file) distribution a feasible approach. Per the file, we also believe that (per the file) there is still more (per the file) rooms for more optimization (per the file) to further cut down the above timing. Per the file, therefore, the following design (per the file) is based on the above optimization. Per the file, the reward calculation is to be performed at the (per the file) first block of the epoch.",
+    "Per the file, once the full rewards (per the file) are calculated, the rewards is to be partitioned into distribution (per the file) chunks stored in the (per the file) bank, which will then (per the file) be distributed during the reward distribution phase. Per the file, to ensure that each (per the file) block distributes a subset (per the file) of the rewards in (per the file) a deterministic manner for (per the file) the current epoch, while (per the file) also randomizing the distribution (per the file) across different epochs, the (per the file) partitioning of all rewards is to be done as follows.",
+    "Per the file, the reward results are (per the file) sorted by Stake Account (per the file) address, and randomly shuffled (per the file) with a fast rng (per the file) seeded by current epoch. Per the file, the shuffled reward results (per the file) are then divided into M chunks. Per the file, this process will ensure (per the file) that the reward distribution (per the file) is deterministic for the (per the file) current epoch, while also (per the file) introducing a degree of randomness between epochs.",
+    "Per the file, to minimize the impact (per the file) on block processing time (per the file) during the reward distribution (per the file) phase, a total of 4,096 accts is to be distributed per block. Per the file, the total number of (per the file) blocks needed to distributed (per the file) rewards is given by (per the file) the following formula to (per the file) avoid using floating point value arithmetic:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "`EpochRewards` Sysvar Account",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, epochRewards sysvar acct records the total rewards (per the file) and the amount of (per the file) distributed rewards for the current epoch internally. Per the file, and the acct balance reflects the amount (per the file) of pending rewards to distribute. Per the file, the layout of EpochRewards (per the file) sysvar is shown in (per the file) the following pseudo code. Per the file, the EpochRewards sysvar is (per the file) created at the start (per the file) of the first block (per the file) of the epoch (before any txs are processed), as both (per the file) the total epoch rewards and vote acct rewards become available at this time.",
+    "Per the file, the distributed_reward_in_lamport field is (per the file) updated per reward distribution for each block (per the file) in the reward distribution phase. Per the file, once all rewards have (per the file) been distributed, the balance of the EpochRewards acct MUST be reduced to (per the file) 0 (or something has gone wrong). Per the file, for safety, any extra lamports in EpochRewards accts is to be burned after reward (per the file) distribution phase, and the sysvar acct is to be deleted.",
+    "Per the file, because of the lifetime (per the file) of EpochRewards sysvar coincides (per the file) with the reward distribution (per the file) interval, user can explicitly (per the file) query the existence of (per the file) this sysvar to determine (per the file) whether a block is in reward interval. Per the file, therefore, no new RPC (per the file) method for reward interval is needed."
+   ]
+  },
+  {
+   "heading": "Reward Distribution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reward distribution phase happens (per the file) after reward computation phase, (per the file) which starts after the (per the file) first block in the (per the file) epoch for this proposal. Per the file, each of the M (per the file) blocks is responsible for (per the file) distributing the reward from (per the file) one partition of the (per the file) rewards from the EpochRewards sysvar acct. Per the file, before each reward distribution, the EpochRewards acct's balance is checked to (per the file) make sure there is enough (per the file) balance to distribute the reward. Per the file, after a reward is (per the file) distributed, the balance in EpochRewards acct is decreased by the (per the file) amount of the reward that was distributed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Restrict Stake Account Access",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to avoid the complexity (per the file) and potential rewards in unexpected stake accts, the stake program is (per the file) disabled during the epoch reward distribution period. Per the file, any tx that invokes staking program (per the file) during this period will (per the file) fail with a new (per the file) unique error code - StakeProgramUnavailable. Per the file, that means all updates to stake accts have to wait until (per the file) the rewards distribution finishes. Per the file, because different stake accts are receiving the rewards (per the file) at different blocks, on-chain (per the file) programs, which depends on the (per the file) rewards of stakes accts during the reward period, may (per the file) get into partial epoch reward state.",
+    "Per the file, to prevent this from happening, loading stake accts from on-chain programs during reward period is to be disabled. Per the file, however, reading the stake acct through RPC will still be available. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there are the two (per the file) main impacts of the changes to stake accts during the epoch rewarding phase. Per the file, the first impact is that stake accts will see their rewards (per the file) being credited a few (per the file) blocks later in the epoch than before. Per the file, the second impact is (per the file) that users will not (per the file) be able to update (per the file) their stakes during the (per the file) epoch reward phases, and (per the file) will have to wait (per the file) until the end of (per the file) the epoch reward period (per the file) to make any changes.",
+    "Per the file, nonetheless, the overall amount (per the file) of time that the (per the file) user must wait before (per the file) receiving and updating their stake rewards ought to be roughly equivalent to (per the file) what they are now (per the file) experiencing on the current (per the file) mainnet beta, since the (per the file) prolonged first block time (per the file) at the epoch boundary (per the file) effectively obstructs the user's (per the file) access to those stake accts during that time. Per the file, another advantage with the (per the file) new approach is that all non-staking txs will continue to be processed, while those txs are blocked on mainnet beta today. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while the proposed new (per the file) approach does impact and (per the file) modify various components of the nodes, it fails to alter the economics of the reward system. Per the file, if all the changes (per the file) are implemented correctly and (per the file) tested fully, there are no security issues."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this is a breaking change. Per the file, the new epoch calculation (per the file) and distribution approach will (per the file) not be compatible with the old approach."
+   ]
+  },
+  {
+   "heading": "Open Questions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

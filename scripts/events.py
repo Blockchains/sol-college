@@ -622,6 +622,14 @@ def write_page(S, page, path, title, desc, main, data=None):
     write_text(S, path + 'index.html', doc)
 
 
+def browser_title(ev, title_counts):
+    """Disambiguate recurring names with the start date so SEO titles stay unique."""
+    title = ev['title']
+    if title_counts.get(title, 0) > 1 and ev.get('start_utc'):
+        return f'{title} ({ev["start_utc"][:10]}) | Solana Calendar'
+    return f'{title} | Solana Calendar'
+
+
 def write(S, page, css):
     del css
     pages = []
@@ -632,13 +640,17 @@ def write(S, page, css):
     pages.append(('/events/', 'Solana Calendar', desc))
     write_text(S, '/events/events.js', (HERE / 'events.js').read_text(encoding='utf-8'))
     write_text(S, '/events/feeds/all.ics', calendar_text(upcoming(), 'Solana Calendar'))
+    upcoming_rows = upcoming()
+    title_counts = {}
+    for ev in upcoming_rows:
+        title_counts[ev['title']] = title_counts.get(ev['title'], 0) + 1
     intents = {}
-    for ev in upcoming():
+    for ev in upcoming_rows:
         intents.setdefault(ev['intent'], []).append(ev)
         write_text(S, f'/events/{ev["id"]}/event.ics', calendar_text([ev], ev['title']))
         path = f'/events/{ev["id"]}/'
         d = meta_for(ev)
-        write_page(S, page, path, ev['title'] + ' | Solana Calendar', d, detail(ev), event_ld(ev, path))
+        write_page(S, page, path, browser_title(ev, title_counts), d, detail(ev), event_ld(ev, path))
         pages.append((path, ev['title'], d))
     for intent, group in intents.items():
         write_text(S, f'/events/feeds/intent-{intent}.ics', calendar_text(group, INTENT.get(intent, intent)))
@@ -697,15 +709,19 @@ def write(S, page, css):
     for sid, group in series.items():
         path = f'/events/series/{sid}/'
         d = 'Dated occurrences only. The series title is not a future date.'
-        write_page(S, page, path, group[0]['title'] + ' | Solana Calendar', d, series_page(sid, group))
+        write_page(S, page, path, group[0]['title'] + ' series | Solana Calendar', d, series_page(sid, group))
         pages.append((path, group[0]['title'], d))
         write_text(S, f'/events/feeds/series/{sid}.ics', calendar_text(group, group[0]['title']))
 
-    for ev in archive():
+    archive_rows = archive()
+    archive_counts = {}
+    for ev in archive_rows:
+        archive_counts[ev['title']] = archive_counts.get(ev['title'], 0) + 1
+    for ev in archive_rows:
         slug = ev['id'].removeprefix('archive-')
         path = f'/events/archive/{slug}/'
         d = meta_for(ev)
-        write_page(S, page, path, ev['title'] + ' | Solana Calendar', d, detail(ev))
+        write_page(S, page, path, browser_title(ev, archive_counts), d, detail(ev))
         pages.append((path, ev['title'], d))
 
     for path, _t, _d in pages:

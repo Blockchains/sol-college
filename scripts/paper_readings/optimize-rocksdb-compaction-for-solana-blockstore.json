@@ -1,0 +1,190 @@
+{
+ "slug": "optimize-rocksdb-compaction-for-solana-blockstore",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "The file explores RocksDB based solutions (per the file) for Solana BlockStore mentioned in issue #16234. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, solana uses RocksDB as (per the file) the underlying storage for its blockstore. Per the file, rocksDB is a LSM-based (per the file) key value store which consists (per the file) of multiple logical levels, and (per the file) data in each level is (per the file) sorted by key (read amplification). Per the file, in such leveled structure, (per the file) each read hits at (per the file) most one file for (per the file) each level, while all (per the file) other mutable operations including (per the file) writes, deletions, and merge (per the file) operations are implemented as (per the file) append operations and will (per the file) eventually create more logical (per the file) levels which makes the (per the file) read performance worse over time.",
+    "Per the file, to make reads more (per the file) performant over time, RocksDB (per the file) periodically reduces the number (per the file) of logical levels by (per the file) running compaction in background, (per the file) where part or multiple (per the file) logical levels are merged (per the file) into one, which increases (per the file) the number of disk (per the file) I/Os (write amplification) and (per the file) storage (space amplification) required for (per the file) storing each entry. Per the file, in other words, RocksDB (per the file) uses compactions to balance (per the file) write, space, and read amplifications.",
+    "Per the file, as different workloads have (per the file) different requirements, RocksDB makes (per the file) its options highly configurable. Per the file, however, it also means (per the file) its default settings might (per the file) not be always suitable. The file focuses on RocksDB's compaction (per the file) optimization for Solana's Blockstore."
+   ]
+  },
+  {
+   "heading": "Problems",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as mentioned in #16234, there're several issues (per the file) in the Solana's BlockStore which (per the file) runs RocksDB with level compaction. Per the file, here's a quick summary (per the file) of the issues:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Long Write Stalls on Shred Insertions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, remember that RocksDB periodically runs background compactions so as to keep the number (per the file) of logical levels small so as to reach the target read amplification. Per the file, however, when the background (per the file) compactions cannot catch up (per the file) the write rate, the (per the file) number of logical levels (per the file) will eventually exceeds the configured limit. Per the file, in such case, RocksDB (per the file) will rate-limit / stop all (per the file) writes when it reaches soft / hard threshold.",
+    "Per the file, in #14586, it is reported (per the file) that the write stalls (per the file) in Solana's use case may be 40 minutes long. Per the file, it is also reported in #16234 that writes are (per the file) also slowed-down, indicating the (per the file) underlying RocksDB instance has reach (per the file) the soft limit for write stall. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Deletions are not Processed in Time",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deletions are processed in (per the file) the same way as (per the file) other write operations in (per the file) RocksDB, where multiple entries (per the file) associated with the same (per the file) key are merged / deleted (per the file) during the background compaction. Per the file, although the deleted entries (per the file) will not be visible (per the file) from the read side (per the file) right after the deletion (per the file) is issued, the deleted (per the file) entries (including the original (per the file) data entries and its (per the file) deletion entries) will still occupy disk storage. Per the file, tBD: explain how write-key (per the file) order makes this worse."
+   ]
+  },
+  {
+   "heading": "High Write I/O from Write Amplification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in addition to write (per the file) stalls, it is also (per the file) observed that compactions cause (per the file) unwanted high write I/O. Per the file, with the current design (per the file) where level compaction is (per the file) configured for BlockStore, it (per the file) has ~30x write amplification (per the file) (10x write amp per (per the file) level and assuming three levels in average). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Current Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blockstore stores three types (per the file) of data in RocksDB: shred data, metadata, accts and transactional data. Per the file, each stores in multiple different column families. Per the file, for shred insertions, write (per the file) batches are used to (per the file) combine several shred insertions (per the file) that update both shred (per the file) data and metadata related (per the file) column families, while column families related to accts and transactional are unrelated. Per the file, in the current BlockStore, (per the file) the default level compaction (per the file) is used for all column families.",
+    "Per the file, as deletions are not (per the file) processed in time by (per the file) RocksDB, a slot-ID based (per the file) compaction filter with periodic manual (per the file) compactions is used so as to force the deletions to be processed. Per the file, while this approach can (per the file) guarantees deletions are processed (per the file) for specified period of (per the file) time which mitigates the (per the file) write stall issue, period (per the file) manual compactions will introduce additional write amplification."
+   ]
+  },
+  {
+   "heading": "The Proposed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as all the above (per the file) issues are compaction related, it may be solved with a (per the file) proper compaction style and deletion policy. Per the file, fortunately, shred data column (per the file) families, ShredData and ShredCode, (per the file) which contribute to 99% (per the file) of the storage size (per the file) in shred insertion, have (per the file) an unique write workload (per the file) where write-keys are mostly (per the file) monotonically increasing over time.",
+    "Per the file, this lets data to be persisted (per the file) in sorted order naturally (per the file) without compaction, and the deletion policy may be as simple as (per the file) deleting the oldest file (per the file) when the storage (per the file) size reaches the cleanup trigger. Per the file, in the proposed design, (per the file) we will leverage such (per the file) unique property to aggressively (per the file) config RocksDB to run (per the file) as few compactions as (per the file) possible while offering low (per the file) read amplification with no write stalls."
+   ]
+  },
+  {
+   "heading": "Use FIFO Compaction for Shred Data Column Families",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as mentioned above, shred (per the file) data column families, ShredData (per the file) and ShredCode, which contribute (per the file) to 99% of the (per the file) storage size in shred (per the file) insertion, have an unique (per the file) write workload where write-keys (per the file) are mostly monotonically increasing over time. Per the file, as a result, after (per the file) entries are flushed from (per the file) memory into SST files, (per the file) the keys are naturally (per the file) sorted across multiple SST (per the file) files where each SST (per the file) file might have a (per the file) small overlapping key range (per the file) between at most two other SST files.",
+    "Per the file, in other words, files (per the file) are sorted naturally from (per the file) old to new, which lets us to use the (per the file) First-In-First-Out compaction, or FIFO (per the file) Compaction. Per the file, fIFO Compaction actually fails to compact files. Per the file, instead, it simply deletes (per the file) the oldest files when (per the file) the storage size reaches the specified threshold. Per the file, as a result, it (per the file) has a constant 1 write amplification.",
+    "Per the file, in addition, as keys (per the file) are naturally sorted across (per the file) multiple SST files, each read may be answered by hitting (per the file) mostly only one (or (per the file) in the boundary case, two) file. Per the file, this gives us (per the file) close to 1 read amplification. Per the file, as each key is (per the file) only inserted once, we (per the file) have space amplification 1. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Use Current Settings for Metadata Column Families",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the second type of (per the file) the column families related (per the file) to shred insertion is metadata column families. Per the file, these metadata column families (per the file) contributes ~1% of the (per the file) shred insertion data in size. Per the file, the largest metadata column (per the file) family here is the (per the file) Index column family, which (per the file) occupies 0.8% of the (per the file) shred insertion data. Per the file, as these column families (per the file) only contribute ~1% of (per the file) the shred insertion data (per the file) in size, the current (per the file) settings with default level (per the file) compaction with compaction filter ought to be good enough for now.",
+    "Per the file, we can revisit later (per the file) if these metadata column (per the file) families become the performance (per the file) bottleneck after we've optimized (per the file) the shred data column families. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Benefits",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "No More Write Stalls",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, write stall is a (per the file) RocksDB's mechanism to slow-down (per the file) or stop writes so as to allow compactions to catch up so as to keep read amplification low. Per the file, luckily, because keys in (per the file) data shred column families (per the file) are written in mostly (per the file) monotonically increasing order, the (per the file) resulting SST files are (per the file) naturally sorted that always (per the file) keeps read amplification close to 1. Per the file, as a result, there (per the file) is no need to stall writes so as to maintain the read amplification."
+   ]
+  },
+  {
+   "heading": "Deletions are Processed in time",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in FIFO compactions, deletions (per the file) are happened immediately when (per the file) the size of the (per the file) column family reaches the configured trigger. Per the file, as a result, deletions (per the file) are always processed in (per the file) time, and we don't (per the file) need to worry about whether (per the file) RocksDB picks the correct file (per the file) to process the deletion (per the file) as FIFO compaction always pick (per the file) the oldest one, which is (per the file) the correct deletion policy for shred data. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Low I/Os with Minimum Amplification Factors",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, fIFO Compaction offers constant (per the file) write amplification as it fails to run any compactions in (per the file) background while it usually (per the file) has a large read (per the file) amplification as each read has to be answered by reaching (per the file) every single SST file. Per the file, however, it is (per the file) not the case in (per the file) the shred data column (per the file) families because SST files (per the file) are naturally sorted as (per the file) write keys are inserted (per the file) in mostly monotonically increasing order without duplication.",
+    "Per the file, this gives us 1 (per the file) space amplification and close (per the file) to 1 read amplification. Per the file, to sum up, if (per the file) no other manual compaction (per the file) is issued for quickly (per the file) picking up deletions, FIFO (per the file) Compaction offers the following (per the file) amplification factors in Solana's (per the file) BlockStore use case: Write Amplification: (per the file) 1 (all data is written (per the file) once without compaction.) Read Amplification: (per the file) < 1.1 (assuming each SST file (per the file) has 10% overlapping key range (per the file) with another SST file.) Space Amplification: (per the file) 1 (same data never be written (per the file) in more than one SST file, (per the file) and no additional temporary space (per the file) required for compaction.)."
+   ]
+  },
+  {
+   "heading": "Migration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, here we discuss Level (per the file) to FIFO and FIFO to Level migrations:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Level to FIFO",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, theoretically, FIFO compaction is (per the file) the superset of all (per the file) other compaction styles, as it fails to have any assumption of (per the file) the LSM tree structure. Per the file, however, the current RocksDB implementation fails to offer such flexibility while (per the file) it is theoretically doable. Per the file, as the current RocksDB (per the file) implementation doesn't offer such (per the file) flexibility, the best option is (per the file) to extend the copy tool (per the file) in the ledger tool to (per the file) allow it also specifying the (per the file) destired compaction style of the output DB.",
+    "Per the file, this approach also ensures (per the file) the resulting FIFO compacted (per the file) DB can clean up (per the file) the SST files in (per the file) the correct order, as (per the file) the copy tool iterates (per the file) from smaller (older) slots (per the file) to bigger (latest) slots, (per the file) leaving the resulting SST (per the file) files generated in the (per the file) correct time order, which lets FIFO compaction to delete (per the file) the oldest data just (per the file) by checking the file (per the file) creation time (per the file) during its clean up process. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "FIFO to Level",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while one can opens (per the file) a FIFO-compacted DB using (per the file) level compaction, the DB will (per the file) likely to encounter long write stalls. Per the file, it is because FIFO (per the file) compaction puts all files (per the file) in level 0, and (per the file) write stalls trigger when (per the file) the number of level-0 (per the file) files exceed the limit until (per the file) all the level-0 files are (per the file) compacted into other levels.",
+    "Per the file, to avoid the start-up (per the file) write stalls, a more efficient (per the file) way to perform FIFO to (per the file) level compaction is to do (per the file) a manual compaction first, then (per the file) open the DB. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Release Plan",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as the migration in (per the file) either way cannot not (per the file) be done smoothly in place, the release is to be divided into the (per the file) following steps: v0 - merge (per the file) FIFO compaction implementation with (per the file) visible args. v1 - visible (per the file) args with a big (per the file) warning stating you'll lose (per the file) your ledger if you enable (per the file) it v2 - slow-roll and monitor (per the file) FIFO compaction, fix any issues. v3 (per the file) - if needed, add migration support.",
+    "Per the file, in step v1, FIFO (per the file) will use a different (per the file) rocksdb directory (something like (per the file) rocksdb-v2 or rocksdb-fifo) to (per the file) ensure that the node will never mix two different formats (per the file) and panic."
+   ]
+  },
+  {
+   "heading": "Experiments",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Single Node Benchmark Results",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to verify the effectiveness, (per the file) I ran both 1m (per the file) slots and 100m slots (per the file) shred insertion benchmarks on (per the file) my n2-standard-32 GC instance (per the file) (32 cores 2800MHz cpu, 128GB memory, (per the file) 2048GB SSD). Per the file, each slot contains 25 (per the file) shreds, and the shreds (per the file) are inserted with with 8 writers.",
+    "Per the file, here are the summary (per the file) of the result: FIFO based node: Shred insertion took 13450.8s, (per the file) 185.8k shreds/s Current setting: shred (per the file) insertion took 30337.2s, 82.4k shreds/s If we (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) further remove the write lock inside the shred insertion to allow fully concurrent shred insertion, the proposed FIFO setting can inserts 295k shreds/s: FIFO + no write lock: Shred insertion took 8459.3s, 295.5k shreds/s The possibility of enabling fully concurrent multi-writer shred insertion is discussed in #21657."
+   ]
+  },
+  {
+   "heading": "Results from the Mainnet-Beta",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to further understand the (per the file) performance, I setup two node instances joining the Mainnet-Beta, (per the file) but one with FIFO based node and the other is based (per the file) on the current setting. Per the file, two nodes have the same machine (per the file) spec (24-core 2.8kMHz CPU, (per the file) 128GB memory, 768GB SSD for blockstore, (per the file) and everything else stored in the (per the file) 1024GB SSD.) Below are the results. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Disk Write Bytes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, i first compared the (per the file) disk write bytes of (per the file) the SSD for blockstore (per the file) of the two instances. Per the file, this number represents how (per the file) many bytes written are required so as to store the same (per the file) amount of logical data. Per the file, it also reflects the (per the file) write amplification factor of the storage.",
+    "Per the file, fIFO based node: ~15~20 MB/s Current setting: (per the file) vs 25~30 MB/s The result shows (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) that FIFO-based node writes ~33% less data to perform the same task compared to the current setting. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Compaction Stats on Data and Coding Shred Column Family",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, another data point we (per the file) have is the RocksDB (per the file) compaction stats, which tells (per the file) us how much resource (per the file) is spent in compaction.",
+    "Per the file, below shows the compaction (per the file) stats on data and (per the file) coding shreds: FIFO based node: 188.24 GB write, 1.27 (per the file) MB/s write, 0.00 GB read, 0.00 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) MB/s read, 870.4 seconds Current setting: 719.87 GB write, 4.88 MB/s write, 611.61 GB read, 4.14 MB/s read, 5782.6 seconds The compaction stats show that FIFO based node is 6.5x faster in compacting data shreds and coding shreds with fewer than 1/3 disk writes. Per the file, in addition, there is (per the file) no disk read involved (per the file) in FIFO's compaction process."
+   ]
+  },
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this documents proposes a (per the file) FIFO-compaction based solution to (per the file) the performance issues of blockstore #16234. Per the file, it minimizes read / write (per the file) / space amplification factors by (per the file) leveraging the unique property (per the file) of Solana BlockStore workload (per the file) where write-keys are mostly (per the file) monotonically increasing over time. Per the file, experimental results from the (per the file) single node 100m slots (per the file) insertion indicate the proposed (per the file) solution can insert 185k (per the file) shred/s, which is ~2.25x (per the file) faster than current design that inserts (per the file) 82k shreds/s.",
+    "Per the file, experimental results from Mainnet-Beta (per the file) also shows that the proposed (per the file) FIFO-based solution can achieve same (per the file) task with 33% fewer disk writes (per the file) compared to the current design. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

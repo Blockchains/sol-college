@@ -1,0 +1,56 @@
+{
+ "slug": "skip-rent-rewrites",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, do not rewrite accts *that are unchanged* by rent collection."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rent collection checks every acct at least once per epoch. Per the file, this process loads *and stores* accts, regardless if the acct has actually changed or not. Per the file, all accts now has to be rent-exempt, and there (per the file) are zero rent-paying accts on mainnet-beta. Per the file, thus, almost every acct stored due to rent (per the file) collection is unchanged, and storing unchanged accts is useless work. Per the file, worse, storing accts incurs all the downstream costs on the accts database: computing the various accts hashes on extra accts unnecessarily, tracking/cleaning/purging the new (per the file) and old versions of accts, plus it bloats the incremental snapshots with accts that haven't meaningfully changed."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we could remove rent (per the file) collection entirely, and that (per the file) is already planned (see SIMD-0084). Per the file, skipping rewrites is a (per the file) smaller, less complex change, (per the file) which can allow rollout and activation sooner. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, \"Skipping rewrites\" means to not store accts that are unchanged by rent collection."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if rent collection has *not* changed an acct, the acct must not be stored/written (per the file) back in that slot. Per the file, an important note, rent collection updates an acct's rent epoch in addition (per the file) to its balance. Per the file, if rent collection fails to collect rent (i.e. the acct's balance is unchanged), but *does* (per the file) change the acct's rent epoch, the acct must still be stored. Per the file, to state another consequence explicitly, since these accts will not be rewritten, (per the file) they will no longer (per the file) be part of the accts delta hash nor the incremental accts hash."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators will see performance improvements: Fewer accts will need to be stored per slot. Per the file, fewer accts will need to be (per the file) hashed for the various accts hashes. Per the file, fewer accts will need to be (per the file) included in incremental snapshots. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, having all accts rewritten due to rent (per the file) collection results in all accts being included in at (per the file) least one bank hash per epoch. Per the file, since the bank hash (per the file) is part of what (per the file) is voted on for (per the file) consensus, this means every acct is verified by the (per the file) network at least once per epoch. Per the file, by skipping rewrites, we (per the file) lose this security property.",
+    "Per the file, this is OK because (per the file) the Epoch Accounts Hash (per the file) (EAH) was added to (per the file) directly address this issue. Per the file, see the EAH proposal for more information. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

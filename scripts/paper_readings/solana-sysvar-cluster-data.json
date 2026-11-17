@@ -1,0 +1,97 @@
+{
+ "slug": "solana-sysvar-cluster-data",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, solana exposes a variety (per the file) of cluster state data (per the file) to programs via sysvar accts. Per the file, these accts are populated at known (per the file) addresses published along with the acct layouts in the solana-program crate, and outlined below. Per the file, there are two ways (per the file) for a program to access a sysvar.",
+    "Per the file, the first is to (per the file) query the sysvar at (per the file) runtime via the sysvar's get() function: The following sysvars support get: (per the file) Clock EpochSchedule Fees Rent EpochRewards (per the file) The second is to pass (per the file) the sysvar to the program as an acct by including its address as (per the file) one of the accts in the Instruction and then (per the file) deserializing the data during execution. Per the file, access to sysvars accts is always _readonly_.",
+    "Per the file, the first method is more efficient and fails to require that the sysvar acct be passed to the (per the file) program, or specified in (per the file) the Instruction the program is processing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Clock",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Clock sysvar contains (per the file) data on cluster time, (per the file) including the current slot, (per the file) epoch, and estimated wall-clock Unix timestamp. Per the file, it is updated every slot. Per the file, address: SysvarC1ock11111111111111111111111111111111 Layout: Clock Fields: slot: the current (per the file) slot epoch_start_timestamp: the Unix (per the file) timestamp of the first slot in (per the file) this epoch.",
+    "Per the file, in the first slot (per the file) of an epoch, this (per the file) timestamp is identical to (per the file) the unix_timestamp (below). epoch: (per the file) the current epoch leader_schedule_epoch: the (per the file) most recent epoch for which the leader (per the file) schedule has already been generated unix_timestamp: the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Unix timestamp of this slot. Per the file, each slot has an (per the file) estimated duration based on Proof of History.",
+    "Per the file, but in reality, slots (per the file) may elapse faster and (per the file) slower than this estimate. Per the file, as a result, the (per the file) Unix timestamp of a (per the file) slot is generated based (per the file) on oracle input from voting nodes. Per the file, this timestamp is calculated (per the file) as the stake-weighted median (per the file) of timestamp estimates provided by (per the file) votes, bounded by the expected (per the file) time elapsed since the start (per the file) of the epoch.",
+    "Per the file, more explicitly: for each (per the file) slot, the most recent (per the file) vote timestamp provided by each node is used to generate (per the file) a timestamp estimate for (per the file) the current slot (the (per the file) elapsed slots since the (per the file) vote timestamp are assumed (per the file) to be Bank::ns_per_slot). Per the file, each timestamp estimate is (per the file) associated with the stake (per the file) delegated to that vote acct to create a distribution (per the file) of timestamps by stake.",
+    "Per the file, the median timestamp is (per the file) used as the unix_timestamp, (per the file) unless the elapsed time since (per the file) the epoch_start_timestamp has deviated from (per the file) the expected elapsed time by more than (per the file) 25%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "EpochSchedule",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the EpochSchedule sysvar contains (per the file) epoch scheduling constants that (per the file) are set in genesis, and makes possible calculating the number of (per the file) slots in a given (per the file) epoch, the epoch for (per the file) a given slot, etc. Per the file, (Note: the epoch schedule (per the file) is distinct from the leader schedule) Address: SysvarEpochSchedu1e111111111111111111111111 Layout: EpochSchedule. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Fees",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Fees sysvar contains (per the file) the fee calculator for the current slot. Per the file, it is updated every (per the file) slot, based on the fee-rate governor. Per the file, address: SysvarFees111111111111111111111111111111111 Layout: Fees. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Instructions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Instructions sysvar contains (per the file) the serialized instructions in (per the file) a Message while that (per the file) Message is being processed. Per the file, this lets program instructions to reference (per the file) other instructions in the same tx. Per the file, read more information on instruction introspection. Per the file, address: Sysvar1nstructions1111111111111111111111111 Layout: Instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "RecentBlockhashes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the RecentBlockhashes sysvar contains (per the file) the active recent blockhashes and also their associated fee calculators. Per the file, it is updated every slot. Per the file, entries are ordered by (per the file) descending block height, so (per the file) the first entry holds (per the file) the most recent block (per the file) hash, and the last (per the file) entry holds an old block hash. Per the file, address: SysvarRecentB1ockHashes11111111111111111111 Layout: RecentBlockhashes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rent",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Rent sysvar contains the rental rate. Per the file, currently, the rate is (per the file) static and set in genesis. Per the file, the Rent burn percentage (per the file) is modified by manual feature activation. Per the file, address: SysvarRent111111111111111111111111111111111 Layout: Rent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "SlotHashes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the SlotHashes sysvar contains (per the file) the most recent hashes (per the file) of the slot's parent banks. Per the file, it is updated every slot. Per the file, address: SysvarS1otHashes111111111111111111111111111 Layout: SlotHashes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "SlotHistory",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the SlotHistory sysvar contains (per the file) a bitvector of slots (per the file) present over the last epoch. Per the file, it is updated every slot. Per the file, address: SysvarS1otHistory11111111111111111111111111 Layout: SlotHistory. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "StakeHistory",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the StakeHistory sysvar contains (per the file) the history of cluster-wide (per the file) stake activations and de-activations per epoch. Per the file, it is updated at (per the file) the start of every epoch. Per the file, address: SysvarStakeHistory1111111111111111111111111 Layout: StakeHistory. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "EpochRewards",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the EpochRewards sysvar tracks (per the file) the progress of epoch rewards distribution. Per the file, the sysvar is created (per the file) in the first block (per the file) of the epoch, and (per the file) lasts for several blocks (per the file) while paying out the rewards. Per the file, when all rewards have (per the file) been distributed, the sysvar is deleted. Per the file, unlike other sysvars, which (per the file) almost always exist on-chain, (per the file) EpochRewards sysvar only exists during (per the file) the reward period.",
+    "Per the file, therefore, calling EpochRewards::get() on (per the file) blocks that are outside of (per the file) the reward period will return (per the file) an error, i.e. Per the file, this can serve as (per the file) a method for determining (per the file) whether epoch rewards distribution has finished. Per the file, address: SysvarEpochRewards1111111111111111111111111 Layout: EpochRewards. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "LastRestartSlot",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the LastRestartSlot sysvar contains (per the file) the slot number of (per the file) the last restart or (per the file) _0_ (zero) if none ever happened. Per the file, address: SysvarLastRestartS1ot1111111111111111111111 Layout: LastRestartSlot. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

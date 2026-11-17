@@ -1,0 +1,31 @@
+{
+ "slug": "commitment",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, the commitment metric aims (per the file) to give clients a (per the file) measure of the network (per the file) confirmation and stake levels (per the file) on a particular block. Per the file, clients can then use (per the file) this information to derive (per the file) their own measures of commitment. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Calculation RPC",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, clients can request commitment metrics from a node for a signature s (per the file) through get_block_commitment(s: Signature) -> BlockCommitment (per the file) over RPC. Per the file, the BlockCommitment struct contains (per the file) an array of u64 [u64, MAX_CONFIRMATIONS]. Per the file, this array represents the (per the file) commitment metric for the (per the file) particular block N that (per the file) contains the signature s (per the file) as of the last (per the file) block M that the node voted on.",
+    "Per the file, an entry s at (per the file) index i in the (per the file) BlockCommitment array implies that the node observed s total stake (per the file) in the cluster reaching (per the file) i confirmations on block (per the file) N as observed in some block M. Per the file, there is to be MAX_CONFIRMATIONS elements in (per the file) this array, representing all the (per the file) possible number of confirmations from (per the file) 1 to MAX_CONFIRMATIONS. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Computation of commitment metric",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, building this BlockCommitment struct (per the file) leverages the computations already (per the file) being performed for building consensus. Per the file, the collect_vote_lockouts function in (per the file) consensus.rs builds a HashMap, where each (per the file) entry is of the form (b, s) (per the file) where s is the amount of stake (per the file) on a bank b. Per the file, this computation is performed (per the file) on a votable candidate (per the file) bank b as follows.",
+    "Per the file, where f is some (per the file) accumulation function that modifies (per the file) the Stake entry for (per the file) slot a with some (per the file) data derivable from vote (per the file) v and vote_account (stake, lockout, etc.). Per the file, note here that the (per the file) ancestors here only includes (per the file) slots that are present (per the file) in the current status cache. Per the file, signatures for banks earlier (per the file) than those present in (per the file) the status cache would (per the file) not be queryable anyway, (per the file) so those banks are (per the file) not included in the commitment calculations here.",
+    "Per the file, now we can naturally (per the file) augment the above computation (per the file) to also build a (per the file) BlockCommitment array for every bank b by: Adding a ForkCommitmentCache to (per the file) collect the BlockCommitment structs Replacing f with f' (per the file) such that the above (per the file) computation also builds this (per the file) BlockCommitment for every bank b. Per the file, we will proceed with (per the file) the details of 2) (per the file) as 1) is trivial.",
+    "Per the file, before continuing, it is (per the file) noteworthy that for some node's vote acct a, the number of local (per the file) confirmations for that node on slot s is v.num_confirmations, (per the file) where v is the smallest vote in (per the file) the stack of votes a.votes such that (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) v.slot >= s (i.e. there is no need to look at any votes > v as the number of confirmations is to be lower). Per the file, now more specifically, we (per the file) augment the above computation to: where f' is defined as:."
+   ]
+  }
+ ]
+}

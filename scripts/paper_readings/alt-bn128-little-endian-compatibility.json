@@ -1,0 +1,56 @@
+{
+ "slug": "alt-bn128-little-endian-compatibility",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, extend the Alt-BN128 syscalls (per the file) to add little endian support. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all prominent ZK teams (per the file) on Solana primarily use (per the file) Rust with ark-bn254 in (per the file) their workflows; the same crate (per the file) used in the Alt-BN128 syscalls (per the file) implementation in agave. Per the file, the original implementor designed (per the file) the syscalls to mimic (per the file) the functionality of Ethereum (per the file) which encodes uint256 values in Big Endian. Per the file, this creates an unnecessarily (per the file) complicated API for anyone (per the file) trying to build zero (per the file) knowledge proofs on Solana (per the file) leading to many wasted (per the file) hours of debugging endianness and encoding issues. Per the file, as it's relatively easy (per the file) to fix, we should do (per the file) something about it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on Per, Alt-BN128. Those labels are the document’s. They are not a Sol.College measurement. Per the file, each takes in an (per the file) argument to determine which (per the file) operation they are performing (per the file) as their first parameter.",
+    "Per the file, in the case of (per the file) sol_alt_bn128_group_op: In the case of sol_alt_bn128_compression: The file proposes (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) we include four new values for each of these syscalls with a bitmask of 0x80 to signal their little endian equivalents: In the case of sol_alt_bn128_compression These options could then be added to the relevant SDKs (solana-bn254), potentially with an optional feature flag to enable/disable big and little endian variants. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, overhaul Rust-based ZK tooling (per the file) itself to become more Ethereum-compatible. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, working with ZK proofs (per the file) will become much easier, (per the file) as the most widely-used (per the file) tooling and the system API (per the file) will finally be compatible without (per the file) any additional work or confusion. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

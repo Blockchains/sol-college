@@ -1,0 +1,148 @@
+{
+ "slug": "core-bpf-upgrade-procedure",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file describes the procedure for (per the file) upgrading a Core BPF (per the file) program that may have (per the file) been migrated from a (per the file) native builtin or otherwise (per the file) deployed on-chain as a core program. Per the file, each individual Core BPF (per the file) program upgrade may reference (per the file) this procedure when proposing (per the file) an upgrade and specifying (per the file) its corresponding feature gate. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, core BPF programs are (per the file) essential to network operations (per the file) and may be deployed (per the file) in a number of (per the file) ways, including migration from (per the file) a native builtin (as (per the file) described in [SIMD-0088]) or (per the file) direct deployment as an on-chain program. Per the file, regardless of how they (per the file) are deployed, these programs (per the file) may have no upgrade (per the file) authority or may otherwise (per the file) not be upgradeable through (per the file) the standard Loader v3 Upgrade instruction.",
+    "Per the file, however, Core BPF programs still require updates. Per the file, bug fixes, new features (per the file) introduced via SIMDs, and (per the file) protocol changes all necessitate (per the file) a mechanism for upgrading (per the file) these programs through consensus. The file defines a feature-gated, runtime-level (per the file) procedure for upgrading Core BPF programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on The, SIMD-0088, Enable, Core, BPF, Programs, Defines, 0088. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, core BPF programs are (per the file) Loader v3 (BPF Upgradeable (per the file) Loader) programs, as specified in [SIMD-0088]. Per the file, upgrading a Core BPF (per the file) program involves replacing the (per the file) contents of an existing program data acct with new ELF bytes (per the file) from a source buffer acct. Per the file, the program acct itself is not modified. Per the file, a feature gate triggers (per the file) the upgrade at activation time."
+   ]
+  },
+  {
+   "heading": "Preparation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, before an upgrade can (per the file) occur, the following steps has to be completed: Verifiably build the ELF (per the file) of the new BPF (per the file) implementation using a verified (per the file) build tool (e.g. solana-verify). Per the file, compute the SHA-256 hash (per the file) of the resulting ELF bytes. Per the file, generate a new keypair (per the file) for the source buffer acct. Per the file, create the buffer acct and write the ELF (per the file) bytes to it using (per the file) the Loader v3 Write instruction.",
+    "Per the file, the buffer acct has to be owned by the (per the file) BPF Upgradeable Loader (Loader v3). Per the file, generate a new keypair (per the file) for the feature gate. Per the file, create a new feature (per the file) gate to upgrade the (per the file) target program with the (per the file) source buffer, according to your node implementation. Per the file, the verified build hash from step 2 has to be included in the (per the file) upgrade configuration alongside the feature gate.",
+    "Per the file, follow the existing process for activating features. Per the file, these preparation steps are (per the file) off-chain and cannot be (per the file) enforced by the protocol. Per the file, they are the responsibility (per the file) of the upgrade proposer and ought to be verified as part (per the file) of the code review (per the file) process for integrating the (per the file) upgrade feature gate into each node client implementation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Source Buffer Validation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when the feature gate (per the file) activates, the runtime must (per the file) validate the source buffer acct before proceeding. Per the file, the source buffer acct: Must exist. Per the file, must be owned by (per the file) the BPF Upgradeable Loader. Per the file, must deserialize as UpgradeableLoaderState::Buffer. Per the file, if any of these (per the file) checks fail, the upgrade must not proceed."
+   ]
+  },
+  {
+   "heading": "Verified Build Hash",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each Core BPF upgrade (per the file) must include a verified (per the file) build hash in its upgrade configuration. Per the file, the verified build hash (per the file) is the SHA-256 hash (per the file) of the expected ELF bytes. Per the file, this hash is computed (per the file) during preparation and enshrined in the node client alongside the feature (per the file) gate and source buffer address. Per the file, when the feature gate (per the file) activates, after validating the source buffer acct structure, the runtime must: Extract the ELF bytes (per the file) from the source buffer acct (all bytes after the (per the file) UpgradeableLoaderState::Buffer metadata header, excluding (per the file) trailing zero bytes).",
+    "Per the file, compute the SHA-256 hash (per the file) of these bytes. Per the file, compare the computed hash (per the file) against the expected verified build hash. Per the file, if the hashes fail to match, the upgrade must not proceed. Per the file, this ensures that the (per the file) exact ELF bytes deployed (per the file) in the buffer at (per the file) preparation time are the (per the file) same bytes used during the upgrade. Per the file, no party can alter (per the file) the buffer contents between (per the file) preparation and feature activation (per the file) without invalidating the hash."
+   ]
+  },
+  {
+   "heading": "Target Program Validation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the target Core BPF (per the file) program must also be validated. Per the file, the program acct: Must exist. Per the file, must be owned by (per the file) the BPF Upgradeable Loader. Per the file, must deserialize as UpgradeableLoaderState::Program (per the file) with a programdata_address that matches (per the file) the derived program data address for (per the file) the program ID. Per the file, the program data acct (derived from the program ID): Must exist. Per the file, must be owned by (per the file) the BPF Upgradeable Loader. Per the file, must deserialize as UpgradeableLoaderState::ProgramData. Per the file, if any of these (per the file) checks fail, the upgrade must not proceed."
+   ]
+  },
+  {
+   "heading": "Upgrade Authority Matching",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if the target program data acct's upgrade_authority_address is None, the (per the file) source buffer's authority is ignored and the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) new program data acct's upgrade authority will also be set to None. Per the file, if the target program data acct's upgrade_authority_address is Some, the (per the file) source buffer acct's authority must match. Per the file, if they fail to match, the upgrade must not proceed."
+   ]
+  },
+  {
+   "heading": "Upgrade Result",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ELF bytes from the source buffer has to be validated against the (per the file) current runtime environment before any accts are modified. Per the file, if validation fails, the (per the file) upgrade must not proceed. Per the file, once validation passes, the (per the file) following conditions must hold (per the file) after the upgrade completes: **Program acct**: Unchanged. Per the file, it retains its existing (per the file) UpgradeableLoaderState::Program state, owner, and (per the file) lamports. **Program data acct**: Replaced at the same derived address.",
+    "Per the file, the new acct contains UpgradeableLoaderState::ProgramData with the (per the file) slot field set to the (per the file) current slot and the same (per the file) upgrade_authority_address as the previous program (per the file) data acct. Per the file, the ELF bytes from (per the file) the source buffer follow the metadata header. Per the file, the acct is owned by the (per the file) BPF Upgradeable Loader and (per the file) funded at the rent-exempt (per the file) minimum for its new size. **Source buffer acct**: Data and lamports cleared, assigned (per the file) to System. **Capitalization**: The lamports (per the file) from the old program data acct and the source buffer acct are burned.",
+    "Per the file, the new program data acct is funded at the (per the file) rent-exempt minimum for its new size. Per the file, total capitalization is adjusted (per the file) by the difference between (per the file) burned and funded lamports. (per the file) **Accounts data size delta**: (per the file) Updated to reflect the (per the file) difference between the old (per the file) total data size (old program data acct + source buffer acct) and the new total (per the file) data size (new program data acct). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Program Availability",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in the slot immediately (per the file) following the feature activation, (per the file) the program will not be invocable. Per the file, this one-slot cooldown applies (per the file) to every fork that has (per the file) the feature activation slot as an ancestor. Per the file, after the cooldown, the (per the file) program is fully operational. Per the file, the program ID fails to change."
+   ]
+  },
+  {
+   "heading": "Feature Gates",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each Core BPF program upgrade has to be controlled by a (per the file) feature gate, which triggers (per the file) the upgrade when activated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Standard Loader v3 Upgrade Instruction",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, core BPF programs with (per the file) None as their upgrade (per the file) authority cannot use the (per the file) standard Loader v3 Upgrade instruction. Per the file, even where an upgrade (per the file) authority is set, performing (per the file) a Core BPF upgrade (per the file) through the standard instruction (per the file) would mean the change (per the file) takes effect on whatever slot the tx lands in, rather than (per the file) at a coordinated activation slot.",
+    "Per the file, the feature-gated approach ensures (per the file) upgrades go through the same (per the file) consensus process as other protocol (per the file) changes and activate at a (per the file) deterministic slot across all nodes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Governance-Based Upgrade Authority",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an alternative would be (per the file) to assign a multisig (per the file) or governance program as the upgrade authority. Per the file, this was rejected because (per the file) consensus-critical program upgrades must (per the file) take effect at a deterministic (per the file) slot across all nodes, and the activation point ought to be governed by the same (per the file) mechanism as the rest of (per the file) the protocol's behavioral changes. Per the file, coupling the upgrade to (per the file) the feature gate itself (per the file) avoids introducing a separate (per the file) authority surface for code (per the file) that runs in consensus.",
+    "Per the file, as feature gate activation (per the file) evolves toward multisig authority, (per the file) this proposal naturally inherits (per the file) those properties without requiring (per the file) a distinct governance path. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file supplies a clear, repeatable process (per the file) for upgrading Core BPF programs. Per the file, validator client teams can (per the file) coordinate upgrades through the (per the file) existing feature gate process, (per the file) ensuring all participants in (per the file) the network agree on (per the file) program changes before they take effect. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, upgrading a Core BPF (per the file) program replaces the executable (per the file) code of a program (per the file) that the network depends on. Per the file, this is an extremely sensitive operation that has to be handled with maximum caution. Per the file, if a core program (per the file) is upgraded incorrectly, it (per the file) could have immediate consequences for the network. Per the file, the feature-gated approach mitigates (per the file) this risk by requiring the (per the file) upgrade to go through the (per the file) standard feature activation process, which (per the file) includes community review, testnet validation, (per the file) and coordinated mainnet activation.",
+    "Per the file, the source buffer acct has to be deployed and verified (per the file) on-chain before the feature (per the file) gate is activated. Per the file, this lets the community to inspect (per the file) and verify the exact ELF bytes that is to be deployed. Per the file, the verified build hash supplies an additional layer of (per the file) protection by cryptographically binding (per the file) the upgrade to a (per the file) specific set of ELF bytes. Per the file, even if the source buffer acct's authority were compromised, the (per the file) runtime will reject the upgrade (per the file) if the buffer contents have (per the file) been modified after the hash was enshrined. Per the file, this prevents any party (per the file) from sneaking unauthorized changes (per the file) into a core program (per the file) upgrade between preparation and activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file fails to introduce any breaking changes. Per the file, the upgrade mechanism exists (per the file) off of the runtime's (per the file) \"hot path\" until a feature (per the file) gate is activated for a specific upgrade. Per the file, when an upgrade is (per the file) conducted, details pertaining to (per the file) the upgrade's backwards compatibility is to be provided. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

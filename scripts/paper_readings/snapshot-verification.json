@@ -1,0 +1,20 @@
+{
+ "slug": "snapshot-verification",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Problem",
+   "where": "Design proposal body",
+   "paragraphs": [
+    "The retrieved note says snapshot verification of account states is already implemented. The remaining problem it names is that the bank hash carried with the snapshot, which is used for that verification, is falsifiable. That is the file’s diagnosis. It is not a report that a named cluster accepted a forged bank hash, and it is not a Sol.College measurement of snapshot honesty."
+   ]
+  },
+  {
+   "heading": "Solution",
+   "where": "Design proposal body",
+   "paragraphs": [
+    "While a validator is processing transactions to catch up to the cluster from the snapshot, the note says to use incoming vote transactions and the commitment calculator to confirm that the cluster is building on the snapshotted bank hash. Once a threshold commitment level is reached, the snapshot is to be accepted as valid and the validator may start voting. Those steps are the design’s. They were not observed on a live validator for this catalogue entry."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,69 @@
+{
+ "slug": "disable-partitioned-rent-updates",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, partitioned rent collection ought to be removed since it (per the file) will no longer be (per the file) useful after rent collection (per the file) is disabled by https://github.com/solana-labs/solana/issues/33946 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (https://github.com/solana-foundation/solana-improvement-documents/pull/84) and acct rewrites are disabled by https://github.com/solana-labs/solana/issues/26599."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, since partitioned rent collection (per the file) is no longer necessary (per the file) for collecting rent or updating the acct rent epoch field, it ought to be removed to speed (per the file) up block production and block replay."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, disabling partitioned rent collection is very straightforward. Per the file, partitioned rent collection is (per the file) initiated during bank freezing (per the file) and can simply be (per the file) not performed if a (per the file) feature gate is activated."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, improved block processing performance (per the file) by removing the need to load all accts once per epoch for no good reason. Per the file, note that the epoch accts hash calculation similarly loads all accts once per epoch but (per the file) serves the important role (per the file) of ensuring that all nodes have the same set of acct state."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rent related code changes (per the file) often come along with (per the file) a lot of edge (per the file) cases to consider so changes ought to be made carefully to (per the file) avoid introducing any bugs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, why should we not do this?"
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, changes require feature gates (per the file) for activation to avoid any backwards incompatiblity. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,124 @@
+{
+ "slug": "loader-v3-minimum-extend-program-size",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, enforce a minimum extension (per the file) size of 10,240 bytes (per the file) (10 KiB) on the ExtendProgram (per the file) instruction in Loader V3, mitigating (per the file) the existing denial-of-service vector through (per the file) economic deterrence while preserving the instruction's permissionless (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) nature. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ExtendProgram instruction is (per the file) currently permissionless — anyone can (per the file) extend any upgradeable program's data acct by as little as 1 byte. Per the file, due to complexities surrounding (per the file) the program cache, each (per the file) invocation of ExtendProgram invalidates (per the file) the program's cache entry (per the file) for the current slot, effectively (per the file) disabling the program for one slot. Per the file, combined with the negligible (per the file) cost of a 1-byte (per the file) extension, this creates a cheap (per the file) denial-of-service vector.",
+    "Per the file, sIMD-0164 and earlier revisions (per the file) of this SIMD attempted to (per the file) fix this by making ExtendProgram (per the file) permissioned, requiring the upgrade authority (per the file) as a signer. Per the file, while this supplies absolute DoS protection, it (per the file) breaks several important workflows: (per the file) **Multisig PDA authorities** cannot (per the file) sign top-level instructions. Per the file, with a CPI resize (per the file) cap of 10 KiB (per the file) per instruction, large extensions (per the file) require multiple proposals or (per the file) a clunky authority-shuffle pattern. (per the file) **Self-upgrading programs** that manage their (per the file) own upgrade authority as a PDA (per the file) would lose the ability to extend themselves.",
+    "Per the file, sIMD-0164 was never approved, (per the file) and the general sentiment favored (per the file) a more flexible solution that (per the file) preserves the permissionless nature of ExtendProgram. Per the file, as [suggested by jstarry][jstarry_suggestion], (per the file) a minimum extension size achieves this. (per the file) [jstarry_suggestion]: https://github.com/solana-foundation/solana-improvement-documents/pull/164#issuecomment-3138353713 A minimum extension size (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) solves the DoS vector economically instead: at 10 KiB, each extension costs the attacker approximately 0.072 SOL in rent-exempt lamports, which are irrecoverably donated to the victim's program data acct.",
+    "Per the file, ten successive attacks cost (per the file) the attacker 0.72 SOL (per the file) while only benefiting the program owner. Per the file, this makes sustained griefing (per the file) economically irrational without breaking any existing workflows. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terminology is (per the file) introduced by this proposal."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after this proposal's feature (per the file) gate is activated, the ExtendProgram (per the file) instruction will enforce a minimum (per the file) extension size of 10,240 bytes (per the file) (10 KiB). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Instruction Accounts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the instruction accts remain unchanged:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Control Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the instruction will verify (per the file) the following, in addition (per the file) to all existing checks: The requested extension size (per the file) is at least 10,240 bytes. Per the file, if not, return InvalidArgument. Per the file, all other existing checks (program ownership, acct state, rent-exempt balance) remain unchanged."
+   ]
+  },
+  {
+   "heading": "Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Near maximum acct size.** The maximum permitted acct data length is 10 (per the file) MiB (10,485,760 bytes). Per the file, if the program data acct's current size is within (per the file) 10 KiB of this limit (per the file) (i.e. less than 10,240 bytes (per the file) of headroom remain), the acct may be extended by the remaining amount (per the file) up to the 10 MiB cap. Per the file, in this case the 10 KiB minimum fails to apply, since the acct cannot grow further regardless. (per the file) **Frozen (immutable) programs.** Programs (per the file) whose upgrade authority has (per the file) been set to None cannot be extended. Per the file, the loader program already (per the file) rejects ExtendProgram for such programs with Immutable. Per the file, this behavior is unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "CPI Restriction",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing restriction preventing (per the file) ExtendProgram from being invoked (per the file) via CPI is not (per the file) modified by this proposal."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Permissioned ExtendProgram (SIMD-0164)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, require the upgrade authority (per the file) as a signer and (per the file) lift the CPI restriction. Per the file, this supplies absolute DoS protection but (per the file) breaks multisig PDA workflows, (per the file) self-upgrading programs, and any (per the file) third-party tooling that extends programs (per the file) on behalf of owners. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Disable ExtendProgram entirely",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if ExtendProgram were made (per the file) permissioned, there would be (per the file) little reason for it (per the file) to exist as a (per the file) standalone instruction — resizing could (per the file) instead be folded into Upgrade. Per the file, however, keeping ExtendProgram permissionless (per the file) avoids nasty workarounds for (per the file) multisigs and self-upgrading programs: (per the file) anyone can crank a top-level (per the file) extend to prime up space before (per the file) a multisig upgrade, without needing the (per the file) multisig authority to sign.",
+    "Per the file, it also sidesteps the (per the file) CPI 10 KiB CPI (per the file) growth limit that would (per the file) otherwise cap how much (per the file) a program can extend (per the file) itself in a single call. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Smaller minimum extension size",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a 1 KiB minimum (per the file) costs only ~0.008 SOL (per the file) per attack — too cheap to (per the file) deter sustained griefing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Larger minimum extension size",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, minimums of 20 KiB (per the file) or 50 KiB provide (per the file) stronger deterrence but disproportionately affect small programs.",
+    "Per the file, a survey of 14,822 (per the file) mainnet-beta programs shows the following (per the file) size distribution: | Size Range | Programs | Share (per the file) | |--------------|----------|--------| | 0 – 10 KiB | 149 | 1.0% | | 10 (per the file) – 50 KiB | 843 | 5.7% | | 50 – 200 KiB| (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) 2,066 | 13.9% | | 200 – 500 KiB| 6,058 | 40.9% | | 500+ KiB | 5,706 | 38.5% | At 10 KiB, only 1.0% of programs are smaller than the minimum extension size, and over 93% of programs are larger than 50 KiB — well above the proposed minimum. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the 10 KiB minimum (per the file) makes griefing attacks cost (per the file) approximately 0.072 SOL per (per the file) invocation, with all lamports irrecoverably (per the file) donated to the victim's program data acct. Per the file, the minimum extension size (per the file) has minimal impact on (per the file) legitimate use: Programs needing (per the file) less than 10 KiB (per the file) of additional space must (per the file) extend by the full 10 KiB minimum. Per the file, the excess capacity is (per the file) available for future use.",
+    "Per the file, only 1.0% of mainnet (per the file) programs have a total size (per the file) below 10 KiB. Per the file, no changes to the instruction's acct list. Per the file, no changes to signer requirements. Per the file, no impact on existing (per the file) tooling or multisig workflows."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the minimum extension size supplies economic deterrence rather than absolute prevention. Per the file, an attacker willing to (per the file) spend 0.072 SOL per (per the file) slot can still trigger program cache invalidation. Per the file, however: The cost scales (per the file) linearly with attack duration (per the file) (~650 SOL/hour at 400ms slots). Per the file, all lamports spent are (per the file) donated to the victim, not burned. Per the file, the attacker receives no (per the file) benefit — the victim's program (per the file) only gains additional allocated space. Per the file, this economic model makes (per the file) sustained attacks prohibitively expensive (per the file) while preserving the permissionless nature of ExtendProgram."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature places an (per the file) additional constraint on an (per the file) existing Loader V3 instruction (per the file) (minimum extension size) and (per the file) is therefore not fully backwards compatible. Per the file, any caller currently extending (per the file) by less than 10 (per the file) KiB will need to (per the file) increase their extension amount. Per the file, this change is gated (per the file) behind a feature flag."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "slug": "stake-program-float-to-fixed-point",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file proposes replacing all IEEE-754 (per the file) double-precision floating-point arithmetic within the (per the file) Solana Stake Program & node client's warmup/ cooldown logic with a fixed-point (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) implementation using integer arithmetic. Per the file, the new logic expresses (per the file) the warmup/cooldown rate in (per the file) basis points (bps) and performs (per the file) stake calculations using unsigned 128-bit (per the file) integers to maintain precision. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is a (per the file) prerequisite to the Stake (per the file) Program's migration to a (per the file) no_std & upstream eBPF-toolchain friendly implementation. Per the file, standard eBPF strictly forbids floating-point operations. Per the file, while the solana fork (SBF) lets for it via a (per the file) deterministic (and inefficient) soft-float (per the file) compiler built-in, aligning with upstream standards calls for removing all floating-point usage from the (per the file) program. Per the file, the node client shares the same (per the file) warmup/cooldown calculation logic with (per the file) the on-chain program, so it (per the file) is also in need of a (per the file) lock-step update to stay in sync. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Basis points (bps)**: An (per the file) integer representation of a (per the file) percentage where bps = percent × 100. Per the file, 1 bps = 0.01% 1% (per the file) = 100 bps Formula variables **account_portion**: (per the file) The amount of stake (in lamports) (per the file) for a single acct that is eligible to warm up (per the file) or cool down in a given (per the file) epoch. **cluster_portion**: The total amount of (per the file) stake (in lamports) across the cluster that (per the file) is in the same warmup/cooldown phase as (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) account_portion for the previous epoch. **cluster_effective**: The total effective stake in the cluster (in lamports) for the previous epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Pseudocode conventions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file uses the following notation (per the file) to describe arithmetic operations (per the file) with explicit bit-width and (per the file) overflow semantics: Uint64 / Uint128: Unsigned (per the file) 64-bit / 128-bit integer types widen(x): (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Zero-extend a Uint64 to Uint128 (lossless) narrow(x): Convert a Uint128 to Uint64 (caller must ensure x ≤ 2^64−1) sat_mul(a, b): Saturating multiplication—returns a × b or 2^128−1 if the result would overflow trunc_div(a, b): Truncating unsigned integer division (floor toward zero). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Rate representation (basis points)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current network warmup/cooldown (per the file) rate is 9%. Per the file, this means that, in (per the file) any given epoch, at (per the file) most 9% of the (per the file) previous epoch's effective stake may be activated or deactivated. Per the file, currently, this figure is (per the file) represented in floating-point: 0.09. Per the file, the new representation is (per the file) an integer of basis points: 900. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Maintaining precision",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the original float logic computes: For an integer implementation, (per the file) the division MUST occur (per the file) last (after all multiplications) (per the file) to maintain the highest (per the file) precision and done via (per the file) an algebraically equivalent re-ordering: Note: The division MUST use (per the file) unsigned integer division and truncate (round down). Per the file, widening arithmetic and safety (per the file) All inputs are unsigned 64-bit integers. Per the file, to maintain precision and (per the file) bound overflow behavior, all (per the file) values used in the (per the file) formula MUST be widened (per the file) to unsigned 128-bit integers (per the file) (or an exact emulation) prior (per the file) to any multiplication or division.",
+    "Per the file, implementations MUST NOT fault (per the file) or abort due to (per the file) overflow in intermediate arithmetic. Per the file, instead, the computation MUST (per the file) adhere to the following sequence: Saturate: All intermediate 128-bit (per the file) multiplications in the computation (including (per the file) both numerator and denominator multiplications) (per the file) MUST use saturating arithmetic, capping (per the file) at the maximum representable unsigned (per the file) 128-bit value. Per the file, divide: The division MUST (per the file) use unsigned integer division (per the file) and truncate (round down).",
+    "Per the file, clamp: The post-division result (per the file) MUST be clamped to account_portion. Per the file, narrow: The clamped value (per the file) MUST be converted back (per the file) to an unsigned 64-bit integer. Per the file, because the value is (per the file) capped at account_portion, this (per the file) conversion MUST be exact (lossless) (per the file) and NOT truncate, wrap, or (per the file) otherwise alter the clamped value.",
+    "Per the file, rationale: Saturating multiplication combined (per the file) with post-division clamping ensures (per the file) that overflow cannot amplify a (per the file) stake change beyond the acct's own portion (fail-safe rather than (per the file) fail-open) and avoids introducing a fault/abort path. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, implementations without native 128-bit (per the file) support MUST emulate these semantics exactly. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Minimum progress clamp",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, when account_portion > 0, (per the file) there is a granted minimum (per the file) change of 1 lamport per (per the file) epoch so that small delegations fail to get stuck in activating/ deactivating (per the file) states due to truncation. Per the file, the new implementation MUST (per the file) keep this behavior. **Note:** (per the file) This clamp MUST apply (per the file) only to stake activation/deactivation (per the file) transitions and NOT to inflation reward payouts. Per the file, reward distribution has a (per the file) separate mechanism that defers (per the file) sub-lamport payouts by not (per the file) advancing credits_observed until a full lamport may be paid."
+   ]
+  },
+  {
+   "heading": "Pseudocode guidance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, current implementation ```text RATE_FLOAT = 0.09. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "All params are Uint64",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, function rate_limited_stake_change(account_portion, cluster_portion, cluster_effective): (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) if account_portion == 0 or cluster_portion == 0 or cluster_effective == 0: return 0 # Cast all params to double weight_float = account_portion_float / cluster_portion_float allowed_change_float = weight_float * cluster_effective_float * RATE_FLOAT # Truncate toward zero via cast allowed_change = allowed_change_float as Uint64 # Never allow more than the acct's own portion to change if allowed_change > account_portion: allowed_change = account_portion # Minimum progress clamp if allowed_change == 0: return 1 return allowed_change text BASIS_POINTS_PER_UNIT: Uint128 = 10_000 RATE_BPS: Uint128 = 900."
+   ]
+  },
+  {
+   "heading": "All params are Uint64",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, function rate_limited_stake_change(account_portion, cluster_portion, cluster_effective): (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) if account_portion == 0 or cluster_portion == 0 or cluster_effective == 0: return 0 # Widen inputs to Uint128 numerator = sat_mul( sat_mul(widen(account_portion), widen(cluster_effective)), RATE_BPS ) denominator = sat_mul(widen(cluster_portion), BASIS_POINTS_PER_UNIT) allowed_change = trunc_div(numerator, denominator) # Never allow more than the acct's own portion to change if allowed_change > widen(account_portion): allowed_change = widen(account_portion) # Narrow back to Uint64 result = narrow(allowed_change) # Minimum progress clamp if result == 0: return 1 return result ```."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary alternative is (per the file) to continue using floating-point arithmetic. Per the file, for reasons given in (per the file) the motivation section, this (per the file) blocks upstream eBPF-toolchain usage, (per the file) which just puts the technical (per the file) debt off to handle later. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Stake Interface**: Export new (per the file) integer-based stake activation and (per the file) deactivation logic for rust consumers (per the file) Deprecate the floating-point rate field (per the file) while preserving binary layout compatibility **Stake (per the file) Program**: Feature gate v2 interface helpers (per the file) in: **Stake Merging**: Stake calculations are (per the file) used to determine if the acct is in a transient state, ensuring (per the file) that merges are rejected if the acct is not effectively fully active or (per the file) inactive. **Stake Splitting**: Stake calculations are (per the file) used to determine if the source (per the file) stake is currently active (effective stake > 0).",
+    "Per the file, this status is required (per the file) to correctly enforce rent-exempt (per the file) reserve prefunding requirements for the destination acct. **Stake Redelegation**: The acct's cooldown status is determined with (per the file) stake calculations and confirms that effective (per the file) stake is exactly zero before allowing (per the file) redelegation. **Stake Withdrawal**: When withdrawing from (per the file) a deactivated acct, stake calculations are used to determine (per the file) the remaining effective stake. **Validator Clients (per the file) (Agave & Firedancer)**: Clients MUST feature gate (per the file) the transition from floating-point to fixed-point (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) arithmetic in all consensus-critical operations involving effective, activating, or deactivating stake.",
+    "Per the file, the following operations require (per the file) updates: **Stake Activation and (per the file) Deactivation**: When querying a (per the file) stake delegation's status for (per the file) a given epoch, the node _computes how much of the (per the file) delegation's stake has completed warmup (per the file) or cooldown_. Per the file, this calls for walking through epochs from (per the file) the delegation's activation or (per the file) deactivation point, computing the allowed (per the file) stake change at each epoch (per the file) boundary to determine the portion that transitioned.",
+    "Per the file, the result categorizes the (per the file) delegation's lamports into effective, (per the file) activating, and deactivating buckets. **Epoch (per the file) Boundary Stake History**: At each (per the file) epoch boundary, the node iterates over all stake delegations (per the file) and _computes their activation status_ (per the file) as of the concluding epoch. Per the file, these per-delegation values are (per the file) summed to produce the cluster-wide (per the file) totals (effective/activating/deactivating) that form the new (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) stake history entry.",
+    "Per the file, this entry is then (per the file) used as input for (per the file) subsequent epoch calculations. **Stake Cache Updates**: The node maintains a cache mapping vote accts to their delegated stake. Per the file, when a stake acct is created/modified/closed, the cache (per the file) entry for the associated vote acct MUST be updated. Per the file, this calls for _computing the delegation's effective (per the file) stake_ contribution before and after (per the file) the change to correctly adjust (per the file) the cached totals. **Vote Account (per the file) Stake Totals**: At epoch boundaries, the node refreshes the stake distribution across vote accts for the upcoming epoch.",
+    "Per the file, for each vote acct, it _sums the effective (per the file) stake_ of all delegations pointing to that acct. Per the file, these totals determine leader (per the file) schedule weights and fork (per the file) choice voting power. **Inflation (per the file) Rewards**: Reward calculation iterates (per the file) over each epoch in a vote acct's credit history. Per the file, for each epoch, the node _computes the delegation's effective (per the file) stake_ at that epoch, multiplies (per the file) by the earned vote credits (per the file) to produce points and accumulates (per the file) these across epochs.",
+    "Per the file, the final reward is (per the file) proportional to the delegation's (per the file) share of total cluster points. Per the file, note: Only the effective (per the file) stake computation (warmup/cooldown) is (per the file) affected by this SIMD. Per the file, the downstream reward-to-lamport conversion (per the file) and sub-lamport deferral logic remain unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all implementations MUST adhere (per the file) to the following standards: **Unit tests:** Baseline of (per the file) correctness by testing specific, (per the file) known scenarios and edge cases. **Differential Fuzzing:** maintains an (per the file) oracle implementation that preserves (per the file) the original logic, used only in tests. Per the file, those should then be (per the file) run against the integer (per the file) arithmetic to ensure a (per the file) difference of no more (per the file) than 4 x ULP (per the file) (units of last place). **External Audit:** A comprehensive (per the file) audit from an auditor (per the file) with good skills in (per the file) numerical audits to validate (per the file) arithmetic equivalence or regressions."
+   ]
+  }
+ ]
+}

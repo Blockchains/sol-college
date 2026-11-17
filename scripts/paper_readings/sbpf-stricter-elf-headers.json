@@ -1,0 +1,70 @@
+{
+ "slug": "sbpf-stricter-elf-headers",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, imposes more restrictions on (per the file) what is expected of ELF headers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after the removal of (per the file) relocations in SIMD-0178 the (per the file) ELF layout could be massively (per the file) be simplified by constraining it (per the file) to a strict subset of (per the file) what ELF otherwise lets. Per the file, doing so not only (per the file) reduces the complexity of node implementations but also reduces the attack surface."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, moving away from ELF (per the file) as a container format altogether. Per the file, however this would only (per the file) gain a very small (per the file) file size advantage but (per the file) otherwise loose all tooling compatibility. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following must go (per the file) into effect if and (per the file) only if a program (per the file) indicates the SBPF-version v3 (per the file) or higher in its program (per the file) header (see SIMD-0161). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "File header",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file size must (per the file) not be less than (per the file) size_of::<Elf64Ehdr>() (64 bytes), otherwise (per the file) ElfParserError::OutOfBounds has to be thrown. e_ident.ei_mag has to be [0x7F, 0x45, 0x4C, 0x46] e_ident.ei_class has to be ELFCLASS64 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (0x02) e_ident.ei_data has to be ELFDATA2LSB (0x01) e_ident.ei_version has to be EV_CURRENT (0x01) e_ident.ei_osabi has to be ELFOSABI_NONE (0x00) e_ident.ei_abiversion has to be 0x00 e_ident.ei_pad has to be [0x00; 7] e_type is not checked e_machine has to be EM_BPF (0x00F7) e_version has to be EV_CURRENT (0x00000001) e_entry has to be within the bounds of the second program header e_phoff has to be size_of::<Elf64Ehdr>() (64 bytes) e_shoff is not checked e_flags see SIMD-0161 e_ehsize has to be size_of::<Elf64Ehdr>() (64 bytes) e_phnum has to be greater than or equal 0x0001 e_phoff + e_phnum * size_of::<Elf64Phdr>() has to be less than or equal the file size e_phentsize has to be size_of::<Elf64Phdr>() (56 bytes) e_shnum is not checked e_shentsize is not checked e_shstrndx is not checked If any check fails ElfParserError::InvalidFileHeader has to be thrown."
+   ]
+  },
+  {
+   "heading": "Program headers",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, index | purpose | p_flags | p_vaddr (per the file) | | ----- | --------- | ---------- | ------- | | 0 | ro data | PF_R | 0 << 32 (per the file) | | 1 | bytecode | PF_X | 1 << 32 | If p_flags (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) of the first program header is not PF_R, then only the second program header is expected (effectively skipping the first).",
+    "Per the file, for each of these (per the file) predefined program headers: p_type has to be PT_LOAD p_flags must match (per the file) the p_flags of the entry in the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) table above p_offset be e_phoff + e_phnum * size_of::<Elf64Phdr>() for the first entry and be p_offset + p_filesz of the previous entry for all subsequent entries p_offset has to be less than or equal file.len() as u64 p_offset has to be evenly divisible by 8 bytes, p_vaddr must match the p_vaddr of the entry in the table above p_paddr must match the p_vaddr of the entry in the table above p_filesz has to be p_memsz p_filesz must not be greater than file.len() as u64 - p_offset p_filesz has to be evenly divisible by 8 bytes, p_memsz must fit in 32 bits / be less than 1 << 32 p_align is ignored If any check fails ElfParserError::InvalidProgramHeader has to be thrown."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the toolchain linker will (per the file) use a new linker (per the file) script to adhere to (per the file) these restrictions defined here (per the file) and thus the change is to be transparent to the dApp developers. Per the file, the section headers are (per the file) ignored so arbitrary metadata (per the file) can continue to be encoded there. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,71 @@
+{
+ "slug": "increase-writeable-account-limit-to-20m-cus",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increase the per acct CU limit from a (per the file) static 12M to 40% (per the file) of the block CU limit. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this will allow more (per the file) activity to target a single hot acct in each block and (per the file) take advantage of the (per the file) performance improvements that have been made. Per the file, we are consistently hitting (per the file) the current 12M CU (per the file) cap, so this will (per the file) unlock more economic activity. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terms, but (per the file) the following definitions are (per the file) given for clarity: Max (per the file) Block Units - The maximum (per the file) number of CUs that may be included in a block. Per the file, max Writable Account Units (per the file) - The maximum number of CUs that may be used to write any given acct in a block. Per the file, max Vote Units - The (per the file) maximum number of CUs that may be used by simple (per the file) votes in a block. Per the file, max Block Accounts Data (per the file) Size Delta - The maximum size of the accts data size delta in a block."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following table shows (per the file) the current block limits (per the file) and future proposed block (per the file) limits: | Type | Current Block (per the file) Limit | SIMD-0256 Limit | SIMD-0286 (per the file) Limit | |------|-----|---------------|---------------------| | Max Block Units | 50M | 60M (per the file) | 100M | | Max Writable Account Units | 12M (per the file) | 12M | 12M | | Max Vote Units | 36M (per the file) | 36M | 36M | | Max Block Accounts Data (per the file) Size Delta | 100MB | 100MB | 100MB | The file advocates to set Max Writable Account (per the file) Units to 40% of Max Block Units.",
+    "Per the file, this will result in (per the file) the following Max Writable (per the file) Account Units for current (per the file) and future proposed Max (per the file) Block Units: | Block Limit (per the file) | Max Block Units | Max (per the file) Writable Account Units | | Current (per the file) | 50M | 20M | | SIMD-0256 | 60M (per the file) | 24M | | SIMD-0286 | 100M | 40M | The file only changes the Max Writable Account (per the file) Units limit. Per the file, the purpose is to (per the file) increase amount of activity (per the file) that can target a single acct.",
+    "Per the file, the Max Block Unit is left unchanged. Per the file, further increases to global limit is to be addressed with SIMD-0286. Per the file, increasing Max Writeable Account (per the file) Units while leaving Max (per the file) Block Units unchanged takes (per the file) advantage of underutilized serial execution capacity. Per the file, the intention is for (per the file) this to follow SIMD-0256 (per the file) but activate before SIMD-0286 (which (per the file) has not merged yet). Per the file, rationale is that we (per the file) are ready to handle (per the file) this increased serialized execution (per the file) today but the 100M (per the file) CU increase has some development dependencies. Per the file, that said, we is to be capable of handling (per the file) a scenario where SIMD-0286 (per the file) merges and gets activated first."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, killing per acct limits altogether. Per the file, but this may be (per the file) too easy to attack (per the file) by aggressively targeting a single acct up to the global CU limit. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this will allow for more serialized acct access, making it easier (per the file) for more updates to (per the file) some hot state to occur. Per the file, it may increase block (per the file) execution times, which could (per the file) impact slot times for some unforeseen cases. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blocks may take longer (per the file) to execute, slowing down (per the file) network progress and catchup times. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increasing the CU limit for single acct will increase worst case (per the file) serialized execution, which could (per the file) increase block verification and/or slot time. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all previously valid blocks (per the file) are still valid, since (per the file) limits are only increasing. Per the file, blocks produced after the (per the file) change may be rejected (per the file) by previous versions that fail to support the new limits. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

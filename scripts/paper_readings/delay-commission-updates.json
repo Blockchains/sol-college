@@ -1,0 +1,77 @@
+{
+ "slug": "delay-commission-updates",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, allow nodes to update their commission (per the file) rate at any time (per the file) but delay those commission (per the file) updates for at least one full epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators ought to be able update their (per the file) desired commission at any time. Per the file, that said, stake delegators (per the file) should always have ample (per the file) time to re-delegate their (per the file) stake in response to node commission rate changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for a given epoch (per the file) E, the earned inflation (per the file) rewards for each vote acct are calculated at the (per the file) beginning of the next epoch E + 1. Per the file, during inflation reward calculation, (per the file) use the inflation rewards (per the file) commission rate from the vote acct state as it existed (per the file) at the beginning of epoch E - 1. Per the file, if the vote acct did not exist at (per the file) that time, fall back to the vote acct state at the beginning of epoch E.",
+    "Per the file, and if the vote acct did not exist then (per the file) either, fall back to the vote acct state at the beginning (per the file) of epoch E + 1. Per the file, updateCommission Update the core (per the file) vote program to no (per the file) longer restrict commission increases (per the file) from happening during the (per the file) first half of the epoch."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators will need to (per the file) wait at least one (per the file) full epoch before their (per the file) commission updates are applied. Per the file, stake delegators will have (per the file) at least one full (per the file) epoch to react to commission updates. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, why should we not do this?"
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a feature gate is to be used to simultaneously (per the file) update vote program rules (per the file) around commission rate updates and also update the runtime's commission (per the file) calculations at epoch boundaries. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

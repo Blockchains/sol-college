@@ -1,0 +1,64 @@
+{
+ "slug": "single-program-runtime-environment",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, today, a program is (per the file) verified on deployment against (per the file) the program runtime environment (per the file) of the *next* slot. The file changes deployment to verify (per the file) against the environment of (per the file) the *current* slot - the (per the file) same one used for execution. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, verifying deployments against the next slot calls for every client to maintain (per the file) a second program runtime (per the file) environment alongside the one (per the file) used for execution, and (per the file) to keep the two (per the file) consistent across epoch boundaries and feature activations. Per the file, dropping it significantly simplifies (per the file) runtime environment management, which (per the file) reduces the surface for (per the file) consensus bugs and makes (per the file) changes to the program (per the file) runtime easier to ship.",
+    "Per the file, the two environments can (per the file) only differ at the (per the file) very last slot of (per the file) an epoch, where the (per the file) next slot belongs to (per the file) the next epoch, which (per the file) may activate a feature (per the file) that affects the SBPF program runtime environment. Per the file, continuing to straddle such (per the file) an epoch boundary with (per the file) two program runtime environments (per the file) is cumbersome and can (per the file) actually be eliminated completely (per the file) without significant impact to developers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the program runtime environment (per the file) - the registered syscalls and (per the file) the verifier configuration used (per the file) to validate an ELF (per the file) - is derived from the (per the file) feature set of an epoch. Per the file, after the activation of (per the file) the associated feature key, (per the file) Loader V3 instructions DeployWithMaxDataLen, (per the file) Upgrade, and ExtendProgram MUST (per the file) use the program runtime (per the file) environment of the current (per the file) slot, rather than that (per the file) of the next slot.",
+    "Per the file, this is a no-op (per the file) at every slot except for (per the file) the very last slot S (per the file) of an epoch N where (per the file) the next slot S + 1 (per the file) belongs to N + 1 and (per the file) activates a feature that affects (per the file) SBPF program runtime environments. Per the file, the deployment is verified (per the file) against the program runtime (per the file) environment for slot S (per the file) and *not* S + 1."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this preserves the guarantee (per the file) that a deployment which (per the file) succeeds at the very (per the file) last slot of an (per the file) epoch also loads in (per the file) the next one, at (per the file) the cost of every (per the file) client maintaining two environments (per the file) indefinitely for the sake (per the file) of one slot per epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dApp developers deploying at (per the file) the very last slot (per the file) of an epoch at (per the file) which an environment-changing feature (per the file) activates may see a deployment (per the file) succeed and the program then (per the file) fail to load in the next epoch. Per the file, conversely, a program using (per the file) such a feature must (per the file) wait until activation to deploy. Per the file, deployments at any other slot are unaffected. Per the file, validator implementations may drop the second environment. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a program is still (per the file) verified against the environment (per the file) in effect whenever it (per the file) is loaded for execution, (per the file) so no unverified code can execute."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deploy txs at the very last (per the file) slot of an affected (per the file) epoch may produce a (per the file) different result than before (per the file) activation, which is why (per the file) the change is feature gated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,75 @@
+{
+ "slug": "relax-transaction-loading-constraints",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file aims to relax certain tx errors related to loading tx accts, from protocol violations to runtime errors. Per the file, specifically, if a tx fails to load a valid program acct or exceeds the requested maximum loaded acct data size, the tx may be included in (per the file) a block, and the tx fee is to be charged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current tx constraints are overly restrictive (per the file) and adds complexity in (per the file) determining whether a block (per the file) is valid or not. The file aims to relax these (per the file) loading constraints to simplify (per the file) the protocol, and give (per the file) block-producers more flexibility in determining which txs may be included in a block. Per the file, the goal is to (per the file) remove this reliance on acct-state so as to validate a block."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, these terms are used (per the file) elsewhere, but are defined (per the file) here for clarity: Protocol (per the file) Violating Transaction Error: A tx error that violates the protocol. Per the file, this class of errors (per the file) must result in the (per the file) entire block being rejected by the network. Per the file, runtime Transaction Error: A tx error that results in a failed tx, and may be included in the block. Per the file, these txs still incur tx fees, and nonce advancements. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, among others, a tx that fails to load (per the file) due to violating one (per the file) of the following constraints (per the file) is considered a protocol violation error: The total loaded data size of the tx must not exceed requested_loaded_accounts_data_size_limit, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) or the default limit (64MiB).",
+    "Per the file, any acct used as a program (per the file) in a top-level instruction (per the file) must: be the native loader: (per the file) NativeLoader1111111111111111111111111111111 OR exist be executable (per the file) be owned by the native (per the file) loader: NativeLoader1111111111111111111111111111111 OR exist be (per the file) executable the owner acct be owned by the native (per the file) loader: NativeLoader1111111111111111111111111111111 the owner acct has to be executable The file moves these errors from protocol (per the file) violations to runtime errors. Per the file, a tx that fails to load (per the file) due to violating either (per the file) one of these constraints (per the file) may be included in (per the file) a block, so long (per the file) as it is otherwise valid.",
+    "Per the file, the tx must pay tx fees, and if present, the nonce has to be advanced. Per the file, constraints SHOULD be checked for each tx before execution to avoid unnecessary computation. Per the file, if a constraint violating tx is executed, the constraints (per the file) MUST be checked BEFORE committing tx changes. Per the file, the TransactionError variants fail to need to change from their current values. The file only changes how the node handles these errors. agave (per the file) currently performs the relevant (per the file) checks in the following order.",
+    "Per the file, this order is not (per the file) necessary for consensus, and (per the file) is only provided for clarity. Per the file, for each Pubkey included in the tx message, or loaded from (per the file) an address lookup table, (per the file) the following checks MUST (per the file) be performed, and SHOULD (per the file) be performed in this (per the file) order for error-consistency: Check if the acct exists. Per the file, if not, assume default acct state (empty).",
+    "Per the file, accumulate acct's data field len. Per the file, if the total exceeds (per the file) the requested_loaded_accounts_data_size_limit (or default (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) if unspecified), return MaxLoadedAccountDataSizeExceeded. Per the file, for each transction-level instruction in the tx the following checks MUST be (per the file) performed, and SHOULD be performed (per the file) in this order for error-consistency: (per the file) If the program acct is native_loader, continue to next instruction.",
+    "Per the file, if the program acct fails to exist, return ProgramAccountNotFound If the program acct is not executable, return (per the file) `InvalidProgramForExecution This only applies until SIMD-0162 is activated If the program acct's owner is the native_loader, continue (per the file) to next instruction.",
+    "Per the file, if the program acct's owner fails to exist, return ProgramAccountNotFound If the program acct's owner is not the native_loader, (per the file) return `InvalidProgramForExecution If the program acct's owner is not executable, return `InvalidProgramForExecution This (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) only applies until SIMD-0162 is activated Accumulate the owner acct's data field len and check if the total exceeds the requested_loaded_accounts_data_size_limit (or default if unspecified), return MaxLoadedAccountDataSizeExceeded. Per the file, the owner's data size (per the file) MUST only be accumulated on (per the file) the first instruction that uses the program acct."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, do nothing This is (per the file) the simplest option, as (per the file) we could leave the protocol as is. Per the file, however, this leaves the (per the file) protocol more complex than (per the file) it needs to be. Per the file, relax additional constraints: SIMD-0082 (per the file) sought to relax additional constraints, (per the file) but has not been accepted. The file is a subset of (per the file) SIMD-0082, intended to make (per the file) the review process simpler and faster. Per the file, therefore, we have decided (per the file) to keep this proposal (per the file) focused specifically on certain loading failures."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions that would previously (per the file) have been dropped with (per the file) a protocol violation error (per the file) can now be included and is to be charged fees. Per the file, users has to be more careful when constructing txs to ensure they are executable if they fail to want to waste fees. Per the file, block-production is simplified as it may be done without needing to (per the file) load large program accts for the initial decision to include a tx. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, users has to be more careful about (per the file) what they sign, as they is to be charged fees for txs that are included in (per the file) a block, even if (per the file) they are not executed. Per the file, this will likely break (per the file) a lot of tooling, including explorers, which may expect all txs to attempt execution."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file is backwards compatible with (per the file) the current protocol, since (per the file) it only relaxes constraints, and fails to add any new constraints. Per the file, all previously valid blocks (per the file) would still be valid. Per the file, however, new blocks may (per the file) not be valid under the old protocol."
+   ]
+  }
+ ]
+}

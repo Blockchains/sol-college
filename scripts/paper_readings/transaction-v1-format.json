@@ -1,0 +1,90 @@
+{
+ "slug": "transaction-v1-format",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current live tx formats, v0 and legacy, (per the file) have a number of (per the file) limitations that make them (per the file) unsuitable for efficient ingestion, (per the file) processing, and unable to (per the file) support developer features that (per the file) are required for today's applications. The file presents a new tx format, v1, that is meant to get rid of (per the file) the need for compute (per the file) budget instructions, address lookup (per the file) tables, and more to speed up tx ingestion and processing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current live tx formats, v0 and legacy, (per the file) have a number of (per the file) inefficiencies and limitations that (per the file) adversely impact the performance of the cluster. Per the file, ingestion is slowed down (per the file) when trying to prioritize txs by their Compute Budget instructions. Per the file, address lookup tables currently supported by tx format v0 are also (per the file) a significant source of complexity for nodes to support. Per the file, by introducing a new tx format, v1, we can (per the file) address these issues and (per the file) improve the performance of txs ingestion, processing, and save (per the file) developers space in their tx by including compute budget information in the tx header itself. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, 'v1 tx' - A new tx format that is meant to enable larger txs sizes while not having (per the file) the address lookup table (per the file) features introduced in v0 txs. Per the file, the v1 tx format also fails to require compute budget instructions (per the file) to be present within the tx, but instead the TransactionConfigMask detailed below ought to be used."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new tx format, v1, is proposed to enable larger tx sizes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Transaction V1 Specification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, versionByte The VersionByte MUST (per the file) be set to 129 to distinguish v1 txs from legacy/v0 formats. Per the file, legacyHeader The LegacyHeader is unchanged from prior tx formats. Per the file, for reference, it consists (per the file) of three u8 values with no padding. Per the file, the values (in order) (per the file) are: num_required_signatures: The number of calls for signatures num_readonly_signed_accounts: The number of the (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) accts with signatures that are loaded as read-only num_readonly_unsigned_accounts: The number of accts without signatures that are loaded as read-only As in prior formats, the tx fails sanitization if num_readonly_signed_accounts >= num_required_signatures.",
+    "Per the file, note that num_readonly_signed_accounts == num_required_signatures (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) is a sanitization failure because it would imply the fee payer acct is readonly. Per the file, note that this also (per the file) implies num_required_signatures >= 1. Per the file, numInstructions NumInstructions is set (per the file) to the number of instructions in the tx.",
+    "Per the file, as explained in the (per the file) Transaction Constraints section, the tx fails sanitization if NumInstructions > 64. Per the file, transactionConfigMask TransactionConfigMask is explained below in detail. Per the file, lifetimeSpecifier LifetimeSpecifier is the (per the file) same as the Recent (per the file) Blockhash field in prior tx formats. Per the file, it has been renamed (per the file) to clarify its use (per the file) without changing its meaning. Per the file, numAddresses NumAddresses is set (per the file) to the number of acct addresses the tx references.",
+    "Per the file, the tx fails sanitization if num_addresses (per the file) < num_required_signatures + num_readonly_unsigned_accounts. Per the file, the tx also fails sanitization if (per the file) num_addresses > 64, as explained (per the file) in the Transaction Constraints section. Per the file, addresses Addresses is an (per the file) array of all the acct addresses that the tx references. Per the file, it is a sanitization (per the file) failure for this array (per the file) to contain any duplicates. Per the file, this list has NumAddresses elements.",
+    "Per the file, the ordering of the (per the file) addresses is unchanged from prior tx formats. Per the file, for reference, they are: (per the file) num_required_signatures-num_readonly_signed_accounts additional addresses for (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) which the tx contains signatures and are loaded as writable, of which the first is the fee payer num_readonly_signed_accounts addresses for which the tx contains signatures and are loaded as readonly num_addresses-num_required_signatures-num_readonly_unsigned_accounts addresses for which the tx fails to contain signatures and are loaded as writable num_readonly_unsigned_accounts addresses for which the tx fails to contain signatures and are loaded as readonly ConfigValues ConfigValues is explained below with TransactionConfigMask in detail.",
+    "Per the file, instructionHeaders InstructionHeaders is an (per the file) array with NumInstructions elements. Per the file, each element consists of (per the file) three fields with no (per the file) padding: ProgramAccountIndex: u8: the (per the file) index in the array (per the file) of addresses of the (per the file) address of the program (per the file) to invoke for this instruction. Per the file, this field was known (per the file) as program_id_index in previous (per the file) versions of the tx format; it has been renamed to (per the file) clarify its use without changing its meaning.",
+    "Per the file, numInstructionAccounts: u8: the number of addresses that is to be passed to the (per the file) program when it is invoked. Per the file, this field was implicitly (per the file) represented in a different (per the file) encoding in a previous versions of the tx format as the element count of the accts vector. Per the file, numInstructionDataBytes: u16: the size (per the file) in bytes of the data that is to be passed as input (per the file) to the program when it is invoked.",
+    "Per the file, this field was implicitly (per the file) represented in a different (per the file) encoding in a previous versions of the tx format as the element (per the file) count of the data vector. Per the file, there is also no (per the file) padding between each 4-byte element. Per the file, instructionPayloads InstructionPayloads is a (per the file) concatenation of byte arrays. Per the file, for each of the (per the file) NumInstructions instructions, it consists (per the file) of NumInstructionAccounts bytes of acct indices followed by NumInstructionDataBytes of instruction data.",
+    "Per the file, for example, the InstructionPayloads (per the file) for a two-instruction tx looks like: instruction 0's InstructionAccountIndices (per the file) (InstructionHeaders[0].NumInstructionAccounts bytes) instruction 0's InstructionData (InstructionHeaders[0].NumInstructionDataBytes (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) bytes) instruction 1's InstructionAccountIndices (InstructionHeaders[1].NumInstructionAccounts bytes) instruction 1's InstructionData (InstructionHeaders[1].NumInstructionDataBytes bytes) The tx fails sanitization if any element of InstructionAccountIndices is greater than or equal to NumAddresses Signatures Signatures is an array with num_required_signatures elements, each consisting of a 64-byte Ed25519 signature.",
+    "Per the file, specifically, Signatures[i] is the (per the file) signature resulting from signing the (per the file) portion of the tx prior to the Signatures field (per the file) with the keypair associated with (per the file) the public key at Addresses[i]. Per the file, the tx must not contain trailing (per the file) data after the signatures field. Per the file, there are no padding fields. Per the file, this new v1 tx format notably fails to include address lookup tables."
+   ]
+  },
+  {
+   "heading": "Transaction Constraints",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, any tx violating these constraints is to be considered invalid and (per the file) will not be included in the chain. Per the file, violations are considered sanitization (per the file) failures: | value | max specified (per the file) by this SIMD | prior (per the file) max | max implied by format | | --- | --- | --- | --- | | tx size | 4096 | 1232 | 4096 | | signatures per tx | 12 | 12 | 42 | | num accts | 64 | 64 | 96 | | num (per the file) instructions | 64 | 64 | 255 | | accts/instruction | 255 | 255 | 255."
+   ]
+  },
+  {
+   "heading": "TransactionConfigMask",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the tx config mask is used (per the file) to configure specific fee (per the file) and resource requests in a tx. Per the file, it is intended to (per the file) be flexible enough to (per the file) add new fields in (per the file) the future, and is (per the file) initially aimed at replacing (per the file) the ComputeBudgetProgram instructions that (per the file) are currently used to configure txs. Per the file, each bit in the (per the file) mask represents 4-bytes in (per the file) the ConfigRequests array.",
+    "Per the file, if a configured value, including priority-fee, needs more than (per the file) 4-bytes a field can use (per the file) 2 bits in the mask. Per the file, initially supported fields and (per the file) assigned bits: [0, 1] - total lamports for tx priority-fee. Per the file, 8-byte LE u64. [2] (per the file) - compute-unit-limit. Per the file, 4 byte LE u32. [3] - requested loaded accts data size limit. Per the file, 4 byte LE u32. (per the file) [4] - requested heap size.",
+    "Per the file, for 2 bit fields, including priority-fee, both bits MUST be set. Per the file, if only one of (per the file) the bits is set, the tx is invalid and cannot (per the file) be included in blocks. Per the file, for TxV1 txs, any ComputeBudgetProgram instructions are (per the file) ignored for configuration, even (per the file) if they are invalid. Per the file, the instructions will still (per the file) consume compute-units if included (per the file) and be processed as a (per the file) successful no-op instruction.",
+    "Per the file, for the cost-model, all TxV1 txs are treated as if requests are present. Per the file, for all fields, if (per the file) the bit(s) are not (per the file) set, the minimum allowed value (per the file) is used: If bits [0, (per the file) 1] are not set, the (per the file) priority-fee is 0. Per the file, if bit 2 is (per the file) not set, the requested (per the file) compute-unit-limit is 0. Per the file, if bit 3 is (per the file) not set the requested accts data size limit is 0.",
+    "Per the file, this is different from the current requested accts data size limit defaulting (per the file) today to 64MiB (MAX_LOADED_ACCOUNTS_DATA_SIZE_BYTES). (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, a requested accts data size limit of (per the file) 0, whether the default (per the file) because bit 3 is (per the file) unset or because the (per the file) user-supplied value for bit (per the file) 3 is 0, is treated (per the file) for cost-model purposes as reserving (per the file) 1 page of loaded acct data, or 32KiB.",
+    "Per the file, this fails to change the tx budget request itself and (per the file) only clarifies the cost-model (per the file) handling of 0. Per the file, if bit 4 is (per the file) not set the requested (per the file) heap size is 32KiB (per the file) (MIN_HEAP_FRAME_BYTES). Per the file, if bit 4 is (per the file) set, the requested heap (per the file) size MUST be a (per the file) multiple of 1KiB and (per the file) in the inclusive range [32KiB, 256KiB]. Per the file, values outside of these (per the file) bounds are sanitization failures."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as developers adopt the new tx format, node clients accepting their txs is to be much more efficient at ingestion. Per the file, the tx format as currently defined (per the file) may also support other features including larger tx sizes. Per the file, notably the proposed format fails to support address lookup tables, (per the file) which are commonly used (per the file) in the developer community today. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

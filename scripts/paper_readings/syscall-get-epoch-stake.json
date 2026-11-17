@@ -1,0 +1,71 @@
+{
+ "slug": "syscall-get-epoch-stake",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a syscall to retrieve a vote acct's delegated stake or the (per the file) total cluster stake for the current epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, on-chain programs have (per the file) no knowledge of the current (per the file) epoch's stake and how much (per the file) active stake is delegated to any vote acct. Per the file, if this data were (per the file) available for querying by (per the file) on-chain programs, it would (per the file) unblock many use cases, including node governance and secondary consensus mechanisms, (per the file) that were previously not possible on Solana. Per the file, additionally, this would enable (per the file) the Feature Gate program (per the file) defined in SIMD 0089 to tally vote acct stake in support for (per the file) a pending feature gate."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sIMD 0056 proposes using an on-chain sysvar acct to store all of the (per the file) current epoch's stake. Per the file, because acct data is finite, using a sysvar acct to store even just (per the file) the current epoch's stake (per the file) limits the number of entries that may be stored. Per the file, the amount of nodes in one Solana cluster (per the file) could surpass this number in the future. Per the file, exposing epoch-stake information through (per the file) a syscall avoids this acct maximum size constraint.",
+    "Per the file, while the syscall approach fails to offer the easy off-chain (per the file) retrieval of a sysvar, there (per the file) are existing ways to get (per the file) epoch-stake data off chain. Per the file, the priority of a new design ought to be making the data (per the file) available to on-chain programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the specification for the (per the file) proposed syscall is as follows:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Control Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if var_addr is _not_ (per the file) a null pointer: The syscall (per the file) aborts the virtual machine if: (per the file) Not all bytes in VM (per the file) memory range [vote_addr, vote_addr + 32) (per the file) are readable. Per the file, compute budget is exceeded. Per the file, otherwise, the syscall returns (per the file) a u64 integer representing (per the file) the total active stake (per the file) delegated to the vote acct at the provided address.",
+    "Per the file, if the provided vote (per the file) address corresponds to an acct that is not a vote acct or fails to exist, the syscall will (per the file) return 0 for active stake. Per the file, if var_addr is a (per the file) null pointer: The syscall aborts (per the file) the virtual machine if: Compute (per the file) budget is exceeded. Per the file, otherwise, the syscall returns (per the file) a u64 integer representing (per the file) the total active stake (per the file) on the cluster for the current epoch."
+   ]
+  },
+  {
+   "heading": "Compute Unit Usage",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall will always (per the file) consume a fixed amount (per the file) of CUs regardless of control flow. Per the file, this fixed amount may be one of two (per the file) values, depending on whether (per the file) a null pointer was (per the file) provided for var_addr. Per the file, if var_addr is _not_ (per the file) a null pointer: If var_addr is a null pointer: PUBKEY_BYTES: 32 bytes for an Ed25519 (per the file) public key. syscall_base: Base cost of a (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) syscall. cpi_bytes_per_units: Number of acct data bytes per CU charged during CPI. mem_op_base: Base cost of a memory operation syscall. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dapp developers is to be able to query vote acct and cluster stake for (per the file) the current epoch from (per the file) within on-chain programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this new syscall introduces (per the file) the same security considerations (per the file) as the rest of (per the file) the syscalls in the (per the file) existing interface, which manipulate (per the file) raw pointers to VM memory and has to be implemented with care. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

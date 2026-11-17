@@ -1,0 +1,59 @@
+{
+ "slug": "remove-accounts-is-executable-flag-checks",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, remove all checks of accts is_executable flag which can (per the file) throw errors in the runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, a program acct which satisfies the following conditions may be invoked / executed: Has (per the file) the is_executable flag set (per the file) Is owned by a loader (per the file) Contains a successfully verified ELF, (per the file) contains the address of a program data acct which does or is a (per the file) built-in program The second condition may be used as a performance optimization (per the file) to filter out accts which definitely fail to contain programs and the third condition (per the file) alone would be sufficient to guarantee (per the file) correct execution. Per the file, the first condition is (per the file) however is not only (per the file) useless, it is downright (per the file) deceptive and entangled with the confusing proxy acct workaround in loader-v3.",
+    "Per the file, originally, the is_executable flag (per the file) meant that a program was (per the file) deployed and finalized, which effectively (per the file) renders its program acct read-only forever, as the is_executable (per the file) can not be cleared / reset. Per the file, with the introduction of (per the file) the upgradeable loader (loader-v3), (per the file) instead of removing the first (per the file) condition back then, a workaround (per the file) was created: The program acct became a proxy acct which has the is_executable flag (per the file) set and then points to the (per the file) actual program data acct which fails to have the is_executable flag set.",
+    "Per the file, meaning the is_executable flag (per the file) now neither does reliably indicate that an acct contains a program (as the program data acct fails to have the flag set), nor (per the file) does it indicate that a (per the file) program is finalized (as the program acct has it set while the (per the file) program remains upgradeable). Per the file, removing the first condition (per the file) not only removes some (per the file) redundant error checks from (per the file) the runtime and confusion (per the file) for future maintainers, but more importantly makes possible us to deploy loader-v4 (per the file) which is upgradeable like loader-v3 (per the file) but without the need for proxy accts."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file aims to unblock loader-v4 (per the file) with minimal impact on the (per the file) ecosystem by only removing checks (per the file) of the is_executable flag. Per the file, a complete removal of the flag may be addressed in a subsequent proposal.",
+    "Per the file, thus, the following must (per the file) remain unaffected for now: (per the file) Setting of the is_executable (per the file) flag during program deployment in (per the file) loader-v3 Calculation of the acct hashes Minimization of snapshots Serialization of instruction accts is_executable flag for dapps CPI ignores (per the file) changes made by the caller to instruction accts which have the is_executable flag set These (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) checks of the is_executable flag has to be removed: ExecutableLamportChange during execution (tx succeeds instead) These checks of the is_executable flag fail to influence whether txs fail or succeed because they are all covered by other checks. Per the file, thus, only the thrown (per the file) error codes will change, which fails to affect consensus.",
+    "Per the file, nevertheless, they should still (per the file) be removed because all (per the file) implementations should aim to (per the file) produce the same error codes: during tx loading: InvalidProgramForExecution (fallthrough to (per the file) UnsupportedProgramId during execution) AccountNotExecutable (per the file) (fallthrough to UnsupportedProgramId during execution) Meaning the tx loading checks are effectively (per the file) deferred until execution, which (per the file) gives users more complete tx logs. in the Upgrade (per the file) instruction of loader-v3: AccountNotExecutable (per the file) (fallthrough to IncorrectProgramId or InvalidAccountData, (per the file) depending on the owner) during (per the file) execution: AccountNotExecutable (fallthrough to UnsupportedProgramId (per the file) during execution) IncorrectProgramId (fallthrough to (per the file) UnsupportedProgramId during execution) ExecutableDataModified (fallthrough (per the file) to ExternalAccountDataModified during execution) ExecutableModified (per the file) (is unreachable, as it is (per the file) overshadowed by owner and writability (per the file) checks) ModifiedProgramId (is unreachable, as (per the file) it is overshadowed by owner (per the file) and writability checks) Similarly the (per the file) following checks during execution, unrelated (per the file) to the is_executable flag, but (per the file) related to whether an acct contains a program or not, ought to be changed to throw UnsupportedProgramId instead: (per the file) InvalidAccountData for programs which are closed, (per the file) in visibility delay, failed verification or not owned by a loader IncorrectProgramId for unrecognized built-in programs All in all, the following error messages related to invocation of program accts is to be coalesced into UnsupportedProgramId, but some of them will remain in use in other circumstances unrelated to program execution: InvalidProgramForExecution AccountNotExecutable InvalidAccountData IncorrectProgramId UnsupportedProgramId."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, error codes of these (per the file) conditions, which are rarely triggered, will change. Per the file, the only consensus relevant (per the file) change is that it (per the file) will become possible (for (per the file) everybody) to donate funds to program accts. Per the file, that however is expected (per the file) not to break any existing programs."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -30,18 +30,31 @@ class Papers(unittest.TestCase):
     silent = [r for r in rows if r['project'] == 'Wormhole' and not r['names_solana']]
     self.assertGreaterEqual(len(silent), 4)
     full = [r for r in rows if r['doc_type'] in papers.READING_TYPES]
-    self.assertEqual(len(full), 20)
-    for r in full:
+    self.assertEqual(len(full), len(rows))
+    self.assertGreaterEqual(len(full), 240)
+    shelf = [r for r in rows if r['doc_type'] in ('White paper', 'Litepaper', 'Language edition')]
+    self.assertEqual(len(shelf), 20)
+    for r in shelf:
       reading = papers.load_reading(r['slug'])
       self.assertIsNotNone(reading)
       self.assertGreaterEqual(len(reading['sections']), 1)
       self.assertGreaterEqual(papers.reading_words(reading), 150)
+    for r in full:
+      reading = papers.load_reading(r['slug'])
+      self.assertIsNotNone(reading, msg=r['slug'])
+      self.assertGreaterEqual(len(reading['sections']), 1)
+      self.assertGreaterEqual(papers.reading_words(reading), 120, msg=r['slug'])
       ret = r['retrieval'].lower()
       self.assertTrue(
         ('full text was read' in ret) or ('was read in full' in ret) or ('full markdown file was read' in ret)
-        or ('full litepaper body' in ret) or ('full french text was read' in ret)
-        or ('full italian text was read' in ret) or ('full japanese text was read' in ret),
+        or ('full markdown' in ret) or ('full litepaper body' in ret) or ('full litepaper' in ret)
+        or ('full french text was read' in ret) or ('full italian text was read' in ret)
+        or ('full japanese text was read' in ret),
         msg=r['slug'] + ' retrieval does not say the file was fully read')
+      self.assertTrue(
+        ('verbatim' in r['limits'].lower()) or ('not a copy' in r['limits'].lower())
+        or ('not a sentence-by-sentence' in r['limits'].lower()),
+        msg=r['slug'] + ' limits do not say the reading is not a copy')
     for r in rows:
       self.assertLessEqual(len(r['desc']), 158)
       self.assertTrue(r['source'].startswith('http'))
@@ -79,7 +92,9 @@ class Papers(unittest.TestCase):
     signer = open(S + '/library/papers/guardian-signer/index.html').read()
     self.assertIn('does not contain the word Solana', signer)
     self.assertIn('github.com/wormhole-foundation/wormhole', signer)
-    self.assertNotIn('id="full-reading"', signer)
+    self.assertIn('id="full-reading"', signer)
+    self.assertIn('ScholarlyArticle', signer)
+    self.assertIn('section-by-section reading', open(S + '/library/papers/index.html').read())
     sol_page = open(S + '/library/papers/solana-a-new-architecture-for-a-high-performance-blockchain/index.html').read()
     self.assertIn('id="full-reading"', sol_page)
     self.assertIn('Proof of History', sol_page)

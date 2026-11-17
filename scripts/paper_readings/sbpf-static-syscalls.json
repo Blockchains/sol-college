@@ -1,0 +1,73 @@
+{
+ "slug": "sbpf-static-syscalls",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces static syscalls, using (per the file) the eBPF call instruction (per the file) encoding, to remove runtime (per the file) relocations while keeping compatibility (per the file) with the eBPF encoding. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the resolution of syscalls during ELF loading calls for relocating addresses, which is (per the file) a performance burden for the node. Per the file, relocations require an entire (per the file) copy of the ELF (per the file) file in memory to (per the file) either relocate addresses we (per the file) fetch from the symbol (per the file) table or offset addresses (per the file) to after the start (per the file) of the virtual machine's memory. Per the file, moreover, relocations pose security (per the file) concerns, as they allow (per the file) the arbitrary modification of (per the file) program headers and programs sections. Per the file, introducing static syscalls lets us to resolve all (per the file) program relocations during link time. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on The, SIMD-0189, SBPF, ELF, Deprecation, PT_DYNAMIC, SBPFv3, 0189, 189. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following must go (per the file) into effect if and (per the file) only if a program (per the file) indicates the SBPF version (per the file) 0x03 or higher in (per the file) its ELF header e_flags (per the file) field, according to the specification (per the file) of SIMD-0161. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Static syscall instruction",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we follow the encoding (per the file) referenced in the eBPF specification for encoding static syscalls. Per the file, that means we must (per the file) use the call instruction (per the file) (opcode 0x85) with the (per the file) source register field set to zero. Per the file, the immediate field has to be filled with a (per the file) registered syscall hash code. Per the file, for more reference on (per the file) the SBF ISA format, (per the file) see the spec document.",
+    "Per the file, we define the hash (per the file) code for a syscall (per the file) as the murmur32 hash (per the file) of its respective name. Per the file, the 32-bit immediate value (per the file) of the call instruction has to be the integer representation of (per the file) such a hash. Per the file, for instance, the code (per the file) for abort is given (per the file) by murmur32(\"abort\"), so the (per the file) instruction hexadecimal representation should look (per the file) like 85 00 00 00 (per the file) 11 1a fc b6.",
+    "Per the file, consequently, system calls in (per the file) the Solana SDK and (per the file) in any related compiler tools has to be registered as function (per the file) pointers, whose address is (per the file) the murmur32 hash of their name. Per the file, this new instruction comes (per the file) together with modifications in (per the file) the semantics of the (per the file) instruction opcode 0x85 with (per the file) source register set to (per the file) one, which must only (per the file) refer to internal calls (per the file) and its immediate field (per the file) must only be interpreted (per the file) as a relative address (per the file) to jump from the program counter.",
+    "Per the file, as static syscalls don't (per the file) use dynamic text-based relocations, the (per the file) PT_DYNAMIC program header, along with the (per the file) .dynamic, .dynsym, .dynstr and .rel.dyn section header (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) entries will no longer be required to invoke static syscalls for any SBPFv3 program and is to be omitted by default. Per the file, albeit rare, hash collisions (per the file) may occur depending on (per the file) the syscall name, so care has to be taken not to (per the file) introduce names whose hash (per the file) collides with existing ones.",
+    "Per the file, we expect core developers (per the file) to rely on proper (per the file) testing to identify such (per the file) cases when registering a (per the file) new syscall in the program loader. Per the file, it is worth pointing (per the file) that the solution proposed (per the file) in this document is (per the file) an improvement over the existing mechanism that fails to realiably distinguish internal and external calls. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the changes proposed in (per the file) this SIMD are transparent to dApp developers. Per the file, the compiler toolchain will (per the file) emit correct code for (per the file) the specified SBF version. Per the file, static syscalls obviate relocations (per the file) for call instructions and (per the file) move the virtual machine (per the file) closer to eliminating relocations (per the file) altogether, which can bring considerable performance improvements. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

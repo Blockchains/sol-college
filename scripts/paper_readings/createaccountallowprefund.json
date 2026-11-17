@@ -1,0 +1,97 @@
+{
+ "slug": "createaccountallowprefund",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a CreateAccountAllowPrefund instruction added (per the file) to the system program (per the file) reduces network overhead for (per the file) applications that need to fund acct rent (in whole or (per the file) in part) in advance of acct creation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing CreateAccount system program instruction creates accts within a program by (per the file) use of transfer, allocate, and assign. Per the file, createAccount fails if lamports > 0. Per the file, this was intended as (per the file) a protection measure, preventing (per the file) developers from accidentally passing (per the file) in some normal wallet (per the file) address and permanently locking (per the file) its lamports after allocate and assign. Per the file, however, it is common (per the file) practice to provide rent lamports to accts prior to the actual (per the file) creation (allocation and assigning) of the acct space, rather than forcing (per the file) the fee payer of the tx to provide all of the required lamports.",
+    "Per the file, in this and similar (per the file) instances, developers currently must (per the file) manually construct a patched (per the file) CreateAccount call of their (per the file) own with 2-3 CPI (per the file) calls: sometimes Transfer, then Allocate, (per the file) and then Assign. Per the file, while these actions themselves (per the file) are minimally expensive, the (per the file) overhead incurred with every (per the file) Cross-Program Invocation - depth check, signer check, acct copy, etc. - can make up (per the file) the bulk of the computation (per the file) done in the tx.",
+    "Per the file, each CPI incurs a (per the file) minimum of 1_000 compute (per the file) units, plus additional amounts depending (per the file) on the instruction and acct length. Per the file, createAccountAllowPrefund performs allocate, assign, (per the file) and transfer without asserting that the created acct has zero lamports. Per the file, applications which fail to need to transfer can (per the file) specify 0 lamports, effectively (per the file) providing them with an (per the file) AllocateAndAssign. p-ATA program benchmarks (per the file) demonstrate that use of CreateAccountAllowPrefund (per the file) can save approximately 2_500 compute (per the file) units: https://github.com/solana-program/associated-token-acct/pull/102 This is a stopgap (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) measure, as it extends the undesired interface sprawl of helper instructions including CreateAccount.",
+    "Per the file, however, any redesign of (per the file) Cross-Program Invocations to safely (per the file) reduce overhead would be an (per the file) extensive protocol upgrade and slow to land. Per the file, in the meantime, the (per the file) network will benefit from CreateAccountAllowPrefund. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, prefund: sending lamports to an acct to pay for its (per the file) rent in whole or (per the file) in part in any (per the file) prior instruction or prior tx, before the instruction in (per the file) which its space is allocated and its owner is assigned. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, createAccountAllowPrefund is added as (per the file) a system program instruction, (per the file) identical to CreateAccount except for the following: The instruction has a new discriminant (13). Per the file, the funding acct is optional. Per the file, due to #2, the accts are ordered differently. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Instruction Data",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, field | Type | Description | |---|---|---| | Discriminant (per the file) | u32 | The instruction discriminant, (per the file) value 13. | | lamports | u64 (per the file) | Number of lamports to (per the file) transfer to the new acct. | | space | u64 | Number of (per the file) bytes of memory to (per the file) allocate. | | owner | Pubkey | Address (per the file) of program that will own the new acct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Accounts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the instruction calls for the following accts: | Index | Role | Description | |---|---|---| | 0 | [WRITE, SIGNER] | **New acct**: The acct to be created. | | 1 (per the file) | [WRITE, SIGNER] (optional) | **Funding acct**: The acct that will pay for the lamport transfer. Per the file, required only when lamports > 0. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Behavior",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the CreateAccountAllowPrefund instruction performs the following actions: **Allocate**: As with CreateAccount, (per the file) this instruction calls allocate, (per the file) which will fail if the new acct is non-empty. **Assign**: As with CreateAccount, this (per the file) instruction calls assign. **Transfer**: If lamports is greater (per the file) than 0, it transfers the (per the file) specified number of lamports from (per the file) the funding_account (acct index 1) to the new_account (acct index 0). lamports may be used when the acct is prefunded insufficiently; in other words, when (per the file) the acct has some lamports, but needs more to (per the file) cover rent. Per the file, this instruction will fail (per the file) if: The funding_account is (per the file) not provided when lamports > 0.",
+    "Per the file, additional underlying reasons may (per the file) cause the instruction to (per the file) fail; in other words, (per the file) it will fail if (per the file) allocate, assign, or transfer (per the file) fail for any reason (per the file) including: The funding_account fails to have enough lamports for the (per the file) transfer (when lamports > 0). Per the file, the new_account already contains (per the file) data or is not owned (per the file) by the System Program.",
+    "Per the file, the new_account fails to have sufficient lamports to be (per the file) rent-exempt after the transfer. Per the file, required accts are not writable or not signers. Per the file, the requested space exceeds (per the file) the max permitted data length."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a separate AllocateAndAssign instruction. Per the file, however, using CreateAccountAllowPrefund is (per the file) appropriate for a caller (per the file) needing to allocate and (per the file) assign, as transfer is (per the file) called to top up (per the file) the storage rent requirement (per the file) only if current lamports (per the file) are insufficient (equivalent to (per the file) how an instruction named AllocateAndAssignAndMaybeTransfer would function). Per the file, a separate AllocateAndAssign would (per the file) save one check, but (per the file) the compute savings would (per the file) be minimal and not (per the file) enough to justify such interface sprawl.",
+    "Per the file, the current CPI model (per the file) spins up a new (per the file) context for every invocation (per the file) - re-copying and re-verifying acct and signer data. Per the file, a CPI redesign ​could (per the file) slash this overhead for (per the file) innumerable programs, but such (per the file) a redesign would involve (per the file) extensive implementation and audit time. Per the file, by contrast, CreateAccountAllowPrefund delivers (per the file) quick compute savings for (per the file) a common pattern with minimal surface area.",
+    "Per the file, instruction-batching helpers including CreateAccountAllowPrefund and CreateAccount may be deprecated whenever CPI improvements (per the file) land, enabling such helpers to (per the file) become library-level functions rather than (per the file) system instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as mentioned, this is (per the file) a temporary compromise until (per the file) CPI improvements can land. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary impact is (per the file) an available reduction in (per the file) CPI overhead for programs (per the file) which currently must perform (per the file) these operations manually across (per the file) 2 to 3 CPIs. The file’s claim in this section turns on Per, ATA, CreateAccountAllowPrefund, 102. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, developers using CreateAccountAllowPrefund should (per the file) ensure they are not (per the file) passing an unintended wallet acct with lamports. Per the file, the usual checks of (per the file) allocate and assign are still performed - an acct with data or with (per the file) an owner other than (per the file) the system program will (per the file) not be modified - but (per the file) since the lamport check (per the file) is removed, a wallet acct with lamports may be bricked by this instruction."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file calls for a feature gate, as (per the file) it adds a new System Program instruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

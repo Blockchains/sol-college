@@ -1,0 +1,71 @@
+{
+ "slug": "allow-commission-decrease-at-any-time",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the commission_updates_only_allowed_in_first_half_of_epoch feature disallows (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) commission decrease in the second half of epoch. Per the file, given that the purpose (per the file) of this feature was (per the file) to prevent 'rug pulls' (per the file) which are accomplished by (per the file) increasing commission at the (per the file) end of epoch and (per the file) then decreasing commission at (per the file) the beginning of next (per the file) epoch, disallowing decreases during (per the file) the second half of epoch is unnecessary.",
+    "Per the file, a feature gate has to be added to support (per the file) this SIMD as all nodes' vote programs must treat (per the file) commission change instructions the (per the file) same or else consensus will diverge. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, some node operators may need to decrease commission so as to satisfy their own operational criteria. Per the file, as an example, a node operator may have a (per the file) policy whereby any error (per the file) that results in reduced stake acct rewards for the epoch, (per the file) will result in the (per the file) operator choosing to reduce (per the file) commission to 0% for (per the file) that epoch to ensure that stake accts are not disadvantaged by that error.",
+    "Per the file, not being allowed to (per the file) do this in the (per the file) second half of an (per the file) epoch is a problem (per the file) because it would prevent (per the file) that commission change until (per the file) the next epoch, which (per the file) will not allow this (per the file) policy to take effect for stake accts which were de-activating during the epoch."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no alternatives were considered."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a feature is to be added which, when (per the file) enabled, must cause all (per the file) node implementations' vote program's (per the file) set-commission instruction handling to first (per the file) check whether the proposed commission change (per the file) is a decrease or no change, (per the file) and if so, fail to invoke the \"only allow commission change (per the file) in first half of epoch\" rule."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators will now be (per the file) able to decrease commission (per the file) at any time in (per the file) the epoch, but only (per the file) increase commission in the (per the file) first half of epochs (per the file) (because of the commission_updates_only_allowed_in_first_half_of_epoch (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) feature already implemented). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it may cause additional confusion to nodes who might not understand (per the file) why some types of (per the file) commission changes succeed only (per the file) in the first half (per the file) of epochs while others succeed always."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature calls for a feature gate because (per the file) software which includes the (per the file) implementation will allow certain set-commission txs to succeed where software without (per the file) the implementation would fail those txs. Per the file, thus all nodes has to be updated to the (per the file) new functionality at an (per the file) epoch boundary so that all nodes agree on the result of executing those txs. Per the file, when activated, breaks the (per the file) ability of older Solana (per the file) node software to verify (per the file) ledgers with this feature. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

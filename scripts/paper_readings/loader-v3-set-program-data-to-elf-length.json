@@ -1,0 +1,99 @@
+{
+ "slug": "loader-v3-set-program-data-to-elf-length",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file proposes changing the default (per the file) behavior of program upgrades (per the file) to automatically resize the program data acct so that its ELF (per the file) region matches the length (per the file) of the ELF being deployed. Per the file, the total acct size remains the program (per the file) data metadata header plus the ELF length. Per the file, if the new ELF (per the file) is smaller, surplus lamports (per the file) are refunded to the spill acct. Per the file, if the new ELF is larger, the acct is extended accordingly. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, Loader v3 program data accts may be extended via (per the file) the ExtendProgram instruction, but cannot be retracted. Per the file, as program sizes decrease (per the file) due to SDK improvements including Pinocchio, this limitation results in program data accts remaining larger than necessary, (per the file) with no mechanism to (per the file) reclaim the rent paid for unused bytes. Per the file, this unnecessarily increases rent (per the file) costs and program loading overhead. Per the file, additionally, upgrading a program (per the file) to a larger ELF calls for issuing a separate ExtendProgram (per the file) instruction prior to Upgrade. Per the file, this additional step increases (per the file) operational complexity and has (per the file) been a recurring point (per the file) of debate in other proposals."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Upgrade instruction is to be updated to automatically (per the file) resize the program data acct so that its ELF (per the file) region matches the length (per the file) of the ELF in (per the file) the buffer being deployed. Per the file, the program data acct retains its existing metadata (per the file) header (UpgradeableLoaderState::ProgramData, containing the (per the file) slot and upgrade authority), so the resulting acct size is PROGRAMDATA_METADATA_SIZE + elf_length. Per the file, this applies in both directions: the acct may grow or shrink (per the file) as needed. **Shrinking:** If (per the file) the new ELF is (per the file) smaller than the current program data acct's ELF region, the acct is to be retracted to the new size.",
+    "Per the file, surplus lamports from the (per the file) reduced rent requirement for the program data acct is to be refunded to the spill acct. **Growing:** If the new (per the file) ELF is larger than (per the file) the current program data acct's ELF region, the acct is to be extended to accommodate the new ELF. Per the file, new lamports for the (per the file) increased rent requirement are (per the file) expected to be either (per the file) credited to the program data acct or available in the buffer acct prior to the execution (per the file) of the Upgrade instruction. Per the file, if the available lamports (per the file) are insufficient to satisfy (per the file) the new rent requirement, (per the file) the upgrade will fail with InsufficientFunds. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Buffer Accounts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, the Upgrade instruction (per the file) will: Deallocate the buffer acct for garbage collection. Per the file, apply the buffer's lamports (per the file) to the program data's new (per the file) rent requirement, if necessary. Per the file, sweep the remaining buffer (per the file) lamports to the spill acct. Per the file, this behavior is unchanged by this proposal. Per the file, for any proposals that (per the file) may modify the behavior of buffer acct closure, the same lamport (per the file) requirements detailed in the **Growing** paragraph apply. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Feature Gate",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is to be a feature-gated behavioral (per the file) change to the existing Upgrade instruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Shrinking Only",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an earlier version of (per the file) this proposal only supported (per the file) shrinking, requiring the ExtendProgram (per the file) instruction to be called (per the file) before upgrading to a larger ELF. Per the file, this approach was rejected (per the file) in favor of bidirectional (per the file) resizing to simplify upgrade (per the file) workflows and reduce the (per the file) number of instructions required. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Separate Lamport Withdrawal",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an alternative approach would (per the file) be to add a (per the file) new WithdrawExcessLamports instruction, similar (per the file) to the instruction of (per the file) the same name in (per the file) the Token-2022 program. Per the file, this would allow the (per the file) program's upgrade authority to (per the file) claim excess lamports after the (per the file) auto-resizing from Upgrade. Per the file, this was rejected in (per the file) favor of automatically refunding (per the file) surplus lamports to the spill acct during the upgrade itself. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, developers who over-provision program data accts with additional free space will (per the file) see that space reclaimed during upgrade. Per the file, anyone who intentionally over-provisions (per the file) and expects that additional space (per the file) to survive across upgrades will (per the file) no longer be able to do so. Per the file, however, those who accidentally (per the file) over-provision, or those who (per the file) are forced to do so (per the file) - via minimum extension requirements, as an illustration - is to be able to reclaim part (per the file) of their rent deposit.",
+    "Per the file, additionally, this proposal incentivizes (per the file) developers to upgrade to (per the file) newer, more performant libraries and SDKs, and makes possible the recovery of surplus (per the file) lamports, including those accidentally (per the file) sent to the program data address. Per the file, for nodes/contributors: this proposal should result (per the file) in a lower program footprint (per the file) in Accounts DB. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "CPI Account Growth Limit",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when invoking the Upgrade (per the file) instruction via CPI, the (per the file) 10 KiB per-instruction acct growth limit still applies. Per the file, if the new ELF calls for the program data acct to grow by more (per the file) than 10 KiB, the (per the file) upgrade will fail when called via CPI. Per the file, programs requiring larger growth (per the file) must either: Perform the (per the file) upgrade at the top level of the tx, or Split the growth (per the file) across multiple instructions using ExtendProgram before upgrading. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change modifies an (per the file) existing Loader v3 instruction and therefore calls for a feature gate for consensus safety. Per the file, from an API and (per the file) tooling perspective, interface-wise, the (per the file) change is backwards compatible. Per the file, however, rent and space (per the file) management behavior has changed (per the file) according to the Impact section above. Per the file, developers should double-check the spill accts they'll use on upgrade to (per the file) take advantage of potential rent refunds. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

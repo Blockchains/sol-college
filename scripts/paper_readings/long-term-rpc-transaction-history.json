@@ -1,0 +1,67 @@
+{
+ "slug": "long-term-rpc-transaction-history",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Long term RPC Transaction History",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there's a need for (per the file) RPC to serve at least (per the file) 6 months of tx history. Per the file, the current history, on (per the file) the order of days, (per the file) is insufficient for downstream users. Per the file, 6 months of tx data cannot be stored practically in a node's rocksdb ledger so an (per the file) external data store is necessary. Per the file, the node's rocksdb ledger will continue (per the file) to serve as the primary (per the file) data source, and then will (per the file) fall back to the external data store.",
+    "Per the file, the affected RPC endpoints are: getFirstAvailableBlock getConfirmedBlock getConfirmedBlocks getConfirmedSignaturesForAddress getConfirmedTransaction getSignatureStatuses getBlockTime Some system design (per the file) constraints: The volume of (per the file) data to store and (per the file) search can quickly jump (per the file) into the terabytes, and is immutable. Per the file, the system ought to be as light as possible for SREs. Per the file, for example an SQL database cluster that calls for an SRE to continually (per the file) monitor and rebalance nodes is undesirable.",
+    "Per the file, data has to be searchable in real (per the file) time - batched queries that (per the file) take minutes or hours (per the file) to run are unacceptable. Per the file, easy to replicate the (per the file) data worldwide to co-locate (per the file) it with the RPC endpoints (per the file) that will utilize it. Per the file, interfacing with the external data store ought to be easy and not (per the file) require depending on risky (per the file) lightly-used community-supported code libraries (per the file) Based on these constraints, Google's BigTable (per the file) product is selected as the data store."
+   ]
+  },
+  {
+   "heading": "Table Schema",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a BigTable instance is (per the file) used to hold all tx data, broken up into (per the file) different tables for quick searching. Per the file, new data may be (per the file) copied into the instance (per the file) at anytime without affecting (per the file) the existing data, and (per the file) all data is immutable. Per the file, generally the expectation is that new data is to be uploaded once an (per the file) current epoch completes but (per the file) there is no limitation (per the file) on the frequency of data dumps.",
+    "Per the file, cleanup of old data (per the file) is automatic by configuring (per the file) the data retention policy (per the file) of the instance tables (per the file) appropriately, it just disappears. Per the file, therefore the order of (per the file) when data is added becomes important. Per the file, for example if data (per the file) from epoch N-1 is (per the file) added after data from epoch (per the file) N, the older epoch data (per the file) will outlive the newer data.",
+    "Per the file, however beyond producing _holes_ (per the file) in query results, this (per the file) kind of unordered deletion (per the file) will have no ill effect. Per the file, note that this method of cleanup effectively lets for an unlimited amount of tx data to be stored, (per the file) restricted only by the (per the file) monetary costs of doing so. Per the file, the table layout s (per the file) supports the existing RPC endpoints only. Per the file, new RPC endpoints in (per the file) the future may require (per the file) additions to the schema (per the file) and potentially iterating over all txs to build up the necessary metadata."
+   ]
+  },
+  {
+   "heading": "Accessing BigTable",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bigTable has a gRPC endpoint that may be accessed using the tonic] and the raw protobuf (per the file) API, as currently no (per the file) higher-level Rust crate for BigTable exists. Per the file, practically this makes parsing (per the file) the results of BigTable (per the file) queries more complicated but (per the file) is not a significant issue."
+   ]
+  },
+  {
+   "heading": "Data Population",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ongoing population of (per the file) instance data will occur (per the file) on an epoch cadence (per the file) through the use of (per the file) a new solana-ledger-tool command (per the file) that will convert rocksdb data for (per the file) a given slot range into the (per the file) instance schema. Per the file, the same process is to be run once, manually, (per the file) to backfill the existing ledger data. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Block Table: `block`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this table contains the (per the file) compressed block data for a given slot. Per the file, the row key is (per the file) generated by taking the (per the file) 16 digit lower case (per the file) hexadecimal representation of the (per the file) slot, to ensure that (per the file) the oldest slot with (per the file) a confirmed block will (per the file) always be first when (per the file) the rows are listed. (per the file) eg, The row key (per the file) for slot 42 would be 000000000000002a. Per the file, the row data is (per the file) a compressed StoredConfirmedBlock struct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Account Address Transaction Signature Lookup Table: `tx-by-addr`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this table contains the txs that affect a given address. The file’s claim in this section turns on Per, 0, 16. Those labels are the document’s. They are not a Sol.College measurement. Per the file, the row data is (per the file) a compressed TransactionByAddrInfo struct. Per the file, taking the one's compliment (per the file) of the slot lets for listing of slots ensures (per the file) that the newest slot with txs that affect an address will (per the file) always be listed first.",
+    "Per the file, sysvar addresses are not indexed. Per the file, however frequently used programs including Vote or System are, (per the file) and will likely have (per the file) a row for every confirmed slot."
+   ]
+  },
+  {
+   "heading": "Transaction Signature Lookup Table: `tx`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this table maps a tx signature to its confirmed (per the file) block, and index within that block. Per the file, the row key is the base58-encoded tx signature. Per the file, the row data is (per the file) a compressed TransactionInfo struct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Entries Table: `entries`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, > Support for the entries (per the file) table was added in v1.18.0. Per the file, this table contains data (per the file) about the entries in a slot. Per the file, the row key is (per the file) the same as a block row key. Per the file, the row data is (per the file) a compressed Entries struct, (per the file) which is a list (per the file) of entry-summary data, including (per the file) hash, number of hashes since (per the file) previous entry, number of txs, and starting tx index. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

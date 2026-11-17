@@ -1,0 +1,113 @@
+{
+ "slug": "alpenglow-migration",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrate to Alpenglow from TowerBFT. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrating from TowerBFT to Alpenglow consensus calls for a safe handoff mechanism (per the file) that doesn't rollback TowerBFT confirmed user txs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) accepted proposal: **[SIMD-0326]: Alpenglow** (per the file) Requires Alpenglow to be implemented so as to migrate **[SIMD-0307]: Add Block (per the file) Footer** Specifies BlockMarker, a means of (per the file) disseminating metadata in a block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migration boundary slot: Slot (per the file) at which Alpenglow migration (per the file) begins For all slots (per the file) after and inclusive of (per the file) this boundary slot: Turn (per the file) off packing anything other than simple vote txs in blocks. Per the file, any txs not belonging to the (per the file) vote program will cause (per the file) a block to be (per the file) marked dead during replay by all correct nodes. Per the file, core code will stop (per the file) notifying RPC services of (per the file) any optimistic confirmation/ commitment updates.",
+    "Per the file, towerBFT will stop rooting (per the file) blocks to prevent losing (per the file) optimistically confirmed blocks that (per the file) could qualify as the Alpenglow genesis blocks. Per the file, alpenglow genesis block: The (per the file) last TowerBFT block before (per the file) the \"migration boundary slot\" (per the file) which is the parent (per the file) of the first Alpenglow block.",
+    "Per the file, this is picked via (per the file) the process described in (per the file) the \"Detailed Design\" section (per the file) below Strong optimistic confirmation: (per the file) A block B is (per the file) strong OC if there (per the file) exists a block T (per the file) such that B is (per the file) the parent of T (per the file) and slot(B) + 1 = slot(T) (per the file) and T contains vote txs for B from at least 82% (per the file) of stake. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Migration Handoff",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, pick a \"migration boundary (per the file) slot\" (defined above) S as follows. Per the file, let X be the feature activation slot. Per the file, let the migration slot (per the file) S be X + 5000, (per the file) as to avoid the (per the file) beginning of an epoch. Per the file, after the migration boundary (per the file) slot S, wait for (per the file) some block B >= S (per the file) to reach strong optimistic confirmation.",
+    "Per the file, find the most recent (per the file) ancestor block G of (per the file) B from before the (per the file) migration boundary slot S. Per the file, this is the Alpenglow genesis block. Per the file, cast a BLS vote, (per the file) the \"genesis vote\", for (per the file) G via all to all. Per the file, note nodes should have filled out (per the file) their BLS keys prior (per the file) to the feature flag (per the file) activation, and will sign (per the file) this genesis vote with this BLS key.",
+    "Per the file, if we observe >=82% (per the file) genesis votes for the (per the file) ancestor block G, this (per the file) consitutes the genesis certificate, (per the file) and G is the (per the file) genesis block for Alpenglow. Per the file, validators will periodically refresh (per the file) genesis votes every GENESIS_VOTE_REFRESH (per the file) = 400ms (i.e. once a slot) until (per the file) this genesis certificate is observed. Per the file, during this period they (per the file) perform regular TowerBFT consensus for all blocks.",
+    "Per the file, anytime a correct node receives a genesis certificate (per the file) for a slot G (per the file) (either constructed themselves, received (per the file) through replaying a block, (per the file) or received from all-to-all (per the file) broadcast), they: Verify the certificate against (per the file) the BLS keys for the epoch. Per the file, broadcast the certificate to all other nodes via the Alpenglow all-to-all mechanism. Per the file, validators will continually retry (per the file) broadcasting this certificate every (per the file) 10 seconds via the (per the file) certificate pool standstill timer (per the file) so long as a (per the file) finalized Alpenglow certificate for (per the file) a higher slot isn't detected.",
+    "Per the file, we initialize the alpenglow (per the file) votor module with G (per the file) as genesis, and disable (per the file) TowerBFT for any slots (per the file) past G In block (per the file) production pack the genesis (per the file) certificate as a GenesisBlockMarker (per the file) for any blocks that (per the file) are *direct* children of G. Per the file, this means anybody replaying (per the file) any of the initial (per the file) Alpenglow blocks must see the genesis certificate.",
+    "Per the file, delete all blocks and (per the file) shreds with slot greater (per the file) than slot(G) from blockstore, (per the file) and reset all associated state (per the file) (replay, AccountsDB) to block G, (per the file) as is currently done when (per the file) we rollback duplicate blocks. Per the file, we re-enable packing non-vote txs, enable Alpenglow rooting, and re-enable RPC (per the file) commitment/confirmation reporting. Per the file, anytime a node receives a genesis certificate (per the file) validated through *replaying* the (per the file) header of a block, (per the file) they store the certificate (per the file) in a migration success off-curve acct Pubkey::find_program_address(&[\"carlgration\"], alpenglow::id()).",
+    "Per the file, this means all snapshots (per the file) descended from the block will contain this acct and signal to nodes that they should initiate (per the file) Alpenglow after unpacking the snapshot. Per the file, alternatively, anytime a correct node that has not yet (per the file) detected a genesis certificate, (per the file) but receives an Alpenglow (per the file) finalization certificate for some (per the file) block X that they (per the file) can verify, they should (per the file) repair/replay all the ancestors of X Once an Alpenglow finalization certificate (per the file) is received via all-to-all or (per the file) via replaying a block, nodes can stop broadcasting the genesis certificate as (per the file) the Alpenglow finalization certificate is sufficent proof (per the file) of the cluster's successful migration.",
+    "Per the file, on node restart from a snapshot, (per the file) if the migration feature (per the file) flag is active: If (per the file) the off-curve migration success acct is empty in the snapshot, (per the file) we enter step 1. Per the file, if the off-curve migration success acct contains a certificate and the (per the file) certificate is valid, immediately enter Alpenglow. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "GenesisBlockMarker",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order to disseminate (per the file) the genesis certificate in (per the file) the initial Alpenglow block (per the file) we add a new (per the file) BlockMarker to the specification (per the file) of SIMD-0307 with variant ID 3: The full serialization of this component is: Correctness argument: First note it's (per the file) always safe to rollback a block (per the file) greater after the migration slot boundary (per the file) because we stopped packing user txs. Per the file, next we show that if two correct nodes switch to Alpenglow, they (per the file) must pick the same genesis block G.",
+    "Per the file, to switch to Alpenglow, both correct nodes must observe optimistic confirmation (per the file) on some slots B (per the file) and B' past the migration boundary. Per the file, it's guaranteed by optimistic (per the file) confirmation that B and B' (per the file) are on the same fork, (per the file) and must have the same ancestors. Per the file, this means all correct nodes must cast a genesis (per the file) vote on the same ancestor block. Per the file, because there's at most (per the file) 19% malicious, it is to be impossible to construct two (per the file) >82% genesis certificates, so all correct nodes that switch must have observed (per the file) the same genesis certificate for (per the file) the same block.",
+    "Per the file, liveness argument First we show that (per the file) eventually at least one correct node should see an Alpenglow genesis certificate. Per the file, we assume the the (per the file) cluster must eventually run (per the file) under normal network conditions, (per the file) so blocks past the (per the file) migration boundary slot S ought to be strongly optimistically confirmed. Per the file, next, until a migration (per the file) certificate is observed, no correct nodes will migrate, so all correct nodes will vote as normal (per the file) and contribute to optimistic confirmation.",
+    "Per the file, from the correctness argument, (per the file) we know if a correct node casts a genesis vote, (per the file) they must vote for (per the file) the same Alpenglow genesis block. Per the file, this means that eventually 82% of nodes will cast a genesis (per the file) vote for the same genesis block. Per the file, because these genesis votes (per the file) are reliably delivered via (per the file) all-to-all, some correct node will eventually get a genesis certificate.",
+    "Per the file, next we show that once a correct node migrates, then all correct nodes will eventually migrate. Per the file, there are two ways for correct nodes to migrate: A genesis certificate An Alpenglow finalization certificate The first correct node to migrate must have (per the file) gotten a 82% genesis certificate. Per the file, we assume at most (per the file) 19% of the cluster (per the file) is Byzantine, then at least this correct node will continuosly broadcast the (per the file) genesis certificate until they (per the file) see an Alpenglow finalization certificate.",
+    "Per the file, this means 82% - 19% (per the file) = 63% correct nodes will (per the file) eventually receive the genesis (per the file) certificate and will migrate (per the file) to Alpenglow upon receiving (per the file) the certificate via all-to-all (per the file) broadcast which guaranteees delivery. Per the file, this 63% correct nodes is then sufficient to (per the file) run Alpenglow and produce (per the file) a finalized Alpenglow block, (per the file) which will induce a (per the file) repair/transition from any other correct/lagging nodes.",
+    "Per the file, thus from 1. we know some correct node must eventually migrate because (per the file) eventually they must receive (per the file) a genesis certificate, then (per the file) we know from 2 (per the file) that eventually all correct nodes must migrate. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Poh Migration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when switching to the (per the file) first Alpenglow block, we (per the file) want to deprecate Poh. Per the file, this is to be done in a (per the file) few steps to mitigate (per the file) the amount of code changes: Before the end of (per the file) each Alpenglow block, set (per the file) the bank tick height (per the file) to bank.max_tick_height() - 1 Set tick producer to low power mode, (per the file) which only has one hash per tick.",
+    "Per the file, we then call tick_alpenglow() (per the file) at the end of every (per the file) alpenglow block which makes 1 (per the file) ending tick per block. Per the file, because of 1. above, (per the file) this gaurantees that each (per the file) bank will still think (per the file) it has reached bank.max_tick_height(). Per the file, this last tick is (per the file) necessary to coordinate with (per the file) banking stage and broadcast (per the file) to properly end the (per the file) packing/dispersion of a block. Per the file, eliminating it is possible, (per the file) but a load of risky work. Per the file, change blockstore_processor::verify_ticks() to turn (per the file) off tick verification. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Duplicate block handling",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on all blocks descended (per the file) from the Alpenglow genesis block: Turn off tower duplicate block handling Turn off epoch slots. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, alpenswitch where we pick (per the file) fixed slot intervals N (per the file) at which to attempt (per the file) to optimistically migrate to Alpenglow. Per the file, on failure fallback to (per the file) TowerBFT we try again (per the file) at the next slot interval. Per the file, this is more painful (per the file) to implement because of (per the file) the transition back and (per the file) forth between Alpenglow and TowerBFT. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, during the migration process, there is to be a liveness impact (per the file) for the duration of (per the file) the migration, which is (per the file) optimistically only one slot (per the file) past the migration boundary slot. Per the file, validators will run Alpenglow (per the file) after discovering the genesis (per the file) block after the migration boundary. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is not backwards compatible."
+   ]
+  }
+ ]
+}

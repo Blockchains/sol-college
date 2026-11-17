@@ -1,0 +1,67 @@
+{
+ "slug": "deactivatedelinquent-for-closed-vote-accounts",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, allow the Stake Program's (per the file) existing DeactivateDelinquent instruction to deactivate (per the file) stake delegated to a closed vote acct. Per the file, the delegated vote acct is treated as closed (per the file) when its address is (per the file) no longer owned by (per the file) the Vote Program or (per the file) its Vote Program owned (per the file) data meets the uninitialized conditions below. Per the file, all other validation, the (per the file) instruction interface, and deactivation behavior remain unchanged."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deactivateDelinquent lets anyone to begin cooldown (per the file) on stake delegated to a node that has stopped voting. Per the file, it calls for initialized vote state showing (per the file) either no credits ever (per the file) or none in the (per the file) last five epochs, plus (per the file) an active reference vote acct showing that the cluster continued voting. Per the file, if a node closes their vote acct, DeactivateDelinquent can no longer validate that acct's vote state and fails (per the file) before examining the delegated stake acct.",
+    "Per the file, the stake authority can (per the file) still deactivate normally, but (per the file) if they never act, (per the file) the permissionless path is lost. Per the file, the closed vote acct leaves behind an orphaned (per the file) delegation whose stake continues (per the file) contributing to stake-history accounting until deactivated. The file restores a permissionless way (per the file) to begin the stake's cooldown. Per the file, note: This case fails to pose a persistent liveness (per the file) risk because the closed vote acct is excluded from future (per the file) epoch-stakes snapshots and leader schedules."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Delinquency conditions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deactivateDelinquent treats the delinquency (per the file) condition as satisfied in two new cases: The delegated vote acct address is not owned (per the file) by the Vote Program. Per the file, this is the normal result of closure. Per the file, funding the address later (per the file) creates a System Program owned acct, which also satisfies this condition. Per the file, the address is owned (per the file) by the Vote Program (per the file) but contains uninitialized data. Per the file, this state can exist (per the file) if the address holder (per the file) recreates a zero filled acct and assigns it to the Vote Program.",
+    "Per the file, the same state can (per the file) also result when lamports (per the file) are returned during the tx that closes the vote acct. Per the file, the data is considered uninitialized when: It contains fewer than (per the file) four bytes and every byte is zero. Per the file, it contains at least (per the file) four bytes and its (per the file) first four bytes encode (per the file) the little endian zero discriminator. Per the file, only the discriminator is (per the file) inspected so a large (per the file) zero filled shell cannot (per the file) make cleanup exceed the (per the file) instruction's compute budget.",
+    "Per the file, all other Vote Program (per the file) owned data follows the (per the file) existing vote state decoding (per the file) and epoch credit delinquency checks. Per the file, decoding failures, including unknown (per the file) nonzero discriminators, remain errors. Per the file, the active reference vote acct and delegation address checks remain unchanged. Per the file, successful processing deactivates the (per the file) stake at the current (per the file) epoch as it does today. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, keep the existing behavior, (per the file) leaving abandoned stake without (per the file) a permissionless deactivation path. Per the file, treat only zero-lamport addresses as closed. Per the file, funding a closed address (per the file) would create a nonzero System Program acct and block cleanup even (per the file) though no initialized vote state exists there. Per the file, treat only addresses not (per the file) owned by the Vote Program as closed. Per the file, a closed address can (per the file) remain or be recreated (per the file) as a Vote Program-owned (per the file) zero-filled shell, which would still (per the file) block cleanup.",
+    "Per the file, treat every vote-state decoding (per the file) failure as a closed acct. Per the file, however, an unknown nonzero (per the file) discriminator could represent a future vote acct state. Per the file, preserve the five-epoch delay, (per the file) but that would require new (per the file) state because the Stake Program (per the file) cannot determine when the vote acct was closed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, callers: Anyone can use (per the file) the new path for (per the file) stake whose delegated vote acct meets one of the (per the file) closed or uninitialized conditions defined above. Per the file, the stake enters normal (per the file) cooldown without moving lamports (per the file) or changing its authorities. Per the file, instruction interface: No change. Per the file, validators: Clients must support (per the file) the feature-gated upgrade to (per the file) the Stake Program ELF containing this change. Per the file, no other node changes are required."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, closing a vote acct can make its delegated (per the file) stake eligible for DeactivateDelinquent sooner. Per the file, a vote acct that has earned credits (per the file) may be closed after (per the file) two epochs without credits, while DeactivateDelinquent normally calls for five. Per the file, that delay gives an offline node time to recover before its delegated stake may be deactivated. Per the file, closing a vote acct, however, calls for an explicit tx authorized by its withdraw (per the file) authority, so there is (per the file) no outage to wait out.",
+    "Per the file, the new path applies (per the file) only to stake already (per the file) delegated to the supplied vote acct address. Per the file, stake can only become (per the file) delegated to an address (per the file) that previously contained initialized vote state. Per the file, delegateStake continues to reject (per the file) zero-filled or uninitialized vote accts. Per the file, only the recognized closed (per the file) and uninitialized states bypass vote-state decoding. Per the file, malformed initialized formats and (per the file) unknown nonzero discriminators retain their existing errors. Per the file, this prevents an older (per the file) Stake Program from treating (per the file) an unsupported future vote-state (per the file) version as delinquent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

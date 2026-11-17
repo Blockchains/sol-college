@@ -1,0 +1,72 @@
+{
+ "slug": "increase-block-limits-to-60m-cus",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increase the block limit to 60M CUs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, current block limits are (per the file) set to 48M CUs. Per the file, sIMD-0207 will increase them to 50M. Per the file, block limits' primary purpose (per the file) is to ensure the (per the file) vast majority of network (per the file) participants are able to (per the file) keep up with the (per the file) network, by restricting the (per the file) amount of work a (per the file) leader is allowed to (per the file) pack into a block.",
+    "Per the file, however, current mainnet traffic (per the file) is largely not constrained (per the file) by large block execution times. The file aims a substantial increase (per the file) in block limits to 60M CUs, so as to provide additional capacity to the network."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terms, but (per the file) the following definitions are (per the file) given for clarity: Max (per the file) Block Units - The maximum (per the file) number of CUs that may be included in a block. Per the file, max Writable Account Units (per the file) - The maximum number of CUs that may be used to write any given acct in a block. Per the file, max Vote Units - The (per the file) maximum number of CUs that may be used by simple (per the file) votes in a block. Per the file, max Block Accounts Data (per the file) Size Delta - The maximum size of the accts data size delta in a block."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following table shows (per the file) the current block limits (per the file) and the proposed block (per the file) limits: | Type | Current Block (per the file) Limit | SIMD-0207 Limit | Proposed (per the file) Block Limit | |------|---------------------|-----------------|----------------------| | Max Block Units (per the file) | 48M | 50M | 60M | | Max Writable (per the file) Account Units | 12M | 12M | 12M (per the file) | | Max Vote Units | 36M | 36M (per the file) | 36M | | Max Block Accounts Data (per the file) Size Delta | 100MB | 100MB | 100MB | The file only changes the Max Block Units limit. Per the file, the purpose is to (per the file) increase capacity for non-vote txs.",
+    "Per the file, the Max Writable Account (per the file) Units is left unchanged (per the file) since there is no (per the file) specific push to increase (per the file) the capacity for individual accts at this time. Per the file, keeping Max Writeable Account (per the file) Units unchanged while raising (per the file) the Max Block Units , lets for additional parallel capacity. Per the file, the intention is for (per the file) this to follow SIMD-0207 (per the file) (as opposed to replacing).",
+    "Per the file, sIMD-0207 is a much (per the file) more modest increase in block space, but is to be valuable in discovering any (per the file) unforeseen problems with changing the (per the file) longstanding 48M CU cap and verifying assumptions. The file aims to increase block space more aggressively. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, leave the block limits (per the file) as they are This (per the file) leaves capacity on the table. Per the file, larger increase of limit (per the file) to 96M CUs Viewed (per the file) as too aggressive at (per the file) this time, and may (per the file) cause unforeseen issues particularly (per the file) in turbine and infrastructure (per the file) supporting the network users. Per the file, we instead plan to (per the file) increase the limits incrementally (per the file) as the network performance improves. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, more txs may be included per block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blocks may take longer (per the file) to execute, slowing down (per the file) network progress and catchup times. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, larger blocks may cause (per the file) unforseen issues in infrastructure beyond the nodes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all previously valid blocks (per the file) are still valid, since (per the file) limits are only increasing. Per the file, blocks produced after the (per the file) change may be rejected (per the file) by previous versions that fail to support the new limits. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

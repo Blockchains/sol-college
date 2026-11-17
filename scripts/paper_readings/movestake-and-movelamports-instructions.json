@@ -1,0 +1,75 @@
+{
+ "slug": "movestake-and-movelamports-instructions",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors propose introducing two new (per the file) instructions to the stake (per the file) program for moving value between stake accts with identical Authorized and (per the file) Lockup: MoveStake: Move a (per the file) given amount of active (per the file) stake from one active acct to another active acct, or from an active acct to an inactive one, (per the file) turning it into an active acct. Per the file, if the entire source acct delegation is moved, the source acct becomes inactive.",
+    "Per the file, in all cases, rent-exempt (per the file) balance is unaffected and minimum (per the file) delegations are respected for accts that end in an active state. Per the file, moveLamports: Move a given (per the file) amount of excess lamports (per the file) from one active or inactive acct to another active or inactive acct, where \"excess lamports\" refers (per the file) to lamports that are (per the file) neither delegated stake nor (per the file) required for rent-exemption. Per the file, for simplicity of implementation, (per the file) we choose not to support accts that are activating, deactivating, or partially active. Per the file, a future SIMD may (per the file) choose to extend this (per the file) functionality should it be desirable."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, recently, a feature was (per the file) activated which mandates that (per the file) Split destinations be prefunded (per the file) with the rent-exempt reserve, (per the file) because before that, Split could (per the file) be used to deactivate stake (per the file) immediately, bypassing the cooldown period. Per the file, however, this has introduced (per the file) issues for protocols that (per the file) manage stake on behalf (per the file) of users without taking Withdrawer authority. Per the file, particularly, for one that (per the file) splits user stake across many nodes and periodically redelegates between (per the file) them, every time they (per the file) want to split part (per the file) of a user stake (per the file) to deactivate, the protocol (per the file) must fund the rent-exemption themselves.",
+    "Per the file, and then when that split acct is merged, those lamports (per the file) cannot be reclaimed by (per the file) the protocol, instead accumulating (per the file) (undelegated) in the destination merge accts. Per the file, the purpose of the (per the file) MoveStake instruction is to (per the file) enable a flow whereby (per the file) moving stake from a user's stake accts U1 -> U2 from node V1 to node V2 may proceed: MoveStake the (per the file) amount of stake from the user stake acct U1 to an inactive acct T holding sufficient lamports for rent exemption.",
+    "Per the file, t instantly becomes a second active stake acct delegated to V1 with amount stake. Per the file, deactivate T and wait an epoch. Per the file, delegateStake T to V2 (per the file) and wait an epoch. Per the file, t becomes an active stake acct delegated to V2 with amount stake. Per the file, moveStake the amount stake (per the file) from T to U2. Per the file, t returns to its initial inactive state. Per the file, stake has moved from (per the file) U1 to U2 with (per the file) no outside lamports required (per the file) and no new undelegated (per the file) lamports becoming trapped in delegated stake accts. Per the file, the motivation for MoveLamports (per the file) is to enable housekeeping tasks including reclaiming lamports from Merge destinations."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is a longstanding (per the file) proposal we call Multistake, (per the file) which would allow a stake acct to have two delegation (per the file) amounts to the same node, the idea being that (per the file) one serves as an (per the file) onramp (and possibly offramp) (per the file) for active stake on the acct.",
+    "Per the file, this could support other (per the file) flows to accomplish the same objective, including allowing DelegateStake to accept an active stake acct to begin activating an acct's excess (non-rent non-stake) lamports, (per the file) or allowing a Split source to Deactivate (per the file) enough stake to cover rent-exemption for the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) new acct. Per the file, however, Multistake is a (per the file) much larger design/engineering project, (per the file) and we have to solve (per the file) the existing proble sooner than (per the file) Multistake would be ready.",
+    "Per the file, we discussed various proposals (per the file) for allowing Merge to (per the file) leave behind the source acct or Split to split (per the file) into any mergeable destination. Per the file, however this confuses the (per the file) presently clear distinction between (per the file) these two operations and (per the file) entails additional implementation risk (per the file) as they are already rather complex. Per the file, a new instruction that (per the file) does one specific thing seems highly preferable.",
+    "Per the file, the original version of (per the file) this SIMD proposed a (per the file) Move that did not (per the file) take an amount, but (per the file) this would require changes (per the file) to Split to enable (per the file) the first leg of the proposed flow. Per the file, back out the changes (per the file) introduced by requiring rent-exempt Split destinations. Per the file, this is undesirable because (per the file) that restriction was added (per the file) for very good reason: (per the file) an effectively unbounded amount (per the file) of stake could be (per the file) instantly deactivated through repeated splitting."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, moveStake and MoveLamports, two (per the file) new stake program instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for clarity of terminology (per the file) inside this specification: An (per the file) \"active\" stake is in (per the file) a Stake state with (per the file) nonzero delegation, 100% of (per the file) which is effective stake. Per the file, there is no activating or deactivating stake. Per the file, an \"inactive\" stake is (per the file) in an Initialized or Stake state. Per the file, there is no effective, (per the file) activating, or deactivating stake."
+   ]
+  },
+  {
+   "heading": "`MoveStake`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, moveStake calls for 3 accts: Source stake acct: Writable, owned by the stake program Destination stake acct: Writable, owned by the stake program Stake acct authority: Read-only signer MoveStake (per the file) instruction data is 12 bytes, (per the file) containing: 0x10 0x00 0x00 0x00, (per the file) a fixed-value four-byte little-endian unsigned (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) integer acting as the instruction discriminator amount, an unaligned eight-byte little-endian unsigned integer indicating the quantity of lamports to move MoveStake aborts the tx when: amount is 0 Source or destination are not writable Source or destination are not owned by the stake program Source and destination have the same address Source and destination fail to have identical Authorized If Lockup is in force, source and destination fail to have identical Lockup The stake acct authority is not the Staker on both accts The stake acct authority is not a signer Source data length is not equal to the current version of StakeState Destination data length is not equal to the current version of StakeState Source is not active Destination is neither active nor inactive If destination is active, source and destination are not delegated to the same vote acct Moving amount stake would leave source with a nonzero amount of stake less than the minimum delegation Moving amount stake would fail to bring destination up to minimum delegation If all of these conditions hold, then: Delegation and lamports on source are debited amount Delegation and lamports on destination are credited amount If amount constitutes the full delegation on the source, source is reset to an Initialized state If destination is inactive, destination becomes active with the same Stake as source, aside from delegation amount credits_observed has to be updated on the destination according to the same rules as Merge."
+   ]
+  },
+  {
+   "heading": "`MoveLamports`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, moveLamports calls for 3 accts: Source stake acct: Writable, owned by the stake program Destination stake acct: Writable, owned by the stake program Stake acct authority: Read-only signer MoveLamports (per the file) instruction data is 12 bytes, (per the file) containing: 0x11 0x00 0x00 0x00, (per the file) a fixed-value four-byte little-endian unsigned (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) integer acting as the instruction discriminator amount, an unaligned eight-byte little-endian unsigned integer indicating the quantity of lamports to move MoveLamports aborts the tx when: amount is 0 Source or destination are not writable Source or destination are not owned by the stake program Source and destination have the same address Source and destination fail to have identical Authorized If Lockup is in force, source and destination fail to have identical Lockup The stake acct authority is not the Staker on both accts The stake acct authority is not a signer Source is neither active nor inactive Destination is not a valid merge destination (active, inactive, or activating with zero effective stake) amount exceeds source lamports - effective_stake - rent_exempt_reserve If all of these conditions hold, then: Lamports on source are debited amount Lamports on destination are credited amount."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary utility of (per the file) the proposed instructions is (per the file) to support protocol developers (per the file) in moving value between stake accts with the same authorities (per the file) without controlling the Withdrawer. Per the file, there is no loss of existing functionality."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, care has to be taken to ensure (per the file) stakes are active, as moving delegations between accts in any kind of (per the file) intermediate state is fraught. Per the file, otherwise this change ought to be fairly low impact, as it fails to require changing any existing logic, specifically avoiding making Split or Merge more permissive. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

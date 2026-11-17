@@ -1,0 +1,79 @@
+{
+ "slug": "unbound-loaderv3-instruction-data",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, loaderV3 currently bounds instruction (per the file) deserialization at 1232 bytes, the traditional maximum tx size. Per the file, this prevents using most (per the file) of the 4096 bytes (per the file) made available by Transaction V1 when writing to LoaderV3 buffers. Per the file, removing this bound would (per the file) allow program upgrades to (per the file) use a fraction of the txs now required. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transaction V1 lets up to 4KiB txs, and is active on all clusters. Per the file, however, the new larger tx size cannot be fully (per the file) utilized for writing LoaderV3 (per the file) buffers for program deployment (per the file) and upgrade because LoaderV3 (per the file) aborts if instruction data exceeds 1232 bytes. Per the file, due to LoaderV3 Write (per the file) instruction metadata and necessary pubkeys, a legacy tx delivers at best 1012 (per the file) payload bytes, assuming the (per the file) fee-payer is the buffer authority.",
+    "Per the file, this drops to 960 bytes per tx when compute price and (per the file) limit instructions are included. Per the file, a V1 tx can deliver 1216 payload (per the file) bytes, a modest improvement (per the file) over the prior status (per the file) quo, but still severely (per the file) limited compared to what (per the file) it ought to be. Per the file, by removing the artificial (per the file) bound in LoaderV3, a V1 tx can deliver 3864 payload bytes per tx, or 3856 bytes per tx with a priority fee.",
+    "Per the file, this means program deployment (per the file) and upgrade require ~75% fewer txs. Per the file, this also admits LoaderV3 (per the file) buffer writes up to (per the file) almost 10KiB via CPI. Per the file, it is possible this (per the file) may be useful to some consumers including multisigs, but not a (per the file) central goal of this proposal."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terminology, but (per the file) relevant Agave constants (mirrored (per the file) in Firedancer): PACKET_DATA_SIZE: 1232, (per the file) the current LoaderV3 instruction bound and (per the file) maximum size of a legacy or V0 tx. Per the file, mAX_TRANSACTION_SIZE: 4096, the maximum (per the file) size of a V1 tx. Per the file, mAX_INSTRUCTION_DATA_LEN: 10240, the maximum (per the file) size of CPI instruction data."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when deserializing LoaderV3 instructions, (per the file) instead of aborting on (per the file) instruction data larger than (per the file) 1232 bytes, deserialize all the data. Per the file, as an aside, System (per the file) and Vote both enforce (per the file) a 1232 byte limit (per the file) on instruction deserialization as well. Per the file, there is however no (per the file) reason to change this, (per the file) since neither program has (per the file) any valid instruction longer (per the file) than low hundreds of bytes."
+   ]
+  },
+  {
+   "heading": "Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, care ought to be taken that an (per the file) incorrect length on the write Vec fails to over- allocate before failing validation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-------------------------------------| | Transaction Execution (Runtime) (per the file) | LoaderV3 ixn deserialization changes. (per the file) | | Virtual Machine | | | Block Packing (per the file) | | | Consensus | | | Gossip | | | Turbine | | | Snapshots (per the file) | | | On-Chain Core BPF Programs (per the file) | | | Other (please describe) |. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we can always do nothing. Per the file, however, we would fail (per the file) to take advantage of larger txs to improve program deployment and upgrade tx efficiency. Per the file, we could bound the (per the file) deserialize by MAX_TRANSACTION_SIZE to (per the file) allow full use of V1 txs. Per the file, this would retain a (per the file) consensus-relevant bound on CPI. Per the file, ultimately the difference between (per the file) 4KiB and 10KiB is (per the file) not enough to motivate keeping the restriction.",
+    "Per the file, we could bound by (per the file) MAX_INSTRUCTION_DATA_LEN to effect the (per the file) same result as having no bound. Per the file, in fact, this may (per the file) be done as an implementation detail. Per the file, but it is better (per the file) to explicitly unbound it in case new tx formats or other changes (per the file) allow larger instruction data (per the file) and reintroduce a LoaderV3 bound into consensus."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, program deployment and upgrade (per the file) tooling, including the Solana (per the file) CLI, can use V1 txs to deploy and upgrade (per the file) programs much more efficiently. Per the file, this ought to be an opt-in flag (per the file) for now, since not all (per the file) external wallet tooling may support Transaction V1."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as a built-in, LoaderV3 (per the file) pays a fixed CU cost, (per the file) so if a massive amount (per the file) of instruction data was allowed (per the file) through, it may cause performance concerns. Per the file, we rely on the (per the file) 10KiB CPI limit and the 4KiB tx size limit to protect against this. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, verify that LoaderV3 can (per the file) successfully deserialize Write instructions (per the file) of arbitrary length, including (per the file) but not limited to (per the file) longer than 1232 bytes."
+   ]
+  }
+ ]
+}

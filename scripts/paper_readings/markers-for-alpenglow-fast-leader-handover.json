@@ -1,0 +1,125 @@
+{
+ "slug": "markers-for-alpenglow-fast-leader-handover",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors propose augmenting BlockMarkerV1, introduced (per the file) in SIMD-0307, to include (per the file) BlockHeader and UpdateParent variants. Per the file, blockHeader, placed at the (per the file) beginning of a block, (per the file) indicates the parent of the block. The file’s claim in this section turns on Per, Fast, Leader, Handover, Alpenglow, 2.7, 1. Those labels are the document’s. They are not a Sol.College measurement. Per the file, fast Leader Handover will (per the file) minimize the synchronization delay (per the file) between consecutive leaders, increasing throughput."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sIMD-0326 proposes Alpenglow, a (per the file) consensus protocol specified in https://www.anza.xyz/alpenglow-1-1. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, section 2.7 in the (per the file) paper describes Fast Leader Handover. Per the file, this mechanism lets leaders to begin constructing (per the file) blocks on tentative parent (per the file) blocks before the parent (per the file) is ensured to be correct.",
+    "Per the file, in the common case, (per the file) this optimization increases throughput, (per the file) by giving more time (per the file) to the leader to stream the block. Per the file, to ensure correctness, the (per the file) leader may need to (per the file) change the indicated parent (per the file) while streaming the block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **BlockHeader**: Block marker variant (per the file) indicating the block's parent. Per the file, placed in the beginning (per the file) of block data. **UpdateParent**: (per the file) Block marker variant indicating a changed parent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Specification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blockHeader contains info about the parent block. Per the file, updateParent marker contains info (per the file) about the parent block (per the file) that the leader switched (per the file) to as a result (per the file) of Fast Leader Handover. Per the file, each variant includes its own version field: For Version 1: Fields: **Version**: Versioning byte (per the file) for forward compatibility (u8) (per the file) **Parent Slot**: The slot (per the file) number of the (new) (per the file) parent block (u64, little-endian) (per the file) **Parent Block ID**: The block (per the file) ID identifying the parent block (per the file) (32-byte hash). Per the file, the meaning of this (per the file) field is left to (per the file) specification in future Alpenglow-related SIMDs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "`UpdateParent` Code Sample",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, nOTE: BlockHeader has a nearly identical implementation. Per the file, the markers are separate (per the file) to allow future header extensions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Integration with BlockComponent",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the UpdateParent marker integrates (per the file) with the existing BlockComponent system:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Serialization Format",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, both BlockHeader and UpdateParent (per the file) (variant 1 and 2) (per the file) have the following structure (per the file) while serialized within a (per the file) BlockComponent in the first version:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Marker Placement Rules",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blockHeader has to be placed at the (per the file) beginning of shred data (per the file) of the first FEC (per the file) set of every block. Per the file, at most one UpdateParent (per the file) marker might be placed (per the file) in a block, at (per the file) the beginning of the (per the file) shred data of one FEC set. Per the file, only the first block (per the file) of a leader window (per the file) can include the UpdateParent marker. Per the file, otherwise, the given block is invalid. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "`DATA_COMPLETE_SHRED` Placement Rules",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, due to the logic of Alpenglow, nodes need to be able (per the file) to process the UpdateParent (per the file) marker outside of replay, (per the file) even without ever replaying (per the file) the initial parent block. Per the file, to make this possible, (per the file) we introduce additional rules (per the file) for the DATA_COMPLETE_SHRED flag (per the file) in data shreds. Per the file, most implementations already follow (per the file) this rule, but it's (per the file) not yet enforced.",
+    "Per the file, fEC sets in Alpenglow (per the file) will follow a fixed (per the file) structure: Each FEC set (per the file) contains exactly 32 data (per the file) shreds (insufficient data is (per the file) zero-padded) Each FEC set (per the file) contains exactly 32 coding shreds (per the file) for error correction. Per the file, all implementations MUST enforce (per the file) that the DATA_COMPLETE_SHRED flag (per the file) can only appear as true on (per the file) the final data shred within an (per the file) FEC set (index position 31 within (per the file) the set).",
+    "Per the file, otherwise, the block is invalid. Per the file, all implementations MUST enforce (per the file) that UpdateParent marker can (per the file) only start at the (per the file) beginning of an FEC (per the file) set, AND the previous (per the file) FEC set's last data (per the file) shred shows DATA_COMPLETE_SHRED as true. Per the file, otherwise, the block is invalid.",
+    "Per the file, with these rules, UpdateParent marker may be detected at shred (per the file) ingestion, without replaying block (per the file) contents up to this (per the file) point, like so: Check (per the file) the 0th shred of (per the file) the next FEC set (per the file) when DATA_COMPLETE_SHRED is true (per the file) in the current shred Check the (per the file) current shred when the DATA_COMPLETE_SHRED is (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) true in the previous shred.",
+    "Per the file, see https://github.com/anza-xyz/alpenglow/pull/459 for an (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) example implementation. **State Transition Rules**: After Fast Leader Handover is implemented, state transition will work as follows: State changes from txs before the UpdateParent marker are discarded The UpdateParent marker itself fails to modify state Post-UpdateParent marker txs are built on the new parent's state Notably, despite pre-marker tx state changes being discarded, all pre-marker shred data WILL be included in the constructed block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Special Transaction Type**. Per the file, rejected, because of overhead, (per the file) and difficult and inconvenient (per the file) implementation. **Extended Block Footer**. Per the file, rejected, because: Difficult to (per the file) represent the switch point withing the block. Per the file, the footer appears at (per the file) the end of the (per the file) block, delaying the parent (per the file) switch detection. **Shred Modification**. Per the file, rejected, due to significant (per the file) protocol changes required, backward (per the file) compatibility challenges, complexity and (per the file) impact on existing shred processing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Positive**: Paves the way (per the file) for Fast Leader Handover (per the file) that will increase throughput. (per the file) **Negative**: Slight block size overhead. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Examples of Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Unexpected UpdateParent**: A malicious (per the file) leader attempting to include (per the file) an UpdateParent in slots (per the file) 2-4 of their leader window. Per the file, updateParent markers are only (per the file) allowed in the first (per the file) slot of a leader window. Per the file, upon witnessing an UpdateParent (per the file) marker on a different block, a receiving node MUST deem the block (per the file) invalid and invoke TrySkipWindow(slot) (per the file) according to the protocol logic. **Multiple UpdateParents in a Single Block**: A (per the file) malicious leader attempting to create (per the file) blocks on multiple parents simultaneously: (per the file) At most a single UpdateParent (per the file) marker per block is allowed.",
+    "Per the file, upon witnessing two or (per the file) more markers within a block, a receiving node MUST deem the block (per the file) invalid and invoke TrySkipWindow(slot) (per the file) according to the protocol logic. (per the file) **Invalid Parent Reference**: Leader references (per the file) a non-existent or invalid parent: (per the file) If the receiving node cannot validate the parent block in (per the file) time, the receiving node will time out and invoke TrySkipWindow(slot).",
+    "Per the file, nOTE: in each of (per the file) the above cases, TrySkipWindow(slot) (per the file) is NOT the same as (per the file) unconditionally issuing a skip vote. (per the file) **Feature Flag Protection**: BlockHeader and UpdateParent markers is to be processed if and only (per the file) if the Alpenglow feature is (per the file) activated Validators must run with (per the file) a client containing Alpenglow code (per the file) to process blocks with UpdateParent (per the file) and/or BlockHeader markers Missing or (per the file) malformed version fields will fail deserialization gracefully."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, upon launching Alpenglow, nodes must validate blocks according (per the file) to the Alpenglow protocol. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, blocks containing UpdateParent markers (per the file) are **not** backward compatible with nodes that fail to support Alpenglow. Per the file, blocks will not include (per the file) UpdateParent markers until the (per the file) Alpenglow feature flag has been activated."
+   ]
+  },
+  {
+   "heading": "Reference Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on Per, 364. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  }
+ ]
+}

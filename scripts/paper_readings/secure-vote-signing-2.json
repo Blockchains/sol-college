@@ -1,0 +1,29 @@
+{
+ "slug": "secure-vote-signing-2",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, a node receives entries from the (per the file) current leader and submits (per the file) votes confirming those entries are valid. Per the file, this vote submission presents (per the file) a security challenge, because (per the file) forged votes that violate (per the file) consensus rules could be (per the file) used to slash the node's stake. Per the file, the node votes on its chosen (per the file) fork by submitting a tx that uses an asymmetric (per the file) key to sign the (per the file) result of its validation work.",
+    "Per the file, other entities can verify (per the file) this signature using the node's public key. Per the file, if the node's key is used to (per the file) sign incorrect data \\(e.g. votes (per the file) on multiple forks of the ledger\\), (per the file) the node's stake or its resources (per the file) could be compromised. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validators, Vote Signers, and Stakeholders",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when a node receives multiple blocks for (per the file) the same slot, it (per the file) tracks all possible forks (per the file) until it can determine a \"best\" one. Per the file, a node selects the best fork (per the file) by submitting a vote to it. Per the file, a stakeholder is an (per the file) identity that has control (per the file) of the staked capital. Per the file, the stakeholder can delegate (per the file) its stake to the vote signer.",
+    "Per the file, once a stake is (per the file) delegated, the vote signer's (per the file) votes represent the voting weight (per the file) of all the delegated stakes, (per the file) and produce rewards for all (per the file) the delegated stakes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator voting",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a node node, at startup, creates a new vote acct and registers it with (per the file) the cluster via gossip. Per the file, the other nodes on (per the file) the cluster include the new node in the active set. Per the file, subsequently, the node submits a \"new vote\" tx signed with the node's voting private key on (per the file) each voting event. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

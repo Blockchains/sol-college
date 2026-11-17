@@ -1,0 +1,63 @@
+{
+ "slug": "fix-alt-bn128-multiplication-syscall-length",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the alt_bn128_multiplication syscall takes (per the file) in a byte slice as input, (per the file) interprets the bytes as a bn128 (per the file) elliptic curve point/scalar pair, and applies (per the file) point-scalar multiplication. Per the file, if the byte slice (per the file) input has improper length (per the file) then the function terminates early. Per the file, specifically, if the byte (per the file) slice has length greater (per the file) than 128, then the (per the file) function terminates early with an error.",
+    "Per the file, however, a bn128 curve (per the file) point is 64 bytes (per the file) and a scalar is 32 bytes. Per the file, this means that the (per the file) function should check if (per the file) the byte slice is (per the file) 96 bytes in length (per the file) rather than 128 bytes. The file proposes to fix this (per the file) length check by checking (per the file) for the correct length. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the alt_bn128_multiplication function still (per the file) works with the incorrect 128 length (per the file) bound since a correct input of (per the file) 96 bytes is still less than (per the file) 128 bytes. Per the file, however, there could be (per the file) successful inputs that are (per the file) greater than 96 bytes (per the file) and smaller than 128 bytes in length. Per the file, this could cause application (per the file) logic harder to debug. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, the constant ALT_BN128_MULTIPLICATION_INPUT_LEN, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) which is set to 128 is used to sanity check the length of the input. Per the file, a fix would entail (per the file) updating the ALT_BN128_MULTIPLICATION_INPUT_LEN constant (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) to the correct length of 96. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this fix will prevent (per the file) accidental misuse of the (per the file) alt_bn128_multiplication syscall function and (per the file) make programs easier to debug. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this does update the (per the file) behavior of the syscall function and therefore, ought to be properly feature-gated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks _(Optional)_",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

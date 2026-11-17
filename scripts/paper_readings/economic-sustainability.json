@@ -1,0 +1,20 @@
+{
+ "slug": "economic-sustainability",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Guiding principle",
+   "where": "Design note body",
+   "paragraphs": [
+    "The note opens with “Subject to change.” It says long-term economic sustainability is one of the guiding principles of Solana’s economic design. It also says it is impossible to predict how decentralized economies will develop over time, especially economies with flexible decentralized governance. Components can still be arranged so that, under stated conditions, a sustainable economy may take shape in the long term. That framing is the file’s. It is not a forecast Sol.College produced."
+   ]
+  },
+  {
+   "heading": "Issuance, burning, and remittances",
+   "where": "Design note body",
+   "paragraphs": [
+    "For Solana’s network, the note says those components take the form of token issuance via inflation and token burning. It says the dominant remittances from the Solana mining pool are validator rewards. The disinflationary mechanism is described as a flat, protocol-specified and adjusted percentage of each transaction fee. Those mechanisms are the note’s words. Listing them here does not mean the mechanisms were audited or that any yield or burn figure was measured for this page."
+   ]
+  }
+ ]
+}

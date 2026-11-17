@@ -1,0 +1,114 @@
+{
+ "slug": "tower-bft",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, this design describes Solana's (per the file) _Tower BFT_ algorithm. Per the file, it addresses the following (per the file) problems: Some forks may (per the file) not end up accepted (per the file) by the supermajority of (per the file) the cluster, and voters (per the file) need to recover from (per the file) voting on such forks. Per the file, many forks may be (per the file) votable by different voters, (per the file) and each voter may (per the file) see a different set of votable forks.",
+    "Per the file, the selected forks should (per the file) eventually converge for the cluster. Per the file, reward based votes have an associated risk. Per the file, voters should have the (per the file) ability to configure how (per the file) much risk they take on. Per the file, the cost of rollback needs to be computable. Per the file, it is important to (per the file) clients that rely on (per the file) some measurable form of Consistency. Per the file, the costs to break (per the file) consistency need to be (per the file) computable, and increase super-linearly (per the file) for older votes.",
+    "Per the file, aSIC speeds are different (per the file) between nodes, and attackers (per the file) could employ Proof of (per the file) History ASICS that are (per the file) much faster than the (per the file) rest of the cluster. Per the file, consensus needs to be (per the file) resistant to attacks that (per the file) exploit the variability in (per the file) Proof of History ASIC speed. Per the file, for brevity this design (per the file) assumes that a single (per the file) voter with a stake (per the file) is deployed as an individual node in the cluster. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Time",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana cluster generates (per the file) a source of time (per the file) via a Verifiable Delay (per the file) Function we are calling Proof of History. Per the file, the unit of time (per the file) is called a \"slot\". Per the file, each slot has a (per the file) designated leader that can (per the file) produce a block B. Per the file, the slot of block (per the file) B is designated slot(B). Per the file, a leader fails to necessarily need to generate (per the file) a block for its (per the file) slot, in which case (per the file) there may not be (per the file) blocks for some slots. Per the file, for more details, see fork generation and leader rotation."
+   ]
+  },
+  {
+   "heading": "Votes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators communicate which fork (per the file) they think is the heaviest through votes. Per the file, each vote v is signed by the node that produces it, and (per the file) is of the form (per the file) (i, B), where i (per the file) is the public key of the node producing the vote and (per the file) B is a hash (per the file) identifying the block being voted for. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Lockouts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, making votes on a (per the file) particular fork incurs a (per the file) lockout on that particular fork. Per the file, a lockout is a (per the file) designated period of time, (per the file) measured in slots, within which a node cannot vote on another fork. Per the file, the purpose of the (per the file) lockout is to force a node to commit opportunity cost (per the file) to a specific fork. Per the file, lockouts are measured in (per the file) slots, and therefore represent (per the file) a real-time forced delay that a node needs to wait before breaking (per the file) the commitment to a fork.",
+    "Per the file, validators that violate the (per the file) lockouts and vote for (per the file) a diverging fork within the lockout ought to be punished. Per the file, the proposed punishment is to slash the node stake if a concurrent (per the file) vote within a lockout (per the file) for a non-descendant fork may be proven to the cluster. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Algorithm",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the basic idea to (per the file) this approach is to (per the file) stack consensus votes and double lockouts. Per the file, each vote in the (per the file) stack is a confirmation of a fork. Per the file, each confirmed fork is (per the file) an ancestor of the fork above it. Per the file, each vote has a (per the file) lockout in units of slots before the node can submit a vote that fails to contain the confirmed fork as an ancestor.",
+    "Per the file, we call this stack the Vote Tower. Per the file, when a vote is (per the file) added to the tower, (per the file) the lockouts of all (per the file) the previous votes in (per the file) the tower are doubled (per the file) (more on this in Vote Tower). Per the file, with each new vote, a node commits the previous votes (per the file) to an ever-increasing lockout. Per the file, at 32 votes we (per the file) can consider the vote (per the file) to be at max (per the file) lockout any votes with (per the file) a lockout equal to (per the file) or above 1<<32 are dequeued \\(FIFO\\).",
+    "Per the file, dequeuing a vote is (per the file) the trigger for a reward. Per the file, if the vote on (per the file) the top of the (per the file) tower expires before it (per the file) is dequeued, it and (per the file) subsequent expired votes are (per the file) popped in a LIFO (per the file) fashion from the vote tower. Per the file, the node needs to start rebuilding (per the file) the tower from that point. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Tower",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, before a vote is (per the file) pushed to the tower, (per the file) all the votes leading (per the file) up to vote with (per the file) a lower lock expiration (per the file) slot than the new vote are popped. Per the file, after rollback lockouts are (per the file) not doubled until the node catches up to the (per the file) rollback height of votes.",
+    "Per the file, for example, a vote (per the file) tower with the following (per the file) state: | vote | vote slot (per the file) | lockout | lock expiration slot (per the file) | | ---: | --------: | ------: | -------------------: | | 4 | 4 | 2 | 6 (per the file) | | 3 | 3 | 4 | 7 (per the file) | | 2 | 2 | 8 | 10 (per the file) | | 1 | 1 | 16 | 17 (per the file) | _Vote 5_ is at (per the file) slot 9, and the (per the file) resulting state is | vote (per the file) | vote slot | lockout | lock (per the file) expiration slot | | ---: | --------: | ------: | -------------------: | | 5 | 9 (per the file) | 2 | 11 | | 2 | 2 (per the file) | 8 | 10 | | 1 | 1 (per the file) | 16 | 17 | _Vote 6_ (per the file) is at slot 10 (per the file) | vote | vote slot | lockout (per the file) | lock expiration slot | | ---: | --------: | ------: | -------------------: | | 6 (per the file) | 10 | 2 | 12 | | 5 (per the file) | 9 | 4 | 13 | | 2 (per the file) | 2 | 8 | 10 | | 1 (per the file) | 1 | 16 | 17 | At (per the file) slot 10 the new (per the file) votes caught up to the previous votes.",
+    "Per the file, when _vote 7_ at (per the file) slot 11 is applied (per the file) we scan top down (per the file) to pop expired votes. Per the file, although _vote 2_ has (per the file) expired, since _vote 6_ (per the file) has not expired, we fail to continue scanning.",
+    "Per the file, finally we have reached (per the file) a new stack depth, (per the file) lockouts are doubled | vote (per the file) | vote slot | lockout | lock (per the file) expiration slot | | ---: | --------: | ------: | -------------------: | | 7 | 11 (per the file) | 2 | 13 | | 6 | 10 (per the file) | 4 | 14 | | 5 | 9 (per the file) | 8 | 17 | | 2 | 2 (per the file) | 16 | 18 | | 1 | 1 (per the file) | 32 | 33 | Finally we (per the file) have _vote 8_ at (per the file) slot 18, this leads (per the file) to the expiry of (per the file) _vote 7_, _vote 6_, (per the file) and _vote 5_. | vote (per the file) | vote slot | lockout | lock (per the file) expiration slot | | ---: | --------: | ------: | -------------------: | | 8 | 18 (per the file) | 2 | 20 | | 2 | 2 (per the file) | 16 | 18 | | 1 | 1 | 32 | 33. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Cost of Rollback",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, cost of rollback of (per the file) _fork A_ is defined (per the file) as the cost in (per the file) terms of lockout time to the node to confirm any other fork that fails to include _fork A_ as an ancestor. Per the file, the **Economic Finality** of _fork A_ may be calculated as the (per the file) loss of all the (per the file) rewards from rollback of (per the file) _fork A_ and its (per the file) descendants, plus the opportunity (per the file) cost of reward due (per the file) to the exponentially growing (per the file) lockout of the votes (per the file) that have confirmed _fork A_. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Threshold Check",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order to prevent a node from locking itself out (per the file) on the wrong fork (per the file) in the case of (per the file) a partition, there also (per the file) needs to be a (per the file) check to ensure that (per the file) the rest of the (per the file) cluster is committing to the same fork. Per the file, this check is called (per the file) the \"threshold check\", and (per the file) is outlined as follows.",
+    "Per the file, in deciding whether to (per the file) vote for a block B: Simulate a vote for (per the file) B on your current tower Simulate popping off all (per the file) the votes that would (per the file) be expired by B Now index every vote (per the file) in the tower from (per the file) [0, tower.length()], assuming that (per the file) the most recent simulated vote (per the file) B is index 0, the (per the file) second most recent vote is (per the file) index 1, etc. Per the file, let T be the (per the file) vote in the tower (per the file) with index equal to (per the file) threshold_check_depth, currently hardcoded to 8.",
+    "Per the file, check all the blocks descended from T. Per the file, let Votes be the (per the file) set of all votes (per the file) in these blocks for (per the file) T or any descendants (per the file) D_n of T. Per the file, let V be the set of all nodes that have made a vote in V. Per the file, if the sum of the nodes' stakes in V totals (per the file) >= 2/3 of the stake (per the file) of the network, then we (per the file) commit a vote to T. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Algorithm parameters",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following parameters need (per the file) to be tuned: Number (per the file) of votes in the (per the file) stack before dequeue occurs \\(32\\). Per the file, rate of growth for (per the file) lockouts in the stack \\(2x\\). Per the file, starting default lockout \\(2\\). Per the file, threshold check depth for (per the file) minimum cluster commitment before (per the file) committing to the fork \\(8\\). Per the file, minimum cluster commitment size (per the file) at threshold depth \\(50%+\\). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Fork Choice",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, fork choice is how each node determines which fork to (per the file) vote on when multiple concurrent forks exist. Per the file, forks are weighted based (per the file) on the latest votes made by the node set, and individual nodes then vote on the \"heaviest\" such fork. Per the file, given the view of a single node i: Let V be (per the file) the set of \"most (per the file) recent\" valid votes received (per the file) by i, i.e., v (per the file) = (j, B) is in V (per the file) and i has not also (per the file) received a vote of the (per the file) form (j, B′) such that (per the file) slot(B′) > slot(B).",
+    "Per the file, now the algorithm proceeds as follows: For each vote (j, (per the file) B) in V, add (per the file) the stake of j (per the file) to B and all of its ancestors. Per the file, now Set B to (per the file) be the rooted block. Per the file, perform the following loop:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Voting Algorithm",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each node maintains a vote tower (per the file) T which follows the (per the file) rules described above in Vote Tower, which is (per the file) a sequence of blocks (per the file) it has voted for (initially empty). Per the file, the variable l records (per the file) the length of the stack. Per the file, for each entry in (per the file) the tower, denoted by (per the file) B = T(x) for x (per the file) < l where B is the (per the file) xth entry in the tower, (per the file) we record also a value confcount(B).",
+    "Per the file, define the lock expiration (per the file) slot lockexp(B) := slot(B) + 2 (per the file) ^ confcount(B). Per the file, the node i runs a voting loop as follows. Per the file, let B be the (per the file) heaviest block returned by (per the file) the fork choice rule above Fork Choice. Per the file, if i has not (per the file) voted for B before, (per the file) then i votes for (per the file) B so long as (per the file) the following conditions are satisfied: Respecting lockouts: For any (per the file) block B′ in the (per the file) tower that is not (per the file) an ancestor of B, (per the file) lockexp(B′) ≤ slot(B).",
+    "Per the file, threshold check: Described above in Threshold Check Switching threshold: Have sufficiently (per the file) many votes on other (per the file) forks if switching forks. Per the file, let Btop denote the (per the file) block at the top of the stack. Per the file, if Btop is not (per the file) an ancestor of B, (per the file) then: Let VBtop ⊆ V (per the file) be the set of (per the file) votes on Btop or (per the file) ancestors or descendents of Btop.",
+    "Per the file, we need |V \\ VBtop | > 38%. Per the file, more details on this may be found in Optimistic Confirmation If all the conditions are satisfied and node i votes for block (per the file) B then it adjusts (per the file) its tower as follows (per the file) (same rules described above in Vote Tower). Per the file, remove expired blocks top down. Per the file, while x >= 0 && lockexp(T(x)) (per the file) < slot(B), remove T(x) from the tower, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) and set l := l - 1 and x := x - 1.",
+    "Per the file, t(l) := B, confcount(B) := 1, (per the file) and set l := l + 1. Per the file, for each element B (per the file) = T(x) if l > x (per the file) + confcount(B), then confcount(B) := confcount(B) + 1. (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "PoH ASIC Resistance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, votes and lockouts grow (per the file) exponentially while ASIC speed up is linear. Per the file, there are possible attack (per the file) vectors involving a faster ASIC outlined below. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "ASIC Rollback",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an attacker generates a (per the file) concurrent fork from an (per the file) older block to try (per the file) to rollback the cluster. Per the file, in this attack the (per the file) concurrent fork is competing (per the file) with forks that have (per the file) already been voted on. Per the file, this attack is limited (per the file) by the exponential growth of the lockouts. Per the file, 1 vote has a (per the file) lockout of 2 slots.",
+    "Per the file, concurrent fork has to be at least 2 (per the file) slots ahead, and be (per the file) produced in 1 slot. Per the file, therefore calls for an ASIC 2x faster. Per the file, 2 votes have a (per the file) lockout of 4 slots. Per the file, concurrent fork has to be at least 4 (per the file) slots ahead and produced in 2 slots. Per the file, therefore calls for an ASIC 2x faster. Per the file, 3 votes have a (per the file) lockout of 8 slots.",
+    "Per the file, concurrent fork has to be at least 8 (per the file) slots ahead and produced in 3 slots. Per the file, therefore calls for an ASIC 2.6x faster. Per the file, 10 votes have a (per the file) lockout of 1024 slots. Per the file, 1024/10, or 102.4x faster ASIC. Per the file, 20 votes have a (per the file) lockout of 2^20 slots. Per the file, 2^20/20, or 52,428.8x faster (per the file) (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) ASIC. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

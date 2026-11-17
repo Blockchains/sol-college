@@ -1,0 +1,56 @@
+{
+ "slug": "cluster-test-framework",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "The file proposes the Cluster Test Framework \\(CTF\\). Per the file, cTF is a test harness that lets tests to execute against (per the file) a local, in-process cluster (per the file) or a deployed cluster. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the goal of CTF (per the file) is to provide a (per the file) framework for writing tests (per the file) independent of where and (per the file) how the cluster is deployed. Per the file, regressions may be captured in these (per the file) tests and the tests may be run against deployed (per the file) clusters to verify the deployment. Per the file, the focus of these tests ought to be on cluster stability, (per the file) consensus, fault tolerance, API stability.",
+    "Per the file, tests should verify a (per the file) single bug or scenario, and ought to be written with the (per the file) least amount of internal (per the file) plumbing exposed to the test. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Design Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, tests are provided an (per the file) entry point, which is (per the file) a contact_info::ContactInfo structure, and (per the file) a keypair that has already been funded. Per the file, each node in the (per the file) cluster is configured with a node::ValidatorConfig at boot time. Per the file, at boot time this (per the file) configuration specifies any extra (per the file) cluster configuration required for the test. Per the file, the cluster should boot (per the file) with the configuration when (per the file) it is run in-process (per the file) or in a data center. Per the file, once booted, the test (per the file) will discover the cluster (per the file) through a gossip entry (per the file) point and configure any runtime behaviors via node RPC. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Test Interface",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each CTF test starts (per the file) with an opaque entry (per the file) point and a funded keypair. Per the file, the test should not (per the file) depend on how the (per the file) cluster is deployed, and ought to be able to exercise (per the file) all the cluster functionality (per the file) through the publicly available interfaces."
+   ]
+  },
+  {
+   "heading": "Cluster Discovery",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at test start, the (per the file) cluster has already been (per the file) established and is fully connected. Per the file, the test can discover (per the file) most of the available (per the file) nodes over a few second. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Cluster Configuration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to enable specific scenarios, (per the file) the cluster needs to (per the file) be booted with special configurations. Per the file, these configurations may be captured in node::ValidatorConfig. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "How to design a new test",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for example, there is (per the file) a bug that shows (per the file) that the cluster fails (per the file) when it is flooded (per the file) with invalid advertised gossip nodes. Per the file, our gossip library and (per the file) protocol may change, but (per the file) the cluster still needs (per the file) to stay resilient to (per the file) floods of invalid advertised gossip nodes. Per the file, configure the RPC service: Wire the RPCs and (per the file) write a new test:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

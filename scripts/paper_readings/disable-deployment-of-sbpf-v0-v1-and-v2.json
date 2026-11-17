@@ -1,0 +1,77 @@
+{
+ "slug": "disable-deployment-of-sbpf-v0-v1-and-v2",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, disable deployment of SBPFv0, SBPFv1 and SBPFv2. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the number of programs (per the file) using these older SBPF (per the file) versions will decrease over (per the file) time as dApp developers (per the file) will have to target (per the file) at least SBPFv3 for re-deployments. Per the file, this will eventually allow (per the file) us to deprecate the (per the file) execution of these SBPF (per the file) versions after their existence (per the file) (and thus also usage) (per the file) drops to near zero. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: SIMD-0178 SIMD-0189 SIMD-0377 which together form SBPFv3. Per the file, thus, there is to be a new valid (per the file) deployment target before we (per the file) deactivate the older ones. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after the activation of (per the file) the associated feature key a node must fail to (re-)deploy (per the file) or finalize programs with any (per the file) SBPF version older than SBPFv3. Per the file, currently loader-v3 is the (per the file) only loader with program management (per the file) enabled, thus this means for (per the file) each of the following loader-v3 (per the file) instructions: deployment: DeployWithMaxDataLen redeployment: Upgrade finalization: (per the file) SetAuthority and SetAuthorityChecked with no new (per the file) authority must return InstructionError::InvalidAccountData when the (per the file) ELF (in the buffer acct for re-/deployments and in the programdata acct for finalization) contains a SBPFv0, SBPFv1 or SBPFv2 (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) program.",
+    "Per the file, while InitializeBuffer, Write, ExtendProgram (per the file) and Close remain unaffected. Per the file, in order not to (per the file) interfere with other SIMDs, (per the file) all core program migrations (per the file) (SIMD-0418) and upgrades (SIMD-0495) (per the file) are exempt from this. Per the file, these core programs, while (per the file) owned by loader-v3, are (per the file) not using the program management (per the file) instructions of loader-v3 anyway."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, not deprecating some or (per the file) all older SBPF versions."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dApp developers using outdated (per the file) toolchains will have to (per the file) update them and adjust (per the file) their programs before they (per the file) can re-/deploy or finalize them. Per the file, furthermore, testing frameworks and (per the file) mock ups will have (per the file) to be adapted to (per the file) either deactivate this feature (per the file) or bypass the entire deployment so as to continue to test older SBPF versions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Currently Deployed SBPF Versions per Loader (Mainnet)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, analysis performed using Blueshift's (per the file) [program-sync] tool. | Loader | SBPFv0 | SBPFv1 (per the file) | SBPFv2 | | ---------------------- | ------ | ------ | ------ | | Loader-v1 (Finalized) | 136 | 0 | 0 (per the file) | | Loader-v2 (Finalized) | 315 | 0 | 0 | | Loader-v3 (Finalized) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | 422 | 0 | 0 | | Loader-v3 (Upgradable) | 17279 | 12 | 41 | [program-sync]: https://github.com/blueshift-gg/program-sync. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, execution of SBPFv0, SBPFv1 (per the file) and SBPFv2 will remain supported for now. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

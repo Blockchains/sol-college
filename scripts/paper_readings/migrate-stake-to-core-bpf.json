@@ -1,0 +1,63 @@
+{
+ "slug": "migrate-stake-to-core-bpf",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrate the Stake program to Core BPF. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bPF programs offer less (per the file) complexity than native programs for other clients, including Firedancer, since developers will (per the file) no longer have to (per the file) keep up with program (per the file) changes in their runtime implementations. Per the file, instead, the program can (per the file) just be updated once. Per the file, in this spirit, the Stake program ought to be migrated to Core BPF."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Stake program could (per the file) instead remain a builtin program. Per the file, this would mean each node client implementation would have (per the file) to build and maintain (per the file) this program alongside their (per the file) runtime, including any future changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Stake program is to be reimplemented so as to be compiled to (per the file) BPF and executed by the BPF loader. Per the file, the reimplemented program's ABI (per the file) will exactly match that of the original. Per the file, the reimplemented program's functionality (per the file) will exactly match that of (per the file) the original, differing only in compute usage. Per the file, instead it will have (per the file) dynamic compute usage based (per the file) on the VM's compute unit meter.",
+    "Per the file, the program is to be migrated to Core (per the file) BPF using the procedure (per the file) outlined in SIMD 0088. Per the file, the program will have no upgrade authority. Per the file, if changes are required, (per the file) for essential network operations, the program is to be updated using feature-gates."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validator client teams are (per the file) no longer required to (per the file) implement and maintain the (per the file) Stake program within their runtime. Per the file, all node client teams can work (per the file) to maintain the single Stake program together."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the program's reimplementation poses (per the file) no new security considerations compared (per the file) to the original builtin version. Per the file, the greatest security concern (per the file) is a mistake in the reimplementation."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Core BPF implementation (per the file) is 100% backwards compatible (per the file) with the original builtin implementation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

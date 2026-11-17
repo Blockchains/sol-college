@@ -1,0 +1,25 @@
+{
+ "slug": "slashing-rules",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, unlike Proof of Work (per the file) \\(PoW\\) where off-chain capital (per the file) expenses are already deployed at (per the file) the time of block construction/voting, (per the file) PoS systems require capital-at-risk to prevent (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) a logical/optimal strategy of multiple chain voting. Per the file, we intend to implement (per the file) slashing rules which, if (per the file) broken, result some amount of the offending node's deposited stake to be (per the file) removed from circulation.",
+    "Per the file, given the ordering properties (per the file) of the PoH data (per the file) structure, we believe we (per the file) can simplify our slashing (per the file) rules to the level (per the file) of a voting lockout (per the file) time assigned per vote. Per the file, each vote has an (per the file) associated lockout time \\(PoH (per the file) duration\\) that represents a (per the file) duration by any additional vote from that node has to be in a PoH (per the file) that contains the original (per the file) vote, or a portion of that node's stake is slashable.",
+    "Per the file, this duration time is (per the file) a function of the (per the file) initial vote PoH count (per the file) and all additional vote PoH counts. Per the file, it will likely take the form: Where PoHi is the (per the file) height of the vote (per the file) that the lockout is (per the file) to be applied to (per the file) and PoHj is the (per the file) height of the current (per the file) vote on the same fork.",
+    "Per the file, if the node submits a vote on (per the file) a different PoH fork (per the file) on any PoHk where (per the file) k &gt; j &gt; (per the file) i and PoHk &lt; (per the file) Lockout\\(PoHi, PoHj\\), then a (per the file) portion of that node's stake is at risk of (per the file) being slashed.",
+    "Per the file, in addition to the (per the file) functional form lockout described (per the file) above, early implementation may (per the file) be a numerical approximation (per the file) based on a First (per the file) In, First Out \\(FIFO\\) (per the file) data structure and the (per the file) following logic: FIFO queue (per the file) holding 32 votes per active node new votes are pushed (per the file) on top of queue (per the file) \\(push_front\\) expired votes are (per the file) popped off top \\(pop_front\\) as (per the file) votes are pushed into the queue, (per the file) the lockout of each queued vote (per the file) doubles votes are removed from back (per the file) of queue if queue.len() > 32 the (per the file) earliest and latest height that has been (per the file) removed from the back of the queue ought to be stored It is likely that a (per the file) reward is to be offered as a % of the slashed (per the file) amount to any node that submits proof (per the file) of this slashing condition being violated to (per the file) the PoH. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Partial Slashing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in the schema described (per the file) so far, when a node votes on a given (per the file) PoH stream, they are (per the file) committing themselves to that (per the file) fork for a time (per the file) determined by the vote lockout. Per the file, an open question is whether nodes is to be hesitant to begin (per the file) voting on an available (per the file) fork if the penalties (per the file) are perceived too harsh (per the file) for an honest mistake or flipped bit.",
+    "Per the file, one way to address (per the file) this concern would be (per the file) a partial slashing design (per the file) that results in a (per the file) slashable amount as a function of either: the fraction of nodes, out of the total node pool, that were also (per the file) slashed during the same (per the file) time period \\(ala Casper\\) the amount of time (per the file) since the vote was (per the file) cast \\(e.g. a linearly (per the file) increasing % of total deposited as (per the file) slashable amount over time\\), or both. Per the file, this is an area currently under exploration. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,53 @@
+{
+ "slug": "validator-timestamp-oracle",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, third-party users of Solana (per the file) sometimes need to know the (per the file) real-world time a block was (per the file) produced, generally to meet compliance requirements (per the file) for external auditors or law enforcement. The file describes a node timestamp oracle that would (per the file) allow a Solana cluster (per the file) to satisfy this need. Per the file, the general outline of (per the file) the proposed implementation is (per the file) as follows: At regular intervals, each node records its observed time (per the file) for a known slot (per the file) on-chain (via a Timestamp (per the file) added to a slot Vote) (per the file) A client can request a (per the file) block time for a rooted (per the file) block using the getBlockTime RPC method.",
+    "Per the file, when a client requests (per the file) a timestamp for block N: A node determines a \"cluster\" timestamp (per the file) for a recent timestamped (per the file) slot before block N (per the file) by observing all the (per the file) timestamped Vote instructions recorded (per the file) on the ledger that (per the file) reference that slot, and (per the file) determining the stake-weighted mean timestamp.",
+    "Per the file, this recent mean timestamp (per the file) is then used to (per the file) calculate the timestamp of (per the file) block N using the (per the file) cluster's established slot duration Requirements: Any node replaying the ledger in the (per the file) future must come up with (per the file) the same time for every (per the file) block since genesis Estimated block (per the file) times should not drift more (per the file) than an hour or so (per the file) before resolving to real-world (oracle) (per the file) data The block times are not (per the file) controlled by a single centralized oracle, (per the file) but ideally based on a function (per the file) that uses inputs from all nodes Each node must maintain a timestamp oracle The (per the file) same implementation can provide a timestamp (per the file) estimate for a not-yet-rooted block.",
+    "Per the file, however, because the most (per the file) recent timestamped slot may (per the file) or may not be (per the file) rooted yet, this timestamp (per the file) would be unstable (potentially failing requirement 1). Per the file, initial implementation will target (per the file) rooted blocks, but if (per the file) there is a use (per the file) case for recent-block timestamping, it is to be trivial to add the (per the file) RPC apis in the future."
+   ]
+  },
+  {
+   "heading": "Recording Time",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at regular intervals as (per the file) it is voting on (per the file) a particular slot, each node records its observed time (per the file) by including a timestamp (per the file) in its Vote instruction submission. Per the file, the corresponding slot for (per the file) the timestamp is the (per the file) newest Slot in the (per the file) Vote vector (Vote::slots.iter().max()). Per the file, it is signed by the node's identity keypair as a usual Vote. Per the file, in order to enable (per the file) this reporting, the Vote (per the file) struct needs to be (per the file) extended to include a (per the file) timestamp field, timestamp: Option<UnixTimestamp>, which is to be set to None in most Votes.",
+    "Per the file, as of https://github.com/solana-labs/solana/pull/10630, nodes (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) submit a timestamp every vote. Per the file, this makes possible implementation of a block (per the file) time caching service that lets nodes to calculate the (per the file) estimated timestamp immediately after (per the file) the block is rooted, (per the file) and cache that value in Blockstore. Per the file, this supplies persistent data and quick (per the file) queries, while still meeting requirement 1) above. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Accounts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a node's vote acct will hold its most recent (per the file) slot-timestamp in VoteState. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the on-chain Vote program (per the file) needs to be extended to (per the file) process a timestamp sent with (per the file) a Vote instruction from nodes. Per the file, in addition to its (per the file) current process_vote functionality (including (per the file) loading the correct Vote acct and verifying that the tx signer is the expected node), this process needs to compare (per the file) the timestamp and corresponding slot (per the file) to the currently stored values (per the file) to verify that they are (per the file) both monotonically increasing, and store (per the file) the new slot and timestamp in the acct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Calculating Stake-Weighted Mean Timestamp",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order to calculate (per the file) the estimated timestamp for (per the file) a particular block, a node first needs to identify (per the file) the most recently timestamped slot: Then the node needs to gather all Vote WithTimestamp txs from the ledger that (per the file) reference that slot, using (per the file) Blockstore::get_slot_entries(). Per the file, as these txs could have taken some (per the file) time to reach and (per the file) be processed by the leader, the node needs to scan several (per the file) completed blocks after the (per the file) timestamp_slot to get a (per the file) reasonable set of Timestamps.",
+    "Per the file, the exact number of (per the file) slots will need to (per the file) be tuned: More slots (per the file) will enable greater cluster (per the file) participation and more timestamp (per the file) datapoints; fewer slots will (per the file) speed how long timestamp filtering takes. Per the file, from this collection of txs, the node calculates the stake-weighted mean (per the file) timestamp, cross-referencing the epoch stakes (per the file) from staking_utils::staked_nodes_at_epoch(). Per the file, any node replaying the ledger should (per the file) derive the same stake-weighted (per the file) mean timestamp by processing the Timestamp txs from the same number of slots. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Calculating Estimated Time for a Particular Block",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, once the mean timestamp (per the file) for a known slot (per the file) is calculated, it is (per the file) trivial to calculate the (per the file) estimated timestamp for subsequent block N: where block_n_slot_offset is (per the file) the difference between the slot of block (per the file) N and the timestamp_slot, and slot_duration is (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) derived from the cluster's slots_per_year stored in each Bank. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

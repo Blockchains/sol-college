@@ -1,0 +1,80 @@
+{
+ "slug": "pass-abiv1-input-metadata-via-registers-r3r5",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, provide additional input metadata (per the file) in VM registers 3 (per the file) (r3), 4 (r4) and (per the file) 5 (r5), allowing programs (per the file) to reconstruct the instruction data and accts slices without calculating offsets (per the file) or loading their lengths. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, once [SIMD-0449] is activated, (per the file) a slice of acct pointers is to be serialized into the program input. Per the file, this eliminates the need to parse the accts section, but programs must (per the file) still calculate the offset (per the file) from the instruction data (per the file) pointer to the start of the accts slice. Per the file, providing additional metadata representing (per the file) the instruction data length, accts slice length, and accts slice offset in VM (per the file) registers 3, 4, and (per the file) 5 will allow programs (per the file) to reconstruct the instruction data and accts slices without calculating offsets (per the file) or loading their lengths. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on The, SIMD-0449, Direct, Account, Pointers, Program, Input, Defines, 0449. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ABIv1 program entrypoint (per the file) has 5 registers available. Per the file, the first two registers (per the file) (r1 and r2) are (per the file) already used for the (per the file) input region pointer and (per the file) the pointer to the (per the file) instruction data section, respectively.",
+    "Per the file, after this proposal, all (per the file) VM registers will provide (per the file) the following information: r1: (per the file) Input region pointer (existing (per the file) behavior) r2: Pointer to (per the file) instruction data section (existing (per the file) behavior) r3: instruction data (per the file) length **(new)** r4: pointer to the accts slice **(new)** r5: number of accts **(new)** The new register (per the file) assignments are available to (per the file) all ABIv1 programs, under (per the file) all loaders, regardless of (per the file) whether or not the value is read. Per the file, these registers currently contain (per the file) uninitialized data at the program entrypoint.",
+    "Per the file, the deprecated loader (ABIv0) (per the file) is not supported and (per the file) the registers will not (per the file) be initialized for ABIv0 (per the file) programs. **New register details:** (per the file) The value in r3 (per the file) is a little-endian 64-bit (per the file) unsigned integer (8 bytes) representing the (per the file) length of the instruction data section (per the file) in bytes. Per the file, the pointer value in (per the file) r4 is the address (per the file) of the start of the accts slice in the input region.",
+    "Per the file, the address is stored (per the file) as a little-endian 64-bit (per the file) pointer (8 bytes). Per the file, the value in r5 (per the file) is a little-endian 64-bit (per the file) unsigned integer (8 bytes) representing the (per the file) number of accts in the accts slice, including duplicate accts. Per the file, this value is equivalent (per the file) to the number of accts in the serialized input (per the file) region at the start (per the file) of the input region (r1). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-------------------------------------| | Transaction Execution (Runtime) (per the file) | | | Virtual Machine | New register (per the file) assignments | | Block Packing | | | Consensus (per the file) | | | Gossip | | | Turbine | | | Snapshots | | | On-Chain (per the file) Core BPF Programs | | | Other (please describe) |. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Do nothing**: Leave the (per the file) current implementation as is, (per the file) which means that programs (per the file) will need to manually (per the file) parse the input region (per the file) to extract the instruction data length, accts slice pointer, and number of accts. Per the file, this approach is less (per the file) efficient and, considering the (per the file) effort required to implement this change, it fails to seem reasonable to leave (per the file) the current implementation as is. **Modify serialization layout**: Change (per the file) the serialization layout to (per the file) place the instruction data length, accts slice pointer, and number of accts at the start of the input region.",
+    "Per the file, this would allow programs (per the file) to read these values (per the file) directly from the input region. Per the file, however, this approach would (per the file) require a breaking change (per the file) to the serialization format, which is impractical. Per the file, additionally, ABIv2 will change (per the file) the serialization layout and (per the file) simplify the input region, (per the file) so the optimization proposed supplies an immediate benefit and fails to conflict with the future ABIv2 changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on-chain programs is to be able to access the (per the file) instruction data length, accts slice pointer, and number of accts directly from registers r3, r4, (per the file) and r5, respectively. Per the file, this will simplify program (per the file) logic and improve performance (per the file) by eliminating the need (per the file) to parse the input (per the file) region for this information. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs should not currently (per the file) rely on the values (per the file) in r3–r5, which are (per the file) uninitialized at the program entrypoint. Per the file, an analysis using program-sync (with PR #11) flagged three programs: 4rsQkxtHoEHTzvwoUNt6FTCZjygNemEPZqz9Xeucg3fh (per the file) uses uninitialized values in r3, (per the file) r4 and r5, but always (per the file) fails at the fourth instruction (per the file) of the program, so it (per the file) is not an executable program (per the file) in practice; GdY4puYdZiEfk8HCX7L9kJfzzjc3xSxXrVjKv2vphfDn and fastC7gqs2WUXgcyNna2BZAe9mte4zcTGprv3mv18N3 (per the file) are false positives, since their (per the file) entrypoints contain a callx and (per the file) the analyzer assumes that the (per the file) callee consumes all registers, but (per the file) the callee never touches uninitialized registers."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is only (per the file) backwards compatible for programs that currently fail to read from r3, r4, (per the file) or r5 at the program entrypoint. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

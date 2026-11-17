@@ -1,0 +1,29 @@
+{
+ "slug": "read-only-accounts",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, this design covers the (per the file) handling of readonly and writable accts in the runtime. Per the file, multiple txs that modify the same acct has to be processed serially so (per the file) that they are always (per the file) replayed in the same order. Per the file, otherwise, this could introduce (per the file) non-determinism to the ledger. Per the file, some txs, however, only need to (per the file) read, and not modify, the data specifically accts. Per the file, multiple txs that only read the same acct may be processed in parallel, since replay order fails to matter, providing a performance benefit.",
+    "Per the file, in order to identify readonly accts, the tx MessageHeader structure contains num_readonly_signed_accounts (per the file) and num_readonly_unsigned_accounts. Per the file, instruction program_ids are included in the acct vector as readonly, unsigned accts, since executable accts likewise cannot be modified during instruction processing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime handling",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, runtime tx processing rules need to be updated slightly. Per the file, programs still can't write or spend accts that they fail to own. Per the file, but new runtime rules ensure that readonly accts cannot be modified, even (per the file) by the programs that own them. Per the file, readonly accts have the following property: (per the file) Read-only access to all acct fields, including lamports (cannot be (per the file) credited or debited), and acct data Instructions that credit, debit, (per the file) or modify the readonly acct will fail. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Account Lock Optimizations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Accounts module keeps (per the file) track of current locked accts in the runtime, which separates readonly accts from the writable accts. Per the file, the default acct lock gives an acct the \"writable\" designation, and (per the file) can only be accessed (per the file) by one processing thread at one time. Per the file, readonly accts are locked by a (per the file) separate mechanism, allowing for parallel reads. Per the file, although not yet implemented, readonly accts could be cached in (per the file) memory and shared between (per the file) all the threads executing txs.",
+    "Per the file, an ideal design would (per the file) hold this cache while a readonly acct is referenced by any tx moving through the runtime, (per the file) and release the cache when the last tx exits the runtime. Per the file, readonly accts could also be passed (per the file) into the processor as (per the file) references, saving an extra copy. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}
