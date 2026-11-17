@@ -556,9 +556,11 @@ import solana_library as _solib
 LIBRARY_PATHS=_solib.write(S, page, CSS, LIVE, lesson_of, functional_of, readiness, limit_of, one_line)
 import standard as _standard
 STANDARD_PATHS=_standard.write(S, page, CSS)
+import events as _events
+EVENT_PATHS=_events.write(S, page, CSS)
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
-NAV='''<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/articles/">Articles</a><details><summary>More</summary><div><a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/degen/">The Degen</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></div></details></nav>'''
+NAV='''<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/events/">Events</a><a href="/articles/">Articles</a><details><summary>More</summary><div><a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/degen/">The Degen</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></div></details></nav>'''
 TOP_CSS='''<style id=sc-top>.top{flex-wrap:nowrap;gap:8px 16px;align-items:center;padding:8px clamp(12px,3vw,32px);min-height:52px}.brand{font-size:16px}.logo{width:22px;height:22px}.top nav{flex-wrap:nowrap;align-items:center;gap:2px}.top nav a,.top nav summary{font-size:14px;font-weight:600;padding:6px 8px;border-radius:8px}.top nav details{position:relative}.top nav summary{list-style:none;cursor:pointer;color:var(--mut)}.top nav summary::-webkit-details-marker{display:none}.top nav summary::after{content:" ▾";font-size:.7em}.top nav details>div{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:210px;padding:6px;display:flex;flex-direction:column;background:#14122a;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.top nav details a{white-space:nowrap}@media(max-width:600px){.top nav a,.top nav summary{padding:6px}}</style>'''
 for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if '/dapps/' in fp or '/legacy/' in fp: continue
@@ -579,7 +581,7 @@ for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if t!=o: open(fp,'w').write(t)
 sm=f'{S}/sitemap.xml'
 if os.path.exists(sm):
-  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS+ARTICLE_PATHS+JOURNAL_PATHS+LIBRARY_PATHS+STANDARD_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
+  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS+ARTICLE_PATHS+JOURNAL_PATHS+LIBRARY_PATHS+STANDARD_PATHS+EVENT_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])
