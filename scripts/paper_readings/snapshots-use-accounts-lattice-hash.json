@@ -1,0 +1,62 @@
+{
+ "slug": "snapshots-use-accounts-lattice-hash",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, use the **Accounts Lattice (per the file) Hash** as the **Snapshot Hash**, which makes possible removing the merkle-based accts hash calculation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file follows on from SIMD-215, (per the file) and shares its motivation: > The (per the file) main goal is to scale (per the file) Solana to billions accts When snapshots are taken, they (per the file) contain a **Snapshot Hash**. Per the file, this hash is based (per the file) on the merkle-based hash (per the file) of the total acct state. Per the file, as established in SIMD-215, (per the file) this merkle-based hashing of all accts hinders scaling. Per the file, and since SIMD-215 added (per the file) the **Accounts Lattice Hash**, which (per the file) is a hash of the total acct state, the merkle-based hash of all accts used in the current **Snapshot Hash** (per the file) is redundant work. Per the file, the **Snapshot Hash** may be updated to use (per the file) the **Accounts Lattice Hash** instead. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when constructing the **Snapshot (per the file) Hash**, the merkle-based hash of all accts is to be replaced by the **Accounts Lattice Hash**. Per the file, and since SIMD-215 removes (per the file) the **Epoch Accounts Hash**, the (per the file) **Snapshot Hash** becomes: Specifically, the **Snapshot Hash** for (per the file) slot S is the 32-byte (per the file) blake3 of the **Accounts Lattice Hash** (per the file) at slot S. Per the file, note that SIMD-215 is (per the file) a prerequisite for this SIMD. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, only nodes is to be impacted, and their (per the file) performance will improve since (per the file) the merkle-based hashing of all accts will no longer be performed."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, snapshots will have a (per the file) new hash, so consumers (per the file) of snapshots will need (per the file) to know which method (per the file) to use for hash validation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,134 @@
+{
+ "slug": "vote-account-v4",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a new version of vote acct state to support alpenglow, (per the file) block revenue distribution, and commission improvements. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new update for (per the file) the vote program is (per the file) proposed to improve authorized voter bookkeeping and also initialize state fields that will allow nodes to set commission rates and collector accts for different revenue sources in the future. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Authorized voter bookkeeping",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, over 40% of vote (per the file) state size is reserved (per the file) for tracking a history (per the file) of 32 prior authorized (per the file) voters for the vote acct in the prior_voters field. Per the file, having such a long (per the file) history of prior voters (per the file) is not useful, tracking (per the file) the most recent previous (per the file) epoch's voter is sufficient (per the file) for features like slashing and (per the file) authorized voter migration and may be stored in the authorized_voters (per the file) field instead.",
+    "Per the file, the authorized_voters field doesn't (per the file) store the voter for the previous (per the file) epoch so it's impossible to have (per the file) a transition epoch where both the previous (per the file) and newly assigned voter can both sign (per the file) votes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Revenue Collection Customization",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is only one (per the file) commission rate stored in vote acct state but nodes want to be able (per the file) to use different commission (per the file) rates for different income (per the file) streams like block revenue. Per the file, it's not possible to customize which accts income is collected into. Per the file, currently all block fee (per the file) revenue is collected into the node identity acct which cannot be a (per the file) cold wallet since the (per the file) identity needs to sign (per the file) a lot of messages (per the file) for various network protocols (per the file) used in Solana like (per the file) turbine, gossip, and QUIC."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Reuse vote commission",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, vote accts already allow nodes to set a commission (per the file) rate for inflation rewards (per the file) and so it's not (per the file) unreasonable to expect that this (per the file) commission rate could also be (per the file) used to distribute block revenue. Per the file, however, some nodes have expressed a desire (per the file) to be able to (per the file) tune revenue streams independently."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, block Revenue Commission: The (per the file) commission rate that determines (per the file) how much of block (per the file) base fee and priority (per the file) fee revenue is collected by the node before distributing remaining funds to stake delegators. Per the file, previously 100% of block (per the file) revenue was distributed to the node identity acct. Per the file, inflation Rewards Commission: The (per the file) commission rate that determines (per the file) how much of stake (per the file) inflation rewards are collected by the node before distributing the remaining (per the file) rewards to stake delegators.",
+    "Per the file, previously referred to as (per the file) simply the \"commission\" since (per the file) there was no need (per the file) to differentiate from other types of commission. Per the file, block Revenue Commission Collector: The acct used to collect commissioned block revenue for nodes. Per the file, previously collected by default into the node identity acct. Per the file, inflation Rewards Commission Collector: The acct used to collect commissioned inflation rewards for nodes. Per the file, previously collected by default into the vote acct."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, all block revenue, including both tx base fees and priority (per the file) fees, is collected into a node's node id acct. The file details changes to the vote acct state that will allow nodes to specify how different (per the file) sources of income are (per the file) collected in future SIMD's. The file also updates the bookkeeping (per the file) for authorized voters in the vote acct state. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Account",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new version of vote state is to be introduced with the (per the file) enum discriminant value of 3u32 which is to be little endian encoded (per the file) in the first 4 bytes of acct data. Per the file, this new version of (per the file) vote state will include (per the file) new fields for setting (per the file) the commission and collector acct for the following sources of node income: inflation rewards and block revenue. Per the file, it will also remove (per the file) the prior_voters field. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all vote instructions MUST (per the file) be updated to support deserializing v4 vote accts. Per the file, all vote instructions besides (per the file) InitializeAccount MUST be updated to deserialize vote accts in the following order: Deserialize versioned vote state Check for initialization or return InstructionError::UninitializedAccount Convert to v4 with the (per the file) following default values for the new fields: If a modified vote acct's size is smaller than 3762 (per the file) bytes (only possible for vote state (per the file) versions v2 and earlier), first resize the acct to 3762 bytes before updating the acct data.",
+    "Per the file, then check whether the resulting acct is rent exempt or (per the file) not and return an (per the file) AccountNotRentExempt instruction error if (per the file) not rent exempt after the resize. Per the file, this differs from the (per the file) prior vote program implementation (per the file) which falls back to (per the file) store vote state as v2 if the acct would not be rent (per the file) exempt after its data length was increased. Per the file, initializeAccount The required size for vote accts previously set to 3762 (per the file) bytes MUST remain unchanged (per the file) despite freeing up space (per the file) with the removal of (per the file) the prior voters field.",
+    "Per the file, keeping the same size (per the file) requirement simplifies this proposal (per the file) and leaves extra space for future fields. Per the file, note that a v4 vote acct is ALWAYS considered initialized, (per the file) because unlike other vote (per the file) state versions, it's never (per the file) stored with uninitialized state. Per the file, updateCommission The existing UpdateCommission (per the file) instruction will continue to (per the file) only update the inflation (per the file) rewards commission in integer percentage values.",
+    "Per the file, the new commission value (per the file) MUST be multiplied by (per the file) 100 before being checked (per the file) for commission or increases (per the file) and before being stored (per the file) in the new inflation_rewards_commission_bps (per the file) field.",
+    "Per the file, updateValidatorIdentity The existing UpdateValidatorIdentity (per the file) instruction MUST also set (per the file) the block_revenue_collector field to (per the file) the new node pubkey value in (per the file) addition to the node_pubkey field to (per the file) keep the fields in sync until [SIMD-0232] (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) adds the ability to set the field explicitly. [SIMD-0232]: https://github.com/solana-foundation/solana-improvement-documents/pull/232 Authorize, AuthorizeChecked, AuthorizeWithSeed, AuthorizeCheckedWithSeed Existing authorize instructions is to be processed differently when setting new authorized voters.",
+    "Per the file, rather than purging authorized (per the file) voter entries from the (per the file) authorized_voters field that correspond (per the file) to epochs less than the (per the file) current epoch, only purge entries (per the file) less than the previous epoch (per the file) (current epoch - 1). Per the file, this will mean that (per the file) the authorized_voters field can (per the file) now hold up to 4 (per the file) entries for the epochs in (per the file) the range [current_epoch - 1, current_epoch (per the file) + 2].",
+    "Per the file, keeping the authorized voter (per the file) around from the previous (per the file) epoch will allow the (per the file) protocol to accept votes (per the file) from both the current (per the file) and previous authorized voters (per the file) to make voter transitions smoother. Per the file, additionally, since the prior_voters (per the file) field is removed from vote (per the file) state v4, there's no need (per the file) to read or modify this field (per the file) when processing authorize instructions.",
+    "Per the file, withdraw The existing withdraw (per the file) instruction MUST be modified (per the file) to completely zero vote acct data for fully withdrawn vote accts. Per the file, the old behavior partially zeroed the acct data following the vote (per the file) state version discriminant and is less intuitive. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Stake Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the builtin stake program reads vote acct state when creating, delegating, and deactivating stake accts. Per the file, the program MUST be (per the file) updated to support v4 vote accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, commission rates will now (per the file) be stored in basis (per the file) points but the pre-existing (per the file) UpdateCommission instruction only supports integer (per the file) percentage commission values (higher precision (per the file) values cannot be set until (per the file) [SIMD-0291] is adopted). Per the file, so from the runtime's (per the file) perspective, commission rates will remain (per the file) limited to multiples of 100 (per the file) basis points, equivalent to integer percentages. Per the file, therefore, commission calculations should (per the file) continue to use integer (per the file) percentage values for now. The file’s claim in this section turns on Per, MUST, SIMD-0291, 0291, 291. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Other",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the tower serialization format (per the file) MUST remain unchanged and (per the file) continue serializing tower vote (per the file) state as vote state v2. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on Per, SIMD, SIMD-0123, 0123, 123. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, existing programs that read (per the file) vote state will need (per the file) to be updated to support the latest acct state version. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

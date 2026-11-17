@@ -1,0 +1,63 @@
+{
+ "slug": "removes-accounts-delta-hash",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, with the introduction of (per the file) the **Accounts Lattice Hash** (per the file) (SIMD-215), the merkle-based **Accounts (per the file) Delta Hash** is redundant and may be removed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file follows on from SIMD-215, (per the file) and shares its motivation: > The (per the file) main goal is to scale (per the file) Solana to billions accts When a block is done (per the file) being processed, it is frozen. Per the file, the bank hash is (per the file) calculated during the freezing (per the file) process, and includes calculating (per the file) the **Accounts Delta Hash**. Per the file, the **Accounts Delta Hash** (per the file) is the merkle-based hash of the accts modified in this block.",
+    "Per the file, as established in SIMD-215, (per the file) merkle-based hashing of accts hinders scaling. Per the file, and since SIMD-215 added (per the file) the **Accounts Lattice Hash**, which (per the file) is a hash of the total acct state, the merkle-based hash of (per the file) only the accts modified per block is redundant. Per the file, therefore the **Accounts Delta Hash** may be removed from the bank hash entirely. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, remove the **Accounts Delta (per the file) Hash** from the **Bank Hash**. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, only nodes is to be impacted, and their (per the file) performance will improve since (per the file) the merkle-based hashing of modified accts per block will no longer be performed."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this changes the bank (per the file) hash, thus changing consensus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

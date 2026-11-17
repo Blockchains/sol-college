@@ -1,0 +1,80 @@
+{
+ "slug": "hash-validation-in-program-upgrades",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file adds a hash validation (per the file) step to native and (per the file) Loader v2 to v3 (per the file) program migrations and Core BPF program upgrades. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, program migrations and upgrades (per the file) via a feature gate (per the file) are extremely sensitive processes that has to be handled carefully. Per the file, although a migration or (per the file) upgrade can only be (per the file) activated via a feature (per the file) gate, there is currently (per the file) no validation to ensure (per the file) that the contents of the buffer acct match the expected program data."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: **[SIMD-0088]: (per the file) Enable Core BPF Programs** Defines (per the file) the procedure for migrating native (per the file) programs to Core BPF. [SIMD-0088]: (per the file) https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0088-enable-core-bpf-programs.md **[SIMD-0418]: Enable Loader v2 to (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) v3 Program Migrations** Defines the procedure for migrating Loader v2 programs to Loader v3. [SIMD-0418]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0418-enable-loader-v2-to-v3-program-migrations.md **[SIMD-0495]: Enable Core BPF Upgrade Procedure** Defines the procedure for upgrading Core BPF programs. [SIMD-0495]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0495-core-bpf-upgrade-procedure.md. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the procedures for migrating (per the file) native programs to Core (per the file) BPF (SIMD-0088), migrating Loader (per the file) v2 programs to Loader v3 (per the file) (SIMD-0418), and upgrading Core BPF (per the file) programs (SIMD-0495) involve creating a buffer acct with the contents of the program. Per the file, the runtime then replaces (per the file) the existing native, Loader (per the file) v2, or Loader v3 program acct with new Loader v3 (per the file) program and program data accts.",
+    "The file adds a hash validation (per the file) step to the migration and upgrade procedures. Per the file, before migrating or upgrading (per the file) a program, the runtime (per the file) needs to validate that (per the file) the hash of the (per the file) program data (ELF bytes) in the buffer acct, excluding trailing zero bytes, (per the file) matches the expected hash. Per the file, the expected hash is (per the file) the SHA-256 hash of (per the file) the ELF bytes and has to be supplied alongside the feature (per the file) gate in accordance with the node implementation.",
+    "Per the file, when the feature activates, (per the file) the runtime must validate (per the file) the hash of the (per the file) buffer contents after verifying that the buffer acct exists, is owned by (per the file) the Upgradeable Loader, and (per the file) deserializes as UpgradeableLoaderState::Buffer: Extract the ELF bytes from (per the file) the source buffer acct, excluding trailing zero bytes. Per the file, compute the SHA-256 hash (per the file) of the extracted ELF bytes. Per the file, compare the computed hash (per the file) with the expected hash (per the file) provided in the feature gate.",
+    "Per the file, if the hashes match, (per the file) the remaining checks and (per the file) steps are unchanged from (per the file) their respective proposals: Native (per the file) program migrations to Core BPF: [SIMD-0088]. Per the file, loader v2 program migrations (per the file) to Loader v3: [SIMD-0418]. Per the file, core BPF program upgrades: [SIMD-0495]. Per the file, if the hashes fail to match, the migration fails (per the file) without modifying the program. Per the file, in this case, the (per the file) feature is still marked (per the file) as activated, but the (per the file) program data remains unchanged.",
+    "Per the file, hash validation ties the (per the file) migration and upgrade to (per the file) the expected program data, (per the file) rather than relying solely (per the file) on the source buffer acct's address. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-------------------------------------------| | Transaction Execution (Runtime) (per the file) | Validates the hash of (per the file) the buffer contents | | Virtual (per the file) Machine | | | Block Packing | | | Consensus (per the file) | | | Gossip | | | Turbine | | | Snapshots | | | On-Chain (per the file) Core BPF Programs | | | Other (please describe) |. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, continue with the migration (per the file) procedure without hash validation. Per the file, this approach is not (per the file) recommended due to the (per the file) risk of migrating incorrect (per the file) program data, which could (per the file) lead to unexpected behavior (per the file) or security vulnerabilities in important programs."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the runtime will only (per the file) migrate a program if (per the file) the hash of the (per the file) source buffer's ELF bytes (per the file) matches the expected hash. Per the file, a hash mismatch aborts (per the file) the migration and leaves (per the file) the existing program unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrating native and Loader (per the file) v2 programs, or upgrading (per the file) Core BPF programs, replaces (per the file) essential programs with the contents of another acct. Per the file, hash validation protects against (per the file) accidental or malicious substitution (per the file) of incorrect program data, (per the file) including changes to the (per the file) buffer's ELF bytes between (per the file) feature gate creation and activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file fails to introduce any breaking changes, (per the file) and the upgrade mechanism (per the file) is not part of the runtime's tx processing. Per the file, it is only executed (per the file) when a feature gate (per the file) is activated for a specific program migration."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,74 @@
+{
+ "slug": "block-confirmation",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, a node votes on a PoH (per the file) hash for two purposes. Per the file, first, the vote indicates (per the file) it believes the ledger (per the file) is valid up until (per the file) that point in time. Per the file, second, since many valid (per the file) forks may exist at (per the file) a given height, the (per the file) vote also indicates exclusive (per the file) support for the fork. The file describes only the former. Per the file, the latter is described in Tower BFT. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Current Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to start voting, a node first registers an acct to which it will send its votes. Per the file, it then sends votes to that acct. Per the file, the vote contains the (per the file) tick height of the (per the file) block it is voting on. Per the file, the acct stores the 32 highest heights. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Problems",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, only the node knows how to find (per the file) its own votes directly. Per the file, other components, including the one that calculates (per the file) confirmation time, needs to (per the file) be baked into the node code. Per the file, the node code queries the bank for all accts owned by the vote program. Per the file, voting ballots fail to contain a PoH hash. Per the file, the node is only voting that (per the file) it has observed an (per the file) arbitrary block at some height.",
+    "Per the file, voting ballots fail to contain a hash of the bank state. Per the file, without that hash, there (per the file) is no evidence that the node executed the txs and verified there were no double spends."
+   ]
+  },
+  {
+   "heading": "Proposed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "No Cross-block State Initially",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at the moment a (per the file) block is produced, the (per the file) leader shall add a NewBlock tx to the ledger with (per the file) a number of tokens (per the file) that represents the validation reward. Per the file, it is effectively an incremental multisig tx that sends tokens from (per the file) the mining pool to the nodes. Per the file, the acct should allocate just enough (per the file) space to collect the (per the file) votes required to achieve a supermajority.",
+    "Per the file, when a node observes the NewBlock tx, it has the option (per the file) to submit a vote (per the file) that includes a hash (per the file) of its ledger state (the bank state). Per the file, once the acct has sufficient votes, the (per the file) vote program should disperse (per the file) the tokens to the nodes, which causes the acct to be deleted. Per the file, logging Confirmation Time The (per the file) bank will need to (per the file) be aware of the vote program.",
+    "Per the file, after each tx, it should check if (per the file) it is a vote tx and if so, check (per the file) the state of that acct. Per the file, if the tx caused the supermajority to (per the file) be achieved, it should (per the file) log the time since the NewBlock tx was submitted. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Finality and Payouts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, tower BFT is the proposed fork selection algorithm. Per the file, it proposes that payment (per the file) to miners be postponed (per the file) until the _stack_ of node votes reaches a certain (per the file) depth, at which point (per the file) rollback is not economically feasible. Per the file, the vote program may (per the file) therefore implement Tower BFT. Per the file, vote instructions would need (per the file) to reference a global Tower acct so that it can (per the file) track cross-block state."
+   ]
+  },
+  {
+   "heading": "Challenges",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "On-chain voting",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, using programs and accts to implement this is a bit tedious. Per the file, the hardest part is (per the file) figuring out how much (per the file) space to allocate in NewBlock. Per the file, the two variables are (per the file) the _active set_ and (per the file) the stakes of those nodes. Per the file, if we calculate the (per the file) active set at the (per the file) time NewBlock is submitted, the number of nodes to allocate space for is known upfront.",
+    "Per the file, if, however, we allow new nodes to vote on old (per the file) blocks, then we'd need (per the file) a way to allocate space dynamically. Per the file, similar in spirit, if (per the file) the leader caches stakes (per the file) at the time of (per the file) NewBlock, the vote program (per the file) doesn't need to interact (per the file) with the bank when it processes votes. Per the file, if we don't, then (per the file) we have the option to (per the file) allow stakes to float until (per the file) a vote is submitted.",
+    "Per the file, a node could conceivably reference its own staking acct, but that'd be the current acct value instead of the acct value of the most recently (per the file) finalized bank state. Per the file, the bank currently doesn't (per the file) offer a means to reference accts from particular points in time. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Voting Implications on Previous Blocks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, does a vote on (per the file) one height imply a (per the file) vote on all blocks (per the file) of lower heights of that fork? Per the file, if it does, we'll (per the file) need a way to lookup the accts of all blocks that haven't (per the file) yet reached supermajority. Per the file, if not, the node could send votes to (per the file) all blocks explicitly to (per the file) get the block rewards."
+   ]
+  }
+ ]
+}

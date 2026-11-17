@@ -1,0 +1,92 @@
+{
+ "slug": "precompiles",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, define a unified behavior (per the file) for precompiles, and highlight (per the file) a few minor changes (per the file) to the existing precompiles to minimize differences. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, precompiles are special native (per the file) programs designed to verify additional tx signatures. Per the file, they run without the (per the file) VM and without loading any acct, and they can access (per the file) data from other instructions, within the same tx. Per the file, at the time of (per the file) writing, two precompiles exist (per the file) to verify Ed25519 and (per the file) Ethereum-like Secp256k1 signatures, and (per the file) another one is being proposed (per the file) to support Secp256r1 signatures for FIDO Passkeys.",
+    "Per the file, historically, the two precompiles (per the file) were built at different (per the file) times and by different (per the file) people, so naturally there (per the file) are some subtle differences (per the file) in how they behave, (per the file) especially in edge cases. Per the file, the main goal of (per the file) this document is to (per the file) provide a specification for (per the file) how a precompile should (per the file) behave, remove differences and (per the file) provide guidelines for future proposals.",
+    "Per the file, in addition, we highlight (per the file) 3 minor changes to (per the file) the existing precompiles that (per the file) will simplify their behavior (per the file) and make it easier to develop alternative node clients. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we first propose a specification for precompiles. Per the file, then we propose changes (per the file) to the existing precompiles (per the file) with respect to the specification. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Precompile Specification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, precompiles are special native (per the file) programs designed to verify additional signatures. Per the file, each precompile consists of (per the file) a single verify instruction. Per the file, precompiles are executed right after tx signature verification, they run (per the file) without the VM and without loading any acct. Per the file, from a cost perspective, (per the file) they're included in the tx fee (each signature to verify (per the file) counts as a tx signature), but don't require any (per the file) compute units.",
+    "Per the file, if a tx contains more than 8 (per the file) precompile signatures, it must fail. Per the file, the precompile instruction verify (per the file) accepts the following data: The behavior of the (per the file) precompile instruction verify is as follow: If instruction data is empty, return error. Per the file, the first byte of (per the file) data is the number (per the file) of signatures num_signatures. Per the file, if num_signatures is 0, return error. Per the file, expect (enough bytes of (per the file) data for) num_signatures instances of PrecompileOffsets.",
+    "Per the file, read offsets: an instance of PrecompileOffsets b. Per the file, based on the offsets, (per the file) retrieve signature, public_key, and message bytes. Per the file, if any of the (per the file) three fails, return error. c. Per the file, invoke the actual sigverify function. Per the file, if it fails, return error.",
+    "Per the file, to retrieve signature, public_key, and message: Get the instruction_index-th instruction_data The (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) special value 0xFFFF means \"current instruction\" If the index is invalid, return Error Return length bytes starting from offset If this exceeds the instruction_data length, return Error Note that fields (offsets) can overlap, as an illustration the same public key or message may be referred to by multiple instances of PrecompileOffsets. Per the file, if the precompile verify (per the file) function returns any error, the whole tx should fail. Per the file, therefore, the type of (per the file) error is irrelevant and (per the file) is left as an implementation detail. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Changes to `Ed25519SigVerify111111111111111111111111111`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, replace sigverify function with (per the file) Dalek strict_verify(), the same used for txs sigverify. Per the file, implement step 3 above: (per the file) \"If num_signatures is 0, (per the file) return error.\" **Context.** In Solana, txs use Ed25199 signatures, and are (per the file) validated using the so called **strict verify**. Per the file, compared to \"RFC verify\", (per the file) strict verify enforces extra (per the file) checks against (certain types of) malleability. Per the file, the Ed25199 precompile currently puts in place a non-strict verify, so (per the file) with Change #1 we'll make (per the file) it compatible with the way Solana (per the file) verifies signatures.",
+    "Per the file, moreover, the Ed25519 precompile (per the file) accepts a payload of (per the file) [0, 0] as valid (per the file) (for no good reason), (per the file) so Change #2 will prevent this anomaly. Per the file, finally, the Ed25519 precompile (per the file) interleaves retrieving instruction data (per the file) and parsing data types including signatures and public keys.",
+    "Per the file, while this goes against (per the file) this specification and creates (per the file) unnecessary complexity in the (per the file) return error code, we (per the file) recommend to NOT change (per the file) the internal behavior (as (per the file) the return error code (per the file) doesn't really matter). **FAQ.** (per the file) **Q: Why does the Ed25199 (per the file) precompile currently use verify instead (per the file) of strict_verify?** A: No good (per the file) reason, it was built without noticing (per the file) the difference. **Q: If we switch (per the file) to strict_verify, will some of the (per the file) existing signatures break verification?** A: All signatures (per the file) created by a \"regular\" library, i.e. following (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) RFC, pass both verify and strict_verify. Per the file, only carefully crafted signatures (per the file) can pass verify and not strict_verify.",
+    "Per the file, so this won't break (per the file) any honest use case. **Q: (per the file) Why not leaving it as (per the file) is?** A: The verify is (per the file) not well specified. Per the file, in fact, it's behavior (per the file) is slightly different in the (per the file) older version of Dalek that (per the file) Solana currently uses, versus the (per the file) latest version of the same library. Per the file, trying to replicate all (per the file) the edge cases is different nodes is an unnecessary effort, (per the file) not worth the risk (per the file) of exposing different behaviors."
+   ]
+  },
+  {
+   "heading": "Changes to `KeccakSecp256k11111111111111111111111111111`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, implement step 3 above: (per the file) \"If num_signatures is 0, (per the file) return error.\" **Context.** The KeccakSecp256k1 (per the file) precompile currently accepts an input (per the file) of [0], as in \"verify (per the file) 0 signatures\", which is a useless instruction. Per the file, with Change #3 we'll (per the file) avoid this anomaly. Per the file, we note that the (per the file) KeccakSecp256k1 precompile has a (per the file) slightly different struct for (per the file) offset, with instruction indexes (per the file) of a single byte (per the file) (and, as a result, (per the file) no special value of (per the file) 0xFFFF to indicate the \"current instruction\").",
+    "Per the file, this is for historical (per the file) reasons, and since modifying (per the file) it would break existing (per the file) users, we recommend to (per the file) NOT change the existing behavior."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reduce the complexity of (per the file) existing precompiles, to simplify building different node clients. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all 3 changes are (per the file) straightforward and have no impact on security."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all 3 changes require a feature gate. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

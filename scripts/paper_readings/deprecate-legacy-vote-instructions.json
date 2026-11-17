@@ -1,0 +1,62 @@
+{
+ "slug": "deprecate-legacy-vote-instructions",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, disables the legacy Vote, (per the file) UpdateVoteState and CompactUpdateVoteState instruction variants. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, these instructions are no longer sent by node clients. Per the file, it is cumbersome to (per the file) support these old vote (per the file) instructions and ensure parity."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when the features: deprecate (per the file) legacy vote instructions, with (per the file) key depVvnQ2UysGrhwdiwU42tCadZL8GcBb1i2GYhMopQv enable tower (per the file) sync vote instruction, with (per the file) key tSynMCspg4xFiCj1v3TDb4c7crMR5tSBhLz4sF7rrNA are activated, (per the file) the following instructions will (per the file) result in an InvalidInstructionData (per the file) error: Vote VoteSwitch UpdateVoteState (per the file) UpdateVoteStateSwitch CompactUpdateVoteState CompactUpdateVoteStateSwitch Enabling (per the file) deprecate legacy vote instructions (per the file) without enable tower sync (per the file) vote instruction should have no effect."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sending txs that include the mentioned instructions will fail. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "slug": "prohibit-vote-account-self-withdrawals",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reject a Vote Program (per the file) Withdraw instruction when the vote acct and recipient resolve to the same address. Per the file, after activation, every authorized (per the file) self-withdrawal returns InvalidArgument. Per the file, other withdrawals are unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, a Vote Program (per the file) Withdraw instruction may use the same acct as the vote acct and recipient. Per the file, a partial self-withdrawal that (per the file) passes existing checks subtracts and (per the file) then restores the requested lamports, (per the file) making it a no-op. Per the file, a full self-withdrawal behaves differently. Per the file, it deinitializes the vote acct, subtracts its full balance, (per the file) and restores the lamports to the same acct. Per the file, this leaves a funded, (per the file) Vote Program owned, uninitialized acct.",
+    "Per the file, anyone else can then initialize that acct with their own node identity and authorities, taking (per the file) control of the retained balance. Per the file, initiating the self-withdrawal calls for the existing authorized withdrawer, making (per the file) the behavior an operator footgun. Per the file, self-withdrawals have no known use case. Per the file, rejecting them removes this risk. Per the file, the [Stake Program] already (per the file) rejects self-withdrawals with InvalidArgument."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, vote Program Withdraw processes (per the file) an instruction in this order: Validate the vote acct and authorized withdrawer using the existing rules. Per the file, compare the addresses of the vote acct and recipient. Per the file, if the addresses match, return InvalidArgument. Per the file, if the addresses differ, (per the file) continue existing withdrawal processing. Per the file, the new comparison precedes withdrawal amount and acct closure checks. Per the file, it therefore applies to (per the file) zero, partial, full-balance, and (per the file) over-balance withdrawals. Per the file, the instruction data and acct interface fail to change. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reject only full self-withdrawals. Per the file, this prevents vote acct deinitialization but preserves partial (per the file) and zero-lamport no-op txs without a known use. Per the file, skip deinitialization for full self-withdrawals. Per the file, this makes them no-ops (per the file) and leaves a special case (per the file) that future changes must continue (per the file) to handle safely. Per the file, reject self-withdrawals only in (per the file) the SDK and CLI. Per the file, custom tx builders can bypass client-side (per the file) checks, so this fails to enforce the invariant. Per the file, keep the existing behavior. Per the file, this preserves the footgun."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after activation, vote acct self-withdrawals fail with InvalidArgument. Per the file, non-self withdrawals, instruction encoding, and acct lists are unchanged. Per the file, because the Vote Program (per the file) is a native builtin, node clients must implement the (per the file) same feature-gated behavior before activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, n/A [Stake Program]: https://github.com/solana-program/stake/pull/96. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

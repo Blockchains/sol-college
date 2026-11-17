@@ -1,0 +1,57 @@
+{
+ "slug": "maximum-instruction-accounts",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file imposes a hard restriction (per the file) on the maximum number of acct references that an instruction may declare. Per the file, there is already a limit of 255 acct references imposed during serialization (per the file) in ABI v0 and v1, but it fails to currently apply to builtin invocations or precompiles. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, although there can only (per the file) be a maximum of 35 acct keys in the legacy (per the file) message format and 256 (per the file) in the v0 format, (per the file) instructions can have up (per the file) to 65535 (u16::MAX) accts, each being a u8 index referencing a tx acct. Per the file, allowing instructions to reference more accts than what the message format lets is not necessary. Per the file, on one hand there (per the file) is a limit of 255 accts for CPI and user (per the file) deployed programs, on the (per the file) other, builtins and precompiles fail to need as many accts as the message format lets.",
+    "Per the file, furthermore, since there can (per the file) only be 256 unique pubkeys in a tx, any instruction referencing more (per the file) than 256 will have (per the file) aliased references, requiring the node to deduplicate them, even (per the file) though they are unused. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new verification step has to be included in message (per the file) sanitization for message formats legacy and v0. Per the file, the verification step must (per the file) examine every instruction in a tx, check if the former (per the file) references more than 255 accts, and throw an error otherwise. Per the file, transactions violating such a restriction has to be considered invalid and (per the file) not included in a block. Per the file, likewise, blocks containing txs that violate such condition ought to be declared dead.",
+    "Per the file, transactions in the v1 format (SIMD-0385) already have a limit of 255 accts per instruction, so this change (per the file) and the accompanying feature gate fail to affect such newer format. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, calls to user deployed (per the file) programs from top level (per the file) instructions and CPIs will (per the file) not be impacted, since (per the file) there is already a limit in place. Per the file, instructions that invoke builtin (per the file) programs or precompiles will (per the file) error out if they (per the file) have more than 255 accts."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

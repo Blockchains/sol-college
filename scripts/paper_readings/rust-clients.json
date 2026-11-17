@@ -1,0 +1,36 @@
+{
+ "slug": "rust-clients",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Problem",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, high-level tests, including bench-tps, are written in terms (per the file) of the Client trait. Per the file, when we execute these (per the file) tests as part of (per the file) the test suite, we (per the file) use the low-level BankClient implementation. Per the file, when we need to (per the file) run the same test (per the file) against a cluster, we (per the file) use the ThinClient implementation. Per the file, the problem with that (per the file) approach is that it (per the file) means the trait will (per the file) continually expand to include (per the file) new utility functions and (per the file) all implementations of it (per the file) need to add the new functionality.",
+    "Per the file, by separating the user-facing (per the file) object from the trait that (per the file) abstracts the network interface, we (per the file) can expand the user-facing object (per the file) to include all sorts of useful functionality, including the \"spinner\" from RpcClient, without concern (per the file) for needing to extend the trait (per the file) and its implementations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proposed Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, instead of implementing the Client trait, ThinClient ought to be constructed with an implementation of it. Per the file, that way, all utility (per the file) functions currently in the (per the file) Client trait can move into ThinClient. Per the file, thinClient could then move (per the file) into solana-sdk since all (per the file) its network dependencies would be (per the file) in the implementation of Client. Per the file, we would then add (per the file) a new implementation of (per the file) Client, called ClusterClient, and (per the file) that would live in (per the file) the solana-client crate, where (per the file) ThinClient currently resides.",
+    "Per the file, after this reorg, any (per the file) code needing a client (per the file) would be written in terms of ThinClient. Per the file, in unit tests, the (per the file) functionality would be invoked (per the file) with ThinClient<BankClient>, whereas main() (per the file) functions, benchmarks and integration tests (per the file) would invoke it with ThinClient<ClusterClient>. Per the file, if higher-level components require (per the file) more functionality than what could (per the file) be implemented by BankClient, it ought to be implemented by a second object that puts in place a second trait, following the (per the file) same pattern described here. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Error Handling",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Client should use (per the file) the existing TransportError enum (per the file) for errors, except that (per the file) the Custom(String) field ought to be changed to Custom(Box<dyn Error>). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation Strategy",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add new object to (per the file) solana-sdk, RpcClientTng, where the (per the file) Tng suffix is temporary and (per the file) stands for \"The Next Generation\" Initialize RpcClientTng with a SyncClient implementation. Per the file, add new object to (per the file) solana-sdk, ThinClientTng; initialize it (per the file) with RpcClientTng and an AsyncClient implementation Move all unit-tests from BankClient (per the file) to ThinClientTng<BankClient> Add ClusterClient Move ThinClient users to ThinClientTng<ClusterClient> Delete ThinClient and rename ThinClientTng to ThinClient Move RpcClient users to new ThinClient<ClusterClient> Delete RpcClient and rename RpcClientTng to RpcClient. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

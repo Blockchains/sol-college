@@ -1,0 +1,62 @@
+{
+ "slug": "fix-alt-bn128-pairing-syscall-length-check",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the alt_bn128_pairing syscall takes (per the file) a byte slice as input, interprets (per the file) the bytes as an array of (per the file) pairs of g1 and g2 points (per the file) on bn128 elliptic curve, and applies (per the file) a pairing operation. Per the file, if the byte slice (per the file) input has an improper (per the file) length, the function should terminate early. Per the file, specifically, if the byte (per the file) slice length is not (per the file) a multiple of 192 (per the file) (the sum of the (per the file) lengths of g1 and (per the file) g2 points), the function (per the file) should terminate early with an error. Per the file, however, the current code fails to perform this check correctly. The file proposes to fix this (per the file) length check by checking (per the file) for the correct length."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the alt_bn128_pairing function still (per the file) works with the incorrect length check (per the file) because it only processes multiples of (per the file) 192 bytes and discards the rest. Per the file, however, there could be (per the file) successful inputs that are (per the file) not multiples of 192. Per the file, this could make the (per the file) application logic harder to debug."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, the code checks (per the file) than checked_rem of the (per the file) input length and ALT_BN128_PAIRING_ELEMENT_LEN (which (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) is 192) is not None. Per the file, however, checked_rem returns None (per the file) when the rhs is 0, (per the file) which never happens in this context. Per the file, the correct logic should (per the file) check that the remainder is 0."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this fix will prevent (per the file) accidental misuse of the (per the file) alt_bn128_pairing syscall function and (per the file) make programs easier to debug. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this does update the (per the file) behavior of the syscall function and therefore ought to be properly feature-gated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks _(Optional)_",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

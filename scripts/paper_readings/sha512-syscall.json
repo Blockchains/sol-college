@@ -1,0 +1,92 @@
+{
+ "slug": "sha512-syscall",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, introduce a sol_sha512 syscall (per the file) with an identical interface to (per the file) sol_sha256, producing SHA-512 hashes and (per the file) outputting the 64-byte result. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sHA-512 is a core (per the file) primitive of Ed25519 signature verification (per the file) and is already present in (per the file) both the Agave and Firedancer node clients as an internal dependency. Per the file, however, it is not (per the file) currently exposed to on-chain (per the file) programs as a syscall. Per the file, exposing sol_sha512 directly makes possible programs to perform SHA-512 hashing (per the file) without resorting to an on-chain software (per the file) implementation, which is both expensive in compute (per the file) units and unnecessary given the function already (per the file) exists in every node."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Syscall Signature",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall follows the (per the file) same interface as sol_sha256, (per the file) sol_keccak256, and sol_blake3. Per the file, see here for more (per the file) details: https://docs.rs/solana-sha256-hasher/3.1.0/src/solana_sha256_hasher/lib.rs.html#62-75 The syscall (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) computes SHA-512 over the provided byte slices as if they were a single contiguous input, writing the 64-byte digest to result.",
+    "Per the file, the syscall aborts the (per the file) virtual machine if any (per the file) of these conditions are (per the file) true: Not all bytes (per the file) in [bytes, bytes + bytes_len (per the file) * sizeof(SolBytes)) are readable. Per the file, not all bytes in (per the file) each slice [bytes[i].addr, bytes[i].addr (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) + bytes[i].len) are readable.",
+    "Per the file, not all bytes in (per the file) [result, result + 64) are (per the file) writable. bytes_len exceeds the (per the file) configured maximum number of slices. Per the file, the current default is (per the file) 20,000, as per SVMTransactionExecutionBudget. The file’s claim in this section turns on Per, L82. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Compute Unit Usage",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, compute costs follow the (per the file) same model and parameters as sol_sha256. The file’s claim in this section turns on Per, L168-L169. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "BPF Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs can implement SHA-512 (per the file) in BPF today, but at (per the file) a higher CU cost. Per the file, a single SHA-512 hash (per the file) of a short message consumes (per the file) thousands of CUs in software (per the file) versus fewer than 100 via syscall. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Status Quo",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, continue without exposing SHA-512. Per the file, programs requiring SHA-512 (e.g., (per the file) for Ed25519-adjacent verification logic) remain unable (per the file) to access a primitive that both nodes already have linked. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs gain access to (per the file) SHA-512 hashing at syscall cost. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the security surface is (per the file) identical to the existing hash syscalls. Per the file, the same input validation (per the file) and CU metering apply. Per the file, sHA-512 itself is a (per the file) well-studied, standardized hash function (FIPS (per the file) 180-4). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this is an additive (per the file) change gated behind a feature flag. Per the file, programs that fail to invoke sol_sha512 are unaffected. Per the file, existing syscalls are unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

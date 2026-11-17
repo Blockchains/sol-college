@@ -1,0 +1,74 @@
+{
+ "slug": "sbpf-instruction-encoding-improvements",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there are some instructions (per the file) with questionable encodings, that (per the file) when slightly adjusted, could (per the file) significantly simplify verification and execution of programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the instruction lddw dst, (per the file) imm is currently the (per the file) only instruction which takes two instruction slots. The file splits it into a (per the file) two one-slot instruction sequence: (per the file) mov32 dst, imm and an (per the file) introduced hor64 dst, imm. Per the file, this way all instructions is to be exactly one slot (per the file) long which will simplify: (per the file) Calculating the number of (per the file) instructons in a program (per the file) will no longer require (per the file) a full linear scan.",
+    "Per the file, a division of the (per the file) length of the text (per the file) section by the instruction (per the file) slot size will suffice. Per the file, the instruction meter will (per the file) no longer have to (per the file) skip one instruction slot (per the file) when counting a LDDW instruction. Per the file, jump and call instructions (per the file) will no longer have (per the file) to verify that the (per the file) desination is not the (per the file) second half of a LDDW instruction.",
+    "Per the file, the verifier will no (per the file) longer have to check (per the file) that LDDW instructions are (per the file) complete and its first or second half fails to occur without the other on its own. Per the file, the LE instruction is (per the file) essentially useless as only (per the file) BE performs a byte-swap.",
+    "Per the file, its runtime behavior is (per the file) close to no-op and may be replicated by other instructions: (per the file) le dst, 16 behaves the (per the file) same as and32 dst, 0xFFFF (per the file) le dst, 32 behaves the (per the file) same as and32 dst, 0xFFFFFFFF (per the file) le dst, 64 behaves the (per the file) same as mov64 dst, src (per the file) The CALLX instruction encodes its (per the file) source register in the immediate field. Per the file, this is makes the (per the file) instruction decoder more complex (per the file) because it is the (per the file) only case in which (per the file) a register is encoded (per the file) in the immediate field, for no reason.",
+    "Per the file, with all of the (per the file) above changes and the (per the file) ones defined in SIMD-0174, (per the file) the memory related instructions may be moved into the ALU instruction classes. Per the file, doing so would free (per the file) up 8 instruction classes (per the file) completely, giving us back (per the file) three bits of instruction encoding. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following must go (per the file) into effect if and (per the file) only if a program (per the file) indicates the SBPF-version v2 (per the file) or higher in its program (per the file) header (see SIMD-0161). Per the file, some now unreachable verification (per the file) and execution checks around LDDW may be safely removed (see motivation). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Changes to the Bytecode Verifier",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a program containing one (per the file) of the following instructions (per the file) must throw VerifierError::UnknownOpCode during (per the file) verification: the LDDW instruction (opcodes (per the file) 0x18 and 0x00) the LE (per the file) instruction (opcode 0xD4) the moved (per the file) opcodes: 0x72, 0x71, 0x73 (STB, (per the file) LDXB, STXB) 0x6A, 0x69, 0x6B (per the file) (STH, LDXH, STXH) 0x62, 0x61, (per the file) 0x63 (STW, LDXW, STXW) 0x7A, (per the file) 0x79, 0x7B (STDW, LDXDW, STXDW) (per the file) A program containing one of (per the file) the following instructions must **not** (per the file) throw VerifierError::UnknownOpCode during verification anymore: (per the file) the HOR64 instruction (opcode 0xF7) the (per the file) moved opcodes: 0x27, 0x2C, 0x2F (STB, (per the file) LDXB, STXB) 0x37, 0x3C, 0x3F (STH, (per the file) LDXH, STXH) 0x87, 0x8C, 0x8F (STW, (per the file) LDXW, STXW) 0x97, 0x9C, 0x9F (STDW, (per the file) LDXDW, STXDW) When a CALLX instruction (per the file) (opcode 0x8D) is encountered during verification, (per the file) the src register field has to be verified instead of the imm (per the file) immediate field. Per the file, otherwise, the verification rule (per the file) stays the same: The src register has to be in the inclusive (per the file) range from R0 to R9."
+   ]
+  },
+  {
+   "heading": "Changes to Execution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the introduced HOR64 instruction (per the file) (opcode 0xF7) must take (per the file) its immediate value, shift (per the file) it 32 bit towards (per the file) the MSBs (multiplication-like left (per the file) shift) and then bitwise OR (per the file) it into the given dst register. Per the file, for the CALLX instruction (per the file) (opcode 0x8D) the jump destination has to be read from the (per the file) src register field instead (per the file) of the imm immediate field.",
+    "Per the file, the execution behavior of (per the file) the moved instructions is (per the file) transferred to their new (per the file) opcodes: 0x72 => 0x27, 0x71 (per the file) => 0x2C, 0x73 => 0x2F 0x6A (per the file) => 0x37, 0x69 => 0x3C, 0x6B (per the file) => 0x3F 0x62 => 0x87, 0x61 (per the file) => 0x8C, 0x63 => 0x8F 0x7A (per the file) => 0x97, 0x79 => 0x9C, 0x7B => 0x9F. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the toolchain will emit (per the file) machinecode according to the selected SBPF version. Per the file, as most proposed changes (per the file) affect the encoding only, (per the file) and not the functionallity, (per the file) we expect to see (per the file) no impact on dApp developers. Per the file, the only exception is (per the file) that 64-bit immediate loads (per the file) will now cost 2 CU (per the file) instead of 1 CU."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

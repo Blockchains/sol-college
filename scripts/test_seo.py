@@ -41,7 +41,26 @@ class SeoTests(unittest.TestCase):
                'forks we ran on devnet, not a claim that the original team is a partner.')
         out = seo.fit(raw)
         self.assertLessEqual(len(out), 158)
+        self.assertLessEqual(len(seo.esc(out)), 158)
         self.assertIn('not a claim that the original team is a partner.', out)
+
+    def test_fit_keeps_escaped_meta_within_limit(self):
+        raw = ('A page about "Proof of History" and "Tower BFT" for Solana readers who need the '
+               'short note. It is not a peer review and it reports no new measurement.')
+        out = seo.fit(raw)
+        self.assertLessEqual(len(out), 158)
+        self.assertLessEqual(len(seo.esc(out)), 158)
+        self.assertIn('not a peer review', out.lower())
+
+    def test_scholarly_article_counts_as_typed_page(self):
+        page = PAGE.replace(
+            '</head>',
+            '<script type="application/ld+json">{"@type":"ScholarlyArticle","name":"X"}</script></head>',
+            1)
+        out, info = seo.patch(page, '/library/papers/example/', 'library/papers/example/index.html')
+        self.assertTrue(info['indexable'])
+        self.assertIn('ScholarlyArticle', out)
+        self.assertEqual(out.count('"@type":"WebPage"'), 0)
 
     def test_fit_drops_whole_sentences_before_a_limit(self):
         raw = ('Which questions can you ask with these records, and which investigations are not here? '

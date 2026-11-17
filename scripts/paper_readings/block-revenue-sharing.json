@@ -1,0 +1,121 @@
+{
+ "slug": "block-revenue-sharing",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new mechanism is proposed to allow nodes to share part of (per the file) their block revenue with their delegators. Per the file, commission rates from node vote accts is to be used by the (per the file) protocol to calculate post-commission rewards that is to be automatically distributed to delegated stake accts after an epoch is completed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, delegated stake directly increases (per the file) the number of blocks that a node is allocated in an (per the file) epoch leader schedule but (per the file) the core protocol doesn't (per the file) support diverting any of that (per the file) extra revenue to stake delegators. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: **[SIMD-0180]: (per the file) Use Vote Account Address To (per the file) Key Leader Schedule** Necessary for (per the file) looking up a block producer's vote acct **[SIMD-0185]: Vote Account v4** Introduces version (per the file) 4 of the vote acct state, which adds new fields for block (per the file) revenue commission and pending delegation rewards **[SIMD-0232]: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Custom Commission Collector Account** Necessary for looking up a block producer's commission collector acct **[SIMD-0291]: Commssion Rate in Basis Points** Introduces a new instruction type for setting commission rates in basis points **[SIMD-0392]: Runtime Adjustments for Rent Increase** Updates delegation calculation based on Rent sysvar parameters [SIMD-0180]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0180-vote-acct-leader-schedule.md [SIMD-0185]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0185-vote-acct-v4.md [SIMD-0232]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0232-custom-commission-collector.md [SIMD-0291]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0291-commission-rate-in-basis-points.md [SIMD-0392]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0392-rent-increase-adaptations.md. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Distribute Rewards as Activated Stake",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the runtime could ensure (per the file) that any distributed stake (per the file) rewards get activated as (per the file) well but it would (per the file) require extra complexity in (per the file) the protocol to support that feature. The file’s claim in this section turns on Per, SOL, SIMD-0022, 0022. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Out of protocol reward distribution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, due to the lack (per the file) of core protocol support (per the file) for distributing block revenue to stakers, nodes have developed their own (per the file) solutions which are not (per the file) enforced by the core protocol. Per the file, for example, the Cogent node diverts part of its (per the file) fee revenue to NFT holders. Per the file, but it's up the (per the file) NFT holders to audit and (per the file) hold Cogent accountable to a (per the file) specific commission rate.",
+    "Per the file, another alternative is Jito's (per the file) mechanism for block \"tips\" (not (per the file) fees, but the idea is similar). Per the file, jito's node implementation includes a tip distribution (per the file) program which it instructs node operators to divert all of (per the file) their tips to but cannot (per the file) enforce perfect compliance. Per the file, it's up to stakers (per the file) and the Jito team to (per the file) audit compliance by node operators. Per the file, this mechanism calls for trusting a third-party (in (per the file) this case Jito) to calculate (per the file) reward distribution in an accurate (per the file) and fair manner.",
+    "Per the file, it also relies on (per the file) using a merkle tree (per the file) to distribute fees to all stake accts and the distributed fees (per the file) are not automatically staked in recipient stake accts."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime: Block Revenue Collection",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after all txs are processed in a (per the file) block for a given (per the file) leader, rather than collecting (per the file) all block revenue into the node identity acct, the protocol will look (per the file) up the block producer's vote acct as described in [SIMD-0180]. Per the file, then it MUST check if the node's vote acct has specified a block revenue (per the file) commission rate and collector addresses (per the file) in the new vote acct version described in [SIMD-0185].",
+    "Per the file, as described in [SIMD-0232], (per the file) the latest block revenue commission (per the file) rate and collector address MUST (per the file) be loaded from the vote acct state at the beginning of (per the file) the previous epoch. Per the file, this is the same vote acct state used to build (per the file) the leader schedule for the current epoch. Per the file, if the block revenue (per the file) commission rate and collector acct aren't set (e.g., the vote acct state version has not been updated (per the file) to v4 yet), all revenue is to be collected into the node's identity acct as before.",
+    "Per the file, if the block revenue (per the file) commission rate and collector acct *are* specified, the rewards (per the file) MUST be distributed according (per the file) to the commission and (per the file) delegator rewards collection sections below. Per the file, commission Collection The commission (per the file) amount MUST be calculated (per the file) by first multiplying the (per the file) amount of revenue by (per the file) the lesser of the vote acct's block revenue commission rate (per the file) or the maximum of 10,000 (per the file) basis points.",
+    "Per the file, then use integer division (per the file) to divide by 10,000 (per the file) and discard the remainder. Per the file, if the commission amount (per the file) is non-zero, the block (per the file) revenue commission collector acct MUST be loaded and checked (per the file) for the following conditions: acct is system program owned AND acct is rent-exempt after depositing the commission. Per the file, if the conditions are (per the file) met, the commission amount (per the file) MUST be deposited into (per the file) the block revenue commission collector acct.",
+    "Per the file, if either of these (per the file) conditions is violated, the (per the file) commission amount MUST be burned. Per the file, delegator Rewards Collection The (per the file) delegator rewards amount MUST (per the file) be calculated by subtracting (per the file) the calculated commission from (per the file) the block fee revenue.",
+    "Per the file, if the delegator rewards (per the file) amount is non-zero, the vote acct has to be loaded and checked for (per the file) the following conditions: acct is vote program owned AND acct is initialized with vote state (per the file) v4 or later If the (per the file) conditions are met, the delegator (per the file) rewards amount MUST be added (per the file) to the vote state field (per the file) pending_delegator_rewards and added to the (per the file) balance of vote acct. Per the file, if either of these (per the file) conditions is violated, the (per the file) delegator rewards amount MUST be burned. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime: Block Revenue Distribution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at the beginning of (per the file) each epoch, pending delegator rewards is to be collected from actively staked vote accts into the epoch rewards sysvar acct and then distributed to stake accts utilizing the existing partitioned (per the file) rewards distribution mechanism described in [SIMD-0118]. Per the file, delegator Rewards Calculation Delegator (per the file) rewards MUST be calculated (per the file) during the beginning of (per the file) the first block of (per the file) an epoch N where (per the file) the first block is (per the file) any block with a (per the file) parent in the previous epoch.",
+    "Per the file, rewards MUST be recalculated (per the file) if a node is (per the file) restarted during the partitioned (per the file) rewards distribution period as (per the file) described in [SIMD-0118]. Per the file, for each vote acct, get its total active (per the file) stake delegation during the (per the file) reward epoch N - 1. Per the file, then for each vote acct, get its pending delegator (per the file) rewards from the pending_delegator_rewards (per the file) field in the vote state at (per the file) the end of reward epoch N - 1.",
+    "Per the file, if P is zero, skip this vote acct as there is nothing to be distributed. Per the file, lastly, if this is (per the file) the first block of (per the file) epoch N, the vote (per the file) state’s pending_delegator_rewards field MUST (per the file) be reset to 0. Per the file, then, if A (active (per the file) stake) is zero, the (per the file) delegator rewards will effectively (per the file) returned to the voter (per the file) after the pending_delegator_rewards field (per the file) is reset to 0.",
+    "Per the file, otherwise, if A is (per the file) non-zero, P lamports MUST (per the file) be debited from the vote acct’s lamport balance and credited to (per the file) the epoch rewards sysvar acct’s lamport balance before any txs or votes are processed. Per the file, note that unlike inflation (per the file) rewards distribution, block revenue (per the file) distribution will not impact (per the file) any internal epoch rewards (per the file) sysvar state fields like (per the file) total_rewards or distributed_rewards since (per the file) block revenue will instead be tracked (per the file) via the epoch rewards sysvar lamport balance.",
+    "Per the file, individual Delegator Reward For each individual stake acct with an active non-zero (per the file) delegation, multiply its active stake (per the file) in reward epoch N - 1 (per the file) by P, and divide the (per the file) result by A using integer (per the file) division to get the individual stake acct’s block revenue reward distribution amount, (per the file) truncating any sub-lamport portion.",
+    "Per the file, delegator Rewards Distribution The (per the file) reward distribution amounts for each stake acct can then be used (per the file) to construct a list (per the file) of stake reward entries (per the file) which MUST be partitioned (per the file) according to [SIMD-0118] which (per the file) describes which stake rewards are (per the file) distributed in each block during (per the file) the partitioned rewards distribution period.",
+    "Per the file, during partitioned reward distribution (per the file) for a given slot, (per the file) when reward entries are (per the file) used to distribute block (per the file) revenue rewards, the epoch rewards sysvar acct’s lamport balance MUST be (per the file) debited by the block revenue (per the file) reward distribution amount to keep (per the file) capitalization consistent. [SIMD-0118]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0118-partitioned-epoch-reward-distribution.md Stake (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Delegation Adjustment The new delegation amount for a stake acct MUST acct for individual delegator rewards, by adapting the calculation from [SIMD-0392]: Where block_rewards represents the individual block rewards earned by the stake acct in that epoch. Per the file, all other variables are (per the file) the same as before, (per the file) as described in SIMD-0392.",
+    "Per the file, delegator Rewards Completion After (per the file) distributing all partitioned delegator (per the file) rewards, the epoch rewards (per the file) sysvar balance MUST be (per the file) reset to its rent (per the file) exemption balance and any (per the file) surplus lamports are burned. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, withdraw Since pending delegator rewards is to be stored in the node's vote acct until distribution at the next (per the file) epoch boundary, those funds is to be unable to be withdrawn. Per the file, the Withdraw instruction has to be modified so that (per the file) if the balance indicated (per the file) by the pending_delegator_rewards field (per the file) is non-zero, the vote acct will no longer be closeable by fully (per the file) withdrawing funds.",
+    "Per the file, the withdrawable balance when (per the file) pending_delegator_rewards is non-zero is to be equal to the vote acct's balance minus pending_delegator_rewards and the minimum rent (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) exempt balance. Per the file, updateCommissionBps The UpdateCommissionBps instruction (per the file) added in [SIMD-0291] has to be updated to add support (per the file) for updating the block revenue commission rate.",
+    "Per the file, when the specified commission (per the file) kind is CommissionKind::BlockRevenue, update (per the file) the block_revenue_commission_bps field instead of (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the previous behavior of returning an InstructionError::InvalidInstructionData. Per the file, note that the commission (per the file) rate is allowed to (per the file) be set and stored (per the file) as any u16 value (per the file) but as detailed above, (per the file) it will capped at (per the file) 10,000 during the actual commission calculation.",
+    "Per the file, depositDelegatorRewards A new instruction (per the file) for distributing lamports to stake delegators is to be added to the (per the file) vote program with the (per the file) enum discriminant value of (per the file) 19u32 little endian encoded (per the file) in the first 4 bytes. Per the file, perform the following checks: (per the file) If the number of acct inputs is less than (per the file) 2, return InstructionError::NotEnoughAccountKeys If the vote acct (index 0) fails to deserialize, (per the file) return InstructionError::InvalidAccountData If the vote acct is not initialized with state version (per the file) 4, return InstructionError::InvalidAccountData Then the processor (per the file) should perform a system transfer CPI of (per the file) deposit lamports from the source acct (index 1) to the vote acct. Per the file, lastly, increment the pending_delegator_rewards (per the file) value by deposit."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, stake delegators will receive (per the file) additional income when delegating to nodes who adopt this new (per the file) feature by setting a (per the file) block revenue commission rate (per the file) less than the default of 100%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a feature gate is to be used to enable (per the file) block revenue reward distribution (per the file) at an epoch boundary. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

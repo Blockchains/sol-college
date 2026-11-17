@@ -1,0 +1,118 @@
+{
+ "slug": "secp256r1-nist-p-256-curve-syscalls",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces support for the (per the file) secp256r1 (also known as (per the file) NIST P-256) elliptic curve (per the file) to Solana's existing generalized curve syscalls. Per the file, these syscalls will expose: Group operations (addition, subtraction/negation, (per the file) and scalar multiplication) Multiscalar multiplication (MSM) Point validation Decompression operations By extending existing (per the file) low-level syscalls rather than introducing (per the file) a monolithic signature verification syscall, this SIMD makes possible generalized cryptographic operations on the secp256r1 (per the file) curve directly within BPF programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is an ongoing (per the file) effort within the Solana (per the file) ecosystem to migrate cryptographic precompiles from the node client into standard BPF programs. Per the file, currently, the ed25519 and secp256k1 signature verifications may be implemented natively and (per the file) cost-effectively in BPF using (per the file) Solana's existing syscalls. Per the file, however, secp256r1 lacks this (per the file) underlying syscall support, making (per the file) efficient BPF implementations for it expensive. Per the file, extending the existing curve (per the file) syscalls to include secp256r1 (per the file) resolves the missing capability.",
+    "Per the file, outside the context of (per the file) precompiles, the secp256r1 curve (per the file) (also known as NIST (per the file) P-256) is a widely (per the file) adopted industry standard. Per the file, it is the primary (per the file) curve utilized by Apple's (per the file) Secure Enclave, Android Keystore, WebAuthn, and Passkeys. Per the file, equipping developers with native, (per the file) low-level support for secp256r1 supplies a bridge between traditional hardware (per the file) security modules and on-chain accts, significantly expanding the cryptographic toolkit available (per the file) on Solana. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, secp256r1 / NIST P-256: A (per the file) widely used elliptic curve standardized by NIST. Per the file, unlike secp256k1 (used in (per the file) Bitcoin and Ethereum), secp256r1 (per the file) is the standard for (per the file) hardware-backed security modules (Secure (per the file) Enclave, TPMs) and WebAuthn. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors propose extending the existing (per the file) sol_curve_* syscall family to support secp256r1. Per the file, the required operations are: Group operations (addition, subtraction, and scalar multiplication) Multiscalar multiplication (MSM) Point validation Decompression operations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Curve Specification and Encoding",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for the curve definition, (per the file) the standard SP 800-186 (per the file) specifications for NIST P-256 ought to be used. Per the file, to maintain consistency with (per the file) existing curve syscalls, points (per the file) are serialized as fixed-size (per the file) 64-byte arrays representing uncompressed affine coordinates. Per the file, this consists of 32 (per the file) bytes for the X-coordinate, (per the file) immediately followed by 32 bytes (per the file) for the Y-coordinate. Per the file, the point at infinity (per the file) (the identity element) is (per the file) canonically encoded as 64 bytes of zeroes.",
+    "Per the file, because (0, 0) is (per the file) not a valid point (per the file) on the secp256r1 curve, this supplies a safe, fixed-length representation (per the file) of the identity point. Per the file, to provide flexibility across (per the file) different application architectures, we (per the file) define both little-endian (LE) (per the file) and big-endian (BE) variants for (per the file) scalar and field element byte-ordering within (per the file) these fixed-length arrays. Per the file, we note that this (per the file) deviates from the standard SEC1 encoding.",
+    "Per the file, sEC1 is a variable-length (per the file) format (e.g., representing the identity (per the file) point as a single 0x00 byte), (per the file) making it more error-prone for node clients to handle. Per the file, the exception to this (per the file) rule is the sol_curve_decompress syscall. Per the file, this syscall accepts a (per the file) fixed 33-byte compressed structure (per the file) (a 1-byte parity prefix of (per the file) 0x02 or 0x03 followed by a (per the file) 32-byte X-coordinate) and translates it into (per the file) (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the 64-byte uncompressed representation.",
+    "Per the file, the byte-ordering of the (per the file) 32-byte input X-coordinate, and also the resulting 64-byte uncompressed output, is strictly (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) determined by the endianness specified by the curve_id (SECP256R1_LE or SECP256R1_BE). Per the file, note that when using (per the file) the LE identifier, the input X-coordinate has to be little-endian, which deviates from (per the file) the natively big-endian standard SEC1 format. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Curve ID Constants",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors propose using new curve_id (per the file) constants for secp256r1. Per the file, these IDs is to be used across the (per the file) extended syscalls to specify (per the file) the curve and endianness. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Addition and Scalar Multiplication",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing sol_curve_group_op syscall is to be extended to support secp256r1. Per the file, the syscall will use (per the file) the newly defined SECP256R1_{LE,BE} constants. Per the file, the group_op parameter will (per the file) use the existing ADD, SUB, (per the file) and MUL constants. Per the file, validation rules for secp256r1 operands: Addition (ADD) and Subtraction (per the file) (SUB): Both input points (per the file) must undergo full validation (per the file) (field check, curve equation check). Per the file, if either input point (per the file) is invalid, the syscall (per the file) must immediately fail and return 1.",
+    "The file’s claim in this section turns on Per, 64, 0. Those labels are the document’s. They are not a Sol.College measurement. Per the file, otherwise, it writes the (per the file) resulting affine point to (per the file) result_point_addr and returns 0. Per the file, scalar Multiplication (MUL): The (per the file) point must undergo full (per the file) validation (field check, curve equation check). Per the file, the scalar input must (per the file) also be validated to (per the file) ensure it is strictly (per the file) less than the curve's (per the file) prime group order n.",
+    "Per the file, if the scalar is (per the file) out of range, or (per the file) if point validation fails, (per the file) the syscall must immediately (per the file) fail and return 1. Per the file, since secp256r1 has a (per the file) cofactor of 1, any (per the file) point on the curve (per the file) is inherently in the (per the file) correct prime-order subgroup, making (per the file) subgroup checks mathematically trivial. Per the file, multiplying by a scalar (per the file) of 0 must yield (per the file) the canonical 64-byte all-zero array. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Multiscalar Multiplication (MSM)",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing sol_curve_multiscalar_mul syscall is to be extended for secp256r1. Per the file, this extension is useful (per the file) for batch-verifying WebAuthn signatures (per the file) or evaluating complex cryptographic equations efficiently. Per the file, the implementation should leverage (per the file) sub-linear optimization algorithms (e.g., (per the file) Pippenger's algorithm) to reduce compute units (per the file) (CU) compared to sequential scalar multiplications. Per the file, validation rules for MSM operands: Every point in the (per the file) points_addr array must undergo (per the file) full validation (field check, curve equation check).",
+    "Per the file, every scalar in the scalars_addr array has to be validated to ensure it (per the file) is strictly less than the (per the file) curve's prime group order n. Per the file, if any point is (per the file) invalid, or if any (per the file) scalar is out of (per the file) range, the syscall must (per the file) immediately fail and return (per the file) 1 without writing to result_point_addr. Per the file, if the final sum (per the file) results in the point (per the file) at infinity, the syscall (per the file) must write the canonical (per the file) 64-byte all-zero array and (per the file) return 0. Per the file, otherwise, it writes the (per the file) resulting affine point and returns 0. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Point Validation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the sol_curve_validate_point syscall is to be extended to support secp256r1. Per the file, when called with SECP256R1_{LE,BE}, (per the file) the syscall reads the uncompressed affine (per the file) coordinates (64 bytes: 32 bytes for (per the file) X, 32 bytes for Y) from (per the file) point_addr. Per the file, the validation succeeds (returning (per the file) 0) if one of (per the file) the following conditions is met: Identity Point: The input (per the file) is exactly 64 bytes (per the file) of zeroes (the canonical (per the file) representation of the point at infinity).",
+    "Per the file, on-Curve Point: The coordinates (per the file) are valid field elements (strictly (per the file) less than the prime modulus (per the file) p) and satisfy the curve equation. Per the file, if neither condition is (per the file) met (e.g. either coordinate (per the file) is >= p, or the point fails to lie on the curve), the (per the file) syscall must return 1. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Decompression Operations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the sol_curve_decompress syscall is to be extended for secp256r1. Per the file, it accepts a 33-byte (per the file) compressed secp256r1 point (a 1-byte (per the file) parity marker of 0x02 or 0x03 (per the file) and a 32-byte X-coordinate). Per the file, the endianness of both (per the file) the input X-coordinate and (per the file) the output 64-byte affine representation (per the file) to result is dictated by the (per the file) curve_id used. Per the file, it calculates the valid (per the file) Y-coordinate and outputs the (per the file) standard uncompressed representation.",
+    "Per the file, because the point at (per the file) infinity has no affine (per the file) X-coordinate and is represented (per the file) in standard SEC1 as a (per the file) single 0x00 byte, it cannot (per the file) be encoded within the fixed (per the file) 33-byte layout required by this syscall. Per the file, as such, decompression of (per the file) the identity point is explicitly unsupported. Per the file, the provided X-coordinate has to be a valid field element (per the file) (strictly less than the prime modulus p).",
+    "Per the file, the syscall must fail (per the file) and return 1 if (per the file) any of the following conditions are met: The X-coordinate is >= p. Per the file, the 1-byte prefix marker (per the file) is not 0x02 or 0x03. Per the file, the calculated Y^2 value (per the file) is a quadratic non-residue. Per the file, on success, the syscall (per the file) writes the standard uncompressed (per the file) 64-byte affine representation to (per the file) result and returns 0."
+   ]
+  },
+  {
+   "heading": "Compute Unit Usage",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each secp256r1 syscall consumes (per the file) a fixed number of (per the file) compute units (CUs), charged (per the file) before its inputs are read.",
+    "Per the file, the charge applies whether (per the file) the syscall returns 0 (per the file) or 1. | Operation | Syscall (per the file) | CUs | | --- | --- | ---: | | Point validation | sol_curve_validate_point (per the file) | 20 | | Decompression | sol_curve_decompress | 610 | | Addition (ADD) | sol_curve_group_op (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | 520 | | Subtraction (SUB) | sol_curve_group_op | 520 | | Scalar multiplication (MUL) | sol_curve_group_op | 9,000 | | MSM | sol_curve_multiscalar_mul | see below | The MSM cost depends on points_len: An MSM of zero or one point costs the same as a scalar multiplication.",
+    "Per the file, mSMs of more than (per the file) 367 points exceed the (per the file) 1.4 million CU per-tx limit. Per the file, these costs were calibrated (per the file) on a private 10-node Alpenglow cluster with 200 ms (per the file) slots and the cost limits (per the file) of SIMD-0286 (20 million CUs (per the file) per writable acct and 50 million CUs per block (per the file) in each slot). Per the file, they are set so (per the file) that a block filled to the per-acct limit with any of these (per the file) operations, which forces the txs to execute serially, replays within the slot. Per the file, they ought to be revisited if those limits change. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a monolithic sol_secp256r1_verify (per the file) or sol_secp256r1_recover syscall. Per the file, while a single syscall (per the file) might be easier to (per the file) integrate for a narrow (per the file) set of signature verification (per the file) use cases, it limits developer freedom. Per the file, a monolithic verify syscall (per the file) forces the network to (per the file) enshrine specific rules around (per the file) signature malleability (e.g., enforcing (per the file) the rejection of high-S values).",
+    "Per the file, it also precludes developers (per the file) from using the curve (per the file) for anything other than standard ECDSA verification. Per the file, extending the generalized curve (per the file) operations follows the established (per the file) architectural direction of the network. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this will support the (per the file) strategic migration of cryptographic (per the file) precompiles to Core BPF (per the file) and enable hardware-secured WebAuthn (per the file) and Passkey applications to be (per the file) built natively on Solana. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the necessary security considerations including point validation, memory safety, (per the file) etc. are detailed in (per the file) the Detailed Design section. Per the file, to prevent Denial-of-Service (DoS) (per the file) attacks, the Compute Unit (CU) cost (per the file) for each secp256r1 syscall must strictly (per the file) align with the actual wall-clock execution (per the file) time on node hardware. Per the file, if these cryptographic operations (per the file) are underpriced, an attacker (per the file) could exploit the cost (per the file) tracker inaccuracy to artificially (per the file) delay block production while (per the file) remaining ostensibly under the block and per-acct CU limits.",
+    "Per the file, furthermore, the sol_curve_multiscalar_mul syscall calls for a dynamic CU pricing model, because its (per the file) cost grows with points_len. Per the file, the cost in the (per the file) Compute Unit Usage section (per the file) is linear in points_len. Per the file, this matches the measured (per the file) cost of the implementation (per the file) for 32 or more (per the file) points and overcharges smaller MSMs. Per the file, if an implementation later (per the file) scales sub-linearly (e.g., using (per the file) Pippenger's algorithm), the linear cost overcharges (per the file) rather than undercharges it, so nodes still cannot be stalled, and the cost may be revised in a later SIMD. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

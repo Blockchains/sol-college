@@ -1,0 +1,71 @@
+{
+ "slug": "increase-txv1-account-lock-limit-to-96",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increase the maximum number of acct addresses in a v1 tx from 64 to 96. Per the file, this limit includes all addresses in the tx's acct list: signers, program IDs, and (per the file) both writable and read-only accts. Per the file, legacy and v0 tx formats retain the 64-acct limit. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the runtime limits v1 txs to 64 acct locks. Per the file, raising the limit lets v1 txs to use more accts while leaving room for (per the file) signatures, instructions, and instruction data within the tx size limit. Per the file, for example, onchain swap routing can require accts for multiple liquidity pools (per the file) and the programs they use. Per the file, a higher acct limit lets a single tx to access more pools, (per the file) enabling more complex routes (per the file) that can offer better execution prices. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, once the associated feature (per the file) gate is activated, v1 txs MUST be allowed to (per the file) lock up to 96 accts, inclusive. Per the file, a v1 tx with more than 96 accts MUST fail sanitization. Per the file, during block production, the (per the file) leader MUST discard such a tx. Per the file, during replay, a node MUST mark the block (per the file) dead if it contains such a tx. Per the file, legacy and v0 txs MUST remain limited to 64 acct locks.",
+    "Per the file, the increase_tx_account_lock_limit feature, which (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) raises the acct lock limit to 128, MUST be removed before this proposal's feature is introduced. Per the file, the two features therefore (per the file) have no precedence or interaction rules. Per the file, tests should verify that otherwise valid v1 txs with 65–96 accts are accepted only after feature (per the file) activation, and that txs with more than 96 accts remain rejected."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, v1 txs have a 4096-byte size (per the file) limit and encode each acct address directly as 32 bytes, (per the file) without address lookup tables. Per the file, a limit of 96 accts uses 3072 bytes for (per the file) addresses, leaving 1024 bytes (per the file) for signatures, headers, configuration, (per the file) instructions, and instruction data. Per the file, by comparison, 128 acct addresses alone would consume the entire tx size limit. Per the file, the 96-acct limit balances access to more accts with room for the rest of the tx.",
+    "Per the file, transactions MUST still fit within the tx size limit, so those (per the file) with more signatures or (per the file) instruction data may fit fewer than 96 accts. Per the file, extending the higher acct limit to legacy and v0 txs was also considered. Per the file, the goal is to (per the file) eventually remove support for (per the file) these formats, so increasing (per the file) their capabilities would encourage (per the file) further use of formats intended for retirement. Per the file, limiting the increase to (per the file) v1 encourages applications to (per the file) migrate to the newer format. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, applications can use up to 96 accts in a v1 tx. Per the file, legacy and v0 txs are unaffected. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions can lock 50% more accts, increasing their potential scheduling and acct-loading cost. Per the file, existing tx and block resource limits remain unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the change only relaxes (per the file) the limit for v1 txs and is feature gated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, shared tx test vectors ought to be provided so all (per the file) client implementations can verify (per the file) that otherwise valid v1 txs with 65–96 accts are accepted only after feature (per the file) activation, and that txs with more than 96 accts remain rejected. Per the file, each vector should specify the tx, feature activation state, and (per the file) expected acceptance or rejection result. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

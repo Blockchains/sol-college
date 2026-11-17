@@ -1,0 +1,167 @@
+{
+ "slug": "notary",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Notary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, provide a generalized message (per the file) evaluation system that can (per the file) assess the validity of (per the file) Wormhole messages and make (per the file) decisions about their processing (per the file) based on verification state, (per the file) with the ability to (per the file) delay suspicious messages for (per the file) manual review or permanently block malicious ones. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the core Wormhole protocol (per the file) ensures message authenticity through (per the file) Guardian signatures but it (per the file) cannot inherently determine whether (per the file) a message represents legitimate (per the file) activity or is the (per the file) result of an exploit, (per the file) bug, or malicious behavior. Per the file, the Transfer Verifier system (per the file) was developed to validate (per the file) the invariants of Wrapped (per the file) Token Transfers by analyzing (per the file) on-chain data and tx receipts (or other on-chain artifacts).",
+    "Per the file, however, this validation occurs (per the file) at the chain watcher (per the file) level and produces verification (per the file) states that need to (per the file) be acted upon elsewhere in the codebase. Per the file, transfer Verifier only returns (per the file) an accept/reject result when (per the file) provided with a Wrapped Token (per the file) Transfer messages, but fails to alter how that message is (per the file) processed on the way to (per the file) becoming a VAA. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary system aims (per the file) to: Provide a standardized, (per the file) coordinated response to Transfer (per the file) Verifier results across all (per the file) Guardians Enable temporary delays (per the file) for suspicious messages to (per the file) allow for manual review (per the file) and investigation Maintain a (per the file) list of messages that (per the file) are confirmed to be (per the file) malicious or malformed Maintain (per the file) a persistent record of (per the file) delayed and blocked messages (per the file) across Guardian restarts Support (per the file) the broader Wormhole security (per the file) model by providing an (per the file) additional layer of protection (per the file) Operate as a general-purpose (per the file) message evaluation framework that could (per the file) be extended beyond Wrapped Token Transfers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, replace or duplicate the (per the file) Transfer Verifier's analysis capabilities (per the file) Modify or alter message content (per the file) - the Notary only suggests processing (per the file) decisions Provide automatic resolution of (per the file) suspicious messages - manual intervention is (per the file) required Support message types other (per the file) than Wrapped Token Transfers (in (per the file) the initial implementation) Synchronize state (per the file) between Guardians - each Guardian maintains (per the file) its own Notary state Take (per the file) action on hacks or illegitimate (per the file) messages that originate from outside (per the file) of the Wormhole network. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary operates as (per the file) a message evaluation layer (per the file) within each Guardian node, (per the file) positioned between the message (per the file) observation phase and the VAA signing phase. Per the file, it receives messages from (per the file) the watchers that have (per the file) already been processed by (per the file) the Transfer Verifier (if (per the file) enabled) and makes decisions (per the file) based on their verification state.",
+    "Per the file, the system puts in place three possible verdicts: **Approve** - Messages should proceed (per the file) normally through the signing process **Delay** - Messages ought to be temporarily held for (per the file) manual review (default: 4 days) **Blackhole** - Messages ought to be permanently blocked from (per the file) processing The Notary maintains (per the file) persistent storage of delayed (per the file) and blackholed messages, ensuring (per the file) consistent behavior across Guardian (per the file) restarts and providing operators (per the file) with the ability to manage problematic messages. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Architecture",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary is implemented (per the file) as a Go package (per the file) (node/pkg/notary) that integrates with (per the file) the Guardian's message processing pipeline. Per the file, it consists of: **Core (per the file) Notary struct** - Main processing (per the file) logic and state management (per the file) **Database interface** - Persistent storage (per the file) for delayed and blackholed (per the file) messages **Message queues** - In-memory (per the file) management of pending messages. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Message Processing Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when a message reaches the Notary: **Type Check** - Only Wrapped (per the file) Token Transfer messages are (per the file) evaluated; all others are automatically approved **Blackhole Check** - If the (per the file) message is already blackholed, (per the file) return Blackhole verdict immediately **Verification State Evaluation** - Based (per the file) on the Transfer Verifier's (per the file) assessment: Valid, NotVerified, NotApplicable, CouldNotVerify (per the file) → **Approve** Anomalous → **Delay** (4 days (per the file) default) Rejected → **Delay** (4 days (per the file) default) Similar to the Governor (per the file) and Accountant systems, the Notary (per the file) maintains a list of messages (per the file) which the Processor can consult (per the file) to determine if a message ought to be processed into a VAA or not. Per the file, it cannot directly block or delay messages."
+   ]
+  },
+  {
+   "heading": "Verdict Types and Behavior",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, _All three statuses are (per the file) mutually-exclusive, and no message ought to be duplicated within or across (per the file) the containing data structures._ Approve (per the file) Verdict Message proceeds immediately to (per the file) VAA signing No database storage (per the file) required Used for all non-wrapped-token-transfer (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) messages and verified wrapped token transfers Delay Verdict Message is stored in both database and in-memory queue with release timestamp Default delay period: 4 days Messages are automatically released after the delay period expires Delayed messages may be manually promoted to \"blackholed\" status if determined to be malicious Delayed messages may be manually removed from the delay queue if determined to be safe, and then processed immediately Blackhole Verdict Message is permanently blocked from processing (though ultimately it is the Processor that actually takes this action) Stored in database for persistence across restarts Cannot be automatically released - calls for manual intervention Used for messages manually determined to be malicious after investigation Could potentially be applied automatically to certain verification states in future implementations."
+   ]
+  },
+  {
+   "heading": "Database Schema",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary uses a (per the file) BadgerDB-based storage system with (per the file) two primary data types: Storage keys are prefixed to (per the file) distinguish between delayed and blackholed (per the file) messages: Delayed: notary:delayed:<hash> Blackholed: notary:blackholed:<hash>. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Integration with Transfer Verifier",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary builds upon (per the file) the Transfer Verifier system (per the file) but serves a different (per the file) purpose: **Transfer Verifier**: Analyzes tx receipts and on-chain data (per the file) for Wrapped Token Transfers Determines (per the file) if a transfer is well-formed (per the file) (i.e. has matching events on the (per the file) Token and Core Bridges) Returns a corresponding (per the file) verification state on messages (Valid, Anomalous, Rejected, (per the file) etc.) Operates at the chain watcher level (per the file) **Notary**: Consumes Transfer Verifier results Makes recommendations (per the file) based on the verification state of the (per the file) messages Manages its own list of delayed (per the file) and blackholed messages Operates at the Guardian (per the file) processor level This separation lets a separation of concerns: the Transfer Verifier (per the file) focuses on analysis the Notary handles the (per the file) interpretation of the results the Processor takes (per the file) action based on the Notary's verdict (and also the Governor's and Accountant's). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Relationship to Governor and Accountant",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary shares architectural (per the file) similarities with the Governor (per the file) and Accountant systems but (per the file) serves a distinct purpose: (per the file) Common Patterns All three (per the file) systems: Operate as message (per the file) filters in the Guardian (per the file) processing pipeline Can instruct (per the file) the processor to delay (per the file) or block message processing (per the file) based on their evaluation (per the file) criteria Maintain persistent state (per the file) across Guardian restarts Provide (per the file) manual override capabilities for (per the file) operators Key Differences **Notary**: (per the file) **Scope**: General message validation (per the file) based on verification state (per the file) **Criteria**: Transfer Verifier results (per the file) (validity/legitimacy) **Action**: Approve, delay (per the file) (4 days), or permanently reject (per the file) (\"blackhole\") **Focus**: Security and fraud (per the file) prevention **Governor**: **Scope**: Wrapped Token (per the file) Transfer rate limiting **Criteria**: Transfer (per the file) value and volume thresholds **Action**: (per the file) Approve immediately or delay (24 hours) based on notional value of transfers **Focus**: Limitation of impact for software errors in the Guardian watchers **Accountant**: **Scope**: Cross-chain token accounting **Criteria**: Token balance consistency across chains via smart contract validation **Action**: Hold messages pending smart contract approval; approved messages proceed, unapproved messages remain pending indefinitely **Focus**: Prevention of erroneous token unlocks, reducing the effectiveness of cross-chain exploits Sequential Processing and Cumulative Delays Messages flow through the Notary, Governor, and Accountant sequentially.",
+    "Per the file, each system independently evaluates (per the file) messages and maintains its own queue. Per the file, when a message is (per the file) released by one system, (per the file) it proceeds to the (per the file) next system for evaluation.",
+    "Per the file, this sequential architecture means delays can accumulate: **Notary**: Delays messages for (per the file) a fixed period (4 (per the file) days for \"Rejected\" or \"Anomalous\" states) **Governor**: Delays messages for (per the file) a fixed period (24 (per the file) hours if value thresholds are exceeded) **Accountant**: Holds messages indefinitely (per the file) pending smart contract approval; (per the file) messages proceed only when (per the file) approved In the worst (per the file) case, and assuming all (per the file) three modules are enabled, (per the file) a single message could (per the file) experience: 4 days delayed (per the file) by the Notary Then (per the file) 24 hours delayed by (per the file) the Governor Then an (per the file) indefinite hold by the (per the file) Accountant until smart contract (per the file) approval The Accountant's indefinite (per the file) hold means total message delay (per the file) is unbounded if smart contract (per the file) approval is delayed or never received. Per the file, operators should monitor pending (per the file) messages across all three (per the file) systems and plan manual interventions accordingly."
+   ]
+  },
+  {
+   "heading": "Operational Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deployment Considerations The Notary is meant to be modular with (per the file) respect to the node. Per the file, it may be disabled via a configuration flag. Per the file, the Notary may be enabled or disabled (per the file) independently of the Transfer (per the file) Verifier and other security mechanisms. Per the file, messages marked as \"Rejected\" (per the file) by the Transfer Verifier (per the file) are delayed rather than (per the file) blackholed to minimize tampering (per the file) with VAAs and to (per the file) provide a cautious rollout.",
+    "Per the file, future implementations may blackhole (per the file) such messages automatically. _The (per the file) Notary's initial implementation only (per the file) acts on results from the (per the file) Transfer Verifier; if Transfer Verifier (per the file) is not enabled the Notary (per the file) will approve all messages.",
+    "Per the file, (This is because the (per the file) Notary works based on (per the file) the Verification State of (per the file) a Message Publication, and (per the file) the only place this (per the file) field is used currently (per the file) is within watchers with (per the file) Transfer Verification implementations)._ Monitoring (per the file) and Alerting Guardians should (per the file) monitor Notary verdict distributions (per the file) Unusual patterns in delayed (per the file) or blackholed messages may (per the file) indicate attacks Database growth ought to be limited, as delayed (per the file) messages are automatically released (per the file) and deleted, and blackholed messages ought to be extremely rare.",
+    "Per the file, manual Intervention Guardians are (per the file) able to use administrator (per the file) commands to change the (per the file) status of delayed or rejected messages. Per the file, this supplies flexibility in case the (per the file) system has false positives (per the file) or other software bugs. Per the file, possible actions include: Releasing (per the file) a delayed message immediately (per the file) Extending the release time (per the file) of a delayed message (per the file) Marking a delayed message (per the file) as blackholed Marking a (per the file) blackholed message as delayed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Trust Model",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Notary inherits the (per the file) security properties of the (per the file) Transfer Verifier system it depends on. Per the file, if the Transfer Verifier (per the file) is compromised or produces (per the file) incorrect results, the Notary (per the file) will make decisions based (per the file) on that flawed information. Per the file, the current approach of (per the file) delaying rejected messages (instead (per the file) of giving them Blackhole status) supplies additional safety against false positives. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Denial of Service",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an attacker who can (per the file) cause the Transfer Verifier (per the file) to mark legitimate messages (per the file) as \"Anomalous\" or \"Rejected\" (per the file) could cause widespread delays (per the file) in message processing for Wrapped Token Transfers. Per the file, however, messages are automatically (per the file) released after the delay (per the file) period, limiting the impact. Per the file, guardians can also intervene (per the file) manually to release delayed (per the file) messages, or disable the (per the file) Notary entirely which would (per the file) prevent the delay from (per the file) occurring even if the (per the file) Transfer Verifier continues to (per the file) yield incorrect verification states. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "State Consistency",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each Guardian maintains its (per the file) own Notary state independently. Per the file, while this supplies resilience against single points (per the file) of failure, it means (per the file) Guardians might have slightly (per the file) different views of delayed/blackholed messages. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Manual Override Risks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ability to manually (per the file) manage delayed and blackholed messages supplies operational flexibility but also (per the file) introduces the risk of (per the file) human error or malicious operator behavior. Per the file, however, a VAA will (per the file) only be created for (per the file) a message if a (per the file) supermajority of Guardians decide (per the file) to process the message, as usual. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Future Enhancements",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Extended Message Type Support",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the operation of the (per the file) Notary is abstract and may be generalized to any (per the file) Message Publication and verification (per the file) state that the Guardian software uses. Per the file, while currently the Notary (per the file) only operations in conjunction (per the file) with Wrapped Token Transfers (per the file) and the Transfer Verifier, (per the file) the Notary architecture could (per the file) be extended to support (per the file) other message types with appropriate verification mechanisms. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Configurable Delay Periods",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current 4-day delay (per the file) period could be made configurable (per the file) per message type or based (per the file) on other criteria. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

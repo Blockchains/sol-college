@@ -1,0 +1,90 @@
+{
+ "slug": "off-chain-message-signing",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Off-chain message signing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is ecosystem demand (per the file) for a method of signing non-tx messages with a Solana wallet. Per the file, typically this is some (per the file) kind of \"proof of (per the file) wallet ownership\" for entry (per the file) into a whitelisted system. Per the file, some inspiration may be gleaned from relevant (per the file) portions of Ethereum's EIP-712. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, security Off-chain message signatures (per the file) should not be valid tx message signatures Future-proofing Versioning Co-exist (per the file) with versioned tx messages and extended length txs Compatibility Hardware wallet signing Localization."
+   ]
+  },
+  {
+   "heading": "Message Preamble",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, field | Start offset | Length (per the file) (bytes) | Description | :---- | :----------: | :------------: | :---------- | Signing Domain | 0x00 | 16 | \\[1\\] | Header version | 0x10 | 1 | \\[2\\] | Application domain | 0x11 | 32 | \\[3\\] | Message format | 0x31 | 1 | \\[4\\] | Signer count | 0x32 | 1 (per the file) | Number of signers committing to the message.",
+    "Per the file, an 8-bit, unsigned integer. (per the file) **MUST NOT** be zero. | Signers (per the file) | 0x33 | SIGNER_COUNT * 32 | SIGNER_COUNT ed25519 (per the file) public keys of signers | Message length | 0x33 (per the file) + SIGNER_CNT * 32 | 2 | Length of message in (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) bytes. Per the file, a 16-bit, unsigned, little-endian (per the file) integer. **MUST NOT** be zero."
+   ]
+  },
+  {
+   "heading": "Signing Domain Specifier",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the signing domain specifier (per the file) is a prefix byte (per the file) string used to give (per the file) similar structure to all (per the file) off-chain message signatures. Per the file, we assign its value to be: The first byte, \\xff, (per the file) was chosen for the following reasons It corresponds to a (per the file) value that is illegal (per the file) as the first byte in a tx MessageHeader. Per the file, it avoids unintentional misuse (per the file) in languages with C-like, (per the file) null-terminated strings.",
+    "Per the file, the remaining bytes, b\"solana (per the file) offchain\", were chosen to be (per the file) descriptive and reasonably long, but (per the file) are otherwise arbitrary. Per the file, this field **SHOULD NOT** (per the file) be displayed to users."
+   ]
+  },
+  {
+   "heading": "Header",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, header version The header (per the file) version is represented as (per the file) an 8-bit unsigned integer. Per the file, only the version 0 (per the file) header format is specified (per the file) in this document This (per the file) field **SHOULD NOT** be (per the file) displayed to users Application (per the file) domain A 32-byte array (per the file) identifying the application requesting off-chain (per the file) message signing. Per the file, this may be any arbitrary bytes.",
+    "Per the file, for instance the on-chain (per the file) address of a program, DAO (per the file) instance, Candy Machine, etc. Per the file, this field **SHOULD** be (per the file) displayed to users as (per the file) a base58-encoded ASCII string (per the file) rather than interpreted otherwise.",
+    "Per the file, message Format Version 0 (per the file) headers specify three message (per the file) formats allowing for trade-offs (per the file) between compatibility and composition of (per the file) messages. | ID | Encoding | Maximum Length (per the file) \\* | Hardware Wallet Support | | :-: | :-------------------: | :---------------: | :---------------------: | | 0 | Restricted (per the file) ASCII \\*\\* | 1232 | Yes | | 1 | UTF-8 (per the file) | 1232 | Blind sign only | | 2 | UTF-8 (per the file) | 65535 | No | \\* Combined length of the message (per the file) preamble and message body<br/> \\*\\* Those characters for (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) which isprint(3) returns true.",
+    "Per the file, both the message encoding (per the file) and maximum message length (per the file) **MUST** be enforced by signer and verifier. Per the file, formats 0 and 1 (per the file) are motivated by hardware (per the file) wallet support where both (per the file) RAM to store the (per the file) payload and font character support are limited. Per the file, this field **SHOULD NOT** (per the file) be displayed to users."
+   ]
+  },
+  {
+   "heading": "Signing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, solana off-chain messages **MUST** (per the file) only be signed using the (per the file) ed25519 digital signature scheme. Per the file, before signing, the message (per the file) **MUST** be strictly checked (per the file) to conform to the associated preamble. Per the file, the message body is (per the file) then appended to the message preamble. Per the file, finally the result is ed25519 signed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Verification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, upon successful ed25519 verification (per the file) of _all_ attached signatures, (per the file) the message **MUST** be (per the file) strictly checked to conform (per the file) to the message preamble. Per the file, a message that fails to conform to its preamble (per the file) is invalid, regardless of (per the file) the validity of any signatures. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Envelope",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when passing around signed (per the file) off-chain messages a common (per the file) format is helpful. Per the file, the recommended binary representation (per the file) is as follows: | Field (per the file) | Start offset | Length (bytes) (per the file) | Description | :---- | :----------: | :------------: | :---------- | Signature Count \\* | 0x00 (per the file) | 1 | Number of signatures.",
+    "Per the file, an 8-bit, unsigned integer (per the file) | Signatures | 0x01 | SIG_COUNT * 64 | SIG_COUNT (per the file) ed25519 signatures | Message Preamble | 0x01 + SIG_COUNT * 64 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | PREAMBLE_LEN | The message preamble | Message Body | 0x01 + SIG_COUNT * 64 + PREAMBLE_LEN | MESSAGE_LEN` | The message content The signature count **MUST** match the value of signers count from the message preamble. Per the file, signatures **MUST** be ordered (per the file) to match their corresponding (per the file) public keys as specified (per the file) in the message preamble. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to prevent social attacks (per the file) by which the signer (per the file) is tricked into signing a tx, the runtime **MUST NOT** (per the file) accept signed off-chain messages as txs under any circumstances. Per the file, the first byte of (per the file) the signing domain specifier is (per the file) chosen such that it (per the file) corresponds to a value (per the file) (0xff) which is implicitly (per the file) illegal as the first byte in a tx MessageHeader today.",
+    "Per the file, the property is implicit (per the file) because the top bit (per the file) in the first byte (per the file) of a MessageHeader being (per the file) set signals a versioned tx, but only a value (per the file) of zero is supported at this time. Per the file, the runtime will need (per the file) to be modified to (per the file) reserve 127 as an (per the file) illegal version number, making this property explicit. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the runtime changes described (per the file) above have been implemented in PR #29807. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,76 @@
+{
+ "slug": "relax-precompile-failure-constraint",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana protocol currently (per the file) prohibits block producers from including txs with precompile instructions that fail signature verification. Per the file, this constraint is not (per the file) ideal since block producers (per the file) may have to do (per the file) work to verify precompiles (per the file) without a guarantee that (per the file) they can receive a fee from the tx."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, ensure that block producers (per the file) are sufficiently incentivized to include txs which make use of (per the file) precompile instructions by allowing such txs to be included in (per the file) a block even if verification fails. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, also considered relaxing the (per the file) constraint of having valid non-fee payer tx-level signatures but those signatures are (per the file) not signed by the fee payer (per the file) so they could be altered in-flight."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, precompile instruction-level signature: A (per the file) signature specified inside a precompile instruction which has to be verified successfully for the tx to be executed successfully. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana protocol will (per the file) no longer reject blocks with txs that have failed precompile verification. Per the file, such txs is to be allowed to be (per the file) recorded in a block (per the file) and signature verification failures ought to be handled similarly to (per the file) how SVM program errors are handled. Per the file, the tx is to be committed, fees deducted, but no other acct state changes ought to be persisted."
+   ]
+  },
+  {
+   "heading": "Transaction Errors",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while tx errors are not required (per the file) to be consistent for (per the file) clients reaching consensus, they (per the file) should follow the following (per the file) specification to give consistent (per the file) responses to downstream users and clients. Per the file, precompile verification errors should (per the file) now be mapped to (per the file) InstructionError::Custom(u32) such that each (per the file) PrecompileError variant below maps to a (per the file) custom error code as annotated below:."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, end users that submit txs with invalid precompile instructions (per the file) will now be able (per the file) to see clearly in (per the file) explorers and other tooling that their txs failed rather than those txs being dropped. Per the file, they will also be (per the file) charged fees for such txs. Per the file, block producers may be assured that compute (per the file) time spent on verifying (per the file) any non-fee payer signatures is to be compensated with fees. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change will require (per the file) the use of a (per the file) new feature gate which (per the file) will remove the precompile (per the file) failure constraint from produced blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

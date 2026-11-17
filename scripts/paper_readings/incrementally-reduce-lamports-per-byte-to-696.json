@@ -1,0 +1,84 @@
+{
+ "slug": "incrementally-reduce-lamports-per-byte-to-696",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reduce lamports_per_byte incrementally from (per the file) 6960 to 696 via five steps: (per the file) 6333, 5080, 2575, 1322, and 696. The file supersedes SIMD-0436, providing a (per the file) more granular reduction schedule. Per the file, requires SIMD-0392: Relaxation of (per the file) post-execution min_balance check, to allow (per the file) for subsequent rent increases if necessary. Per the file, requires SIMD-0194: deprecate rent (per the file) exemption threshold, to avoid unnecessary (per the file) floating point math when setting (per the file) the rent params on feature activation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, minimum acct balance depends on an (per the file) arbitrary constant set years (per the file) ago that has since (per the file) increased significantly in real (per the file) terms due to increases (per the file) in the SOL price. Per the file, this has made state (per the file) allocation cost more expensive (per the file) on mainnet beta than (per the file) on competitors, with no (per the file) compelling justification provided by real resource costs. Per the file, this reduction is split (per the file) into multiple steps to (per the file) allow for gradual observation (per the file) of state growth and (per the file) to allow for controversial (per the file) steps to be debated separately. The file replaces the 2x reduction (per the file) previously suggested in SIMD-0436 (per the file) with a five-step schedule culminating (per the file) in the final target of 696."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file defines five incremental reductions (per the file) to the lamports_per_byte constant. Per the file, each reduction is controlled (per the file) by its own feature gate. Per the file, the values are absolute, (per the file) starting from the current value of 6960. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Reduction Schedule",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the incremental percentage represents (per the file) the portion of the (per the file) total target reduction (6264 (per the file) lamports, from 6960 to (per the file) 696) applied at each step.",
+    "Per the file, the target lamports_per_byte values (per the file) are derived by applying the cumulative (per the file) percentage reduction to the total reduction (per the file) amount and truncating the result to (per the file) the nearest integer. | Step | Target | Incr (per the file) % | Cumul % | Eff Reduc | |------|---------------|--------|---------|-----------| | 1 | 6333 | 10% (per the file) | 10% | 9% | | 2 | 5080 | 20% | 30% (per the file) | 27% | | 3 | 2575 | 40% | 70% | 63% (per the file) | | 4 | 1322 | 20% | 90% | 81% | | 5 (per the file) | 696 | 10% | 100% | 90%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Operational Details",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each reduction step is (per the file) controlled by its own feature gate. Per the file, risk-Based Advancement Proceed to (per the file) the next step only if (per the file) a risk analysis, grounded in (per the file) existing safeguards and empirical data, (per the file) indicates that it is safe (per the file) to do so. Per the file, the analysis must acct for the fact that (per the file) risk increases superlinearly as (per the file) the reduction increases with each step. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on activation of each (per the file) feature, the effective lamports_per_byte (per the file) is updated in the bank and (per the file) rent sysvar (SysvarRent111111111111111111111111111111111), followed by updating (per the file) DEFAULT_LAMPORTS_PER_BYTE in all relevant SDKs post-activation. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, lower rent for app developers. Per the file, existing accts and programs using the higher rent value is to be unaffected, besides being (per the file) allowed to reduce the (per the file) balance to the new minimum. Per the file, validators: a potential increase in state growth. Per the file, in the case of (per the file) excessive state growth, rent may be increased back to (per the file) the legacy value (0392 lets this without significant disruption to existing accts). Per the file, sIMD-0389 does this automatically. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rent reduction is strictly (per the file) a relaxation of existing (per the file) constraints so all existing (per the file) program logic will continue (per the file) to work as before. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

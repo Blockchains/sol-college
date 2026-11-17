@@ -1,0 +1,118 @@
+{
+ "slug": "inter-chain-transaction-verification",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Problem",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, inter-chain applications are not (per the file) new to the digital asset (per the file) ecosystem; in fact, even the (per the file) smaller centralized exchanges still categorically (per the file) dwarf all single chain applications (per the file) put together in terms of (per the file) users and volume. Per the file, they command massive valuations (per the file) and have spent years (per the file) effectively optimizing their core (per the file) products for a broad (per the file) range of end users.",
+    "Per the file, however, their basic operations (per the file) center around mechanisms that (per the file) require their users to (per the file) unilaterally trust them, typically (per the file) with little to no (per the file) recourse or protection from accidental loss. Per the file, this has led to (per the file) the broader digital asset (per the file) ecosystem being fractured along (per the file) network lines because interoperability (per the file) solutions typically: Are technically (per the file) complex to fully implement (per the file) Create unstable network scale (per the file) incentive structures Require consistent (per the file) and high level cooperation between stakeholders."
+   ]
+  },
+  {
+   "heading": "Proposed Solution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, simple Payment Verification \\(SPV\\) (per the file) is a generic term (per the file) for a range of (per the file) different methodologies used by (per the file) light clients on most (per the file) major blockchain networks to (per the file) verify aspects of the (per the file) network state without the (per the file) burden of fully storing (per the file) and maintaining the chain itself. Per the file, in most cases, this (per the file) means relying on a (per the file) form of hash tree (per the file) to supply a proof (per the file) of the presence of a given tx in a certain block (per the file) by comparing against a (per the file) root hash in that (per the file) block’s header or equivalent.",
+    "Per the file, this lets a light client or (per the file) wallet to reach a (per the file) probabilistic level of certainty (per the file) about on-chain events by (per the file) itself with a minimum of (per the file) trust required with regard to network nodes. Per the file, traditionally the process of (per the file) assembling and validating these (per the file) proofs is carried out (per the file) off chain by nodes, (per the file) wallets, or other clients, (per the file) but it also offers (per the file) a potential mechanism for (per the file) inter-chain state verification.",
+    "Per the file, however, by moving the (per the file) capability to validate SPV (per the file) proofs on-chain as a (per the file) smart contract while leveraging the (per the file) archival properties inherent to the (per the file) blockchain, it is possible to (per the file) construct a system for programmatically (per the file) detecting and verifying txs on other networks without the (per the file) involvement of any type of (per the file) trusted oracle or complex multi-stage (per the file) consensus mechanism.",
+    "Per the file, this concept is broadly (per the file) generalisable to any network (per the file) with an SPV mechanism (per the file) and can even be (per the file) operated bilaterally on other (per the file) smart contract platforms, opening (per the file) up the possibility of (per the file) cheap, fast, inter-chain transfer (per the file) of value without relying on (per the file) collateral, hashlocks, or trusted intermediaries. Per the file, opting to take advantage (per the file) of well established and (per the file) developmentally stable mechanisms already (per the file) common to all major blockchains lets SPV based interoperability solutions (per the file) to be dramatically simpler (per the file) than orchestrated multi-stage approaches.",
+    "Per the file, as part of this, (per the file) they dispense with the (per the file) need for widely agreed (per the file) upon cross chain communication (per the file) standards and the large (per the file) multi-party organizations that write (per the file) them in favor of a (per the file) set of discrete contract-based services that may be easily utilized by caller contracts (per the file) through a common abstraction format. Per the file, this will set the (per the file) groundwork for a broad (per the file) range of applications and (per the file) contracts able to interoperate (per the file) across the variegated and (per the file) every growing platform ecosystem. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sPV Program - Client-facing interface (per the file) for the inter-chain SPV system, (per the file) manages participant roles. Per the file, sPV Engine - Validates tx proofs, subset of the SPV Program. Per the file, client - The caller to (per the file) the SPV Program, typically another solana contract. Per the file, prover - Party who generates proofs for txs and submits them to the SPV Program. Per the file, transaction Proof - Created by (per the file) Provers, contains a merkle proof, tx, and blockheader reference.",
+    "Per the file, merkle Proof - Basic SPV (per the file) proof that validates the presence of a tx in a certain block. Per the file, block Header - Represents the (per the file) basic parameters and relative (per the file) position of a given block. Per the file, proof Request - An order (per the file) placed by a client for verification of tx\\(s\\) by provers. Per the file, header Store - A data (per the file) structure for storing and (per the file) referencing ranges of block headers in proofs.",
+    "Per the file, client Request - Transaction from (per the file) the client to the (per the file) SPV Program to trigger (per the file) creation of a Proof Request. Per the file, sub-acct - A Solana acct owned by another contract acct, without its own private key. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Service",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sPV Programs run as (per the file) contracts deployed on the (per the file) Solana network and maintain (per the file) a type of public (per the file) marketplace for SPV proofs that lets any party to submit (per the file) both requests for proofs and also proofs themselves for verification (per the file) in response to requests. Per the file, there is to be multiple SPV Program (per the file) instances active at any (per the file) given time, at least (per the file) one for each connected (per the file) external network and potentially (per the file) multiple instances per network.",
+    "Per the file, sPV program instances is to be relatively consistent in (per the file) their high level API (per the file) and feature sets with (per the file) some variation between currency (per the file) platforms \\(Bitcoin, Litecoin\\) and (per the file) smart contract platforms owing (per the file) to the potential for (per the file) verification of network state changes beyond simply txs. Per the file, in every case regardless (per the file) of network, the SPV (per the file) Program relies on an (per the file) internal component called an (per the file) SPV engine to provide (per the file) stateless verification of the (per the file) actual SPV proofs upon (per the file) which the higher level (per the file) client facing features and api are built.",
+    "Per the file, the SPV engine calls for a network specific implementation, but lets easy extension of the (per the file) larger inter-chain ecosystem by (per the file) any team who chooses to (per the file) carry out that implementation and (per the file) drop it into the standard (per the file) SPV program for deployment. Per the file, for purposes of Proof (per the file) Requests, the requester is (per the file) referred to as the (per the file) program client, which in (per the file) most if not all cases is to be another Solana Contract.",
+    "Per the file, the client can choose (per the file) to submit a request (per the file) pertaining to a specific tx or to include a (per the file) broader filter that can (per the file) apply to any of (per the file) a range of parameters of a tx including its inputs, outputs, and amount. Per the file, for example, A client (per the file) could submit a request for any tx sent from a given (per the file) address A to address (per the file) B with the amount (per the file) X after a certain time.",
+    "Per the file, this structure may be used in a range of applications, including verifying a specific intended (per the file) payment in the case (per the file) of an atomic swap (per the file) or detecting the movement (per the file) of collateral assets for a loan. Per the file, following submission of a (per the file) Client Request, assuming that (per the file) it is successfully validated, a proof request acct is created by the (per the file) SPV program to track (per the file) the progress of the request.",
+    "Per the file, provers use the acct to specify the request (per the file) they intend to fill (per the file) in the proofs they (per the file) submit for validation, at (per the file) which point the SPV (per the file) program validates those proofs (per the file) and if successful, saves them to the acct data of the request acct. Per the file, clients can monitor the (per the file) status of their requests (per the file) and see any applicable txs alongside their proofs by querying the acct data of the request acct.",
+    "Per the file, in future iterations when (per the file) supported by Solana, this process is to be simplified by contracts (per the file) publishing events rather than (per the file) requiring a polling style process as described. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana Inter-chain SPV (per the file) mechanism consists of the following (per the file) components and participants:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "SPV engine",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a contract deployed on (per the file) Solana which statelessly verifies (per the file) SPV proofs for the caller. Per the file, it takes as arguments (per the file) for validation: An SPV (per the file) proof in the correct (per the file) format of the blockchain (per the file) associated with the program (per the file) Reference\\(s\\) to the relevant (per the file) block headers to compare that (per the file) proof against The necessary parameters of the tx to verify If the proof (per the file) in question is successfully validated, (per the file) the SPV program saves proof (per the file) of that verification to the request acct, which may be saved by the caller to its acct data or otherwise handled as necessary.",
+    "Per the file, sPV programs also expose (per the file) utilities and structs used (per the file) for representation and validation of headers, txs, hashes, etc. on a (per the file) chain by chain basis. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "SPV program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a contract deployed on (per the file) Solana which coordinates and (per the file) intermediates the interaction between (per the file) Clients and Provers and (per the file) manages the validation of (per the file) requests, headers, proofs, etc. Per the file, it is the primary (per the file) point of access for (per the file) Client contracts to access the inter-chain.",
+    "Per the file, it offers the following (per the file) core features: Submit Proof Request - lets client to place a (per the file) request for a specific (per the file) proof or set of (per the file) proofs Cancel Proof Request - lets client to invalidate a (per the file) pending request Fill Proof (per the file) Request - used by Provers (per the file) to submit for validation (per the file) a proof corresponding to (per the file) a given Proof Request (per the file) The SPV program maintains (per the file) a publicly available listing (per the file) of valid pending Proof Requests in its acct data for the benefit (per the file) of the Provers, who (per the file) monitor it and enclose (per the file) references to target requests (per the file) with their submitted proofs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proof Request",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a message sent by (per the file) the Client to the (per the file) SPV engine denoting a (per the file) request for a proof of a specific tx or set of txs. Per the file, proof Requests can either (per the file) manually specify a certain tx by its hash or (per the file) can elect to submit (per the file) a filter that matches multiple txs or classes of txs. Per the file, for example, a filter matching “any tx from address xxx to (per the file) address yyy” could be (per the file) used to detect payment (per the file) of a debt or (per the file) settlement of an inter-chain swap.",
+    "Per the file, likewise, a filter matching “any tx from address xxx” could (per the file) be used by a (per the file) lending or synthetic token (per the file) minting contract to monitor (per the file) and react to changes in collateralization. Per the file, proof Requests are sent (per the file) with a fee, which (per the file) is disbursed by the (per the file) SPV engine contract to (per the file) the appropriate Prover once (per the file) a proof matching that request is validated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Request Book",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the public listing of (per the file) valid, open Proof Requests (per the file) available to provers to (per the file) fill or for clients to cancel. Per the file, roughly analogous to an (per the file) orderbook in an exchange, (per the file) but with a single (per the file) type of listing rather (per the file) than two separate sides. Per the file, it is stored in the acct data of the SPV program. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Proof",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a proof of the (per the file) presence of a given tx in the blockchain in question. Per the file, proofs encompass both the (per the file) actual merkle proof and (per the file) reference\\(s\\) to a chain (per the file) of valid sequential block headers. Per the file, they are constructed and (per the file) submitted by Provers in (per the file) accordance with the specifications (per the file) of the publicly available (per the file) Proof Requests hosted on (per the file) the request book by the SPV program.",
+    "Per the file, upon Validation, they are saved to the acct data of the relevant Proof Request, which may be used by the (per the file) Client to monitor the (per the file) state of the request. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Client",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the originator of a request for a tx proof. Per the file, clients will most often (per the file) be other contracts as (per the file) parts of applications or (per the file) specific financial products like (per the file) loans, swaps, escrow, etc. Per the file, the client in any (per the file) given verification process cycle (per the file) initially submits a ClientRequest (per the file) which communicates the parameters (per the file) and fee and if (per the file) successfully validated, results in (per the file) the creation of a Proof Request acct by the SPV program.",
+    "Per the file, the Client may also (per the file) submit a CancelRequest referencing (per the file) an active Proof Request so as to denote it as (per the file) invalid for purposes of proof submission. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Prover",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the submitter of a (per the file) proof that fills a Proof Request. Per the file, provers monitor the request (per the file) book of the SPV (per the file) program for outstanding Proof (per the file) Requests and generate matching (per the file) proofs, which they submit (per the file) to the SPV program for validation. Per the file, if the proof is (per the file) accepted, the fee associated (per the file) with the Proof Request (per the file) in question is disbursed to the Prover.",
+    "Per the file, provers typically operate as (per the file) Solana Blockstreamer nodes that (per the file) also have access to (per the file) a Bitcoin node, which (per the file) they use for purposes (per the file) of constructing proofs and accessing block headers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Header Store",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an acct-based data structure used to (per the file) maintain block headers for the (per the file) purpose of inclusion in submitted (per the file) proofs by reference to the header store acct. header stores may be maintained by independent entities, (per the file) since header chain validation is (per the file) a component of the SPV (per the file) program proof validation mechanism. Per the file, fees that are paid (per the file) out by Proof Requests (per the file) to Provers are split (per the file) between the submitter of (per the file) the merkle proof itself (per the file) and the header store (per the file) that is referenced in the submitted proof.",
+    "Per the file, due to the current (per the file) inability to grow already allocated acct data capacity, the use (per the file) case necessitates a data (per the file) structure that can grow indefinitely without rebalancing. Per the file, sub-accts are accts owned by the SPV program (per the file) without their own private keys (per the file) that are used for storage (per the file) by allocating blockheaders to their acct data.",
+    "Per the file, multiple potential approaches to (per the file) the implementation of the (per the file) header store system are (per the file) feasible: Store Headers in program sub-accts indexed by Public address: Each sub-acct holds one header and has a (per the file) public key matching the blockhash Requires (per the file) same number of acct data lookups as confirmations per verification (per the file) Limit on number of confirmations \\(15-20\\) (per the file) via max tx data ceiling No network-wide duplication of individual (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) headers Linked List of multiple sub-accts storing headers: Maintain sequential index of storage accts, many headers per storage acct Max 2 acct data lookups for &gt;99.9% of verifications \\(1 for most\\) Compact sequential data address format lets any number of confirmations and fast lookups Facilitates network-wide header duplication inefficiencies."
+   ]
+  }
+ ]
+}

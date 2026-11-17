@@ -1,0 +1,182 @@
+{
+ "slug": "governor",
+ "pages": 4,
+ "sections": [
+  {
+   "heading": "Governor",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, limit the impact of (per the file) certain exploits by giving (per the file) Guardians the option to (per the file) delay Wormhole messages from (per the file) registered token bridges if (per the file) their aggregate notional value is extraordinarily large. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a single integrity failure (per the file) of the core messaging (per the file) bridge can have disastrous (per the file) consequences for users of (per the file) token bridges built on (per the file) top of Wormhole, if (per the file) no additional safety mitigations are in place. Per the file, for example, on Feb (per the file) 2, 2022 a vulnerability (per the file) in the Solana core (per the file) smart contract was exploited to maliciously mint wETH (per the file) on Solana and it (per the file) was subsequently bridged back to Ethereum.",
+    "Per the file, there are multiple potential (per the file) failure modes of the (per the file) bridge: In scope of (per the file) the Wormhole security program: (per the file) Bugs in the smart (per the file) contract Bugs in the (per the file) Guardian software Guardian key (per the file) compromise Out of scope (per the file) of the Wormhole security (per the file) program: Bugs in the (per the file) blockchain smart contract runtime (per the file) or rpc nodes Forks (per the file) Even if Wormhole's code (per the file) and operations are flawless, it (per the file) might still produce \"invalid\" messages (per the file) if there is an exploit (per the file) of the origin chain: \"Bugs\" (per the file) in the origin-chain smart contract (per the file) runtime that produced undesirable Wormhole messages (per the file) could be patched by the community, (per the file) effectively leading to a fork that (per the file) reverts these Wormhole messages.",
+    "Per the file, and bugs in the (per the file) rpc nodes could lead (per the file) to the Guardians not (per the file) having an accurate view (per the file) of the on-chain state. Per the file, if token bridge transfers (per the file) are unlimited and instantaneous, (per the file) a bug in a (per the file) single connected chain could (per the file) cause the entire token (per the file) bridge to be drained."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if a Guardian decides (per the file) to enable this feature: (per the file) Delay Wormhole messages from (per the file) registered token bridges for (per the file) 24h, if their notional (per the file) value is excessively large. Per the file, this gives the Guardian (per the file) the opportunity to delete (per the file) pending messages, if they (per the file) were created through a (per the file) software bug and not (per the file) accurately represent the state (per the file) of the origin chain.",
+    "Per the file, protect against sybil attacks, (per the file) i.e. this feature should (per the file) work even if an attacker (per the file) tries to make one large (per the file) transfer look like organic activity (per the file) by splitting it into many small transfers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, synchronize state between Guardians. Per the file, each Guardian may have (per the file) a slightly different view (per the file) of the network, including (per the file) Governor configuration, ordering and (per the file) completeness of token bridge transfers, etc. Per the file, the Governor is a (per the file) local feature that makes (per the file) decisions based on each (per the file) Guardian's individual view of the network. Per the file, prevent quality-of-service degradation attacks (per the file) where one bad actor causes a (per the file) majority of transfers to be delayed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "High-Level Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Delay Decision Logic",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, *Configuration*: For each chain, a _single-tx-threshold_ and a *24h-threshold* denominated in (per the file) a base currency (U.S. Per the file, dollar) is specified in mainnet_chains.go. The file’s claim in this section turns on Per. Those labels are the document’s. They are not a Sol.College measurement. Per the file, tokens that are not (per the file) on this list are (per the file) not being tracked by the Governor. Per the file, this list is opt-in so as to prevent thinly-traded tokens with (per the file) unreliable price feeds to count towards (per the file) the thresholds.",
+    "Per the file, a list of allow-listed (per the file) assets for flow canceling is (per the file) configured in flow_cancel_tokens.go. Per the file, a list of allow-listed (per the file) chain ID pairs, or corridors, (per the file) for flow canceling is configured (per the file) in flow_cancel_tokens.go. Per the file, the Governor divides token-based txs into two categories: small txs and large txs. **Small Transactions:** Transactions smaller than the single-tx threshold of the chain where the (per the file) transfer is originating from are considered small txs.",
+    "Per the file, during any 24h sliding (per the file) window, the Guardian will (per the file) sign token bridge transfers (per the file) in aggregate value up (per the file) to the 24h threshold (per the file) with no finality delay. Per the file, when small txs exceed this limit, they is to be delayed until sufficient (per the file) headroom is present in (per the file) the 24h sliding window. Per the file, a tx either fits or is (per the file) delayed, they are not (per the file) artificially split into multiple txs.",
+    "Per the file, if a small tx has been delayed for (per the file) more than 24h, it is to be released immediately and (per the file) it will not count (per the file) towards the 24h threshold. (per the file) **Large Transactions:** Transactions larger than the single-tx threshold of the chain where (per the file) the transfer is originating from (per the file) are considered large txs. Per the file, all large txs have an imposed 24h (per the file) finality delay before Wormhole Guardians sign them.",
+    "Per the file, these txs fail to affect the 24h threshold counter. Per the file, headroom Calculations Each chain (per the file) has a configured limit, (per the file) denoted in USD, that (per the file) determines the maximum value of transfers that may be emitted within a 24 hour period. Per the file, this is sometimes referred (per the file) to as the \"daily (per the file) limit\", though it uses (per the file) a 24-hour sliding window (per the file) rather than discrete calendar days.",
+    "Per the file, when the sum exceeds (per the file) the limit, any new (per the file) small transfers that exceed the limit is to be queued. Per the file, the headroom for a (per the file) chain is the amount (per the file) left over after subtracting (per the file) the current sum of (per the file) small transfers from the (per the file) chain's daily limit. Per the file, inbound transfers of certain (per the file) tokens can also decrease (per the file) this sum, a process (per the file) referred to as Flow Canceling.",
+    "Per the file, flow Canceling Guardians can (per the file) optionally enable \"flow canceling\". Per the file, this feature lets incoming transfers to reduce (per the file) the current \"daily limit\" (per the file) (sum of the USD (per the file) value of all small txs within the past 24 hours). Per the file, this creates additional headroom, (per the file) allowing a greater volume (per the file) of notional value to (per the file) leave the chain without being delayed. Per the file, the general idea is (per the file) to allow certain transfers (per the file) to offset the consumption (per the file) of an outgoing \"budget\" (per the file) that the Governor records.",
+    "Per the file, a flow cancel transfer (per the file) is akin toa credit (per the file) transferred into the Governor (per the file) which is measured against (per the file) the total debits of (per the file) the day, 'paying off (per the file) the debt', and allowing for further consumption. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Asset pricing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, since the thresholds are (per the file) denominated in the base (per the file) currency, the Governor must (per the file) know the notional value (per the file) of transfers in this base currency. Per the file, to determine the price (per the file) of a token it (per the file) uses the *maximum* of: **Hardcoded Floor Price**: This (per the file) price is hard coded (per the file) into the governor and (per the file) is based on a (per the file) fixed point in time (per the file) (usually during a Wormhole (per the file) Guardian release) which polls (per the file) CoinGecko for a known (per the file) set of known tokens that are governed. **Dynamic Price:** This price (per the file) is dynamically polled from (per the file) CoinGecko at 5-10min intervals.",
+    "Per the file, the token configurations are (per the file) in manual_tokens.go and generated_mainnet_tokens.go. flow_cancel_tokens.go (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) contains the list of Flow Cancel tokens but fails to include price information. Per the file, if CoinGecko was to (per the file) provide an erroneously low (per the file) price for a token, (per the file) the Governor errs on (per the file) the side of safety (per the file) by using the hard-coded (per the file) floor price instead. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Visibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, each Guardian publishes its (per the file) Governor configuration and status (per the file) on the Wormhole gossip (per the file) network, which anyone can (per the file) subscribe to via a guardian spy (instructions). Per the file, some Guardians also make (per the file) the Governor status available (per the file) through a public API, which may be visualized on the Wormhole Dashboard. Per the file, a more feature-rich Wormhole Explorer that will aggregate (per the file) Governor status across all Guardians (per the file) is work-in-progress. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Governor can only (per the file) reduce the impact of (per the file) an exploit, but not prevent it. Per the file, excessively high transfer activity, (per the file) even if manufactured and (per the file) not organic, will cause txs to be delayed by up to 24h. Per the file, if CoinGecko reports an (per the file) unreasonably high price for (per the file) a token, the 24h threshold is to be exhausted sooner. Per the file, guardians need to manually (per the file) respond to erroneous messages (per the file) within the 24h time window.",
+    "Per the file, it is expected that (per the file) all Guardians operate collateralization (per the file) monitoring for the protocol, taking into acct the Governor queue. Per the file, all Guardians should have (per the file) alerting and incident response (per the file) procedures in case of an under-collateralization. Per the file, an attacker could utilize (per the file) liquidity pools and other (per the file) bridges to launder illicitly minted wrapped assets. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Governor is implemented (per the file) as an additional package that defines a ChainGovernor object mainnet_tokens.go, a single map (per the file) of tokens that is to be monitored mainnet_chains.go, a map of chains governed (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) by the chain governor flow_cancel_tokens.go, a map of tokens that can reduce a chain's calculated aggregate flow. flow_cancel_corridors.go, a list of chain ID pairs which allow flow canceling between those two chains The mainnet_tokens.go maps a list of tokens with the maximum price between a hard-coded token floor price and the latest price read from CoinGecko.",
+    "Per the file, if a node level (per the file) config parameter is enabled (per the file) to indicate that the (per the file) chain governor is enabled, all VAAs is to be passed through the (per the file) ChainGovernor to perform a (per the file) series of additional checks (per the file) to indicate whether the message may be published or if (per the file) it should not and (per the file) be dropped by the processor. Per the file, the checks performed include: Is the source chain (per the file) of the message one (per the file) that is listed within mainnet_chains.go?",
+    "Per the file, is the message sent (per the file) from a governed emitter? Per the file, is the message a (per the file) known type that transfers value? Per the file, is the token transferred (per the file) listed within mainnet_tokens.go? Per the file, is the token transferred (per the file) listed within flow_cancel_tokens.go? Per the file, is the tx a “large” tx (ie. greater than or (per the file) equal to bigTransactionSize for this chain)? Per the file, is the tx a “small” tx (ie. less than bigTransactionSize for this chain)?",
+    "Per the file, the above checks will (per the file) produce 3 possible scenarios: (per the file) **Non-Governed Message**: If a message fails to pass checks (1-4), ChainGovernor will (per the file) indicate that the message may be published. **Governed Message (Large)**: If (per the file) a message is “large”, ChainGovernor will (per the file) wait for 24hrs before signing the (per the file) VAA and place the message in (per the file) a queue. **Governed Message (Small)**: If (per the file) a message is “small”, ChainGovernor will (per the file) determine if it fits inside the (per the file) dailyLimit for this chain. Per the file, if it does fit, it is to be signed immediately.",
+    "Per the file, if it fails to fit, it will wait (per the file) in the queue until it does fit. Per the file, if it fails to fit in 24hrs, it is to be released from the queue. Per the file, the dailyLimit is the (per the file) sum of the notional (per the file) USD value of outbound (per the file) transfers minus the value (per the file) of any inbound Flow Cancel tokens. Per the file, while messages are enqueued, (per the file) any Guardian has a (per the file) window of opportunity to (per the file) determine if a message (per the file) is fraudulent using their (per the file) own processes for fraud detection.",
+    "Per the file, if Guardians determine a (per the file) message is fraudulent, they (per the file) can delete the message (per the file) from the queue from (per the file) their own independently managed queue. Per the file, if a super minority (per the file) of Guardians (7 of (per the file) 19) delete a message (per the file) from their queues, this (per the file) fraudulent message is effectively (per the file) censored as it can (per the file) no longer reach a super-majority quorum.",
+    "Per the file, in this design, there (per the file) are three mechanisms for (per the file) enqueued messages to be (per the file) published: A quorum (13/19) (per the file) of Guardians can manually override (per the file) the Governor and release any (per the file) pending messages. _Messages released through (per the file) this mechanism WOULD NOT be (per the file) added to the list of the processed txs to avoid impacting the daily (per the file) notional limit as maintained by (per the file) the sliding window._ Guardians will (per the file) periodically check if a message may be posted without exceeding the (per the file) daily notional limit as the (per the file) sliding window and notional value of the txs change. _Messages released through this (per the file) mechanism WOULD be added to (per the file) the list of processed txs and thus be counted toward (per the file) the daily notional limit._ Messages is to be automatically released after a (per the file) maximum time limit (this time limit may be adjusted through governance and (per the file) is currently set to 24 (per the file) hours). _Messages released through this (per the file) mechanism WOULD NOT be added (per the file) to the list of the processed txs to avoid impacting the daily (per the file) notional limit as maintained by (per the file) the sliding window._."
+   ]
+  },
+  {
+   "heading": "Flow Canceling",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Flow Canceling assets and Corridors",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, only certain assets transferred (per the file) between certain chains can flow cancel. Per the file, this works using two (per the file) allow-lists: The Flow Cancel token list. Per the file, the Flow Cancel corridors list. Per the file, a corridor is a (per the file) pair of chain IDs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Criteria for flow canceling",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an incoming transfer to (per the file) a chain can flow (per the file) cancel if all of (per the file) the following conditions are (per the file) met: The transfer is (per the file) not a big transfer (per the file) The asset is allow-listed (per the file) in the file flow_cancel_tokens.go. Per the file, the source (emitter) chain (per the file) and the destination (target) (per the file) chain are connected by a corridor. Per the file, the flow cancel feature (per the file) is enabled by a Guardian on start.",
+    "Per the file, the message publication containing (per the file) the transfer data is not a reobservation. Per the file, reobservations could be very (per the file) old and not reflect current transfer patterns. Per the file, this slightly limits the (per the file) effectiveness of flow cancel (per the file) but makes the system (per the file) much simpler to reason about."
+   ]
+  },
+  {
+   "heading": "Effects",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when a flow cancel (per the file) occurs, the \"daily limit\" (per the file) of the destination chain (per the file) is reduced by the (per the file) USD value of the incoming transfer. Per the file, this additional headroom may (per the file) allow previously queued transfers (per the file) to be released if (per the file) they fit within the (per the file) new daily limit constraint. Per the file, it is important to (per the file) note that big transfers (per the file) are not affected by (per the file) flow canceling and will remain queued."
+   ]
+  },
+  {
+   "heading": "Examples",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, flow canceling is enabled (per the file) and the Governor is (per the file) configured as follows: Flow (per the file) canceling assets: USDC minted (per the file) on Ethereum Flow canceling (per the file) corridors: Ethereum <-> Sui Transfers: (per the file) **Transfer 1**: Emitter=Ethereum, Target=Solana, (per the file) Asset=USDC (Eth) **Transfer 2**: Emitter=Ethereum, Target=Sui, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Asset=DAI (Eth) **Transfer 3**: Emitter=Ethereum, Target=Sui, Asset=USDC (Solana) **Transfer 4**: Emitter=Solana, Target=Base, Asset=USDC (Eth) **Transfer 5**: Emitter=Sui, Target=Ethereum, Asset=USDC (Eth) Only **Transfer 5** will flow cancel here, reducing the calculated limit on Ethereum.",
+    "Per the file, transfer 1 fails because (per the file) there is no Ethereum-Solana (per the file) corridor Transfer 2 fails because (per the file) DAI is not a flow (per the file) canceling asset Transfer 3 fails (per the file) because only USDC minted on (per the file) Ethereum is enabled Transfer 4 (per the file) fails because there is no (per the file) corridor between Solana and Base."
+   ]
+  },
+  {
+   "heading": "Operational Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Extending the release time to have more time to investigate",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, guardian operators can use (per the file) the ChainGovernorResetReleaseTimer admin RPC (per the file) or the governor-reset-release-timer [VAA_ID] (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) <num_days> admin command to reset the delay to the specified amount of days (num_days), up to 30 days. Per the file, omitting the argument defaults to 1 day. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dropping messages from the Governor",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, guardian operators can use (per the file) the ChainGovernorDropPendingVAA admin RPC (per the file) or governor-drop-pending-vaa [VAA_ID] admin (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) command to remove a VAA from the Governor queue. Per the file, note that in most cases this ought to be done in conjunction (per the file) with disconnecting a chain (per the file) or block-listing certain messages (per the file) because otherwise the message may (per the file) just get re-observed through automatic (per the file) observation requests. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Potential Improvements",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, right now, adding more governed emitters calls for modifying guardian code. Per the file, in the future, it (per the file) would be ideal to (per the file) be able to dynamically (per the file) add new contracts for (per the file) guardian nodes to observe. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Flow Canceling could weaken Governor protections during an exploit",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, enabling Flow Canceling lets more funds to exit (per the file) a chain when compared (per the file) with running the Chain (per the file) Governor without this feature enabled. Per the file, in the context of (per the file) an exploit of one (per the file) of the core contracts (per the file) or the RPC, an (per the file) attacker may be able (per the file) to craft a series (per the file) of flow-canceling transfers that (per the file) subvert the Governor limits.",
+    "Per the file, this motivates the design (per the file) decision to make flow cancel functionality optional. Per the file, if malicious activity is (per the file) detected, Guardians can toggle (per the file) the CLI flag and (per the file) restart the node software so as to quickly disable the feature. Per the file, when evaluating whether to (per the file) enable flow canceling, consider: (per the file) Is this corridor experiencing chronic congestion? Per the file, could the congestion be (per the file) addressed by modifying the (per the file) daily limit or big tx limit?",
+    "Per the file, is the chain and (per the file) its watcher considered stable? Per the file, does historical transfer data (per the file) show that a small (per the file) number of assets represent (per the file) most of the congestion? Per the file, all of the above ought to be taken into acct so that flow canceling (per the file) is enabled for a (per the file) minimal set of assets and corridors. Per the file, this should mitigate some (per the file) the risk involved with (per the file) increasing the volume allowed by the Governor. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

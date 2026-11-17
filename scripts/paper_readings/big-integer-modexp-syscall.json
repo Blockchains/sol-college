@@ -1,0 +1,164 @@
+{
+ "slug": "big-integer-modexp-syscall",
+ "pages": 4,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a sol_big_mod_exp syscall (per the file) that computes modular exponentiation over unsigned big (per the file) integers: The syscall is analogous to Ethereum's ModExp (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) precompile specified by [EIP-198], but exposes a Solana-native syscall interface instead of the EVM precompile ABI. Per the file, unlike EIP-198, this syscall (per the file) rejects even moduli, so it (per the file) is not input-domain compatible with (per the file) every EIP-198 ModExp call. Per the file, inputs and output are (per the file) byte slices encoded as (per the file) little-endian unsigned integers, with (per the file) the output written into caller-provided (per the file) VM memory."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, modular exponentiation is a (per the file) foundation for RSA verification, (per the file) accumulators, some verifiable delay (per the file) functions, and other number-theoretic cryptography. Per the file, these operations are prohibitively (per the file) expensive when implemented directly (per the file) in sBPF, especially for (per the file) common RSA modulus sizes including 2048, 3072, or 4096 bits. Per the file, the same primitive can (per the file) also provide a native (per the file) modular reduction operation by (per the file) using exponent 1, which (per the file) is useful for programs (per the file) that need large integer (per the file) reduction without general exponentiation.",
+    "Per the file, ethereum exposes the same (per the file) arithmetic operation through its ModExp precompile. Per the file, adding a Solana syscall supplies similar cryptographic building blocks (per the file) to on-chain programs while (per the file) preserving Solana's program-facing syscall model (per the file) and compute metering. Per the file, this syscall is also useful for interoperability. Per the file, programs that verify Ethereum-oriented (per the file) proofs, signatures, or attestations can (per the file) reuse the same high-level arithmetic (per the file) assumptions while adapting only the call interface. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Exact EIP-198 ABI",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall could accept (per the file) one packed input buffer (per the file) using the exact EIP-198 format: This maximizes byte-level compatibility with (per the file) Ethereum tooling, but it is a (per the file) poor fit for Solana syscalls. Per the file, eIP-198 uses 32-byte length (per the file) prefixes, treats calldata as infinitely right-padded (per the file) with zero bytes, and ignores excess bytes. Per the file, solana syscalls should instead (per the file) use explicit VM memory (per the file) ranges and fail deterministically (per the file) on invalid memory accesses. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Precompile Or Native Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a tx precompile or native program (per the file) would follow the pattern (per the file) used for some signature verification features. Per the file, a syscall is preferred (per the file) because programs can invoke (per the file) it directly without instruction (per the file) introspection, and because the (per the file) operation is general arithmetic rather than tx signature validation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "On-chain sBPF Implementation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs can implement modular (per the file) exponentiation in sBPF today, (per the file) but the compute cost (per the file) is too high for (per the file) practical cryptographic use cases. Per the file, a native syscall lets nodes to use audited bigint (per the file) libraries while charging compute (per the file) based on the actual operation size. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "RSA-specific Syscalls",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a full RSA verification (per the file) syscall would cover the (per the file) most common immediate use (per the file) case, but would unnecessarily (per the file) bake message hashing, padding (per the file) schemes, and key sizes into the runtime. Per the file, a fixed-exponent RSA helper (per the file) syscall is also unnecessary because (per the file) generic ModExp metering is exponent-aware (per the file) and charges exponent 65537 for a (per the file) single 64-bit exponent word. Per the file, programs can verify RSA (per the file) signatures by invoking sol_big_mod_exp (per the file) with exponent 65537, while remaining responsible for (per the file) hashing, padding checks, key validation, and domain (per the file) separation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **ModExp**: Modular exponentiation, computing (per the file) (base ^ exponent) mod modulus. (per the file) **Big integer**: A non-negative (per the file) integer encoded as a variable-length (per the file) byte string. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the key words \"MUST\", (per the file) \"MUST NOT\", \"REQUIRED\", \"SHALL\", (per the file) \"SHALL NOT\", \"SHOULD\", \"SHOULD (per the file) NOT\", \"RECOMMENDED\", \"MAY\", and (per the file) \"OPTIONAL\" in this document (per the file) are to be interpreted (per the file) as described in [RFC (per the file) 2119] and [RFC 8174]."
+   ]
+  },
+  {
+   "heading": "Syscall Interface",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add the following program-facing syscall function: Where params points to the (per the file) following struct in VM memory: params is a VM pointer (per the file) to a readable 48-byte BigModExpParams (per the file) record with the following ABI layout: (per the file) | Offset | Size | Field | | ------ | ---- | -------------- | | 0 | 8 | base (per the file) | | 8 | 8 | base_len | | 16 | 8 | exponent (per the file) | | 24 | 8 | exponent_len | | 32 | 8 | modulus | | 40 (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | 8 | modulus_len | Each field is a 64-bit little-endian unsigned integer.",
+    "Per the file, the pointer fields base, (per the file) exponent, and modulus are (per the file) VM pointers to readable (per the file) byte slices with the following lengths: base - base_len bytes exponent - exponent_len bytes modulus - modulus_len bytes result is a (per the file) VM pointer to a writable output buffer (per the file) of exactly modulus_len bytes. Per the file, the syscall computes: and writes exactly modulus_len (per the file) bytes to result. Per the file, the output is encoded (per the file) using the same little-endian (per the file) representation as the inputs and (per the file) is padded to exactly modulus_len (per the file) bytes with trailing zeroes. base_len MAY (per the file) be smaller than, equal to, or larger (per the file) than modulus_len.",
+    "Per the file, if the decoded exponent (per the file) value is 1, the (per the file) syscall computes a modular reduction: The result range MAY (per the file) overlap the params range or input ranges. Per the file, implementations MUST behave as (per the file) if the params record (per the file) and all input bytes (per the file) were read from VM (per the file) memory before any result byte is written. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Length Limits",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on Per, Each, MUST, BIG_MOD_EXP_MAX_BYTES. Those labels are the document’s. They are not a Sol.College measurement. Per the file, this bound is applied (per the file) to the explicit encoded (per the file) base, exponent, and modulus (per the file) lengths, and to the (per the file) implicit result length. exponent_len (per the file) bounds the number of exponent (per the file) bits that can drive repeated (per the file) multiplication, while base_len and modulus_len (per the file) bound operand parsing, reduction, multiplication size, and (per the file) the output length.",
+    "Per the file, the 512-byte limit covers (per the file) 4096-bit RSA moduli and keeps (per the file) the first version within a predictable (per the file) compute envelope. Per the file, larger operands may be introduced by a (per the file) later SIMD after benchmarking and node implementation experience. Per the file, zero-length base and exponent (per the file) inputs are valid and are (per the file) interpreted as the integer 0. (per the file) modulus_len MUST be greater than zero. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Output And Abort Behavior",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the function returns no value on success. Per the file, there are no non-fatal (per the file) error return values. Per the file, the syscall MUST abort (per the file) the virtual machine if (per the file) any of the following (per the file) are true: The params pointer fails to refer to a readable (per the file) VM memory range of (per the file) 48 bytes. base_len, exponent_len, (per the file) or modulus_len is greater than BIG_MOD_EXP_MAX_BYTES. (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file)",
+    "Per the file, any pointer plus length (per the file) calculation overflows, including base (per the file) + base_len, exponent + exponent_len, modulus (per the file) + modulus_len, and result + modulus_len. Per the file, any required VM memory (per the file) range is not readable (per the file) or writable as required. modulus_len == 0. Per the file, the decoded modulus value (per the file) is less than or equal to 1. Per the file, the decoded modulus value is even. Per the file, the tx fails to have enough remaining compute units."
+   ]
+  },
+  {
+   "heading": "Validation And Charging Order",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, implementations MUST perform validation, (per the file) compute charging, and arithmetic (per the file) in the following order: Validate and read the (per the file) params record from VM memory. Per the file, validate all length fields, (per the file) including maximum length checks (per the file) and nonzero modulus_len. Per the file, validate pointer plus length (per the file) calculations for overflow, including (per the file) base + base_len, exponent + exponent_len, (per the file) modulus + modulus_len, and result + modulus_len.",
+    "Per the file, validate required input VM (per the file) memory ranges are readable (per the file) and the output VM (per the file) memory range is writable. Per the file, read all input bytes (per the file) from VM memory, decode (per the file) the exponent and modulus, (per the file) and validate that the (per the file) modulus is odd and greater than 1. Per the file, determine the compute cost. Per the file, abort if the tx fails to have enough remaining compute units.",
+    "Per the file, perform the arithmetic and write the result. Per the file, aborts from steps 1 (per the file) through 7 MUST NOT (per the file) charge the syscall compute cost. Per the file, after step 8 succeeds, (per the file) the charged compute units (per the file) are consumed even if (per the file) an implementation-level failure aborts (per the file) the virtual machine. Per the file, implementations MUST NOT perform (per the file) arithmetic before completing step 8."
+   ]
+  },
+  {
+   "heading": "Arithmetic Semantics",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all inputs are little-endian unsigned integers. Per the file, trailing zeroes are allowed and fail to change the integer value. Per the file, the decoded modulus value (per the file) MUST be odd and greater than 1. Per the file, this requirement rejects zero, (per the file) one, and all even (per the file) moduli, allowing implementations to (per the file) rely on reduction algorithms (per the file) that require an odd non-degenerate modulus. Per the file, if exponent is zero, (per the file) the result is 1 (per the file) mod modulus, encoded in (per the file) exactly modulus_len bytes. Per the file, this defines the zero-base, (per the file) empty-exponent case as 0^0 mod (per the file) modulus = 1 for every valid modulus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Compute Metering",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall MUST charge (per the file) compute before performing the arithmetic. Per the file, the cost depends on (per the file) the encoded operand lengths (per the file) and, for the general (per the file) ModExp path, on the (per the file) number of 64-bit words (per the file) spanned by the exponent. Per the file, a separate modular-reduction path (per the file) is used when the decoded (per the file) exponent value is 1.",
+    "Per the file, the constants are: With these constants multiplications (per the file) is always a multiple (per the file) of BIG_MOD_EXP_CU_DIVISOR, so the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) general path costs exactly 50 + mult_complexity * (3 + 20 * exponent_words) CUs. mult_complexity is the cost of one multiplication modulo an operand of operand_words 64-bit words: the quadratic term is the word-by-word product and reduction, and BIG_MOD_EXP_MULT_COMPLEXITY_CONSTANT is the fixed overhead of each multiplication, which dominates for small operands.",
+    "Per the file, bIG_MOD_EXP_MULTIPLICATIONS_PER_EXPONENT_WORD covers the squarings (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) and multiplications for each 64-bit exponent word, and BIG_MOD_EXP_SETUP_MULTIPLICATIONS covers the precomputation and conversions done once per call. Per the file, bIG_MOD_EXP_BASE_CU covers syscall overhead (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) outside the arithmetic.",
+    "Per the file, the decoded_exponent == 1 branch (per the file) prices the modular-reduction use case directly. Per the file, this branch MUST be (per the file) selected by the decoded (per the file) exponent value, not by adjusted_exponent_length. Per the file, that length is 0 (per the file) for both exponent 0 (per the file) and exponent 1 when (per the file) exponent_len <= 32, and it (per the file) counts trailing zero bytes when (per the file) exponent_len > 32. adjusted_exponent_length MUST be (per the file) (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) computed using the EIP-198 rules over the decoded exponent.",
+    "Per the file, implementations MUST compute the (per the file) same value that would (per the file) be obtained by viewing (per the file) the little-endian exponent in (per the file) most-significant-byte-first order across exactly exponent_len (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) bytes. Per the file, if exponent_len <= 32 and (per the file) all exponent bits are zero, (per the file) then adjusted_exponent_length = 0.",
+    "Per the file, if exponent_len <= 32 and (per the file) the exponent is nonzero, then (per the file) adjusted_exponent_length is the zero-based index (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) of the exponent's highest set bit. Per the file, if exponent_len > 32, then (per the file) adjusted_exponent_length is 8 * (exponent_len - 32) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) plus the zero-based index of the highest set bit in the most significant 32 bytes of the fixed-width exponent.",
+    "Per the file, if those most significant (per the file) 32 bytes are all (per the file) zero, the index term is zero. Per the file, the formula is based (per the file) on encoded lengths, not (per the file) the minimal numerical byte (per the file) length of any decoded (per the file) value, so trailing zeroes fail to reduce base_len, modulus_len, or (per the file) exponent_len. Per the file, the same formula applies (per the file) to RSA verification use cases. The file’s claim in this section turns on Per, RSA-2048, 2048, 65537, 256, 32. Those labels are the document’s. They are not a Sol.College measurement.",
+    "Per the file, its adjusted_exponent_length is 16, (per the file) so exponent_words = 1 and multiplications = 92. Per the file, it costs 50 + ceil(1_046 (per the file) * 92 / 4) = 24_108 CUs. Per the file, with a 512-byte modulus, (per the file) exponents longer than 1024 bits (per the file) exceed the 1.4 million CU per-tx limit. Per the file, these costs were calibrated (per the file) on a private 10-node Alpenglow cluster with 200 ms (per the file) slots and the cost limits (per the file) of SIMD-0286 (20 million CUs (per the file) per writable acct and 50 million CUs per block (per the file) in each slot).",
+    "Per the file, they are set so (per the file) that a block filled to the per-acct limit with any of the (per the file) measured operand and exponent shapes, (per the file) which forces the txs to execute serially, replays within the slot. Per the file, they ought to be revisited if those limits change. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Benchmark Methodology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, benchmark results used to (per the file) set the compute constants (per the file) MUST be reproducible before activation. Per the file, the benchmark report SHOULD include: the node implementation commit and bigint (per the file) backend, hardware, operating system, (per the file) compiler, and optimization settings, (per the file) the exact benchmark command (per the file) or harness, input generation (per the file) details for balanced, RSA-style, (per the file) modulus-driven, and exponent-driven cases, including (per the file) decoded_exponent == 1 modular-reduction cases, the selected values (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) of the constants in the Compute Metering section, and the rule used to convert benchmark time to compute units. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Test Vectors",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, implementations MUST include tests (per the file) for: The EIP-198 example, (per the file) encoded as little-endian inputs and (per the file) output: base = 0x0300000000000000000000000000000000000000000000000000000000000000 exponent = 0x2efcfffffeffffffffffffffffffffffffffffffffffffffffffffffffffffff modulus (per the file) = 0x2ffcfffffeffffffffffffffffffffffffffffffffffffffffffffffffffffff result = 0x0100000000000000000000000000000000000000000000000000000000000000 Zero base and (per the file) empty exponent with modulus 0x03, writing 0x01. Per the file, zero base and empty (per the file) exponent with modulus 0x01 (per the file) aborting the virtual machine. Per the file, a base longer than (per the file) the modulus with exponent 1, including 100000000^1 mod 5555, encoded (per the file) as little-endian inputs: base = 0x00e1f505 (per the file) exponent = 0x01 modulus = 0xb315 result = 0x5d11 (per the file) Zero, one, and even moduli aborting (per the file) the virtual machine. Per the file, little-endian input decoding and output padding. Per the file, each VM abort condition listed above. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Feature Activation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall MUST be (per the file) feature-gated and unavailable before activation. Per the file, validator implementations MUST agree (per the file) on: the syscall name (per the file) and ABI, BIG_MOD_EXP_MAX_BYTES, output (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) and abort behavior, the compute metering formula and constants, and the arithmetic test vectors. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dapp developers gain a (per the file) practical primitive for RSA (per the file) verification and other number-theoretic cryptography. Per the file, programs remain responsible for (per the file) higher-level protocol details including hashing, padding, key validation, and domain separation. Per the file, validators add a new (per the file) variable-cost syscall backed by bigint arithmetic. Per the file, the bounded input size, (per the file) deterministic edge-case behavior, and (per the file) benchmarked compute cost are required (per the file) to keep execution predictable.",
+    "Per the file, programs that need modular (per the file) reduction can use the (per the file) same syscall with exponent (per the file) 1, including cases where (per the file) base_len is larger than modulus_len. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, underpricing is the main risk. Per the file, modular exponentiation has input-dependent (per the file) cost, especially as base size, (per the file) modulus size, exponent length, and (per the file) exponent density change. Per the file, the compute costs MUST be benchmarked across node implementations before activation and (per the file) should leave margin for (per the file) worst-case valid inputs, including (per the file) dense exponents, large bases, and (per the file) odd moduli that are slow (per the file) for the selected implementation.",
+    "Per the file, the syscall MUST NOT (per the file) expose library-specific error behavior. Per the file, all valid byte strings (per the file) within the length limit (per the file) are unsigned integers with (per the file) an odd decoded modulus. Per the file, rejecting zero and even (per the file) moduli avoids implementation-dependent division-by-zero (per the file) handling and slower even-modulus reduction paths. Per the file, the syscall is not (per the file) suitable for secret exponents. Per the file, on-chain program data is public, and node implementations are not required to (per the file) execute bigint operations in constant time.",
+    "Per the file, programs using this syscall (per the file) for RSA signatures MUST (per the file) implement the relevant padding scheme checks, including RSASSA-PKCS1-v1_5 or RSA-PSS, outside (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the syscall. Per the file, raw modular exponentiation alone (per the file) is not signature verification. (per the file) [EIP-198]: https://eips.ethereum.org/EIPS/eip-198 [RFC 2119]: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) https://www.ietf.org/rfc/rfc2119.txt [RFC 8174]: https://www.ietf.org/rfc/rfc8174.txt."
+   ]
+  }
+ ]
+}

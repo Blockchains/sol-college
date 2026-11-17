@@ -1,0 +1,82 @@
+{
+ "slug": "message-publishing",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Message Publishing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to specify the mechanics (per the file) and interfaces for publishing messages over Wormhole. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the original Generic Message (per the file) Passing design doc describes (per the file) the format of Wormhole (per the file) messages, however, the way (per the file) messages are published needs (per the file) to be defined clearly (per the file) for chain endpoints to be built. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, specify an interface for posting messages. Per the file, specify a fee model for message posting. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the core Wormhole contracts (per the file) on every chain will (per the file) have a method for (per the file) posting messages to Wormhole, (per the file) which will emit an (per the file) event that needs to (per the file) be observable by guardians (per the file) running a full node (per the file) on a given chain. Per the file, the fees is to be payable in the (per the file) respective chain's native currency. Per the file, fees may be claimed by the (per the file) protocol and collected in (per the file) a fee pool on Solana where they may be distributed according to protocol rules. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, wormhole core contracts have (per the file) a postMessage method which may be used by EOAs (externally owned accts) or SCs (smart contracts) (per the file) to publish a message via Wormhole. Per the file, this method has to (per the file) perform verification on the (per the file) payload for the maximum (per the file) size limitation of **750 bytes**. Per the file, the message ought to be emitted such that it may be picked up by (per the file) guardians in a way that lets offline nodes to replay missed blocks.",
+    "Per the file, the Wormhole contract will (per the file) also need to make (per the file) the emitter of the (per the file) published message available to the guardians. Per the file, the emitter is either (per the file) a parameter to the (per the file) postMessage method if the chain lets proving that the caller (per the file) controls or is authorized (per the file) by said address (i.e. Per the file, solana PDAs), or it (per the file) is the sender of the tx.",
+    "Per the file, additionally, the Wormhole contract (per the file) will keep track of (per the file) a sequence number per (per the file) emitter that is incremented (per the file) for each message submitted. Per the file, the timestamp is derived (per the file) by the guardian software (per the file) using the finalized timestamp (per the file) of the block the (per the file) message was published in. Per the file, when a message is (per the file) posted, the emitter can (per the file) specify for how many (per the file) confirmations the guardians should (per the file) wait before an attestation is produced.",
+    "Per the file, this lets latency sensitive applications to (per the file) make sacrifices on safety (per the file) while critical applications can (per the file) sacrifice latency over safety. Per the file, chains with instant finality (per the file) can omit the argument. (per the file) **Fees:** In order to (per the file) incentivize guardians and prevent (per the file) spamming of the Wormhole (per the file) network, publishing a message (per the file) will require a fee payment. Per the file, this fee is supposed (per the file) to be paid in (per the file) any of the chain's (per the file) native fee currencies when publishing a message.",
+    "Per the file, this assumes that anyone sending a tx is already required to hold such assets so as to make the tx publishing the message, and (per the file) that the fee will (per the file) therefore not negatively affect (per the file) usability of the bridge. Per the file, the fee is defined (per the file) by governance using the SetMessageFee VAA. Per the file, the fees set are (per the file) denominated in the respective chains native currency.",
+    "Per the file, each chain's Wormhole program (per the file) is supposed to use an (per the file) on-chain price oracle (e.g. a (per the file) uniswap pool TWAP or Pyth price feed) (per the file) Fees are set per chain to allow (per the file) the protocol to take into consideration the (per the file) effort required to keep the chain's nodes (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) online and acct for spam attacks.",
+    "Per the file, fees is to be collected in a (per the file) wallet that is controlled (per the file) by the Wormhole contract, (per the file) governance or a more (per the file) automated mechanism to be (per the file) implemented in a later design doc is to be able to produce (per the file) a TransferFees which will (per the file) allow to move the (per the file) collected fee tokens to a specified address. Per the file, in case there is (per the file) a widely accepted token (per the file) bridge, this mechanism might (per the file) be extended to bridge (per the file) tokens back to the (per the file) chain where the governance (per the file) and staking contracts are (per the file) located for them to be distributed there. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "API / database schema",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, proposed bridge interface: postMessage(bytes (per the file) payload, u8 confirmations) - Publish a (per the file) message to be attested by (per the file) Wormhole. setFees(VAA fee_payload) - Update the (per the file) fees using a SetMessageFee VAA transferFees(VAA transfer_payload) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) - Transfer fees using a TransferFees VAA --- **Payloads**: The payloads follow the governance message format. Per the file, setMessageFee: TransferFees: > **NOTE:** The Wormhole CosmWasm Core Contract fails to conform to this spec. Per the file, the Amount and To (per the file) fields are in reverse order. Per the file, (Ref: CosmWasm Core Contract). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Caveats",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a governance decision is (per the file) required for the collection of fees. Per the file, this means a lot (per the file) of manual intervention in (per the file) the distribution of fees (per the file) to stakers and guardians. Per the file, the lack of a (per the file) token bridge makes it (per the file) hard to automate this (per the file) in the early days of the protocol. Per the file, also, a transfer primitive (per the file) is unlikely to support (per the file) token bridges (which may (per the file) require smart contract calls), so a contract is to be required. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

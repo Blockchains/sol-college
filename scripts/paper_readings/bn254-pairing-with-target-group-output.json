@@ -1,0 +1,148 @@
+{
+ "slug": "bn254-pairing-with-target-group-output",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a new opcode, (per the file) ALT_BN128_PAIRING_MAP, to the existing (per the file) sol_alt_bn128_group_op syscall. Per the file, it computes the same (per the file) product of pairings on (per the file) the BN254 curve as (per the file) the existing ALT_BN128_PAIRING opcode, (per the file) but writes the resulting target group (per the file) (Gt) element instead of a 32-byte (per the file) identity flag. Per the file, no existing opcode, input (per the file) format, or output format is changed."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing BN254 pairing (per the file) operation (ALT_BN128_PAIRING) mirrors the (per the file) Ethereum precompile: it interprets its input (per the file) as an array of (G1, G2) (per the file) pairs, computes the product of pairings (per the file) e(P1, Q1) * ... * e(Pn, Qn), and reports (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) only whether the product equals the identity of the target group. Per the file, the target group element (per the file) itself is never exposed.",
+    "Per the file, this is sufficient for (per the file) Groth16-style verification, which may be rearranged into a single (per the file) identity check, but it rules (per the file) out applications that need the (per the file) actual pairing output: Comparing the (per the file) pairing product against a target (per the file) group element computed off-chain and (per the file) stored on-chain, instead of re-deriving it (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) every time Splitting an expensive verification across several txs, by computing partial pairing products in separate syscalls and combining them later Identity-based and time-lock encryption, where the pairing output is used directly as key material (e.g.",
+    "Per the file, h(e(P, Q))) Feature parity (per the file) with the BLS12-381 syscalls of SIMD-0388, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) whose pairing operation returns the target group element. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **[SIMD-0284]: Alt-BN128 Little Endian (per the file) compatibility** Defines the 0x80 opcode flag (per the file) that selects little-endian encodings for the (per the file) BN254 syscalls. Per the file, the new opcode follows (per the file) the same convention. **[SIMD-0302]: (per the file) BN254 G2 Arithmetic Syscalls** Allocates (per the file) opcodes 4, 5, and 6 (per the file) of sol_alt_bn128_group_op. The file allocates the next free (per the file) opcode, 7. **[SIMD-0334]: Fix (per the file) alt_bn128_pairing syscall length check** Defines (per the file) the input length check that the new (per the file) opcode reuses. [SIMD-0284]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0284-alt-bn128-little-endian.md [SIMD-0302]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0302-bn254-g2-syscalls.md [SIMD-0334]: (per the file) (per the file) (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0334-fix-alt-bn128-pairing-length-check.md. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Target group (Gt) element**: (per the file) The output of the (per the file) BN254 pairing, an element (per the file) of the order-r subgroup (per the file) of the degree-12 extension field (per the file) Fq12, represented as twelve 32-byte base (per the file) field coefficients. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the key words \"MUST\", (per the file) \"MUST NOT\", \"SHOULD\", and (per the file) \"MAY\" in this document (per the file) are to be interpreted (per the file) as described in RFC 2119 and RFC 8174. Per the file, the new operation is (per the file) added to the existing (per the file) syscall, whose signature is unchanged:."
+   ]
+  },
+  {
+   "heading": "New Constants and Opcode",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Endianness",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, following SIMD-0284, ALT_BN128_PAIRING_MAP (7) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) selects the big-endian (EIP-197) encoding and ALT_BN128_PAIRING_MAP | 0x80 selects the little-endian encoding. Per the file, the flag applies to (per the file) both the input points (per the file) and the output target (per the file) group element (see Target Group (Gt) Encoding). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Input",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the input layout and (per the file) validation are identical to (per the file) those of ALT_BN128_PAIRING, so (per the file) existing callers can switch opcodes without (per the file) re-encoding their data. Per the file, the input is a (per the file) sequence of ALT_BN128_PAIRING_MAP_ELEMENT_LEN (192) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) byte elements, each an uncompressed affine G1 point (64 bytes) immediately followed by an uncompressed affine G2 point (128 bytes).",
+    "Per the file, points are encoded exactly (per the file) as for the corresponding (per the file) ALT_BN128_PAIRING variant. input_size MUST (per the file) be a multiple of 192; otherwise the (per the file) syscall MUST return an error, consistent with (per the file) SIMD-0334. Per the file, the number of pairs (per the file) is not capped by the syscall itself. Per the file, as for ALT_BN128_PAIRING, compute (per the file) units are charged per pair, so the tx compute budget bounds the amount of work."
+   ]
+  },
+  {
+   "heading": "Input Validation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, input points MUST be (per the file) validated exactly as for (per the file) ALT_BN128_PAIRING, so the two (per the file) opcodes accept the same set of (per the file) inputs and decode them identically. Per the file, for each G1 and G2 point: The all-zero encoding (64 (per the file) bytes for G1, 128 bytes (per the file) for G2) is the point at infinity. Per the file, the two most significant (per the file) bits of y (of (per the file) y.c1 for G2) are flag bits.",
+    "Per the file, if both are set, (per the file) the input MUST be rejected. Per the file, if bit 6 (0x40 (per the file) in the most significant (per the file) byte) is set, the (per the file) point is the point at infinity. Per the file, bit 7 (0x80) alone is ignored. Per the file, both bits are cleared (per the file) before the field check below. Per the file, every field element MUST (per the file) be less than the base field modulus.",
+    "Per the file, this still applies to (per the file) x when the infinity flag is set. Per the file, g1 points MUST satisfy the curve equation. Per the file, g2 points MUST satisfy (per the file) the curve equation and (per the file) MUST be in the prime-order subgroup. Per the file, if any input fails (per the file) validation, the syscall MUST (per the file) return an error and (per the file) MUST NOT write to the output buffer. Per the file, every EIP-197 conformant input (per the file) has all coordinates below the (per the file) modulus, hence no flag bits (per the file) set, and is accepted unchanged. Per the file, restricting the BN254 opcodes (per the file) to strict EIP-197 conformance (per the file) is out of scope for (per the file) this proposal (see Alternatives Considered)."
+   ]
+  },
+  {
+   "heading": "Output",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, on success, the syscall (per the file) writes exactly ALT_BN128_PAIRING_MAP_OUTPUT_LEN (384) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) bytes to result: the target group element e(P1, Q1) * ... * e(Pn, Qn) after the final exponentiation, encoded as specified below. Per the file, the element is fully (per the file) reduced and canonical, so (per the file) equal target group elements (per the file) always have byte-identical encodings (per the file) and callers MAY compare outputs (per the file) by comparing bytes.",
+    "Per the file, if input_size is 0 (per the file) (zero pairs), the syscall MUST (per the file) succeed and write the multiplicative (per the file) identity of the target group. Per the file, this matches the existing (per the file) ALT_BN128_PAIRING behavior of returning (per the file) 1 for an empty input, and (per the file) the BLS12-381 pairing syscall. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Target Group (Gt) Encoding",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the target group is (per the file) a subgroup of Fq12, (per the file) represented as a tower (per the file) of extensions in the (per the file) same way as for (per the file) BLS12-381 in SIMD-0388: Fq12 = c0 + c1 * w is a (per the file) quadratic extension of Fq6, with w^2 (per the file) = v Fq6 = c0 + c1 * v + c2 * v^2 is (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) a cubic extension of Fq2, with v^3 = 9 + u Fq2 = c0 + c1 * u is a quadratic extension of Fq, with u^2 = -1 This is the tower used by ark-bn254 and by most BN254 libraries.",
+    "Per the file, flattening the tower yields (per the file) twelve base field coefficients (per the file) c0, ..., c11, where the (per the file) coefficient Fq12.c_a.c_b.c_c (with a, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) c ∈ {0, 1} and b ∈ {0, 1, 2}) is c_(6a + 2b + c). Per the file, that is, coefficients are (per the file) listed in canonical memory (per the file) order: the Fq6 component (per the file) c0 of Fq12 first, (per the file) within each Fq6 the (per the file) Fq2 components c0, c1, (per the file) c2 in order, and (per the file) within each Fq2 the (per the file) real part before the imaginary part.",
+    "Per the file, the 384-byte target group (per the file) element is serialized as follows: **Little-Endian (ALT_BN128_PAIRING_MAP | 0x80)**: coefficients in (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the order c0, c1, ..., c11, each 32-byte Fq coefficient in little-endian. **Big-Endian (ALT_BN128_PAIRING_MAP)**: coefficients in the order c11, c10, ..., c0, each 32-byte Fq coefficient in big-endian. Per the file, the big-endian encoding is (per the file) exactly the byte-reversal of the (per the file) little-endian encoding.",
+    "Per the file, this is the rule (per the file) SIMD-0388 uses for BLS12-381, (per the file) and it is consistent with how (per the file) the existing BN254 big-endian (EIP-197) encoding (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) orders Fq2 elements: reversing the 64-byte little-endian encoding (c0, c1) of an Fq2 element yields the big-endian encoding (c1, c0), imaginary part first. Per the file, for example, the multiplicative (per the file) identity 1 of the (per the file) target group is encoded (per the file) as: **LE**: 01 00 ...",
+    "Per the file, 00 (0x01 followed by (per the file) 383 zero bytes), i.e. (per the file) c0 = 1 and all other (per the file) coefficients 0. **BE**: 00 ... Per the file, 00 01 (383 zero (per the file) bytes followed by 0x01). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Compute Cost",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, aLT_BN128_PAIRING_MAP performs the same (per the file) Miller loop and final exponentiation as ALT_BN128_PAIRING (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) and differs only in what it writes. Per the file, it MUST be charged (per the file) using the same cost (per the file) model (a base cost (per the file) plus a per-pair cost), (per the file) with the larger output accounted (per the file) for in the memory access (per the file) cost as for the other (per the file) sol_alt_bn128_group_op operations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, input_size == 0: succeeds and (per the file) writes the identity element. input_size (per the file) not a multiple of 192: error, (per the file) nothing written. Per the file, any G1 or G2 (per the file) point that fails validation: error, nothing written. Per the file, a point whose encoding (per the file) is all zeros, or (per the file) whose infinity flag (bit (per the file) 6 of the most (per the file) significant byte of y (per the file) or y.c1) is set, (per the file) is the point at infinity.",
+    "Per the file, it contributes the identity (per the file) to the product and is otherwise valid. Per the file, a y (or y.c1) (per the file) coordinate with both flag bits (per the file) set: error, nothing written. Per the file, an unknown group_op value, (per the file) including 7 before feature activation, (per the file) MUST continue to return an error. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validator Component | Impact | |---------------------------------|-------------------------------------| | Transaction (per the file) Execution (Runtime) | New opcode (per the file) in an existing syscall (per the file) | | Virtual Machine | None | | Block (per the file) Packing | None | | Consensus | None (per the file) | | Gossip | None | | Turbine | None (per the file) | | Snapshots | None | | On-Chain Core (per the file) BPF Programs | None. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Changing ALT_BN128_PAIRING** to return (per the file) the target group element instead of (per the file) the identity flag. Per the file, this is a breaking (per the file) change for every existing (per the file) caller, and the output (per the file) buffer would grow from (per the file) 32 to 384 bytes. The file’s claim in this section turns on Per, Routing, BN254, BLS12-381, 381. Those labels are the document’s. They are not a Sol.College measurement. Per the file, the BN254 syscalls already (per the file) have their own entrypoint, (per the file) input layout, and endianness (per the file) convention; a second path (per the file) would create two encodings (per the file) for the same points.",
+    "Per the file, a new opcode reuses (per the file) the existing pairing input (per the file) layout unchanged. **A dedicated (per the file) syscall** for the pairing output. Per the file, this increases the API (per the file) surface for no functional (per the file) gain over a new (per the file) opcode. **Validating inputs strictly (per the file) against EIP-197**, rejecting any (per the file) coordinate with a flag bit (per the file) set so that the point (per the file) at infinity has a single encoding.",
+    "Per the file, this would make the (per the file) new opcode accept a (per the file) different set of inputs (per the file) than ALT_BN128_PAIRING, and callers (per the file) could no longer switch opcodes without (per the file) re-checking their encodings. Per the file, if strict EIP-197 conformance (per the file) is wanted, it ought to be applied uniformly to all (per the file) BN254 opcodes in a separate (per the file) proposal. **Adding target group arithmetic** (per the file) (multiplication, inversion, exponentiation) alongside the pairing output.",
+    "Per the file, out of scope here; (per the file) Fq12 arithmetic is cheap (per the file) enough to implement in (per the file) BPF when needed and may be added as separate opcodes later. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, exposing the pairing output makes possible protocols that consume the (per the file) target group element directly (per the file) (comparison against precomputed values, multi-tx verification, pairing-based encryption), and brings (per the file) the BN254 syscalls to feature parity (per the file) with the BLS12-381 pairing syscall. Per the file, no existing opcode, input (per the file) format, or output format is changed. Per the file, programs using the existing (per the file) syscalls are not affected."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, aLT_BN128_PAIRING_MAP MUST apply the (per the file) full input validation of Input Validation, including the G2 subgroup check. Per the file, skipping it would produce (per the file) values outside the target (per the file) group and make the (per the file) output unsafe to use as key material. Per the file, the new opcode accepts (per the file) exactly the inputs that (per the file) ALT_BN128_PAIRING accepts, including the (per the file) flag-bit encodings of the point at (per the file) infinity, and introduces no new decoding path.",
+    "Per the file, the output MUST be (per the file) the canonical encoding of (per the file) the fully reduced target (per the file) group element, so that (per the file) equal elements are byte-identical. Per the file, implementations MUST NOT leak (per the file) internal representation details (e.g. Per the file, montgomery form) into the output. Per the file, the new opcode changes (per the file) the behavior of sol_alt_bn128_group_op (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) for a previously invalid group_op value and therefore MUST be feature-gated.",
+    "Per the file, it performs no computation (per the file) beyond what ALT_BN128_PAIRING already (per the file) performs, so it adds no new (per the file) denial-of-service surface when charged with the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) same cost model."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, only a previously invalid (per the file) opcode value gains a meaning. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

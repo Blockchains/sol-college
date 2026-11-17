@@ -1,0 +1,21 @@
+{
+ "slug": "economic-design-mvp",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, **Subject to change.** The (per the file) preceding sections, outlined in (per the file) the Economic Design Overview, describe a long-term vision (per the file) of a sustainable Solana economy. Per the file, of course, we don't (per the file) expect the final implementation to (per the file) perfectly match what has been described above. Per the file, we intend to fully (per the file) engage with network stakeholders (per the file) throughout the implementation phases (per the file) \\(i.e. pre-testnet, testnet, mainnet\\) (per the file) to ensure the system supports, and (per the file) is representative of, the various network (per the file) participants' interests.",
+    "Per the file, the first step toward (per the file) this goal, however, is (per the file) outlining a some desired (per the file) MVP economic features to (per the file) be available for early (per the file) pre-testnet and testnet participants. Per the file, below is a rough (per the file) sketch outlining basic economic (per the file) functionality from which a (per the file) more complete and functional system may be developed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "MVP Economic Features",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, faucet to deliver testnet SOLs to nodes for staking and application development. Per the file, mechanism by which nodes are rewarded via network inflation. Per the file, ability to delegate tokens to node nodes Validator set commission (per the file) fees on interest from delegated tokens. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

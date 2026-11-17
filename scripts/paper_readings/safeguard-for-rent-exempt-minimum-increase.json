@@ -1,0 +1,62 @@
+{
+ "slug": "safeguard-for-rent-exempt-minimum-increase",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, protective feature to increase (per the file) rent-exempt minimum balance back (per the file) to the legacy value of (per the file) 6960 per-byte. Per the file, this should only be (per the file) activated in response to (per the file) excessive state growth observed on mainnet beta. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reducing rent without a (per the file) built-in safeguard to respond (per the file) to excessive state growth is inherently risky. The file is meant to provide a rent (per the file) increase feature gate proactively (per the file) so core developers can (per the file) respond to issues more promptly. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reset lamports_per_byte_year to the (per the file) legacy value of 6960. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sIMD-0389 introduces a supervisory (per the file) controller that will detect and (per the file) respond to excessive state growth automatically. Per the file, because that alternative is (per the file) yet to be accepted, (per the file) the manual intervention described (per the file) in this proposal can (per the file) allow for safely shipping (per the file) moderate rent reduction sooner while further reduction may be withheld until the controller is shipped. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, new acct creations and allocations is to be subject to the increased rent value. Per the file, sIMD-0392 maintains usability of existing accts that are made sub-exempt after (per the file) the rent increase. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sIMD-0392 grandfathers in existing accts so they will continue to (per the file) be valid after a rent increase. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

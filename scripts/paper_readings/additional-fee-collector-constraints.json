@@ -1,0 +1,71 @@
+{
+ "slug": "additional-fee-collector-constraints",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, every node defines a node id (per the file) which is also used as the node's fee-collector acct for collecting earned protocol fees. Per the file, after implementing this proposal, node implementations will burn fees (per the file) if they would otherwise (per the file) be distributed into a fee-collector acct that violates one of the following constraints: Must be a system owned acct Must be rent-exempt These constraints (per the file) apply to both tx fees and rent fees. Per the file, note that the rent-exempt (per the file) constraint was already added for (per the file) rent fee collection in Feature 30151. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, fee distribution occurs outside of the tx runtime because the Solana (per the file) protocol mandates that fees (per the file) are distributed to \"fee-collector\" accts at the end of each block. Per the file, by restricting fee-collector accts to be system owned, the number of acct modification edge cases and also protocol complexity are both reduced. Per the file, prevent new rent-paying accts from being created since rent (per the file) collection is planned to be (per the file) disabled in SIMD-0084. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Elide the system-owned constraint",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, restricting fee-collector accts to be system-owned is perhaps (per the file) overly restrictive and limits the amount (per the file) of flexibility that node operators have when managing sensitive accts with funds. Per the file, however, the risk of (per the file) having more runtime edge (per the file) cases is too high (per the file) to allow any program-owned acct to collect fees. Per the file, the Solana protocol should (per the file) aim to limit the types of acct modifications that can occur outside of the tx processor to avoid introducing loopholes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Introduce an enshrined \"validator-node\" account",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rather than restricting fee-collector accts to be system-owned, a new (per the file) type of \"node-node\" acct could be introduced. Per the file, currently, in normal node operations, the fee-collector acct is also used as the node id and also the vote fee payer. Per the file, introducing a node-node acct that is owned by a node-node program which lets configuring a withdraw authority and vote (per the file) fee payer could help increase node operation flexibility and increase clarity in how node keys are used in the protocol.",
+    "Per the file, this approach calls for a migration of all fee-collector accts and also the development of a new (per the file) on-chain program to manage the new node-node accts. Per the file, it is to be a big effort (per the file) compared to the proposed (per the file) constraints in this SIMD and ought to be discussed in a (per the file) new SIMD if this approach is desired. Per the file, furthermore, durable nonce accts already have a configurable authority field which may be used to manage fee-collector acct funds in a more flexible way. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, fee-Collector Account: The acct that receives block and rent (per the file) fees distributed by nodes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, at the end of a block, nodes MUST ONLY distribute fees to accts that are both system (per the file) owned and rent-exempt. Per the file, if a fee-collector acct fails to satisfy these constraints, the fees (per the file) MUST be burned by not (per the file) distributing them to anyone."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, new and existing nodes must ensure that their fee-collector acct is rent-exempt and owned by (per the file) the system program so as to receive fees. Per the file, since the Solana Labs node implementation currently calls for the fee-collector acct to be same acct as the fee payer for vote txs, this is unlikely to impact any nodes unless they run a custom implementation. Per the file, validators will still be (per the file) able to collect fees into durable nonce accts if they wish.",
+    "Per the file, if a node fails to wish to use a (per the file) hot wallet to have (per the file) custody over collected fees, (per the file) they may use durable nonce accts which have a configurable authority address. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, note that durable nonce accts are system owned and (per the file) rent exempt and can (per the file) therefore continue to be (per the file) used for fee collection. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,60 @@
+{
+ "slug": "maintain-dynamic-set-of-reserved-account-keys",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the tx scheduler and the runtime both demote tx write locks for builtin (per the file) programs and sysvars using (per the file) a static list of reserved IDs. The file replaces the currently used (per the file) static lists of builtin (per the file) program and sysvar IDs (per the file) with a dynamic set of reserved acct keys that may be updated at epoch (per the file) boundaries with feature gates. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current approach of (per the file) using static lists of (per the file) reserved IDs doesn't allow (per the file) core developers to modify which acct write locks ought to be demoted without breaking consensus. Per the file, since the static lists (per the file) were introduced years ago, (per the file) a few sysvars and (per the file) some popular builtin programs (per the file) have been developed that (per the file) should not be able (per the file) to be write locked (per the file) but their keys cannot (per the file) be added to the static lists. Per the file, this demonstrates a need (per the file) for a set of reserved keys that may be updated safely over time."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, remove write-lock demotion for reserved accts An alternative is to remove (per the file) write-lock demotion for reserved accts altogether and instead fail txs that write-lock a reserved acct. Per the file, both sysvars and builtin (per the file) programs are easily identified (per the file) by their owner program while loading accts so no list needs (per the file) to be maintained for tx processing. Per the file, however, even if write-lock (per the file) demotion is removed, the tx scheduler still needs to be (per the file) aware of reserved keys to prevent txs that set reserved key write-locks (per the file) from degrading tx scheduling.",
+    "Per the file, this approach would also (per the file) mean that users and (per the file) developers which mistakenly write lock a reserved acct will no longer have (per the file) the nice experience of (per the file) having the write lock (per the file) automatically demoted to a (per the file) read-lock and their txs still being executed. Per the file, instead, their tx would fail and a (per the file) lot of apps could (per the file) be affected by this change in behavior.",
+    "Per the file, demote write-locks lazily Another (per the file) alternative is to demote write-locks (per the file) while loading tx accts if a loaded acct is owned by a reserved id (per the file) like \"native loader\" or \"sysvar\". Per the file, this approach means that (per the file) a simpler set of (per the file) reserved program ids could (per the file) be tracked rather than (per the file) tracking a full set of all reserved accts. Per the file, again, the problem here (per the file) is that the scheduler (per the file) also needs to be (per the file) aware of how write (per the file) locks might be demoted so as to schedule txs efficiently.",
+    "Per the file, so tx schedulers would likely need (per the file) to track a dynamic list of reserved accts anyways to ensure that tx locks are handled in (per the file) exactly the same way (per the file) as the runtime to avoid scheduling issues. Per the file, otherwise if a scheduler prematurely demotes tx write locks before that (per the file) sysvar exists, it could (per the file) send an invalid batch of conflicting txs to the runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reserved Accounts: Any builtin (per the file) program or sysvar or other acct key managed by the (per the file) Solana core protocol that (per the file) should not be write locked by a tx. Per the file, this excludes the incinerator acct which is meant to be write locked."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to determine the post-demotion (per the file) set of write lock requested (per the file) keys for a tx, each tx write locked acct key is checked against a (per the file) set of reserved keys maintained by the node for a given block.",
+    "Per the file, the set of reserved keys is to be initialized as the (per the file) full set of sysvar (per the file) and builtin program keys (per the file) currently tracked in static (per the file) lists in the Solana Labs node implementation: sysvar_ids: SysvarC1ock11111111111111111111111111111111 SysvarEpochSchedu1e111111111111111111111111 (per the file) SysvarFees111111111111111111111111111111111 SysvarRecentB1ockHashes11111111111111111111 SysvarRent111111111111111111111111111111111 SysvarRewards111111111111111111111111111111 SysvarS1otHashes111111111111111111111111111 (per the file) SysvarS1otHistory11111111111111111111111111 SysvarStakeHistory1111111111111111111111111 Sysvar1nstructions1111111111111111111111111 builtin_program_ids: Config1111111111111111111111111111111111111 (per the file) Feature111111111111111111111111111111111111 NativeLoader1111111111111111111111111111111 Stake11111111111111111111111111111111111111 StakeConfig11111111111111111111111111111111 Vote111111111111111111111111111111111111111 11111111111111111111111111111111 BPFLoader1111111111111111111111111111111111 (per the file) BPFLoader2111111111111111111111111111111111 BPFLoaderUpgradeab1e11111111111111111111111 The set of reserved keys (per the file) may only be modified via feature gate (per the file) activation. Per the file, on epoch boundaries, node implementations should add or (per the file) remove reserved keys as (per the file) dictated by feature gated code.",
+    "Per the file, the first feature gate (per the file) activated modification will likely (per the file) include the following keys: (per the file) new_reserved_keys: AddressLookupTab1e1111111111111111111111111 ComputeBudget111111111111111111111111111111 Ed25519SigVerify111111111111111111111111111 (per the file) KeccakSecp256k11111111111111111111111111111 LoaderV411111111111111111111111111111111111 Sysvar1111111111111111111111111111111111111 SysvarEpochRewards1111111111111111111111111 SysvarLastRestartS1ot1111111111111111111111 ZkTokenProof1111111111111111111111111111111 For node operations not subject to consensus like (per the file) RPC services, ledger history storage, and (per the file) debugging tools which don't have a (per the file) block context for fetching the set of (per the file) reserved accts, a static list may be maintained and updated without requiring feature (per the file) gates."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, impact ought to be negligible. dApp developers (per the file) don't need to change (per the file) how they build txs due to the developer friendly (per the file) nature of the write lock demotion feature. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the main consideration is (per the file) making sure that all (per the file) is_writable checks are consistent (per the file) before and after implementing this (per the file) proposal to avoid breaking consensus. Per the file, additionally, this dynamic set (per the file) is intended for protecting (per the file) a small number of core protocol accts. Per the file, if the need arises (per the file) for more larger scale (per the file) write lock management, a new proposal ought to be introduced. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

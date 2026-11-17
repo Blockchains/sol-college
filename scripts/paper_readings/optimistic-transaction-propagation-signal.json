@@ -1,0 +1,57 @@
+{
+ "slug": "optimistic-transaction-propagation-signal",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Current Retransmit behavior",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the retransmission tree currently considers: epoch staked nodes tvu peers (filtered by (per the file) contact info and shred version) current node concatenating (1), (2), and (per the file) (3) deduplicating this list (per the file) of entries by pubkey (per the file) favoring entries with contact (per the file) info filtering this list (per the file) by entries with contact (per the file) info This list is (per the file) then randomly shuffled by stake weight. Per the file, shreds are then retransmitted (per the file) to up to FANOUT (per the file) neighbors and up to FANOUT children. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Deterministic retransmission tree",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, weighted_shuffle will use a (per the file) deterministic seed when enable_deterministic_seed has (per the file) been enabled based on the triple (shred (per the file) slot, shred index, leader pubkey): First, only epoch staked nodes is to be considered regardless of presence of contact (per the file) info (and possibly including the node node itself). Per the file, a deterministic ordering of (per the file) the epoch staked nodes is to be created based on (per the file) the deterministic shred seed using weighted_shuffle.",
+    "Per the file, let neighbor_set be selected (per the file) from up to FANOUT neighbors (per the file) of the current node. Per the file, let child_set be selected (per the file) from up to FANOUT children (per the file) of the current node. Per the file, filter neighbor_set by contact info. Per the file, filter child_set by contact info. Per the file, let epoch_set be the (per the file) union of neighbor_set and child_set. Per the file, let remaining_set be all (per the file) other nodes with contact info (per the file) not contained in epoch_set.",
+    "Per the file, if epoch_set.len < 2*FANOUT then (per the file) we may randomly select up to 2*FANOUT (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) - epoch_set.len nodes to to retransmit to from remaining_set. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Receiving retransmitted shred",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if the current node node is not in (per the file) the set of epoch (per the file) staked nodes for the (per the file) shred epoch then no early retransmission information may be obtained. Per the file, compute the deterministic shred seed. Per the file, run the deterministic epoch_stakes shuffle. Per the file, find position of self (per the file) in the neighbor or child sets. Per the file, calculate the sum of (per the file) the stakes of all (per the file) nodes in the current (per the file) and prior distribution levels."
+   ]
+  },
+  {
+   "heading": "Stake summation considerations:",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, stake sum could include (per the file) stakes of nodes which (per the file) had been skipped in (per the file) prior distribution levels because (per the file) of lack of contact info. Per the file, current node was part (per the file) of original epoch staked (per the file) shuffle from retransmitter but (per the file) was filtered out because (per the file) of missing contact info. Per the file, current node subsequently receives (per the file) retransmission of shred and (per the file) assumes that the retransmit (per the file) was a result of (per the file) the deterministic tree calculation (per the file) and not from subsequent random selection. Per the file, this ought to be benign because the (per the file) current node will underestimate (per the file) prior stake weight in the retransmission tree."
+   ]
+  },
+  {
+   "heading": "General considerations:",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, attack by leader (level (per the file) 0): transmits shred for (per the file) distribution through the tree (per the file) as normal additionally transmits (per the file) shred (or fake shred) (per the file) directly to node(s) at (per the file) level >=2 leading the node(s) (per the file) to believe a greater percentage of (per the file) the tree retransmission tree had been (per the file) processed attack by node at level (per the file) n: retransmits shred to node(s) at (per the file) level >=n+2 leading the node(s) to believe (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) a greater percentage of the tree retransmission tree had been processed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Questions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, should receiving nodes attempt (per the file) to verify that the (per the file) origin of the shred (per the file) was retransmitted from the expected node? Per the file, if so, consideration of spoofing? Per the file, how is this information consumed?. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Notes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, practically, signals should fall (per the file) into the following buckets: current leader (can signal (per the file) layer 1 when broadcast is sent) layer 1 1.1. can (per the file) signal layer 1 when shred (per the file) is received 1.2. can signal (per the file) layer 1 + subset of layer 2 (per the file) when retransmit is sent layer 2 3.1. can signal layer (per the file) 2 when shred is received 3.2. can (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) signal layer 2 + subset of layer 3 when retransmit is sent current node not a member of epoch staked nodes, no signal may be sent."
+   ]
+  }
+ ]
+}

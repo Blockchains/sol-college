@@ -1,0 +1,72 @@
+{
+ "slug": "relax-fee-payer-constraint",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file aims to relax the (per the file) handling of invalid fee-payers for blockhash txs in Solana. Per the file, currently, if a tx with an invalid fee-payer (per the file) is included in a block, (per the file) the entire block is rejected. The file suggests that instead of (per the file) rejecting the entire block, the blockhash tx with the invalid fee-payer (per the file) should simply skip execution. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current constraint forces (per the file) block-validation to be synchronous since so as to determine if a block (per the file) is valid or not, some subset of txs has to be executed so as to determine if the fee-payer (per the file) has sufficient funds to pay the tx fees. Per the file, by relaxing this constraint, (per the file) we move one step (per the file) closer towards asynchronous validation/execution."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a Blockhash Transaction is defined as a tx that uses a real (per the file) blockhash, as opposed to (per the file) a durable nonce, for (per the file) its recent blockhash / lifetime specifier. Per the file, a System Fee-Payer is (per the file) defined as an acct owned by the System Program (per the file) with data length 0. Per the file, a Nonce Fee-Payer is (per the file) defined as an acct owned by the System Program (per the file) with data length 80 and (per the file) the first eight bytes being (per the file) 01 00 00 00 01 (per the file) 00 00 00 (a Current (per the file) Initialized nonce) or 00 00 (per the file) 00 00 01 00 00 (per the file) 00 (a Legacy Initialized nonce).",
+    "Per the file, the remaining 72 bytes are arbitrary. Per the file, a Nonce Fee-Payer is (per the file) unrelated to the concept of a nonce tx: a tx that uses a Nonce Fee-Payer (per the file) and uses a real blockhash is (per the file) a Blockhash Transaction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, any tx has a statically determined fee fee lamports. Per the file, a tx can successfully pay fees (per the file) if: The fee-payer acct is a System Fee-Payer or (per the file) a Nonce Fee-Payer. Per the file, if it is a (per the file) System Fee-Payer, it has (per the file) exactly fee lamports, or has (per the file) at least fee + rent_exempt_reserve lamports. Per the file, if it is a (per the file) Nonce Fee-Payer, it has (per the file) at least fee + rent_exempt_reserve lamports.",
+    "Per the file, if the fee-payer acct fails to meet these conditions, the tx may be included in a (per the file) block, but it must not be executed. Per the file, the tx will have no effect on acct state. Per the file, invalid fee-payer txs will count their requested, or (per the file) default, cost units towards block limits. Per the file, this is intended to (per the file) make it strictly cheaper (per the file) to process invalid fee-payer txs compared to valid fee-payer txs of the same construction.",
+    "The file only applies to blockhash txs. Per the file, handling any failure of nonce txs is more involved, and nonce tx fee-payer failure is to be deferred to SIMD-0297, which also relaxes the nonce acct validity constraint. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, requiring some sort of (per the file) fee-payer lock up/bonding mechanism (per the file) to ensure that fee- payers have (per the file) sufficient funds to pay for the tx fees. Per the file, this is more complex (per the file) compared to this proposal. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions that are unable (per the file) to pay fees may (per the file) be included in blocks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, possible attack vector where (per the file) a malicious leader can spam txs with invalid fee-payers. Per the file, mitigation for this is (per the file) charging full cost units for these. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if there is no (per the file) interest in simplifying block-validation (per the file) to allow for asynchronous, this (per the file) proposal is not necesary. Per the file, concern about data propagation (per the file) for without paying fees (per the file) to the network (burn): (per the file) This concern has been (per the file) raised in the past (per the file) when this has been discussed. Per the file, however, the concern is (per the file) largely invalid since even (per the file) without this proposal, a (per the file) malicious leader could still (per the file) propagate data through the (per the file) network for free by (per the file) simply using an invalid fee-payer."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all previously valid txs and blocks are still valid. Per the file, blocks produced after the (per the file) change may be rejected (per the file) by previous versions of the node client(s). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

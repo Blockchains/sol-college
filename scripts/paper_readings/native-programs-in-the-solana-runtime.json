@@ -1,0 +1,77 @@
+{
+ "slug": "native-programs-in-the-solana-runtime",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, solana contains a small (per the file) handful of native programs, (per the file) which are required to run node nodes. Per the file, unlike third-party programs, the (per the file) native programs are part of the node implementation and may be upgraded as part of cluster upgrades. Per the file, upgrades may occur to (per the file) add features, fix bugs, or improve performance. Per the file, interface changes to individual (per the file) instructions should rarely, if ever, occur. Per the file, instead, when change is (per the file) needed, new instructions are (per the file) added and previous ones are marked deprecated.",
+    "Per the file, apps can upgrade on (per the file) their own timeline without (per the file) concern of breakages across upgrades. Per the file, for each native program (per the file) the program id and (per the file) description each supported instruction is provided. Per the file, a tx can mix and match (per the file) instructions from different programs, (per the file) as well include instructions (per the file) from on-chain programs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "System Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, create new accts, allocate acct data, assign accts to owning programs, transfer (per the file) lamports from System Program owned accts and pay tx fees. Per the file, program id: 11111111111111111111111111111111 Instructions: SystemInstruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Config Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add configuration data to (per the file) the chain and the (per the file) list of public keys (per the file) that are permitted to (per the file) modify it Program id: (per the file) Config1111111111111111111111111111111111111 Instructions: config_instruction Unlike the other programs, the Config program fails to define any individual instructions. Per the file, it has just one (per the file) implicit instruction, a \"store\" instruction. Per the file, its instruction data is (per the file) a set of keys (per the file) that gate access to the acct, and the data to store in it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Stake Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, create and manage accts representing stake and rewards for delegations to nodes. Per the file, program id: Stake11111111111111111111111111111111111111 Instructions: StakeInstruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, create and manage accts that track node voting state and rewards. Per the file, program id: Vote111111111111111111111111111111111111111 Instructions: VoteInstruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Address Lookup Table Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, program id: AddressLookupTab1e1111111111111111111111111 Instructions: AddressLookupTableInstruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "BPF Loader",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deploys, upgrades, and executes (per the file) programs on the chain. Per the file, program id: BPFLoaderUpgradeab1e11111111111111111111111 Instructions: LoaderInstruction The BPF Upgradeable Loader (per the file) marks itself as \"owner\" (per the file) of the executable and program-data accts it creates to store your program. Per the file, when a user invokes (per the file) an instruction via a (per the file) program id, the Solana (per the file) runtime will load both (per the file) your the program and (per the file) its owner, the BPF Upgradeable Loader. Per the file, the runtime then passes (per the file) your program to the (per the file) BPF Upgradeable Loader to process the instruction. Per the file, more information about deployment. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Ed25519 Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, verify ed25519 signature program. Per the file, this program takes an (per the file) ed25519 signature, public key, and message. Per the file, multiple signatures may be verified. Per the file, if any of the (per the file) signatures fail to verify, (per the file) an error is returned. Per the file, program id: Ed25519SigVerify111111111111111111111111111 Instructions: new_ed25519_instruction The ed25519 program processes an instruction. Per the file, the first u8 is (per the file) a count of the (per the file) number of signatures to (per the file) check, which is followed (per the file) by a single byte padding. Per the file, after that, the following (per the file) struct is serialized, one (per the file) for each signature to check. Per the file, pseudo code of the operation:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Secp256k1 Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, verify secp256k1 public key recovery operations (ecrecover). Per the file, program id: KeccakSecp256k11111111111111111111111111111 Instructions: new_secp256k1_instruction The secp256k1 program processes an instruction (per the file) which takes in as the first (per the file) byte a count of the following (per the file) struct serialized in the instruction data: Pseudo code of the operation: This lets the user to specify any instruction (per the file) data in the tx for signature and message data. Per the file, by specifying a special (per the file) instructions sysvar, one can (per the file) also receive data from the tx itself. Per the file, cost of the tx will count the number (per the file) of signatures to verify (per the file) multiplied by the signature cost verify multiplier. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Optimization notes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the operation will have (per the file) to take place after (per the file) (at least partial) deserialization, (per the file) but all inputs come from the tx data itself, this lets it to be relatively (per the file) easy to execute in parallel to tx processing and PoH verification. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

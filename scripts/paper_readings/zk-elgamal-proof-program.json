@@ -1,0 +1,68 @@
+{
+ "slug": "zk-elgamal-proof-program",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deprecate the existing ZK (per the file) Token Proof program that (per the file) is tailored for the SPL Token program. Per the file, replace it with a (per the file) more general zero-knowledge proof (per the file) program called the ZK ElGamal (per the file) Proof program that is application independent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing native ZK (per the file) Token Proof program contains (per the file) logic that is quite (per the file) specialized for the SPL Token program. Per the file, for example, the program (per the file) contains instructions VerifyTransfer, VerifyTransferWithFee, (per the file) and VerifyWithdraw that verify (per the file) zero-knowledge proofs that are (per the file) tailor made for Transfer and (per the file) Withdraw instructions in the SPL (per the file) Token confidential transfer extension. Per the file, the ZK Token Proof (per the file) program is a native (per the file) built-in program that is (per the file) part of the node client.",
+    "Per the file, these types of programs (per the file) should generally not favor (per the file) any specific application/program like (per the file) the SPL Token program. Per the file, in this document, we (per the file) propose that we deprecate (per the file) the existing ZK Token (per the file) Proof program and replace (per the file) it with a more (per the file) general ZK ElGamal Proof (per the file) program that is application independent.",
+    "Per the file, the new ZK ElGamal (per the file) Proof program inherits parts (per the file) of the ZK Token (per the file) Proof program that is (per the file) independent of any specific (per the file) application like the logic (per the file) to verify the validity (per the file) of a public key (per the file) or range of the (per the file) encrypted in an ElGamal ciphertext. Per the file, it leaves out parts (per the file) of the logic that (per the file) are specific to the (per the file) SPL Token application like (per the file) the logic to verify (per the file) a zero-knowledge proof required (per the file) for a token transfer instruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we can activate the (per the file) ZK Token Proof program. Per the file, however, as explained above, (per the file) this is too specific (per the file) to a particular application. Per the file, we can deprecate the (per the file) ZK Token Proof program. Per the file, however, the program still (per the file) contains useful zero-knowledge proofs (per the file) that are very general and (per the file) will benefit many projects in the ecosystem. Per the file, we can rewrite/compile the (per the file) logic in the ZK Token (per the file) Proof program as BPF instructions, (per the file) so that the program is (per the file) independent of any node client.",
+    "Per the file, unfortunately, the logic in (per the file) the proof program are (per the file) just too expensive to (per the file) be currently run inside the vm. Per the file, this could change in (per the file) the future; however, launching (per the file) the ZK Token Proof (per the file) (or the new ZK (per the file) ElGamal Proof) is of (per the file) high priority to the (per the file) ecosystem as there are (per the file) currently a number of (per the file) projects that are waiting (per the file) for the ZK Token (per the file) Proof program to be activated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the new ZK ElGamal (per the file) Proof program contains a (per the file) strict subset of the proof verification instructions in the original ZK Token Proof program. Per the file, we list the the (per the file) instructions in the ZK (per the file) Token Proof program that (per the file) are to be either (per the file) renamed or removed in (per the file) the new ZK ElGamal Proof program. Per the file, the following set of instructions is to be RENAMED: VerifyZeroBalance: Verifies (per the file) a proof that certifies (per the file) that an ElGamal ciphertext (per the file) encrypts the value zero.",
+    "Per the file, this instruction is to be RENAMED to VerifyZeroCiphertext. Per the file, verifyFeeSigma: Verifies a proof (per the file) that certifies that a (per the file) tuple of Pedersen commitments (per the file) satisfy a percentage relation. Per the file, this instruction is to be RENAMED to VerifyPercentageWithCap. Per the file, the following set of instructions is to be REMOVED: VerifyWithdraw: Verifies (per the file) the zero-knowledge proofs that (per the file) are necessary for the Withdraw (per the file) instruction in SPL Token.",
+    "Per the file, verifyTransfer: Verifies the zero-knowledge (per the file) proofs that are necessary for (per the file) the Transfer instruction in SPL Token. Per the file, verifyTransferWithFee: Verifies the zero-knowledge (per the file) proofs that are necessary for (per the file) the Transfer instruction in SPL Token. Per the file, verifyRangeProofU64: Verifies that a (per the file) Pedersen commitment contains a (per the file) positive 64-bit value. Per the file, this instruction is not (per the file) specific to the SPL (per the file) Token program, but it may be subsumed by the existing VerifyBatchRangeProofU64 instruction.",
+    "Per the file, the implementation of the (per the file) instructions that are not (per the file) removed will remain the same. Per the file, instead of modifying the (per the file) existing ZK Token Proof (per the file) program into the ZK (per the file) ElGamal Proof program, we (per the file) propose to simply remove (per the file) the ZK Token Proof (per the file) program altogether and add (per the file) a new built-in ZK (per the file) ElGamal Proof program. Per the file, the existing ZK Token (per the file) Proof program is not (per the file) yet activated on any of the clusters."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing ZK Token (per the file) Proof program in the address ZkTokenProof1111111111111111111111111111111 is to be deprecated and removed. Per the file, a new ZK ElGamal Proof program is to be added to the (per the file) list of built-in programs (per the file) in the address ZkE1Gama1Proof11111111111111111111111111111. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the original ZK Token (per the file) Proof program have been (per the file) audited by multiple third party auditing firms. Per the file, since the new ZK (per the file) ElGamal Proof program will (per the file) inherit the same logic (per the file) from the ZK Token Proof program, we fail to expect additional security vulnerabilities (per the file) introduced with the new (per the file) ZK ElGamal Proof program. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the original ZK Token (per the file) Proof program has not (per the file) yet been activated on (per the file) any of the clusters. Per the file, therefore, deprecating it will (per the file) simply be removing the (per the file) unnecessary logic and the feature gate. Per the file, the new ZK ElGamal (per the file) program will require a (per the file) new feature gate to (per the file) be activated and included (per the file) as part of the (per the file) list of native built-in programs."
+   ]
+  }
+ ]
+}

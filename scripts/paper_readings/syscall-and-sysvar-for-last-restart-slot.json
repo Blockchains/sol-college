@@ -1,0 +1,100 @@
+{
+ "slug": "syscall-and-sysvar-for-last-restart-slot",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, create a new syscall and sysvar that may be used to get (per the file) the last restart slot. Per the file, a new Sysvar : SysvarLastRestartS1ot1111111111111111111111 (per the file) Method signature for syscall: (per the file) fn sol_get_last_restart_slot() -> Slot. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in Solana, when the (per the file) cluster cannot reach consensus, (per the file) it is currently restarted (per the file) using ledger-tool with a (per the file) hard fork on a slot. Per the file, all participating nodes need to restart their node specifying the hard fork slot. Per the file, once all nodes participating (per the file) in the restart effort (per the file) exceed 80% of the (per the file) total stakes, the restart (per the file) is successful, and the (per the file) cluster continues from the hard fork slot.",
+    "Per the file, so hard fork is (per the file) a tool to intentionally (per the file) fork off the nodes (per the file) not participating in the restart effort. Per the file, program developers may find (per the file) it useful to know (per the file) that a cluster restart has recently occurred. Per the file, this information can help (per the file) them prevent arbitrage and (per the file) liquidation caused by outdated oracle price acct states. Per the file, however, the cluster's restart (per the file) process takes several hours; in (per the file) that time, the world can (per the file) change, causing asset prices to fluctuate.",
+    "Per the file, as the cluster updates (per the file) the state of all accts, malicious actors could take (per the file) advantage of the delay (per the file) by conducting trades using (per the file) outdated prices, anticipating that (per the file) they will soon catch (per the file) up to the actual (per the file) prices of real-world assets. Per the file, knowing that cluster restart (per the file) has been done recently, (per the file) programs can manage these cases more appropriately. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we need to have (per the file) the value of the (per the file) last restart slot while executing the program. Per the file, we cannot use an acct because then it ought to be updated just after (per the file) the restart is successful, (per the file) which will add complexity. Per the file, the best way is (per the file) to create a new (per the file) syscall and sysvar to (per the file) get this information during (per the file) the execution of a tx, which will help us (per the file) get the last restart slot.",
+    "Per the file, we prefer syscall over (per the file) sysvar because the newly (per the file) created sysvar has to (per the file) be passed in the (per the file) instruction this takes up tx accts space. Per the file, in the long-term Solana (per the file) evolution, we plan to get (per the file) rid of syscalls and make (per the file) everything a sysvar, so we (per the file) have decided to implement both (per the file) a syscall and a sysvar (per the file) to address short and long-term evolution. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following criteria ought to be met to choose a restart slot. Per the file, should be of type (per the file) unsigned int 64 bits. Per the file, should be indicative of (per the file) when the cluster was (per the file) restarted Should be monotonically (per the file) increasing Should be less (per the file) than equal to the (per the file) current slot Should be (per the file) synchronized in the whole (per the file) cluster Can also be (per the file) indicative of a slow (per the file) block The first restart slot ought to be 0 In Solana (per the file) client hard fork variable (per the file) satisfies nearly all the (per the file) conditions except it is (per the file) not indicative of slow (per the file) block, it is a good candidate. Per the file, the syscall and sysvar is to be available in architectures eBPF and SBF. Per the file, for now, this functionality (per the file) is left undefined in program runtime v2."
+   ]
+  },
+  {
+   "heading": "Feature Gate",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature ought to be protected by the (per the file) feature gate this is (per the file) because this feature can (per the file) create differences in consensus. Per the file, solana core developers should (per the file) create a new keypair (per the file) and use it to (per the file) enable this feature on the cluster. Per the file, upon activation, the functionality (per the file) described below becomes available (per the file) in the next epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Creation of a new sysvar",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, similar to the clock (per the file) or rent sysvar we (per the file) can create a new (per the file) sysvar for last restart slot. Per the file, we have to implement (per the file) a new class to (per the file) store the required values, (per the file) which then could be (per the file) used by sysvar during execution. Per the file, sysvar Id: SysvarLastRestartS1ot1111111111111111111111. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Creation of a new syscall",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the implementation of this (per the file) syscall is pretty straightforward. Per the file, the syscall should have (per the file) following signature: fn sol_get_last_restart_slot() (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) -> u64 Murmur3 hash is: 0xb532af38. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview of changes for Solana client",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in Solana Labs node client all the cluster (per the file) restart-related data is already (per the file) stored in the bank structure. Per the file, for other node clients, we have to (per the file) get the last restart (per the file) slot information and make (per the file) it accessible to the (per the file) runtime of the program. Per the file, we have to set (per the file) this data in invoke (per the file) context executing the program. Per the file, then the syscall and (per the file) sysvar can use invoke (per the file) context to return the (per the file) data to the executing program. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Compute budget for the syscall",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as this feature involves (per the file) moving a u64 from (per the file) the bank to the (per the file) invoke context and returning (per the file) it when syscall or sysvar is called. Per the file, so considering : We can set the (per the file) maximum compute limit for the syscall to:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs managing time-sensitive states (per the file) may upgrade to use this (per the file) syscall to better manage exceptional (per the file) events like restarts. Per the file, we expect this change (per the file) to improve the robustness (per the file) of Solana's financial markets (per the file) as outlined above. Per the file, programs will need to (per the file) be recompiled and redeployed (per the file) (upgraded) to adopt this feature. Per the file, interface changes (e.g. acct inputs) are not required."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the programs using the (per the file) new syscall could not (per the file) be used on Solana version which fails to implement this feature. Per the file, existing programs that fail to use this feature are (per the file) not impacted at all. Per the file, feature gate ought to be used to enable (per the file) this feature when the (per the file) majority of the cluster (per the file) is using the required version."
+   ]
+  }
+ ]
+}

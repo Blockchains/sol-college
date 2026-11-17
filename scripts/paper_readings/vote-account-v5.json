@@ -1,0 +1,192 @@
+{
+ "slug": "vote-account-v5",
+ "pages": 6,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, introduces Vote Account v5, (per the file) the successor to Vote Account v4. Per the file, this is a new vote acct layout designed to facilitate (per the file) zero-copy access, support the (per the file) geo-aware leader schedule and include (per the file) more information about commission rate changes. Per the file, we take the opportunity (per the file) to clean up some (per the file) tech debt from Vote Account v4. Per the file, differences from Vote Account v4: New mandatory location field, for [SIMD-0674]. bls_pubkey_compressed is now mandatory.",
+    "Per the file, replaces the votes array (per the file) with a single optional latest_vote. Per the file, replaces each commission rate (per the file) with a commission schedule. Per the file, renames epoch_credits to accumulated_lamports (per the file) and keeps only the last 5 entries. Per the file, dynamically-sized fields are now (per the file) statically-sized for zero-copy access Reduces the acct size from 3762 bytes to 951 bytes. Per the file, adds a rank field, (per the file) which is just a (per the file) placeholder in this SIMD. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there are several reasons (per the file) to make these changes. (per the file) [SIMD-0674] needs a place (per the file) to store each node's location on-chain. Per the file, under [SIMD-0249], a commission (per the file) change made in epoch E (per the file) takes effect from epoch E+2. Per the file, on-chain programs therefore have (per the file) no visibility into the effective (per the file) commission rate of the vote acct, or into when queued-up commission (per the file) rate changes take effect.",
+    "Per the file, storing up to 4 (per the file) commission rate changes, with (per the file) the epoch in which (per the file) each takes effect, gives (per the file) on-chain programs visibility into (per the file) the previous epoch's rate, the (per the file) current rate and up to two (per the file) pending rate changes. Per the file, under Alpenglow, historical votes (per the file) are not used, epoch_credits (per the file) have a different meaning and (per the file) a bls_pubkey_compressed is needed for (per the file) all vote accts."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, [SIMD-0185] Vote Account v4 (per the file) is the starting point for (per the file) Vote Account v5. [SIMD-0249] Delay (per the file) Commission Updates and [SIMD-0123] Block Revenue (per the file) Distribution define when a commission change takes (per the file) effect. [SIMD-0232] Custom Commission Collector defines the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) vote acct state that the inflation rewards are calculated from. [SIMD-0384] Alpenglow changes the meaning of votes and epoch_credits and calls for bls_pubkey_compressed to be set. [SIMD-0674] Validator Location Registration defines the semantics of the location field and introduces the instruction which converts a Vote Account v4 into a Vote Account v5. [SIMD-0123]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0123-block-revenue-distribution.md [SIMD-0185]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0185-vote-acct-v4.md [SIMD-0232]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0232-custom-commission-collector.md [SIMD-0249]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0249-delay-commission-updates.md [SIMD-0291]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0291-commission-rate-in-basis-points.md [SIMD-0384]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0384-alpenglow-migration.md [SIMD-0387]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0387-bls-pubkey-management-in-vote-acct.md [SIMD-0674]: https://github.com/solana-foundation/solana-improvement-documents/pull/674 [SIMD-0464]: https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0464-vote-acct-initialize-v2.md. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Layout",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the new Vote Account (per the file) v5 state layout: | Offset (per the file) | Size | Field | Type | |-------:|-----:|-------|------| | 0 (per the file) | 4 | discriminant | u32 = 4 (per the file) | | 4 | 32 | node_pubkey | Pubkey (per the file) | | 36 | 32 | authorized_withdrawer | Pubkey | | 68 (per the file) | 32 | inflation_rewards_collector | Pubkey | | 100 | 32 | block_revenue_collector (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | Pubkey | | 132 | 12 | location | x: i32, y: i32, z: i32 | | 144 | 8 | pending_delegator_rewards | u64 | | 152 | 4 | inflation_rewards_commission_bps_len | u32, 1 to 4 | | 156 | 4 | block_revenue_commission_bps_len | u32, 1 to 4 | | 160 | 32 | inflation_rewards_commission_bps_epochs | [u64; 4] | | 192 | 8 | inflation_rewards_commission_bps | [u16; 4] | | 200 | 32 | block_revenue_commission_bps_epochs | [u64; 4] | | 232 | 8 | block_revenue_commission_bps | [u16; 4] | | 240 | 48 | bls_pubkey_compressed | [u8; 48] | | 288 | 8 | latest_vote | u64, u64::MAX = none | | 296 | 8 | root_slot | u64, u64::MAX = none | | 304 | 4 | authorized_voters_len | u32, at most 4 | | 308 | 4 | accumulated_lamports_len | u32, at most 5 | | 312 | 160 | authorized_voters | [(epoch: u64, pubkey: Pubkey); 4] | | 472 | 120 | accumulated_lamports | [(epoch, lamports, prev_lamports); 5] | | 592 | 16 | last_timestamp | (slot: u64, timestamp: i64) | | 608 | 10 | rank | (epoch: u64, rank: u16), (u64::MAX, u16::MAX) = none | | 618 | 333 | zeroed | [u8; 333], all zero | All integers are little-endian.",
+    "Per the file, note that the acct size is 951 bytes, (per the file) which is smaller than (per the file) the 3762 bytes of Vote Account v4. Per the file, each field starts at (per the file) a multiple of its (per the file) own size: all u64 (per the file) and i64's at a (per the file) multiple of 8 bytes and (per the file) all u32 and i32's at (per the file) a multiple of 4 bytes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Fields",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, location - the node's location. Per the file, see [SIMD-0674]. inflation_rewards_commission_bps_len, inflation_rewards_commission_bps_epochs (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) and inflation_rewards_commission_bps replace the Vote Account v4 inflation_rewards_commission_bps field. Per the file, these hold between 1 (per the file) and 4 inflation rewards (per the file) commission rate changes and (per the file) the epoch in which each takes effect.",
+    "Per the file, change i means \"commission (per the file) rate inflation_rewards_commission_bps[i] applies from (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) epoch inflation_rewards_commission_bps_epochs[i].\" See Commission Rate Changes. Per the file, similarly, block_revenue_commission_bps_len, block_revenue_commission_bps_epochs and (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) block_revenue_commission_bps contain the changes to the block revenue commission, replacing block_revenue_commission_bps. latest_vote replaces votes.",
+    "Per the file, it contains the slot (per the file) number of the vote acct's latest vote, or u64::MAX (per the file) if the vote acct hasn't voted. rank - the node's Alpenglow rank and the epoch during which (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) it held this rank. Per the file, this is an optional (per the file) field - if it's not (per the file) set, the epoch is u64::MAX (per the file) and the rank is u16::MAX.",
+    "Per the file, this field is not (per the file) set in this SIMD, but is to be updated in a (per the file) future SIMD. zeroed isn't (per the file) technically a field, but zeroed (per the file) padding at the end of (per the file) the vote state."
+   ]
+  },
+  {
+   "heading": "Changed Fields",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the other fields have (per the file) the same semantics and (per the file) meaning as in Vote Account v4. Per the file, there are some encoding (per the file) changes to support zero-copy (per the file) access: bls_pubkey_compressed is now mandatory. (per the file) root_slot is now u64::MAX when there is (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) no root, instead of being serialized as a bincode Option. authorized_voters is a fixed-size array of up to 4 entries in increasing epoch order. authorized_voters_len holds the number of these entries. epoch_credits is renamed to accumulated_lamports to reflect the changed semantics post-Alpenglow: this array now holds lamports instead of credits.",
+    "Per the file, it is now a (per the file) fixed-size array of up (per the file) to 5 entries, oldest first. (per the file) accumulated_lamports_len holds the number of (per the file) these entries. Per the file, under Alpenglow every delegation (per the file) is paid its rewards (per the file) every epoch, so rewards (per the file) only need the last 2 entries. Per the file, however, the Stake program's (per the file) DeactivateDelinquent instruction uses 5 entries (per the file) to determine if the vote acct has voted recently. Per the file, we will reduce the (per the file) length of this field (per the file) to 2 in a future SIMD. Per the file, all other fields are unchanged. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a Vote Account v5 (per the file) MUST fail to deserialize (per the file) unless all of following are true: The acct data length is exactly (per the file) 951 bytes. location is (per the file) valid as defined in [SIMD-0674]. Per the file, the inflation rewards commission (per the file) rate fields hold 1 (per the file) to 4 commission rate changes. Per the file, the block revenue commission (per the file) rate fields hold 1 (per the file) to 4 commission rate (per the file) changes. authorized_voters has at (per the file) most 4 entries with strictly (per the file) increasing epochs. accumulated_lamports has at (per the file) most 5 entries. rank is (u64::MAX, (per the file) u16::MAX). Per the file, for every fixed size (per the file) list, each entry at (per the file) or after its length (per the file) is zero. zeroed is all zero. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Commission Rate Changes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the only way commission (per the file) rate changes are made (per the file) is through the Vote (per the file) program UpdateCommission and UpdateCommissionBps instructions. Per the file, when these instructions succeed (per the file) for epoch E, the (per the file) Vote program MUST record (per the file) the change (E + 2, (per the file) bps) in the appropiate commission array. Per the file, this is because, as (per the file) per [SIMD-0249], the new (per the file) rate will take effect at (per the file) epoch E + 2.",
+    "Per the file, if the last entry (per the file) in the array is (per the file) already for epoch E (per the file) + 2, the bps value is overwritten. Per the file, otherwise the new entry (per the file) is appended to the (per the file) end of the list. Per the file, if there are already (per the file) 4 changes, the oldest (per the file) one is removed first. Per the file, old entries are not (per the file) removed when their epoch passes.",
+    "Per the file, an entry is only (per the file) removed when a new (per the file) change pushes it out. Per the file, the rate for an (per the file) epoch X is the (per the file) bps of the entry (per the file) with the highest epoch (per the file) that is not after X. The file fails to change the semantics of (per the file) how much delay each commission update incurs. Per the file, it only records extra (per the file) data into the vote acct so that on-chain programs (per the file) can use this.",
+    "Per the file, example 1 If there (per the file) are already 4 entries (per the file) in a commission rate (per the file) array: | Epoch | 0 | 1 (per the file) | 2 | 3 | |-------|--:|--:|--:|--:| | Rate | 10 (per the file) | 11 | 12 | 13 | and (per the file) a [E=2, rate=14] commission (per the file) rate update occurs, then the oldest (per the file) entry is removed and the new (per the file) one is added at the end: (per the file) | Epoch | 1 | 2 | 3 | 4 | |-------|--:|--:|--:|--:| | Rate (per the file) | 11 | 12 | 13 | 14 | If no (per the file) more changes are made, the array (per the file) stays the same in future epochs."
+   ]
+  },
+  {
+   "heading": "Conversion from Vote Account v4",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, conversion from Vote Account (per the file) v4 to Vote Account (per the file) v5 only happens with (per the file) the UpdateLocation Vote program (per the file) instruction introduced in [SIMD-0674]. Per the file, this is because location (per the file) is a mandatory Vote Account v5 field. Per the file, therefore SIMD fails to have a feature gate (per the file) of its own, and fails to change any on-chain logic (per the file) before the [SIMD-0674] feature gate (per the file) is activated.",
+    "The file simply to describes the (per the file) format, semantics of the (per the file) fields and conversion from (per the file) Vote Account v4 to (per the file) Vote Account v5, to (per the file) avoid bloating [SIMD-0674].",
+    "Per the file, the UpdateLocation instruction converts (per the file) the Vote Account v4 (per the file) state to the new (per the file) Vote Account v5 state (per the file) using the conversion function (per the file) below for each field, (per the file) where E is the (per the file) current epoch: | Field | Value (per the file) | |-------|-------| | node_pubkey … block_revenue_collector | copied | | pending_delegator_rewards (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | copied | | location | the location from the UpdateLocation instruction | | inflation rewards commission | one entry: (E + 2, rate) | | block revenue commission | one entry: (E + 2, rate) | | bls_pubkey_compressed | copied | | latest_vote | slot of the last votes entry, or u64::MAX if none | | root_slot | copied, or u64::MAX if None | | authorized_voters | copied, in increasing epoch order | | accumulated_lamports | the last 5 epoch_credits entries, in order | | last_timestamp | copied | | rank | (u64::MAX, u16::MAX) | | zeroed | all zero | A Vote Account v4 only stores its latest rate, so the conversion records it as (E + 2, rate), even if the rate was set long ago.",
+    "Per the file, the rates for epochs (per the file) E and E + 1 (per the file) are not stored in the vote acct. Per the file, rewards for those epochs (per the file) use the rates the (per the file) runtime saved at the (per the file) earlier epoch boundaries, as they do today. Per the file, updateLocation MUST only convert (per the file) a 3762-byte Vote Account (per the file) v4, and MUST then shrink (per the file) it to 951 bytes.",
+    "Per the file, the acct keeps its lamports. Per the file, the UpdateLocation instruction MUST (per the file) fail with InvalidAccountData if (per the file) the Vote Account v4 (per the file) has no BLS key. Per the file, note that this means (per the file) that conversion from vote acct versions older than v4 (per the file) will fail, because they fail to have a BLS key set. Per the file, so older vote accts must first be converted (per the file) to Vote Account v4, (per the file) and set a valid (per the file) BLS key, before they may be converted to Vote Account v5.",
+    "Per the file, an acct may be converted before it (per the file) has voted in Alpenglow. Per the file, its latest_vote, root_slot and (per the file) last_timestamp then still hold its old (per the file) Tower values, which are replaced once it (per the file) starts voting in Alpenglow. Per the file, new lamports are added (per the file) on top of its (per the file) last Tower entry in accumulated_lamports. Per the file, see Runtime Changes and Accumulated Lamports for details.",
+    "Per the file, example 2 If a (per the file) Vote Account v4 with (per the file) a stored commission rate (per the file) of 500 in the acct state is converted to (per the file) Vote Account v5 during (per the file) epoch 100, the commission array is to be: | Epoch | 102 | |-------|----:| | Rate | 500 | This fails to necessarily mean that the (per the file) rate changed in epoch (per the file) 100, just that the (per the file) previous historical values from (per the file) before the conversion are (per the file) not stored on-chain.",
+    "Per the file, example 3 If a (per the file) Vote Account v4 has (per the file) had its commission rate (per the file) changed from 500 to (per the file) 700 during epoch 99, (per the file) and is then converted (per the file) to a Vote Account (per the file) v5 during epoch 100, the commission array is to be: | Epoch | 102 | |-------|----:| | Rate (per the file) | 700 | The change made (per the file) in epoch 99 takes (per the file) effect in epoch 101, (per the file) so the rates actually (per the file) used by the runtime (per the file) are: | Epoch | 100 | 101 (per the file) | 102 | |-------|----:|----:|----:| | Effective Rate | 500 (per the file) | 700 | 700 | The array fails to show that 500 was (per the file) used in epoch 100, (per the file) or that 700 is (per the file) already used in epoch 101. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Creating a Vote Account v5",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is no instruction (per the file) that creates a Vote Account v5 directly. Per the file, to create one: Create a Vote Account v4 with InitializeAccount. Per the file, set the BLS key (per the file) as described in [SIMD-0387]. Per the file, call UpdateLocation as described (per the file) in [SIMD-0674], to convert (per the file) it to a Vote Account v5. Per the file, a future SIMD could (per the file) add an instruction that (per the file) creates a Vote Account (per the file) v5 in one step, (per the file) similar to [SIMD-0464]."
+   ]
+  },
+  {
+   "heading": "Vote Program Changes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all Vote program instructions (per the file) MUST support Vote Account v5. Per the file, the semantics of some (per the file) instructions MUST change: UpdateLocation (per the file) is the new instruction (per the file) described in [SIMD-0674], and (per the file) is the only instruction which (per the file) can convert an acct to Vote Account v5, as (per the file) described in Conversion from Vote Account v4. Per the file, authorize, AuthorizeChecked, AuthorizeWithSeed and (per the file) AuthorizeCheckedWithSeed MUST fail with (per the file) InvalidInstructionData if, after purging, (per the file) adding an authorized voter (per the file) would exceed the limit (per the file) of 4 authorized voters. Per the file, updateCommission and UpdateCommissionBps MUST (per the file) behave as described above (per the file) in Commission Rate Changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime Changes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, whenever the runtime updates a vote acct's state, it MUST keep the acct a Vote Account v5 and (per the file) update its fields. Per the file, this happens in the (per the file) following places: Vote Rewards: (per the file) when processing an Alpenglow (per the file) reward certificate, for each node in the certificate the (per the file) runtime updates latest_vote and (per the file) last_timestamp for the reward slot. Per the file, for a Vote Account (per the file) v4, this replaces the (per the file) votes field with a (per the file) single vote for the reward slot.",
+    "Per the file, a Vote Account v5 (per the file) has no votes field, (per the file) so the runtime sets (per the file) latest_vote instead, to the (per the file) highest of its current value, (per the file) the reward slot and root_slot. (per the file) last_timestamp is only changed if the (per the file) reward slot's timestamp is later than the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) one stored, and its slot and timestamp are changed together. Per the file, the runtime also adds the node's share of the reward (per the file) to accumulated_lamports as described in (per the file) Accumulated Lamports.",
+    "Per the file, the leader's share is (per the file) added to the leader's accumulated_lamports. Per the file, finalization: when processing an (per the file) Alpenglow finalization certificate, for each node in the certificate the (per the file) runtime first sets root_slot (per the file) to the highest of its (per the file) current value and the finalized slot. Per the file, it then updates latest_vote (per the file) and last_timestamp for the finalized (per the file) slot, in the same way as (per the file) for Vote Rewards.",
+    "Per the file, block Revenue and Delegator (per the file) Rewards: at the end (per the file) of each block, the (per the file) delegators' share of the (per the file) fees is added to (per the file) the leader's pending_delegator_rewards. Per the file, at the start of (per the file) each epoch, pending_delegator_rewards is (per the file) paid out to stake accts and reset to 0. Per the file, in these updates, a (per the file) latest_vote or root_slot of (per the file) u64::MAX (none) counts as 0.",
+    "Per the file, therefore, latest_vote, root_slot and (per the file) last_timestamp monotonically increase. Per the file, if a node is in both the (per the file) reward certificate and the (per the file) finalization certificate of a (per the file) block, the reward certificate is processed first. Per the file, commission rate selection is (per the file) unchanged: the rate is (per the file) still read from the vote acct state in the nodes internal cache, as in (per the file) [SIMD-0249] and [SIMD-0123]. Per the file, for a Vote Account (per the file) v5, the rate is (per the file) the bps of the (per the file) last entry in each (per the file) commission array, in the cached vote acct. Per the file, see Commission Rate Changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Accumulated Lamports",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, accumulated_lamports is updated the (per the file) same way as epoch_credits in (per the file) Vote Account v4. Per the file, each entry is (epoch, (per the file) lamports, prev_lamports), where lamports (per the file) is a running total and (per the file) prev_lamports is the total before (per the file) this entry.",
+    "Per the file, to add n lamports (per the file) in epoch E, where (per the file) total is the total (per the file) of the last entry (per the file) (0 if there are (per the file) none), the runtime: adds (per the file) n to the last (per the file) entry, if it is (per the file) for epoch E. otherwise, (per the file) if the last entry (per the file) earned nothing, changes its (per the file) epoch to E and (per the file) adds n to it. (per the file) otherwise, adds a new (per the file) entry (E, total + n, (per the file) total), dropping the oldest (per the file) entry if there are already 5.",
+    "Per the file, in the Alpenglow migration (per the file) epoch, the first time (per the file) lamports are added, a (per the file) marker entry (u64::MAX, u64::MAX, (per the file) u64::MAX) is added first, unless there (per the file) is one already. Per the file, it counts towards the 5 entries. Per the file, entries before the marker (per the file) are Tower credits and (per the file) entries after it are Alpenglow lamports. Per the file, when the last entry (per the file) is the marker, a (per the file) new entry is always (per the file) added, and total is (per the file) the total of the (per the file) entry before the marker.",
+    "Per the file, the conversion copies the (per the file) last 5 epoch_credits entries (per the file) as they are, including the (per the file) marker if there is one. Per the file, if the acct has not earned any (per the file) Alpenglow lamports yet, it (per the file) has no marker, and (per the file) the rules above simply (per the file) carry on from its last Tower entry."
+   ]
+  },
+  {
+   "heading": "Stake Program Changes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the on-chain core BPF (per the file) stake program needs to be (per the file) updated to read Vote Account v5 accts. Per the file, specifically: DelegateStake reads the (per the file) credits of the latest (per the file) epoch_credits entry to set (per the file) the stake's credits_observed. Per the file, deactivateDelinquent reads the recent (per the file) epoch_credits entries of the (per the file) delinquent and reference vote accts. Per the file, both instructions MUST accept (per the file) a Vote Account v5 (per the file) and read accumulated_lamports instead (per the file) of epoch_credits. Per the file, when [SIMD-0674] is activated, (per the file) the runtime MUST upgrade the (per the file) Stake program to a version (per the file) that does this. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Account Size Checks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, several places in the (per the file) runtime check for a 3762 byte acct size to determine if an acct is a valid Vote Account v4. Per the file, these call sites MUST (per the file) be updated to also (per the file) support Vote Account v5's (per the file) new smaller size. Per the file, in particular: Validators keep (per the file) a list of vote accts, used for epoch stakes, (per the file) the leader schedule, the VAT and rewards.",
+    "Per the file, an acct only goes on this (per the file) list if its size (per the file) and discriminant match a known vote acct version. Per the file, crediting and paying out (per the file) pending_delegator_rewards MUST accept a (per the file) 951-byte Vote Account v5. Per the file, the VAT minimum balance (per the file) MUST be the rent-exempt (per the file) minimum for the vote acct's actual size, plus one epoch (per the file) of VAT burn. Per the file, for a Vote Account (per the file) v4 this is the same as today. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, every component that reads or writes vote accts MUST support Vote Account (per the file) v5: | Validator Component | Impact (per the file) | |---------------------------------|-----------------------------------------| | Transaction Execution (Runtime) | Vote program; vote acct reads/writes | | Virtual Machine | None (per the file) | | Block Packing | None | | Consensus | Alpenglow vote acct updates | | Gossip | None | | Turbine | None (per the file) | | Snapshots | Manifest stakes and epoch (per the file) stakes | | On-Chain Core BPF Programs (per the file) | Stake program reads | | Other (RPC) | getVoteAccounts, (per the file) parsed vote accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, keep the 3762-byte size (per the file) of Vote Account v4. Per the file, however, this is unnecessary (per the file) and there are performance (per the file) benefits to hashing smaller accts. Per the file, 951 bytes leaves a (per the file) bit of room for (per the file) extra fields in the (per the file) future without having to (per the file) worry about changing the (per the file) rent-exempt value for vote accts. Per the file, set each node's Alpenglow rank in this SIMD. Per the file, this is a bigger (per the file) change to the runtime, (per the file) so a future SIMD (per the file) will set the rank field. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all third-party programs and (per the file) tools that parse vote accts MUST support Vote Account v5. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, commission rate selection is (per the file) unchanged, so this SIMD fails to change the commission any node is paid. Per the file, every Vote Account v5 (per the file) field is checked on (per the file) deserialization, so a malformed acct cannot be read in place by mistake. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, vote Account v4 accts remain valid, this SIMD fails to force anyone to upgrade. Per the file, upgrading is optional until (per the file) [SIMD-0674]'s enforce_validator_location_registration feature gate (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) is activated, which excludes vote accts without a location set - and therefore have a vote acct version older than v5 - from the VAT. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a series of test (per the file) fixtures MUST be provided, (per the file) using the conformance tooling. Per the file, these MUST include the (per the file) following scenarios at a (per the file) minimum: conversion from Vote (per the file) Account v4 (including no (per the file) BLS key and the (per the file) resize to 951 bytes), (per the file) commission updates in one (per the file) and in consecutive epochs (per the file) and all Vote Account (per the file) v5 states that fail validation."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,85 @@
+{
+ "slug": "loader-v3-remove-extendprogram",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file proposes removing the ExtendProgram (per the file) instruction from Loader V3. Per the file, with [SIMD-0433], the Upgrade (per the file) instruction resizes the programdata acct to match the ELF being (per the file) deployed, so extension as a (per the file) separate step no longer serves a purpose. Per the file, after activation, ExtendProgram MUST fail."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ExtendProgram instruction exists (per the file) mainly for two reasons: (per the file) The Upgrade instruction could (per the file) not previously grow the programdata acct Resizing within CPI is (per the file) limited to 10 KiB (per the file) [SIMD-0433] lifts the first (per the file) restriction, and a new upgrade (per the file) workflow for PDA signers (detailed (per the file) below) can address the second. Per the file, this makes ExtendProgram redundant (per the file) for its original purpose."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: **[SIMD-0433]: (per the file) Loader V3: Set Program Data (per the file) to ELF Length** Upgrade has to be able to grow the programdata acct before ExtendProgram may be removed. Per the file, without it, no program (per the file) could be upgraded to a larger ELF."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the ExtendProgram instruction, discriminator (per the file) 6, MUST fail with InvalidInstructionData. Per the file, its discriminator is retired (per the file) and MUST NOT be reused. Per the file, no other Loader V3 instruction changes. Per the file, no acct layout changes. Per the file, programs already deployed continue (per the file) to run, upgrade, and (per the file) close exactly as before."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Permissioning `ExtendProgram`",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, [SIMD-0164] proposed ExtendProgramChecked, a (per the file) new instruction requiring the upgrade (per the file) authority's signature. Per the file, this approach would continue (per the file) to keep this redundant (per the file) step isolated from Upgrade, (per the file) with both held to (per the file) the same authority, even (per the file) after [SIMD-0433] is active. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, extension ceases to be (per the file) a user-facing operation. Per the file, deploying a larger program (per the file) is a single Upgrade, (per the file) and the rent for (per the file) the growth is supplied through the buffer acct or credited to the programdata acct beforehand, as specified in [SIMD-0433]. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Program-Owned Upgrade Authorities",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs with a program-owned (per the file) upgrade authority that need to (per the file) grow by more than 10 (per the file) KiB in one upgrade must (per the file) implement the authority hand-off described below. Per the file, the workflow is a single tx, signed by the designated (per the file) \"hot\" keypair that serves (per the file) as the upgrade's top-level (per the file) signer, with the following instructions: A CPI from the owning program (per the file) to Loader V3's SetAuthority to assign (per the file) the hot keypair as the new upgrade (per the file) authority, signed by the PDA authority.",
+    "Per the file, a top-level Loader V3 (per the file) Upgrade instruction to perform the (per the file) upgrade and resize the programdata acct by more than 10 KiB. Per the file, this is authorized at (per the file) the top level by (per the file) the signing hot keypair. Per the file, a top-level Loader V3 (per the file) SetAuthority instruction to reassign the (per the file) original PDA authority as the (per the file) upgrade authority, as it was (per the file) at the beginning.",
+    "Per the file, programs may also choose (per the file) to employ one or (per the file) more \"guard\" instructions that (per the file) assert that the resulting (per the file) upgrade authority at the end of the tx is in fact the correct address. Per the file, this new workflow leverages tx atomicity to perform a (per the file) safe upgrade when the programdata acct has to be resized by more than 10 KiB. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary security concern (per the file) is safe implementation of (per the file) upgrade workflows akin to (per the file) the one described in (per the file) the previous section, for (per the file) those authorities who truly require it. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file removes an instruction from (per the file) the Loader V3 interface. Per the file, it is not backwards compatible and calls for a feature gate for consensus safety. Per the file, any tx containing ExtendProgram fails after (per the file) activation. [SIMD-0164]: https://github.com/solana-foundation/solana-improvement-documents/pull/164 [SIMD-0433]: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0433-loader-v3-set-program-data-to-elf-length.md."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,101 @@
+{
+ "slug": "increase-cpi-account-infos-limit",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increase the maximum number of acct info's for cross-program invoked (per the file) (CPI) instructions from 64 to 255 (per the file) and consume compute units for serialized acct info's and instruction acct meta's. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, cPI's are restricted to (per the file) a limit of 64 acct info's passed to the syscall. Per the file, this limit is burdensome (per the file) for onchain programs which (per the file) themselves were invoked with more than 64 accts because it means they (per the file) cannot simply pass through (per the file) the same list of acct info's that they were (per the file) invoked with to another CPI syscall. Per the file, they are faced with (per the file) the burden of first deduplicating the acct info's and constructing a (per the file) new list before making the syscall.",
+    "Per the file, this problem arises when (per the file) onchain programs wrap another program (including Jupiter) that composes many (per the file) other programs and are (per the file) invoked with over 64 accts (including duplicates). Per the file, along with the increasing the acct info limit, start charging for both serialized acct info's and instruction acct meta's to avoid abuse of (per the file) resources in CPI calls. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, **Account Info:** The serialized information for each acct referenced in a CPI (per the file) instruction used to read acct info from the caller program. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Maximum Account Info Length",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, increase the maximum acct info length imposed on (per the file) CPI syscalls from **64** to **255**. Per the file, the maximum is inclusive, (per the file) meaning that a list of acct info's with a length (per the file) of 255 is valid. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Account Info Cost",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, consume **1 compute unit (per the file) (CU)** for every cpi_bytes_per_unit (per the file) (currently 250) bytes of acct info. Per the file, fixed size of **80 (per the file) bytes** for each account_info (per the file) broken down as 32 bytes for acct address 32 bytes for owner (per the file) address 8 bytes for lamport (per the file) balance 8 bytes for data (per the file) length The total cost of acct info's may be computed with (account_info_size * account_infos_len) / cpi_bytes_per_unit (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) rounded down to the nearest CU.",
+    "Per the file, note that the SVM (per the file) can skip duplicate or unused acct info's but for simpler (per the file) CU accounting, each acct info has the same effect (per the file) on cost regardless of whether (per the file) it's actually used by the (per the file) invoked instruction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Instruction Account Metadata Cost",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, consume **1 compute unit (per the file) (CU)** for every cpi_bytes_per_unit (per the file) (currently 250) bytes of instruction acct metadata. Per the file, fixed size of **34 (per the file) bytes** for each ix_account_metadata (per the file) broken down as 32 bytes for acct address 1 byte for signer flag (per the file) 1 byte for writable flag The (per the file) total cost of instruction acct metadata may be computed with (ix_account_metadata_size * ix.accts.len()) / cpi_bytes_per_unit (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) rounded down to the nearest CU. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Reduce base CPI cost",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the base cost of (per the file) CPI syscalls is currently (per the file) set to 1000 compute units. Per the file, in order to avoid (per the file) charging more CU's for (per the file) existing onchain program behavior after (per the file) the activation of this feature, (per the file) the base cost of CPI (per the file) syscalls will decreased by 54 (per the file) compute units to 946 compute (per the file) units to offset the new costs.",
+    "Per the file, before this SIMD, up to 255 instruction acct metadata's could be passed (per the file) to a CPI syscall. Per the file, the base cost offset (per the file) is therefore 255 * 34 (per the file) / 250 = 34 CU's. Per the file, before this SIMD, up to 64 acct info's could be passed (per the file) to a CPI syscall. Per the file, the base cost offset (per the file) is therefore 64 * 80 (per the file) / 250 = 20 CU's. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, what alternative designs were (per the file) considered and what pros/cons (per the file) does this feature have relative to them?. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, since the list of acct info's passed to a (per the file) CPI can now be ~4 (per the file) times longer, there is to be more overhead in the (per the file) SVM to map each instruction acct address to one of the acct info's. Per the file, the number of allowed unique acct info's remains unchanged so (per the file) the maximum amount of accts that need to be translated (per the file) for a CPI syscall has not increased.",
+    "Per the file, cPI's will consume compute (per the file) units proportional to the number of acct info's and instruction accts. Per the file, this gives an extra (per the file) incentive to onchain programs (per the file) to decrease the number of accts passed to CPI's. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, why should we not do this?"
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the max acct info length increase for (per the file) CPI's and new costs is to be feature gated. Per the file, since the limit is (per the file) being increased, existing behavior (per the file) will not be restricted."
+   ]
+  }
+ ]
+}

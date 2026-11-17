@@ -1,0 +1,65 @@
+{
+ "slug": "fork-generation",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, the Solana protocol doesn’t (per the file) wait for all nodes to agree on a newly (per the file) produced block before the next (per the file) block is produced. Per the file, because of that, it’s (per the file) quite common for two different (per the file) blocks to be chained to (per the file) the same parent block. Per the file, in those situations, we (per the file) call each conflicting chain a “fork.” Solana nodes need to vote on (per the file) one of these forks (per the file) and reach agreement on (per the file) which one to use (per the file) through a consensus algorithm (per the file) (that is beyond the (per the file) scope of this article).",
+    "Per the file, the main point you (per the file) need to remember is (per the file) that when there are (per the file) competing forks, only one fork is to be finalized by the (per the file) cluster and the abandoned (per the file) blocks in competing forks are all discarded. Per the file, this section describes how (per the file) forks naturally occur as (per the file) a consequence of leader rotation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, nodes take turns being leader and generating the (per the file) PoH that encodes state changes. Per the file, the cluster can tolerate (per the file) loss of connection to (per the file) any leader by synthesizing (per the file) what the leader _**would**_ (per the file) have generated had it (per the file) been connected but not (per the file) ingesting any state changes. Per the file, the possible number of (per the file) forks is thereby limited (per the file) to a \"there/not-there\" skip (per the file) list of forks that may arise (per the file) on leader rotation slot boundaries. Per the file, at any given slot, (per the file) only a single leader's txs is to be accepted."
+   ]
+  },
+  {
+   "heading": "Forking example",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the table below illustrates (per the file) what competing forks could look like. Per the file, time progresses from left (per the file) to right and each (per the file) slot is assigned to a node that temporarily becomes the (per the file) cluster “leader” and may (per the file) produce a block for that slot. Per the file, in this example, the (per the file) leader for slot 3 (per the file) chose to chain its (per the file) “Block 3” directly to (per the file) “Block 1” and in (per the file) doing so skipped “Block 2”.",
+    "Per the file, similarly, the leader for (per the file) slot 5 chose to (per the file) chain “Block 5” directly (per the file) to “Block 3” and (per the file) skipped “Block 4”. > Note (per the file) that across different forks, (per the file) the block produced for (per the file) a given slot is (per the file) > _always_ the same because (per the file) producing two different blocks (per the file) for the same slot (per the file) is > a slashable offense.",
+    "Per the file, so the conflicting forks above may be distinguished from > each (per the file) other by which slots (per the file) they have _skipped_. | | Slot (per the file) 1 | Slot 2 | Slot (per the file) 3 | Slot 4 | Slot (per the file) 5 | | ------ | ------- | ------- | ------- | ------- | ------- | | Fork 1 | Block (per the file) 1 | | Block 3 | | Block (per the file) 5 | | Fork 2 | Block (per the file) 1 | | Block 3 | Block (per the file) 4 | | | Fork 3 | Block 1 | Block 2 | | |. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Message Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions are ingested by the current leader. Per the file, leader filters valid txs. Per the file, leader executes valid txs updating its state. Per the file, leader packages txs into entries based off (per the file) its current PoH slot. Per the file, leader transmits the entries to node nodes \\(in signed shreds\\) The PoH stream includes (per the file) ticks; empty entries that (per the file) indicate liveness of the (per the file) leader and the passage (per the file) of time on the cluster.",
+    "Per the file, a leader's stream begins (per the file) with the tick entries necessary (per the file) to complete PoH back to (per the file) the leader's most recently observed (per the file) prior leader slot. Per the file, validators retransmit entries to (per the file) peers in their set (per the file) and to further downstream nodes. Per the file, validators validate the txs and execute them on their state. Per the file, validators compute the hash of the state. Per the file, at specific times, i.e. (per the file) specific PoH tick counts, nodes transmit votes to the leader.",
+    "Per the file, votes are signatures of (per the file) the hash of the (per the file) computed state at that PoH tick count. Per the file, votes are also propagated via gossip. Per the file, leader executes the votes, (per the file) the same as any other tx, and broadcasts them to the cluster. Per the file, validators observe their votes (per the file) and all the votes from the cluster. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Partitions, Forks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, forks can arise at (per the file) PoH tick counts that (per the file) correspond to a vote. Per the file, the next leader may (per the file) not have observed the (per the file) last vote slot and (per the file) may start their slot (per the file) with generated virtual PoH entries. Per the file, these empty ticks are (per the file) generated by all nodes (per the file) in the cluster at (per the file) a cluster-configured rate for (per the file) hashes/per/tick Z.",
+    "Per the file, there are only two (per the file) possible versions of the (per the file) PoH during a voting (per the file) slot: PoH with T (per the file) ticks and entries generated (per the file) by the current leader, (per the file) or PoH with just ticks. Per the file, the \"just ticks\" version of the PoH may be thought of as (per the file) a virtual ledger, one (per the file) that all nodes in (per the file) the cluster can derive (per the file) from the last tick (per the file) in the previous slot.",
+    "Per the file, validators can ignore forks (per the file) at other points \\(e.g. (per the file) from the wrong leader\\), or (per the file) slash the leader responsible for the fork. Per the file, validators vote based on (per the file) a greedy choice to (per the file) maximize their reward described in Tower BFT. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator's View",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, time Progression The diagram below represents a node's view of the PoH (per the file) stream with possible forks over time. Per the file, l1, L2, etc. are leader slots, and Es represent entries from that (per the file) leader during that leader's slot. Per the file, the xs represent ticks only, and (per the file) time flows downwards in the diagram. Per the file, note that an E (per the file) appearing on 2 forks (per the file) at the same slot (per the file) is a slashable condition, so a node observing E3 and E3' (per the file) can slash L3 and (per the file) safely choose x for that slot.",
+    "Per the file, once a node commits to a fork, other forks may be discarded below that tick count. Per the file, for any slot, nodes need only consider a (per the file) single \"has entries\" chain (per the file) or a \"ticks only\" (per the file) chain to be proposed by a leader. Per the file, but multiple virtual entries (per the file) may overlap as they (per the file) link back to the a previous slot. Per the file, time Division It's useful (per the file) to consider leader rotation over (per the file) PoH tick count as time (per the file) division of the job of (per the file) encoding state for the cluster.",
+    "Per the file, the following table presents (per the file) the above tree of (per the file) forks as a time-divided (per the file) ledger. | leader slot | L1 | L2 (per the file) | L3 | L4 | L5 | | :--------------- | :-- | :-- | :-- | :-- | :-- | | data | E1 (per the file) | E2 | E3 | E4 | E5 | | ticks (per the file) since prev | | | | x | xx | Note (per the file) that only data from leader L3 is to be accepted during leader slot L3. Per the file, data from L3 may (per the file) include \"catchup\" ticks back (per the file) to a slot other (per the file) than L2 if L3 (per the file) did not observe L2's data.",
+    "Per the file, l4 and L5's transmissions (per the file) include the \"ticks to prev\" PoH entries. Per the file, this arrangement of the (per the file) network data streams permits (per the file) nodes to save exactly (per the file) this to the ledger (per the file) for replay, restart, and checkpoints. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Leader's View",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when a new leader (per the file) begins a slot, it (per the file) must first transmit any (per the file) PoH \\(ticks\\) required to (per the file) link the new slot (per the file) with the most recently (per the file) observed and voted slot. Per the file, the fork the leader (per the file) proposes would link the (per the file) current slot to a (per the file) previous fork that the (per the file) leader has voted on with virtual ticks. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,73 @@
+{
+ "slug": "lift-the-cpi-caller-restriction",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, remove the check which (per the file) forces CPI callers to have the program acct of the callee available (per the file) to them as an instruction acct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the restriction is purely (per the file) historical and not necessary (per the file) for the protocol or its implementations. Per the file, removing it would improve composability and reduce tx building complexity because program accts would no longer be (per the file) passed all the way from tx level instructions to the (per the file) inner most CPI instructions. Per the file, additionally, not passing these program accts is a significant reduction (per the file) in data copied during serialization as program accts of loader v1, v2 (per the file) and v4 contain the (per the file) entire 10 MB ELF.",
+    "Per the file, this massively reduces the (per the file) CU cost for nested (per the file) CPI and disincentivizes programs from accessing program accts, which could later allow (per the file) us to remove program loading from tx loading. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Example transaction",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, accounts: Fee payer Caller (per the file) Program Callee Program Token (per the file) Transaction-level instruction: Program Account: (per the file) Caller Program Instruction Accounts: **Callee (per the file) Program** (this could be removed) (per the file) Token CPI: Program Account: Callee (per the file) Program Instruction Accounts: Token Currently, so as to be used as a program acct for a nested instruction the callee program has to be passed as an instruction acct to all outer instructions recursively. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in CPI a feature (per the file) gate must switch the (per the file) search for the program (per the file) id of the callee from the instruction accts of the caller to the acct list of the tx. Per the file, invoking a program in (per the file) CPI which was un/re/deployed (per the file) in the same tx is prevented by the \"delay visibility\" (per the file) feature and thus unproblematic. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, see motivation and security considerations. Per the file, dapp developers who wish (per the file) to benefit from the (per the file) lifting of the restriction (per the file) shall: Hard-code the callee (per the file) address in the CPI call, (per the file) in case they want a (per the file) static dispatch Use the instruction (per the file) **data**, not instruction **accts**, to receive the callee address (per the file) as a parameter, in case (per the file) they want a dynamic dispatch (per the file) Transaction building should append the required program accts, which are not passed as instruction accts, at the end of the tx accts list. Per the file, how the dapps describe (per the file) which callee prorgams they (per the file) require to be present in the tx is explicitly left unspecified."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for a program to (per the file) be allowed to modify an acct it has to be the owner and the instruction acct must have been passed (per the file) in with the is_writable flag set. Per the file, some programs take custody of an accts ownership and allow control (per the file) via a signer authority. Per the file, in these cases the instruction acct must have been passed (per the file) in with the is_signer (per the file) flag set additionally.",
+    "Per the file, both these flags can (per the file) only be set in (per the file) the inner most nested (per the file) CPI if all parent (per the file) CPIs did also set them. Per the file, however, they can not (per the file) be controlled at per top-level-instruction. Per the file, all of these instructions (per the file) share the same flags throughout the tx.",
+    "Per the file, this means the CPI (per the file) caller restriction has been (per the file) used as a security (per the file) feature to prevent a (per the file) top-level-instruction from calling into (per the file) a program which has custody of an acct that another top-level-instruction required as a (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) signer. Per the file, removing this restriction would (per the file) require a lot more (per the file) care to be taken in tx builing to prevent the (per the file) relaxation from being exploited. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs remain unaffected the (per the file) way they are, unless (per the file) they want to profit from this change. Per the file, in that case they (per the file) can do one of (per the file) the following: Existing programs, (per the file) which have hard-coded the (per the file) callee statically and only need (per the file) it as any instruction acct to satisfy the constraint imposed (per the file) by the runtime, may be fed a placeholder like (per the file) NativeLoader1111111111111111111111111111111, in order not to (per the file) shift the indices of the other instruction accts.",
+    "Per the file, all other existing programs, (per the file) which dynamically call whatever (per the file) is passed in a specific instruction acct will have to be (per the file) updated and redeployed to (per the file) benefit from the lifting of the restriction. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

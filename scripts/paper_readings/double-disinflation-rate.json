@@ -1,0 +1,84 @@
+{
+ "slug": "double-disinflation-rate",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reduce the inflation schedule (per the file) by increasing the disinflation (per the file) rate from the current (per the file) -15% rate to -30%. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while there is a (per the file) significant appetite to reduce (per the file) the nominal inflation rate (per the file) of SOL, mechanism design (per the file) has become a point (per the file) of contention, ultimately leading (per the file) to SIMD 228 failing to reach quorum. The file represents a simplification of (per the file) the idea, delivering predictable (per the file) inflation reduction by doubling the disinflation rate. Per the file, the same change was (per the file) previously proposed as SIMD-0411; SIMD-0550 brings it back now (per the file) that governance tooling is ready and (per the file) tokenomics is, again, an ecosystem focus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a new feature (per the file) gate called double_disinflation_rate. Per the file, the inflation rate uses (per the file) the SIMD-0607 integer schedule, (per the file) which must activate first. Per the file, at the SIMD-0550 activation (per the file) slot, calculate anchor_rate using the (per the file) preceding 15% integer taper across the (per the file) actual slot-time regimes, including the terminal-rate (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) clamp.",
+    "Per the file, apply the 30% integer (per the file) taper to that anchor (per the file) from the activation slot forward. Per the file, at zero elapsed slots, (per the file) the rate is exactly (per the file) anchor_rate, so issuance fails to jump at activation. Per the file, the stored Inflation governor (per the file) keeps initial = 0.08 and (per the file) changes taper to 0.30; it (per the file) is not re-anchored with powf. Per the file, regarding activation timing, features (per the file) activate on an epoch (per the file) boundary: the gate fires (per the file) on the E -> E+1 (per the file) transition, and the 30% schedule (per the file) governs rewards for E+1 and later.",
+    "Per the file, rewards for the just-completed (per the file) epoch E are computed at (per the file) that boundary using the rate (per the file) at the boundary slot. Per the file, because zero elapsed slots (per the file) leave the rate unchanged, (per the file) epoch E settles identically (per the file) to the pre-activation schedule (per the file) and nothing is applied retroactively. Per the file, implementations *must not* apply (per the file) the 30% schedule to (per the file) any epoch before E+1.",
+    "Per the file, the feature gate is (per the file) retained permanently and not cleaned up. Per the file, inflation rewards are committed (per the file) to bank hashes, so the effective taper has to be a function of (per the file) slot so that any (per the file) node reconstructing the chain (per the file) from genesis arrives at the same state. Per the file, removing the gate would (per the file) cause a from-genesis replay (per the file) that crosses the activation slot (per the file) to recompute pre-activation epochs with (per the file) the wrong taper.",
+    "The file fails to modify DEFAULT_TAPER in solana-inflation. Per the file, that constant is only (per the file) consulted when a new (per the file) genesis is constructed; it (per the file) has no effect on (per the file) already-running clusters, whose taper (per the file) is carried in bank state (per the file) and updated by the gate above."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transaction Execution (Runtime): Epoch (per the file) reward calculation uses the (per the file) integer activation anchor and (per the file) 30% taper, with no change to per-tx execution. Per the file, consensus: Reward totals feed (per the file) bank capitalization and the (per the file) bank hash, so all (per the file) clients must compute identical (per the file) values across the activation boundary. Per the file, snapshots: The stored Inflation (per the file) governor retains initial = 0.08 (per the file) and the updated taper; the (per the file) feature activation slot must remain (per the file) available after restart.",
+    "Per the file, on-Chain Core BPF Programs: None. Per the file, other (please describe): getInflationGovernor (per the file) returns the stored initial (per the file) = 0.08 and updated taper = 0.30. Per the file, the current floating-point getInflationRate calculation fails to use the consensus integer schedule; (per the file) making it do so calls for a separate RPC code change. Per the file, no RPC interface changes are specified here. Per the file, adds the feature double_disinflation_rate."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, do nothing, leave inflation as is. Per the file, invent a new inflation (per the file) mechanism, previously deemed contentious and unpalatable. Per the file, directly halve the inflation (per the file) rate, resulting in a (per the file) faster reduction to inflation (per the file) at the expense of (per the file) a sudden, drastic drop in node profitability. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, doubling disinflation accelerates the (per the file) timeline of reaching the (per the file) terminal emissions rate from (per the file) a period of ~5.7 (per the file) years to ~2.8 years. Per the file, this would result in (per the file) a reduction of approximately (per the file) ~18.9 million SOL in (per the file) emissions over the next 6 (per the file) years, which is ~2.6% lower (per the file) than the current disinflation schedule.",
+    "Per the file, with 41% of nodes already opting for a (per the file) 0% commission on emissions, (per the file) this change would result (per the file) in little realized reduction (per the file) in revenue for many nodes, with a soft taper (per the file) so the remaining 59% fail to experience any immediate significant (per the file) shock to projected earnings. Per the file, a more detailed breakdown may be found in the accompanying forum post. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the taper transition is (per the file) consensus-affecting because rewards are (per the file) committed to bank hashes. Per the file, the double_disinflation_rate feature gate, (per the file) therefore, encodes a slot-dependent value (i.e., (per (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) 0.15 before activation, and 0.30 at and after it) and must remain in the client for as long as any node may replay history across the activation slot; in practice, permanently. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is not backwards compatible and calls for a feature gate activation."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change is consensus-affecting: (per the file) epoch inflation rewards feed into (per the file) bank capitalization and, therefore, the bank hash. Per the file, every client implementation *must* (per the file) compute identical reward values (per the file) across the activation boundary (per the file) or risk diverging from the canonical chain. Per the file, at the activation slot, (per the file) clients *must* perform the (per the file) following steps in order: (per the file) Compute anchor_rate with the (per the file) preceding SIMD-0607 15% integer schedule (per the file) across the actual slot-time regimes, including (per the file) the terminal-rate clamp.",
+    "Per the file, set the stored Inflation (per the file) taper to 0.30 and (per the file) leave initial = 0.08. Per the file, apply the SIMD-0607 30% (per the file) integer taper to anchor_rate from (per the file) the activation slot forward. Per the file, at zero elapsed slots, (per the file) the result *must* equal anchor_rate. Per the file, rewards for the just-completed (per the file) epoch use the boundary rate. Per the file, conformance uses the SIMD-0607 (per the file) integer arithmetic and rounding rules, (per the file) including the terminal clamp; no (per the file) floating-point powf calculation determines consensus rewards.",
+    "Per the file, conformance is verified by (per the file) replaying a reference ledger (per the file) spanning the activation slot (per the file) and confirming byte-identical per-epoch (per the file) reward capitalization and bank hashes. Per the file, agreement on the inflation (per the file) rate alone is necessary, (per the file) but clients must also (per the file) allocate the resulting rewards identically. Per the file, the reference ledger and (per the file) test vectors would need (per the file) to be produced by (per the file) the future reference implementation, (per the file) as they depend on the activation epoch. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

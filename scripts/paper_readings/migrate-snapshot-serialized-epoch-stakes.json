@@ -1,0 +1,95 @@
+{
+ "slug": "migrate-snapshot-serialized-epoch-stakes",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrate bank snapshots to (per the file) a new \"epoch stakes\" field so as to store additional stake (per the file) state needed for calculating partitioned rewards. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order to properly (per the file) support recalculating partitioned rewards (per the file) (SIMD-0118) when rebooting from (per the file) a snapshot in the middle (per the file) of the rewards distribution period (per the file) at the beginning of an (per the file) epoch, additional stake state ought to be stored in the epoch (per the file) stakes snapshot field. Per the file, since the currently used (per the file) epoch stakes field doesn't (per the file) support versioning, we propose migrating (per the file) the snapshot format to use (per the file) a new epoch stakes field (per the file) which is versioned and supports (per the file) storing the required stake state. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we have discussed the following alternative approach: The missing stake state information may be retrieved from the (per the file) current epoch's stakes cache (per the file) instead of epoch stakes. Per the file, however this alternative is (per the file) risky because the current (per the file) epoch's stake cache is (per the file) being updated during rewards distribution (per the file) with newly rewarded stake accts and possibly newly created stake accts as well. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Serialized Data Changes",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to be more specific, (per the file) the missing stake information (per the file) is the credits_observed field (per the file) from the Stake struct: The currently used epoch_stakes field (per the file) in the bank snapshot serializes a (per the file) map of epochs to EpochStakes structs (per the file) which have special logic for serializing (per the file) stake state: When serializing EpochStakes in snapshots, all (per the file) StakesEnum variants first map stake entry (per the file) values to their Delegation value before serialization.",
+    "Per the file, the goal of this (per the file) proposal is to migrate (per the file) to a new epoch (per the file) stakes field which maps (per the file) stake entry values to (per the file) their full Stake value (per the file) before serialization so that credits_observed is to be be included in the (per the file) snapshot and available after snapshot deserialization. Per the file, the proposed new_epoch_stakes bank (per the file) snapshot field will instead serialize a (per the file) map of epochs to VersionedEpochStakes structs which may be updated in the future to (per the file) serialize different information if needed. Per the file, this field is to be appended to the (per the file) end of the serialized bank snapshot:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Snapshot Migration Phases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, handling snapshot format changes (per the file) is always a delicate (per the file) operation to coordinate given (per the file) that old software releases (per the file) will not be able (per the file) to deserialize snapshots from (per the file) new software releases properly.",
+    "Per the file, the rollout will require two phases: Introduce support for deserializing (per the file) the migrated epoch stakes field Enable serializing epoch stakes (per the file) to the new field (per the file) and phase out the (per the file) old field During the first phase, node software is to be updated to attempt (per the file) to deserialize the new (per the file) epoch stakes field appended (per the file) at the end of (per the file) the bank snapshot and (per the file) merge those entries with (per the file) the epoch stakes entries (per the file) deserialized from the old epoch stakes field. Per the file, if the field doesn't exist, nodes can assume that all epoch (per the file) stakes entries are serialized in (per the file) the old deserialized field.",
+    "Per the file, during the second phase, node software is to be updated to start (per the file) serializing epoch stakes entries (per the file) to the new epoch stakes field. Per the file, note, however, that there (per the file) will still potentially be (per the file) some epoch stake entries (per the file) that are incompatible with (per the file) the new epoch stakes (per the file) field that must still (per the file) be serialized to the (per the file) old epoch stakes field.",
+    "Per the file, there are 3 different (per the file) epoch stakes entry variants: Entries created during epoch (per the file) boundaries which have _full_ stake acct data Entries deserialized from the (per the file) old snapshot epoch stakes (per the file) field which only have stake delegation state. Per the file, entries deserialized from the (per the file) new snapshot epoch stakes (per the file) field which have full stake state. Per the file, only variants 1 and 3 may be serialized into the (per the file) new epoch stakes field (per the file) so any variant 2 (per the file) epoch stakes entries will (per the file) continue being serialized into (per the file) the old epoch stakes field.",
+    "Per the file, there are normally 6 (per the file) epoch stakes entries serialized (per the file) in each snapshot, so (per the file) nodes will have to (per the file) cross 6 epoch boundaries (per the file) before they completely stop (per the file) serializing any entries to (per the file) the old epoch stakes snapshot field. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Snapshot Rollout",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors propose merging the implementation (per the file) for phase 1 into (per the file) the next minor software (per the file) release (e.g. v2.0) and (per the file) then merging the implementation for phase (per the file) 2 into the following minor software (per the file) release (e.g v2.1). Per the file, this way, we can (per the file) ensure that the whole (per the file) cluster is running a (per the file) version capable of reading (per the file) the new snapshot field (per the file) before any nodes start (per the file) producing snapshots with that new field. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no major impact beyond backwards compatibility concerns. Per the file, snapshots is to be a few MB larger than before."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, missing or corrupted epoch (per the file) stakes entries caused by (per the file) faulty snapshot migration can cause nodes to fork off from (per the file) the cluster or cause (per the file) the cluster to lose (per the file) consensus if sufficient stake is affected. Per the file, care ought to be taken to ensure (per the file) that implementations can detect (per the file) corrupted or incorrect values. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, snapshot changes has to be made in a backwards compatible way. Per the file, handling compatibility is thoroughly (per the file) discussed in the proposal above. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Open Questions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

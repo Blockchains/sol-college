@@ -1,0 +1,93 @@
+{
+ "slug": "vote-account-initialize-v2",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces the InitializeAccountV2 instruction (per the file) to the Vote program, which lets creating new vote accts with all vote state (per the file) v4 fields — including BLS public keys — at acct creation time. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the existing InitializeAccount instruction (per the file) for the Vote program fails to support setting all vote (per the file) state v4 fields at creation time. Per the file, after the activation of (per the file) vote state v4 ([SIMD-0185]), (per the file) users must create an acct with InitializeAccount and then use (per the file) multiple separate instructions to configure (per the file) fields like commission rates, collector accts, and BLS public keys. Per the file, initializeAccountV2 supplies a unified way to (per the file) set all vote state v4 fields during acct creation, streamlining the process for nodes setting up new vote accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: **[SIMD-0387]: (per the file) BLS Pubkey management in vote acct** Specifies BLS public key generation (per the file) and proof of possession verification. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Feature Activation Ordering",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the InitializeAccountV2 instruction introduced by this proposal lets setting all vote state v4 fields at acct creation time.",
+    "Per the file, to prevent early access (per the file) to these fields before (per the file) their respective feature gates (per the file) are activated, **this SIMD's (per the file) feature gate MUST be activated (per the file) after all of the following**: (per the file) **[SIMD-0180]: Use Vote Account Address (per the file) To Key Leader Schedule** Prerequisite for (per the file) vote state v4 features to be (per the file) operational **[SIMD-0185]: Vote Account v4** Adds (per the file) the vote state v4 structure including the (per the file) BLS public key field **[SIMD-0291]: Commission Rate (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) in Basis Points** Enables the inflation_rewards_commission_bps field via UpdateCommissionBps **[SIMD-0232]: Custom Commission Collector Account** Enables the inflation_rewards_collector and block_revenue_collector fields via UpdateCommissionCollector **[SIMD-0123]: Block Revenue Distribution** Enables the block_revenue_commission_bps field via UpdateCommissionBps This ordering ensures that each vote state v4 field can only be set through its designated instruction until all features are active, at which point InitializeAccountV2 supplies a unified way to set all fields at acct creation. [SIMD-0123]: https://github.com/solana-foundation/solana-improvement-documents/pull/123 [SIMD-0180]: https://github.com/solana-foundation/solana-improvement-documents/pull/180 [SIMD-0185]: https://github.com/solana-foundation/solana-improvement-documents/pull/185 [SIMD-0232]: https://github.com/solana-foundation/solana-improvement-documents/pull/232 [SIMD-0291]: https://github.com/solana-foundation/solana-improvement-documents/pull/291 [SIMD-0387]: https://github.com/solana-foundation/solana-improvement-documents/pull/387. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Add InitializeAccountV2",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new instruction for initializing a vote acct with all vote state v4 fields is to be added to the (per the file) vote program with the (per the file) enum discriminant value of (per the file) 16u32 little endian encoded (per the file) in the first 4 bytes. Per the file, upon receiving the tx, the vote program will (per the file) perform a BLS verification (per the file) on the submitted BLS (per the file) public key and associated (per the file) proof of possession, as (per the file) described in [SIMD-0387].",
+    "Per the file, the tx will fail if the verification fails. Per the file, for each collector acct (indices 2 and 3), (per the file) the vote program MUST (per the file) perform the following validation, (per the file) matching the checks required (per the file) by UpdateCommissionCollector in [SIMD-0232]: If the collector is not (per the file) equal to the vote acct, it has to be system program owned. Per the file, otherwise return InstructionError::InvalidAccountOwner. Per the file, the collector has to be rent-exempt.",
+    "Per the file, otherwise return InstructionError::InsufficientFunds. Per the file, the collector has to be writable (not a reserved acct). Per the file, otherwise return InstructionError::InvalidArgument. Per the file, both collector accts may alias the vote acct and both collector accts may alias the same collector acct. Per the file, the checks above are (per the file) applies to each index independently. Per the file, if all checks pass, the new vote acct is created with the given parameters. Per the file, the inflation rewards collector (per the file) address is taken from acct index 2 and the (per the file) block revenue collector address is taken from acct index 3. Per the file, the BLS PoP verification (per the file) will cost 34,500 CUs, (per the file) as described in [SIMD-0387]."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Before feature gate in this SIMD is activated",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, users continue to create vote accts using the legacy InitializeAccount (per the file) instruction, then set newer (per the file) fields using their respective instructions (ie. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "After the feature gate in this SIMD is activated",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, new vote accts may be created using InitializeAccountV2, (per the file) which sets all vote (per the file) state v4 fields at (per the file) creation time including the (per the file) BLS public key and proof of possession. Per the file, the legacy InitializeAccount instruction remains available. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bLS public key verification (per the file) and proof of possession (per the file) are specified in [SIMD-0387]. Per the file, the same security considerations (per the file) for BLS rogue-key attacks (per the file) and replay attacks described there (per the file) apply to InitializeAccountV2. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

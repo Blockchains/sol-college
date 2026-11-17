@@ -50,7 +50,7 @@ SECTIONS = [
 ORDER = ['Home', 'Lessons', 'Events', 'Articles', 'Library', 'Journal', 'The Degen', 'Campus', 'Live apps',
          'How to build', 'Findings', 'FAQ', 'Glossary', 'Topics', 'Learn Solana', 'Concept walkthroughs',
          'What to build', 'Legal', 'New', 'Edge AI', 'Source library', 'Other']
-PAGE_TYPES = r'WebPage|Article|TechArticle|FAQPage|Course|CollectionPage|LearningResource|SoftwareSourceCode|DefinedTermSet'
+PAGE_TYPES = r'WebPage|Article|TechArticle|ScholarlyArticle|FAQPage|Course|CollectionPage|LearningResource|SoftwareSourceCode|DefinedTermSet'
 
 
 def esc(s):
@@ -62,25 +62,42 @@ def fit(s, n=158):
 
     Whole sentences are dropped from the end of the lead until the line fits.
     A limit sentence is never sliced in half, and a one-word fragment is never
-    glued to it.
+    glued to it. The returned string also fits after HTML-attribute escaping, so
+    raw meta content never exceeds n characters in the file.
     """
     s = ' '.join((s or '').split())
-    if len(s) <= n:
+
+    def ok(candidate):
+        return len(candidate) <= n and len(esc(candidate)) <= n
+
+    if ok(s):
         return s
     parts = re.split(r'(?<=[.!?])\s+', s)
     if len(parts) >= 2:
         tail = parts[-1]
-        if re.search(r'\b(not|no|never|without)\b', tail, re.I) and len(tail) <= n:
+        if re.search(r'\b(not|no|never|without)\b', tail, re.I) and ok(tail):
             head_parts = parts[:-1]
             while head_parts:
                 head = ' '.join(head_parts)
                 candidate = f'{head} {tail}'
-                if len(candidate) <= n:
+                if ok(candidate):
                     return candidate
                 head_parts.pop()
             return tail
-    cut = s[:n - 1].rsplit(' ', 1)[0]
-    return cut.rstrip(',;:.') + '…'
+    # Shrink until both plain and escaped forms fit.
+    cut = s
+    for _ in range(48):
+        if ok(cut):
+            return cut
+        expansion = len(esc(cut)) - len(cut)
+        budget = n - max(0, expansion) - 1
+        if budget < 20:
+            budget = 20
+        nxt = cut[:budget].rsplit(' ', 1)[0].rstrip(',;:.')
+        if not nxt or nxt == cut.rstrip('…'):
+            nxt = cut[:budget].rstrip(',;:.…')
+        cut = (nxt or cut[:20]).rstrip(',;:.') + '…'
+    return cut[:n]
 
 
 def short_title(title):

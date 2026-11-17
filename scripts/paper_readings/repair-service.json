@@ -1,0 +1,49 @@
+{
+ "slug": "repair-service",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Repair Service",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the RepairService is in (per the file) charge of retrieving missing (per the file) shreds that failed to (per the file) be delivered by primary (per the file) communication protocols like Turbine. Per the file, it is in charge (per the file) of managing the protocols (per the file) described below in the (per the file) Repair Protocols section below. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Challenges:",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, 1\\) Validators can fail (per the file) to receive particular shreds (per the file) due to network failures (per the file) 2\\) Consider a scenario (per the file) where blockstore contains the (per the file) set of slots {1, 3, 5}. Per the file, then Blockstore receives shreds (per the file) for some slot 7, (per the file) where for each of (per the file) the shreds b, b.parent (per the file) == 6, so then the parent-child (per the file) relation 6 -&gt; 7 is stored (per the file) in blockstore.",
+    "Per the file, however, there is no (per the file) way to chain these (per the file) slots to any of (per the file) the existing banks in (per the file) Blockstore, and thus the (per the file) Shred Repair protocol will (per the file) not repair these slots. Per the file, if these slots happen (per the file) to be part of (per the file) the main chain, this (per the file) will halt replay progress on this node."
+   ]
+  },
+  {
+   "heading": "Repair-related primitives",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, epoch Slots: Each node advertises separately on gossip (per the file) the various parts of (per the file) an Epoch Slots: The (per the file) stash: An epoch-long compressed (per the file) set of all completed slots. Per the file, the cache: The Run-length (per the file) Encoding (RLE) of the latest (per the file) N completed slots starting from (per the file) some some slot M, where (per the file) N is the number of (per the file) slots that will fit in (per the file) an MTU-sized packet.",
+    "Per the file, epoch Slots in gossip (per the file) are updated every time a node receives a complete slot within the epoch. Per the file, completed slots are detected (per the file) by blockstore and sent (per the file) over a channel to RepairService. Per the file, it is important to (per the file) note that we know (per the file) that by the time (per the file) a slot X is (per the file) complete, the epoch schedule (per the file) must exist for the (per the file) epoch that contains slot (per the file) X because WindowService will (per the file) reject shreds for unconfirmed epochs.",
+    "Per the file, every N/2 completed slots, (per the file) the oldest N/2 slots are (per the file) moved from the cache into the stash. Per the file, the base value M (per the file) for the RLE should also be updated. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Repair Request Protocols",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the repair protocol makes (per the file) best attempts to progress (per the file) the forking structure of Blockstore. Per the file, the different protocol strategies (per the file) to address the above challenges: Shred Repair \\(Addresses Challenge (per the file) \\#1\\): This is the (per the file) most basic repair protocol, (per the file) with the purpose of (per the file) detecting and filling \"holes\" in the ledger. Per the file, blockstore tracks the latest root slot. Per the file, repairService will then periodically (per the file) iterate every fork in (per the file) blockstore starting from the (per the file) root slot, sending repair requests to nodes for any missing shreds.",
+    "Per the file, it will send at (per the file) most some N repair requests per iteration. Per the file, shred repair should prioritize (per the file) repairing forks based on (per the file) the leader's fork weight. Per the file, validators should only send repair requests to nodes who have marked that (per the file) slot as completed in their EpochSlots. Per the file, validators should prioritize repairing (per the file) shreds in each slot (per the file) that they are responsible (per the file) for retransmitting through turbine.",
+    "Per the file, validators can compute which (per the file) shreds they are responsible (per the file) for retransmitting because the (per the file) seed for turbine is (per the file) based on leader id, (per the file) slot, and shred index. Per the file, note: Validators will only (per the file) accept shreds within the (per the file) current verifiable epoch \\(epoch the node has a leader schedule for\\). Per the file, preemptive Slot Repair \\(Addresses (per the file) Challenge \\#2\\): The goal (per the file) of this protocol is (per the file) to discover the chaining (per the file) relationship of \"orphan\" slots that fail to currently chain to any known fork.",
+    "Per the file, shred repair should prioritize (per the file) repairing orphan slots based (per the file) on the leader's fork weight. Per the file, blockstore will track the (per the file) set of \"orphan\" slots (per the file) in a separate column family. Per the file, repairService will periodically make (per the file) Orphan requests for each (per the file) of the orphans in blockstore.",
+    "Per the file, orphan(orphan) request - orphan is (per the file) the orphan slot that the (per the file) requestor wants to know the (per the file) parents of Orphan(orphan) response - The (per the file) highest shreds for each of the (per the file) first N parents of the requested (per the file) orphan On receiving the responses p, (per the file) where p is some shred in (per the file) a parent slot, nodes will: Insert an empty SlotMeta in (per the file) blockstore for p.slot if it doesn't (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) already exist.",
+    "Per the file, if p.slot does exist, (per the file) update the parent of p (per the file) based on parents Note: that (per the file) once these empty slots are (per the file) added to blockstore, the Shred (per the file) Repair protocol should attempt to (per the file) fill those slots. Per the file, note: Validators will only (per the file) accept responses containing shreds (per the file) within the current verifiable epoch \\(epoch the node has a leader schedule for\\). Per the file, validators should try to (per the file) send orphan requests to nodes who have marked that (per the file) orphan as completed in their EpochSlots. Per the file, if no such nodes exist, then randomly select a node in a stake-weighted fashion."
+   ]
+  },
+  {
+   "heading": "Repair Response Protocol",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when a node receives a request for (per the file) a shred S, they (per the file) respond with the shred (per the file) if they have it. Per the file, when a node receives a shred through (per the file) a repair response, they (per the file) check EpochSlots to see (per the file) if <= 1/3 of the (per the file) network has marked this slot as completed. Per the file, if so, they resubmit (per the file) this shred through its (per the file) associated turbine path, but only if this node has not retransmitted this shred before."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,66 @@
+{
+ "slug": "upgrade-bpf-stake-program-to-v5-0-0",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file will upgrade the Core (per the file) BPF Stake Program to v5.0.0. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the BPF Stake Program (per the file) is under active development and calls for feature-gated releases to upgrade (per the file) to new versions. The file is not in and (per the file) of itself a new feature. Per the file, aside from the general (per the file) desire to improve and (per the file) maintain the BPF Stake (per the file) Program, this SIMD is (per the file) necessary to activate the (per the file) Incremental Reduction of lamports_per_byte feature gates."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bPF Stake v5.0.0 introduces (per the file) several changes: Raise minimum delegation from (per the file) 1 lamport to 1 sol. Per the file, this is a medium-firm (per the file) blocker on rent reduction because (per the file) allowing the total lamports required (per the file) to open a stake acct to fall is highly undesirable. Per the file, use the Rent sysvar (per the file) in preference to Meta.rent_exempt_reserve. Per the file, this is a *hard* (per the file) blocker on rent reduction (per the file) to protect the integrity (per the file) of mathematical operations involving delegated stake.",
+    "Per the file, the value of rent_exempt_reserve (per the file) for all new stake accts is held at 2_282_880, the present (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) rent-exempt reserve of a 200-byte stake acct, to minimize downstream breakage. Per the file, make all sysvar acct inputs optional. Per the file, the Stake Program will (per the file) continue to gracefully accept (per the file) existing instructions that include sysvars.",
+    "Per the file, rewrite the implementation of (per the file) Split to fix several longstanding bugs. Per the file, other that removing self-split, (per the file) the new Split processor remains backwards compatible. Per the file, in node clients this feature will (per the file) use existing code to (per the file) effect a Core BPF Program upgrade. Per the file, otherwise, the only required node support is to return (per the file) the new minimum delegation (per the file) for the getMinimumDelegation RPC call. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the 1 sol minimum (per the file) delegation was chosen after (per the file) extensive debate and several (per the file) other options had been (per the file) considered, including 0.1 sol, (per the file) 0.001 sol, and the current (per the file) rent-exemption threshold. Per the file, a substantial number of stake accts on Mainnet-Beta are below (per the file) 1 sol, however collectively these acct for 0.02% of active stake (per the file) on the network. Per the file, validator operators have expressed (per the file) comfort with adopting a (per the file) 1 sol minimum via SIMD. Per the file, all other changes in (per the file) v5.0.0 are routine fixes (per the file) and improvements. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, creating new stake accts whose delegation is below (per the file) 1 sol will no longer be possible. Per the file, dapps which create stake accts must acct for minimum delegation. Per the file, ultimately the Stake Program (per the file) is the arbiter of (per the file) correctness and will safely (per the file) reject invalid state transitions. Per the file, merging stake accts is always allowed, even (per the file) if the merge destination fails to rise above 1 sol.",
+    "Per the file, meta.rent_exempt_reserve is now deprecated (per the file) and dapps should calculate rent- exemption via (per the file) Rent. Per the file, this is a consequence (per the file) of rent reduction itself (per the file) rather than this SIMD specifically. Per the file, sysvars no longer need (per the file) to be provided for (per the file) Stake Program operations, reducing tx size and allowing CPI (per the file) callers to also no longer require these accts in their own interfaces. Per the file, updated Stake Program instruction builders is to be released after BPF (per the file) Stake v5.0.0 is live (per the file) on all networks.",
+    "Per the file, the old version of (per the file) Split treated initialized stakes (per the file) and deactivated stakes differently (per the file) due to a longstanding (per the file) bug with the side-effect (per the file) that deactivated stakes could sometimes (per the file) not be Split from. Per the file, this is now fixed (per the file) and Split should always (per the file) work under the rules of its operation. Per the file, when calling Merge on (per the file) two activating stakes, only (per the file) the source delegation and (per the file) rent_exempt_reserve would be merged (per the file) into the destination delegation. Per the file, we now merge all (per the file) lamports from the source acct."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bPF Stake v5.0.0 will (per the file) undergo security audit before deployment is allowed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, minimum delegation will rise above 1 lamport. Per the file, tooling or onchain programs (per the file) that assume Rent.minimum_balance(200) + 1 (per the file) is sufficient to create a stake acct may break for very small balances. Per the file, splitting a stake acct into itself is now an error. Per the file, there is no valid (per the file) usecase for such an (per the file) act and as such (per the file) we expect no breakage."
+   ]
+  }
+ ]
+}

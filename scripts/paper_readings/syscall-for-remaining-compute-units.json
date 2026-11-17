@@ -1,0 +1,64 @@
+{
+ "slug": "syscall-for-remaining-compute-units",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a new syscall (per the file) to access the number (per the file) of compute units that (per the file) are left to use in a tx. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, some instructions can use (per the file) a variable amount of compute. Per the file, examples include: Event processing (per the file) instructions that can process (per the file) as many events as are available. Per the file, orderbook matching instructions, which (per the file) want to match a (per the file) large taker order as (per the file) deeply into the orderbook (per the file) as is necessary to fully fill it. Per the file, routing instructions, that may (per the file) want to pick routes (per the file) depending on remaining compute.",
+    "Per the file, currently these types of (per the file) instructions often require the (per the file) user to pass in (per the file) a limit (like the (per the file) maximum number of events (per the file) to process, for the first example). Per the file, that means the user (per the file) needs to request the (per the file) right compute budget for the tx and guess the best (per the file) possible limits for their instructions. Per the file, this often leads to (per the file) users over-provisioning compute budget for a tx.",
+    "Per the file, if the instruction could (per the file) access the remaining budget, (per the file) it could decide on (per the file) its own whether another (per the file) round of processing would (per the file) fit or not, leading (per the file) to better utilization of requested compute. Per the file, example: The example is inspired (per the file) by an actual potential (per the file) usecase in the Mango program. Per the file, it shows how it (per the file) would be preferable to (per the file) \"process events for all (per the file) the 150k CU that (per the file) remain\" (so up to (per the file) 15 cheap ones) instead (per the file) of the current \"process (per the file) at most three events\" (per the file) (because 4 expensive ones would not fit)."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, instead of knowing the tx-wide remaining budget, instructions could (per the file) be allowed to access the (per the file) amount of compute they have already used. Per the file, then instructions could be (per the file) written in a way (per the file) where users can pass (per the file) in compute targets and (per the file) the instruction aims to (per the file) stay below the target. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a syscall sol_remaining_compute_units() (per the file) -> u64 that returns the remaining compute budget (per the file) for the current tx. Per the file, the syscall must cost (per the file) no more than the (per the file) syscall base cost of 100 CU. The file’s claim in this section turns on Per, 31640. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, new syscall, needs a (per the file) feature flag Dapp developers get new capabilities. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, programs having access to (per the file) the remaining compute budget (per the file) would allow them to: (per the file) Check if they are (per the file) the first instruction, but (per the file) they can already do that via introspection. Per the file, guess the effect of (per the file) a CPI call by (per the file) observing how much compute it used. Per the file, but since program and (per the file) data bytes are public, (per the file) that shouldn't create new capabilities. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

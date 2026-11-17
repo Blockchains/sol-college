@@ -1,0 +1,71 @@
+{
+ "slug": "secure-vote-signing",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Secure Vote Signing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this design describes additional (per the file) vote signing behavior that (per the file) will make the process more secure. Per the file, currently, Solana puts in place a vote-signing service that (per the file) evaluates each vote to ensure it fails to violate a slashing condition. Per the file, the service could potentially (per the file) have different variations, depending (per the file) on the hardware platform capabilities. Per the file, in particular, it could (per the file) be used in conjunction (per the file) with a secure enclave \\(including SGX\\).",
+    "Per the file, the enclave could generate (per the file) an asymmetric key, exposing (per the file) an API for user (per the file) \\(untrusted\\) code to sign the vote txs, while keeping the vote-signing (per the file) private key in its protected memory. Per the file, the following sections outline (per the file) how this architecture would work:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Message Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the node initializes the (per the file) enclave at startup The (per the file) enclave generates an asymmetric (per the file) key and returns the (per the file) public key to the (per the file) node The keypair is ephemeral. Per the file, a new keypair is (per the file) generated on node bootup. Per the file, a new keypair might (per the file) also be generated at (per the file) runtime based on some (per the file) to be determined criteria.",
+    "Per the file, the enclave returns its (per the file) attestation report to the node The node performs attestation (per the file) of the enclave \\(e.g (per the file) using Intel's IAS APIs\\) The (per the file) node ensures that the Secure Enclave (per the file) is running on a TPM and (per the file) is signed by a trusted party The stakeholder of the node grants (per the file) ephemeral key permission to use its stake. Per the file, this process is to be determined.",
+    "Per the file, the node's untrusted, non-enclave (per the file) software calls trusted enclave software using (per the file) its interface to sign txs and other data. Per the file, in case of vote (per the file) signing, the node needs (per the file) to verify the PoH. Per the file, the PoH verification is (per the file) an integral part of signing. Per the file, the enclave would be (per the file) presented with some verifiable (per the file) data to check before signing the vote. Per the file, the process of generating (per the file) the verifiable data in (per the file) untrusted space is to be determined. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "PoH Verification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when the node votes (per the file) on an en entry (per the file) X, there's a lockout (per the file) period N, for which it (per the file) cannot vote on a fork that fails to contain X in its history. Per the file, every time the node (per the file) votes on the derivative (per the file) of X, say X+y, (per the file) the lockout period for X (per the file) increases by a factor F (per the file) \\(i.e. the duration node cannot (per the file) vote on a fork that fails to contain X increases\\).",
+    "Per the file, the lockout period for (per the file) X+y is still N (per the file) until the node votes again. Per the file, the lockout period increment (per the file) is capped \\(e.g. factor (per the file) F applies maximum 32 times\\). Per the file, the signing enclave must (per the file) not sign a vote (per the file) that violates this policy.",
+    "Per the file, this means Enclave is (per the file) initialized with N, F (per the file) and Factor cap Enclave (per the file) stores Factor cap number (per the file) of entry IDs on (per the file) which the node had (per the file) previously voted The sign (per the file) request contains the entry (per the file) ID for the new (per the file) vote Enclave verifies that (per the file) new vote's entry ID (per the file) is on the correct fork (per the file) \\(following the rules \\#1 and \\#2 above\\). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Ancestor Verification",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this is alternate, albeit, (per the file) less certain approach to verifying voting fork. Per the file, the node maintains an active set (per the file) of nodes in the cluster 2. Per the file, it observes the votes (per the file) from the active set (per the file) in the last voting period 3. Per the file, it stores the ancestor/last_tick (per the file) at which each node voted 4.",
+    "Per the file, it sends new vote (per the file) request to vote-signing service (per the file) It includes previous votes from (per the file) nodes in the active set, (per the file) and their corresponding ancestors The signer checks if the (per the file) previous votes contains a vote from the node, and the vote ancestor matches (per the file) with majority of the nodes (per the file) It signs the new vote (per the file) if the check is successful (per the file) It asserts \\(raises an alarm (per the file) of some sort\\) if the (per the file) check is unsuccessful The premise (per the file) is that the node may be spoofed at most once (per the file) to vote on incorrect data.",
+    "Per the file, if someone hijacks the node and submits a vote (per the file) request for bogus data, (per the file) that vote will not (per the file) be included in the (per the file) PoH \\(as it'll be (per the file) rejected by the cluster\\). Per the file, the next time the node sends a request to (per the file) sign the vote, the (per the file) signing service will detect that node's last vote is missing (per the file) \\(as part of."
+   ]
+  },
+  {
+   "heading": "5 above\\).",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Fork determination",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, due to the fact (per the file) that the enclave cannot (per the file) process PoH, it has (per the file) no direct knowledge of (per the file) fork history of a submitted node vote. Per the file, each enclave ought to be initiated with the (per the file) current _active set_ of public keys. Per the file, a node should submit its current (per the file) vote along with the (per the file) votes of the active (per the file) set \\(including itself\\) that (per the file) it observed in the (per the file) slot of its previous vote.",
+    "Per the file, in this way, the (per the file) enclave can surmise the votes accompanying the node's previous vote and thus (per the file) the fork being voted on. Per the file, this is not possible for the node's initial submitted vote, as (per the file) it will not have a (per the file) 'previous' slot to reference. Per the file, to acct for this, a short (per the file) voting freeze should apply (per the file) until the second vote (per the file) is submitted containing the (per the file) votes within the active (per the file) set, along with it's (per the file) own vote, at the height (per the file) of the initial vote."
+   ]
+  },
+  {
+   "heading": "Enclave configuration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a staking client ought to be configurable to prevent (per the file) voting on inactive forks. Per the file, this mechanism should use (per the file) the client's known active (per the file) set N_active along with a (per the file) threshold vote N_vote and a threshold (per the file) depth N_depth to determine whether or not (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) to continue voting on a submitted fork.",
+    "Per the file, this configuration should take (per the file) the form of a (per the file) rule such that the (per the file) client will only vote (per the file) on a fork if (per the file) it observes more than (per the file) N_vote at N_depth. Per the file, practically, this represents the (per the file) client from confirming that (per the file) it has observed some (per the file) probability of economic finality (per the file) of the submitted fork (per the file) at a depth where (per the file) an additional vote would (per the file) create a lockout for (per the file) an undesirable amount of (per the file) time if that fork (per the file) turns out not to be live."
+   ]
+  },
+  {
+   "heading": "Challenges",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, generation of verifiable data (per the file) in untrusted space for (per the file) PoH verification in the enclave. Per the file, need infrastructure for granting (per the file) stake to an ephemeral key. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

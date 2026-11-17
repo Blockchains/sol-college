@@ -1,0 +1,70 @@
+{
+ "slug": "static-instruction-limit",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions will fail execution (per the file) in SVM if the txs use more than 64 (per the file) instructions, including CPI calls. The file is to make txs that use more than (per the file) 64 top-level instructions fail (per the file) sanitization checks and be rejected (per the file) by the network. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current limit of (per the file) 64 instructions is a (per the file) runtime failure, and makes (per the file) sense in the context of CPIs. Per the file, it is bad user (per the file) experience to allow creation and submission of txs that have no chance (per the file) of being executed successfully. Per the file, several other checks worst-case (per the file) performance scales with the number (per the file) of top-level instructions in a tx, so limiting this number can help (per the file) the worst-case performance."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, allow txs with more than 64 (per the file) top-level instructions to be (per the file) included in blocks, but skip (per the file) execution only taking fees. Per the file, checking the number of (per the file) top-level instructions in a tx is a relatively cheap operation and may be done very early in (per the file) the processing of a tx, similar to the current check (per the file) that the number of required (per the file) signatures matches the number of signatures provided.",
+    "Per the file, additionally, if we still (per the file) allow more than 64 (per the file) top-level instructions in a tx we would still need to (per the file) parse all the instructions to (per the file) determine the fee, so there (per the file) is a performance benefit in (per the file) strictly limiting the number of (per the file) top-level instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, any tx that has more than (per the file) 64 top-level instructions cannot (per the file) be included in a block. Per the file, if a block contains a tx with more than 64 (per the file) top-level instructions, the block has to be marked as invalid. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, users are prevented from creating txs that cannot be executed successfully. Per the file, smaller upper bound on (per the file) number of instructions can help performance of node. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, requires a feature-gate to (per the file) enable the new limit. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, similar to the runtime (per the file) check on number of (per the file) instructions including CPI, logic is duplicated. Per the file, can no longer collect fees from txs that are rejected due to new limit."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, some txs that are currently valid is to be rejected. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

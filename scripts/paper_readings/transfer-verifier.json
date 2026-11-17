@@ -1,0 +1,158 @@
+{
+ "slug": "transfer-verifier",
+ "pages": 3,
+ "sections": [
+  {
+   "heading": "Transfer Verifier",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, add a defense-in-depth mechanism (per the file) that cross-references a message publication from (per the file) a Core Bridge with a corresponding transfer (per the file) into the Token Bridge. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, wormhole works by watching (per the file) for message publications on (per the file) Core Bridge contracts for supported chains. Per the file, message Publications are created (per the file) when a contract calls (per the file) into the Core Bridge (per the file) to trigger a state (per the file) change in the Wormhole network. Per the file, generally speaking, if an (per the file) attacker has a way (per the file) to fraudulently emit message (per the file) from the Core Bridge, (per the file) the integrity of the system is to be compromised.",
+    "Per the file, in order to mitigate (per the file) this risk for Token (per the file) Transfers, it's possible to (per the file) cross-reference the Core Bridge message (per the file) publications with the calling contract i.e. (per the file) the corresponding Token Bridge for that chain. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, detect and respond to (per the file) a compromise of the (per the file) Core Bridge pertaining to (per the file) publishing arbitrary token transfer messages. Per the file, provide another layer of (per the file) defense for token transfers. Per the file, allow for a flexible (per the file) response in the Guardian (per the file) when suspicious activity is detected. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, block, delay, or otherwise (per the file) interfere with message processing. Per the file, the Transfer Verifier reports (per the file) whether a message looks (per the file) safe or not, but it fails to take any other action. Per the file, address any message publications (per the file) or Token Bridge activity (per the file) other than token transfers. Per the file, check cross-chain invariants. Per the file, this mechanism only checks (per the file) that pre-conditions are met (per the file) on the sender side.",
+    "Per the file, protect against RPC compromises. Per the file, (The Transfer Verifier relies (per the file) on reliable RPC information.) (per the file) Protect against a compromise (per the file) of the Token Bridge. Per the file, (The Transfer Verifier checks (per the file) for a potential _Core (per the file) Bridge_ issue by querying the Token Bridge.). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, users are able to (per the file) send funds cross-chain by (per the file) interacting with a Token Bridge (per the file) contract deployed on the sending chain. Per the file, when they transfer funds (per the file) into this contract, it (per the file) will make a corresponding (per the file) call to the Core (per the file) Bridge contract on the same chain. Per the file, the Core Bridge contract (per the file) will then make the (per the file) details of the token (per the file) transfer available via a (per the file) message publishing process (e.g. (per the file) emitting an event on EVM based chains).",
+    "Per the file, the Wormhole Guardians run (per the file) \"watcher\" software that observe (per the file) this activity, parse and (per the file) verify the data, and (per the file) finally issue a transfer (per the file) on the destination chain (per the file) to complete the cross-chain transfer. Per the file, the ability to spoof (per the file) messages coming from the (per the file) Core Bridge would pose (per the file) a serious threat to (per the file) the integrity of the (per the file) system, as it would (per the file) trick the Guardians into (per the file) minting or unlocking funds (per the file) on the destination chain (per the file) without a corresponding deposit (per the file) on the source chain.",
+    "Per the file, in order to mitigate (per the file) this attack, a Transfer Verifier is meant to cross-reference Core Bridge (per the file) messages against the Token Bridge's activity. Per the file, if there is no (per the file) Token Bridge activity that (per the file) matches the Core Bridge (per the file) message, the Guardians will (per the file) have the ability to (per the file) respond to a potentially fraudulent message, including by dropping or delaying it. Per the file, the Transfer Verifier will (per the file) not drop or delay messages itself.",
+    "Per the file, another part of the (per the file) node can respond as it sees fit. Per the file, for example, the processor (per the file) could be extended to (per the file) process messages differently based (per the file) on the status a (per the file) Transfer Verifier gives them. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the overview section described (per the file) an abstract view of (per the file) how the Token Bridge, (per the file) Core Bridge, and Guardians interact. Per the file, however, different blockchain environments operate heterogeneously. Per the file, for example, the EVM supplies strict logs in the (per the file) form of message receipts (per the file) that can easily be verified. Per the file, in contrast, Sui and Solana fail to provide the same degree (per the file) of introspection on historical acct states.",
+    "Per the file, as a result, a Transfer Verifier has to be implemented in an (per the file) ad-hoc way using the (per the file) state and tooling available to particular chains. Per the file, rPC providers for different (per the file) blockchains may prune state aggressively which supplies another limitation on the degree of confidence. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Types of Implementations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, broadly, a Transfer Verifier for a chain may be thought of as (per the file) \"strict\" or \"heuristic\" based (per the file) on whether or not historical acct data is easily accessible. Per the file, for \"strict\" implementations, the (per the file) Guardian could drop the (per the file) message publication completely as (per the file) it is guaranteed to be fraudulent. Per the file, for \"heuristic\" implementations, the (per the file) Guardian could choose to (per the file) delay the transfer, allowing time for the tx to be manually triaged."
+   ]
+  },
+  {
+   "heading": "General Process",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, connect to the chain (per the file) (using a WebSocket subscription, (per the file) or else by polling) (per the file) Monitor the Core Contract (per the file) for Message Publications Filter (per the file) the Message Publications for (per the file) Token Transfers Examine Token (per the file) Bridge activity, ensuring that (per the file) at least as many (per the file) funds were transferred into (per the file) the Token Bridge as (per the file) are encoded in the (per the file) Core Bridge's message If (per the file) the above is not true, (per the file) report the Message Publication as (per the file) having failed verification."
+   ]
+  },
+  {
+   "heading": "Responding to suspicious messages",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if a Transfer Verifier (per the file) reports an error the (per the file) Guardian should block the (per the file) Message Publication if the implementation is \"strict\". Per the file, if the implementation is \"heuristic\", the message ought to be delayed. Per the file, this will allow some (per the file) time for core contributors (per the file) to analyze the message (per the file) and associated logs for (per the file) potential bugs or malicious activity. Per the file, in order to handle messages flexibly, they may be tagged with a \"verification state\".",
+    "Per the file, this state is to be embedded in to (per the file) the message itself to (per the file) allow for different parts (per the file) of the message publication (per the file) process within the node (per the file) to handle messages in specific ways. Per the file, for example, an Anomalous (per the file) message originating from Sui (per the file) could be treated in (per the file) a different way than (per the file) one coming from Solana. Per the file, as chains are developed, (per the file) they may introduce other (per the file) tools or logging artifacts (per the file) that result in a (per the file) Transfer Verifier implementation to (per the file) become more or less strict.",
+    "Per the file, some example \"verification states\" (per the file) are: Not verified Not (per the file) applicable Verified Anomalous Rejected (per the file) Could not verify Messages (per the file) can have an initial (per the file) state of Not verified (per the file) which should eventually be (per the file) changed to one of the other states. Per the file, messages marked as Not applicable ought to be processed normally. Per the file, this state is to be used for messages (per the file) that are not Token (per the file) Transfers, as only Token (per the file) Transfers are process by a Transfer Verifier.",
+    "Per the file, a Verified message is (per the file) in a \"known good\" state and ought to be processed normally. Per the file, both Anomalous and Rejected (per the file) represent potentially dangerous states. Per the file, anomalous ought to be used for \"heuristic\" (per the file) Transfer Verifier implementations and Rejected ought to be used for \"strict\" implementations. Per the file, rejected messages has to be dropped and must (per the file) not result in a (per the file) VAA creation for the message.",
+    "Per the file, anomalous messages may be delayed, though other (per the file) potential responses may be (per the file) appropriate depending on the (per the file) reliability of a Transfer (per the file) Verifier implementation and how (per the file) likely Anomalous messages are (per the file) to occur in practice. Per the file, could not verify refers to txs that could be correctly (per the file) parsed for whatever reason. Per the file, this state signals that (per the file) an attempt was made (per the file) to verify a transfer (per the file) but that it could (per the file) not be completed successfully."
+   ]
+  },
+  {
+   "heading": "Sequencing with the Governor and the Accountant",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, assuming both are enabled, (per the file) the processor first sends (per the file) a message to the (per the file) Governor and then to (per the file) the Accountant once the (per the file) message is released by the Governor. Per the file, checks relating to a (per the file) Transfer Verifier should occur (per the file) before the checks to (per the file) the Governor or the Accountant. Per the file, if a message is (per the file) Rejected or Anomalous, it ought to be dropped or delayed (per the file) before it is included (per the file) in the Governor or Accountant. Per the file, this prevents a scenario (per the file) where a Rejected message (per the file) might still consume outgoing Governor capacity, as an illustration. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Implementations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Ethereum",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the EVM supplies a Receipt containing detailed (per the file) logs for all of (per the file) the contracts that were (per the file) interacted with during the txs. Per the file, the Receipt may be parsed and filtered (per the file) to isolate Token Bridge (per the file) and Core Bridge activity (per the file) and the details are precise. Per the file, even though an EVM (per the file) receipt contains a perfect (per the file) record of all information (per the file) from the blockchain, the (per the file) implementation for Ethereum is not \"strict\".",
+    "Per the file, this is because certain (per the file) ERC-20 token implementations override (per the file) the transfer, deposit, or balance (per the file) functions such that it is (per the file) not possible to strictly enforce (per the file) the solvency invariant. Per the file, (Tokens in >= Tokens out) (per the file) For example, when transferring (per the file) a rebasing token into (per the file) the Token Bridge, the result may be a _decrease_ of (per the file) the Token Bridge's balance!",
+    "Per the file, in order to support (per the file) these tokens, the EVM Transfer Verifier ought to be considered \"heuristic\" and (per the file) hence only delay messages (per the file) rather than ban them outright. Per the file, for EVM implementations, the (per the file) contents of the LogMessagePublished event may be observed and parsed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Deployment Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Modularity",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, because a Transfer Verifier is to be integrated with the (per the file) Watcher code, bugs in (per the file) its implementations could lead (per the file) to messages being missed. Per the file, for this reason, the (per the file) changes to the watcher code has to be minimal, well-tested, and reversible. Per the file, it ought to be possible to disable (per the file) a Transfer Verifier entirely (per the file) or on a per-chain (per the file) basis by a Guardian without (per the file) the need for a new release. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Testing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Transfer Verifier ought to be implemented in a (per the file) standalone package and distributed (per the file) with a CLI tool that lets users to verify its accuracy. Per the file, this would allow for (per the file) isolated testing and development (per the file) outside of the context (per the file) of critical Guardian code. Per the file, it ought to be possible to run (per the file) the standalone tool for (per the file) long periods of time (per the file) to ensure that the (per the file) mechanism is strict and fails to produce false positives. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Interactions with the Governor",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the idea of delaying (per the file) unusual transfers overlaps to (per the file) some extent with the (per the file) Governor's delay mechanism. Per the file, it is tempting to (per the file) leverage this existing mechanism, (per the file) e.g. by adding a (per the file) suspicious transfer to the Governor's (per the file) pending list. Per the file, there are some complexities (per the file) to consider if this (per the file) route is chosen, outlined below. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Multiple Delays",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if a Transfer Verifier (per the file) result causes a message (per the file) to be delayed, this ought to be considered against other (per the file) delays that may be introduced. Per the file, for example, a suspicious (per the file) message on a governed (per the file) chain with a notional (per the file) value beyond the Governor's \"big tx limit\" may result in a (per the file) message being delayed twice. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Flow Cancel can release transfers early",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Flow Cancel mechanism (per the file) can result in the (per the file) \"daily limit\" of the (per the file) Governor being reduced under specific conditions. Per the file, if suspicious transfers are (per the file) queued alongside regular transfers, (per the file) and Flow Cancel is (per the file) enabled, the suspicious transfers (per the file) may become released early. Per the file, it ought to be noted that this (per the file) only affects small transfers, as Flow Cancel fails to affect transfers over the big transfer limit. Per the file, more details about the Flow Cancel feature may be found in the Governor whitepaper. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

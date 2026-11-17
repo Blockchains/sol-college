@@ -1,0 +1,63 @@
+{
+ "slug": "poseidon-syscall-enforce-input-length",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, require all Poseidon hash (per the file) inputs to have a (per the file) fixed length determined by (per the file) the number of bytes (per the file) used by the modulus (per the file) of a prime field. Per the file, for the (currently the (per the file) only supported) prime field (per the file) BN254, the modulus is: (per the file) $$ p = 21888242871839275222246405745257275088548364400416034343698204186575808495617 $$ The byte (per the file) representation of that modulus takes 32 bytes: That means there is (per the file) no element in BN254 (per the file) prime field that has (per the file) byte representation larger than 32 bytes.",
+    "Per the file, as of today, Poseidon (per the file) syscall accepts byte slices (per the file) with length $$n$$, where: (per the file) $$ 0 \\leq n \\leq (per the file) bytelen(p) $$ The goal of (per the file) this change is to restrict (per the file) it to: $$ n = bytelen(p) $$ In (per the file) case of inputs with byte representations (per the file) having fewer bytes than modulus, that (per the file) means a necessity to add explicit padding. Per the file, for example, the following big number: Which may be represented by these 24 bytes: When used as a (per the file) little-endian input for Poseidon (per the file) on BN254 prime field, will (per the file) have to be extended to (per the file) the following 32 byte representation:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the current behavior allowing (per the file) people to submit slices (per the file) of different lengths is (per the file) confusing and makes the (per the file) implementation of the hasher less straightforward. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this exact change is (per the file) already implemented by [light-poseidon (per the file) 0.4.0][light-poseidon]. The file’s claim in this section turns on Per, Lightprotocol, 4.0. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it's a consensus breaking (per the file) change, therefore it needs to (per the file) be guarded with a feature (per the file) flag, implemented by all node implementations and activated once all (per the file) of them are ready. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the feature breaks backward (per the file) compatibility, therefore it needs (per the file) to be introduced with a feature gate. Per the file, without the feature enabled, nodes must honor the old (per the file) behavior, where smaller inputs (per the file) are accepted and still (per the file) correctly serialized as big integers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

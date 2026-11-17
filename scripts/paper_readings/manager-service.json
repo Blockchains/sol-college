@@ -1,0 +1,151 @@
+{
+ "slug": "manager-service",
+ "pages": 6,
+ "sections": [
+  {
+   "heading": "Manager Service",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, enable a bi-directional bridge (per the file) for chains which fail to have smart contract support. Per the file, this design focuses on (per the file) the Guardian funds management (per the file) delegation and procedure for (per the file) locking and unlocking funds (per the file) on Dogecoin but may (per the file) be extended for other chains. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dogecoin, a UTXO-based chain originally based on Litecoin that puts in place several Bitcoin protocols, fails to support a smart contract runtime, (per the file) so options are limited. Per the file, however, P2SH supplies a mechanism to lock (per the file) up coins to the (per the file) result of a script. Per the file, p2WSH (Segregated Witness) is (per the file) not available on Dogecoin. (per the file) > ⚠️ The maximum size of (per the file) a Redeem Script is (per the file) **520 bytes** and a (per the file) ScriptSig limit is **1650 bytes**.",
+    "Per the file, given those limits along (per the file) with the header in (per the file) this design, the largest (per the file) multisig to maintain a (per the file) 2/3+ majority would be 9/13. Per the file, fees are based on tx size, so this should (per the file) also be taken into consideration. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, officially and publicly delegate (per the file) fund manager signing authority (per the file) to a set of (per the file) public keys for the (per the file) purposes of bridging to (per the file) (i.e. unlocking) Dogecoin. Per the file, this should require a (per the file) new governance by the (per the file) canonical guardian set and (per the file) be maintained on-chain. Per the file, this ought to be reusable by other (per the file) chains that require a (per the file) fund manager implementation - e.g.",
+    "Per the file, bitcoin, XRPL - but be flexible per-chain. Per the file, trigger signing by this (per the file) delegated set based on a VAA. Per the file, make the resulting signature(s) (per the file) and artifact publicly available. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migration of UTXOs for (per the file) manager set migration - the (per the file) integrating protocol should consider (per the file) an underlying mechanism to (per the file) transition UTXOs to an updated redeem script. Per the file, relaying Payment for the manager service. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the new Wormhole Guardian Manager Service overview. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Technical Details",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in sending from Dogecoin (per the file) to Solana, funds are (per the file) locked by a redeem (per the file) script that can only (per the file) be accessed by a (per the file) signer (or set of signers). Per the file, these signers should represent (per the file) guardian fund management - the (per the file) expectation being that only (per the file) a legitimate withdrawal witnessed (per the file) by the guardians should (per the file) transfer out the funds.",
+    "Per the file, the primary difference between (per the file) this and the existing (per the file) functionality of Wormhole is (per the file) that 1) the guardians fail to directly hold funds, but (per the file) rather smart contracts do (per the file) and 2) those smart (per the file) contracts verify guardian signatures (per the file) against generic messages (VAAs) (per the file) and transfer out the (per the file) funds based on their (per the file) validation of that message. Per the file, this design purposely leaves (per the file) the complexity of UTXO (per the file) management to the integrator.",
+    "Per the file, a contract or off-chain (per the file) service of the integrating protocol (per the file) must determine the appropriate UTXO (per the file) management prior to emitting a VAA. Per the file, the gap here is (per the file) then translating that VAA into a signed tx that can release the (per the file) funds on Dogecoin - effectively (per the file) taking the place of (per the file) the smart contract outbound (per the file) transfer functionality on traditional Wormhole-supported chains.",
+    "Per the file, ideally, the approach implemented (per the file) here would be modular (per the file) enough to allow support (per the file) for other runtimes which fail to feature sufficient smart contract support. Per the file, this calls for the following: Fetching the current delegated (per the file) manager set for the configured chains. Per the file, (Optional) Verifying a VAA against (per the file) the current guardian set. Per the file, generating and signing a Dogecoin tx. Per the file, storing and distributing the resulting signature.",
+    "Per the file, aggregating the signatures and (per the file) making them publicly accessible. Per the file, this design introduces the (per the file) following new concepts: **Delegated (per the file) Manager Set** - A set (per the file) of public keys to (per the file) which the canonical guardians (per the file) have indicated are trusted (per the file) to manage funds for (per the file) chains without sufficient smart contract support.",
+    "Per the file, due to technical limitations, (per the file) feature evolution, or other (per the file) tradeoffs, this may have (per the file) a different number of (per the file) keys compared to the (per the file) guardian set. **Manager Service** (per the file) - An optional guardian service (per the file) module to dispatch signature (per the file) requests, aggregate signature responses, (per the file) and serve resulting signatures and txs. **Chain-Specific Signing Service** - A (per the file) modular component of the Manager (per the file) Service which parses a VAA (per the file) and performs chain-specific steps to (per the file) form a tx and sign it. Per the file, this may or may (per the file) not involve coordination with the other guardians. Per the file, that coordination is outside (per the file) the scope of this (per the file) design, as it is (per the file) not required for Dogecoin."
+   ]
+  },
+  {
+   "heading": "Protocol Integration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the guardian may be extended to optionally (per the file) run a new Manager Service. Per the file, this would include the functionality detailed above. Per the file, the operator would not (per the file) necessarily need to be (per the file) part of the canonical guardian set so as to run the service. Per the file, delegated Manager Set Governance (per the file) (Optional) A new module may be added for DelegatedManager (per the file) along with a governance action for DelegateSetUpdate.",
+    "Per the file, these should work similar (per the file) to the existing guardian (per the file) set update action, with the following exceptions. Per the file, delegated Manager needs to (per the file) be assigned on a per-chain basis. Per the file, this ought to be designated by a (per the file) uint16 like a standard Wormhole Chain ID. Per the file, address representations for other (per the file) chains may not always (per the file) use 20-bytes like the (per the file) existing guardian public keys.",
+    "Per the file, to support different address (per the file) implementations per-chain, the address (per the file) information will need to be (per the file) stored generically as bytes. Per the file, as even those formats (per the file) may change depending on (per the file) implementation-specific designations, a 1-byte prefix ought to be used to differentiate representation standards. Per the file, a new immutable contract may be deployed to verify (per the file) and store these on-chain. Per the file, it ought to be forward-compatible, and therefore (per the file) should not parse the internal set bytes.",
+    "Per the file, it must expose the (per the file) following: submitNewManagerSet(bytes memory _vm) this ought to be akin to submitNewGuardianSet on (per the file) the Core bridge, except store (per the file) the set and latest set (per the file) index per-chain getManagerSet(uint16 chainId, uint32 (per the file) index) getCurrentManagerSetIndex(uint16 chainId) getCurrentManagerSet(uint16 chainId) This is (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) technically optional, as the rest of the steps would work without it, but making the set transparent to integrators may ease integration and increase transparency.",
+    "Per the file, fetching the Delegated Manager (per the file) Set (Optional) The guardian’s Ethereum watcher may be extended to support fetching (per the file) of the delegated manager set (per the file) akin to how the guardian (per the file) set is currently fetched. Per the file, verifying a VAA against (per the file) the Current Guardian Set (per the file) The Manager Service will (per the file) need access to the (per the file) current guardian set (gst). Per the file, it should also have (per the file) a new channel to (per the file) ingest certain VAAs when (per the file) the guardian broadcasts or receives them.",
+    "Per the file, for an MVP, it (per the file) is recommended to have (per the file) a hardcoded config of (per the file) which chain-emitter pairs are (per the file) forwarded, akin to Governor and Accountant. Per the file, for defense-in-depth, this chain-emitter (per the file) pair ought to be checked in both the forwarding code (per the file) (likely the p2p module) and receiving code (per the file) in the Manager Service. **Critically**, this configuration (per the file) must also include what signer the emitter ought to be forwarded to.",
+    "Per the file, this is necessary to (per the file) avoid any message confusion (per the file) between signers - e.g. a (per the file) Dogecoin emitter should never be (per the file) able to trigger an XRPL signature. Per the file, after checking the message (per the file) against the config, the (per the file) Manager Signer should verify (per the file) the VAA (unless the (per the file) VAA is guaranteed to (per the file) have already been verified (per the file) by the code path) (per the file) and forward it to (per the file) the chain-specific signing service. (per the file) > 💡 Not all guardians subscribe to (per the file) the VAA gossip channel.",
+    "Per the file, this is controlled by (per the file) an optional flag subscribeToVAAs. Per the file, if a guardian is (per the file) acting as a manager and fails to subscribe to VAAs, they (per the file) would only produce signatures (per the file) for messages they observed, (per the file) as the guardian will (per the file) only form VAAs for messages they observed. Per the file, generating and Signing a (per the file) Dogecoin Transaction The Chain-Specific (per the file) Signing Service for Dogecoin must (per the file) parse the VAA and its (per the file) payload to extract the necessary fields.",
+    "Per the file, it must then construct (per the file) the resulting redeem script and tx, sign, and return the signed tx to the Manager Service. Per the file, in order to avoid (per the file) coordination between the different (per the file) Manager Services, the process (per the file) to convert a VAA to a tx has to be deterministic. Per the file, storing and Distributing Signatures (per the file) Upon receipt of a signature and tx from the Chain-Specific Signing (per the file) Service, the Manager Service must (per the file) store the signature and tx indexed by the VAA that generated it.",
+    "Per the file, this ought to be indexed by both (per the file) the VAA hash (which (per the file) is unique) and the (per the file) VAA ID ({chain}/{emitter}/{sequence}) for (per the file) ease of integrator lookup. Per the file, it must also send the signed tx over gossip to the other Manager Services. Per the file, in order to reduce (per the file) traffic to non-manager guardians, (per the file) this must use a new gossip channel. Per the file, signature Aggregation and Availability (per the file) A guardian running a (per the file) Manager Service may subscribe (per the file) to this new gossip channel so as to aggregate signatures.",
+    "Per the file, upon receipt of a signed tx, the receiving guardian must (per the file) verify that the signature (per the file) recovers to one of (per the file) the public keys in (per the file) the manager set and, if a tx is already stored, validate that this tx matches the existing one (per the file) for the same VAA hash. Per the file, a valid signed tx has to be upserted - critically, the signatures has to be stored in the (per the file) order they appear in the manager set. Per the file, explorer Integration Wormholescan may (per the file) want to consider monitoring (per the file) the new gossip channel (per the file) and aggregating signatures as well. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "API / database schema",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, delegated Manager Governance See (per the file) Cross-Chain Governance Decision Messaging for more information. Per the file, for Dogecoin, this set (per the file) would be represented by the following struct Redeem Script The following redeem script has to be used in order (per the file) for the manager set (per the file) to unlock the funds. Per the file, the emitter chain and (per the file) contract must match the (per the file) emitter of the VAA that is to be allowed to unlock the funds.",
+    "Per the file, the recipient address is (per the file) required by the deposit (per the file) contract on the destination (per the file) chain to determine what acct to mint the tokens (per the file) to - e.g. on Solana. Per the file, dogecoin Unlock VAA Payload (per the file) (UTX0) The following payload may be emitted by a registered emitter so as to trigger Manager Service signing. Per the file, this payload is specific to UTXO chains, including Bitcoin and Dogecoin, **_as (per the file) well as_** being specific (per the file) to the redeem script specified above.",
+    "Per the file, it contains all of (per the file) the information necessary for (per the file) the manager set to (per the file) _independently, asynchronously, and deterministically_ (per the file) generate and sign the same tx. > 📝 All uint values are (per the file) encoded big-endian (including the (per the file) deposit transaction_id). Per the file, where input is and output is <!-- cspell:ignore XREL --> XRPL Release (per the file) Payload (XREL) Emitted when a (per the file) ticket is assigned to an inbound transfer.",
+    "Per the file, guardians observe this payload (per the file) to construct the XRPL Payment tx. | Offset | Size | Field | | ------ | ---- | ---------------------------- | | 0 (per the file) | 4 | prefix (\"XREL\" = 0x5852454C) (per the file) | | 4 | 8 | ticket_id | | 12 (per the file) | 20 | xrpl_custody_account | | 32 | 20 | xrpl_recipient (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | | 52 | 8 | amount | | 60 | 1 | token_decimals | | 61 | 2 | source_chain | | 63 | 32 | source_emitter | | 95 | 8 | source_sequence | | 103 | 1-41 | token_id (variable) | | var | 2 | memos_len | | var | var | memos (repeated) | **token_id encoding (variable length):** | Type | Byte 0 | Remaining Bytes | Total | | ---- | ------ | --------------------------- | -------- | | XRP | 0x00 | (none) | 1 byte | | IOU | 0x01 | currency (20) + issuer (20) | 41 bytes | | MPT | 0x02 | mpt_issuance_id (24) | 25 bytes | **Each memo entry:** Minimum bytes: 106 bytes (XRP), 130 bytes (MPT), 146 bytes (IOU) <!-- cspell:ignore XRFL --> TicketRefill Payload (XRFL) Emitted when tickets are running low and need refilling.",
+    "Per the file, guardians observe this payload (per the file) to construct a TicketCreate tx on XRPL. | Offset | Size (per the file) | Field | | ------ | ---- | ---------------------------- | | 0 | 4 | prefix (per the file) (\"XRFL\" = 0x5852464C) | | 4 | 20 (per the file) | xrpl_account | | 24 | 8 | use_ticket (per the file) | | 32 | 8 | request_count | Total: 40 bytes (per the file) <!-- cspell:ignore XBRN --> Burn Ticket Request Payload (XBRN) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Burn Ticket Request payload — emitted to tell guardians to submit a no-op XRPL tx using the specified ticket, consuming it. | Offset | Size | Field | | ------ | ---- | ------------ | | 0 | 4 | prefix | | 4 | 20 | xrpl_address | | 24 | 8 | ticket_id | Total: 32 bytes Manager Service API The Manager Service will expose two public endpoints.",
+    "Per the file, they both return the following output: The vaaHash is in (per the file) hex without a 0x (per the file) prefix, the vaaId is (per the file) in the standard {chain}/{emitter}/{sequence} (per the file) format, and signatures are base64. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Caveats",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this design does NOT (per the file) explicitly require that the (per the file) Delegated Manager Set participants (per the file) are part of the canonical guardian set. Per the file, integrating protocols has to be aware of Delegated (per the file) Manager Set upgrades by (per the file) the canonical Guardian Set (per the file) and act promptly to (per the file) migrate to the new Delegated Manager Set.",
+    "Per the file, there is no inherent (per the file) requirement for a given (per the file) Delegated Manager Set to (per the file) remain operational for any (per the file) specific period of time (per the file) in this design, but it ought to be expected that signers (per the file) in the prior set (per the file) remain operational for some (per the file) period of time to facilitate migrations. Per the file, protocols may rely on (per the file) the Delegated Manager Set (per the file) Governance VAA to permissionlessly facilitate migration.",
+    "Per the file, a smart contract may (per the file) be made available to (per the file) verify and store this (per the file) on-chain as described in 0. Per the file, delegated Manager Set Governance (Optional). Per the file, as mentioned above, UTXO (per the file) management is left up (per the file) to the integrating protocol (per the file) prior to message emission. Per the file, it is anticipated that (per the file) protocols would subtract fees (per the file) from withdrawals and send (per the file) any remaining amounts back (per the file) to their protocol by (per the file) sending to the P2SH (per the file) address of the redeem (per the file) script above with their (per the file) chain and emitter but (per the file) a zero recipient_address.",
+    "Per the file, their protocol would _not_ (per the file) mint and tokens on these deposits. Per the file, this zero address approach (per the file) can also be used (per the file) by the protocol to (per the file) arbitrarily consolidate UTXOs in (per the file) addition to performing Delegated Manager Set rotations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Direct Observations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Manager Service could (per the file) directly witness messages generated (per the file) on-chain and bypass the (per the file) canonical guardian observations. Per the file, the VAA v1 based (per the file) approach has the following advantages: The canonical 13/19 has (per the file) greater resiliency (percentage-wise) to outages (per the file) than the 5/7 set. Per the file, this approach would allow (per the file) the 5/7 set to (per the file) continue signing regardless of the (per the file) state of their Solana node.",
+    "Per the file, the existing VAA v1 (per the file) generation already has well-established (per the file) mechanisms for re-observation. Per the file, the VAA v1 generation (per the file) may include additional integrity checks. Per the file, this keeps a better (per the file) separation of concerns - the Manager Service fails to need to rely upon (per the file) a separate series of (per the file) watchers and can rely (per the file) on the already standardized message emission. Per the file, assuming the security of (per the file) the manager keys, this (per the file) retains the witness authority (per the file) with the canonical guardian (per the file) set by having the (per the file) manager set only sign (per the file) based on verified VAAs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Threshold Signatures",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The authors have an (per the file) aversion to threshold implementations, (per the file) typically because they are (per the file) a “black box” and (per the file) don’t offer attribution. Per the file, it also adds latency and networking overheads, and also increasing the implementation complexity. Per the file, furthermore, there is not (per the file) an existing threshold implementation used by Wormhole. Per the file, a multi-sig implementation is (per the file) transparent, attributable, and fails to require coordination amongst the parties, (per the file) though it does increase on-chain cost."
+   ]
+  },
+  {
+   "heading": "Alternative Publishers",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the guardian process has (per the file) support for a list of Alternate Publishers. Per the file, this could be used (per the file) to push VAA publications (per the file) to a separate process (per the file) or list of services (per the file) that could then use (per the file) basic REST endpoints instead (per the file) of (or in addition (per the file) to) listening on the (per the file) gossip network for new VAAs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "CompactSize and ScriptPubKey",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, bitcoin uses CompactSize for input and output lengths. Per the file, a Bitcoin output has the following structure. Per the file, scriptPubKey can take many (per the file) forms, but not all (per the file) of them are necessarily (per the file) supported on every UTXO (per the file) destination chain - e.g. as (per the file) of this writing, Bitcoin supports P2WSH but Dogecoin fails to. Per the file, in order to minimize (per the file) potential errors and avoid (per the file) additional boilerplate, this design (per the file) opts to use constant (per the file) size uint32 for lengths (per the file) and an enum for (per the file) the address type instead of arbitrary ScriptPubKeys. Per the file, example ScriptPubKey versus address (per the file) type format comparisons are provided below."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Manager service, the (per the file) Chain-Specific Signing service, and its keys has to be treated with the same (per the file) care as the guardian service (per the file) and its keys. Per the file, the Manager service must (per the file) always verify that VAAs (per the file) are valid against the (per the file) current guardian set and (per the file) are emitted by an (per the file) emitter in the config before initiating signing. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

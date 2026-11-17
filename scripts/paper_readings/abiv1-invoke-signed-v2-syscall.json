@@ -1,0 +1,74 @@
+{
+ "slug": "abiv1-invoke-signed-v2-syscall",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces a new invoke (per the file) syscall with an improved API to handle acct information in CPI (cross-program (per the file) invocation) calls, aiming to reduce (per the file) the memory overhead and simplify (per the file) the process of passing acct data between programs and runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, configuring CPI parameters (per the file) in ABIv1 programs is unnecessarily cumbersome: It calls for passing two acct slices: &[AccountMeta] and &[AccountInfo]. Per the file, it calls for converting acct information received as program (per the file) input into a different (per the file) layout, even though the (per the file) runtime subsequently converts it (per the file) into yet another layout. Per the file, both requirements force programs (per the file) to allocate and copy (per the file) more memory than strictly necessary.",
+    "Per the file, this overhead could be (per the file) avoided without negatively affecting runtime performance. Per the file, an AccountMeta occupies 34 (per the file) bytes, while an AccountInfo occupies 56 bytes. Per the file, therefore, a program must (per the file) manipulate 90 bytes per acct for each CPI. Per the file, this often calls for heap allocation because the (per the file) total size can exceed (per the file) the maximum stack size (per the file) of 4096 bytes, particularly (per the file) given that a CPI (per the file) can accept up to 255 accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to address the first (per the file) issue, we can eliminate one of the acct slices by combining the (per the file) information contained in AccountMeta and AccountInfo. Per the file, the purpose of AccountMeta (per the file) is to associate the (per the file) writable and signer flags with an acct, while AccountInfo contains the actual acct information. Per the file, the second issue may be mitigated by allowing (per the file) programs to simply pass (per the file) the index of the acct in the instruction rather (per the file) than requiring them to copy the acct information into a different layout.",
+    "Per the file, the runtime already has access to the acct information, so it can look up the acct by index and retrieve the necessary information. Per the file, these two changes may be combined by defining (per the file) a new type CpiAccount that associates the acct index with the writable/signer (per the file) flags, reducing the per-acct memory requirement for a CPI from (per the file) 90 bytes to 4 bytes. Per the file, the program creates a (per the file) new CpiInstruction containing a (per the file) single slice of the accts expected by the invoked program: Finally, the CpiInstruction is (per the file) used as a parameter (per the file) to a new invoke_signed_v2 syscall: The layout for signer seeds is (per the file) the same as in the current (per the file) invoke syscall.",
+    "Per the file, these modifications eliminate only (per the file) the type conversions performed (per the file) on the program side. Per the file, the CPI logic in (per the file) the runtime remains unchanged, (per the file) apart from reading the acct information through the instruction acct index during acct translation. Per the file, in other words, this proposal fails to change the runtime's CPI (per the file) logic, but it does change (per the file) the way programs pass acct information to the runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-------------------------------------| | Transaction Execution (Runtime) (per the file) | None | | Virtual Machine | New (per the file) syscall | | Block Packing | None (per the file) | | Consensus | None | | Gossip | None (per the file) | | Turbine | None | | Snapshots | None (per the file) | | On-Chain Core BPF Programs (per the file) | None | | Other (please describe) | None. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, continue without the new syscall. Per the file, this would maintain the (per the file) current overhead of CPIs, (per the file) which is unnecessary and inefficient. Per the file, continue to use the (per the file) existing AccountMeta, but pass a slice of acct pointers to the runtime instead of AccountInfo. Per the file, this would reduce the (per the file) memory requirement from 90 (per the file) to 42 bytes (34 + 8 bytes) per acct. Per the file, this fails to offer as much reduction (per the file) in memory overhead as (per the file) the proposed solution, and also still calls for a second slice of accts to be passed to the runtime.",
+    "Per the file, instead of using the index of an acct in the tx, pass acct pointers to the runtime. Per the file, this reduces the memory (per the file) requirement from 90 to 16 bytes per acct, including 6 bytes of (per the file) padding &mdash; the program (per the file) itself copies only 10 bytes per acct. Per the file, while this reduces memory (per the file) overhead, the current proposal is more efficient. Per the file, in particular, using acct indices lets the CPI acct list to be constructed (per the file) statically at compile time (per the file) when the program’s acct list is deterministic. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The proposal will reduce (per the file) the memory overhead of (per the file) CPIs, which will improve (per the file) performance and reduce the (per the file) likelihood of heap allocation. Per the file, this will benefit program (per the file) developers by making it (per the file) easier to write efficient programs. Per the file, below is a benchmark (per the file) showing reductions in CU (per the file) usage when setting up (per the file) CPI parameters in a (per the file) Pinocchio program that performs (per the file) a CPI to a (per the file) simple program that logs the number of accts received.",
+    "Per the file, this benchmark measures the (per the file) improvement in CPI parameter setup. Per the file, all other costs of (per the file) a CPI remain the (per the file) same. | | CPI (8) | CPI (per the file) (16) | CPI (32) | CPI (per the file) (64) | | --- | --- | --- | --- | --- | | invoke | 1,376 | 1,592 (per the file) | 1,999 | 2,813 | | invoke v2 (proposed) | **1,174** (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) | **1,198** | **1,221** | **1,267** | | **Change invoke v2 vs invoke** | **−15%** | **−25%** | **−39%** | **−55%**. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the security surface is (per the file) identical to that of (per the file) the existing invoke syscall. The file fails to change the CPI logic (per the file) in the runtime, apart from accessing acct information through the instruction acct index during acct translation. Per the file, the same input validation (per the file) and CU metering apply. Per the file, although the new syscall (per the file) reduces the memory overhead (per the file) of CPIs by representing acct information in 4-byte descriptors, (per the file) the CU charge remains based (per the file) on 34 bytes per acct, since the runtime still needs (per the file) to read the same amount of acct information from the tx. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file is fully backwards compatible. Per the file, the new invoke_signed_v2 syscall (per the file) is an addition to the existing (per the file) invoke_signed syscall, which remains unchanged. Per the file, programs that fail to use the new syscall (per the file) will continue to function as before. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

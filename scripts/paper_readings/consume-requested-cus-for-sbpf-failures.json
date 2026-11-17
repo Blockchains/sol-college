@@ -1,0 +1,63 @@
+{
+ "slug": "consume-requested-cus-for-sbpf-failures",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, adjusting how CU consumption (per the file) is measured based on the conditions of tx execution: successful completion will (per the file) consume actual CUs, but (per the file) certain irregular failures in (per the file) the sBPF VM will result in the tx automatically consuming all requested CUs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in the Solana protocol, tracking tx Compute Unit (CU) consumption (per the file) is a critical aspect of maintaining consensus. Per the file, block costs are part (per the file) of this consensus, meaning (per the file) that all clients must (per the file) agree on the execution cost of each tx, including those that error out during execution. Per the file, ensuring consistency in CU (per the file) tracking across clients is (per the file) essential for maintaining protocol integrity.",
+    "Per the file, to improve performance, Solana (per the file) programs are often compiled (per the file) with a JIT that (per the file) works at the level (per the file) of Basic Blocks — linear (per the file) sequences of sBPF instructions (per the file) with a single entry (per the file) and exit point, and (per the file) no loops or branches. Per the file, basic Blocks allow for (per the file) efficient execution by reducing (per the file) the overhead associated with (per the file) tracking CU consumption for (per the file) each individual sBPF instruction.",
+    "Per the file, other than in less (per the file) common situations discussed below, (per the file) the total CU consumption (per the file) for a Basic Block (per the file) is deterministic and CU accounting may be done once per (per the file) basic block instead of at each instruction. Per the file, a tx completing successfully or with (per the file) most errors implies that (per the file) execution exited each basic (per the file) block at its single (per the file) exit point, and thus (per the file) that the total CU (per the file) consumption of the execution (per the file) is equal to the (per the file) sum of the CU (per the file) cost of each Basic Block executed.",
+    "Per the file, however, when an exception (per the file) is thrown during the (per the file) execution of a Basic (per the file) Block (e.g., a null (per the file) memory dereference or other faults), (per the file) determining the exact number of (per the file) CUs consumed up to the (per the file) point of failure calls for additional effort. Per the file, for instance, the Agave client puts in place a mechanism that tracks (per the file) the Instruction Pointer (IP) (per the file) or Program Counter (PC) (per the file) to backtrack and estimate (per the file) the CUs consumed when an exception occurs.",
+    "Per the file, more details on this mechanism may be found here. Per the file, while this approach is (per the file) effective, it introduces additional work and complexity. Per the file, these mechanisms are often (per the file) implementation-specific, and requiring all (per the file) clients to track the exact (per the file) number of executed sBPF instructions (per the file) for consensus is costly and unnecessary. Per the file, such precision is not (per the file) essential for protocol-level consensus, (per the file) especially since these cases are infrequent.",
+    "Per the file, instead of mandating implementation-specific (per the file) work to handle exceptions, we (per the file) propose the following clarification in (per the file) the protocol: For successful execution (per the file) of a Basic Block (i.e., (per the file) the block exits at the last (per the file) sBPF instruction), the deterministic CU cost (per the file) of the block is to be charged to the tx’s CU meter. Per the file, this ensures that CU consumption for successful txs is accurately accounted for.",
+    "Per the file, in the event of (per the file) irregular failure, where execution (per the file) aborts from the middle (per the file) of basic block, the (per the file) requested CUs for the tx is to be charged to the CU meter. Per the file, this lets for a simple and (per the file) efficient fallback mechanism that (per the file) avoids the need for (per the file) tracking the exact number (per the file) of executed instructions up (per the file) to the point of failure.",
+    "Per the file, by adopting this approach, (per the file) the protocol avoids the (per the file) overhead of requiring precise (per the file) instruction-level CU tracking for txs that fail. Per the file, instead, the requested CU limit of the tx is to be used, simplifying the (per the file) handling of irregularly failed txs while still maintaining consensus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, basic Block: In the (per the file) context of JIT execution (per the file) and BPF processing, a (per the file) Basic Block is a (per the file) sequence of BPF instructions (per the file) that forms a single, (per the file) linear flow of control (per the file) with no loops or (per the file) conditional branches except for (per the file) the entry and exit points. Per the file, it represents a segment (per the file) of code where execution (per the file) starts at the first (per the file) instruction and proceeds sequentially (per the file) through to the last instruction without deviation.",
+    "Per the file, the Basic Block is (per the file) characterized by its predictable (per the file) execution path, allowing for (per the file) efficient budget checks and (per the file) optimizations, as its Compute Unit (CU) cost may be determined before execution (per the file) and verified at the (per the file) end of the block. Per the file, irregular tx failure: A rare case (per the file) that a Transaction execution (per the file) aborts in the middle (per the file) of executing basic block, (per the file) results in consuming all requested CUs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, if VM execution returns (per the file) any error except SyscallError, tx's CU meter ought to be fully depleted, in another (per the file) words, all requested CUs are (per the file) consumed; otherwise consumes the actual executed CUs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

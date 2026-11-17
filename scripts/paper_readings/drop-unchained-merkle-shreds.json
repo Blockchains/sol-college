@@ -1,0 +1,63 @@
+{
+ "slug": "drop-unchained-merkle-shreds",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as the new shred (per the file) format is being sent (per the file) by all clients, this (per the file) feature deprecates the old shred format. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it is inconvinient to (per the file) support both formats, and (per the file) upcoming consensus changes (alpenglow) (per the file) expect all shreds to (per the file) be of the chained variety. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the chained merkle shred (per the file) variant, adds an additional (per the file) field to Data and Coding shreds. Per the file, it adds the Merkle (per the file) root of the previous (per the file) erasure batch after the (per the file) data buffer or erasure (per the file) coded shard respectively, before the merkle proof: Additionally in the common (per the file) shred header, the first (per the file) 4 bits of the (per the file) shred variant field are (per the file) reserved to specify the shred variant.",
+    "Per the file, the second bit indicates (per the file) if this shred is (per the file) of the chained merkle shred variant. Per the file, if drop_unchained_merkle_shreds: 5KLGJSASDVxKPjLCDWNtnABLpZjsQSrYZ8HKwcEdAMC8 is (per the file) active, then any shred with the second (per the file) bit of the shred variant as zero is to be dropped on ingest. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, any clients still producing (per the file) blocks using the old (per the file) shred format will have (per the file) their shreds ignored on ingest. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is not backwards compatible."
+   ]
+  }
+ ]
+}

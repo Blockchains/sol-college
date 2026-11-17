@@ -1,0 +1,128 @@
+{
+ "slug": "adapt-runtime-for-rent-increases",
+ "pages": 4,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to allow for non-disruptive (per the file) rent increases, the Solana runtime (per the file) relaxes post-execution minimum balance checks (per the file) and adjusts stake delegations during epoch (per the file) rewards calculations. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Relax Post-Execution Minimum Balance Check",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, during tx execution, the new lower-bound (per the file) on post-exec balance is min(acc.pre_exec_balance, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) calculate_min_balance(acc.size())). Per the file, this maintains the invariant that every acct has a balance at (per the file) or above the minimum (per the file) balance requirement calculated at (per the file) any point since the (per the file) most recent allocation occurred. Per the file, when enabled, only newly allocated accts is to be subject to rent increases. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Adjust Stake Delegations during Reward Calculation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new calculation is (per the file) proposed to adjust stake (per the file) delegation amounts during the (per the file) epoch rewards payout system, (per the file) based on the Rent (per the file) sysvar parameters at the (per the file) beginning of that epoch. Per the file, sidenote: this proposal doesn't (per the file) include any mechanism for increasing (per the file) rent, but when such a (per the file) mechanism is added in the (per the file) future it should cap the (per the file) effective rent-per-byte at the legacy (per the file) rent-exempt per-byte rate.",
+    "Per the file, this limitation isn't strictly (per the file) necessary but it avoids needing (per the file) to significantly modify any core (per the file) system programs (e.g. stake program). Per the file, if increasing the per-byte (per the file) rate beyond this cap is (per the file) desirable then the relevant core (per the file) programs need to be updated (per the file) to be compatible. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file is a prerequisite for (per the file) SIMD-0438 (Rent Increase). Per the file, in order to safely reduce rent there has to be a mechanism available (per the file) for non-disruptive rent increases. Per the file, without these changes, a (per the file) rent increase would either place existing accts in a gray area (per the file) undefined by the protocol (per the file) or prevent write-locking all accts with balances below the new rent value.",
+    "Per the file, for stake accts, any meaningful user (on-chain (per the file) programs, dapps, etc) typically assumes (per the file) the following invariant: If a rent lamport can (per the file) also be a delegation lamport, (per the file) at best programs or users (per the file) will abort operations due to (per the file) incorrect values, at worst they (per the file) might overestimate the value of a stake acct and create a loss-of-funds scenario. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on Per. Those labels are the document’s. They are not a Sol.College measurement. Per the file, note, acc_size includes both the acct data size and the 128 (per the file) overhead bytes. legacy_rent_per_byte: the fixed (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) rent-exempt per-byte rate used prior to this proposal."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Post-Execution Balance Checks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, current behavior For all write-locked accts, post-execution acct balance checks currently verify: This lets a tx to reduce an acct's balance as long as it still (per the file) satisfies the minimum balance for its post-execution (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) data size. Per the file, if the rent price (per the file) is increased then existing accts may become sub-exempt, which (per the file) isn't currently allowed in the (per the file) protocol as rent paying accts have been deprecated.",
+    "Per the file, proposed behavior For all write-locked accts, post-execution acct balance checks MUST verify: The same pre/post-balance semantics MUST also (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) be applied to fee and commission distribution: tx fee debits and subsequent fee/commission distribution are treated as an additional balance-changing phase, and the invariant above MUST be enforced using the pre-fee and post-fee balances.",
+    "Per the file, this applies to the current fee distribution and also the next version of (per the file) commission distribution where fees (per the file) are distributed via block (per the file) revenue commission (SIMD-0123) The (per the file) check ensures that an acct's balance is always rent-exempt as (per the file) of the last (re)allocation of its data: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) As the base case, it's clear this holds for new acct creations or upwards reallocations: the post-execution rent price and acct size is used to determine the minimum balance.",
+    "Per the file, the first subsequent tx write-locking the same acct but not performing any upwards (per the file) reallocations can either have (1) (per the file) a balance higher than the (per the file) original min_balance or (2) a (per the file) lower balance that's bounded below by (per the file) a reduced rent price. Per the file, with this, we can (per the file) inductively prove that the (per the file) post-execution balance of every acct is bounded below by the (per the file) lowest rent since the last allocation.",
+    "Per the file, the owner check is (per the file) intended to make reselling low-rent acct state more difficult so a (per the file) secondary market doesn't develop. Per the file, see the security considerations (per the file) section for more details. Per the file, implementation details The pre-execution (per the file) balance MUST be captured before (per the file) any state is modified (e.g. (per the file) before fee collection, instruction execution, etc). Per the file, this same pre_exec_balance snapshot (per the file) MUST be reused when enforcing the (per the file) minimum balance invariant across both instruction (per the file) execution and fee/commission debiting/distribution.",
+    "Per the file, the pre and post-execution (per the file) sizes are compared to determine (per the file) if upwards reallocation occurred. Per the file, the pre-execution owner MUST be captured. Per the file, if the acct owner changes during execution, (per the file) the min(pre_exec_balance, …) clause MUST (per the file) NOT apply; enforce the current rent-exempt minimum (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) for the post-exec size.",
+    "Per the file, the calculate_min_balance() function uses (per the file) the current rent_per_byte value, which may (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) vary based on active feature gates and rent policies. Per the file, newly created accts have pre_exec_balance = 0 and (per the file) are not subject to the min() clause. Per the file, as before, 0 post-balance (per the file) is allowed and equivalent to closing an acct.",
+    "Per the file, edge cases **Account creation:** (per the file) Pre-execution: pre_exec_balance = 0 Post-execution: (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) only calculate_min_balance(post_exec_size) is enforced No change to existing behavior **Account closure:** No change to existing behavior **Size increase (reallocation upward):** No change to existing behavior **No net size increase:** post_exec_size <= pre_exec_size Owner MUST remain unchanged for the min() clause to apply: min_balance = min(calculate_min_balance(size), pre_exec_balance) **This is the key behavioral change**: lets accts to retain their original rent price even if current rent increases Note that if the balance increases but is still below the current rent price, the new balance becomes the effective minimum balance for the given acct.",
+    "Per the file, this means that the (per the file) balance can no longer (per the file) be reduced back to (per the file) the original rent price. (per the file) **Owner change:** If the acct owner changes, always enforce (per the file) the current rent-exempt minimum (per the file) for the post-exec size; the (per the file) min(pre_exec_balance, …) clause fails to apply."
+   ]
+  },
+  {
+   "heading": "Rent-Adjusted Stake Delegations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, during the epoch rewards (per the file) distribution phase, a stake's (per the file) updated delegation MUST be adjusted (per the file) with the following formula: Where: post_delegation: the acct's post-reward delegated lamport amount pre_delegation: the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) acct's pre-reward delegated lamport amount stake_rewards: the acct's calculated stake reward lamport amount for the past epoch balance: the acct's balance at distribution time, in lamports rent_exempt_reserve: the minimum lamport balance required for the stake acct (more information below) All arithmetic operations MUST be saturating and use unsigned 64-bit integers. Per the file, the rent_exempt_reserve calculation MUST (per the file) use current Rent sysvar parameters.",
+    "Per the file, any updates to the (per the file) Rent sysvar values MUST (per the file) take place before epoch (per the file) rewards calculation takes place. Per the file, during distribution, the delegation.stake (per the file) field (absolute offset 156,164)) in (per the file) the stake acct's data MUST be set to the (per the file) new delegation amount, expressed as a little-endian (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) unsigned 64-bit integer.",
+    "Per the file, if the new delegation (per the file) amount is 0, then (per the file) delegation.deactivation_epoch (absolute offset [172,180)) (per the file) MUST be set to the rewarded epoch, (per the file) expressed as a little-endian unsigned 64-bit integer. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) Per the file, note that only stake accts included in partitioned epoch rewards are updated. Per the file, changes in inclusion criteria (per the file) are outlined in the [unrewarded stake accts section.",
+    "Per the file, adjustment edge cases Given (per the file) a new rent-exempt minimum (per the file) R, increased at the epoch (per the file) boundary, here are the possible (per the file) outcomes for delegation amounts after distribution. Per the file, \"Rewarded\" means any stake acct that receives inflation rewards, (per the file) and \"capped\" refers to a stake acct whose delegation increase is (per the file) capped to its previous (per the file) delegation plus inflation rewards (per the file) (additional lamports are not (per the file) included in the delegation increase).",
+    "Per the file, nOTE: delegation values are (per the file) bounded by the total lamports in the acct, and cannot ever be (per the file) greater. <!-- markdownlint-disable MD013 --> | Description (per the file) | Total lamports before | Delegation before (per the file) | Inflation reward | Extra lamports | Total (per the file) lamports after | Delegation after | | --- | --- | --- | --- | --- | --- | --- | | Exempt, (per the file) rewarded | R + X | X > 0 (per the file) | Y > 0 | 0 | R + X (per the file) + Y | X + Y | | Exempt, capped (per the file) | R + X | X > 0 | Y (per the file) > 0 | Z > 0 | R + X (per the file) + Y + Z | X + Y | | Not (per the file) adjusted, extra lamports cover rent (per the file) difference | R | X > 0 | 0 (per the file) | X | R + X | X | | Not (per the file) adjusted, lamports cover rent difference, (per the file) with inflation | R | X > 0 (per the file) | Y > 0 | X | R + X (per the file) + Y | X + Y | | *NEW* Deactivated, (per the file) rent-exempt after distribution | R | X (per the file) > 0 | 0 | 0 | R | 0 | | *NEW* (per the file) Deactivated, not rent-exempt after distribution | X (per the file) < R | Y > 0 | 0 | 0 | X | 0 (per the file) | | *NEW* Adjusted, inflation covers rent difference | R (per the file) | X > 0 | R - X | 0 | R + X | X | | *NEW* Adjusted, inflation partially covers rent difference | X < R | Y > R - X - Z | R - X > Z > 0 | 0 | X + Z | X + Z - R | <!-- markdownlint-restore --> Unrewarded stake accts included in partitioned epoch rewards If a stake acct fails to receive rewards, but calls for a delegation adjustment during the calculation phase, it MUST be included as a reward recipient during partitioned epoch rewards.",
+    "Per the file, if one of these stake accts is credited enough lamports (per the file) between calculation and distribution (per the file) to meet the new (per the file) rent-exempt minimum, no adjustment takes place. Per the file, this table summarizes how to include stake accts if rent is increased: (per the file) | Meets new rent-exempt minimum (per the file) | Receives rewards | Outcome | | --- | --- | --- | | Yes | Yes (per the file) | Included, delegation increased by inflation (per the file) reward amount | | Yes | No | Not (per the file) included, not adjusted | | No | Yes (per the file) | Included, may be adjusted at (per the file) distribution | | No | No | *NEW* Included, (per the file) may be adjusted at distribution."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Always enforce current rent price post-execution",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while sub-exempt accts are a gray area in (per the file) the protocol, this would be (per the file) the closest to the current behavior. Per the file, all accts would be forced to (per the file) adopt new rent prices immediately, causing widespread tx failures when write-locks are attempted on accts with balances between the old (per the file) and new rent price. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Track \"rent price at allocation\" in metadata",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, more complex: calls for acct versioning and metadata changes. Per the file, the proposed approach achieves (per the file) a similar goal with (per the file) only runtime logic changes (per the file) by using the pre-execution (per the file) balance as a proxy for (per the file) the minimum rent price since last allocation. Per the file, the benefit of a (per the file) dedicated metadata field is that the invariant may be made stricter: every acct's balance is bounded below (per the file) by the rent price at (per the file) the most recent allocation rather (per the file) than the minimum rent price (per the file) *since* the last allocation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Fix Minimum Balance for Stake Accounts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we could fix the (per the file) minimum balance for stake accts to the current minimum (per the file) balance for 200 bytes. Per the file, this approach breaks any (per the file) existing on-chain programs or (per the file) tooling that use the Rent (per the file) sysvar to calculate the minimum (per the file) balance of a stake acct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, dapp developers: Enables non-disruptive rent increases. Per the file, existing accts are grandfathered at their (per the file) creation-time rent price until (per the file) they increase in size. Per the file, new accts and accts that have increased in (per the file) size adopt the current rent price. Per the file, minimal behavior change for (per the file) typical applications; most applications fail to reduce acct balances below their minimum during normal operation. Per the file, validators: Minimal performance impact; calls for storing pre-execution balance (one (per the file) u64) and size per write-locked acct during tx execution. Per the file, core contributors: Changes to tx processing logic to capture (per the file) pre-execution state and implement (per the file) the relaxed balance check. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, enables safe rent increases without disrupting existing accts: only newly allocated accts are subject to new rent prices. Per the file, maintains the invariant that accts always satisfy the minimum (per the file) rent price since the (per the file) time of their most recent allocation. Per the file, no mechanism for forcing accts to \"upgrade\" to current (per the file) rent prices without upwards (per the file) reallocation; this is intentional (per the file) to preserve non-disruptiveness. Per the file, it's essentially free to (per the file) adopt a new rent rate (per the file) that's lower than the rent (per the file) rate an acct was subject to at allocation time.",
+    "Per the file, this isn't problematic in (per the file) itself but it may cause (per the file) users to be less sensitive (per the file) to rent increases. Per the file, for similar reasons, there's (per the file) potential for a secondary state (per the file) market to develop, leading to (per the file) an additional sudden increase in (per the file) state allocation in anticipation of (per the file) a future rent hike. Per the file, this can further exacerbate (per the file) an excessive state growth event. Per the file, the owner change check (per the file) during minimum balance calculation (per the file) is intended to limit (per the file) this by making reselling accts more difficult. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, for post-execution balance checks, (per the file) this is a **relaxation** of (per the file) existing constraints: The change makes (per the file) the balance check less strict by allowing accts to retain their original rent (per the file) price when not upwards reallocating. Per the file, this is backwards compatible (per the file) in the sense that txs that currently succeed will continue to succeed. Per the file, however, it changes consensus rules and has to be activated behind a feature gate.",
+    "Per the file, for stake accts: A stake delegation MAY (per the file) decrease between epochs, so (per the file) consumers MUST relax assumptions (per the file) that delegation amounts only (per the file) increase or stay the same. Per the file, consumers MUST allow for stake accts to become inactive as (per the file) a result of reward (per the file) distribution, without an explicit (per the file) call to Deactivate or DeactivateDelinquent. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

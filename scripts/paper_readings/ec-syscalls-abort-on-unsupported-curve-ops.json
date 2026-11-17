@@ -1,0 +1,73 @@
+{
+ "slug": "ec-syscalls-abort-on-unsupported-curve-ops",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, update the curve25519 syscalls (per the file) functions from returning an (per the file) error code 1 (Ok(1) (per the file) in rust) to returning an (per the file) error type Err(SyscallError::InvalidAttribute) when invoked (per the file) on unsupported curve id or group op (per the file) id. Per the file, the curve25519 syscall functions (per the file) should never be invoked (per the file) on an unsupported curve (per the file) or operations and such (per the file) behavior is an unrecoverable program error. Per the file, updating the syscall functions (per the file) to return an error (per the file) type variant will immediately abort a tx execution."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is currently inconsistency (per the file) between the curve25519 and (per the file) alt_bn128 syscall functions on (per the file) unsupported curve inputs. Per the file, if the curve25519 syscalls (per the file) are invoked on an (per the file) unsupported curve or group (per the file) operation id, the curve25519 (per the file) syscalls return error code (per the file) of 1 (Ok(1) in (per the file) rust) while the alt_bn128 syscalls (per the file) immediately aborts with error code SyscallError::InvalidAttribute (per the file) (Err(SyscallError::InvalidAttribute).",
+    "Per the file, it would be great (per the file) to update these functions (per the file) so that this behavior (per the file) is handled consistently between the curve syscalls. Per the file, since calling these syscalls (per the file) on an unsupported curve (per the file) or group op should (per the file) never be done by (per the file) a program and is (per the file) an unrecoverable error, it (per the file) makes sense to update (per the file) the curve25519 syscalls to (per the file) also immediately abort when (per the file) invoked on an unsupported (per the file) curve id or ops."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the curve25519 syscall functions (per the file) are organized as follows: (per the file) Curve point validation: on (per the file) input a curve id (per the file) and a byte representation (per the file) of a curve point, (per the file) verifies whether the input (per the file) represents a valid curve point. Per the file, curve point group operations: (per the file) on input a curve (per the file) id, operation id, and (per the file) two byte representations of (per the file) curve points, either adds, (per the file) subtracts, or multiplies the input points.",
+    "Per the file, curve point multiscalar multiplications: (per the file) on input a curve (per the file) id, a vector of (per the file) scalar, and a vector (per the file) of curve points, performs (per the file) a multiscalar multiplication on (per the file) the input scalars and points. Per the file, currently, these syscalls accept (per the file) two possible curve ids: (per the file) CURVE25519_EDWARDS=0 and CURVE25519_RISTRETTO=1. Per the file, if any other curve (per the file) variant is provided as (per the file) input, then the function (per the file) returns with error code 1.",
+    "Per the file, similarly, the curve point (per the file) group operations accept the (per the file) operation ids ADD=0, SUB=1, (per the file) and MUL=2. Per the file, if any other operation (per the file) id is provided as (per the file) input, then the function (per the file) returns with error code 1.",
+    "Per the file, the proposed change in (per the file) this SIMD is to (per the file) update these syscalls so (per the file) that on curve ids (per the file) that are not CURVE25519_EDWARDS (per the file) or CURVE25519_RISTRETTO, and operation ids (per the file) that are not ADD=0, SUB=1, or (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) MUL=2, instead of returning with error code 1, immediately abort the execution, returning Err(SyscallError::InvalidAttribute) as is done in the alt_bn128 syscall functions."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, returning an error Err(...) (per the file) on an unsupported curve (per the file) or operation will prevent (per the file) a program from mishandling (per the file) an accidental mis-use of (per the file) the syscall functions. Per the file, it will also make (per the file) the curve25519 and alt_bn128 (per the file) syscalls for consistent in the (per the file) way they handle unsupported curves. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a program should never (per the file) invoke the syscalls on (per the file) an unsupported curve or operation. Per the file, if the syscall function (per the file) returns Ok(1) as is (per the file) currently implemented, it is still (per the file) possible for the program to (per the file) handle the error and abort. Per the file, however, if the syscall (per the file) function returns an actual (per the file) error Err(...), then the (per the file) program will automatically abort (per the file) execution, removing the possibility (per the file) that the caller program (per the file) handles the error incorrectly."
+   ]
+  },
+  {
+   "heading": "Drawbacks _(Optional)_",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, none other than potentially (per the file) delaying the activation of the syscall. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility _(Optional)_",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the curve25519 syscalls are (per the file) enabled on testnet and devnet. Per the file, therefore, we will need (per the file) to feature gate the change. Per the file, programs using this syscall (per the file) may need to adapt (per the file) to the new error (per the file) handling behavior, but this (per the file) should not be a (per the file) big issue since programs (per the file) should not generally be (per the file) calling the syscalls on (per the file) an unsupported curve to begin with."
+   ]
+  }
+ ]
+}

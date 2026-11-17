@@ -1,0 +1,63 @@
+{
+ "slug": "disable-bpf-loader-v2-program-deployment",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, disable BPF Loader V2 for program deployment. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, an acct on solana network is (per the file) defined by the following struct. Per the file, in the struct, the (per the file) bool metadata field executable (per the file) was used to indicate whether the acct is executable by program runtime. Per the file, we want to deprecate (per the file) the usage of *executable* metadata on accts for program runtime. Per the file, the new variant of (per the file) Bpf loader (i.e. Per the file, v3/V4 etc.) no longer calls for *executable* metadata.",
+    "Per the file, however, the old Bpf (per the file) loader (v2) still uses (per the file) *executable* metadata during its program deployment. Per the file, and this is a (per the file) blocker for deprecating the (per the file) usage of *executable* metadata for program runtime. Per the file, therefore, as we are (per the file) migrating from the old (per the file) Bpf loader V2 to (per the file) the new Bpf loader (per the file) (V3/V4), we are going (per the file) to add a feature to (per the file) disable old V2 Bpf program (per the file) deployment so that we can (per the file) activate the feature and deprecate (per the file) *executable* metadata in program runtime (per the file) for the new kinds of Bpf loaders. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when the feature - \"disable (per the file) bpf loader instructions\" is (per the file) activated, no program of bpf loader V2 may be deployed. Per the file, any such deployment attempt (per the file) will result in a \"UnsupportedProgramId\" error. Per the file, the PR for this (per the file) work is at https://github.com/solana-labs/solana/pull/34194. (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file)"
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, new programs will no (per the file) longer be deployable with Bpf loader V2. Per the file, people will have to (per the file) migrate their program deployment (per the file) to a new Bpf loader, i.e."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, because when the feature (per the file) is activated, people should (per the file) have already migrated their (per the file) new programs to Bpf loader V3/V4. Per the file, and existing already-deployed Bpf (per the file) loader V2 programs will still run correctly. Per the file, hence, there ought to be no security concerns."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}

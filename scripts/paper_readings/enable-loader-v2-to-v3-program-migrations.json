@@ -1,0 +1,67 @@
+{
+ "slug": "enable-loader-v2-to-v3-program-migrations",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file introduces a feature-gated mechanism (per the file) for runtime-level migration of Loader (per the file) v2 programs to Loader v3. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, loader v2 programs are (per the file) immutable by design, as the loader fails to support program upgrades. Per the file, however, several essential Loader (per the file) v2 programs would benefit (per the file) from a feature-gated, consensus-driven (per the file) mechanism that lets the community to approve targeted upgrades (per the file) to specific programs (e.g., SPL Token). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, previously, the runtime could (per the file) \"upgrade\" Loader v2 programs (per the file) by directly modifying their acct data. Per the file, this approach is no (per the file) longer recommended due to (per the file) the introduction of the (per the file) global program cache, since (per the file) it can cause inconsistencies if acct data is modified in-place. Per the file, the global program cache fails to support upgrades of Loader (per the file) v2 programs because in (per the file) Loader v2 there is (per the file) no upgrade path and (per the file) thus also no last upgrade slot metainfo.",
+    "Per the file, without this metainfo, the (per the file) global program cache cannot (per the file) distinguish the old and (per the file) new version across forks. Per the file, when migrating to Loader (per the file) v3 this would not (per the file) be a problem because (per the file) the owner is a (per the file) distinguishing feature and Loader (per the file) v3 does have the (per the file) last upgrade slot metainfo (per the file) for further future changes."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the migration from Loader (per the file) v2 program to Loader (per the file) v3 is only performed (per the file) by the runtime and (per the file) activated via a feature gate. The file describes the procedure to (per the file) follow to execute the migration. Per the file, each individual program upgrade (per the file) will reference the procedure (per the file) described in this SIMD (per the file) when proposing a migration (per the file) and specify its corresponding feature gate.",
+    "Per the file, migrating a Loader v2 (per the file) program to Loader v3 (per the file) involves creating a buffer acct owned by the Loader (per the file) v3 (BPF Upgradable Loader) (per the file) that contains the ELF (per the file) bytes of the program's (per the file) implementation to be migrated. Per the file, this buffer is deployed (per the file) before initiating the migration, (per the file) and a portion of (per the file) its lamports is later (per the file) used to fund the (per the file) new program and program data accts.",
+    "Per the file, any remaining lamports in (per the file) the buffer are burned (per the file) as part of the migration process. Per the file, the migration proceeds in (per the file) the following steps: **Create the program data acct**: A program data acct is derived from the program ID. Per the file, this acct must not already exist, (per the file) with one exception: if an acct with the derived address (per the file) exists, holds lamports, and (per the file) is owned by the (per the file) System Program, it may be reused.",
+    "Per the file, in that case, any (per the file) excess lamports are burned. Per the file, the ELF bytes from the buffer acct are then copied into this program data acct. **Rewrite the program acct**: The existing Loader v2 program acct is replaced with a Loader v3 program acct that references the newly created program data acct. Per the file, because Loader v2 programs (per the file) are not upgradable, they fail to have an upgrade authority, (per the file) and None is assigned (per the file) during migration. **Close the buffer acct**: Once both program and program data accts have been created and populated, the buffer acct is closed and any (per the file) remaining lamports are burned.",
+    "Per the file, in the slot immediately (per the file) following the feature activation, (per the file) the program will not be invocable. Per the file, this status will last (per the file) one slot, then the program is to be fully operational. Per the file, the program ID fails to change by this migration process. Per the file, each individual program migration ought to be controlled by its (per the file) own feature gate, which (per the file) triggers the migration process when activated."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change introduces a (per the file) feature-gated, consensus-driven mechanism that lets the community to approve targeted upgrades (per the file) for specific programs that would otherwise (per the file) be non-upgradeable. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, migrating Loader v2 programs (per the file) have serious security implications (per the file) surrounding the replacement of (per the file) essential programs with the contents of another acct. Per the file, this is an extremely sensitive process that has to be handled with maximum caution. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file itself fails to directly introduce any breaking changes. Per the file, the code introduced to (per the file) migrate Loader v2 programs (per the file) to Loader v3 programs (per the file) will exist off of (per the file) the runtime's \"hot path\" (per the file) until it's actually used for (per the file) a migration. Per the file, when a migration is (per the file) conducted, the Loader v3 (per the file) version of a program (per the file) is expected to be (per the file) backwards compatible *functionally* &mdash; (per the file) its Loader v3 version (per the file) must provide the exact (per the file) same results as the (per the file) Loader v2 program it aims to replace. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

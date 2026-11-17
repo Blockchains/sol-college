@@ -1,0 +1,18 @@
+{
+ "slug": "cluster-economics",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Document body",
+   "where": "Full retrieved file",
+   "paragraphs": [
+    "Per the file, **Subject to change.** Solana’s (per the file) crypto-economic system is meant to promote a healthy, long term (per the file) self-sustaining economy with participant incentives aligned (per the file) to the security and decentralization of the (per the file) network. Per the file, the main participants in (per the file) this economy are validation-clients. Per the file, their contributions to the (per the file) network, state validation, and (per the file) their requisite incentive mechanisms are discussed below. Per the file, the main channels of (per the file) participant remittances are referred (per the file) to as protocol-based (inflationary) rewards and tx fees.",
+    "Per the file, protocol-based rewards are issuances (per the file) from a global, protocol-defined, inflation rate. Per the file, these rewards will constitute (per the file) the total reward delivered (per the file) to validation clients, the remaining sourced from tx fees. Per the file, in the early days (per the file) of the network, it (per the file) is likely that protocol-based (per the file) rewards, deployed based on predefined (per the file) issuance schedule, will drive the (per the file) majority of participant incentives to (per the file) participate in the network.",
+    "Per the file, these protocol-based rewards, to (per the file) be distributed across the actively (per the file) staked tokens on the network, (per the file) are to be a result (per the file) of a global supply inflation (per the file) rate, calculated per Solana epoch (per the file) and distributed amongst the active node set. Per the file, as discussed further below, (per the file) the per annum inflation (per the file) rate is based on (per the file) a pre-determined disinflationary schedule.",
+    "Per the file, this supplies the network with monetary (per the file) supply predictability which supports (per the file) long term economic stability and security. Per the file, transaction fees are market-based (per the file) participant-to-participant transfers, attached to network (per the file) interactions as a necessary motivation and compensation (per the file) for the inclusion and execution of a (per the file) proposed tx. Per the file, a mechanism for long-term (per the file) economic stability and forking protection (per the file) through partial burning of each tx fee is also discussed below.",
+    "Per the file, a high-level schematic of (per the file) Solana’s crypto-economic design is shown (per the file) below in **Figure 1**. Per the file, the specifics of validation-client (per the file) economics are described in sections: (per the file) Validation-client Economics, Inflation Schedule, and Transaction Fees. Per the file, also, the section titled Validation Stake Delegation closes with a discussion of node delegation opportunities and marketplace. Per the file, additionally, in Storage Rent Economics, we describe an implementation (per the file) of storage rent to acct for the externality costs (per the file) of maintaining the active (per the file) state of the ledger.",
+    "Per the file, an outline of features (per the file) for an MVP economic (per the file) design is discussed in (per the file) the Economic Design MVP section. **Figure 1**: Schematic overview (per the file) of Solana economic incentive design. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

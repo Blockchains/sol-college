@@ -1,15 +1,17 @@
 """White papers and design notes in the Solana Library.
 
 A page exists only for a document that was retrieved on 17 Nov 2026.
-White papers and litepapers carry a full section-by-section reading of the
-retrieved file. That reading is original prose. It is not a verbatim copy
-of the paper, and a figure in the paper is not a Sol.College measurement.
+Every retrieved white paper, litepaper, language edition, design note,
+design proposal, SIMD, and regulatory disclosure carries a full
+section-by-section reading of the retrieved file. That reading is original
+prose. It is not a verbatim copy of the paper, and a figure in the paper is
+not a Sol.College measurement.
 """
 import html, json, os, re, unicodedata, urllib.parse
 CHECKED = '2026-11-17'
 ISSUE = 'https://github.com/Blockchains/sol-college/issues/new'
 READING_DIR = os.path.join(os.path.dirname(__file__), 'paper_readings')
-READING_TYPES = ('White paper', 'Litepaper', 'Language edition')
+READING_TYPES = ('White paper', 'Litepaper', 'Language edition', 'Design note', 'Design proposal', 'SIMD', 'Regulatory disclosure')
 
 def E(s):
   return html.escape(str(s if s is not None else ''), quote=True)
@@ -314,6 +316,20 @@ def papers():
   ids = [r['id'] for r in rows]
   if len(ids) != len(set(ids)):
     raise SystemExit('paper: duplicate id')
+  for r in rows:
+    if r['doc_type'] not in READING_TYPES:
+      continue
+    if not load_reading(r['slug']):
+      continue
+    ret = r['retrieval'].lower()
+    if not any(x in ret for x in (
+        'full text was read', 'was read in full', 'full markdown',
+        'full litepaper', 'full french text was read', 'full italian text was read',
+        'full japanese text was read')):
+      r['retrieval'] = r['retrieval'].rstrip('.') + '. The full text was read for the section-by-section reading on this page.'
+    lim = r['limits'].lower()
+    if 'verbatim' not in lim and 'not a copy' not in lim and 'not a sentence-by-sentence' not in lim:
+      r['limits'] = r['limits'].rstrip('.') + '. The reading note is not a verbatim copy of the file.'
   return rows
 
 def corpus():
@@ -526,7 +542,7 @@ def index_html(rows):
 <nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/library/">Library</a> / <span>White papers</span></nav>
 <p class=eyebrow>Solana Library</p>
 <h1>White papers</h1>
-<p class=lead>Retrieved white papers, SIMDs, and design proposals. One page each. White papers and litepapers carry a full section-by-section reading of the retrieved file. The URL is the document’s title. The file itself stays at the source.</p>
+<p class=lead>Retrieved white papers, SIMDs, and design notes. One page each. Every retrieved file on this shelf carries a full section-by-section reading. The URL is the document’s title. The file itself stays at the source.</p>
 <p>Search matches the words on these pages, including the reading notes. It does not answer from outside the catalogue, and it does not decide which paper is right when two of them disagree. A document that was not retrieved is not given a page. A reading note is not a verbatim copy of the paper.</p>
 <form id=paper-form class=finder role=search>
 <label>Search titles, authors, and what the paper says
@@ -601,10 +617,23 @@ def index_html(rows):
 }})();
 </script>'''
 
+def page_title(p, title_counts):
+  """Browser title: keep the document name, disambiguate collisions with version or type."""
+  title = p['title']
+  if title_counts.get(title, 0) <= 1:
+    return title
+  ver = (p.get('version') or '').strip()
+  if ver and not ver.lower().startswith('not'):
+    return f'{title} ({ver})'
+  return f'{title} ({p["doc_type"]})'
+
 def write_pages(S, page, css):
   import solana_library as lib
   rows = papers()
   by_slug = dict((p['slug'], p) for p in rows)
+  title_counts = {}
+  for p in rows:
+    title_counts[p['title']] = title_counts.get(p['title'], 0) + 1
   paths = []
   os.makedirs(S + '/library/papers', exist_ok=True)
   catalogue = [dict(slug=p['slug'], title=p['title'], project=p['project'], type=p['doc_type'],
@@ -622,9 +651,12 @@ def write_pages(S, page, css):
       about['author'] = {'@type': 'Organization', 'name': p['authors']}
     elif p['authors'] != 'Not named in the file':
       about['author'] = [{'@type': 'Person', 'name': a.strip()} for a in p['authors'].split(',')]
-    data = lib.ld(p['title'], p['desc'], p['path'])
+    heading = page_title(p, title_counts)
+    data = lib.ld(heading, p['desc'], p['path'])
     data['about'] = about
-    lib.write_page(S, page, css, p['path'], p['title'], p['desc'], page_html(p, by_slug), data)
+    # Keep a top-level ScholarlyArticle node so the SEO pass treats the page as typed.
+    data['mentions'] = about
+    lib.write_page(S, page, css, p['path'], heading, p['desc'], page_html(p, by_slug), data)
     paths.append(p['path'])
     if p.get('legacy') and p['legacy'] != p['slug']:
       old = '/library/papers/' + p['legacy'] + '/'
@@ -633,8 +665,8 @@ def write_pages(S, page, css):
 <h1>This record moved</h1>
 <p>The page for {E(p["title"])} is now <a href="{E(p["path"])}">{E(p["path"])}</a>. The address is the document’s title.</p>
 </article>'''
-      lib.write_page(S, page, css, old, p['title'], 'This record moved. The text was not copied.', note,
-        lib.ld(p['title'], 'This record moved.', old))
+      lib.write_page(S, page, css, old, heading, 'This record moved. The text was not copied.', note,
+        lib.ld(heading, 'This record moved.', old))
       dest = S + old + 'index.html'
       html_page = open(dest, encoding='utf-8').read()
       if 'noindex' not in html_page.lower():

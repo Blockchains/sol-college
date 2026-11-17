@@ -1,0 +1,81 @@
+{
+ "slug": "early-detection-of-instruction-trace-overflow",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the protocol only lets a tx to execute 64 instructions, (per the file) accounting for both top level and CPIs. Per the file, runtime counts executed instructions (per the file) to determine when to fail a tx. The file proposes counting all top (per the file) level instructions (executed or (per the file) not) plus the executed (per the file) CPIs, as the runtime (per the file) attempts to add each instruction frame. Per the file, consequently, txs that exceed the instruction (per the file) trace length will fail early."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary motivation is slightly speeding up txs that are going to fail regardless. The file proposes failing offending txs earlier, increasing block space (per the file) for well formed ones. Per the file, the secondary motivator for (per the file) this change is ABIv2 SIMD-177. Per the file, the new memory layout (per the file) exposes all top level (per the file) instructions for every instruction in a tx in pre-defined address spaces (per the file) for exactly 64 instructions.",
+    "Per the file, allowing a CPI in a tx with 64 top level (per the file) instructions, or, likewise, two CPIs in a tx with 63 top level (per the file) instructions, would cause runtime (per the file) to overwrite a memory (per the file) region already reserved for (per the file) other purposes, due to (per the file) the reservation of only (per the file) 64 regions for instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terminology introduced in this document."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, the total number (per the file) of instructions (top-level + CPI) (per the file) is checked against the limit (per the file) as each instruction is executed. Per the file, hence, a tx with 64 top-level instructions, (per the file) whose first instruction performs a (per the file) CPI, will still have 62 (per the file) out of the remaining 63 (per the file) instructions executed before exceeding the limit.",
+    "Per the file, in the new design, (per the file) when pushing the instruction (per the file) to be processed onto (per the file) the execution stack, the (per the file) runtime must verify if (per the file) the total number of (per the file) top level instructions plus (per the file) the number of CPIs fails to exceed the maximum allowed (per the file) instructions in the trace.",
+    "Per the file, below is a basic (per the file) snippet of how this (per the file) verification is recommended to look like: It is worth pointing (per the file) that the number of CPIs aforementioned already accts for the CPI that (per the file) is about to be (per the file) pushed onto the execution (per the file) stack, if we are (per the file) not dealing with a top level instruction. Per the file, the number of CPIs (per the file) is tallied whenever a (per the file) CPI is invoked, and (per the file) can't be tracked ahead of time.",
+    "Per the file, during the instruction push (per the file) onto the instruction stack, the error precendence has to be as follows: InstructionError::UnsupportedProgramId. Per the file, instructionError::ReentrancyNotAllowed. Per the file, instructionError::UnbalancedInstruction. Per the file, instructionError::MaxInstructionTraceExceeded. Per the file, instructionError::CallDepth InstructionError::InvalidAccountOwner. The file must not change the (per the file) amount of CUs charged (per the file) on CPI entry nor (per the file) those charged for instruction accts and data, both of (per the file) which will still be (per the file) imposed in case runtime (per the file) errors with maximum instruction length exceeded.",
+    "Per the file, on the other hand, (per the file) since the specific CPI (per the file) that exceeds the maximum (per the file) number of instructions must (per the file) not be executed, CUs (per the file) for its execution must (per the file) not be accounted for."
+   ]
+  },
+  {
+   "heading": "Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transactions containing exactly 64 (per the file) top-level instructions will fail (per the file) as soon as the first (per the file) CPI is pushed onto the (per the file) execution stack, instead of executing (per the file) all 64 instructions in the (per the file) budget provided by the protocol. Per the file, likewise, any tx with 64-X instructions, will (per the file) fail as soon as X+1 (per the file) CPIs are pushed onto the stack. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-------------------------------------| | Transaction Execution (Runtime) (per the file) | A condition is changing (per the file) place | | Virtual Machine | None (per the file) | | Block Packing | Different CU (per the file) accounting | | Consensus | Different CU (per the file) accounting | | Gossip | None | | Turbine (per the file) | None | | Snapshots | None | | On-Chain (per the file) Core BPF Programs | None | | Other (per the file) (please describe) | None. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators should see more (per the file) block space as offending txs will fail earlier. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is a potential (per the file) impact on the error order. Per the file, transactions that would exceed (per the file) the instruction trace length, (per the file) but are failing, for (per the file) instance, because of an (per the file) error in a CPI (per the file) before reaching the instruction (per the file) limit, will now fail (per the file) without such an error. Per the file, as a consequence, developers (per the file) may see different logs in txs. Per the file, in addition, CU consumption will change for txs now halt earlier. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, once implemented, we will (per the file) generate new fixtures for (per the file) the correct conformance testing between node implementations. Per the file, we are going to (per the file) use the SVM conformance module for txs implemented in Agave PR 13211, allowing for differential (per the file) fuzzing in an uniform interface. Per the file, the conformance testing for (per the file) the correct implementation of (per the file) this proposal must focus (per the file) on the correct CU (per the file) match between clients and the error order. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

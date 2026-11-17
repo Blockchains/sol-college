@@ -1,0 +1,64 @@
+{
+ "slug": "upgrade-secp256k1-to-k256-agave-specific",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, transition the secp256k1 precompile (per the file) and syscall implementation in the Agave node client from the libsecp256k1 (per the file) crate to the k256 crate. Per the file, this is an Agave-specific (per the file) upgrade, but make this upgrade (per the file) behind a feature gate for safety. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, Agave utilizes the (per the file) libsecp256k1 crate for the (per the file) secp256k1 precompile and syscall implementation. Per the file, because this crate is (per the file) no longer actively maintained, (per the file) a transition to the (per the file) k256 crate has been (per the file) under consideration for some time. Per the file, however, swapping out cryptographic (per the file) dependencies carries inherent consensus (per the file) risks; any differing behavior (per the file) between the crates could (per the file) result in a network fork.",
+    "Per the file, while we believe we (per the file) have a strong understanding (per the file) of the behavioral differences (per the file) between the two crates, (per the file) executing this transition behind (per the file) a feature gate is (per the file) the safest approach to minimize risk. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the implementation will introduce (per the file) a new feature gate (per the file) and maintain dual implementations (per the file) of the secp256k1 operations (per the file) to facilitate a safe transition. Per the file, feature Gate: Introduce a (per the file) new feature gate named secp256k1_use_k256. Per the file, client-Specific Behavior: Because this (per the file) is an Agave implementation detail, this is to be an empty (no-op) feature (per the file) gate for other node clients, including Firedancer, requiring no functional changes on (per the file) their end.",
+    "Per the file, precompile Implementation: Retain the (per the file) existing precompile function utilizing the libsecp256k1 crate. Per the file, add a new version (per the file) of the precompile function (per the file) utilizing the k256 crate. Per the file, introduce branching logic: If (per the file) secp256k1_use_k256 is **inactive**, invoke (per the file) the libsecp256k1 version. Per the file, if secp256k1_use_k256 is **active**, (per the file) invoke the k256 version. **Syscall Implementation:** (per the file) Apply the exact same dual-implementation and (per the file) branching logic to the secp256k1 syscall execution (per the file) path. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary alternative is (per the file) to replace the libsecp256k1 (per the file) crate with k256 directly, (per the file) without guarding the transition (per the file) behind a feature gate. Per the file, while this approach would (per the file) slightly reduce implementation boilerplate, (per the file) it carries consensus risk. Per the file, if there is any (per the file) subtle, uncaught differing behavior (per the file) between the two cryptographic (per the file) implementations, a direct upgrade (per the file) would result in a network fork. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is no intended (per the file) functional or performance impact on the network. Per the file, assuming our understanding of (per the file) the behavioral differences between (per the file) libsecp256k1 and k256 is (per the file) accurate, and the normalization (per the file) logic is implemented correctly, the execution results is to be perfectly identical. Per the file, the feature gate serves (per the file) strictly as an additional (per the file) safety measure to prevent (per the file) any unintended consensus divergence."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the primary security risk (per the file) is a consensus failure (per the file) leading to a network (per the file) fork if the k256 (per the file) implementation diverges from libsecp256k1 (per the file) in any edge cases. Per the file, to mitigate this, the (per the file) new implementation will undergo (per the file) extensive differential fuzzing (via (per the file) solfuzz-agave) and testing against (per the file) known vectors to guarantee exact (per the file) execution parity before the feature (per the file) gate is activated on mainnet. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, prior to the activation (per the file) of the feature gate, (per the file) there are no changes (per the file) to the consensus rules (per the file) or precompile behavior; Agave (per the file) will continue to use (per the file) the legacy libsecp256k1 implementation. Per the file, post-activation, the new k256 implementation is meant to perfectly emulate the behavior (per the file) of the current libsecp256k1 version. Per the file, it will remain fully (per the file) backwards compatible, and smart (per the file) contracts or applications relying (per the file) on the secp256k1 precompile (per the file) or syscall will not require any modifications."
+   ]
+  }
+ ]
+}

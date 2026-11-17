@@ -1,0 +1,83 @@
+{
+ "slug": "validate-chained-block-id",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, specify the protocol for (per the file) validating chained block ids (per the file) under both TowerBFT and Alpenglow. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, block ids are a (per the file) unique identifier for every (per the file) block, being the last (per the file) FEC set's merkle root (per the file) (chained merkle root) or rollup (per the file) merkle root of all FEC (per the file) sets (double merkle root). Per the file, given a starting block id, every node client can validate the (per the file) canonical linear chain all (per the file) the way back to (per the file) a snapshot using chained (per the file) / double merkle roots (two (per the file) notes: 1. see SIMD-0333 (per the file) proposal for including a block (per the file) id in the snapshot manifest.",
+    "Per the file, alpenglow uses double merkle (per the file) roots, not chained merkle roots, and is to be discussed later). Per the file, this linear chain MUST (per the file) be explicitly validated and (per the file) enforced by every client. Per the file, without a canonical linear (per the file) chain, you don't know (per the file) if your parent slot is (per the file) in fact your actual parent (per the file) block because slot numbers fail to key blocks uniquely when there is equivocation.",
+    "Per the file, this is important for (per the file) both TowerBFT and Alpenglow consensus. Per the file, towerBFT and Alpenglow both (per the file) need this to repair (per the file) the consensus block if (per the file) the client receives the (per the file) \"wrong\" block for a (per the file) slot (ie. not the (per the file) one the cluster is converging on)."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) accepted proposals: **[SIMD-0313]: Drop (per the file) unchained merkle roots** As the (per the file) new shred format is being (per the file) sent by all clients, this (per the file) feature deprecates the old shred (per the file) format. **[SIMD-0333]: Serialize block ID (per the file) in bank into snapshot** Currently the (per the file) block ID (the merkle root of (per the file) the last FEC set) of the (per the file) snapshot slot is not included in (per the file) the snapshot Bank Fields. Per the file, this would enforce the (per the file) snapshot producer to include (per the file) the block ID in the serialized bank.",
+    "Per the file, furthermore, this forward proposal (per the file) is a useful reference (per the file) but not a dependency: (per the file) **[SIMD-0504]: Stricter Shred Validation** (per the file) Shred validation currently lets certain shreds that seem like they ought to be invalid. Per the file, this leads to lots (per the file) of corner cases when (per the file) a new client bases (per the file) their behavior on what Agave implicitly lets rather than easily specified behavior. The file supplies the spec."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in TowerBFT, clients MUST (per the file) verify the chained merkle (per the file) root of all FEC (per the file) sets in a slot, (per the file) both intra-slot and inter-slot. Per the file, if there is equivocation (per the file) ie. multiple blocks for (per the file) a slot, clients MUST (per the file) validate chains across all (per the file) blocks for the slot. Per the file, note also that fields (per the file) are at the shred-level (per the file) not FEC-set level.",
+    "Per the file, for brevity, the spec (per the file) below will refer to (per the file) \"every FEC set\" which (per the file) is equivalent to \"every (per the file) FEC set's shreds which (per the file) have fields set to the (per the file) same value\" (covered by SIMD-0504). Per the file, for intra-slot CMR verification, (per the file) every FEC set in a (per the file) slot MUST contain in the (per the file) chained merkle root field the (per the file) merkle root of its parent FEC set.",
+    "Per the file, the parent FEC set (per the file) is defined as the (per the file) FEC set with fec_set_idx (per the file) - 32 away, such that every slot (per the file) begins with fec_set_idx 0 and ends (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) with a fec_set_idx that is an arbitrary multiple of 32, though as of time of writing the maximum allowed FEC set idx is 32768 - 32 = 32736. Per the file, furthermore, every FEC set (per the file) MUST have the same (per the file) parent_off and MUST NOT (per the file) have slot_complete set, except for (per the file) the last FEC set.",
+    "Per the file, for inter-slot CMR verification, (per the file) the child FEC set's chained (per the file) merkle root MUST equal the merkle (per the file) root of the parent slot's last (per the file) FEC set ie. the FEC that sets (per the file) slot_complete. Per the file, the parent slot MUST (per the file) equal the child slot (per the file) - the child FEC set's parent_off. Per the file, the child FEC set (per the file) idx MUST be 0 (per the file) and the parent FEC (per the file) set MUST have slot_complete set.",
+    "Per the file, on detection of a (per the file) chained merkle root conflict, (per the file) the client MUST mark the slot dead. Per the file, a chained merkle root (per the file) violation can occur at (per the file) any arbitrary FEC set (per the file) in the slot, so (per the file) a partially replayed slot may be marked dead. Per the file, if verification fails intra-slot, (per the file) the client MUST mark the (per the file) associated slot as dead.",
+    "Per the file, if the verification fails (per the file) inter-slot, the client MUST (per the file) mark the _child slot_ as dead. Per the file, note that marking dead (per the file) is at the slot-, (per the file) not block- or FEC set-, level. Per the file, if there are multiple (per the file) blocks for a given (per the file) slot (equivocation), and one (per the file) block contains an invalid (per the file) chain but the other (per the file) a valid chain, any (per the file) client that observes the (per the file) invalid chain MUST mark (per the file) the slot as dead.",
+    "Per the file, in case the client (per the file) observes the valid chain, (per the file) verifies the slot fully, (per the file) and later observes the (per the file) invalid chain, the client (per the file) MUST NOT mark the (per the file) slot dead but instead (per the file) ignore the FEC sets (per the file) with the invalid chain. Per the file, after marking dead, clients (per the file) MUST continue to propagate (per the file) shreds through Turbine even (per the file) after CMR verification failure.",
+    "Per the file, this lets downstream nodes in the (per the file) Turbine tree to also observe the failure. Per the file, in Alpenglow, the design (per the file) is exactly the same (per the file) as above, except instead (per the file) of chained merkle root (per the file) verification Alpenglow uses double merkle root verification. Per the file, the differences from chained (per the file) merkle root verification are: (per the file) Intra-slot: at the end (per the file) of every slot, the leader (per the file) transmits a double merkle root, (per the file) which is the root of (per the file) a second merkle tree generated (per the file) from every FEC set in (per the file) the slot's merkle root.",
+    "Per the file, the client MUST verify (per the file) this double merkle root (per the file) by checking that double (per the file) merkle root they independently (per the file) calculate from their received FEC sets matches. Per the file, there is no longer (per the file) a need to examine (per the file) the parent FEC set (per the file) (fec_set_idx - 32). Per the file, if any FEC set (per the file) has an incorrect merkle (per the file) root, the double merkle (per the file) root will not match (per the file) and will fail verification, (per the file) and the associated slot is marked dead.",
+    "Per the file, inter-slot: the block header (per the file) contains the parent slot's double (per the file) merkle root. Per the file, if the block's header fails to match the parent slot's double (per the file) merkle root, then the associated slot (per the file) with the block header (child, in (per the file) this case) is marked dead. Per the file, additionally, Alpenglow clients MUST (per the file) explicitly vote \"skip\" on (per the file) any slot that fails (per the file) double merkle root verification.",
+    "Per the file, finally, it is possible (per the file) in case of equivocation (per the file) that the cluster converges (per the file) on the slot, despite (per the file) the client observed an (per the file) invalid chain, because there (per the file) exists an alternate (equivocating) (per the file) block containing a valid (per the file) chain, and an honest majority observed it. Per the file, consensus and repair then (per the file) work together to resolve the dead block. Per the file, in TowerBFT, the client (per the file) knows the cluster is (per the file) converging on an alternate (per the file) block if the alternate (per the file) block gets \"duplicate confirmed\".",
+    "Per the file, this notifies repair, and the node will repair (and subsequently (per the file) replay) the alternate version of the block. Per the file, in Alpenglow, the client (per the file) knows the cluster is (per the file) converging on an alternate (per the file) block if it observes (per the file) a valid block certificate for the slot. Per the file, this block certificate is to be used by repair (per the file) to retrieve (and subsequently (per the file) replay) the alternate block. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, clients will mark slots (per the file) that don't have a (per the file) valid chained block id as (per the file) dead that they previously would (per the file) have replayed and voted on. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, security is improved because (per the file) this ensures all clients (per the file) unequivocally agree on a (per the file) canonical linear chain of (per the file) block ids and defends (per the file) against equivocation attacks and related variants. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is backwards (per the file) compatible with the existing (per the file) chained merkle shred format. Per the file, it is to be upgraded to use (per the file) double merkle shreds when Alpenglow is released. Per the file, however, this SIMD is to be feature gated. Per the file, blocks that previously passed (per the file) consensus will now be marked dead. Per the file, thus nodes will need to coordinate (per the file) rollout of this upgrade. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

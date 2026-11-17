@@ -1,0 +1,70 @@
+{
+ "slug": "loader-v3-allow-prefunded-programdata",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file proposes changing the DeployWithMaxDataLen (per the file) instruction in Loader V3 (per the file) to create the programdata acct with the System program's (per the file) CreateAccountAllowPrefund instruction ([SIMD-0312]) instead of (per the file) CreateAccount, so that pre-funded programdata accts are accepted. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deployWithMaxDataLen currently creates the programdata acct by invoking the System (per the file) program's CreateAccount instruction via CPI. Per the file, createAccount fails with AccountAlreadyInUse if the target acct holds any lamports. Per the file, this can create an (per the file) annoying scenario if funds (per the file) are sent to the programdata acct ahead of time, requiring (per the file) a new program keypair to be generated. Per the file, using CreateAccountAllowPrefund avoids this (per the file) scenario without incurring any (per the file) further CPI cost to the Loader program. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file depends on the following (per the file) previously accepted proposals: **[SIMD-0312]: (per the file) CreateAccountAllowPrefund** Its feature, 6sPDzwyARRExKH52LECxcGoqziH8G7SZofwuxi8Ja331, is (per the file) active on all clusters (mainnet-beta, (per the file) testnet, and devnet). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deployWithMaxDataLen MUST invoke CreateAccountAllowPrefund (per the file) instead of CreateAccount to create the programdata acct. Per the file, createAccountAllowPrefund takes the same (per the file) instruction data as CreateAccount (per the file) (lamports, space, owner). space (per the file) and owner are unchanged. Per the file, instead of the full (per the file) rent-exempt minimum, lamports is (per the file) only the top-up needed to (per the file) make the programdata acct rent-exempt: Where programdata_len is the programdata metadata size (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) plus max_data_len, and programdata_lamports is the programdata acct's balance before the CPI.",
+    "Per the file, any lamports in excess (per the file) of required_lamports remain in the programdata acct. Per the file, as today, the buffer's (per the file) lamports are drained to the (per the file) payer before the CPI. Per the file, when top_up_lamports is zero, (per the file) the payer is omitted from the (per the file) CPI and is not required to (per the file) sign DeployWithMaxDataLen. Per the file, the payer MUST still (per the file) be writable, since it (per the file) receives the buffer's lamports. Per the file, note that CreateAccountAllowPrefund takes its accts in reverse order:."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the loader could invoke (per the file) Allocate and Assign without transferring any lamports. Per the file, this would require every (per the file) caller to pre-fund the programdata acct before deployment, which breaks existing (per the file) deployment workflows and is not (per the file) worth the developer experience cost."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deployments no longer fail when the programdata acct holds lamports."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the target is always (per the file) the derived programdata address, (per the file) so the wallet-locking concern (per the file) noted in [SIMD-0312] fails to apply. Per the file, an unsigned payer only (per the file) ever receives lamports (the (per the file) drained buffer balance), and (per the file) the upgrade authority, which (per the file) must sign, still authorizes the deployment. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file changes the behavior of DeployWithMaxDataLen and calls for a feature gate for consensus safety. The file’s claim in this section turns on Per, SIMD-0312, 0312. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  }
+ ]
+}

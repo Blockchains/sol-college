@@ -1,0 +1,50 @@
+{
+ "slug": "guardian-signer",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Guardian Signer",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objective",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sign payloads within the (per the file) Wormhole ecosystem for the (per the file) purpose of attestation and Guardian identification. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order for Guardians (per the file) to attest to on-chain (per the file) events or prove their identities (per the file) when communicating among each other, (per the file) digital signatures are required. Per the file, on-chain smart contracts and (per the file) Guardians hold registries of public (per the file) keys of trusted Guardian nodes (per the file) that are permitted to perform (per the file) certain actions within the Guardian network. Per the file, without this system, it (per the file) would not be possible (per the file) to distinguish legitimate behavior from malicious. Per the file, the Guardian signer is (per the file) responsible for signing payloads, and may be configured to do (per the file) so using different signing technologies."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Guardian signer is (per the file) used to sign numerous (per the file) messages within the Wormhole (per the file) ecosystem: Gossip Messages - Messages (per the file) that are sent between Guardians, including heartbeats, governor configs, governor (per the file) status updates and observation requests. Per the file, on-Chain Observations - Events that (per the file) occur on-chain that need to (per the file) be attested to and delivered to (per the file) different chains, bundled in VAAs (Version 1).",
+    "Per the file, guardian Identification - Wormchain acct registration. Per the file, accountant Observations - Sign observations (per the file) relevant to token bridge and NTT. Per the file, cross-Chain Query Responses - Attest (per the file) to states on other chains. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the process for signing (per the file) gossip messages are as follows: Prepend the message type (per the file) prefix to the payload. Per the file, this is to ensure (per the file) uniqueness of the message, (per the file) and prevent two gossip (per the file) messages from being used (per the file) interchangeably for different operations. Per the file, compute the keccak256 hash of the payload. Per the file, compute a signature of (per the file) the hash using ethcrypto.Sign().",
+    "Per the file, on-chain observations are signed (per the file) by performing a double-keccak256 hashing (per the file) operation on the observation and signing (per the file) the result. Per the file, the resulting data structure, (per the file) which primarily contains information (per the file) about the observation and (per the file) the signature, is called (per the file) a VAA (Verifiable Action Approval). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Prefixes Used",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, <!-- cspell:disable --> <!-- cspell:enable -->. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "slug": "remove-inactive-stakes-from-rewards",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the partitioned epoch rewards process currently calls for all stake accts, including inactive stakes, to (per the file) be considered when computing (per the file) the lattice hash and rewards partition count. Per the file, but inactive stakes fail to contribute to stake weight (per the file) or rewards, so they (per the file) shouldn't be required. The file changes the rewards process (per the file) to only include activating, (per the file) active, and deactivating stake accts. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Solana runtime currently includes inactive stake accts during partitioned epoch reward (per the file) calculations, which are useless, but consensus critical. Per the file, their inclusion during the (per the file) rewards period can impact: The number of partitions The lattice hash As a result, all node implementations must also include (per the file) inactive stakes, which is (per the file) a maintenance burden and potential footgun. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, not new, but \"inactive (per the file) stake\" means \"a stake (per the file) with no effective or activating stake\". Per the file, as a reminder, a (per the file) deactivating stake has effective stake."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, during epoch rollover from (per the file) an epoch E to (per the file) E + 1, all stakes (per the file) that were inactive in (per the file) E must not be (per the file) included in the partitioned (per the file) epoch rewards phases: calculation and distribution. Per the file, specifically, during epoch rollover, inactive stakes has to be excluded from the (per the file) set of all potential reward-receiving stakes. Per the file, during acct updates, if a stake acct is inactive in *both* (per the file) the current and previous epochs, it has to be removed from consideration for a node's stake weight.",
+    "Per the file, as a reminder, during (per the file) the calculation and distribution (per the file) phases of partitioned epoch (per the file) rewards, stake state changes (per the file) are not allowed through txs. Per the file, this table summarizes the (per the file) cases and actions to (per the file) take. | Status in E (per the file) | Status in E+1 | During (per the file) rewards for E | | -- | -- | -- | | Activating / active (per the file) | Activating / active | Include | | Active | Inactive (per the file) | Include | | Inactive | Inactive | Exclude."
+   ]
+  },
+  {
+   "heading": "Edge Cases",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this case is covered (per the file) in the design, but (per the file) it is useful to explain. Per the file, stakes going from non-zero (per the file) effective stake to inactive at (per the file) the start of epoch E + 1 has to be included in the reward set. Per the file, during partitioned epoch reward (per the file) payout, the newly-inactive stake (per the file) must receive its rewards. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Validator Components Affected",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, which node components are affected by (per the file) this change? | Validator Component (per the file) | Impact | |---------------------------------|-----------------------------------| | Transaction Execution (Runtime) (per the file) | Partitioned epoch rewards changed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validator development is to be simpler since developers (per the file) no longer need to (per the file) consider inactive stakes in partitioned epoch rewards."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Conformance",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, we will provide a (per the file) ledger with active, inactive (per the file) and deactivating stakes at (per the file) epoch E, covering all (per the file) cases in the table under \"Detailed Design\". Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

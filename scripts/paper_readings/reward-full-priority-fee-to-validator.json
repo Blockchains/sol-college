@@ -1,0 +1,69 @@
+{
+ "slug": "reward-full-priority-fee-to-validator",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, reward 100% of priority fee to node. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to better align node incentives, priority fee should (per the file) change from current 50% (per the file) burn 50% reward to 100% reward to node. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, current 50-50% model is (per the file) an alternative, which fails to fully align with node's incentive, and encourages side deals. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when calculate fee for (per the file) SanitizedMessage, it should separate prioritization_fee from tx fee. change FeeStructure.calculate_fee() During fee (per the file) collection, priority fees are accumulated separately from tx fees; change bank.collector_fees and bank.filter_program_errors_and_collect_fee() When distributing (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) collected fees, the collector_id receives the sum of priority fees. Per the file, logic for distributing base tx fees is unchanged. Per the file, change bank.distribute_transaction_fee() No change (per the file) to fee payer acct validation; No change to how much tx would be paying in total;."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the implemented proposal aims (per the file) to enhance incentives for nodes to prioritize txs with higher priority fees, (per the file) thereby providing more substantial compensation for the nodes' efforts in processing higher-paying txs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, by paying the complete (per the file) priority fee to their own accts, leaders can now inflate (per the file) the reported priority fees (per the file) in their blocks artificially, incurring minimal costs. Per the file, previously, burning a portion (per the file) of the priority fees deincentivized such behavior. Per the file, the artificial inflation of (per the file) fees could lead wallets (per the file) to overestimate the required priority fee. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the implementation of this (per the file) proposal necessitates the use (per the file) of a feature gate. Per the file, although there is to be no alteration to the tx submitter's payment structure, the (per the file) software incorporating the proposal will (per the file) allocate a greater portion of (per the file) fees to the leader compared (per the file) to other versions. Per the file, consequently, a feature gate (per the file) is essential to ensure that all nodes transition to the new (per the file) functionality at the epoch (per the file) boundary, thereby preserving consensus."
+   ]
+  }
+ ]
+}

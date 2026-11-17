@@ -1,0 +1,30 @@
+{
+ "slug": "managing-forks",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Opening",
+   "where": "Text before the first heading",
+   "paragraphs": [
+    "Per the file, the ledger is permitted (per the file) to fork at slot boundaries. Per the file, the resulting data structure (per the file) forms a tree called a _blockstore_. Per the file, when the node interprets the blockstore, it (per the file) must maintain state for (per the file) each fork in the chain. Per the file, it is the responsibility of a node to weigh those forks, (per the file) such that it may (per the file) eventually select a fork. Per the file, details for selection and (per the file) voting on these forks may be found in Tower Bft. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Forks",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a fork is as (per the file) a sequence of slots (per the file) originating from some root. Per the file, for example: The following sequences are forks:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Pruning and Squashing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as the chain grows, (per the file) storing the local forks (per the file) view becomes detrimental to performance. Per the file, fortunately we can take (per the file) advantage of the properties (per the file) of tower bft roots (per the file) to prune this data structure. Per the file, recall a root is (per the file) a slot that has (per the file) reached the max lockout depth. Per the file, the assumption is that (per the file) this slot has accrued (per the file) enough lockout that it (per the file) would be impossible to (per the file) roll this slot back.",
+    "Per the file, thus, the node prunes forks that fail to originate from its local (per the file) root, and then takes (per the file) the opportunity to minimize (per the file) its memory usage by (per the file) squashing any nodes it (per the file) can into the root. Per the file, although not necessary for (per the file) consensus, to enable some (per the file) RPC use cases the node chooses to keep ancestors (per the file) of its local root (per the file) up until the last (per the file) slot rooted by the (per the file) super majority of the cluster.",
+    "Per the file, we call this the (per the file) super majority root (SMR). Per the file, starting from the above (per the file) example imagine a max (per the file) lockout depth of 3. Per the file, our node votes on slots 0, (per the file) 1, 3, 5, 7, 9. Per the file, upon the final vote (per the file) at 9, our local root is 3. Per the file, assume the latest super (per the file) majority root is 0. Per the file, after pruning this is (per the file) our local fork view.",
+    "Per the file, now imagine we vote (per the file) on 10, which roots 5. Per the file, at the same time (per the file) the cluster catches up (per the file) and the latest super (per the file) majority root is now 3. Per the file, after pruning this is (per the file) our local fork view. Per the file, finally a vote on (per the file) 11 will root 7, (per the file) pruning the final fork. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

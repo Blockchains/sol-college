@@ -1,0 +1,62 @@
+{
+ "slug": "static-nonce-account-only",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the advance nonce instruction in a tx can currently specify any acct in the tx as the acct to advance. The file would restrict the advance (per the file) nonce instruction to only (per the file) be able to advance a statically included acct. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there is a separate (per the file) proposal to relax the constraints on tx acct resolution. Per the file, that proposal would allow txs with invalid lookups or duplicate accts to be included in (per the file) a block, pay fees, but not processed. Per the file, however, that relaxation cannot (per the file) happen without specifying the interaction with nonce accts. Per the file, rather than complicating the (per the file) protocol and specifying the (per the file) interactions between lookups and (per the file) nonces, this proposal aims (per the file) to simplify by restricting nonce accts to statically declared accts."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, no new terminology is introduced. Per the file, clarification of existing terminology is provided: nonce tx A tx that includes SystemInstruction::AdvanceNonceAccount as (per the file) its first instruction. nonce acct The acct specified in the first acct of the SystemInstruction::AdvanceNonceAccount instruction in (per the file) a nonce tx. statically included acct An acct that has its' Pubkey directly included (per the file) in the tx message."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, nonce txs MUST have a nonce acct index that is less (per the file) the number of statically included accts in the tx. Per the file, leader nodes MUST drop nonce txs that fail to meet this requirement without (per the file) including them in a block. Per the file, nonce txs that fail to meet this requirement are (per the file) invalid and MUST result (per the file) in the entire block (per the file) being rejected by the nodes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, do nothing This means we cannot relax acct resolution constraints Delete nonces (per the file) entirely preferred by some, (per the file) but is a separate (per the file) proposal and a more (per the file) thought-out transition plan is necessary. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, clients who currently send nonce-txs with looked up nonce accts will need to change their behavior. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, requires a feature-gate to (per the file) be enabled to avoid forking the network. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, some previously valid txs may not be valid (per the file) under the new restrictions."
+   ]
+  }
+ ]
+}

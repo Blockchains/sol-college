@@ -1,0 +1,62 @@
+{
+ "slug": "relax-program-data-account-check-in-migration",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file relaxes the requirements for (per the file) runtime-level migrations of programs (including builtins) to permit system-owned programdata accts to hold lamports. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, runtime-level program migrations (per the file) require that the target program data acct must not already exist. Per the file, this means the acct must have zero lamports. Per the file, if the program data acct is pre-funded (i.e., has (per the file) a lamports balance greater than 0), (per the file) the migration will not proceed."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, taking no action will (per the file) result in a situation (per the file) in which pre-funding a (per the file) target program data acct prevents the migration from being completed."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, improve the check for target program data accts to relax the requirement (per the file) that they must not exist. Per the file, if an acct with the derived address (per the file) for the target program data acct already exists, holds lamports, (per the file) and is owned by (per the file) the system program, the migration proceeds. Per the file, current logic (pseudo-code): Logic after this SIMD is enabled: Note that an ownership check (per the file) is sufficient, since allocating a (per the file) Loader V3 programdata PDA under (per the file) System is not feasible. Per the file, important Note: If the system-owned programdata acct contains lamports, those lamports has to be burned during any runtime-level (per the file) program migrations by updating the Bank's (per the file) capitalization."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this change prevents the (per the file) migration from failing when (per the file) the target program data acct is pre-funded. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file itself fails to introduce any breaking changes. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

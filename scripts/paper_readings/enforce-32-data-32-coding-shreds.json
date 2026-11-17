@@ -1,0 +1,63 @@
+{
+ "slug": "enforce-32-data-32-coding-shreds",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, all clients currently send (per the file) 32 data + 32 coding (per the file) shreds, however Turbine still lets to send and receive (per the file) a variable number of shreds. Per the file, with this change we (per the file) will enforce sending and (per the file) receiving only 32 data + 32 coding shreds. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it is inconvinient to (per the file) support many combinations of data + coding shreds. Per the file, even the logic to (per the file) validate if a shred (per the file) index is valid or (per the file) not is complex because it calls for to receive a coding (per the file) shred for the FEC (per the file) set to know the index boundaries. Per the file, with fixed 32 data (per the file) + 32 coding shreds this logic becomes trivial.",
+    "Per the file, there's no security benefit (per the file) in variable number of data (per the file) + coding shreds, and in fact (per the file) security is reduced when the (per the file) number of shreds is low. Per the file, with fixed 32 data (per the file) + 32 coding shreds, equivocation (per the file) detection is simplified because (per the file) it's sufficient to receive (per the file) any two shreds in the (per the file) same FEC set with different (per the file) Merkle roots and valid signatures."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a sender should always (per the file) produce 32 data shreds (per the file) + 32 coding shreds per (per the file) FEC set (this is currently already happening). Per the file, receivers currently accept FEC (per the file) sets with variable number of shreds. Per the file, if enforce_32_data_shreds: <PUBKEY> is (per the file) active, then any FEC set with a (per the file) number of shreds different than 32 data (per the file) + 32 coding is to be dropped on ingest. Per the file, as a result, the FEC set payload has to be exactly equal to (per the file) 31840 bytes (with 995 (per the file) bytes of payload per data shred). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, clients will no longer (per the file) accept FEC sets (thus (per the file) blocks) with any number (per the file) of shreds different than (per the file) 32 data + 32 coding."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, security is improved since (per the file) the (minimum) number of (per the file) shreds is now 32 (per the file) + 32, validating shred indexes (per the file) is trivial and equivocation detection is simplified. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is not backwards compatible."
+   ]
+  }
+ ]
+}

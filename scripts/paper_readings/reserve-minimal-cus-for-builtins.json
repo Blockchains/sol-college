@@ -1,0 +1,62 @@
+{
+ "slug": "reserve-minimal-cus-for-builtins",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when txs fail to request a specific compute (per the file) unit limit, the Solana (per the file) runtime conservatively allocates 200,000 (per the file) compute units for each tx-level (per the file) instruction (excluding compute budget instructions) in the tx's compute budget. Per the file, since builtin program instructions (per the file) consume far less than (per the file) 200k compute units, the runtime is to be modified to only (per the file) allocate 3,000 compute units in the tx compute budget for each of these instructions. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, when allocating the tx compute budget for txs which don't specify a (per the file) specific compute unit limit, the (per the file) Solana runtime over-allocates the number (per the file) of compute units needed for executing (per the file) builtin programs which have a small (per the file) (mostly) static execution compute unit cost. Per the file, the runtime will only (per the file) release the over-allocated compute (per the file) units from the block cost tracker when tx execution finishes and the actual (per the file) consume compute units is known.",
+    "Per the file, over-allocating CUs for builtin (per the file) program instructions reduces block density, (per the file) lowers network throughput, and can (per the file) degrade block producer performance by causing repeated tx retries (due to repeatedly over (per the file) allocating cu's and then releasing (per the file) them after execution). Per the file, avoiding excessive CU allocation (per the file) is critical for maximizing (per the file) block efficiency and minimizing network delays. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, establish a static maximum (per the file) allocation of 3,000 CU's (per the file) for builtin programs denoted as MAX_BUILTIN_ALLOCATION_COMPUTE_UNIT_LIMIT, (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) which is larger than all actual compute unit costs of builtin programs and also the potential Cross-Program Invocations (CPIs) they do. Per the file, this uniform limit is (per the file) applied to each builtin (per the file) program instruction and is (per the file) used to configure both (per the file) CU meter allocations and (per the file) block producer CU limits (per the file) reservation for all builtin instructions.",
+    "Per the file, the static list of (per the file) builtin program id's that (per the file) will have 3,000 compute units (per the file) allocated are listed below, note that (per the file) when builtins are migrated to sBPF (per the file) programs, they MUST be removed from (per the file) this list and have the default (per the file) 200k compute units allocated instead. Per the file, stake11111111111111111111111111111111111111 Config1111111111111111111111111111111111111 Vote111111111111111111111111111111111111111 11111111111111111111111111111111 (per the file) ComputeBudget111111111111111111111111111111 AddressLookupTab1e1111111111111111111111111 BPFLoaderUpgradeab1e11111111111111111111111 BPFLoader1111111111111111111111111111111111 (per the file) BPFLoader2111111111111111111111111111111111 LoaderV411111111111111111111111111111111111 KeccakSecp256k11111111111111111111111111111 Ed25519SigVerify111111111111111111111111111 (per the file) Note that there are (per the file) a few builtin programs (per the file) not in the list (per the file) including the upcoming zk programs and also the feature program.",
+    "Per the file, the 3,000 CU threshold (per the file) is based on analysis of (per the file) current built-in programs and reflects (per the file) the unlikely need for additional complexity. Per the file, for instance, the AddressLookupTable’s (per the file) CreateLookupTable performs the highest number (per the file) of CPI calls (up to (per the file) three invocations of the System (per the file) program), resulting in a maximum (per the file) CU demand of 1,200 CUs (per the file) (750 + 3 × 150).",
+    "Per the file, similarly, UpgradeableLoader’s ExtendProgram, which (per the file) may invoke the System program once, calls for up to 2,520 CUs (2,370 (per the file) + 150), representing the most resource-intensive operation among (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) current built-ins. Per the file, the proposed 3,000 CU (per the file) limit slightly exceeds this requirement, (per the file) allowing for controlled flexibility without (per the file) an excessive margin.",
+    "Per the file, if a tx consists only of builtins, (per the file) no explicit CU request ought to be required. Per the file, if a CU request (per the file) is made, the requested (per the file) limit will override the (per the file) max allocation in #2."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, do nothing and continue (per the file) allocating 200k compute unit's (per the file) for all non-compute budget instructions. Per the file, however, this fails to address over-allocation. Per the file, unlike regular instructions, the (per the file) execution of builtins is (per the file) more predictable and usually calls for significantly fewer CUs than BPF instructions. Per the file, this approach would allocate (per the file) more CUs than necessary, (per the file) undermining the goal of efficient CU usage.",
+    "Per the file, declare both max and (per the file) default CU values for (per the file) builtins: A more precise (per the file) approach would be to (per the file) require builtins to declare (per the file) both a maximum CU (per the file) allocation (MAX_BUILTIN_ALLOCATION_COMPUTE_UNIT_LIMIT) and a (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) default CU value for each instruction (DEFAULT_BUILTIN_INSTRUCTION_COMPUTE_UNITS). Per the file, this would allow fine-tuned (per the file) CU allocation based on each (per the file) instruction’s potential execution path.",
+    "Per the file, however, this introduces new (per the file) constraints for existing and (per the file) future builtins, requiring updates (per the file) to comply with these (per the file) rules, which could overcomplicate the design. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, users who previously relied (per the file) on including builtin instructions, (per the file) instead of explicitly setting (per the file) compute-unit limits, to allocate (per the file) budget for their txs may experience an increase in tx failures. Per the file, to avoid this, users (per the file) are encouraged to use (per the file) set_compute_unit_limit to explicitly request (per the file) the necessary budget for their txs. Per the file, if those impacted users (per the file) have issues fitting in (per the file) the set compute unit (per the file) limit instruction into their txs due to tx data (per the file) size limits, they can (per the file) also migrate to using (per the file) address lookup tables to (per the file) fit in the compute budget instruction call. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, both Agave and FD (per the file) clients should implement this (per the file) proposal to avoid breaking consensus. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

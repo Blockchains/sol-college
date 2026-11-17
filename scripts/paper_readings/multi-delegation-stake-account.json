@@ -1,0 +1,103 @@
+{
+ "slug": "multi-delegation-stake-account",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new \"multi stake\" acct that lets for multiple movements of (per the file) stake, useful for simpler (per the file) stake movement through more (per the file) activations, deactivations, or redelegation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, \"multi stake\": a stake acct with multiple Delegation instances (per the file) \"small stake\": a stake (per the file) whose delegation is less (per the file) than current minimum stake delegation amount. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, stake operations are cumbersome (per the file) or impossible for many ordinary uses. Per the file, for example, delegating more (per the file) lamports in an existing stake acct calls for creating a new acct, delegating, waiting, merging, then (per the file) withdrawing the rent-exempt lamports. Per the file, the current stake redelegate instruction calls for using a new stake acct and eventually cleaning up (per the file) the old one, which may be tricky to use. Per the file, as a minimum stake (per the file) delegation amount is applied (per the file) to the network, and (per the file) potentially increased over time, (per the file) these operations will become (per the file) more complicated, since all (per the file) delegations must clear that threshold.",
+    "Per the file, small SOL amounts is to be left liquid rather (per the file) than delegated to a node. Per the file, additionally, stake pools always (per the file) carry some risk or (per the file) capital inefficiency for the stake pool operator. Per the file, either there's a requirement (per the file) to leave liquid SOL available (per the file) for small stakers to exit, (per the file) or small stakes cannot enter (per the file) because there's not enough to (per the file) cover the minimum delegation amount.",
+    "Per the file, small stakes need to (per the file) be delegated, while not (per the file) causing problems in the node's stakes cache. The file’s claim in this section turns on Per, 24762. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the easiest solution is to change the node's stakes cache, since that (per the file) only impacts the specific implementation (per the file) in the Solana Labs node. Per the file, in the perfect situation, (per the file) small stakes are properly (per the file) delegated, but don't receive rewards. Per the file, meaning: they don't take (per the file) up space in the stakes (per the file) cache they take the correct (per the file) amount of epoch boundaries to (per the file) activate / deactivate they are included in a node's voting power There are a (per the file) few ways of solving this at (per the file) the stakes cache level, and they (per the file) all have serious issues.",
+    "Per the file, include small stakes in (per the file) the cache, but don't (per the file) pay out rewards This is (per the file) the simplest solution, which essentially (per the file) imposes a \"minimum reward earning amount\". Per the file, so you can delegate (per the file) small stakes, but they (per the file) won't earn rewards. Per the file, unfortunately, small stakes can (per the file) still bloat the stakes (per the file) cache from a memory level. Per the file, don't include small stakes (per the file) in the cache, but track them in txs In this solution, on every tx that manipulates a small stake (per the file) delegation, it includes its delegation (per the file) amount in the node's voting power, but doesn't add (per the file) its pubkey and Delegation to the cache.",
+    "Per the file, the runtime tracks the (per the file) pre and post state of every acct, and for a successful tx, subtracts the old small (per the file) stake delegation amount, and (per the file) adds the new small stake delegation amount. Per the file, during rewards payout, small (per the file) stakes are completely omitted, (per the file) since they are not (per the file) present in the cache. Per the file, this is incredibly brittle, (per the file) however, and introduces more (per the file) overhead in the runtime.",
+    "Per the file, the bank must hold (per the file) onto pre-states for all txs to debit the stakes cache. Per the file, and, if called from (per the file) the outside, all store_accounts (per the file) functions on the bank could (per the file) easily invalidate the stakes cache. Per the file, for example, if you (per the file) store a small stake (per the file) directly, what does the cache do? Per the file, what was the pre-state (per the file) of that small stake?. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, rather than hacking the node, let's change the stake program. Per the file, with a new \"multi delegation stake\" acct, carrying *two* Delegation instances, (per the file) the stake program becomes much more flexible. Per the file, here are some example uses:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Add or remove small stake",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, to add a small stake to your acct, transfer the lamports, call (per the file) delegate once more, and now your stake acct has two delegations: the (per the file) initial one, and the newly activating one. Per the file, once the new Delegation (per the file) is active, an update (per the file) instruction follows the existing (per the file) merge logic to consolidate the two Delegations into one. Per the file, the same roughly applies (per the file) for removing a small stake. Per the file, you deactivate a portion (per the file) of it, which adds (per the file) another delegation to your stake acct: the initial one, and (per the file) the newly deactivating one. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Redelegate",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, with another Delegation instance, (per the file) you can redelegate from one node to another within the same acct. Per the file, it works the same (per the file) as the existing \"redelegate\" (per the file) instruction, except the lamports (per the file) all stay in the same acct, and the second Delegation covers the redelegation. Per the file, the update instruction clears (per the file) out the first one (per the file) once it's inactive. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Upgrade",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the stake program exposes (per the file) a new instruction to upgrade a stake acct to a multi-stake acct. Per the file, it performs a realloc (per the file) to the new size of the stake acct, and updates the rent-exempt (per the file) reserve field in the stake acct Meta. Per the file, it has to be signed by the (per the file) current staker or withdrawer, (per the file) and takes an optional (per the file) payer to fund the (per the file) additional rent-exempt reserve requirement. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Runtime",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the main difference to (per the file) the runtime is processing up to two Delegations per acct. Per the file, there's minor impact on (per the file) the stakes cache, which gets (per the file) a little bigger for the (per the file) additional Delegation instances. Per the file, there's minor impact on (per the file) rewards payout, since the time (per the file) spent calculating the rewards amount (per the file) is negligible compared to the (per the file) time spent storing the accts. Per the file, the number of acct storages stays the same. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators likely see a (per the file) small increase in memory (per the file) usage from additional Delegation (per the file) entries in the stakes (per the file) cache, and perhaps a (per the file) tiny increase in rewards (per the file) payout time, but nothing substantial. Per the file, dapp developers have to (per the file) deal with a new stake acct type. Per the file, this may break programs (per the file) that try to deserialize any stake acct. Per the file, the network benefits as a whole: stake accts are more flexible for (per the file) adding or removing stake, (per the file) without splits and merges (per the file) stakers can easily redelegate (per the file) without missing out on rewards. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it's risky to change (per the file) the runtime, especially the stake (per the file) program and rewards payout. Per the file, thankfully, since this all (per the file) operates on the level (per the file) of the Delegation, as (per the file) long as we pass (per the file) all the instances as (per the file) needed, none of the (per the file) most sensitive parts need to change. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, while existing programs that (per the file) create and use their own stake accts are not impacted, those (per the file) that accept any stake acct will crash on multi-stakes. Per the file, there's no way around (per the file) that, since the proposal entails (per the file) a new stake acct variant."
+   ]
+  },
+  {
+   "heading": "Appendix: Single validator stake pool",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a single-node stake pool program can manage (per the file) small stakes with 100% efficiency (per the file) using \"multi stakes\". Per the file, with a total of (per the file) *two* Delegation instances, the (per the file) program can add or remove small stakes. Per the file, one instance covers the (per the file) main amount, and the (per the file) other covers new activations or deactivations. Per the file, for small stake deposit, (per the file) you simply transfer the (per the file) lamports and activate the new amount.",
+    "Per the file, if a user wishes (per the file) to withdraw, the program (per the file) first withdraws from the activating amount. Per the file, if there is no (per the file) more activating amount available, (per the file) then the pool deactivates (per the file) from the main delegation and supplies a ticket to the (per the file) user, used to claim (per the file) their lamports after deactivation."
+   ]
+  }
+ ]
+}

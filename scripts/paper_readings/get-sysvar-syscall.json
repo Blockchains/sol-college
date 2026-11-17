@@ -1,0 +1,119 @@
+{
+ "slug": "get-sysvar-syscall",
+ "pages": 2,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file outlines a new syscall (per the file) interface for sysvars; one (per the file) which can retrieve dynamic (per the file) ranges of sysvar data (per the file) without fully copying the entire data structure. Per the file, with a unified syscall (per the file) interface to handle retrieval (per the file) of sysvar data, many (per the file) existing syscalls will become (per the file) obsolete, and the act (per the file) of changing sysvar data (per the file) layouts or adding new (per the file) sysvars will involve much less overhead. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, sysvars are special accts that are implicitly modified by the runtime. Per the file, certain sysvars are essential (per the file) for operation of the (per the file) network, and many others (per the file) are used by on-chain (per the file) programs for a wide range (per the file) of use cases. Per the file, the sysvar API ought to be completely consistent, available (per the file) to all BPF programs, (per the file) and capable of more (per the file) easily handling changes in the future.",
+    "Per the file, the syscall API for sysvars ought to be designed to serve (per the file) a wide range of (per the file) requests on sysvar data (per the file) without bloating the overall syscall interface. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Consistent API",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, although it's true an (per the file) on-chain program can access sysvar (per the file) data by reading its acct directly, many sysvars - including Clock - may be accessed directly via syscalls, thereby (per the file) not requiring an increase in tx size to include the sysvar acct key. Per the file, furthermore, reducing the amount of acct data mapped into virtual (per the file) machine memory may also yield cost savings. Per the file, a consistent API ought to be present for accessing (per the file) this data from on-chain programs."
+   ]
+  },
+  {
+   "heading": "Availability to BPF Programs",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the proposed design herein (per the file) would allow for access (per the file) to previously unavailable sysvar data - including SlotHashes and StakeHistory. Per the file, although retrieving the entire (per the file) data structure may still (per the file) be too heavy to (per the file) copy into a BPF (per the file) context, fragments of the data may be made accessible via (per the file) calls like SlotHashes::get_slot(slot) and (per the file) StakeHistory::get_entry(epoch). Per the file, additionally, as per SIMD-0088, an effort is underway to (per the file) reduce code complexity of the (per the file) Solana runtime by porting native (per the file) programs to Core BPF programs.",
+    "Per the file, these programs has to be 100% backwards compatible, (per the file) therefore requiring access to (per the file) this sysvar data via (per the file) syscalls and _not_ via providing the acct directly. Per the file, requiring the acct would break the programs' ABIs. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Reducing Syscall Bloat",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently, sysvar data layouts (per the file) are very difficult to change. Per the file, when called, the syscall (per the file) handler will copy the (per the file) entire sysvar to the given memory location. Per the file, notably, BPF programs fail to inform the syscall handler (per the file) of the expected size of the sysvar. Per the file, bPF programs thus effectively (per the file) assume that the requested (per the file) sysvars will forever have the same size.",
+    "Per the file, this prevents future upgrades (per the file) that shrink or extend sysvars. Per the file, in the same spirit, (per the file) if a new sysvar (per the file) is created, a new syscall has to be created. Per the file, furthermore, if certain queries (per the file) are required by BPF programs - including SlotHashes::get_slot() and StakeHistory::get_entry() - those (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) single-element retrievals will _also_ require new syscalls.",
+    "Per the file, it's worth noting that (per the file) at the time of this (per the file) writing, the work required for SIMD-0088 will require at least five new (per the file) syscalls if the existing design is (per the file) not ratified. Per the file, this tightly-coupled relationship between (per the file) sysvars and syscalls will perpetually (per the file) swell the syscall interface as (per the file) changes are made, making maintenance (per the file) and reimplementation difficult."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, other mechanisms considered that (per the file) provide sysvar data to (per the file) BPF programs are as follows:. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Sysvar-Specific Syscalls",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this approach would involve changing nothing. Per the file, we'd continue on the (per the file) same course, directly coupling new (per the file) sysvar fetch functions to new syscalls. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New VM Memory Regions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a new memory region (per the file) in the VM could (per the file) be introduced to store (per the file) sysvar data, which could (per the file) then be made available (per the file) to BPF programs through (per the file) an interface around raw (per the file) pointers, which loads the (per the file) data similarly to the interface proposed herein. Per the file, this approach would depend (per the file) on direct mapping of (per the file) host memory to VM (per the file) memory, which has been (per the file) in development for some time and calls for further research and development (per the file) to introduce safely to the VM ABI.",
+    "Per the file, this extensive R&D period (per the file) would mean Core BPF program (per the file) initiatives would remain blocked. Per the file, without direct mapping, sysvar (per the file) data would be fully (per the file) copied to this memory (per the file) region each time a (per the file) VM is created (currently one per tx processed), causing a degradation (per the file) in runtime performance and (per the file) likely reducing compute by (per the file) far less compared to (per the file) the compute savings posed by this proposal. Per the file, even with direct mapping, (per the file) this change makes address (per the file) translation more complex and (per the file) therefore slows down _all_ memory accesses. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a single sol_get_sysvar syscall may be defined, which may be used by all forward-facing sysvar (per the file) interfaces to retrieve data from any sysvar. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Control Flow",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall aborts the (per the file) virtual machine if any (per the file) of these conditions are (per the file) true: Not all bytes (per the file) in VM memory range (per the file) [sysvar_id, sysvar_id + 32) are readable. Per the file, not all bytes in (per the file) VM memory range [var_addr, (per the file) var_addr + length) are writable. offset (per the file) + length is not in [0, 2^64). (per the file) var_addr + length is not in [0, 2^64). (per the (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file)",
+    "Per the file, compute budget is exceeded. Per the file, all VM violations (above) (per the file) are checked first, before (per the file) to returning one of (per the file) the following error codes. Per the file, the following checks are (per the file) completed in the order they appear below. Per the file, the syscall returns the (per the file) following graceful codes: 2 (per the file) if the sysvar data (per the file) is not present in the Sysvar Cache. Per the file, 1 if offset + length (per the file) is greater than the (per the file) length of the sysvar data. Per the file, 0 if the process (per the file) completed successfully and the (per the file) requested sysvar data was (per the file) written to the virtual (per the file) memory at var_addr."
+   ]
+  },
+  {
+   "heading": "Compute Unit Usage",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the syscall will always (per the file) consume the same amount (per the file) of CUs regardless of control flow. Per the file, cU usage is proportional (per the file) to the length parameter. sysvar_base: Base cost of (per the file) accessing a sysvar. cpi_per_u: Number (per the file) of acct data bytes per CU charged during CPI. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Supported Sysvars",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the proposed unified syscall (per the file) interface will support all (per the file) non-deprecated sysvars in the Sysvar Cache. Per the file, unless specified otherwise, any (per the file) new sysvars added to (per the file) the Sysvar Cache in (per the file) the future also become (per the file) accessible through this syscall. Per the file, the supported list of (per the file) sysvars for the proposed syscall is to be as follows: SysvarC1ock11111111111111111111111111111111 (per the file) SysvarEpochRewards1111111111111111111111111 SysvarEpochSchedu1e111111111111111111111111 SysvarLastRestartS1ot1111111111111111111111 SysvarRent111111111111111111111111111111111 (per the file) SysvarS1otHashes111111111111111111111111111 SysvarStakeHistory1111111111111111111111111 Sysvar APIs (per the file) at the SDK level (per the file) are responsible for defining (per the file) exactly how the data may be accessed using the new syscall.",
+    "Per the file, for example, multiple SDKs (per the file) may choose to allow (per the file) users to access one (per the file) element from a list-based (per the file) sysvar at a time, while (per the file) only a few may offer (per the file) lookups or binary searches on the data. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, as mentioned as partial (per the file) motivation for this proposal, (per the file) the new syscall would (per the file) make changing and adding (per the file) new sysvars in the (per the file) future much easier, which (per the file) would be positively impactful to contributors. Per the file, it also greatly reduces (per the file) the complexity and required (per the file) upkeep for the syscall interface. Per the file, furthermore, it unblocks the (per the file) efforts to give BPF (per the file) programs more access to (per the file) sysvar data, so on-chain (per the file) programs gain the ability to (per the file) read more sysvar data without increasing tx size.",
+    "Per the file, one minor change is (per the file) the behavior of verification (per the file) of syscall availability for a given program. Per the file, currently, the availability of specific sysvar data may be verified by simply (per the file) determining whether its corresponding (per the file) syscall is available to (per the file) the program during the verification step. Per the file, with this change, even (per the file) though the new unified syscall may be verified available during (per the file) program verification, the actual (per the file) availability of specific sysvar (per the file) data is determined at runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this new syscall interface (per the file) does increase the chances (per the file) of improper management of (per the file) bytes and offsets, which (per the file) could throw critical errors. Per the file, however, this may be mitigated in testing, (per the file) and the upside for (per the file) reducing the number of (per the file) syscalls - thereby reducing the (per the file) surface area for other (per the file) critical bugs or exploits (per the file) - is a worthy tradeoff. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

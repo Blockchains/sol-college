@@ -1,0 +1,20 @@
+{
+ "slug": "deterministic-transaction-fees",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Calculating fees",
+   "where": "Design note body",
+   "paragraphs": [
+    "Before sending a transaction to the cluster, a client may query the network to learn what the fee will be through the getFeeForMessage RPC method, which the note links to Solana’s RPC documentation. That workflow is the file’s description. This catalogue did not send getFeeForMessage against a live endpoint for the reading."
+   ]
+  },
+  {
+   "heading": "Fee Parameters",
+   "where": "Design note body",
+   "paragraphs": [
+    "The fee is described as rising with the number of signatures in the transaction: more signatures mean a higher fee. A transaction may also specify an additional fee that decides how it is prioritized relative to others. The note says a prioritization fee is calculated by multiplying the number of compute units by the compute-unit price, measured in micro-lamports, set by the transaction through compute-budget instructions. Those parameters are the note’s claims. They are not a fee schedule Sol.College measured on mainnet or devnet for this page."
+   ]
+  }
+ ]
+}

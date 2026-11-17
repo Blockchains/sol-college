@@ -1,0 +1,212 @@
+{
+ "slug": "global-accountant",
+ "pages": 6,
+ "sections": [
+  {
+   "heading": "Global Accountant",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file describes the motivation, goals, (per the file) and technical design of the \"Global Accountant\". Per the file, the Global Accountant is (per the file) a safety feature for (per the file) registered token bridges and (per the file) Native Token Transfer (NTT) deployments. Per the file, it is implemented as an Integrity Checker on Wormchain. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Objectives",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, tightly limit the impact (per the file) an exploit in a (per the file) connected chain can have (per the file) on registered token bridges and NTT deployments. Per the file, ensure the number of (per the file) wrapped tokens capable of (per the file) being moved out of (per the file) a chain never exceeds (per the file) the number sent to (per the file) that chain, even if (per the file) that chain was compromised."
+   ]
+  },
+  {
+   "heading": "Background",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Token Bridges",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, token Bridges built on Wormhole (e.g. Per the file, portal) allow transferring tokens between (per the file) any of the various (per the file) blockchains connected to the bridge. Per the file, a core feature of (per the file) these systems is that (per the file) xAssets are fungible across all chains. Per the file, eTH sent from Ethereum (per the file) to Solana to Polygon (per the file) is the same as (per the file) the ETH sent from (per the file) Ethereum to Aptos to Polygon.",
+    "Per the file, transfers work by locking (per the file) native assets (or burning (per the file) wrapped assets) on the (per the file) source chain and emitting (per the file) a Wormhole message that lets the minting of wrapped (per the file) assets (or unlocking of (per the file) native assets) on the destination chain.",
+    "Per the file, it is unfortunately not (per the file) practical to synchronize the (per the file) state of token bridges (per the file) and NTT protocols across (per the file) all chains: If a (per the file) transfer of Portal-wrapped ETH (per the file) happens from Solana to Polygon, (per the file) the token bridge contract on (per the file) Ethereum is not aware of (per the file) that transfer and therefore doesn't (per the file) know where the wrapped assets are (per the file) currently located.",
+    "Per the file, if any connected chain (per the file) gets compromised, e.g. through (per the file) a bug in the RPC (per the file) nodes, this could cause arbitrary (per the file) minting of \"unbacked\" wrapped assets, (per the file) i.e. wrapped assets that are (per the file) not backed by native assets. Per the file, those unbacked wrapped assets (per the file) could then be transferred (per the file) to the native chain. Per the file, because wrapped assets are (per the file) fungible, the smart contract (per the file) on the native chain (per the file) cannot distinguish those unbacked (per the file) wrapped assets and would (per the file) proceed with unlocking the (per the file) native assets, effectively draining the bridge.",
+    "Per the file, the Governor limits the maximal impact (per the file) of such an attack (per the file) on the token bridges, (per the file) but cannot fully prevent it. Per the file, the core of the (per the file) issue is the differing (per the file) trust assumptions and security (per the file) program maturity of various blockchains. Per the file, by design, Token Bridges (per the file) are subject to the weakest link. Per the file, a holder of a (per the file) wrapped asset should only (per the file) be subject to security (per the file) risks from the asset's native chain and also the chain where the wrapped asset lives. Per the file, they should not be (per the file) subject to security risks (per the file) from other chains connected to the bridge."
+   ]
+  },
+  {
+   "heading": "Native Token Transfers",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, native Token Transfer (NTT) (per the file) deployments allow certain assets (per the file) to be transferred across (per the file) a subset of chains, (per the file) according to the deployment details. Per the file, additional details may be found in that project's README. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Primary Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, localize cross-chain risk by (per the file) ensuring no more wrapped tokens may be moved out of a (per the file) chain than have been sent (per the file) to that chain, even if (per the file) that chain was compromised. Per the file, support both Token Bridge (per the file) and Native Token Transfer (per the file) (NTT) protocols with unified accounting principles."
+   ]
+  },
+  {
+   "heading": "Nice-to-haves",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, support any token bridge, not just Portal. Per the file, provide ground-truth statistics for (per the file) locked and minted assets per (per the file) chain, transfer activity, etc. Per the file, minimize smart contract changes. Per the file, ideally, we won't need (per the file) to change the Token Bridge (per the file) or NTT smart contracts at all."
+   ]
+  },
+  {
+   "heading": "Non-Goals",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, protect against any exploit (per the file) that doesn't go cross-chain (per the file) e.g. a bug in a smart (per the file) contract allowing minting of unbacked wrapped assets, (per the file) the attacker might swap these wrapped assets (per the file) into other valuable assets through other protocols (per the file) or through exchanges without going through Wormhole. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Overview",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Global Accountant consists (per the file) of two parallel accounting systems: **Base Accountant**: Handles traditional (per the file) Token Bridge transfers (Portal) **NTT Accountant**: Handles Native (per the file) Token Transfer protocol messages (per the file) Both systems act as Integrity Checkers on wormchain. Per the file, guardians submit pre-observations to the appropriate (per the file) accountant and only finalize their (per the file) observations if the accountant gives (per the file) the go-ahead. Per the file, each accountant keeps track (per the file) of the tokens locked (per the file) and minted on each (per the file) connected blockchain for their respective message type.",
+    "Per the file, once a transfer message (per the file) has reached a quorum (per the file) of pre-observations (i.e. Per the file, 13 guardians have submitted (per the file) a pre-observation), the appropriate (per the file) accountant attempts to apply the (per the file) transfer to the acct balances for each chain. Per the file, if the transfer doesn't (per the file) result in a negative acct balance, it is allowed to proceed. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Architecture",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the Global Accountant supports (per the file) both Token Bridge and (per the file) NTT protocols through separate (per the file) but parallel accounting systems: (per the file) Base Accountant Handles Token (per the file) Bridge transfers (Portal) Uses (per the file) existing Token Bridge emitter (per the file) detection logic Maintains separate (per the file) contract: accountantContract Uses accountantKeyPath (per the file) and accountantKeyPassPhrase for authentication (per the file) NTT Accountant Handles Native (per the file) Token Transfer protocol messages (per the file) Detects NTT messages through (per the file) payload analysis and known (per the file) emitter configurations Maintains separate (per the file) contract: accountantNttContract Uses accountantNttKeyPath (per the file) and accountantNttKeyPassPhrase for authentication (per the file) Supports both direct NTT (per the file) endpoint transfers and Automatic (per the file) Relayer (AR) forwarded transfers. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Message Detection and Routing",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the accountant includes message (per the file) detection logic to route (per the file) transfers to the appropriate (per the file) accounting system: Token Bridge (per the file) Detection Uses known Token (per the file) Bridge emitter mappings Validates (per the file) payload format for Token (per the file) Bridge transfers Routes to (per the file) Base Accountant for processing (per the file) NTT Detection **Direct NTT (per the file) Transfers**: Detects messages from (per the file) known NTT endpoint contracts (per the file) by: Checking emitter chain/address (per the file) against configured NTT emitters Validating (per the file) NTT payload format (WH_PREFIX + NTT_PREFIX (per the file) at specific offsets) **Automatic Relayer Transfers**: Detects (per the file) NTT messages forwarded through Automatic Relayers by: (per the file) Checking if emitter is a known Automatic (per the file) Relayer Parsing AR payload to extract original (per the file) sender address Validating that sender is a (per the file) known NTT emitter Extracting and validating embedded (per the file) NTT payload. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Accountant Smart Contracts",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, query methods for signature (per the file) verification Both accountants are (per the file) cosmwasm-based smart contracts rather (per the file) than built-in native cosmos-sdk modules. Per the file, they expose query methods (per the file) from the native wormhole module to cosmwasm.",
+    "Per the file, the x/wormhole native module (per the file) exposes the following query methods: Submitting observations to wormchain When (per the file) a guardian observes a transfer (per the file) message, it first determines whether (per the file) it's a Token Bridge or (per the file) NTT transfer, then submits the observation (per the file) to the appropriate accountant: **Token Bridge (per the file) transfers** → submitted to Base Accountant **NTT (per the file) transfers** → submitted to NTT Accountant Each (per the file) accountant maintains separate: Processing workers (baseWorker (per the file) / nttWorker) Event watchers (baseWatcher / nttWatcher) Submission (per the file) channels and message prefixes Per-emitter enforcement (per the file) configurations The contract processing logic is the (per the file) same for both accountants: Check that the (per the file) signature is valid and from a guardian (per the file) in the current guardian set.",
+    "Per the file, if the transfer fails to yet have a quorum (per the file) of signatures, return a (per the file) Pending status and mark (per the file) the transfer as having (per the file) a signature from the guardian. Per the file, if a transfer with (per the file) the same (emitter_chain, emitter_address, (per the file) sequence) tuple has already been committed, (per the file) then check that the digest of (per the file) the transfer matches the digest of (per the file) the committed transfer.",
+    "Per the file, if they match return (per the file) a Committed status; otherwise (per the file) return an Error status (per the file) and emit an Error event. Per the file, if the transfer has (per the file) a quorum of signatures, (per the file) parse the payload (Token (per the file) Bridge or NTT format) (per the file) and commit the transfer. Per the file, if committing the transfer fails (as an illustration, if one of the accts fails to have a sufficient balance), (per the file) return an Error status (per the file) and emit an Error event.",
+    "Per the file, otherwise return a Committed (per the file) status and emit a Committed event. Per the file, if the guardian receives (per the file) a Committed status for (per the file) a transfer then it (per the file) can immediately proceed to signing the VAA. Per the file, if it receives an (per the file) Error status, then it (per the file) should halt further processing of the transfer. Per the file, if it receives a (per the file) Pending status, then it (per the file) should add the observation (per the file) to a local database (per the file) of pending transfers and (per the file) wait for an event from the accountant.",
+    "Per the file, observing Events from Wormchain (per the file) Each guardian sets up (per the file) watchers for both accountants, (per the file) watching for events emitted (per the file) signalling determinations on transfers. Per the file, events can come from (per the file) either the Base Accountant (per the file) or NTT Accountant depending (per the file) on the transfer type. Per the file, there are 2 types (per the file) of events that the (per the file) guardian must handle from (per the file) each accountant: Transfer committed (per the file) - This indicates that an (per the file) observation has reached quorum (per the file) and the transfer has been committed.",
+    "Per the file, the guardian must verify (per the file) the contents of the (per the file) event and then sign (per the file) the VAA if they match. Per the file, error - This indicates that (per the file) the accountant ran into (per the file) an error while processing an observation. Per the file, the guardian should halt (per the file) further processing of the transfer. Per the file, handling stuck transfers It (per the file) may be possible that (per the file) some transfers don't receive (per the file) enough observations to reach quorum.",
+    "Per the file, this can happen if (per the file) a number of guardians miss the tx on the origin chain. Per the file, since the accountant runs (per the file) before the peer to (per the file) peer gossip layer, it (per the file) cannot take advantage of (per the file) the existing automatic retry (per the file) mechanisms that the guardian network uses. Per the file, to deal with this, (per the file) both accountant contracts provide (per the file) a MissingObservations query that (per the file) returns a list of (per the file) pending transfers for which the accountant fails to have an observation from a particular guardian.",
+    "Per the file, guardians are expected to (per the file) periodically run this query (per the file) against both accountants and re-observe txs for which the accountants are (per the file) missing observations from them. Per the file, configuration and Deployment Flexibility (per the file) The dual accountant system (per the file) supports flexible deployment configurations: (per the file) **Base Only**: Only Token (per the file) Bridge accounting enabled (accountantContract (per the file) configured, accountantNttContract empty) **NTT (per the file) Only**: Only NTT accounting (per the file) enabled (accountantNttContract configured, accountantContract (per the file) empty) **Both**: Full accounting (per the file) for both protocols (both (per the file) contracts configured) **Neither**: Accountant (per the file) disabled entirely (both contracts empty) This lets for gradual rollout and protocol-specific deployments.",
+    "Per the file, contract Upgrades Upgrading either (per the file) contract is performed with (per the file) a migrate contract governance (per the file) action from the guardian network. Per the file, once quorum+1 guardians (13) (per the file) have signed the migrate contract (per the file) governance VAA, the wormchain client migrate command may be ran by anyone with (per the file) an authorized wallet to submit (per the file) the valid governance vaa and (per the file) updated wasm contract to wormchain. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Account Management",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, both the Base and (per the file) NTT Accountants use the same acct management principles. Per the file, each accountant keeps track (per the file) of token balances for (per the file) each blockchain ensuring they never become negative. Per the file, when committing a transfer, (per the file) the accountant parses the (per the file) respective payload format (Token (per the file) Bridge or NTT) to (per the file) get the emitter chain, (per the file) recipient chain, token chain, and token address.",
+    "Per the file, these values are used (per the file) to look up the relevant accts and adjust the balances as needed. Per the file, both accountants maintain the following accts: Accounts for native tokens (per the file) -- not to be confused (per the file) with Native Token Transfers (per the file) -- include e.g. $SOL on (per the file) Solana, and $ETH or $wETH on Ethereum. Per the file, these are classified as (per the file) assets because they represent (per the file) actual tokens held by (per the file) smart contracts on the various chains.",
+    "Per the file, all tokens not issued (per the file) by the token bridge (per the file) are considered native tokens, (per the file) even if they are (per the file) wrapped tokens issued by another bridge. Per the file, if the token is (per the file) held by the bridge (per the file) contract rather than burned, (per the file) it is an asset. Per the file, we'll call these \"custody accts\". Per the file, accounts for wormhole wrapped (per the file) tokens (wrapped SOL on (per the file) Ethereum, wrapped ETH on Solana).",
+    "Per the file, these are classified as liabilities. Per the file, these tokens are not (per the file) held by the smart (per the file) contract and instead represent (per the file) a liability for the (per the file) bridge: if a user (per the file) returns a wrapped token (per the file) to the bridge, the (per the file) bridge **must** be able (per the file) to transfer the native (per the file) token to that user (per the file) on its native chain.",
+    "Per the file, we'll call these \"wrapped accts\". Per the file, transferring a native token (per the file) across either protocol (locking) (per the file) increases the balance on both the custody acct and wrapped acct on the destination chain. Per the file, transferring a wrapped token (per the file) back across either protocol (per the file) (burning) and subsequently unlocking (per the file) its native asset decreases (per the file) the balance on both (per the file) the wrapped and custody accts. Per the file, any transfer causing the balance of an acct to become negative is (per the file) invalid and gets rejected.",
+    "Per the file, each acct is identified via a (per the file) (chain_id, token_chain, token_address) tuple. Per the file, custody accts are those where chain_id (per the file) == token_chain, while the rest are wrapped accts. Per the file, see the governance section below for further clarification. Per the file, governance Account balances recorded (per the file) by either accountant may (per the file) end up inaccurate due (per the file) to bugs in the (per the file) program or exploits of the respective protocols.",
+    "Per the file, in these cases, the (per the file) guardians may issue governance (per the file) actions to manually modify (per the file) the balances of the accts in either the Base or NTT Accountant. Per the file, these governance actions has to be signed by a quorum of guardians. Per the file, examples Example 1: A (per the file) user sends SOL from Solana to Ethereum. Per the file, in this tx the (Solana, Solana, SOL) acct is debited and the (Ethereum, Solana, SOL) acct is credited, increasing the balances of both accts.",
+    "Per the file, example 2: A user (per the file) sends wrapped SOL from Ethereum to Solana. Per the file, in this tx the (Ethereum, Solana, SOL) acct is debited and the (Solana, Solana, SOL) acct is credited, decreasing the balances of both accts. Per the file, example 3: An attacker (per the file) exploits a bug in (per the file) the Solana contract to (per the file) print fake wrapped ETH (per the file) and transfers it over the bridge. Per the file, this could drain real (per the file) ETH from the Ethereum contract.",
+    "Per the file, thanks to the accounting (per the file) contract, the total amount (per the file) drained is limited by (per the file) the total number of (per the file) wrapped ETH issued by (per the file) the solana token bridge contract. Per the file, since the token bridge (per the file) is still liable for (per the file) all the legitimately issued wrapped ETH the acct balances no longer reflect reality. Per the file, wormhole decides to cover (per the file) the cost of the (per the file) hack and transfers the (per the file) ETH equivalent to the (per the file) stolen amount to the (per the file) token bridge contract on Ethereum.",
+    "Per the file, to update the accts, the guardians must issue (per the file) 2 governance actions: one (per the file) to increase the balance (per the file) of the (Ethereum, Ethereum, ETH) custody acct and one to increase (per the file) the balance of the (per the file) (Solana, Ethereum, ETH) wrapped acct. Per the file, example 4: A user (per the file) sends wrapped SOL from Ethereum to Polygon. Per the file, even though SOL is (per the file) not native to either chain, the tx is still recorded the (per the file) same way: the (Ethereum, Solana, SOL) wrapped acct is debited and the (per the file) (Polygon, Solana, SOL) wrapped acct is credited.",
+    "Per the file, the total liability of (per the file) the token bridge has (per the file) not changed and instead (per the file) we have just moved (per the file) some liability from Ethereum to Polygon. Per the file, creating accts Since users can send (per the file) any arbitrary token over (per the file) the token bridge, the (per the file) accountant should automatically create accts for any new token. Per the file, to determine whether the newly created acct ought to be a custody acct or a wrapped acct, these steps are followed: (per the file) If emitter_chain == token_chain and (per the file) a custody acct doesn't already exist, create one.",
+    "Per the file, if emitter_chain != token_chain and (per the file) a wrapped acct doesn't already exist, reject the tx. Per the file, the wrapped acct should have been created (per the file) when the tokens were (per the file) originally transferred to emitter_chain. Per the file, if token_chain != recipient_chain and (per the file) a wrapped acct doesn't already exist, create one. Per the file, if token_chain == recipient_chain and (per the file) a custody acct doesn't already exist, reject the tx. Per the file, the custody acct should have been created (per the file) when the tokens were (per the file) first transferred from recipient_chain. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Enforcement Configuration",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, both accountants support per-emitter (per the file) enforcement configuration: **Enforcing mode**: Guardians (per the file) will not sign VAAs until (per the file) the transfer is committed by (per the file) the accountant **Log-only mode**: Observations (per the file) are submitted but VAAs are signed (per the file) regardless of accountant status This lets for: Gradual rollout of enforcement per (per the file) protocol Different security postures for different (per the file) emitters Testing and validation in production environments."
+   ]
+  },
+  {
+   "heading": "Bootstrapping / Backfills",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, in order for each (per the file) accountant to have accurate (per the file) values for the balances of the various accts, it needs to replay all txs since the initial launch (per the file) of the respective protocol. Per the file, similarly, it may be (per the file) necessary to backfill missing (per the file) transfers if either accountant (per the file) is disabled for any period of time. Per the file, to handle both issues, (per the file) each accountant has the (per the file) ability to directly process (per the file) transfer VAAs for their respective protocols.",
+    "Per the file, as long as the (per the file) VAAs are signed by (per the file) a quorum of guardians (per the file) from the latest guardian (per the file) set, the accountant uses (per the file) them to update its (per the file) on-chain state of token balances. Per the file, submitting VAAs fails to disable any core checks: (per the file) a VAA causing the balance of an acct to become negative will (per the file) still be rejected even (per the file) if it has a quorum of signatures. Per the file, this may be used to catch (per the file) problematic transfers after the fact. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Handling Rejections",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, legitimate txs should never be rejected (per the file) so a rejection implies (per the file) either a bug in (per the file) the accountant or an (per the file) actual attack on the bridge. Per the file, in both cases manual intervention is required. Per the file, alerting Whenever a guardian (per the file) observes an error (either (per the file) via an observation response (per the file) or via an error (per the file) event), it will increase (per the file) a Prometheus error counter.",
+    "Per the file, guardians is to be encouraged to set (per the file) up alerts whenever these (per the file) metrics change so that they may be notified when an (per the file) error occurs from either accountant. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Deployment Plan",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, deploy Wormchain and have (per the file) a quorum of guardians (per the file) bring their nodes online. Per the file, deploy both accountant contracts (per the file) to Wormchain and backfill (per the file) them with their respective (per the file) transfer VAAs that have (per the file) been emitted since inception. Per the file, enable both accountants in log-only mode. Per the file, in this mode, each (per the file) guardian will submit observations (per the file) to the appropriate accountant (per the file) but will not wait (per the file) for transfers to commit before signing VAAs.",
+    "Per the file, this lets time to shake out (per the file) any remaining implementation issues (per the file) without impacting the network. Per the file, after confidence is achieved (per the file) that both accountants are (per the file) running correctly in log-only (per the file) mode, switch to enforcing mode (per the file) per protocol as needed. Per the file, as long as at (per the file) least a quorum of (per the file) guardians submit their observations (per the file) to the accountants, only (per the file) a super-minority (1/3) is (per the file) needed to turn on enforcing-mode for (per the file) it to be effective. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Threat Model",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, since both Global Accountants (per the file) are implemented as Integrity (per the file) Checkers, they inherit the (per the file) threat model of Integrity Checkers. Per the file, therefore, they are only (per the file) able to block messages (per the file) and not create or modify messages."
+   ]
+  },
+  {
+   "heading": "Protocol Isolation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the dual accountant architecture supplies protocol isolation benefits: The (per the file) Base and NTT accountants may be enabled independently Token (per the file) Bridge exploits cannot affect (per the file) NTT accounting and vice (per the file) versa Each protocol can (per the file) have different enforcement policies (per the file) Issues in one accountant (per the file) don't necessarily impact the other. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Susceptibility to wormchain downtime",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, once transfers are gated (per the file) on approval from the (per the file) respective accountants, the uptime (per the file) of the guardian network (per the file) for those transfers becomes (per the file) dependent on the uptime of wormchain itself. Per the file, any downtime for wormchain (per the file) would halt transfers until (per the file) the network is back (per the file) online (or 2/3+ of (per the file) the guardians choose to disable (per the file) the relevant accountant).",
+    "Per the file, in practice, cosmos chains (per the file) are stable and wormchain (per the file) is not particularly complex. Per the file, however, once the accountants (per the file) are live, attacking wormchain (per the file) could shut down transfers for both protocols."
+   ]
+  },
+  {
+   "heading": "Token Bridge and NTT messages cannot reach quorum if 7 or more, but less than 13 Guardians decide to disable Accountant",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, due to the nature (per the file) of the accountants, a (per the file) guardian that chooses to (per the file) enable them in enforcing-mode (per the file) will refuse to sign a (per the file) transfer until it sees that (per the file) the transfer is committed by (per the file) the appropriate accountant.",
+    "Per the file, if a super-minority of (per the file) guardians choose to not enable (per the file) an accountant at all (i.e. (per the file) stop sending their observations to the (per the file) contract) then we will end up (per the file) with a stalemate: the guardians with (per the file) the feature disabled is to be unable to reach quorum because (per the file) they don't have enough signatures while (per the file) the guardians in enforcing-mode will never observe (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) the transfer being committed by the accountant (and so will never sign the observation).",
+    "Per the file, this is very different (per the file) from the governor feature, where only a super-minority (per the file) of guardians have to enable (per the file) it to be effective. Per the file, note: this applies only (per the file) to the enforcing mode. Per the file, if the Guardians enable (per the file) logging mode on the (per the file) accountant(s) instead, this issue (per the file) will not occur."
+   ]
+  },
+  {
+   "heading": "Configuration Complexity",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the dual accountant system (per the file) introduces configuration complexity: Guardians (per the file) must properly configure both (per the file) accountants Message routing logic (per the file) must correctly identify transfer (per the file) types Monitoring and alerting (per the file) must cover both systems. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

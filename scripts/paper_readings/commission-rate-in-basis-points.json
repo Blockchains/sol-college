@@ -1,0 +1,93 @@
+{
+ "slug": "commission-rate-in-basis-points",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, allow nodes to update their inflations (per the file) reward commission rate with (per the file) basis points and update commission calculation. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators should have more (per the file) fine grained control over (per the file) commission values beyond integer percentage values. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Dependencies",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "The file’s claim in this section turns on The, SIMD-0185, Vote, Account, Introduces, SIMD-0249, Delay, Commission, Updates, Simplifies, 0185, 4, 0249, 185, 249. Those labels are the document’s. They are not a Sol.College measurement."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Commission Calculation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, after the adoption of (per the file) [SIMD-0185], commission rates will (per the file) begin to be stored in (per the file) basis points but they could (per the file) still only be set in (per the file) whole integer percentages. Per the file, as a result, all (per the file) stored values were multiples (per the file) of 100 basis points. Per the file, as a result, the (per the file) actual commission calculation logic (per the file) remained unchanged: the system (per the file) continued to divide by (per the file) 100 and use whole integer percentage values.",
+    "The file introduces support for setting (per the file) commission rates with full (per the file) basis point precision (e.g., (per the file) 1,234 basis points = 12.34%). Per the file, because commission values are (per the file) no longer limited to (per the file) clean multiples of 100, (per the file) the calculation logic must (per the file) now operate directly on basis point values. Per the file, to compute the inflation (per the file) reward commission while avoiding (per the file) overflow, first convert the (per the file) pending inflation reward to a u128 integer.",
+    "Per the file, then multiply it by (per the file) the lesser of the vote acct’s commission rate or the (per the file) maximum of 10,000 basis points. Per the file, lastly, divide by 10,000 (per the file) using integer division and discard the remainder. Per the file, to calculate the portion (per the file) of the reward that (per the file) goes to delegated stake, (per the file) again convert to u128. Per the file, multiply by the greater (per the file) of 0 or 10,000 (per the file) minus the vote acct’s commission rate. Per the file, lastly, divide by 10,000 (per the file) and discard the remainder. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Vote Program",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, updateCommissionBps A new instruction (per the file) for setting a commission (per the file) rate denominated in basis points is to be added to the (per the file) vote program with the (per the file) enum discriminant value of (per the file) 18u32 little endian encoded (per the file) in the first 4 bytes.",
+    "Per the file, perform the following checks: (per the file) If the number of acct inputs is less than (per the file) 1, return InstructionError::NotEnoughAccountKeys If the vote acct (index 0) fails to deserialize, (per the file) return InstructionError::InvalidAccountData If the vote acct's authorized withdrawer is not an acct input for the instruction or is not (per the file) a signer, return InstructionError::MissingRequiredSignature Update the corresponding (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) field for the specified commission kind: CommissionKind::InflationRewards: update the inflation_rewards_commission_bps field CommissionKind::BlockRevenue: return InstructionError::InvalidInstructionData Note that the commission rate is allowed to be set and stored as any u16 value but as detailed above, it will capped at 10,000 during the actual commission calculation."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, validators is to be able to set (per the file) inflation rewards commission rates in basis points. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Drawbacks *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, why should we not do this?"
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility *(Optional)*",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, a feature gate is to be used to simultaneously (per the file) update the vote program (per the file) to support commission rates in basis points and also update the runtime's commission (per the file) calculations at epoch boundaries. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  }
+ ]
+}

@@ -1,0 +1,64 @@
+{
+ "slug": "serialize-block-id-in-bank-into-snapshot",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, currently the block ID (per the file) (the merkle root of (per the file) the last FEC set) (per the file) of the snapshot slot (per the file) is not included in (per the file) the snapshot Bank Fields. Per the file, this would enforce the (per the file) snapshot producer to include (per the file) the block ID in the serialized bank."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, it is convenient for multiple node clients to have the (per the file) block ID when booting (per the file) from a snapshot, and lets the inter-slot equivocation block (per the file) ID verification to not be (per the file) special-cased on startup. Per the file, in addition, this future-proofs (per the file) for Alpenglow, as Alpenglow votes (per the file) and related tracking is done (per the file) on (Slot, Block ID), and (per the file) repair & duplicate block resolution uses block ID. Per the file, having the block ID available in snapshots makes possible this."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the block_id already lives (per the file) in the bank. Per the file, snapshot producers for all (per the file) clients must include the (per the file) block ID of the (per the file) snapshot slot in the (per the file) serialized bank of the snapshot. Per the file, this may be implemented by adding (per the file) a block_id field to (per the file) the snapshot serialization schema (eg. (per the file) the ExtraFieldsToSerialize addendum to BankFieldsToSerialize). Per the file, the block_id is to be serialized at the end (per the file) of the manifest, after accounts_lt_hash.",
+    "Per the file, snapshot consumers may optionally (per the file) read the block ID (per the file) in the deserialized bank, (per the file) and use it to (per the file) validate as seen fit. Per the file, in cases where an (per the file) artificial bank is created (per the file) (ex. via ledger tool (per the file) during development or for (per the file) a cluster restart), the (per the file) block_id must also be populated.",
+    "Per the file, if the artificial bank (per the file) with bank hash bank_hash (per the file) builds on slot S with (per the file) block ID parent_block_id, the block (per the file) ID value for the serialized bank is to be a SHA256 hash of the direct (per the file) concatenation of 32-bytes of parent_block_id followed by (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) 32-bytes of bank_hash, i.e. Per the file, sHA256(parent_block_id || bank_hash). Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, clients will now need (per the file) to include an extra (per the file) field when generating a snapshot. Per the file, supporting deserializing the block_id (per the file) will also need to be (per the file) backported to the adjacent (previous) (per the file) versions of Agave before we (per the file) begin serializing the block_id in snapshots. Per the file, other clients will also (per the file) update their corresponding snapshot (per the file) serialize and deserialize structures. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, security is improved because this now lets inter-slot verification between the (per the file) snapshot slot and its child (per the file) without repairing the block ID (per the file) of the snapshot slot. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Backwards Compatibility",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, this feature is not backwards compatible."
+   ]
+  }
+ ]
+}

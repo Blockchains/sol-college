@@ -1,0 +1,80 @@
+{
+ "slug": "stricter-abi-and-runtime-constraints",
+ "pages": 1,
+ "sections": [
+  {
+   "heading": "Summary",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, removing pitfalls and foot-guns (per the file) from the ABI (including syscalls) and runtime. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Motivation",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, there are a couple (per the file) of interactions between dApps (per the file) and the virtual machine (per the file) which are currently allowed (per the file) but make no sense (per the file) and are even dangerous (per the file) for dApps: CPI verification (per the file) Allows accidentally using AccountInfo (per the file) structures which the program (per the file) runtime never serialized AccountInfo structures may be overwritten by CPI (per the file) during CPI, causing complex (per the file) side effects Syscall alignment (per the file) requirements In ABI v0 the acct input region has no (per the file) alignment guarantees (it is (per the file) 1 byte aligned) and (per the file) ABI v1 has 8 byte alignment. Per the file, however, there are some syscalls including the reading of sysvars (per the file) which require 16 byte alignment.",
+    "Per the file, vM memory access Bad read accesses to acct payload go unnoticed as (per the file) long as they stay (per the file) within the reserved address (per the file) space, even if they leave the actual acct payload Bad write accesses to acct payload go unnoticed as (per the file) long as the original (per the file) value is restored Syscall (per the file) slice parameters Bad read (per the file) and write accesses which (per the file) span nonsensical ranges go (per the file) unnoticed Furthermore, at the moment all node implementations have to copy (per the file) (and compare) data in (per the file) and out of the (per the file) virtual memory of the virtual machine.",
+    "Per the file, there are four possible acct data copy paths: Serialization: (per the file) Copy from program runtime (per the file) (host) to virtual machine (per the file) (guest) CPI call edge: (per the file) Copy from virtual machine (per the file) (guest) to program runtime (per the file) (host) CPI return edge: (per the file) Copy from program runtime (per the file) (host) to virtual machine (per the file) (guest) Deserialization: Copy from (per the file) virtual machine (guest) to (per the file) program runtime (host) By (per the file) restricting the allowed behavior (per the file) of dApps we enable the node to map acct payload data directly, avoiding copies and compares. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Alternatives Considered",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "New Terminology",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "VM memory regions",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the memory regions are (per the file) (in ABI v0 and (per the file) v1): Readonly data (0x100000000..0x200000000) (per the file) Stack (0x200000000..0x300000000) Heap (0x300000000..0x400000000) Instruction (per the file) meta data Account meta data Account payload (per the file) address space Instruction payload and program key (per the file) The payload address space of an acct is the range in the serialized input (per the file) region (0x400000000..0x500000000) which covers the payload and (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) optionally the 10 KiB resize padding (if not a loader-v1 program), but not the accts metadata."
+   ]
+  },
+  {
+   "heading": "Detailed Design",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Syscall parameters",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, the following pointers has to be on the stack (per the file) or heap, meaning their (per the file) virtual address is inside (per the file) 0x200000000..0x400000000, otherwise SyscallError::InvalidPointer has to be thrown: The destination address of (per the file) all sysvar related syscalls The pointer (per the file) in the array of &[AccountInfo] / SolAccountInfo* (per the file) The AccountInfo::data field, which is a (per the file) RefCell<&[u8]> in sol_invoke_signed_rust The AccountInfo::lamports field, which (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) (per the file) is a RefCell<&u64> in sol_invoke_signed_rust The following pointers must point to what was originally serialized in the input regions by the program runtime, otherwise SyscallError::InvalidPointer has to be thrown: AccountInfo::key / SolAccountInfo::key AccountInfo::owner / SolAccountInfo::owner AccountInfo::lamports / SolAccountInfo::lamports AccountInfo::data::ptr / SolAccountInfo::data. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "VM memory access",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, memory accesses (both by (per the file) the program and by (per the file) syscalls) which span across (per the file) memory mapping regions are considered access violations. Per the file, accesses to multiple regions (per the file) (e.g. by memcpy syscalls) (per the file) have to be split into (per the file) multiple separate accesses, one for each region. Per the file, for all memory accesses (per the file) to the payload address space of an acct which is flagged as (per the file) writable and owned by (per the file) the currently executed program, (per the file) check that: The access (per the file) is completely within the maximum acct length, otherwise InstructionError::InvalidRealloc has to be thrown.",
+    "Per the file, the access is completely (per the file) within the rest of the acct growth budget of the tx, otherwise InstructionError::InvalidRealloc has to be thrown. Per the file, the access is completely (per the file) within the current length of the acct, otherwise extend the acct with zeros to the (per the file) maximum allowed by the previous two checks. Per the file, for loads / read accesses (per the file) to the payload address space of an acct check that: The access (per the file) is completely within the (per the file) current length of the acct, otherwise InstructionError::AccountDataTooSmall has to be thrown.",
+    "Per the file, for stores / write accesses (per the file) to the payload address space of an acct check that: The acct is flagged as writable, otherwise InstructionError::ReadonlyDataModified has to be thrown The acct is owned by the currently (per the file) executed program, otherwise InstructionError::ExternalAccountDataModified has to be thrown. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Impact",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "Per the file, these restrictions have been (per the file) extensively tested by replay against MNB. Per the file, most of the dApps (per the file) devs whose dApps would (per the file) fail have been contacted (per the file) and had their dApps fixed already. Per the file, programs which used the SDKs acct realloc function, which is (per the file) now deprecated, should upgrade so as to avoid the read-before-write (per the file) access to uninitialized memory. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+   ]
+  },
+  {
+   "heading": "Security Considerations",
+   "where": "Heading in the retrieved file",
+   "paragraphs": [
+    "This section of the retrieved file was present, but the extract did not yield a full sentence of body text after headings and code fences were removed. The heading itself is kept so the reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster."
+   ]
+  }
+ ]
+}
