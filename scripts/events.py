@@ -181,9 +181,10 @@ def by_id(eid):
 
 
 def search_blob(ev):
+    import events_listings as listings
     parts = [ev['title'], ev.get('city') or '', ev.get('country') or '', ev.get('online_tag') or '',
              organisers(ev), ' '.join(ev.get('topics') or []), ev['event_type'], INTENT.get(ev['intent'], ''),
-             place_line(ev)]
+             place_line(ev), listings.search_text(ev)]
     return ' '.join(parts).casefold()
 
 
@@ -407,6 +408,8 @@ def detail(ev):
         series = f'<p>Other dated occurrences of this title: <a href="/events/series/{E(ev["series_id"])}/">the series</a>. A shared title did not create any date that the source did not list.</p>'
     related = f'<p>{E(ev["related_note"])}</p>' if ev.get('related_note') else ''
     access = f'<p>{E(ev["access_note"])}</p>' if ev.get('access_note') else ''
+    import events_listings as listings
+    full = listings.section(ev)
     learn = '''<h2>Before you go</h2>
 <p>The organiser did not name a prerequisite, a lesson, or a reading list on the fields kept here. Sol.College lessons are optional practice: <a href="/lessons/">Lessons</a>. Sources for reading sit in the <a href="/library/">library</a>.</p>
 <h2>After the event</h2>
@@ -421,6 +424,7 @@ def detail(ev):
 <dl class=facts>{dl}</dl>
 {reg}{ics}{series}
 <p>Original source: <a href="{E(ev['source_url'])}">{E(ev['source_name'])}</a></p>
+{full}
 {learn}
 <p><a href="{E(CORRECTION)}">Something here disagrees with the source</a> · <a href="{E(REPORT)}">Report a suspicious change</a></p>
 </article>
@@ -491,6 +495,11 @@ def queue_page():
                   'A name without a checked time stays here.', inner, ['<span>Queue</span>'])
 
 
+def listings_retrieved():
+    import events_listings as listings
+    return listings.retrieved_label()
+
+
 def coverage_page():
     rows = upcoming()
     countries = sorted({e['country'] for e in rows if e.get('country')})
@@ -513,7 +522,8 @@ def coverage_page():
 <p>Series kept as separate occurrences: {E(', '.join(series) or 'none')}. Nothing was merged on the title alone.</p>
 <p>Two in-person listings name an organiser and do not name a city: Solana Demo &amp; Dine, Solana Yacht Cruise.</p>
 <p>A deploy of the website does not refresh Luma. Stale times stay until <code>scripts/events_refresh.py</code> is run and the data file is published.</p>
-<p>Registration clicks are not attendance. An organiser named here is not a partner.</p>'''
+<p>Registration clicks are not attendance. An organiser named here is not a partner.</p>
+<p>Host-page wording was retrieved separately on {E(listings_retrieved())} for the Superteam events. It is quoted on those listings. Guest lists and answers are not in that file. The hackathon archive still has no day and no winner list.</p>'''
     return simple('Coverage', 'What this calendar actually holds',
                   'Counts from the current snapshot. Not a claim of global completeness.', inner, ['<span>Coverage</span>'])
 

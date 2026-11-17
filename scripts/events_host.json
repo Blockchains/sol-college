@@ -1,0 +1,1577 @@
+{
+  "retrieved_at": "2026-11-17T15:55:55Z",
+  "note": "Host-page wording for events on the Superteam calendar. Question labels are the form, not anyone's answers. Guest lists are not stored.",
+  "events": [
+    {
+      "source_id": "evt-hj7ObeemnBUZFgQ",
+      "url": "BP26-After-Party",
+      "title": "Unofficial Official After Party to Breakpoint 2026: The Great British Pub Crawl",
+      "blocks": [
+        "Three days at Olympia. The last talk ends at five. It’s your last night in London. What do you do?",
+        "You go to the pub.",
+        "On Tuesday 17 November Superteam UK is running the Great British Pub Crawl, the unofficial official afterparty to Breakpoint 2026. Locals-approved pubs from Olympia to Soho, a bar tab at every stop, ecosystem teams pouring the pints.",
+        "How it works\nTwo tours and several routes. Spread across the city from the start, or join a tour at any point all evening. Look for the guides. Our helpers wear hi-vis and carry signs. They’ll point you to the right tour, and keep each group moving between stops once one venue is full.",
+        "Register at - 🔥🔥🔥 Bonfires.london 🔥🔥🔥\nThis is the platform for the night. It’s where you can see every stop on the route. Fires show where a bar tab is active. Pick a fire, or follow a tour guide. Show them the relevant bar tab in the app (try not to say it out loud if you can) and enjoy a pint! When the tab is dry, move on.",
+        "Want your own fire? Put money behind the bar at any suggested tour stops and spark your own fire in the app, so others can join you. (Authenticated with proof of purchase.)",
+        "Happy/Power Hours Presented by:",
+        "IkaRockawayXHawkFi & LP ArmyFormation (Orca / Loopscale)BAXUSSolflareSuperteam IrelandSuperteam BrasilSuperteam BlackSuperteam UK (obvs)Aurus",
+        "Check out our Ecosystem Partner Events too:",
+        "Blockchain.com TYB Party - Gallery Club, 8pm-2am\nJoin Blockchain.com for a very special closer to Breakpoint 2026, complete with a world class DJ, open bar, networking and plenty of degen pandemonium. You must Register here to be added to the guest listW3 Demo Day & Gosai Law - Huckster, 8-10pm.\nJoin W3 Accelerator and partners to celebrate the launch of W3 PlaybookEcosystem Pub Quiz: Crown & Sceptre, 7pm start\nLimited space - register here to gain entry",
+        "What to expect",
+        "A route of proper London pubs, west to east, walkable or a couple of tube stops apartHappy hours and pub takeovers hosted by Solana ecosystem teamsOne app with the live map, showing which pub is pouring right now and whose round it isSpark your own fire: put money behind a bar yourself, especially at our suggested pubs, and others can join youGuides in hi-vis with signs to point you to the right tourA few final Happy Hour slots still openLate-night options for the ones who never stop - Head to the Blockchain.com party until 2am.",
+        "Register at Bonfires.london to get the app and the route. Pick your pub, claim your pint, see who paid for it. Cheers.",
+        "18+, bring ID",
+        "Message Cap from Superteam UK to sponsor a happy hour upfront."
+      ],
+      "questions": [
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": false,
+          "question_type": "twitter",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": false,
+          "question_type": "telegram",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": false,
+          "question_type": "linkedin",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": "Download https://bonfires.london/ to find the pubs with free pints"
+    },
+    {
+      "source_id": "evt-dWuFCJm1rSs2IDb",
+      "url": "SolanaPadelMatchDXB",
+      "title": "Solana Padel Match",
+      "blocks": [
+        "Solana Padel Match",
+        "🗓 Date: Thursday, 19 November\n🕢 Time: 7:00 PM – 9:00 PM\n📍 Venue: To be shared upon approval",
+        "Superteam UAE is bringing the Solana community together for a padel evening built around friendly competition and good energy.\nAgenda\n🕖 19:00 – 19:30 : Arrival\n🎾 19:30 – 21:00 : Games\nPlease Note:\n🔸 This event has limited spots and operates on a first-come, first-served basis.\n🔸 Please arrive on time to secure your spot.\n🔸 Dress Code: Sporty attire\n📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.\nFollow us on X: @SuperteamAE"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-JRloloPOnjwowzA",
+      "url": "coworking-fridays-belgrade",
+      "title": "Coworking Fridays Belgrade | Superteam Balkan",
+      "blocks": [
+        "Free coworking in Belgrade, every Friday",
+        "Join founders, builders, and frens from the Solana and Balkan Web3 community.",
+        "Attendance is free. Just register here.",
+        "What to expect?",
+        "friendly vibesin-person help from the Superteam Balkan crewgreat networking, free coffee and a cozy space",
+        "Who it's for?",
+        "founders, developers, designers, students (basically everyone)anyone curious about Solana and building startups",
+        "Who are we?",
+        "Superteam Balkan is a non-profit community.",
+        "We incubate and fund the next wave of Balkan tech talent.",
+        "We help builders learn, build, and ship future-proof startups that use the Solana blockchain under the hood.\nWe don’t sell anything or offer investment advice.",
+        "Learn more about us",
+        "​What is Solana?",
+        "Solana is a high-performance blockchain for building internet-scale apps that are fast, low-cost, and energy-efficient.",
+        "Developers from around the world are building apps on Solana for a fast, secure, scalable, global and user-friendly future. A future that's only possible on Solana.",
+        "By signing up, you agree that Superteam Balkan can contact you about future events and updates."
+      ],
+      "questions": [],
+      "bios": [
+        {
+          "name": "Superteam Balkan",
+          "bio": "The home of Solana in the Balkans."
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-JtMFXLB62ZYI4BY",
+      "url": "london-nov-20",
+      "title": "Co-Working Fridays : London Chapter",
+      "blocks": [
+        "Join SuperteamUK every Friday at our co-working space for builders, leaders and creatives at the frontier of tech in London (Every Friday: 10:00AM - 8:30PM)!",
+        "Attendance is free but entry via approval only, so make sure to register and be accepted for your name to be on the guestlist.",
+        "Come and meet and collaborate with like-minded developers & builders, discover new team members, and gain insights from industry leaders.",
+        "On arrival you will receive your event wristband which must be worn at all times on site! Please keep the safe as you found it to represent the other members and venue staff.",
+        "For more info, reach out to us on the Solana UK Telegram.",
+        "About Superteam UK",
+        "Superteam is a global co-operative organised into regional non-profit organisations across 20+ countries focused on supporting founders and talent building at the frontier of tech.\nLearn more and apply for membership at superteamuk.org",
+        "* This is a strictly invite-only event. Each ticket allows admission for one participant only. Do note that you will have to show the confirmation QR code/email of registration for approval for entry.",
+        "** Limited spaces available, even after confirmation. Please arrive early to avoid disappointment.",
+        "By signing up to this event you agree that Solana, The SRI, & SuperteamUK can capture any footage of you, and contact you directly about future events, major news, and more."
+      ],
+      "questions": [
+        {
+          "label": "Which of the below describes you? Tick all that apply.",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What type of organisation is this?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-AfGAxD8AxHdOEEx",
+      "url": "4j37rbu1",
+      "title": "Solana Para Estudiantes - España 🇪🇸",
+      "blocks": [
+        "Solana Para Estudiantes - España 🇪🇸",
+        "Tu puerta de entrada al ecosistema Solana empieza aquí.",
+        "¡Acercamos el ecosistema Solana a los estudiantes de España!",
+        "Juntos, Dev3pack x Solana Foundation lanzan Solana Para Estudiantes, un movimiento global que conecta a la próxima generación de builders con las personas, los proyectos y las oportunidades de Solana.",
+        "Únete a un encuentro online dedicado a los estudiantes de España. Conoce a expertos del ecosistema, conecta con otros estudiantes y descubre cómo puedes involucrarte en Solana.",
+        "¿Qué puedes explorar?",
+        "Conoce a los builders: conecta con fundadores, desarrolladores y colaboradores del ecosistema Solana.Aprende nuevas habilidades: descubre los próximos bootcamps y programas educativos.Construye algo: infórmate sobre hackatones, desafíos y oportunidades.Lanza tu startup: explora programas de aceleración y conecta con personas que pueden ayudarte a empezar.Contribuye al open source: participa en proyectos reales, colabora con equipos y haz crecer tu portafolio.Encuentra a tu gente: conoce a otros estudiantes y futuros builders de tu país.",
+        "No se requiere experiencia previa en blockchain.",
+        "📍 Online",
+        "👥 Abierto a estudiantes residentes en España",
+        "🏆 Los estudiantes también pueden unirse a la hackathon universitaria de Solana más grande: https://hack.dev3pack.xyz/",
+        "Organizado por Dev3pack x Solana Foundation."
+      ],
+      "questions": [
+        {
+          "label": "Tu invitación para unirte a la hackathon universitaria de Solana más grande: https://hack.dev3pack.xyz/",
+          "required": false,
+          "question_type": "agree-check",
+          "has_terms": false
+        }
+      ],
+      "bios": [
+        {
+          "name": "dev3pack",
+          "bio": "The Global's home for women building in Web3 & AI"
+        },
+        {
+          "name": "La Familia",
+          "bio": "Impulsando el ecosistema de @solana en España 🇪🇦"
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-hGXtyURp5lgm6Fa",
+      "url": "brgiltaz",
+      "title": "Solana For Students - Brazil 🇧🇷",
+      "blocks": [
+        "Sua porta de entrada no ecossistema Solana",
+        "A Dev3pack e a Solana Foundation estão lançando o Solana For Students, um movimento global para aproximar estudantes da Solana. Este é o encontro online do Brasil, com o Superteam Brasil como co-host.",
+        "A sessão é em inglês, com convidados do ecossistema.",
+        "O que dá para explorar:",
+        "Conhecer quem já constrói na SolanaAprender com bootcamps e programasConstruir em hackathons e desafiosLançar sua startup com aceleradorasContribuir com open sourceEncontrar sua turma",
+        "Não precisa de experiência com blockchain. Aberto a estudantes que moram no Brasil.",
+        "Sobre o Superteam Brasil",
+        "O Superteam Brasil é a comunidade de builders da Solana no Brasil. Organiza hackathons e eventos pelo país e publica bounties e oportunidades pagas no Superteam Earn (earn.superteam.fun).",
+        "Próximo passo: Build Station em São Paulo",
+        "De 27 a 29 de novembro tem o Dev3pack Global Hackathon, o maior hackathon universitário da Solana. Dá para participar online ou na Build Station de São Paulo, organizada pelo Superteam Brasil e pela SheFi Brasil. A inscrição é pelo site da Dev3pack:\nhttps://app.dev3pack.xyz/hackathon/register?ref=BRAZIL",
+        "English",
+        "Dev3pack and Solana Foundation are launching Solana For Students, a global movement connecting the next generation of builders with the people, projects and opportunities on Solana. This online session is for students based in Brazil and will be held in English. No previous blockchain experience required.",
+        "Want to build next? Join the Dev3pack Global Hackathon from Nov 27 to 29, online or at the São Paulo Build Station hosted by Superteam Brasil and SheFi Brasil.",
+        "Hosted by Dev3pack x Solana Foundation\nCo-hosted by Superteam Brasil"
+      ],
+      "questions": [
+        {
+          "label": "Your invitation to join the largest Solana university hackathon: https://hack.dev3pack.xyz/",
+          "required": false,
+          "question_type": "agree-check",
+          "has_terms": false
+        }
+      ],
+      "bios": [
+        {
+          "name": "dev3pack",
+          "bio": "The Global's home for women building in Web3 & AI"
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-MN8icQzIdiX7OYz",
+      "url": "fdvdqkq9",
+      "title": "Rust Melbourne Meetup",
+      "blocks": [
+        "Two talks on the night.",
+        "Speaker Spots are still open - Please register your interest at rustmelbourne.com/speak",
+        "Sponsored by Superteam Australia",
+        "Superteam Australia backs builders in the Solana ecosystem. It connects Australian developers, founders and operators to grants, bounties, hackathons and a global network of Superteams. If you're building in Rust, you're already halfway to building on Solana. Come say hi.",
+        "Venue: Stone & Chalk",
+        "Hosted at Stone & Chalk Melbourne Startup Hub, 121 King St. Stone & Chalk is Australia's leading innovation community, home to hundreds of startups and scaleups across fintech and emerging tech. Thanks to the Stone & Chalk team for having us.",
+        "Catering and drinks provided. Doors open 5.30pm"
+      ],
+      "questions": [],
+      "bios": [
+        {
+          "name": "Rust Melbourne",
+          "bio": "rustmelbourne.com"
+        },
+        {
+          "name": "Superteam Australia",
+          "bio": "Accelerating the Solana ecosystem in Australia 🇦🇺 | powered by Solana Foundation | Find our events 👉 luma.com/superteamAU"
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-oLzlTP4u8bCHDJ1",
+      "url": "UAENationalDayLunchSolana",
+      "title": "UAE National Day Lunch 🇦🇪",
+      "blocks": [
+        "🇦🇪 UAE National Day Lunch 🇦🇪",
+        "🗓 Date: Wednesday, 25th November\n🕐 Time: 1:00 PM – 3:00 PM\n📍 Location: To be shared upon approval",
+        "Join Superteam UAE and the Solana community for a special UAE National Day lunch celebrating the people, culture, and community that bring our ecosystem together. 🇦🇪✨",
+        "Spend the afternoon with the community over lunch, meet familiar and new faces, and celebrate the occasion together.\nPlease Note:\n🔸 This is an invite-only event. RSVP required – no +1s, no walk-ins.\n🔸 This event has limited capacity and follows a first-come, first-served policy.\n🔸 Kindly arrive on time to secure your spot.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.\nFollow us on X: @SuperteamAE\n​We’re excited to see you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-S85peLd1TLeNc05",
+      "url": "lmy1gn6j",
+      "title": "Solana Student Bootcamp｜AIで始める、ブロックチェーン開発",
+      "blocks": [
+        "Solana Student Bootcampは、AIを活用しながら、自分のアイデアをSolanaブロックチェーン上のプロダクトとして形にしていく、学生向け・全4回の実践プログラムです。",
+        "「AIを使って、自分でも何かつくってみたい」「ブロックチェーンが、実際にどんな場面で使われているのか知りたい」その興味を、開発の第一歩につなげます。",
+        "いま注目されている領域を知り、実際に手を動かすことで、技術への理解を深めていきます。",
+        "AIとブロックチェーンの今を、つくりながら学ぶ",
+        "AIが目覚ましく進化する今、ブロックチェーンの活用やプロダクト開発は、どのように変わっているのでしょうか。",
+        "本プログラムでは、業界で注目されている領域や実際の活用について学びながら、Solana上での開発に取り組みます。",
+        "学んだことを、自分のアイデアで試してみる。AIを活用して実装し、動きを確かめ、改善する。講義と開発を行き来しながら、「知っている」を「つくれる」へと近づけていきます。",
+        "全4回の実践プログラムを通じて目指すのは、自分のアイデアをプロダクトとして開発する力を身につけること。授業や独学で得た知識も、まだ形になっていない発想も、実際に動くものへとつなげていきましょう。",
+        "現場で活躍する人の視点に触れる",
+        "実際の現場で活躍する方々を、外部講師としてお招きする予定です。技術の説明だけでなく、現場で何に取り組み、どのようにプロダクトをつくっているのか。その視点に触れることも、自分がつくりたいものを考えるヒントになります。",
+        "※講師や各回の詳しい内容は、順次ご案内します。",
+        "こんな学生におすすめ",
+        "AIを使って、自分のアイデアをアプリやサービスにしてみたいSolanaやブロックチェーンの今を、実際に触りながら学びたい授業や独学で学んだことを、プロダクト開発に生かしたい業界で活躍する人の話を聞き、自分の挑戦や進路のヒントを見つけたい",
+        "開催日程｜全4回",
+        "第1回：2026年10月8日（木）\n第2回：2026年10月22日（木）\n第3回：2026年11月12日（木）\n第4回：2026年11月27日（金）",
+        "開催時間：全4回とも17:00〜19:00（日本時間）",
+        "※ 開催日時が急遽変更となる場合があります。",
+        "準備するもの",
+        "PC",
+        "使用するAIツールなど事前準備の詳細は、別途参加者へご案内します。",
+        "事前準備",
+        "（以下リンクから手順を参照し、当日までに実施お願いします）https://docs.google.com/presentation/d/1h3xVqJhRGOK1AWPnbKIMs777IrazvDlH/edit?usp=drive_link&&rtpof=true&sd=true",
+        "講義資料",
+        "https://docs.google.com/presentation/d/1WQbkZjgxP97OcajJvg55TltMyFLifJNe/edit?usp=drive_link&&rtpof=true&sd=true",
+        "（前回の講義資料）https://docs.google.com/presentation/d/1iofbvuarVoV9W_zNo_GLsF-C50q5jz34/edit?usp=sharing&&rtpof=true&sd=true",
+        "最終成果発表会（ミニハッカソン）について",
+        "https://drive.google.com/file/d/1U0hNlFqhbJsBSQ5MJpJ_xwpe5fz0K3Ca/view?usp=drive_link, https://drive.google.com/file/d/1VJhuF9SJDMSU4It7YiKFkjHKkdUazz_H/view?usp=drive_link",
+        "【最終成果発表会】成果物提出フォーム",
+        "※以下フォームアクセス時にGoogleログインが必須になっておりますのでご注意ください",
+        "https://forms.gle/yRBAPwFT2tQd3ZSeA",
+        "お問い合わせ",
+        "成果発表会や発表資料に関する質問・確認は以下から受け付けています。",
+        "https://forms.gle/bkDg6FR9nPYrwA5J9",
+        "開催概要",
+        "開催期間：2026年10月〜11月\n会場：千葉工業大学 津田沼キャンパス 講義室\n形式：全4回・各2時間\n対象：AIを使った開発やブロックチェーンに関心のある学生\n共同開催：\nSolana Foundation DevRel Japan\nCAC（株式会社シーエーシー）\n千葉工業大学 web3 研究会\nxFin Labs\nSuperteam Japan",
+        "講師",
+        "株式会社シーエーシー ブロックチェーン推進グループ\nSolana開発リーダー",
+        "二村 進弘"
+      ],
+      "questions": [
+        {
+          "label": "在籍している学校名を教えてください。",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        }
+      ],
+      "bios": [
+        {
+          "name": "KOTA",
+          "bio": "Head of ChibaTech web3 Head of UxV Lab East Ventures Intern"
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-l9mP3MX4Ven4vv6",
+      "url": "london-nov-27",
+      "title": "Co-Working Fridays : London Chapter",
+      "blocks": [
+        "Join SuperteamUK every Friday at our co-working space for builders, leaders and creatives at the frontier of tech in London (Every Friday: 10:00AM - 8:30PM)!",
+        "Attendance is free but entry via approval only, so make sure to register and be accepted for your name to be on the guestlist.",
+        "Come and meet and collaborate with like-minded developers & builders, discover new team members, and gain insights from industry leaders.",
+        "On arrival you will receive your event wristband which must be worn at all times on site! Please keep the safe as you found it to represent the other members and venue staff.",
+        "For more info, reach out to us on the Solana UK Telegram.",
+        "About Superteam UK",
+        "Superteam is a global co-operative organised into regional non-profit organisations across 20+ countries focused on supporting founders and talent building at the frontier of tech.\nLearn more and apply for membership at superteamuk.org",
+        "* This is a strictly invite-only event. Each ticket allows admission for one participant only. Do note that you will have to show the confirmation QR code/email of registration for approval for entry.",
+        "** Limited spaces available, even after confirmation. Please arrive early to avoid disappointment.",
+        "By signing up to this event you agree that Solana, The SRI, & SuperteamUK can capture any footage of you, and contact you directly about future events, major news, and more."
+      ],
+      "questions": [
+        {
+          "label": "Which of the below describes you? Tick all that apply.",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What type of organisation is this?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-xOlwbqXWtgfRfJB",
+      "url": "SolanaEquestrianPilates",
+      "title": "Solana Equestrian Pilates",
+      "blocks": [
+        "Solana Equestrian Pilates\nPilates experience in the calming presence of horses",
+        "📅 Date: 3 December, Thursday\n🕒 Time: 8:30 AM – 10:00 AM\n📍 Venue: Details shared upon approval",
+        "Start your morning in the peaceful desert surroundings of Dubai with Solana Equestrian Pilates, a ground-based Pilates experience in the calming presence of horses.",
+        "The experience combines movement, nature, and community. Spend time meeting, feeding, and interacting with the horses, followed by a guided Pilates session suitable for all levels.",
+        "There is no horse riding during this experience. The horses will be present for interaction only.",
+        "Agenda\n8:30 – 9:00 AM | Guest arrival & time with the horses\n9:00 – 10:00 AM | Pilates session",
+        "What to Expect\n🐴 Meet, pet, and feed the horses\n🧘 Ground-based Pilates session for all levels\n🏜️ Peaceful outdoor setting in the Dubai desert\n🤝 Connect with the Solana community\n✨ No riding, only presence",
+        "Please Note\n🔸This is an invite-only event. RSVP is required. No +1s or walk-ins.\n🔸Please arrive on time to enjoy the full experience.\n🔸Dress Code: Comfortable activewear suitable for Pilates and an outdoor setting.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE",
+        "We look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-nztwmY6cKhFx3T9",
+      "url": "london-dec-04",
+      "title": "Co-Working Fridays : London Chapter",
+      "blocks": [
+        "Join SuperteamUK every Friday at our co-working space for builders, leaders and creatives at the frontier of tech in London (Every Friday: 10:00AM - 8:30PM)!",
+        "Attendance is free but entry via approval only, so make sure to register and be accepted for your name to be on the guestlist.",
+        "Come and meet and collaborate with like-minded developers & builders, discover new team members, and gain insights from industry leaders.",
+        "On arrival you will receive your event wristband which must be worn at all times on site! Please keep the safe as you found it to represent the other members and venue staff.",
+        "For more info, reach out to us on the Solana UK Telegram.",
+        "About Superteam UK",
+        "Superteam is a global co-operative organised into regional non-profit organisations across 20+ countries focused on supporting founders and talent building at the frontier of tech.\nLearn more and apply for membership at superteamuk.org",
+        "* This is a strictly invite-only event. Each ticket allows admission for one participant only. Do note that you will have to show the confirmation QR code/email of registration for approval for entry.",
+        "** Limited spaces available, even after confirmation. Please arrive early to avoid disappointment.",
+        "By signing up to this event you agree that Solana, The SRI, & SuperteamUK can capture any footage of you, and contact you directly about future events, major news, and more."
+      ],
+      "questions": [
+        {
+          "label": "Which of the below describes you? Tick all that apply.",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What type of organisation is this?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-w3iE1ZeeFBWQUCH",
+      "url": "SolanaPadelMatchSuperweek",
+      "title": "Solana Padel Match",
+      "blocks": [
+        "Solana Padel Match\nSolana Superweek: UAE Edition",
+        "Game on! 🎾",
+        "🗓 Date: Monday, 7 December\n🕤 Time: 9:30 AM – 12:30 PM\n📍 Venue: Shared upon approval",
+        "Kick off Solana Superweek: UAE Edition with a morning of padel, networking, and good vibes.",
+        "Join the Solana community on the court for 90 minutes of padel, followed by food, refreshments, and plenty of time to connect with builders, founders, creators, and community members.\nStart Superweek with some friendly competition, new connections, and great energy before a packed week of events across the UAE.",
+        "Agenda\n9:30 – 10:00 AM | Arrival & Welcome\n10:00 – 11:30 AM | Padel Matches\n11:30 AM – 12:30 PM | Networking, Food & Drinks",
+        "What to Expect\n🎾 Padel Matches: 90 minutes of action on the court\n🤝 Networking: Meet and connect with the Solana community\n🥤 Food & Drinks: Enjoy bites and refreshments after the games\n⚡ Good Vibes: Sport, community, and a fun start to Superweek",
+        "Please Note\n🔸 This is an invite-only event. RSVP required. No +1s or walk-ins.\n🔸 Capacity is limited and first come, first served.\n🔸 Please arrive on time to secure your spot.\n🔸 Dress Code: Sporty attire",
+        "📸 Photos and videos may be taken during the event. By participating, you agree to their use for promotional purposes.\n​Follow us on X: @SuperteamAE"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-dz0MXGbPcSzCZXS",
+      "url": "SolanaArcadeSuperweek",
+      "title": "Solana Arcade Night",
+      "blocks": [
+        "Solana Arcade Night\nSolana Superweek: UAE Edition\n📅 Date: Monday, 7 December\n⏰ Time: 7:00 PM – 10:00 PM\n📍 Venue: To be shared upon approval\nJoin us for an action-packed evening of games, fun, and all things Solana at Solana Arcade Night.",
+        "An invite-only evening of karting, arcade games, friendly competition, and good conversations with the Solana community.",
+        "What to Expect",
+        "Immersive video-mapped kart racingArcade-style gaming experiences and friendly competitionsLight bites and refreshmentsGenuine conversations and meaningful connections\nPlease Note:\n🏁 This is an invite-only event. RSVP required – no +1s, no walk-ins.\n🏁 This event has limited capacity and follows a first-come, first-served policy.\n🏁 Kindly arrive on time to secure your spot.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.\nFollow us on X: @SuperteamAE",
+        "Get ready for a night of speed, play, and connection with the Solana community. 🏁🎮"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-ag6JFY5WZrCIGbi",
+      "url": "SolanaCoffeeConnectSuperweek",
+      "title": "Solana Coffee Connect",
+      "blocks": [
+        "Solana Coffee Connect\nSolana Superweek: UAE Edition",
+        "📅 Date: Tuesday, 8 December\n🕚 Time: 12:00 PM – 2:00 PM\n📍 Venue: Details shared upon approval",
+        "Join us for Solana Coffee Connect, a builders-focused meetup for developers, founders, and teams building across the Solana ecosystem.",
+        "Meet fellow builders, exchange ideas, find potential teammates, and connect with the local Solana community over coffee and bites.",
+        "Part of Solana Superweek: UAE Edition, this meetup is all about bringing builders together and getting ideas moving.",
+        "Please Note\n🔸 Invite-only. RSVP required. No +1s or walk-ins.\n🔸 Capacity is limited and first come, first served.\n🔸 Please arrive on time to secure your spot.",
+        "📸 Photos and videos may be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE",
+        "Meet builders. Share ideas. Start building. ☕️🛠️"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Are you a builder?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-KAos7sj5AAyZqKS",
+      "url": "SolanaAfternoonSoireeADFW",
+      "title": "Solana Afternoon Soirée",
+      "blocks": [
+        "Solana Afternoon Soirée | Abu Dhabi",
+        "📅 Date: 9 December, Wednesday\n🕒 Time: 3:00 PM – 6:00 PM\n📍 Venue: Details shared upon approval | Abu Dhabi",
+        "Join us for the Solana Afternoon Soirée, a private afternoon gathering taking place alongside ADFW.\nBringing together investors, founders, executives, and leaders across finance, technology, and digital assets, the soirée offers an opportunity to connect beyond the conference floor.",
+        "Spend the afternoon over good conversation, drinks, and light bites in a relaxed setting.",
+        "Please Note\n🔸 This is an invite-only event. RSVP is required. No +1s or walk-ins.\n🔸 Capacity is limited and attendance is first come, first served.\n🔸 Please arrive on time to secure your spot.\n🔸 Dress Code: Smart Casual. No flip-flops, beachwear, swimwear, or sportswear. Gentlemen are kindly requested not to wear shorts or open-toe shoes.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.\nWe look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-TAgdaghwfv42w8q",
+      "url": "SolanaMuayThaiSupeweek",
+      "title": "Solana Muay Thai",
+      "blocks": [
+        "Solana Muay Thai\nSolana Superweek: UAE Edition",
+        "📅 Date: 10 December, Thursday\n🕒 Time: 10:00 AM – 12:00 PM\n📍Venue: Details shared upon approval",
+        "Start the morning with Solana Muay Thai, an energizing training session for all levels. Get moving, practice Muay Thai techniques, and connect with the Solana community.",
+        "The session is open to all experience levels, from first-timers to experienced participants. Come ready to train, move, and have fun.",
+        "Part of Solana Superweek: UAE Edition, enjoy an active morning and connect with the community.",
+        "Agenda\n10:00 – 10:30 AM | Guest arrival & check-in\n10:30 AM – 12:00 PM | Muay Thai session",
+        "What to Expect\n🥊 Muay Thai training for all levels\n🔥 Learn and practice Muay Thai techniques\n🤝 Connect with the Solana community",
+        "Please Note\n🥊This is an invite-only event. RSVP is required. No +1s or walk-ins.\n🥊Capacity is limited and available on a first-come, first-served basis.\n🥊Please arrive on time to secure your spot.\n🥊Dress Code: Comfortable activewear suitable for training.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE",
+        "We look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-wgBuDdnjWj1BDrW",
+      "url": "SolanaDemoDineSuperweek",
+      "title": "Solana Demo & Dine",
+      "blocks": [
+        "Solana Demo & Dine\nSolana Superweek: UAE Edition\n📅 Date: Thursday, 10 December\n🕒 Time: 7:00 PM – 10:00 PM\n📍 Venue: Details shared upon approval",
+        "Solana Demo & Dine is a private dinner where some of the top teams building on Solana in the region pitch their projects to a room of VCs, institutions, founders and Superteam UAE members.",
+        "The evening starts with short demos and pitches, followed by dinner and drinks, so there’s plenty of time to meet the teams, ask questions and keep the conversation going.",
+        "If you’re investing in, building on or partnering with Solana, this is a chance to see what’s coming out of the ecosystem here, and to meet the builders behind it early.",
+        "Please Note\n🔸 This is an invite-only event. RSVP required. No +1s or walk-ins.\n🔸 Please arrive on time.\n🔸 Dress Code: Smart Casual. No flip-flops, beachwear, swimwear, or sportswear.\n📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.\n​Follow us on X: @SuperteamAE\nWe look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "LinkedIn or X profile",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What are you hoping to get out of the evening?",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "For Investors: What’s your focus?",
+          "required": false,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "For Builders: What's your focus?",
+          "required": false,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-qO4sD61DMoLROXA",
+      "url": "zupaxmas",
+      "title": "Superzauber Weihnachtsfest",
+      "blocks": [
+        "Our famous Christmas Party \"Superzauber Weihnachtsfest\" is back for round three! 🎄\nJoin Superteam Germany on December 10th at Al Hamra in Berlin for a Christmas dinner, drinks, and a festive evening with your favorite Superteam members & friends. Come hungry, grab a drink and settle in for a proper end-of-year celebration.",
+        "We’ll kick things off with welcome drinks, followed by an open buffet and Secret Santa. Want in on the gift exchange? Bring a wrapped gift worth around $10–20. Something thoughtful, funny or delightfully unexpected is very welcome. 🎁",
+        "Sign up to see the location of this years edition. We can’t wait to celebrate with you!"
+      ],
+      "questions": [
+        {
+          "label": "Who are you? (Share any social of yours)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What are you building or exploring right now?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Are you a Superteam member?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "Are you bringing a gift for the Secret Santa?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-lP1rJscLXMeSPBc",
+      "url": "SolanaFlowSuperweek",
+      "title": "Solana Flow: Yoga & Sound Healing",
+      "blocks": [
+        "Solana Flow: Yoga & Sound Healing\nSolana Superweek: UAE Edition",
+        "🌿Date: Friday, 11 December\n🌿Time: 8:30 AM – 11:00 AM\n🌿 Venue: Details shared upon approval",
+        "Start the morning with Solana Flow, a yoga and sound healing experience to reset, recharge, and connect with the Solana community.",
+        "Part of Solana Superweek: UAE Edition, enjoy a guided practice, refreshments, and a relaxed morning together.\nAgenda:\n08:30 AM – Arrival & welcome drinks\n09:00 AM – Yoga & Sound Healing session\n10:00 AM – Light snacks, drinks & networking",
+        "What to Expect",
+        "🌿 Yoga & Sound Healing: A guided morning practice\n🌿 Drinks: Available throughout the morning\n🌿 Nourishing Bites: Light snacks after the session\n🌿 Community: Time to connect and unwind together",
+        "Please Note\n🌿 This is an invite-only event. RSVP required. No +1s or walk-ins.\n🌿 Capacity is limited and first come, first served.\n🌿 Please arrive on time to secure your spot.\n🌿 Dress Code: Comfortable activewear suitable for yoga.\n📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE\nWe look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [
+        {
+          "name": "Inna Kontsymal",
+          "bio": "Head of Events at Superteam UAE"
+        }
+      ],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-97Lmf48H8oTrMDC",
+      "url": "london-dec-11",
+      "title": "Co-Working Fridays : London Chapter",
+      "blocks": [
+        "Join SuperteamUK every Friday at our co-working space for builders, leaders and creatives at the frontier of tech in London (Every Friday: 10:00AM - 8:30PM)!",
+        "Attendance is free but entry via approval only, so make sure to register and be accepted for your name to be on the guestlist.",
+        "Come and meet and collaborate with like-minded developers & builders, discover new team members, and gain insights from industry leaders.",
+        "On arrival you will receive your event wristband which must be worn at all times on site! Please keep the safe as you found it to represent the other members and venue staff.",
+        "For more info, reach out to us on the Solana UK Telegram.",
+        "About Superteam UK",
+        "Superteam is a global co-operative organised into regional non-profit organisations across 20+ countries focused on supporting founders and talent building at the frontier of tech.\nLearn more and apply for membership at superteamuk.org",
+        "* This is a strictly invite-only event. Each ticket allows admission for one participant only. Do note that you will have to show the confirmation QR code/email of registration for approval for entry.",
+        "** Limited spaces available, even after confirmation. Please arrive early to avoid disappointment.",
+        "By signing up to this event you agree that Solana, The SRI, & SuperteamUK can capture any footage of you, and contact you directly about future events, major news, and more."
+      ],
+      "questions": [
+        {
+          "label": "Which of the below describes you? Tick all that apply.",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What type of organisation is this?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-CKQ1hP5qJ9yvNDH",
+      "url": "SolanaSocialMixerSuperweek",
+      "title": "Solana Social Mixer",
+      "blocks": [
+        "Solana Social Mixer\nSolana Superweek: UAE Edition",
+        "Date: 11 December, Friday\nTime: 7:00 PM – 10:00 PM\nLocation: Details will be shared upon approval",
+        "Join us for Solana Social Mixer, an invite-only evening bringing together the Solana community during Superweek UAE.",
+        "Catch up with familiar faces, meet new people, and enjoy an evening of great conversations and networking.\n​Please Note\n🔸 This is an invite-only event. RSVP required – no +1s, no walk-ins.\n🔸 This event has limited capacity and follows a first-come, first-served policy.\n🔸 Kindly arrive on time to secure your spot.\n🔸 Dress Code: Smart Casual. No flip-flops, beachwear/swimwear, or sportswear. Gentlemen are kindly requested not to wear shorts or open-toe shoes.",
+        "📸 Photos will be taken during the event. By attending, you consent to their use for promotional purposes.",
+        "We look forward to seeing you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-THSqqMrXCBU5xtP",
+      "url": "SolanaYachtCruiseSuperweek",
+      "title": "Solana Yacht Cruise",
+      "blocks": [
+        "Solana Yacht Cruise\nSolana Superweek: UAE Edition",
+        "🗓 Saturday, 12 December\n🕕 16:00 PM – 19:00 PM\n📍 Venue: To be shared upon approval\nJoin us for an exclusive Solana Yacht Cruise, part of Solana Superweek: UAE Edition. Experience curated networking and live DJ vibes aboard a luxury yacht, while connecting in a relaxed and elevated setting on the water.\nAgenda",
+        "4:00 PM – Registration & Welcome4:30 PM – Departure7:00 PM – Return to Harbour\nPlease Note:Arrival: Please arrive no later than 4:00 PMDeparture: The yacht sets sail at 4:30 PM sharpAccess: Strictly invite-only. No invite, no entry.Capacity: Limited to 40 guests. Entry closes once full.Food & Drinks: A wide variety of selections will be served throughout.\n📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE",
+        "We’re excited to see you there!"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-bJh9tTLff2UOpEA",
+      "url": "SolanaDunesSuperweek",
+      "title": "Solana Dunes",
+      "blocks": [
+        "Solana Dunes\nSolana Superweek: UAE Edition\n📅 Date: Sunday, 13 December\n🕒 Time: 4:00 PM – 7:00 PM\n📍 Venue: Details shared upon approval\nJoin us for Solana Dunes, an afternoon desert adventure with the Solana community.",
+        "Ride buggies across the dunes, catch the desert sunset, and settle in for a BBQ and refreshments in a relaxed setting.\nThe final event of Solana Superweek: UAE Edition, bringing everyone together for an afternoon away from the city.",
+        "What to Expect\n🏎️ Buggy Rides: Off-road riding across the dunes\n🌅 Sunset: Golden hour in the desert\n🔥 BBQ: Food and refreshments\n🤝 Community: Time to connect and unwind",
+        "Please Note\n🔸 This is an invite-only event. RSVP required. No +1s or walk-ins.\n🔸 Capacity is limited and first come, first served.\n🔸 Please arrive on time to secure your spot.\n🔸 Dress Code: Comfortable, casual attire suitable for desert activities.",
+        "📸 Photos will be taken during the event. By participating, you agree to their use for promotional purposes.",
+        "Follow us on X: @SuperteamAE",
+        "See you in the dunes. 🏜️🏎️"
+      ],
+      "questions": [
+        {
+          "label": "Full Legal Name",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Age",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Country of Residence",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Company / Organisation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Role / Designation",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Please share the link to your most impressive social media profile (eg: https://x.com/SuperteamAE)",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Telegram",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "Terms and Conditions",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-Kv2qvIlXHp3FpGY",
+      "url": "london-dec-18",
+      "title": "Co-Working Fridays : London Chapter",
+      "blocks": [
+        "Join SuperteamUK every Friday at our co-working space for builders, leaders and creatives at the frontier of tech in London (Every Friday: 10:00AM - 8:30PM)!",
+        "Attendance is free but entry via approval only, so make sure to register and be accepted for your name to be on the guestlist.",
+        "Come and meet and collaborate with like-minded developers & builders, discover new team members, and gain insights from industry leaders.",
+        "On arrival you will receive your event wristband which must be worn at all times on site! Please keep the safe as you found it to represent the other members and venue staff.",
+        "For more info, reach out to us on the Solana UK Telegram.",
+        "About Superteam UK",
+        "Superteam is a global co-operative organised into regional non-profit organisations across 20+ countries focused on supporting founders and talent building at the frontier of tech.\nLearn more and apply for membership at superteamuk.org",
+        "* This is a strictly invite-only event. Each ticket allows admission for one participant only. Do note that you will have to show the confirmation QR code/email of registration for approval for entry.",
+        "** Limited spaces available, even after confirmation. Please arrive early to avoid disappointment.",
+        "By signing up to this event you agree that Solana, The SRI, & SuperteamUK can capture any footage of you, and contact you directly about future events, major news, and more."
+      ],
+      "questions": [
+        {
+          "label": "Which of the below describes you? Tick all that apply.",
+          "required": true,
+          "question_type": "multi-select",
+          "has_terms": false
+        },
+        {
+          "label": "What project or organisation are you representing?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What type of organisation is this?",
+          "required": true,
+          "question_type": "dropdown",
+          "has_terms": false
+        },
+        {
+          "label": "What is your job title at the organisation?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What city/town are you usually based in?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your X (Twitter) handle?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your Telegram username?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "What is your LinkedIn profile?",
+          "required": true,
+          "question_type": "text",
+          "has_terms": false
+        },
+        {
+          "label": "I agree",
+          "required": true,
+          "question_type": "terms",
+          "has_terms": true
+        }
+      ],
+      "bios": [],
+      "place_note": ""
+    },
+    {
+      "source_id": "evt-vZ1HR9Rka8ch50U",
+      "url": "aq7rqqmn",
+      "title": "Superteam Canada Community Call",
+      "blocks": [
+        "Hey!\nGet ready to dive into the world of Solana with our Community Call happening first Thursday on the every Quarter.\nHosted by Simon, this is your golden ticket to connect, learn, and have a blast with fellow enthusiasts. Whether you're a seasoned pro or just starting out, there's something for everyone.",
+        "Join us in a Google Meet for 30 minutes packed with insights, advice, and all things Superteam Canada.\nGot questions? Bring 'em on! Want to get more involved? This is your chance!\nCan't wait to see you there!"
+      ],
+      "questions": [],
+      "bios": [],
+      "place_note": ""
+    }
+  ]
+}

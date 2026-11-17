@@ -150,6 +150,49 @@ class Pages(unittest.TestCase):
         self.assertEqual(text.count('UID:london-nov-20@sol.college'), 1)
         self.assertNotIn('DTSTART:202604', text)
 
+    def test_solana_listing_quotes_the_host_and_keeps_a_hidden_venue_hidden(self):
+        padel = self.read('/events/solanapadelmatchdxb/index.html')
+        self.assertIn('upon approval', padel)
+        self.assertIn('friendly competition', padel)
+        self.assertIn('did not count who came', padel)
+        self.assertNotIn('Sol.College attended', padel)
+        london = self.read('/events/london-nov-20/index.html')
+        self.assertIn('street address is not public', london)
+        self.assertIn('Solana UK Telegram', london)
+        self.assertNotIn('121 King', london)
+        yacht = self.read('/events/solanayachtcruisesuperweek/index.html')
+        self.assertIn('40', yacht)
+        self.assertIn('not a count of people who arrived', yacht.lower())
+
+    def test_archive_listing_does_not_grow_a_day(self):
+        text = self.read('/events/archive/solana-frontier/index.html')
+        self.assertIn('not a start day', text)
+        self.assertIn('Winner names on the archive page were not copied.', text)
+        self.assertNotIn('DTSTART', text)
+        self.assertIn('Prediction Markets Hackathon', text)
+
+    def test_a_host_series_is_not_split_into_extra_events(self):
+        text = self.read('/events/lmy1gn6j/index.html')
+        self.assertIn('not published as another event', text)
+        self.assertIn('2026年11月27日', text)
+        self.assertNotIn('ouid=', text)
+
+    def test_topic_only_event_does_not_pretend_the_host_wrote_solana(self):
+        text = self.read('/events/zupaxmas/index.html')
+        self.assertIn('do not contain the word', text)
+        self.assertIn('Al Hamra', text)
+
+    def test_listings_are_an_order_of_magnitude_longer(self):
+        # Detail pages before this expansion were 11,996 words.
+        import re as _re
+        total = 0
+        for ev in events.EVENTS:
+            html = events.detail(ev)
+            html = _re.sub(r'<script[\s\S]*?</script>', ' ', html)
+            html = _re.sub(r'<[^>]+>', ' ', html)
+            total += len(_re.findall(r"[A-Za-z0-9''-]+", html))
+        self.assertGreaterEqual(total, 11996 * 10)
+
 
 if __name__ == '__main__':
     unittest.main()

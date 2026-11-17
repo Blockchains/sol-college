@@ -342,7 +342,7 @@ def sources(checked_at, upcoming_count):
             'status': 'checked',
             'last_checked': checked_at,
             'upcoming': upcoming_count,
-            'permission': 'Public calendar fields only: title, time, timezone, city, public venue, host names, ticket flags, and the registration URL. Guest lists, attendee counts, and guests-only coordinates are not stored.',
+            'permission': 'Public calendar fields: title, time, timezone, city, public venue, host names, ticket flags, and the registration URL. A separate snapshot stores host-page wording, public bios, and registration question labels, quoted as the host’s words. Guest lists, answers, attendee counts, and guests-only coordinates are not stored.',
             'refresh': 'This file is a snapshot. A site deploy does not call Luma. Run scripts/events_refresh.py to replace the Superteam records.',
         },
         {
