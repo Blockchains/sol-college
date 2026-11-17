@@ -120,7 +120,7 @@ function init() {
   }
   // The film is the homepage picture. Keep the room list clickable and leave the 3D walk on /campus/.
   if (document.getElementById('film-stage')) {
-    setMode('2d', 'Independent practice forks. Select a project for details. The 3D walk is on the campus page.');
+    stage.dataset.mode = '2d';
     return;
   }
   // Capable devices show a CSS preview of the room right away (data-mode="loading") and start loading the 3D

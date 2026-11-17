@@ -692,31 +692,19 @@ def campus_hero_html(projects: list[dict]) -> str:
         body = f'<ul class="ch-list">{items}</ul>' if ps else '<p class="ch-empty">No projects yet</p>'
         rooms.append(
             f'<li class="ch-room ch-{sid.lower()}"><h3>{E(sid)} room</h3><p class="ch-blurb">{E(blurb)}</p>{body}</li>')
-    n = len(projects)
     n_act = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'active')
-    n_pau = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'paused')
-    n_env = sum(1 for x in load_live() if is_fully_functional(x))
-    count = f'{n} project{"" if n == 1 else "s"} on campus' + (f' ({n_act} active CTO agent{"" if n_act == 1 else "s"}, {n_pau} paused)' if n_pau else '')
-    explain = (
-        f'Environment verification records completed test runs ({n_env} environments). '
-        f'The campus is the public room list ({n} projects). '
-        'Paused means that project’s CTO agent is not producing work. It does not mean the practice app is unavailable. '
-        'A project with no CTO agent is still a practice fork.'
-    )
     active_line = f'{n_act} active CTO agent{"" if n_act == 1 else "s"}'
     data = json.dumps(projects, ensure_ascii=False).replace('<', '\\u003c')
     return (
         '<section class="campus-hero" id="campus-hero" aria-labelledby="ch-title">\n'
         '  <div class="ch-head">\n'
-        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2>'
-        f'<p class="ch-sub">Shared DeFi, DePIN and DeAI rooms. Each project is an independent practice fork unless its record says it is an official participant. A place on the campus is not an endorsement and not a partnership. {E(count)}. {E(explain)}</p></div>\n'
+        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2></div>\n'
         '    <a class="btn ghost ch-explore" href="/campus/">Explore campus</a>\n'
         '  </div>\n'
         '  <div class="ch-stage" id="ch-stage" data-mode="2d">\n'
         '    <div class="ch-poster" aria-hidden="true"><span class="ch-shelf"></span><span class="ch-table"></span><span class="ch-load">Loading the live 3D campus…</span></div>\n'
         f'    <ul class="ch-rooms" aria-label="Campus rooms">{"".join(rooms)}</ul>\n'
         '  </div>\n'
-        '  <p class="ch-note" id="ch-note">Select a project to see its details. Coordination is asynchronous through GitHub; nothing here starts a chat or calls an agent.</p>\n'
         '  <dialog class="ch-dialog" id="ch-dialog" aria-labelledby="ch-dialog-title"><div id="ch-dialog-body"></div>'
         '<form method="dialog"><button class="btn ch-close" value="close">Close</button></form></dialog>\n'
         f'  <script type="application/json" id="ch-data">{data}</script>\n'
