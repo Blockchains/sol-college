@@ -263,7 +263,7 @@ def call_page():
 <p>The Journal of Solana Studies invites original research into the reliability, security, performance, usability, and operation of Solana systems.</p>
 <p>We welcome empirical studies, reproducible systems papers, replication work, negative results, research artifacts, and critical reviews.</p>
 <p>Submissions should state a clear research question, explain their methods, distinguish observations from interpretation, and provide the materials necessary to evaluate their claims wherever that is ethically and technically possible.</p>
-<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, and developer education. Those six items are protocols on this site. Twelve further questions are sketches. None of them is a finding.</p>
+<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, and developer education. Those six items are protocols on this site. Twelve further questions are sketches. A source-appraisal series reads documents the library already retrieved. None of them is a finding.</p>
 <p>The journal does not publish promotional investment material, unsupported performance claims, or work whose conclusion is fixed by a sponsor.</p>
 <p>Review status, conflicts, funding, artifact availability, and material limits will be disclosed for every publication. Today those disclosures are: not reviewed, no named author, no external funding, no artifacts, and no completed study.</p>
 </blockquote>
@@ -291,6 +291,8 @@ def programme_page():
 <h2 id=sketches>Twelve sketches</h2>
 <p>A sketch is a question with its terms. It is not yet a protocol: the system, the sample, and the analysis are missing. None of them has a result.</p>
 <div class=hub-grid>{sketches}</div>
+<h2 id=appraisals>Source appraisals</h2>
+<p>The <a href="/journal/notes/">appraisal series</a> applies one instrument to every document the library retrieved on 17 Nov 2026. An appraisal quotes the catalogue’s stored sentences and says what a citation may not infer. It is not a line-by-line review, and it is not a study that was run.</p>
 <p><a href="/journal/methods/">How to read a protocol</a> · <a href="/journal/call/">Call for papers</a></p>'''
   return shell('Volume 1', 'Reliability, authority, and evidence',
     'Six proposed studies. None has been run.',
@@ -319,17 +321,17 @@ def home_page():
 <p>Reproducible experiments, systems research, replication studies, negative results, and critical investigations are in scope. The purpose is to improve understanding. It is not to promote a token, a project, or a conclusion chosen in advance.</p>
 <p>Every publication is supposed to state what was investigated, how the evidence was obtained, what the evidence supports, and what remains uncertain. The pages in this release cannot do the middle two of those, because no study has been run.</p>
 <aside class=status-panel>
-<p><b>What this release contains.</b> The charter, the policies, the call for papers, a methods note, six prospective protocols, and twelve sketches. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
+<p><b>What this release contains.</b> The charter, the policies, the call for papers, a methods note, six prospective protocols, twelve sketches, and a source-appraisal series over documents the library retrieved. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
 </aside>
 <p class=cta><a class=btn href="/journal/programme/">Read the protocols</a> <a class="btn ghost" href="/journal/call/#submit">Submit a proposal</a></p>
 <h2>How a journal paper differs</h2>
 <p>A long tutorial is not research. A technical article is not peer reviewed. This journal is meant to publish fewer pieces than the articles list, and to require more evidence from each one. The articles list is at <a href="/articles/">Articles</a>. Practice is at <a href="/lessons/">Lessons</a>. Finding a source belongs in the <a href="/library/">Solana Library</a>. Reporting of what is happening belongs in <a href="/degen/">The Degen</a>.</p>
 <table><thead><tr><th>Publication</th><th>Purpose</th><th>Standard</th></tr></thead><tbody>{kind_rows}</tbody></table>
 <h2 id=latest>Latest publications</h2>
-<p>There are no completed publications. A protocol is not a paper. Review status for each item below is: not peer reviewed.</p>
+<p>There are no completed publications. A protocol is not a paper. A source appraisal is not a paper. Review status for each item below is: not peer reviewed. The <a href="/journal/notes/">appraisal series</a> is a reading of retrieved documents, not a results issue.</p>
 <div class=hub-grid>{cards}</div>
 <h2 id=programme>Current research programme</h2>
-<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Six protocols and twelve sketches. No data. <a href="/journal/methods/">How to read them</a>.</p>
+<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Six protocols, twelve sketches, and <a href="/journal/notes/">source appraisals</a> of retrieved documents. No data. <a href="/journal/methods/">How to read them</a>.</p>
 <h2 id=scope>Scope</h2>
 <p>Sections open when there is a credible study and someone competent to review it. Opening a row here does not open a section.</p>
 <table><thead><tr><th>Section</th><th>The sort of question</th><th>Publications</th></tr></thead><tbody>{sections}</tbody></table>
@@ -344,6 +346,7 @@ def home_page():
 <li><a href="/journal/policies/#fees">Fees</a></li>
 <li><a href="/journal/methods/">How to read a protocol</a></li>
 <li><a href="/journal/call/">Founding call for papers</a></li>
+<li><a href="/journal/notes/">Source appraisals</a></li>
 </ul>
 <h2>Citation</h2>
 <p>There is no DOI. This citation is for the charter, not for a research finding.</p>
@@ -382,6 +385,8 @@ def methods_page():
 </ul>
 <h2>Where the neighbouring publications stop</h2>
 <p>The <a href="/library/">library</a> points at sources. The <a href="/articles/">articles</a> explain a recorded case. The <a href="/degen/">Degen</a> is for reporting and argument about what is happening. A journal page that wants to be news, or a news page that wants to be a study, has to move. This release has no study and no report.</p>
+<h2>What a source appraisal is for</h2>
+<p>An appraisal takes one library record retrieved on 17 Nov 2026 and states the estimand that record can support: a claim about what the file says, on the sentences the catalogue stored. It copies a SIMD status when the file prints one, and it leaves that word as a label. Activated, Accepted, and Implemented are not recoded into a cluster observation, and Review is not this journal’s peer review. The series is indexed at <a href="/journal/notes/">source appraisals</a>. No appraisal collected an observation.</p>
 <p><a href="/journal/programme/">The programme</a> · <a href="/journal/policies/">Policies</a></p>'''
   return shell('Methods', 'How to read a protocol',
     'Terms, records, and the difference between an illustration and a result.',
@@ -403,7 +408,7 @@ def write_page(S, page, css, path, title, desc, main, data):
 def write(S, page, css):
   pages = []
   home = home_page()
-  desc = 'Journal of Solana Studies: the charter, the policies, six prospective protocols and twelve sketches. No study has been completed and nothing is peer reviewed.'
+  desc = 'Journal of Solana Studies: charter, protocols, sketches, and appraisals of retrieved documents. No study is complete and nothing is peer reviewed.'
   write_page(S, page, css, '/journal/', 'Journal of Solana Studies', desc, home, ld('Journal of Solana Studies', desc, '/journal/'))
   pages.append(('/journal/', 'Journal of Solana Studies', desc))
   pol = policies_page()
@@ -431,6 +436,10 @@ def write(S, page, css):
   for p in PROTOCOLS:
     slug, title, pdesc, html = protocol_page(p)
     path = f'/journal/protocols/{slug}/'
+    write_page(S, page, css, path, title, pdesc, html, ld(title, pdesc, path))
+    pages.append((path, title, pdesc))
+  import journal_appraisals as appraisals
+  for path, title, pdesc, html in appraisals.pages():
     write_page(S, page, css, path, title, pdesc, html, ld(title, pdesc, path))
     pages.append((path, title, pdesc))
   # The generated pages must not look like finished research.
