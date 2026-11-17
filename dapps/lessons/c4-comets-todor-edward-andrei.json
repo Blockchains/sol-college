@@ -1,0 +1,148 @@
+{
+ "title": "NameGen: one display-name PDA per wallet",
+ "summary": "Init a user PDA, set a 64-byte UTF-8 name, clear it, and see why another wallet cannot edit your account.",
+ "what": "Each wallet has one NameGen PDA, seeded [\"user\", authority]. Init creates it, set_name writes a 64-byte UTF-8 name, clear_name zeros it, and a second wallet cannot change someone else's PDA because the seeds include the signer.",
+ "app_note": "The fork's own Next.js 14 app (web/) exported as static pages with this devnet program ID. Changes: static export with basePath; getPda/getProgram read the program id from the IDL; Read decodes the name from the 8+32+64 account layout (BorshCoder.accounts.decode(\"UserData\") did not return .name in this IDL).",
+ "try_steps": [
+  {
+   "do": "Open [NameGen](/dapps/c4-comets-todor-edward-andrei/) and connect a Phantom wallet set to **devnet**.",
+   "see": "The app shows your wallet. If you have never initialised, the user PDA does not exist yet."
+  },
+  {
+   "do": "Run **init** for your wallet (create the NameGen PDA seeded `[\"user\", authority]`). Approve.",
+   "see": "A successful `init_user` transaction. The PDA now exists for your authority.",
+   "ran": [
+    [
+     "Script: B already funded 0.03 SOL (no transfer resent)",
+     "(no tx; already funded)"
+    ]
+   ]
+  },
+  {
+   "do": "Set a display name (up to 64 UTF-8 bytes). Approve.",
+   "see": "A `set_name` transaction. The account stores your name bytes.",
+   "ran": [
+    [
+     "Script: A inits user PDA [\"user\", A]",
+     "v1BNqC7KEmKTqqYkU7HR4c3XsT18taPRfb8dwifsMW2PsErCeUKxki8UqY5KQxXSuQr3UFRi68tvU5KJVUVh6JN"
+    ]
+   ]
+  },
+  {
+   "do": "Clear the name, then set a different one.",
+   "see": "`clear_name` zeros the name field; a later `set_name` writes the new bytes.",
+   "ran": [
+    [
+     "Script: A saves name \"shadow-college\"",
+     "551MiW7rKYHsAhwcbLWT4GD7uZfX43cqAgJ4i6GHXH5TKGn3EDqW5dBYNJpiVjVd47mskQbXXLURxisH9dxT6FdV"
+    ],
+    [
+     "Script: A reads on-chain name (shadow-college)",
+     "(no tx; read-only)"
+    ]
+   ]
+  },
+  {
+   "do": "Optional: from a second wallet, try to change the first wallet\u2019s PDA.",
+   "see": "The transaction fails at account constraints (`ConstraintSeeds` before any `NotOwner` branch). Your PDA stays unchanged.",
+   "ran": [
+    [
+     "Script: A clears the name",
+     "4yYwwtWFRX4oUbvgVPfmNDGaawK9MsoS6A8TNWq1YuXDQPy1wxCrR63QJ9Fwru2yKaqYtJj2cD9LzfzxJsyZCWKj"
+    ]
+   ]
+  }
+ ],
+ "diagram": "wallet A \u2500 init_user \u2500\u25b6 UserData PDA seeds=[\"user\", authority]\nwallet A \u2500 set_name([u8;64]) \u2500\u25b6 same PDA\nwallet A \u2500 clear_name \u2500\u25b6 same PDA (name zeros)\nwallet B \u2500 set_name on A\u2019s PDA \u2500\u25b6 ConstraintSeeds (wrong seeds for B)",
+ "accounts": [
+  [
+   "UserData",
+   "PDA seeds `[\"user\", authority]`",
+   "owner pubkey + 64-byte name"
+  ],
+  [
+   "Authority",
+   "Your wallet (signer, payer)",
+   "Pays rent on init; must match the PDA seeds"
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "`init_user`: create the display-name account",
+   "refs": [
+    {
+     "path": "programs/namegen/src/lib.rs",
+     "a": 12,
+     "b": 49,
+     "note": "init + seeds"
+    }
+   ],
+   "steps": [
+    "Seeds are `[\"user\", authority.key()]`. One PDA per wallet.",
+    "Init fails if the account already exists."
+   ]
+  },
+  {
+   "name": "`set_name` / `clear_name`",
+   "refs": [
+    {
+     "path": "programs/namegen/src/lib.rs",
+     "a": 19,
+     "b": 31
+    }
+   ],
+   "steps": [
+    "Name is a fixed `[u8; 64]` field.",
+    "A second wallet cannot satisfy the PDA seeds for someone else\u2019s authority, so the constraint fails first."
+   ]
+  }
+ ],
+ "innovation": {
+  "text": "A minimal profile registry: one PDA per wallet, fixed-size name bytes, no token vault."
+ },
+ "frontend": [
+  {
+   "title": "Connect and derive the user PDA",
+   "steps": [
+    "The client derives the user account from seeds `[\"user\", wallet]` and the program id before sending `init_user` or `set_name`.",
+    "Only the matching wallet can sign instructions that list that PDA under those seeds."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Read the PDA seeds on Explorer",
+   "steps": [
+    "Open the init signature under Proof.",
+    "Confirm the program id and that the user account is owned by the NameGen program."
+   ],
+   "expect": "Program ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG is invoked and the user PDA is created."
+  },
+  {
+   "title": "Explain the failed foreign write",
+   "steps": [
+    "Open the foreign-wallet failure signature if listed under Proof.",
+    "Name the constraint that failed."
+   ],
+   "expect": "ConstraintSeeds (or equivalent), not a successful overwrite."
+  }
+ ],
+ "not_covered": "No ENS-style secondary market; no UTF-8 validation beyond fitting 64 bytes; the redundant NotOwner branch is noted in the deployment limits because seeds already bind the account.",
+ "path_order": 3,
+ "path_stage": 1,
+ "difficulty": "Beginner",
+ "time": "25 minutes",
+ "objectives": [
+  "Create a per-wallet PDA",
+  "Write and clear a fixed-size name field",
+  "See why another wallet cannot edit your PDA"
+ ],
+ "prereqs": [
+  "A Solana address is not always a wallet"
+ ],
+ "concepts": [
+  "pda",
+  "seeds",
+  "signer"
+ ]
+}

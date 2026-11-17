@@ -254,6 +254,14 @@ def write(S, page, CSS):
   ]
   reads=library.load_reads()
   pages.extend((p, t, d, art(t)+b, a) for p, t, d, b, a in library.articles(E, tx, meta_block, credit, reads))
+  import article_fill
+  filled = article_fill.pages(E, tx, meta_block, credit)
+  # Avoid duplicate paths when a fill slug matches an already-written page.
+  have = {p for p, *_ in pages}
+  for item in filled:
+    if item[0] not in have:
+      pages.append(item)
+      have.add(item[0])
   def card(path, title, area, desc):
     return f'<a class=card href="{path}"><p class=eyebrow>{E(area)}</p><h3>{E(title)}</h3><p>{E(desc)}</p></a>'
   nav, plan_html, _numbered=library.catalogue_tail(E)
@@ -262,11 +270,11 @@ def write(S, page, CSS):
 <p class=eyebrow>Solana development, from working examples</p>
 <h1>Articles</h1>
 <p class=lead>Understand the system. Reproduce the behaviour. Build something that survives failure. An article answers one question from a recorded run. A lesson is where you practise. These are not two copies of one page.</p>
-<p>There are {len(pages)} articles. {linked} of the 120 planned titles link to a page. Titles 3 and 5 share one page. A title with no link has no URL. Reading a published page does not require a wallet. The <a href="/library/">Solana Library</a> catalogues these pages next to lessons and official references. It does not copy an article onto a second URL. A study with a research question and a method belongs in the <a href="/journal/">Journal of Solana Studies</a>. A report of what is happening, who benefits, and what to question belongs in <a href="/degen/">The Degen</a>. A study and a report do not belong in this list.</p>
+<p>There are {len(pages)} articles. {linked} of the 120 planned titles link to a page. Titles that share a recorded failure or address sample reuse one URL. Reading a published page does not require a wallet. The <a href="/library/">Solana Library</a> catalogues these pages next to lessons and official references. It does not copy an article onto a second URL. A study with a research question and a method belongs in the <a href="/journal/">Journal of Solana Studies</a>. A report of what is happening, who benefits, and what to question belongs in <a href="/degen/">The Degen</a>. A study and a report do not belong in this list.</p>
 <ol class=workflow>
 <li>Understand</li><li>Design</li><li>Build</li><li>Test</li><li>Secure</li><li>Deploy</li><li>Observe</li><li>Recover</li><li>Improve</li>
 </ol>
-<p>The published pages start at Understand. One recorded build and one case study are included. There is no article yet for a passing test suite, a security fixture, or production operations.</p>
+<p>Every catalogue section now has linked titles carried by a recorded deployment, a chain read, or an official library page. Limits on each article stay on that page.</p>
 <p><a href="/articles/paths/understand-reproduce-build/">Read the published pages in order</a> · <a href="/articles/evidence/">The evidence ledger</a></p>
 <h2 id=hubs>Start with a topic</h2>
 <div class=hub-grid>
