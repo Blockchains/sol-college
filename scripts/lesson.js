@@ -137,23 +137,26 @@
       var last = load(LAST);
       if (last && last.href && last.title && location.pathname !== last.href) {
         resume.hidden = false;
-        resume.innerHTML = 'Continue <a href="' + esc(last.href) + '">' + esc(last.title) + '</a>';
+        resume.innerHTML = 'Pick up where you left off: <a href="' + esc(last.href) + '">' + esc(last.title) + '</a>';
       }
     }
 
     var q = document.getElementById('lesson-q');
     var cards = [].slice.call(document.querySelectorAll('[data-lesson]'));
     if (q && cards.length) {
-      var buttons = [].slice.call(document.querySelectorAll('.finder-row [data-diff]'));
+      var buttons = [].slice.call(document.querySelectorAll('.finder-diff [data-diff]'));
+      var formats = [].slice.call(document.querySelectorAll('.finder-format [data-format]'));
       var empty = document.getElementById('lesson-empty');
       var count = document.getElementById('lesson-count');
       function apply() {
         var s = (q.value || '').toLowerCase().trim();
-        var pressed = document.querySelector('.finder-row [data-diff][aria-pressed="true"]');
+        var pressed = document.querySelector('.finder-diff [data-diff][aria-pressed="true"]');
         var diff = pressed ? (pressed.getAttribute('data-diff') || '') : '';
+        var fpressed = document.querySelector('.finder-format [data-format][aria-pressed="true"]');
+        var format = fpressed ? (fpressed.getAttribute('data-format') || '') : '';
         var n = 0;
         cards.forEach(function (c) {
-          var ok = (!s || (c.getAttribute('data-text') || '').indexOf(s) >= 0) && (!diff || c.getAttribute('data-diff') === diff);
+          var ok = (!s || (c.getAttribute('data-text') || '').indexOf(s) >= 0) && (!diff || c.getAttribute('data-diff') === diff) && (!format || c.getAttribute('data-format') === format);
           c.hidden = !ok;
           if (ok) n++;
         });
@@ -166,16 +169,20 @@
         });
         if (count) count.textContent = n + (n === 1 ? ' lesson' : ' lessons');
         if (empty) empty.hidden = n !== 0;
-        var filtering = !!(s || diff);
+        var filtering = !!(s || diff || format);
         document.querySelectorAll('.index-intro').forEach(function (el) { el.hidden = filtering; });
       }
       q.addEventListener('input', apply);
-      buttons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          buttons.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
-          apply();
+      function bind(group) {
+        group.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            group.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+            apply();
+          });
         });
-      });
+      }
+      bind(buttons);
+      bind(formats);
       cards.forEach(function (card) {
         var rec = progress[card.getAttribute('data-slug')];
         if (rec && rec.done && rec.done.length) {
