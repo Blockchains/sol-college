@@ -91,6 +91,53 @@ pre.diagram,pre.sh{position:relative}
 @media (prefers-reduced-motion: reduce){
  .readbar>span{transition:none}
 }
+.tds{--ink:#1c140c;--paper:#f3ead7;background:var(--paper);color:var(--ink);margin:-24px calc(-1 * clamp(16px,4vw,48px)) 0;padding:28px clamp(16px,4vw,48px) 56px;font-family:Georgia,"Iowan Old Style",Palatino,serif}
+.tds h1,.tds h2,.tds h3,.tds .papername{font-family:Arial,Helvetica,sans-serif;color:#1c140c;letter-spacing:-.03em;text-transform:uppercase;background:none;-webkit-text-fill-color:#1c140c}
+.tds h1{font-size:clamp(2.6rem,8vw,5.4rem);line-height:.88;text-align:center;border-top:4px solid #1c140c;border-bottom:4px solid #1c140c;padding:.14em 0;margin:.2em 0}
+.tds h2{font-size:1.35rem;margin:1.1em 0 .3em;letter-spacing:.04em}
+.tds h3{font-size:1.05rem;margin:.2em 0}
+.tds a{color:#7a1f1f}
+.tds a:hover{color:#1c140c}
+.tds .papername{font-weight:800;font-size:1.4rem;text-align:center;margin:0}
+.tds .papername a{color:#1c140c;text-decoration:none}
+.tds .dateline,.tds .byline,.tds .kind,.tds .label{font-family:Arial,Helvetica,sans-serif}
+.tds .dateline{text-align:center;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin:0}
+.tds .motto{text-align:center;font-style:italic;font-size:1.35rem;margin:.4em 0 .6em}
+.tds .desknav{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 16px;border-top:1px solid #1c140c;border-bottom:1px solid #1c140c;padding:8px 0;margin:0 0 18px}
+.tds .desknav a{color:#1c140c;text-decoration:none;font-family:Arial,Helvetica,sans-serif;font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+.tds .label{color:#8f1d1d;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin:0 0 4px}
+.tds .deck{font-size:1.2rem;max-width:42rem}
+.tds .lead{color:#1c140c}
+.tds .box{border:1px solid #1c140c;background:#efe4cf;padding:12px 14px;margin:16px 0}
+.tds .box p:last-child{margin-bottom:0}
+.tds .cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,.9fr);gap:28px 36px;align-items:start}
+.tds .rule{border:0;border-top:1px solid #1c140c;margin:22px 0}
+.tds table{width:100%;border-collapse:collapse;table-layout:fixed}
+.tds td,.tds th{border-bottom:1px solid #1c140c;padding:8px;text-align:left;vertical-align:top;overflow-wrap:anywhere;color:#1c140c}
+.tds .facts{display:grid;grid-template-columns:8rem minmax(0,1fr);gap:6px 12px}
+.tds .facts dt,.tds .crumbs{font-family:Arial,Helvetica,sans-serif;font-weight:700;color:#3d342b}
+.tds .crumbs{font-weight:400}
+.tds .facts dd{margin:0}
+.tds .kind{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#8f1d1d;font-weight:700}
+.tds .index{padding-left:1.1em}
+.tds .index li{margin:0 0 8px}
+.tds .features{padding-left:1.1em;max-width:46rem}
+.tds .assigns{padding-left:1.2em}
+.tds .assigns li{margin:0 0 16px}
+.tds .paperfoot{display:flex;flex-wrap:wrap;gap:8px 16px;border-top:3px solid #1c140c;margin-top:28px;padding-top:12px}
+.tds .paperfoot a{font-family:Arial,Helvetica,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:13px;color:#1c140c}
+.tds .colophon{font-size:14px;max-width:46rem}
+.tds a.ink{font-family:Arial,Helvetica,sans-serif;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#f3ead7;background:#1c140c;text-decoration:none;padding:8px 12px;display:inline-block}
+.tds .satire{border:3px dashed #8f1d1d;padding:12px 14px;margin:12px 0;background:#fff8ea}
+.tds .papersearch{margin:8px 0 18px}
+.tds .papersearch label{font-family:Arial,Helvetica,sans-serif;font-weight:700}
+.tds input[type=search]{font:inherit;font-size:16px;background:#fff;color:#1c140c;border:1px solid #1c140c;border-radius:0;padding:8px 10px;width:min(100%,28rem);margin-left:8px}
+.tds a:focus-visible,.tds input:focus-visible{outline:2px solid #1c140c;outline-offset:2px}
+.tds h2,.tds section{scroll-margin-top:88px}
+@media(max-width:800px){
+ .tds .cols,.tds .facts{grid-template-columns:1fr}
+ .tds input[type=search]{display:block;width:100%;margin:6px 0 0}
+}
 @media(max-width:900px){
  .lesson-layout{grid-template-columns:minmax(0,1fr);grid-template-areas:"rail" "main"}
  .rail{position:sticky;top:7.5rem;z-index:4;flex-direction:row;max-height:none;width:100%;overflow-x:auto;gap:6px;padding:8px 0;background:rgba(11,10,20,.94);border-bottom:1px solid var(--line)}
