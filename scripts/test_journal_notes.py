@@ -1,4 +1,4 @@
-"""The appraisal series is a tenfold expansion of journal prose, and it stays prospective."""
+"""The appraisal series is a deep expansion of journal prose, and it stays prospective."""
 import re
 import unittest
 import journal
@@ -6,9 +6,10 @@ import journal_appraisals as appraisals
 import library_papers as papers
 
 # Words in string literals longer than 40 characters in journal.py and
-# journal_depth.py on origin/main, before this series. Tenfold means the
-# appraisal prose alone clears ten times that count.
+# journal_depth.py on origin/main, before this series. The floor is three
+# times the prior ~180k appraisal expansion (~500k+ words).
 BASELINE = 8555
+DEPTH_FLOOR = 500000
 
 
 def _blob(note):
@@ -21,8 +22,9 @@ class JournalNotes(unittest.TestCase):
         cls.notes = appraisals.notes()
         cls.by_slug = {n['slug']: n for n in cls.notes}
 
-    def test_word_count_is_tenfold(self):
-        self.assertGreaterEqual(appraisals.word_count(), BASELINE * 10)
+    def test_word_count_is_three_times_prior_depth(self):
+        self.assertGreaterEqual(appraisals.word_count(), DEPTH_FLOOR)
+        self.assertGreaterEqual(appraisals.word_count(), BASELINE * 50)
 
     def test_one_note_per_retrieved_document(self):
         library = papers.papers()

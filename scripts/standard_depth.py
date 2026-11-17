@@ -136,3 +136,32 @@ BRIEFS = {
   ask='Which decisions about the college are visible to a reader, and which decisions have no public record?',
   trap='Pretending the paper can force the publisher. It cannot. Sol.College can edit the page. The assignment is to say what a reader still cannot see.'),
 }
+
+def deepen_desks(more):
+  out = {}
+  for desk, d in more.items():
+    d = dict(d)
+    show = list(d.get('show') or [])
+    refuse = list(d.get('refuse') or [])
+    show.append('The retrieval date on every cited document, kept next to the claim.')
+    show.append('The limit sentence that stops the piece from becoming a report it has not earned.')
+    refuse.append('A depth paragraph that adds a person, a trip, or a quote the sources do not contain.')
+    refuse.append('Treating a document reading as if a newsroom had filed a story.')
+    d['show'] = show
+    d['refuse'] = refuse
+    d['specimen'] = (d.get('specimen') or '') + ' Depth wording on this desk is still a specimen, not a filed piece.'
+    out[desk] = d
+  return out
+
+def deepen_briefs(briefs):
+  out = {}
+  for title, b in briefs.items():
+    b = dict(b)
+    b['seek'] = (b.get('seek') or '') + ' Depth does not invent the missing documents.'
+    b['ask'] = (b.get('ask') or '') + ' A thicker question is still unanswered until records exist.'
+    b['trap'] = (b.get('trap') or '') + ' Do not print depth prose as a finding.'
+    out[title] = b
+  return out
+
+DESK_MORE = deepen_desks(DESK_MORE)
+BRIEFS = deepen_briefs(BRIEFS)

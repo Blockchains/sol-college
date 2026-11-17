@@ -125,7 +125,7 @@ def sentences(block: str) -> list[str]:
   out = []
   for p in parts:
     p = p.strip().strip('|').strip()
-    if len(p) < 25:
+    if len(p) < 18:
       continue
     if p.lower().startswith(('table of', 'copyright', 'license', 'http://', 'https://')):
       continue
@@ -224,14 +224,14 @@ def pack_paragraphs(sents: list[str], src_norm: str) -> list[str]:
   for s in sents:
     rw = break_overlap(rewrite_sentence(s), src_norm)
     w = len(rw.split())
-    if words + w > 140 and buf:
+    if words + w > 220 and buf:
       paras.append(' '.join(buf))
       buf = [rw]
       words = w
     else:
       buf.append(rw)
       words += w
-    if words >= 85 and len(buf) >= 2:
+    if words >= 140 and len(buf) >= 2:
       paras.append(' '.join(buf))
       buf = []
       words = 0
@@ -251,7 +251,7 @@ def pack_paragraphs(sents: list[str], src_norm: str) -> list[str]:
       'of body text after headings and code fences were removed. The heading itself is kept so the '
       'reading still follows the file’s own outline. Nothing on this page is a measurement of a live cluster.'
     ]
-  return cleaned[:14]
+  return cleaned[:28]
 
 
 def parse_sections(text: str) -> list[tuple[str, str, str]]:

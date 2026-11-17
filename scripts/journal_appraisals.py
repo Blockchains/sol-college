@@ -233,6 +233,118 @@ def _outline(row):
      % ('; '.join(shown), more)
     )
 
+_TYPE_INSTRUMENT = {
+ 'SIMD': (
+  'A SIMD appraisal has three sentences that must not be collapsed. The first is what the proposal says it wants. The second is the process label in the front matter. The third is what a cluster would have to show for the change to be treated as running. '
+  'This note stores the first two from the catalogue. It does not store the third. A methods section that cites only the proposal as proof of activation has skipped the third sentence.'
+ ),
+ 'White paper': (
+  'A white-paper appraisal treats the abstract and the stated design as the document’s claims. Figures, simulations, and architecture diagrams stay inside the paper unless a separate record shows they were re-run. '
+  'This note does not re-run proofs, does not time a client, and does not promote a title-page number into a live-network baseline.'
+ ),
+ 'Litepaper': (
+  'A litepaper is a short public description. Its brevity is part of the record: a missing section is not filled in from a longer paper that was not retrieved for this catalogue row. '
+  'Yield, market, or roadmap sentences stay the litepaper’s sentences. They are not checked balances and not a schedule this journal observed.'
+ ),
+ 'Language edition': (
+  'A language edition is a translation of a design already filed in another language. This appraisal does not grade translation quality, does not claim sentence-by-sentence equivalence, and does not treat the edition as a second, independent architecture. '
+  'Where the catalogue’s reading note is an English paraphrase of this file, that paraphrase is still not a measurement.'
+ ),
+ 'Design note': (
+  'A design note is often a short mechanism page. The appraisal’s job is to keep the mechanism claim separate from a deployment claim. '
+  'A sysvar address, a fee rule, or a helper name in the note is the file’s design. Calling the helper on a cluster would be a different study, and that study was not run here.'
+ ),
+ 'Design proposal': (
+  'A design proposal may be longer than a note and still not be a specification that a cluster is known to run. The appraisal reads the proposal as a proposal. '
+  'Acceptance, review, or implementation labels, when present, are handled by the status instrument. When absent, silence is not a substitute label.'
+ ),
+ 'Regulatory disclosure': (
+  'A regulatory disclosure is a filing or template the catalogue retrieved. Completeness of a form, blank fields, and jurisdiction labels stay as the file presents them. '
+  'This journal does not practise law, does not fill blank schedules, and does not treat a template as evidence a named product is authorised.'
+ ),
+}
+
+def _type_instrument(row):
+    return _TYPE_INSTRUMENT.get(row['doc_type'], (
+     'The catalogue’s document type for this row is “%s”. The type organises the shelf. It is not a peer-review outcome and not evidence the design runs.'
+     % row['doc_type']
+    ))
+
+def _retrieval(row):
+    return (
+     'The catalogue’s retrieval note for this row is: %s '
+     'That note is the only retrieval this appraisal trusts. A mirror URL, a later edit, or a second PDF that was not fetched on %s is not silently substituted. '
+     'If the retrieval says the full text was read for a section-by-section reading, that reading is still a Sol.College reading note: not a verbatim copy, and not a cluster log.'
+     % (row['retrieval'], CHECKED)
+    )
+
+def _language(row):
+    lang = row.get('language') or 'Not stated'
+    return (
+     'The catalogue records the language as “%s”. A language label is a filing fact. It is not a claim that every technical term was checked against a bilingual glossary, and it is not a claim that a reader of another language has the same page. '
+     'Quotations in this appraisal follow the catalogue’s stored English (or the catalogue’s English paraphrase of a non-English file). They are not a certified translation.'
+     % lang
+    )
+
+def _topics(row):
+    topics = row.get('topics') or []
+    if not topics:
+        return (
+         'No topic tags were stored for this row. The absence of a tag is not evidence the file is unclassifiable. It means this note will not invent a topic list to make the file look sorted.'
+        )
+    return (
+     'The catalogue’s topic tags for this row are: %s. A tag is a shelf label for search and for the library index. '
+     'It is not a finding that the file is the authoritative treatment of that topic, and it is not a finding that other files under the same tag agree with this one.'
+     % ', '.join(topics)
+    )
+
+def _related_docs(row):
+    related = row.get('related') or []
+    if not related:
+        return (
+         'The catalogue stores no related-document slugs for this row. This appraisal will not invent a reading list. '
+         'A later study that wants a comparison set has to name the other retrieved files and say what was compared.'
+        )
+    shown = ', '.join(related[:8])
+    more = ''
+    if len(related) > 8:
+        more = ' %d further related slugs were stored and are not repeated here.' % (len(related) - 8)
+    return (
+     'The catalogue lists these related document slugs: %s.%s '
+     'A related slug is a pointer inside the shelf. It is not a statement that the files agree, that one supersedes another, or that reading them in order is a literature review. '
+     'Each related file has its own appraisal page with its own limits.'
+     % (shown, more)
+    )
+
+def _later_study(row):
+    sentence = _claim_sentence(row['scope'])
+    return (
+     'A later study that wants to move from this file to a measurement would have to publish at least four things this note does not have: '
+     'the exact sentence used (for example, “%s”), the instrument that turns that sentence into an observable, the raw records the instrument produced, and the failure rule for when the records disagree with the sentence. '
+     'Without those four, repeating the file’s wording in a results section is still a citation of a document, not a result. '
+     'This appraisal is written so that gap stays visible.'
+     % sentence
+    )
+
+def _citation_hygiene(row):
+    return (
+     'Citation hygiene for “%s” is narrow. Quote the library page or the source URL the catalogue stores, keep the version string “%s” in the citation, and keep the retrieval date %s in the same paragraph as any number taken from the stored scope. '
+     'Do not upgrade a design note into a white paper, a SIMD status into a cluster fact, or a translation into an independent design. '
+     'Do not drop the limits paragraph when the sentence is moved into a slide deck. The limits are part of the record this journal is willing to stand behind.'
+     % (row['title'], row['version'], CHECKED)
+    )
+
+def _keywords(row):
+    keys = (row.get('keywords') or '').strip()
+    if not keys:
+        return (
+         'No keyword string was stored for this row beyond the fields already quoted. This note will not harvest keywords from outside the catalogue entry.'
+        )
+    return (
+     'The catalogue’s keyword string includes: %s. Keywords help a reader find the page. They are not a controlled vocabulary this journal validated, and a keyword match is not evidence two files describe the same mechanism.'
+     % keys
+    )
+
 def build(row):
     status = status_of(row)
     status_sentence = STATUS_RULE.get(status) if status else (
@@ -252,15 +364,98 @@ def build(row):
      'The file was retrieved on %s. The retrieval note on the catalogue is the note this appraisal relies on. The journal did not open a second copy and did not collect observations of its own.'
      % (row['title'], kind, version, date, authors, size, CHECKED),
      _project(row),
+     _type_instrument(row),
+     _retrieval(row),
      'What the reading stored as the document’s scope is this: %s' % row['scope'],
      _terms(row),
      'What the reading stored about Solana, specifically, is this: %s' % row['solana'],
      'What the reading stored as limits is this: %s Those limits bind this appraisal. A sentence that outruns them is not a reading of the record.' % row['limits'],
+     _language(row),
+     _topics(row),
+     _keywords(row),
      status_sentence,
      _outline(row),
      *([_distinct_headings(row)] if _distinct_headings(row) else []),
      btext,
+     _related_docs(row),
      _misuse(row),
+     _citation_hygiene(row),
+     _later_study(row),
+     (
+      'Reading order for a careful citation of this row: open the library page first, then the source URL the catalogue stores, then this appraisal. '
+      'Do not reverse that order. The appraisal is a filter on what the catalogue already stored; it is not a shortcut that replaces the file. '
+      'If the library page and this appraisal ever disagree, the library page wins for bibliographic fields, and the disagreement should be filed as a catalogue correction rather than patched in a footnote here.'
+     ),
+     (
+      'Negative space for “%s”: this note does not contain a line-by-line review, a diff against another version, a benchmark, a security proof check, a deployment address, a signer study, or a yield verification. '
+      'Each of those would be a different instrument with different records. Naming them here is a warning, not a promise that they are queued. '
+      'The journal’s status panel still says no research paper has been published and review has not started.'
+      % row['title']
+     ),
+     (
+      'Comparability: files that share a project label, a topic tag, or a related-slug link are still separate retrievals. '
+      'A table that puts their scope sentences in one column is allowed as documentary comparison. A table that ranks them by “quality” or “readiness” without a pre-registered rubric is not what this series supplies. '
+      'No rubric for ranking retrieved documents was registered for this note.'
+     ),
+     (
+      'Automation disclosure: catalogue retrieval and this appraisal series were prepared with automated assistance under the journal’s charter. '
+      'Automated assistance does not create observations, does not assign peer reviewers, and does not turn a proposal label into a cluster reading. '
+      'A human correction that finds an invented guest, a private key, or a verbatim paper dump still belongs on the public issue path the library policy names.'
+     ),
+     (
+      'Shelf position: this appraisal sits under Journal of Solana Studies → Notes, beside the library page for the same slug. '
+      'The journal homepage still states that no research paper has been published and that nothing here is peer reviewed. '
+      'A reader who lands on this note from search should treat it as a citation filter, not as Volume 1 of an issue that does not exist.'
+     ),
+     (
+      'Version discipline: the stored version string is “%s” and the stored document date is “%s”. '
+      'If a later retrieval of the same URL shows a different version, that retrieval needs a new catalogue row or an updated retrieval note. '
+      'This appraisal does not auto-update when the upstream file moves. Quoting it after a silent upstream edit is the reader’s error unless the retrieval date is checked.'
+      % (row['version'], row['date'])
+     ),
+     (
+      'Solana-wording check, repeated for depth: the catalogue’s Solana field is quoted above on purpose. '
+      'Files that never contain the word Solana stay filed with that fact visible. Files that mention Solana only as an example chain stay examples. '
+      'Neither case is repaired by this journal’s outside knowledge of where a project later deployed.'
+     ),
+     (
+      'What “full reading” on the library page does and does not do for this appraisal: when the catalogue says a section-by-section reading exists, that reading is a separate Sol.College note on the library page. '
+      'This appraisal may rely on the catalogue’s scope, limits, and retrieval lines without re-copying that reading. '
+      'It still does not promote the reading’s paraphrase into a measurement, and it does not treat the reading as peer review of the source file.'
+     ),
+     (
+      'Byte and identity check: %sThe stable catalogue id for this row is “%s”. '
+      'Authors are stored as “%s”. When authors are “Not named in the file”, this note does not invent a byline from a blog, a social account, or a press page that was not retrieved into the catalogue. '
+      'A nameless file stays nameless here.'
+      % (
+        ('%s bytes were retrieved. ' % format(row['bytes'], ',')) if isinstance(row.get('bytes'), int) else 'No byte length was stored. ',
+        row['id'],
+        row['authors'],
+      )
+     ),
+     (
+      'Cross-shelf warning: articles, lessons, campus rooms, findings, and live-app ledgers are other Sol.College surfaces. '
+      'None of them silently upgrades this appraisal. A lesson that uses a related brand name still has only the deployment record on its own page. '
+      'A finding that counts forks does not count as a reading of this file.'
+     ),
+     (
+      'Evidence accounting for “%s”: every factual claim a reader may copy from this note must already appear on the library page or in the retrieved file this appraisal names. '
+      'Depth paragraphs that restate the same catalogue fields in different order do not create new evidence. '
+      'If a citation needs a number, a date, a status, or an author string that is missing from the catalogue, the correct move is to leave the field blank or to retrieve again—not to fill it from memory, a blog, or a social post. '
+      'The journal treats invented fields as catalogue corruption, even when the invention looks helpful.'
+      % row['title']
+     ),
+     (
+      'Reader checklist before citing this appraisal elsewhere: (1) copy the stable slug and the retrieval date from the library page; (2) quote the source URL the catalogue stores; '
+      '(3) state that no observations were collected and that the page is not peer-reviewed research; (4) do not upgrade “%s” into a cluster fact; '
+      '(5) do not treat related-slug links as endorsement. Missing any of those steps turns a citation filter into a promotional blurb the series refuses to supply.'
+      % (status or row['doc_type'])
+     ),
+     (
+      'Depth vs. discovery: expanding this note’s word count is a reading aid for the same retrieved record. '
+      'It is not a discovery that the file was re-fetched, that a reviewer was assigned, or that a later study finished. '
+      'Editors who score journals by word count alone will misread Sol.College. Editors who score by whether a claim can be checked against the catalogue will not.'
+     ),
      'No observations have been collected. No reviewer has been assigned. The page is not peer-reviewed research. '
      'The library page remains the catalogue record; this page is the journal’s statement of what that record can and cannot be cited for. '
      'A later study that uses the file has to say which sentence it used and which measurement it added. This note is not that measurement.',

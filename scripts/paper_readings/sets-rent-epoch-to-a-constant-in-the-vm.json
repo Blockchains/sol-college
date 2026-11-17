@@ -13,8 +13,7 @@
    "heading": "Motivation",
    "where": "Heading in the retrieved file",
    "paragraphs": [
-    "Per the file, the rent_epoch field on an acct is no longer meaningful. Per the file, this is because all accts has to be rent exempt, and (per the file) rent fees collection has (per the file) been disabled (see SIMD-84). Per the file, with this in mind, (per the file) it would be beneficial (per the file) to remove rent_epoch from (per the file) the computation of a single acct's hash. Per the file, however, before we can (per the file) remove the rent_epoch from the acct hash computation, we must set (per the file) the value of rent_epoch—as serialized (per the file) into the VM for tx processing—to a constant.",
-    "Per the file, if we did not do this, different nodes could have different values (per the file) for rent_epoch passed into (per the file) the VM, which could result in different tx results and thus cluster divergence."
+    "Per the file, the rent_epoch field on an acct is no longer meaningful. Per the file, this is because all accts has to be rent exempt, and (per the file) rent fees collection has (per the file) been disabled (see SIMD-84). Per the file, with this in mind, (per the file) it would be beneficial (per the file) to remove rent_epoch from (per the file) the computation of a single acct's hash. Per the file, however, before we can (per the file) remove the rent_epoch from the acct hash computation, we must set (per the file) the value of rent_epoch—as serialized (per the file) into the VM for tx processing—to a constant. Per the file, if we did not do this, different nodes could have different values (per the file) for rent_epoch passed into (per the file) the VM, which could result in different tx results and thus cluster divergence."
    ]
   },
   {

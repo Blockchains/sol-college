@@ -48,8 +48,7 @@
    "heading": "Security Considerations",
    "where": "Heading in the retrieved file",
    "paragraphs": [
-    "Per the file, having all accts rewritten due to rent (per the file) collection results in all accts being included in at (per the file) least one bank hash per epoch. Per the file, since the bank hash (per the file) is part of what (per the file) is voted on for (per the file) consensus, this means every acct is verified by the (per the file) network at least once per epoch. Per the file, by skipping rewrites, we (per the file) lose this security property.",
-    "Per the file, this is OK because (per the file) the Epoch Accounts Hash (per the file) (EAH) was added to (per the file) directly address this issue. Per the file, see the EAH proposal for more information. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
+    "Per the file, having all accts rewritten due to rent (per the file) collection results in all accts being included in at (per the file) least one bank hash per epoch. Per the file, since the bank hash (per the file) is part of what (per the file) is voted on for (per the file) consensus, this means every acct is verified by the (per the file) network at least once per epoch. Per the file, by skipping rewrites, we (per the file) lose this security property. Per the file, this is OK because (per the file) the Epoch Accounts Hash (per the file) (EAH) was added to (per the file) directly address this issue. Per the file, see the EAH proposal for more information. Those statements are the file’s claims, not a Sol.College measurement of a live cluster."
    ]
   }
  ]

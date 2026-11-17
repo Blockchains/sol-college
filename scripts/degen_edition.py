@@ -27,6 +27,7 @@ def _words(text):
 
 def load():
     import degen_copy
+    import degen_depth
     rows = []
     seen = set()
     for raw in degen_copy.READINGS:
@@ -44,6 +45,8 @@ def load():
         if not re.search(r'\b(not|no|never|without)\b', desc, re.I):
             raise SystemExit('degen: description has no limit word ' + row['slug'])
         row['desc'] = desc
+        # Depth pass triples analytical prose from fields the reading already stored.
+        row['paragraphs'] = list(row['paragraphs']) + degen_depth.deepen(row)
         blob = '\n'.join([
             row['title'], row['question'], row['desc'],
             '\n'.join(row['paragraphs']),

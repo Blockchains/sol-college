@@ -96,3 +96,40 @@ GUIDES = [
   ],
   next=[('lessons-guide', 'How to use a lesson'), ('lessons-path', 'Learning path'), ('lessons-index', 'Lesson index'), ('gloss', 'Glossary')]),
 ]
+
+
+def deepen_guides(guides):
+  """Triple guide depth without adding measurements or unretrieved pages."""
+  out = []
+  for g in guides:
+    g = dict(g)
+    paras = list(g['paras'])
+    title = g['title']
+    question = g['question']
+    next_ids = ', '.join(n for n, _ in g.get('next') or [])
+    paras.append(
+      'How this guide stays honest about “%s”: every distinction above is already on a catalogue page, a journal protocol, or an official URL the library retrieved. '
+      'The guide does not add a fee schedule, a TPS figure, or a deployment the records do not contain. '
+      'If a syllabus needs a claim stronger than those records, the claim has to wait for a page that stores it.'
+      % title
+    )
+    paras.append(
+      'The question this guide answers is only: %s '
+      'A different question — “is the network safe?”, “which wallet is best?”, “will this yield hold?” — is outside the holdings named above. '
+      'Pointing at the next links is not an endorsement of every sentence on those destinations; it is a map of what was filed.'
+      % question
+    )
+    paras.append(
+      'Teaching or building from this guide means keeping the same limits on the card the learner sees. A completion tick, a copied command, or a mentioned SIMD number does not become a measurement because a guide paragraph repeated it. '
+      'Related catalogue ids named for the next step include: %s. Each id still has its own page and its own limitation line.'
+      % (next_ids or 'none stored')
+    )
+    paras.append(
+      'What this guide refuses: inventing a payments doc that was not retrieved, treating /explore/ walkthroughs as lessons, treating a white-paper reading note as a literature review, and treating a campus “paused” label as a story about students. '
+      'Those refusals are the same refusals the maintenance policy and the journal methods page already print. The guide exists to put them in one shelf-sized path, not to soften them.'
+    )
+    g['paras'] = paras
+    out.append(g)
+  return out
+
+GUIDES = deepen_guides(GUIDES)

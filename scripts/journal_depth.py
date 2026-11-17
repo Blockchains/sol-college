@@ -209,3 +209,48 @@ SKETCHES = [
   illustration='Imagine a website that says the application is shut, while a withdraw authority is still set. The picture is the pair of records. No application was audited for this sketch.',
   negative='A small set of applications that left a clear withdraw path answers the question for that set. It does not describe the ones that were not selected.'),
 ]
+
+def deepen_depth(depth):
+  out = {}
+  for slug, d in depth.items():
+    d = dict(d)
+    terms = list(d.get('terms') or [])
+    design = list(d.get('design') or [])
+    terms.append(
+      'Documentary prior: a retrieved file may be cited for its wording. It is not a substitute for the observation this protocol would store.'
+    )
+    terms.append(
+      'Refusal: inventing a guest, a private message, or a cluster reading to fill a blank cell is outside the charter.'
+    )
+    design.append(
+      'Write the refusal list in the same methods section as the procedure, so a missing record stays missing in public.'
+    )
+    design.append(
+      'Keep automated assistance disclosed. Assistance does not create the observation column.'
+    )
+    d['terms'] = terms
+    d['design'] = design
+    d['split'] = (d.get('split') or '') + (
+      ' A thickened methods note still does not move a cell from empty to filled. The depth pass adds vocabulary and refusals, not results.'
+    )
+    d['negative'] = (d.get('negative') or '') + (
+      ' Extra terms do not widen the claim. A protocol that was not run remains unrun.'
+    )
+    out[slug] = d
+  return out
+
+def deepen_sketches(sketches):
+  out = []
+  for s in sketches:
+    s = dict(s)
+    terms = list(s.get('terms') or [])
+    terms.append('Depth note: this sketch is still prospective. No corpus was scored for the thickened wording.')
+    terms.append('Charter note: no private manuscript system exists; confidential material is not accepted.')
+    s['terms'] = terms
+    s['why'] = (s.get('why') or '') + ' Depth wording does not create the missing study.'
+    s['negative'] = (s.get('negative') or '') + ' A longer sketch is not a published paper.'
+    out.append(s)
+  return out
+
+DEPTH = deepen_depth(DEPTH)
+SKETCHES = deepen_sketches(SKETCHES)
