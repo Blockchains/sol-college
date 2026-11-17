@@ -32,6 +32,7 @@ LABELS = {
     'topics': 'Topics', 'learn-solana': 'Learn Solana', 'learn-by-example': 'Concept walkthroughs',
     'what-to-build': 'What to build', 'legal': 'Legal', 'new': 'New', 'edge-ai': 'Edge AI',
     'map': 'All pages', 'path': 'Learning path', 'guide': 'How to use a lesson', 'guides': 'Guides',
+    'papers': 'White papers',
     'methods': 'Methods', 'policy': 'Policy', 'protocols': 'Protocols', 'sketches': 'Sketches',
     'programme': 'Programme', 'policies': 'Policies', 'desks': 'Desks', 'assignments': 'Assignment board',
     'charter': 'Charter', 'editorial': 'Editorial', 'corrections': 'Corrections', 'letters': 'Letters',

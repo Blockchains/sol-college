@@ -146,7 +146,7 @@ def hand_records():
     external('ext-simd', 'Solana Improvement Documents', 'The repository of proposed and accepted changes to the Solana protocol.',
       'Research archive', ['research'], ['evidence', 'explain'], 'https://github.com/solana-foundation/solana-improvement-documents',
       'The repository description says SIMDs describe proposed and accepted changes. That is the research collection’s primary source.',
-      'Discussion status for an individual SIMD: not established. Acceptance of an individual SIMD: not established. The repository contains both proposed and accepted documents; this record is the repository, not one proposal. Implementation evidence: not established. Activation evidence: not established. Applicable client or network: not established. A proposal is not proof a feature is active.',
+      'SIMD-0326 has its own page because that file cites the Alpenglow white paper. The other proposals are not each catalogued. Discussion status, acceptance, implementation, and activation are not established for the repository as a whole. A proposal is not proof a feature is active.',
       'Where protocol proposals are tracked, and what this record does not establish.', 'SIMD proposal accepted research', 'solana-foundation', 'Solana Foundation repository', OK_DISC),
     external('ext-anchor', 'Anchor documentation', 'The Anchor docs home. The page title read on 17 Nov 2026 was Introduction.',
       'Framework reference', ['programs', 'prerequisites'], ['build'], 'https://www.anchor-lang.com/docs',
@@ -455,8 +455,8 @@ ROOMS = [
   'The network hub is the official map. Sol.College has not operated a validator, and the child links were not opened.',
   ['ext-network', 'ext-tools']),
  ('research', 'Research and protocol', 'What is proposed, implemented, or still debated?',
-  'The SIMD repository holds proposed and accepted documents. Activation of any one proposal is not established. A mention of a SIMD number on a docs page is not activation evidence.',
-  ['ext-simd', 'ext-core']),
+  'The SIMD repository holds proposed and accepted documents. SIMD-0326 is catalogued on its own because it cites the Alpenglow paper. White papers that were retrieved have their own pages. A mention of a SIMD number is not activation evidence.',
+  ['ext-simd', 'paper-solana-whitepaper', 'paper-alpenglow-v1-1', 'ext-core']),
  ('agents', 'AI and agents', 'How do I control permissions and verify outcomes?',
   'The developer-resources page has an AI-tools heading. Those child pages were not opened. Article titles 113 to 116 have no page.',
   ['ext-tools', 'art-index']),
@@ -479,7 +479,7 @@ def card(r, by_id):
   exact = ' '.join([r['keywords'], r['title'], r.get('environment') or ''])
   search = ' '.join([r['title'], r['purpose'], r['why'], r['limits'], r['learn'], r['keywords'], subs, r['type'], r['standing']]).lower()
   report = issue('Library correction: ' + r['title'], 'Record: ' + r['id'] + '\n\nWhat is wrong:\n\nWhat the source says:\n\nDo not include private keys or recovery phrases.\n')
-  kind = 'Open original' if r['origin'] == 'external' else 'Open'
+  kind = 'Open the record' if str(r['href']).startswith('/') else ('Open original' if r['origin'] == 'external' else 'Open')
   label_attr = ' '.join(r['labels'])
   return f'''<article class="card lib-item" id="r-{E(r['id'])}" data-needs="{E(' '.join(r['needs']))}" data-subjects="{E(' '.join(r['subjects']))}" data-origin="{E(r['origin'])}" data-labels="{E(label_attr)}" data-historical="{'1' if r['historical'] else '0'}" data-href="{E(r['href'])}" data-exact="{E(exact)}" data-search="{E(search)}">
 <h3>{E(r['title'])}</h3>
@@ -521,9 +521,10 @@ def inventory(records, counts):
     ('Complete lessons', str(counts['guided']), 'Guided lessons: a written walkthrough of an app recorded as working.'),
     ('Debug challenges', str(counts['challenge']), 'Deployed, and a core flow does not complete. Not counted as complete lessons.'),
     ('Project previews', str(counts['preview']), 'Teaching sequence not written.'),
-    ('Research records', str(n(lambda r: 'research' in r['subjects'])), 'The SIMD repository is one record. Individual proposals were not each catalogued.'),
+    ('Research records', str(n(lambda r: 'research' in r['subjects'])), 'Includes the white-paper shelf and SIMD-0326. The SIMD repository remains one record. Other individual proposals were not catalogued.'),
+    ('White papers and design notes', str(n(lambda r: r['id'].startswith('paper-'))), 'One retrieved document each. A French, Italian, or Japanese edition is a separate URL and not a second design. A docs homepage is not in this count.'),
     ('Historical records', str(n(lambda r: r['historical'])), 'None in this release. Past failures that still matter are inside current articles.'),
-    ('Languages', '1', 'English. No translation is catalogued.'),
+    ('Languages', str(len({r['language'] for r in records if r['id'].startswith('paper-')} | {'English'})), 'English, plus any language edition whose file was read. Those editions were not compared line by line. No other translation is catalogued.'),
     ('Active subject collections', str(len(active)) + ' of 24', 'A subject is active when at least one record names it. Active is not complete.'),
     ('Source checked', str(n(lambda r: 'source-checked' in r['labels'])), 'Destination read on 17 Nov 2026. Examples on those pages were not run.'),
     ('Editorially reviewed', '0', 'No reviewer is named, so the label is not used.'),
@@ -709,6 +710,7 @@ def page_html(records, counts):
 <p class=lead>Understand it. Build it. Find the evidence.</p>
 <p>Anything you need to understand, build, or investigate on Solana—find the right starting point here. The reference desk for your next question. The workshop for your next idea.</p>
 <p>This is the founding catalogue. It is not a claim that every subject is covered, and it does not use a size ranking. A later stage aims at about 150 to 250 reviewed records. This page does not claim that count.</p>
+<p>White papers and design notes that were retrieved, each with its own page, are in the <a href="/library/papers/">white paper catalogue</a>. A project’s docs homepage is not listed there unless a paper file was read.</p>
 <form id=lib-form class=finder role=search>
 <label>Search concepts, errors, code, tools, and research
 <input id=lib-q type=search placeholder="A question, an error, or a program id" autocomplete=off>
@@ -718,6 +720,7 @@ def page_html(records, counts):
 <button type=button data-try="Token account versus wallet">Token account versus wallet</button>
 <button type=button data-try="Build an escrow">Build an escrow</button>
 <button type=button data-try="Understand validator operation">Understand validator operation</button>
+<button type=button data-try="Proof of History">Proof of History</button>
 </div>
 <div class=finder-row>
 <label>Subject <select id=lib-subject><option value="">Any subject</option>{subject_opts}</select></label>
@@ -743,7 +746,7 @@ def page_html(records, counts):
 <div class="finder-row" role=group aria-label=Collections>{collections}</div>
 <p>These buttons filter the catalogue. They do not create a separate URL, so an empty combination is not a page.</p>
 <h2 id=catalogue>Catalogue</h2>
-<p>Original pages and external links are mixed here on purpose, and the standing field says which is which. Opening an external record leaves Sol.College. A search or a button scrolls here.</p>
+<p>Original pages and external links are mixed here on purpose, and the standing field says which is which. A record that stays on Sol.College opens the research page. A link that leaves the site is the publisher’s own page. A search or a button scrolls here.</p>
 {cards}
 <h2 id=selection>Librarian’s selection</h2>
 <p>A small list chosen for this release. It is not ranked by visits, and it is not a complete set.</p>
@@ -819,7 +822,9 @@ def policy_html():
 </aside>
 <p>A working link is not evidence the workflow still works.</p>
 <h2 id=proposals>Proposals</h2>
-<p>The SIMD repository contains proposed and accepted changes. For an individual proposal this catalogue does not establish discussion status, acceptance, implementation, activation, or the client and network. Those fields say “not established”. The same rule applies to announcements and roadmaps, which are not catalogued here.</p>
+<p>The SIMD repository contains proposed and accepted changes. SIMD-0326 is catalogued because the file cites the Alpenglow white paper, and its front matter says Review. For every other proposal this catalogue does not establish discussion status, acceptance, implementation, activation, or the client and network. The same rule applies to announcements and roadmaps.</p>
+<h2 id=papers>White papers</h2>
+<p>A white paper page exists only when the file was retrieved. The page records the title, the version, the date if the file states one, and what the opening says the document is for. It does not copy the paper. A figure in a paper is the paper’s figure. A translation is its own URL and is not counted as a second design. A docs page with no link to a paper is named on the <a href="/library/papers/">white paper catalogue</a> as a page that was checked, not as a holding.</p>
 <h2 id=not-checked>Pages named in the plan that are not records</h2>
 <ul>
 <li>https://solana.com/developers — the fetch timed out.</li>
@@ -926,6 +931,8 @@ def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one
   lessons, counts = lesson_records(live, lesson_of, functional_of, readiness, limit_of, one_line)
   counts['lessons'] = len(live)
   records.extend(lessons)
+  import library_papers as _papers
+  records.extend(_papers.records())
   validate(records, counts, guide_slugs)
   import library_guides as guides
   by_id = dict((r['id'], r) for r in records)
@@ -938,6 +945,7 @@ def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one
       raise SystemExit('library: guide description is over 158 characters ' + g['slug'])
     write_page(S, page, css, path, g['title'], gdesc, guide_html(g, by_id), ld(g['title'], gdesc, path))
     guide_paths.append(path)
+  paper_paths = _papers.write_pages(S, page, css)
   desc = 'A catalogue of Solana explanations, lessons, and official references. Search does not require a wallet. Holdings are counted in public.'
   write_page(S, page, css, '/library/', 'The Solana Library', desc, page_html(records, counts), ld('The Solana Library', desc, '/library/'))
   policy = 'Labels, counting rules, and the GitHub issues used to suggest a resource or report an error.'
@@ -945,8 +953,9 @@ def write(S, page, css, live, lesson_of, functional_of, readiness, limit_of, one
   llms = f'{S}/llms.txt'
   if os.path.exists(llms):
     guide_lines = ''.join(f'- [{g["title"]}]({SITE}/library/guides/{g["slug"]}/): {g["question"]}\n' for g in guides.GUIDES)
-    block = '\n## Library\n- [The Solana Library](' + SITE + '/library/): Catalogue of original pages and source-checked references.\n- [Library maintenance](' + SITE + '/library/policy/): Labels, counting rules, and corrections.\n' + guide_lines
+    paper_lines = ''.join(f'- [{p["title"]}]({SITE}{p["path"]}): {p["project"]} {p["doc_type"]}.\n' for p in _papers.papers())
+    block = '\n## Library\n- [The Solana Library](' + SITE + '/library/): Catalogue of original pages and source-checked references.\n- [Library maintenance](' + SITE + '/library/policy/): Labels, counting rules, and corrections.\n- [White papers](' + SITE + '/library/papers/): Retrieved project papers, one page each.\n' + guide_lines + paper_lines
     text = re.sub(r'\n## Library\n.*?(?=\n## |\Z)', '', open(llms).read(), flags=re.S)
     open(llms, 'w').write(text.rstrip() + '\n' + block)
   print('library:', len(records), 'records;', len(guide_paths), 'guides;', counts)
-  return ['/library/', '/library/policy/'] + guide_paths
+  return ['/library/', '/library/policy/'] + guide_paths + paper_paths
