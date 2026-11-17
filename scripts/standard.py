@@ -1,6 +1,6 @@
 """The Degen: the student newspaper of Sol.College.
 
-This release is the charter, the policies, one editorial, and an assignment board.
+This release is the charter, the policies, the editorial series, and an assignment board.
 It is not a news edition. No story has been reported. No student is named.
 """
 import html, json, os, re, urllib.parse
@@ -77,7 +77,7 @@ ASSIGNMENTS = [
  ('We Tried to Follow the Fees', 'Rebuild the disclosed costs of one bounded workflow. The walk has not been done.'),
  ('The Case for Memecoins', 'A commissioned opinion, with disclosures. It has not been commissioned and it has not been written.'),
  ('The Case Against Memecoins', 'A counterargument commissioned separately from the case for. It has not been commissioned and it has not been written.'),
- ('What Sol.College Should Publish About Itself', 'An editorial asking the publisher for transparency. The founding editorial does not answer this assignment.'),
+ ('What Sol.College Should Publish About Itself', 'Answered as a publisher editorial in the series. Still not a student-filed report.'),
 ]
 
 def desks_nav():
@@ -112,14 +112,17 @@ def box(title, text):
   return f'<aside class=box><p class=label>{E(title)}</p><p>{text}</p></aside>'
 
 NOTE = box('What this package contains',
-  'The charter, the policies, the style book, the founding editorial, the desk standards, an assignment board, and a reading edition of public pages. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
+  'The charter, the policies, the style book, the editorial series, the desk standards, an assignment board, and a reading edition of public pages. No report has been published. No student editor is named. Editorial independence is not established. Sol.College is the publisher and the only party who can change these pages.')
 
 def home_page():
   import degen_edition as edition
+  import degen_editorials as editorials
   rows = edition.readings()
+  deep = editorials.all_editorials()
   items = [
     ('/degen/readings/', 'Readings', 'Document readings of public pages. Not reports.'),
-    ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'Editorial. A statement of intent, not a report.'),
+    ('/degen/editorial/', 'Editorials', 'The founding editorial and document-based editorials. Not reports.'),
+    ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'Founding editorial. A statement of intent, not a report.'),
     ('/degen/charter/', 'Editorial charter', 'What the paper is for, and what it refuses to pretend.'),
     ('/degen/policies/', 'Policies', 'Interests, trading, reporting, promotion, students, and disputes.'),
     ('/degen/desks/', 'The seven desks', 'Beats and questions. No story is filed.'),
@@ -166,7 +169,11 @@ def home_page():
 <div class=cols>
 <section>
 <h2>The argument</h2>
-<p>One editorial is published. No response to it has been written. The case for memecoins and the case against them are assignments. Neither has been commissioned.</p>
+<p>The <a href="/degen/editorial/">editorial series</a> holds the founding statement and {len(deep)} document-based editorials that argue from pages already filed in the reading edition. No response letter has been published. The case for memecoins and the case against them remain assignments. Neither has been commissioned as a report.</p>
+<ul class=index>{''.join(
+  f'<li><a href="/degen/editorial/{E(e["slug"])}/">{E(e["title"])}</a> <span class=kind>Editorial · not reporting</span></li>'
+  for e in deep[:6])}</ul>
+<p><a class=ink href="/degen/editorial/">All editorials</a></p>
 </section>
 <section>
 <h2>The Fine Print</h2>
@@ -241,7 +248,72 @@ def editorial_page():
 </dl>
 </aside>
 {EDITORIAL}
-<p>The <a href="/degen/readings/">reading edition</a> examines public pages about fees, leverage, launches, and custody. Those pages are readings. They are not market stories, and they are not reports.</p>
+<p>The <a href="/degen/readings/">reading edition</a> examines public pages about fees, leverage, launches, and custody. Those pages are readings. They are not market stories, and they are not reports. Further arguments that cite those readings are in the <a href="/degen/editorial/">editorial series</a>.</p>
+{foot()}
+</article>'''
+
+def editorials_index_page():
+  import degen_editorials as editorials
+  rows = editorials.all_editorials()
+  founding = (
+    '<li><a href="/degen/editorial/the-chain-needs-a-student-paper/">The Chain Needs a Student Paper</a> '
+    '<span class=kind>Founding editorial · no sources · not a report</span></li>'
+  )
+  items = founding + ''.join(
+    f'<li><a href="/degen/editorial/{E(e["slug"])}/">{E(e["title"])}</a> '
+    f'<span class=kind>Editorial · document-based · not a report</span></li>'
+    for e in rows)
+  return f'''<article class=tds>
+{crumbs('Editorials')}
+{mast(False)}
+<p class=label>Editorials · not reporting</p>
+<h1>Editorials</h1>
+<p class=deck>Statements of intent and arguments that cite public pages already filed in the reading edition. None of these pages is a report, an interview, or a market story.</p>
+{NOTE}
+<p>There are {1 + len(rows)} editorials. The founding editorial cites no document. The others cite HTTPS pages retrieved for readings. No response letter has been published.</p>
+<ul class=index>{items}</ul>
+<p><a href="/degen/readings/">Reading edition</a> · <a href="/degen/assignments/">Assignment board</a></p>
+{foot()}
+</article>'''
+
+def deep_editorial_page(e):
+  import degen_edition as edition
+  by = {r['slug']: r for r in edition.readings()}
+  src = ''.join(
+    f'<li><a href="{E(s["url"])}">{E(s["label"])}</a> — {E(s["note"])}</li>'
+    for s in e.get('sources') or [])
+  rel = ''
+  if e.get('related'):
+    items = []
+    for slug in e['related']:
+      title = by[slug]['title'] if slug in by else slug.replace('-', ' ')
+      items.append(f'<li><a href="/degen/readings/{E(slug)}/">{E(title)}</a></li>')
+    rel = '<h2>Related readings</h2><ul>' + ''.join(items) + '</ul>'
+  body = ''.join(f'<p>{p}</p>' for p in e['paragraphs'])
+  return f'''<article class=tds>
+{crumbs('Editorial')}
+{mast(False)}
+<p class=label>Editorial · not reporting</p>
+<h1>{E(e['title'])}</h1>
+<p class=deck>{E(e['deck'])}</p>
+<p class=byline>By Sol.College · 17 Nov 2026 · Editorial</p>
+<aside class=box>
+<p class=label>Status</p>
+<dl class=facts>
+<dt>Type</dt><dd>Editorial. An argument. Not a news report.</dd>
+<dt>Reporting</dt><dd>None. No interview, site visit, or funded account.</dd>
+<dt>Author</dt><dd>Sol.College, the publisher. The “we” is the publisher, not a student staff.</dd>
+<dt>Published</dt><dd>17 Nov 2026. Page date, not an edition date.</dd>
+<dt>Sources</dt><dd>Public HTTPS pages already used by the reading edition, listed below.</dd>
+<dt>Disclosure</dt><dd>The publisher wrote the page and can change it. No named person’s holdings are disclosed on this page.</dd>
+<dt>Corrections</dt><dd>None. <a href="/degen/corrections/">The log</a>.</dd>
+</dl>
+</aside>
+{body}
+<h2>Sources</h2>
+<ul>{src}</ul>
+{rel}
+<p><a href="/degen/editorial/">All editorials</a> · <a href="/degen/readings/">Reading edition</a></p>
 {foot()}
 </article>'''
 
@@ -523,11 +595,13 @@ def write_page(S, page, css, path, title, desc, main, data):
   return path
 
 def write(S, page, css):
-  home_desc = 'The Degen is Sol.College’s student newspaper: a charter, an assignment board, and readings of public pages. No report has been published.'
+  import degen_editorials as editorials
+  home_desc = 'The Degen is Sol.College’s student newspaper: a charter, editorials, an assignment board, and readings of public pages. No report has been published.'
   pages = [
     ('/degen/', 'The Degen', home_desc, home_page()),
     ('/degen/charter/', 'Editorial charter', 'What The Degen is for, how it differs from the articles and the journal, and which seats are empty.', charter_page()),
     ('/degen/policies/', 'Newspaper policies', 'Interest disclosures, a trading rule, reporting standards, a ban on paid tips, student protection, and the limit on disputes with the college.', policies_page()),
+    ('/degen/editorial/', 'Editorials', 'Founding and document-based editorials for The Degen. Not reports and not market stories.', editorials_index_page()),
     ('/degen/editorial/the-chain-needs-a-student-paper/', 'The Chain Needs a Student Paper', 'The founding editorial. A statement of intent by Sol.College. It does not report an event.', editorial_page()),
     ('/degen/desks/', 'Desks', 'Seven desks for The Degen. Each one states its question. No story is filed.', desks_page()),
     ('/degen/assignments/', 'Assignment board', 'Cover commission and ten assignments. None has been reported. None is an allegation.', assignments_page()),
@@ -538,6 +612,17 @@ def write(S, page, css):
     ('/degen/tips/', 'Send a tip', 'Tips to The Degen go to a public GitHub issue. It is not a confidential tip line.', tips_page()),
     ('/degen/noticeboard/', 'Campus noticeboard', 'The campus noticeboard. No event, club, election, or opening is listed.', noticeboard_page()),
   ]
+  for e in editorials.all_editorials():
+    if len(e['desc']) > 158:
+      raise SystemExit('editorial desc too long ' + e['slug'])
+    if not re.search(r'\b(not|no|never|without)\b', e['desc'], re.I):
+      raise SystemExit('editorial desc needs a limit word ' + e['slug'])
+    pages.append((
+      f'/degen/editorial/{e["slug"]}/',
+      e['title'],
+      e['desc'],
+      deep_editorial_page(e),
+    ))
   paths = []
   import degen_edition as edition
   reading_pages = edition.pages(mast, foot, crumbs)

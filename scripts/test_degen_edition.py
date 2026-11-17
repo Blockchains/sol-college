@@ -63,6 +63,16 @@ class Readings(unittest.TestCase):
     moved = open(S + '/standard/index.html').read()
     self.assertIn('noindex', moved.lower())
     self.assertFalse(os.path.exists(S + '/standard/readings/index.html'))
+    self.assertIn('/degen/editorial/', paths)
+    self.assertIn('/degen/editorial/leverage-is-a-disclosure-not-a-dare/', paths)
+    ed_index = open(S + '/degen/editorial/index.html').read()
+    self.assertIn('not a report', ed_index.lower())
+    self.assertIn('The Chain Needs a Student Paper', ed_index)
+    deep = open(S + '/degen/editorial/leverage-is-a-disclosure-not-a-dare/index.html').read()
+    self.assertIn('Editorial · not reporting', deep)
+    self.assertIn('https://docs.flash.trade/flash-trade/getting-started/degen-mode.md', deep)
+    self.assertNotIn('we interviewed', deep.lower())
+    self.assertIn('document-based editorials', home.lower())
 
 if __name__ == '__main__':
   unittest.main()
