@@ -70,6 +70,13 @@ pre.diagram,pre.sh{position:relative}
 #next,#browse,#paths,.path-stage{scroll-margin-top:88px}
 .cta .btn{margin:0 8px 8px 0}
 .resume{font-size:1rem}
+.article-meta{color:var(--mut);font-size:14px;max-width:68ch}
+.article-meta dt{font-weight:700;color:#fff;margin-top:10px}
+.article-meta dd{margin:2px 0 0}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:16px 0}
+.hub-grid a.card{text-decoration:none;color:inherit;display:block}
+.hub-grid a.card h3{margin-top:0}
+.continue-list{max-width:68ch}
 @media (prefers-reduced-motion: reduce){
  .readbar>span{transition:none}
 }
