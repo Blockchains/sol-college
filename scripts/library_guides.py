@@ -71,12 +71,12 @@ GUIDES = [
  dict(slug='research', title='Research and protocol changes',
   question='What does a SIMD record establish, and what does a mention of a SIMD number not establish?',
   paras=[
-   'The Solana Improvement Documents repository holds proposed and accepted changes. That sentence is the repository’s description, checked as a source. It is one record. Individual proposals were not each catalogued. Discussion status, acceptance, implementation, activation, and the applicable client are not established for any one SIMD by this catalogue.',
+   'The Solana Improvement Documents repository holds proposed and accepted changes. That sentence is the repository’s description, checked as a source. It is one record for the repository. SIMD-0326 is the exception that has its own page, because the file cites the Alpenglow white paper. The other proposals are not each catalogued. Discussion status, acceptance, implementation, activation, and the applicable client are not established for the repository as a whole, and SIMD-0326’s own front matter says its status is Review.',
    'A docs page can mention a SIMD number in a note, as the core-concepts page does for CPI depth and the transaction page does for a limit. A mention is not evidence the change is active. The journal’s methods page repeats this rule so a protocol cannot smuggle an activation claim in through a citation.',
-   'The journal is where a question becomes a study, if one is ever run. The library is where the proposal text is found. Pointing at the repository is not a literature review. The protocols say their prior-work sections are not yet surveyed, and this guide does not quietly supply the survey.',
+   'Project white papers that were retrieved are a separate shelf, at the white paper catalogue. A page there is a reading note: the title, the version, and what the opening says the document is for. It is not a copy of the paper and not a literature review. The journal is where a question becomes a study, if one is ever run.',
    'Historical behaviour of the network is a subject with no record yet. Past failures that still matter are described inside current articles, on purpose, rather than filed as a retired document. Nothing in the catalogue is marked Replaced.',
   ],
-  next=[('ext-simd', 'SIMD repository'), ('ext-core', 'Core concepts')]),
+  next=[('ext-simd', 'SIMD repository'), ('paper-solana-whitepaper', 'Solana white paper'), ('paper-alpenglow-v1-1', 'Alpenglow v1.1'), ('ext-core', 'Core concepts')]),
  dict(slug='agents', title='AI and agents',
   question='What is actually on the shelf for someone building an agent?',
   paras=[
