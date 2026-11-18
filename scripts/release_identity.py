@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c3',
+    'title': 'Release C.3 — gree NFT lab learning loop',
+    'summary': (
+      'Stage 1 lesson gree joins the shared preflight → Predict→Act→Inspect → '
+      'assessment stack with Metaplex-specific criteria.'
+    ),
+    'changes': [
+      'gree gains learning_loop, lab-specific assessment criteria, and curriculum metadata.',
+      'Four Stage 1 path labs now share the reusable learning-layer components.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c2',
     'title': 'Release C.2 — Proof of Estimate loop + lab-specific rubrics',
     'summary': (
