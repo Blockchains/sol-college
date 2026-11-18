@@ -18,10 +18,10 @@ Legend: `done` · `partial` · `todo`
 | Counts / path / elective labels | P0 | done | #60 curriculum consistency | Tests in `test_curriculum_consistency.py` |
 | Metadata rendering guards | P0 | done | `curriculum_copy.format_limit_text` | No raw array syntax |
 | Beginner entrance | P1 | done | `#start` + learning_layer | `test_learning_layer.py` |
-| Honest status labels | P0 | partial | env-health panel dimensions | Program flow vs hosted UI vs frontend/RPC |
-| Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour still script path |
-| Canonical per-lesson schema (owner, content_version, …) | P0 | partial | curriculum.json exports available fields | Full schema migration still open |
-| Cache / old-tab update notice | P0 | todo | — | — |
+| Honest status labels | P0 | done | env-health panel + Picassol ui_check | Program flow vs hosted UI vs frontend/RPC |
+| Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour observation/script until hosted UI lands |
+| Canonical per-lesson schema (owner, content_version, …) | P0 | partial | `curriculum_schema.py` + `/curriculum.json` schema_status | Picassol OK; catalogue-wide backfill still open |
+| Cache / old-tab update notice | P0 | done | `scripts/release-notice.js` | Banner when `/release.json` app/curriculum changes |
 
 ## Release B — One complete learning journey
 

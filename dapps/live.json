@@ -106,10 +106,10 @@
       "create_pixel at x=200 is rejected with InvalidXCoordinate",
       "create_pixel on an existing pixel is rejected (account already initialised)"
     ],
-    "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the canvas renders 200x200 cells, and clicking an empty cell sent create_pixel from the app's own code, on the live sol.college page as well.",
-    "limits": "Points/leaderboard need the author's MongoDB backend and its /api/updateUserPoints route, which a static host can't serve (the app's POST gets 501; the pixel tx is unaffected).",
+    "ui_check": "Hosted UI create verified: headless Chromium + injected Wallet Standard wallet on the live sol.college page sent create_pixel from the app's own click handler (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl). Hosted UI recolour (update_pixel via click) is not yet recorded — update_pixel is verified by the program test script only (see Proof).",
+    "limits": "Hosted UI recolour not yet recorded. Points/leaderboard need the author's MongoDB backend and its /api/updateUserPoints route, which a static host can't serve (the app's POST gets 501; the pixel tx is unaffected).",
     "functional": "full",
-    "functional_evidence": "create_pixel landed on devnet from the hosted app. The points/leaderboard API is a separate backend and does not block painting."
+    "functional_evidence": "create_pixel landed on devnet from the hosted app. Recolour is script-verified. The points/leaderboard API is a separate backend and does not block painting."
   },
   {
     "slug": "trustlock",

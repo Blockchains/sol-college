@@ -226,7 +226,7 @@
    "approach": "Edit the `#[msg]` strings (and any client-side copy) so they say `0-199`, rebuild, and send `x = 200`. The error text should now match the actual limit. This is a documentation fix only; the program already rejects 200."
   }
  ],
- "not_covered": "Painting an empty pixel was clicked through on the live page. Recolouring (`update_pixel`) was verified by script only. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected.",
+ "not_covered": "Hosted-UI create is recorded. Hosted-UI recolour is not yet recorded — use the observation route (Proof → update_pixel signature) or the script path until that verification lands. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected.",
  "path_order": 1,
  "path_stage": 1,
  "difficulty": "Beginner",

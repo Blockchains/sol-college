@@ -79,9 +79,12 @@ def auto_lesson(x):
 _here=os.path.dirname(os.path.abspath(__file__))
 _css=os.path.join(_here,'lesson.css')
 _js=os.path.join(_here,'lesson.js')
+_notice=os.path.join(_here,'release-notice.js')
 CSS='<style>'+(open(_css).read() if os.path.exists(_css) else '')+'</style>'
 if os.path.exists(_js):
   CSS+='<script>'+open(_js).read()+'</script>'
+if os.path.exists(_notice):
+  CSS+='<script>'+open(_notice).read()+'</script>'
 DIFF_CLASS={'Beginner':'beg','Intermediate':'int','Advanced':'adv'}
 def canon_diff(level):
   s=str(level or '').strip()
