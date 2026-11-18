@@ -175,6 +175,17 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_agentx_has_learning_loop_and_active_oracle_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/agentx.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'need_active')
+        html = ll.assessment_html(L, 'agentx')
+        self.assertIn('Active', html)
+        self.assertIn('registry.authority', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

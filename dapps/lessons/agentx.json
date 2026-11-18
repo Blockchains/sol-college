@@ -177,8 +177,8 @@
   "Explain why execute_task requires Active status and the registry authority as oracle."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL.",
-  "Comfort with PDAs and Anchor constraints."
+  "A wallet on Devnet with a little practice SOL.",
+  "Complete [Oculus](/lessons/oculus/) or equivalent Stage 2 progress — AgentX is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor constraints."
  ],
  "concepts": [
   "pda",
@@ -192,5 +192,73 @@
   "test": "tests/devnet/agentx.mjs",
   "note": "Program id on this lab deployment is 7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K. initialize_registry is a lab patch."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Register and activate an agent, explain why execute_task needs Active status and the registry authority as oracle, then deactivate — without claiming unverified claim_reward mastery.",
+ "delivery": "Console / observation practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can walk register → Active → oracle execute_task → deactivate, name the oracle=authority constraint, and stay honest that claim_reward was not verified.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Registers and activates an agent",
+    "question": "Can the student fetch the registry, register an agent PDA, and update_state to Active?",
+    "not_yet": "Skips activation or cannot name registry seeds [\"registry\"].",
+    "support": "Correct after revisiting try steps / Proof.",
+    "independent": "Fetches registry, registers with a fresh agent_id, activates, and reads status Active.",
+    "misconception": "register_agent alone makes the agent executable."
+   },
+   {
+    "id": "c2",
+    "title": "Explains execute_task gates",
+    "question": "Why can execute_task fail before Active — and who must sign as oracle?",
+    "not_yet": "Expects any wallet to execute tasks, or ignores Active status.",
+    "support": "Correct after revisiting Unauthorized / status checks.",
+    "independent": "States agent must be Active and oracle.key() must equal registry.authority.",
+    "misconception": "The agent wallet itself is always the oracle for execute_task."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and avoid claiming claim_reward mastery?",
+    "not_yet": "Claims AGX rewards claimed, or treats Proof as personal completion.",
+    "support": "Corrects after reading not_covered (claim_reward needs AGX vault; initialize_registry is a lab patch).",
+    "independent": "Tags observation/live; notes claim_reward unverified and initialize_registry is a Sol.College lab patch.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of rewards."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to deactivate",
+    "question": "Without re-reading the walkthrough: after deactivate_agent, what should happen if someone tries update_state back to Active or execute_task?",
+    "not_yet": "Expects silent reactivation without constraints, or invents success.",
+    "support": "States rejection paths after revisiting try step 5 / program checks.",
+    "independent": "States deactivated agents cannot execute_task until properly returned to Active per program rules; records the observed reject if tried.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Activate an AgentX agent — then explain why execute_task needs Active status and the registry authority as oracle.",
+  "predict_question": "You just registered an agent PDA but have not called update_state to Active. The registry authority submits execute_task. What should happen?",
+  "predict_options": [
+   {"id": "ok", "label": "Succeed — registration alone is enough"},
+   {"id": "need_active", "label": "Fail — the agent must be Active first"},
+   {"id": "agent_signs", "label": "Succeed only if the agent wallet co-signs as oracle"}
+  ],
+  "predict_answer": "need_active",
+  "predict_why": "execute_task requires the agent status to be Active and the oracle signer to equal registry.authority. register_agent creates the PDA; update_state to Active is a separate step. The agent wallet is not automatically the oracle.",
+  "act": "In observation mode, open recorded register / activate / execute_task / deactivate under Proof. In practical mode on Devnet via /dapps/agentx/: fetch registry, register_agent, update_state to Active, execute_task as registry authority, then deactivate_agent. Prefer observation if you are not the lab registry authority. Do not treat claim_reward as required (needs AGX vault). Note initialize_registry is a lab patch upstream lacked.",
+  "inspect": [
+   {"id": "registry", "label": "Registry PDA (short)", "placeholder": "PDA…"},
+   {"id": "agent_id", "label": "agent_id / agent PDA", "placeholder": "8 bytes / PDA…"},
+   {"id": "status", "label": "Status before execute", "placeholder": "Registered / Active / Inactive"},
+   {"id": "oracle", "label": "Oracle signer role", "placeholder": "registry.authority / other"},
+   {"id": "result", "label": "execute_task result", "placeholder": "ok / need Active / Unauthorized"}
+  ],
+  "explain_question": "Why must oracle.key() equal registry.authority on execute_task — and how is that different from the agent wallet signing check_spend-style actions in earlier labs?",
+  "transfer": "Without re-reading the full walkthrough: after deactivate_agent, what should a later execute_task do, and why is claim_reward not part of this lab’s verified path?"
+ }
 }
