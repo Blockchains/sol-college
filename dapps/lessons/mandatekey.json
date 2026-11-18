@@ -163,8 +163,8 @@
   "Revoke a mandate as the owner."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL (create_mandate pays rent).",
-  "Comfort with PDAs and Anchor accounts."
+  "A wallet on Devnet with a little practice SOL (create_mandate pays rent).",
+  "Complete [CipherVault](/lessons/ciphervault/) or equivalent Stage 2 start — MandateKey is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor accounts."
  ],
  "concepts": [
   "pda",
@@ -178,5 +178,73 @@
   "test": "tests/devnet/mandatekey.mjs",
   "note": "Program id on this lab deployment is 89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create a mandate PDA, revoke it as owner, and explain why a revoked mandate cannot pay — without treating an unexecuted pay path as proven mastery.",
+ "delivery": "Browser / console practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can create and revoke a mandate PDA, explain why revoke blocks pay, and stay honest about pay not being required for this lab’s hosted verification.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Creates and reads a mandate PDA",
+    "question": "Can the student create a mandate and confirm revoked is false on-chain?",
+    "not_yet": "Cannot name seeds [owner, agent, id] or invents success without an account read.",
+    "support": "Derives/reads the PDA after revisiting Proof / console fetch steps.",
+    "independent": "Creates with valid_from < expires_at, reads the account, and records revoked=false before revoke.",
+    "misconception": "The UI form alone proves the PDA exists."
+   },
+   {
+    "id": "c2",
+    "title": "Explains revoke blocking pay",
+    "question": "After the owner revokes, what should a later agent pay attempt do — and why?",
+    "not_yet": "Expects pay until expiry regardless of revoke.",
+    "support": "Correct after revisiting the pay check order / revoke flag.",
+    "independent": "States revoked mandates fail pay before spending; owner revoke flips the flag the agent cannot clear.",
+    "misconception": "Expiry is the only way to stop an agent wallet."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish historical Proof from their attempt, and avoid claiming pay mastery without a vaulted pay?",
+    "not_yet": "Claims pay completed from create/revoke alone, or treats Proof as personal completion.",
+    "support": "Corrects after reading not_covered (pay needs mint, vault ATA, recipient).",
+    "independent": "Tags observation/live; states pay was reasoned or scripted separately if not sent; does not invent a hosted pay click-through.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of pay."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to an invalid window",
+    "question": "Without re-reading the walkthrough: what should create_mandate do when expires_at is earlier than valid_from?",
+    "not_yet": "Expects the account to be created anyway.",
+    "support": "States rejection after revisiting try step 4.",
+    "independent": "States create fails for an inverted validity window; no usable mandate account for that id.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Create a spending-mandate PDA — then revoke it and explain why pay cannot proceed afterward.",
+  "predict_question": "You created a mandate with revoked=false and a future expires_at. The owner then successfully submits revoke. What should a later agent pay attempt do?",
+  "predict_options": [
+   {"id": "until_expiry", "label": "Succeed until expires_at — revoke only stops new mandates"},
+   {"id": "blocked", "label": "Fail — a revoked mandate cannot spend"},
+   {"id": "owner_pays", "label": "Succeed only if the owner co-signs the pay"}
+  ],
+  "predict_answer": "blocked",
+  "predict_why": "revoke sets the mandate’s revoked flag. pay checks that flag in its ordered guards before transferring from the mandate-owned vault. Expiry is a separate check; revoke is an immediate owner kill-switch the agent cannot undo.",
+  "act": "In observation mode, open recorded create_mandate / revoke evidence under Proof and confirm revoked flips. In practical mode on Devnet: create_mandate with a past valid_from and future expires_at, fetch the account (revoked=false), then revoke as owner and re-read. Prefer the hosted console at /dapps/mandatekey/. Do not treat pay as required for this lab’s hosted path — pay needs a mint, vault token account, and recipient (see not_covered). Reasoning about pay order is enough for the explain step.",
+  "inspect": [
+   {"id": "owner", "label": "Owner wallet (short)", "placeholder": "e.g. Acc1…"},
+   {"id": "agent", "label": "Agent pubkey (short)", "placeholder": "e.g. Agt…"},
+   {"id": "mandate", "label": "Mandate PDA / id", "placeholder": "PDA… / id"},
+   {"id": "revoked_before", "label": "revoked before revoke ix", "placeholder": "false"},
+   {"id": "revoked_after", "label": "revoked after revoke ix", "placeholder": "true / error"}
+  ],
+  "explain_question": "In the pay check order, why does revoke stop spending even when the validity window is still open — and what vault/mint setup would still be required before you could claim a live pay demonstration?",
+  "transfer": "Without re-reading the full walkthrough: if create_mandate is called with expires_at earlier than valid_from, what should happen, and what three owner instructions remain unimplemented after revoke?"
+ }
 }

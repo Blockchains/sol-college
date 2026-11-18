@@ -131,6 +131,17 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_mandatekey_has_learning_loop_and_revoke_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/mandatekey.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'blocked')
+        html = ll.assessment_html(L, 'mandatekey')
+        self.assertIn('revoked', html.lower())
+        self.assertIn('pay', html.lower())
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
