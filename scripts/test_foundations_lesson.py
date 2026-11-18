@@ -237,8 +237,42 @@ class FoundationsLesson006(unittest.TestCase):
         self.assertIn('/lessons/application-state/', l5.lesson_html())
 
 
+class FoundationsLesson007(unittest.TestCase):
+    def test_status_is_release_candidate(self):
+        import foundations_l007 as l7
+        html = l7.lesson_html()
+        self.assertIn('Release candidate', html)
+        self.assertIn('expected_revision', html)
+        self.assertIn('explanatory pseudocode', html.lower())
+
+    def test_guard_and_conflict(self):
+        import foundations_l007 as l7
+        html = l7.lesson_html().lower()
+        self.assertIn('update_profile_checked', html)
+        self.assertIn('stale revision', html)
+        self.assertIn('silently', html)
+        self.assertIn('state guardian', html)
+
+    def test_assessment_six_criteria(self):
+        import foundations_l007 as l7
+        html = l7.assessment_html()
+        self.assertIn('Criterion 6', html)
+        self.assertIn('Mandatory conceptual checks', html)
+        self.assertIn('Mutation-path consistency', html)
+        self.assertIn('Guided configuration', html)
+
+    def test_meta_descriptions_fit(self):
+        import foundations_l007 as l7
+        self.assertLessEqual(len(l7.LESSON_DESC), 158)
+        self.assertLessEqual(len(l7.ASSESS_DESC), 158)
+
+    def test_links_from_lesson_006(self):
+        import foundations_l006 as l6
+        self.assertIn('/lessons/protecting-state-transitions/', l6.lesson_html())
+
+
 class FoundationsIndexWiring(unittest.TestCase):
-    def test_card_and_path_section_include_all_six(self):
+    def test_card_and_path_section_include_all_seven(self):
         cards = f.foundations_card_html()
         self.assertIn('/lessons/first-transaction/', cards)
         self.assertIn('/lessons/accounts-ownership/', cards)
@@ -246,11 +280,12 @@ class FoundationsIndexWiring(unittest.TestCase):
         self.assertIn('/lessons/transaction-atomicity/', cards)
         self.assertIn('/lessons/transaction-failures/', cards)
         self.assertIn('/lessons/application-state/', cards)
-        self.assertIn('/lessons/application-state/assessment/', cards)
+        self.assertIn('/lessons/protecting-state-transitions/', cards)
+        self.assertIn('/lessons/protecting-state-transitions/assessment/', cards)
         path = f.foundations_path_section().lower()
         self.assertIn('release candidate', path)
-        self.assertIn('application state', path)
-        self.assertIn('/lessons/application-state/', path)
+        self.assertIn('expected revisions', path)
+        self.assertIn('/lessons/protecting-state-transitions/', path)
 
 
 if __name__ == '__main__':
