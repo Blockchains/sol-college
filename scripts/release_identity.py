@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c6',
+    'title': 'Release C.6 — CipherVault Stage 2 learning loop',
+    'summary': (
+      'Stage 2 opens with CipherVault on the shared learning layer: threshold '
+      'multisig flow plus honest missing-constraint assessment criteria.'
+    ),
+    'changes': [
+      'ciphervault gains learning_loop, lab-specific criteria, and path-aligned prereqs from Stage 1.',
+      'Release C continues into Stage 2 after completing all six Stage 1 labs.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c5',
     'title': 'Release C.5 — Gifter escrow learning loop (Stage 1 complete)',
     'summary': (
