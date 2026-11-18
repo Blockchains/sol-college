@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c7',
+    'title': 'Release C.7 — MandateKey learning loop',
+    'summary': (
+      'Stage 2 MandateKey joins the shared learning layer with create/revoke '
+      'practice and honest coverage that pay was not hosted-verified.'
+    ),
+    'changes': [
+      'mandatekey gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment requires honesty about pay/vault prerequisites and unimplemented owner ixs.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c6',
     'title': 'Release C.6 — CipherVault Stage 2 learning loop',
     'summary': (
