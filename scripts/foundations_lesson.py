@@ -9,6 +9,7 @@ import foundations_l002 as l002
 import foundations_l003 as l003
 import foundations_l004 as l004
 import foundations_l005 as l005
+import foundations_l006 as l006
 
 SITE = 'https://sol.college'
 PUBLISHED = '2026-11-18'
@@ -471,7 +472,7 @@ def foundations_card_html():
     f'<p class=cta><a class=btn href="{PATH}">Open Lesson 001</a> · <a href="{ASSESS_PATH}">Assessment rubric</a></p>'
     f'</article>'
   )
-  return l001 + l002.card_html() + l003.card_html() + l004.card_html() + l005.card_html()
+  return l001 + l002.card_html() + l003.card_html() + l004.card_html() + l005.card_html() + l006.card_html()
 
 
 def foundations_path_section():
@@ -484,17 +485,20 @@ def foundations_path_section():
     'Lesson 003: <b>instructions → account changes</b>. '
     'Lesson 004: <b>multi-instruction atomicity</b>. '
     'Lesson 005: <b>diagnose failures and recover safely</b>. '
-    'All five are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    'Lesson 006: <b>read/write application state honestly</b>. '
+    'All six are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
     f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
     f'<a class="btn ghost" href="{L002_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.PATH}">003</a> '
     f'<a class="btn ghost" href="{l004.PATH}">004</a> '
     f'<a class="btn ghost" href="{l005.PATH}">005</a> '
+    f'<a class="btn ghost" href="{l006.PATH}">006</a> '
     f'<a class="btn ghost" href="{ASSESS_PATH}">001 rubric</a> '
     f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.ASSESS_PATH}">003</a> '
     f'<a class="btn ghost" href="{l004.ASSESS_PATH}">004</a> '
-    f'<a class="btn ghost" href="{l005.ASSESS_PATH}">005</a></p>'
+    f'<a class="btn ghost" href="{l005.ASSESS_PATH}">005</a> '
+    f'<a class="btn ghost" href="{l006.ASSESS_PATH}">006</a></p>'
     '</section>'
   )
 
@@ -569,5 +573,12 @@ def write(S, page, css):
     'When Transactions Fail | Sol.College',
     'Lesson 005 assessment rubric | Sol.College',
     l005.LESSON_DESC, l005.ASSESS_DESC,
+  )
+  paths += _write_one(
+    S, page, css, l006.PATH, l006.ASSESS_PATH,
+    l006.lesson_html(css), l006.assessment_html(css),
+    'Read and Write Application State | Sol.College',
+    'Lesson 006 assessment rubric | Sol.College',
+    l006.LESSON_DESC, l006.ASSESS_DESC,
   )
   return paths
