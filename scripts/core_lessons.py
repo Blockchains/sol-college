@@ -618,8 +618,42 @@ import events as _events
 EVENT_PATHS=_events.write(S, page, CSS)
 # ---- homepage: owned by the landing-page worker. Do not rewrite site/index.html.
 # ---- nav, footer and source-library labels on every page (skip the homepage)
-NAV='''<nav aria-label=Main><a href="/lessons/">Lessons</a><a href="/events/">Events</a><a href="/articles/">Articles</a><details><summary>More</summary><div><a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/degen/">The Degen</a><a href="/lessons/path/">Learning path</a><a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a><a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a><a href="/explore/">Source library</a></div></details></nav>'''
-TOP_CSS='''<style id=sc-top>.top{flex-wrap:nowrap;gap:8px 16px;align-items:center;padding:8px clamp(12px,3vw,32px);min-height:52px}.brand{font-size:16px}.logo{width:22px;height:22px}.top nav{flex-wrap:nowrap;align-items:center;gap:2px}.top nav a,.top nav summary{font-size:14px;font-weight:600;padding:6px 8px;border-radius:8px}.top nav details{position:relative}.top nav summary{list-style:none;cursor:pointer;color:var(--mut)}.top nav summary::-webkit-details-marker{display:none}.top nav summary::after{content:" ▾";font-size:.7em}.top nav details>div{position:absolute;right:0;top:calc(100% + 8px);z-index:30;min-width:210px;padding:6px;display:flex;flex-direction:column;background:#14122a;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.45)}.top nav details a{white-space:nowrap}@media(max-width:600px){.top nav a,.top nav summary{padding:6px}}</style>'''
+_FOUNDATIONS_NAV=_foundations.foundations_main_nav_items()
+NAV=(
+  '<nav aria-label=Main>'
+  '<details class=nav-lessons><summary>Lessons</summary><div>'
+  f'{_FOUNDATIONS_NAV}'
+  '</div></details>'
+  '<a href="/events/">Events</a><a href="/articles/">Articles</a>'
+  '<details><summary>More</summary><div>'
+  '<a href="/library/">Library</a><a href="/journal/">Journal</a><a href="/degen/">The Degen</a>'
+  '<a href="/lessons/path/">Learning path</a><a href="/lessons/#foundations">Foundations</a>'
+  '<a href="/lessons/glossary/">Glossary</a><a href="/live/">Live apps</a>'
+  '<a href="/campus/">Campus</a><a href="/how-to-build/">How to build</a>'
+  '<a href="/explore/">Source library</a>'
+  '</div></details></nav>'
+)
+TOP_CSS=(
+  '<style id=sc-top>'
+  '.top{flex-wrap:nowrap;gap:8px 16px;align-items:center;padding:8px clamp(12px,3vw,32px);min-height:52px}'
+  '.brand{font-size:16px}.logo{width:22px;height:22px}'
+  '.top nav{flex-wrap:nowrap;align-items:center;gap:2px}'
+  '.top nav a,.top nav summary{font-size:14px;font-weight:600;padding:6px 8px;border-radius:8px}'
+  '.top nav details{position:relative}'
+  '.top nav summary{list-style:none;cursor:pointer;color:var(--mut)}'
+  '.top nav summary::-webkit-details-marker{display:none}'
+  '.top nav summary::after{content:" ▾";font-size:.7em}'
+  '.top nav details>div{position:absolute;left:0;top:calc(100% + 8px);z-index:30;min-width:230px;max-height:min(70vh,520px);overflow:auto;padding:6px;display:flex;flex-direction:column;background:#14122a;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.45)}'
+  '.top nav details:last-of-type>div{left:auto;right:0}'
+  '.top nav details a{white-space:nowrap}'
+  '.foundations-seq{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:10px 0 14px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:rgba(20,18,42,.55)}'
+  '.foundations-seq-label{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--mut);margin-right:4px}'
+  '.foundations-seq a,.foundations-seq span[aria-current=page]{font-size:13px;font-weight:650;padding:4px 8px;border-radius:8px;text-decoration:none}'
+  '.foundations-seq a{color:var(--fg)}'
+  '.foundations-seq span[aria-current=page]{background:var(--accent,#7dffb3);color:#0b0a14}'
+  '@media(max-width:600px){.top nav a,.top nav summary{padding:6px}}'
+  '</style>'
+)
 for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if '/dapps/' in fp or '/legacy/' in fp: continue
   if os.path.normpath(fp)==os.path.normpath(f'{S}/index.html'): continue

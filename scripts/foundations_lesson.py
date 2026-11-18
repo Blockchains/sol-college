@@ -4,7 +4,7 @@ Release candidate. Not a live-dApp walkthrough and not technically or learner ve
 Teaches: review intent, verify execution and commitment separately, stop when uncertain.
 """
 from __future__ import annotations
-import html, json, os
+import html, json, os, re
 import foundations_l002 as l002
 import foundations_l003 as l003
 import foundations_l004 as l004
@@ -459,6 +459,51 @@ Reassessment needed:</pre>
 </article>'''
 
 
+def foundations_catalog():
+  """Ordered foundations lessons for nav, sequence strips, and catalogues."""
+  return [
+    ('001', PATH, 'First transaction', ASSESS_PATH),
+    ('002', l002.PATH, 'Accounts & authority', l002.ASSESS_PATH),
+    ('003', l003.PATH, 'Instructions & programs', l003.ASSESS_PATH),
+    ('004', l004.PATH, 'Transaction atomicity', l004.ASSESS_PATH),
+    ('005', l005.PATH, 'Transaction failures', l005.ASSESS_PATH),
+    ('006', l006.PATH, 'Application state', l006.ASSESS_PATH),
+    ('007', l007.PATH, 'Protecting transitions', l007.ASSESS_PATH),
+  ]
+
+
+def foundations_main_nav_items():
+  """Compact links for the site Lessons dropdown / More menu."""
+  items = [
+    '<a href="/lessons/">All lessons</a>',
+    '<a href="/lessons/path/">Learning path</a>',
+    '<a href="/lessons/#foundations">Foundations 001–007</a>',
+  ]
+  for num, path, title, _assess in foundations_catalog():
+    items.append(f'<a href="{path}">{num} {E(title)}</a>')
+  items.append('<a href="/lessons/glossary/">Glossary</a>')
+  return ''.join(items)
+
+
+def foundations_sequence_nav(current_path=''):
+  """In-page jump strip so every foundations lesson can reach the others."""
+  bits = []
+  for num, path, title, _assess in foundations_catalog():
+    label = f'{num}'
+    if path.rstrip('/') == current_path.rstrip('/'):
+      bits.append(f'<span aria-current=page title="{E(title)}">{label}</span>')
+    else:
+      bits.append(f'<a href="{path}" title="{E(title)}">{label}</a>')
+  return (
+    '<nav class=foundations-seq aria-label="Foundations lessons">'
+    '<span class=foundations-seq-label>Foundations</span>'
+    + ''.join(bits)
+    + '<a href="/lessons/path/#foundations">Path</a>'
+    '<a href="/lessons/#foundations">Catalogue</a>'
+    '</nav>'
+  )
+
+
 def foundations_card_html():
   """Cards for lessons index: foundations gateway before Stage 1."""
   l001 = (
@@ -510,10 +555,25 @@ def foundations_path_section():
   )
 
 
+def _inject_sequence_nav(body, current_path):
+  """Place the foundations jump strip after breadcrumbs when missing."""
+  seq = foundations_sequence_nav(current_path)
+  if 'class=foundations-seq' in body or 'class="foundations-seq"' in body:
+    return body
+  marker = '</nav>'
+  # First crumbs nav ends here; insert sequence strip immediately after.
+  idx = body.find(marker)
+  if idx < 0:
+    return seq + body
+  return body[:idx + len(marker)] + seq + body[idx + len(marker):]
+
+
 def _write_one(S, page, css, path, assess_path, lesson_body, assess_body, title, assess_title, lesson_desc, assess_desc):
   assert len(lesson_desc) <= 158 and len(assess_desc) <= 158, (len(lesson_desc), len(assess_desc))
   os.makedirs(f'{S}{path}', exist_ok=True)
   os.makedirs(f'{S}{assess_path}', exist_ok=True)
+  lesson_body = _inject_sequence_nav(lesson_body, path)
+  assess_body = _inject_sequence_nav(assess_body, path)
   open(f'{S}{path}index.html', 'w').write(page(lesson_body, title, lesson_desc, path))
   open(f'{S}{assess_path}index.html', 'w').write(page(assess_body, assess_title, assess_desc, assess_path))
   for p, h, d in ((path, title.split(' |')[0], lesson_desc), (assess_path, assess_title.split(' |')[0], assess_desc)):
@@ -595,4 +655,25 @@ def write(S, page, css):
     'Lesson 007 assessment rubric | Sol.College',
     l007.LESSON_DESC, l007.ASSESS_DESC,
   )
+  _append_llms(S)
   return paths
+
+
+def _append_llms(S):
+  """Expose foundations lessons in llms.txt when the file already exists."""
+  fp = f'{S}/llms.txt'
+  if not os.path.isfile(fp):
+    return
+  text = open(fp, encoding='utf-8', errors='replace').read()
+  text = re.sub(r'\n## Solana Foundations\n.*?(?=\n## |\Z)', '\n', text, flags=re.S)
+  lines = [
+    '',
+    '## Solana Foundations',
+    'Release-candidate teaching specifications (not yet technically or learner verified):',
+  ]
+  for num, path, title, assess in foundations_catalog():
+    lines.append(f'- [{num} {title}]({SITE}{path})')
+    lines.append(f'  - Assessment: {SITE}{assess}')
+  lines.append(f'- [Learning path]({SITE}/lessons/path/#foundations)')
+  lines.append(f'- [Lessons catalogue]({SITE}/lessons/#foundations)')
+  open(fp, 'w', encoding='utf-8').write(text.rstrip() + '\n' + '\n'.join(lines) + '\n')
