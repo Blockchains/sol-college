@@ -214,6 +214,19 @@ class LabAssessment(unittest.TestCase):
             self.assertIn('assessment', L, slug)
             self.assertTrue(L['assessment'].get('criteria'), slug)
 
+    def test_sentient_send_has_learning_loop_and_payout_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/sentient-send.json').read_text())
+        self.assertEqual(L.get('path_stage'), 3)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'yes_wins')
+        html = ll.assessment_html(L, 'sentient-send')
+        self.assertIn('winner-takes-all', html.lower().replace(' ', '-').replace('—', '-'))
+        # also accept spaced form
+        self.assertTrue('winner' in html.lower() and 'pool' in html.lower())
+        self.assertIn('32', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

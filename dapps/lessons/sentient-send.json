@@ -324,8 +324,8 @@
   "Hit a 32-byte seed limit, and a tie, on purpose."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 SOL.",
-  "Stages 1–2, especially [TrustLock](/lessons/trustlock/) (Clock, close) and [Friendstake](/lessons/friendstake/) (vaults). This is the first lesson in [stage 3](/lessons/path/#stage-3)."
+  "Phantom on Devnet with about 0.1–1+ practice SOL (create needs ≥1 SOL stake).",
+  "Complete Stage 2 ending at [NAIM](/lessons/naim/) — sentient.send opens [stage 3](/lessons/path/#stage-3). [TrustLock](/lessons/trustlock/) (Clock, close) is the closest Stage 1 escrow parallel."
  ],
  "concepts": [
   "pda",
@@ -345,5 +345,73 @@
   "test": "anchor test",
   "note": "`anchor-lang` 0.32.1. The program is `programs/prediction-market`. Tests: `tests/prediction-market.test.ts`."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Open a short-question sentiment market, bet, and explain winner-takes-all payouts plus the 32-byte question seed limit — computing a claim before pressing it.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain winner-takes-all resolution, compute a pro-rata claim before clicking, and hit/explain the 32-byte seed limit — without confusing UI date limits with on-chain rules.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains winner-takes-all resolution",
+    "question": "After the deadline, which side wins and what do losers receive from the pool?",
+    "not_yet": "Thinks each side is paid like a fixed-odds book, or invents oracle outcomes.",
+    "support": "Correct after revisiting resolution: largest SOL side wins the whole pool.",
+    "independent": "States the side with the most SOL wins; winners split the entire pool by stake; losers get 0 from the pool (fees aside).",
+    "misconception": "This market resolves from an external real-world oracle feed."
+   },
+   {
+    "id": "c2",
+    "title": "Computes payout before claim",
+    "question": "Can the student compute an expected claim from recorded side totals before pressing Claim?",
+    "not_yet": "Claims blindly without relating stake share to pool.",
+    "support": "Works a pro-rata example after revisiting claim_winnings notes.",
+    "independent": "States claim ≈ (my winning stake / winning side total) × pool (after fee accounting as documented).",
+    "misconception": "Claim always returns exactly the bet amount."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and UI vs chain limits",
+    "question": "Does the student distinguish Proof from their attempt, and separate the form’s tomorrow-only end dates from the 32-byte PDA seed limit?",
+    "not_yet": "Confuses UI date picker limits with program seed limits, or treats Proof as personal mastery.",
+    "support": "Corrects after reading not_covered / exercises.",
+    "independent": "Tags observation/live; states questions >32 bytes fail PDA seeds; notes hosted form may force end dates from tomorrow.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a tie / seed-limit case",
+    "question": "Without re-reading the walkthrough: what should happen if two sides tie for most SOL, and what if the question string exceeds 32 bytes?",
+    "not_yet": "Invents a random winner for ties, or expects long questions to create.",
+    "support": "States documented tie/seed behaviour after revisiting exercises.",
+    "independent": "States create fails for >32-byte question seeds; describes the program’s tie handling as documented in the lesson exercises.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Bet into a winner-takes-all sentiment market — then explain how the winning side splits the pool and why questions are capped at 32 bytes.",
+  "predict_question": "After the end time, Side Yes holds 0.7 SOL of bets and Side No holds 0.3 SOL. Ignoring fees for a moment, what should resolution do?",
+  "predict_options": [
+   {"id": "split_even", "label": "Split the pool 50/50 between Yes and No bettors"},
+   {"id": "yes_wins", "label": "Yes wins the whole pool; Yes bettors share it by stake"},
+   {"id": "oracle", "label": "Wait for an external oracle to pick the real-world answer"}
+  ],
+  "predict_answer": "yes_wins",
+  "predict_why": "sentient.send is a sentiment/parimutuel market: the side with the most SOL at the deadline wins the entire pool. Winners claim pro-rata; losers do not share the pool. There is no external outcome oracle. Separately, the market question is a PDA seed and cannot exceed 32 bytes.",
+  "act": "In observation mode, open recorded create/bet/resolve/claim under Proof and compute a sample payout from the amounts shown. In practical mode on Devnet: create a market with a short (≤32 char) question and ≥1 SOL, bet 0.1 on a side, then after end time resolve and claim (script-created markets may be needed if the form only allows tomorrow end dates). Prefer hosted UI for create/bet when possible.",
+  "inspect": [
+   {"id": "question", "label": "Question length (bytes)", "placeholder": "e.g. 12 / tried 33"},
+   {"id": "sides", "label": "Side totals (SOL)", "placeholder": "Yes 0.7 / No 0.3"},
+   {"id": "winner", "label": "Winning side after resolve", "placeholder": "Yes / No / tie"},
+   {"id": "claim_math", "label": "Expected claim (rough)", "placeholder": "stake/side × pool"},
+   {"id": "fees", "label": "Fee path noted", "placeholder": "2% / creator claim"}
+  ],
+  "explain_question": "Why does a longer-than-32-byte question fail at create even if the UI accepts typing — and where do the 2% fees go relative to the winning pool?",
+  "transfer": "Without re-reading the full walkthrough: if two sides tie for most SOL at resolve, what should you expect, and how would you compute your claim if your side alone won with 40% of that side’s stake?"
+ }
 }
