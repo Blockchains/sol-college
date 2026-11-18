@@ -53,6 +53,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'transaction-failures',
+    act_anchor='#classify',
+    act_cta_label='Jump to classify the failure',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -247,6 +256,7 @@ Investigation order:
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
+    '<a href="#workspace">Workspace</a>'
     '<a href="#outcomes">Outcomes</a><a href="#safety">Safety</a><a href="#app">Attempt record</a>'
     '<a href="#packs">Evidence packs</a><a href="#sequence">Sequence</a><a href="#map">Map</a>'
     '<a href="#classify">Classify</a><a href="#error">Read error</a><a href="#correct">Correct</a>'
@@ -261,6 +271,7 @@ Investigation order:
 <p class="eyebrow status-preview">Foundations · Lesson 005 · release candidate</p>
 <h1>When Transactions Fail</h1>
 <p class=lead>Read the evidence. Diagnose the cause. Recover safely.</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

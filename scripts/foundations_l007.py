@@ -55,6 +55,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'protecting-state-transitions',
+    act_anchor='#predict',
+    act_cta_label='Jump to predict the guarded outcome',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -300,6 +309,7 @@ F: Client refreshes after a conflict and silently resubmits the old draft using 
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
+    '<a href="#workspace">Workspace</a>'
     '<a href="#outcomes">Outcomes</a><a href="#scope">Scope</a><a href="#problem">Problem</a>'
     '<a href="#guard">Guard</a><a href="#guarantee">Guarantee</a><a href="#sequence">Sequence</a>'
     '<a href="#predict">Predict</a><a href="#implement">Implement</a><a href="#tests">Tests</a>'
@@ -314,6 +324,7 @@ F: Client refreshes after a conflict and silently resubmits the old draft using 
 <p class="eyebrow status-preview">Foundations · Lesson 007 · release candidate</p>
 <h1>Protecting State Transitions</h1>
 <p class=lead>Expected revisions and program-enforced checks.</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

@@ -75,7 +75,7 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true
@@ -103,10 +103,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Separate program ownership from authority \u2014 then predict who must sign an update.",
+        "predict_question": "A profile account\u2019s owner program is ProfileProgram. The profile data names Alice as authority. Who must sign a name update that ProfileProgram will accept?",
+        "predict_options": [
+          {
+            "id": "owner_prog",
+            "label": "Anyone who can deploy ProfileProgram"
+          },
+          {
+            "id": "alice",
+            "label": "Alice (the authority named in the account data), per the program\u2019s rules"
+          },
+          {
+            "id": "any_holder",
+            "label": "Any wallet that can see the account address"
+          }
+        ],
+        "predict_answer": "alice",
+        "predict_why": "The owner program enforces the update rules. Authority lives in the account\u2019s data (or related accounts), not in \u201cI can see the address.\u201d The wrong signer fails even if the owner program is correct.",
+        "act": "Inspect the Lesson 002 cases: authorised vs unauthorised update. Record owner program, data length, and who is named as authority before claiming control.",
+        "inspect": [
+          {
+            "id": "address",
+            "label": "Account address (short)",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "owner",
+            "label": "Owner program",
+            "placeholder": "program id / name"
+          },
+          {
+            "id": "authority",
+            "label": "Authority from data",
+            "placeholder": "who / unsure"
+          },
+          {
+            "id": "signer",
+            "label": "Who signed / who should sign",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "outcome",
+            "label": "Update accepted?",
+            "placeholder": "yes / no / simulation"
+          }
+        ],
+        "explain_question": "Why can \u201cthis is my wallet\u201d and \u201cthis account\u2019s owner is a program\u201d both be true without contradiction?",
+        "transfer": "Given only an address, list three things you will not infer about control or real-world identity."
+      }
     },
     {
       "id": "instructions-programs",
@@ -131,10 +181,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Trace an instruction\u2019s program, accounts, and data \u2014 then predict the state change.",
+        "predict_question": "You prepare an \u201cUpdate profile\u201d instruction. Which three components must you identify before predicting the account change?",
+        "predict_options": [
+          {
+            "id": "ui_only",
+            "label": "Only the friendly button label in the app"
+          },
+          {
+            "id": "three",
+            "label": "Program ID, account list (with permissions), and instruction data"
+          },
+          {
+            "id": "sig_only",
+            "label": "Only the fee payer signature"
+          }
+        ],
+        "predict_answer": "three",
+        "predict_why": "An instruction is a request to a program with accounts and data. A friendly UI label is not evidence of what will execute.",
+        "act": "Open the Lesson 003 worked example. Name the program, the accounts (signer/writable), and the intended profile field change before submission.",
+        "inspect": [
+          {
+            "id": "program",
+            "label": "Program ID / name",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "accounts",
+            "label": "Accounts (roles)",
+            "placeholder": "signer / writable / readonly"
+          },
+          {
+            "id": "data",
+            "label": "Instruction intent (decoded)",
+            "placeholder": "update name \u2192 \u2026"
+          },
+          {
+            "id": "expected",
+            "label": "Expected state change",
+            "placeholder": "what changes / what stays"
+          },
+          {
+            "id": "observed",
+            "label": "Observed after execution",
+            "placeholder": "match / mismatch"
+          }
+        ],
+        "explain_question": "Why is a successful simulation alone insufficient proof that the live account change matched your intention?",
+        "transfer": "Without re-reading: name the three instruction components and one permission you must not confuse with unlimited authority."
+      }
     },
     {
       "id": "transaction-atomicity",
@@ -159,10 +259,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Predict all-or-nothing application state when a later instruction fails.",
+        "predict_question": "A transaction has two instructions: (1) update profile name, (2) record a log that depends on the new name. Instruction 2 fails during execution. What happens to the profile name on-chain?",
+        "predict_options": [
+          {
+            "id": "partial",
+            "label": "The name update from instruction 1 remains; only instruction 2 reverts"
+          },
+          {
+            "id": "rollback",
+            "label": "Neither instruction\u2019s application-state change remains \u2014 the transaction rolls back"
+          },
+          {
+            "id": "fee_keeps",
+            "label": "Both changes remain because a fee was charged"
+          }
+        ],
+        "predict_answer": "rollback",
+        "predict_why": "Solana transactions are atomic for program state changes: if a later instruction fails, earlier instruction effects in that transaction do not persist. A fee may still be charged.",
+        "act": "Walk the Lesson 004 investigator cases. List instructions in order, then predict state when a later step fails.",
+        "inspect": [
+          {
+            "id": "order",
+            "label": "Instruction order",
+            "placeholder": "1\u2026 2\u2026"
+          },
+          {
+            "id": "fail_at",
+            "label": "Which instruction failed",
+            "placeholder": "n / none"
+          },
+          {
+            "id": "profile",
+            "label": "Profile state after tx",
+            "placeholder": "changed / unchanged"
+          },
+          {
+            "id": "fee",
+            "label": "Fee charged?",
+            "placeholder": "yes / no / unsure"
+          },
+          {
+            "id": "boundary",
+            "label": "One tx or many?",
+            "placeholder": "one multi-ix / separate"
+          }
+        ],
+        "explain_question": "How can a failed multi-instruction transaction leave profile state unchanged while still charging a fee?",
+        "transfer": "Distinguish one multi-instruction transaction from two separate transactions in one sentence."
+      }
     },
     {
       "id": "transaction-failures",
@@ -187,10 +337,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Locate the failure stage \u2014 then choose a recovery that avoids blind resubmit.",
+        "predict_question": "The wallet UI shows a signature, then the app times out. You never saw a confirmed execution result. What is the safest next move?",
+        "predict_options": [
+          {
+            "id": "resubmit",
+            "label": "Immediately approve the same transfer again"
+          },
+          {
+            "id": "reconcile",
+            "label": "Reconcile the existing attempt (network, signature, execution) before any replacement"
+          },
+          {
+            "id": "assume_fail",
+            "label": "Treat \u201cnot observed\u201d as proof it never happened and move on"
+          }
+        ],
+        "predict_answer": "reconcile",
+        "predict_why": "Unresolved observation is not proof of non-execution. Blind resubmit can double-apply a business action. Reconcile first.",
+        "act": "Use Lesson 005 scenarios: wallet rejection, simulation failure, execution failure, and timeout. Classify each before recovering.",
+        "inspect": [
+          {
+            "id": "stage",
+            "label": "Failure stage",
+            "placeholder": "reject / sim / exec / unresolved"
+          },
+          {
+            "id": "error",
+            "label": "Error / code (if any)",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "sig",
+            "label": "Signature observed?",
+            "placeholder": "yes / no"
+          },
+          {
+            "id": "exec",
+            "label": "Execution known?",
+            "placeholder": "succeeded / failed / unknown"
+          },
+          {
+            "id": "next",
+            "label": "Next safe action",
+            "placeholder": "reconcile / fix / stop"
+          }
+        ],
+        "explain_question": "Why must you separate \u201cnot observed\u201d from \u201cdid not happen\u201d?",
+        "transfer": "Name four failure stages and one recovery rule that applies to all of them."
+      }
     },
     {
       "id": "application-state",
@@ -215,10 +415,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Keep observed account data separate from drafts and pending updates.",
+        "predict_question": "Your update transaction succeeded on Devnet, but the UI still shows the old name. What should you do first?",
+        "predict_options": [
+          {
+            "id": "resave",
+            "label": "Press Save again immediately with the same draft"
+          },
+          {
+            "id": "reread",
+            "label": "Re-read the account with an appropriate commitment/context and reconcile before editing again"
+          },
+          {
+            "id": "assume_fail",
+            "label": "Assume the transaction failed because the UI did not update"
+          }
+        ],
+        "predict_answer": "reread",
+        "predict_why": "UI staleness is not proof of failed execution. Reconcile observed account data against the attempt before repeating a write.",
+        "act": "In Lesson 006, label observed vs draft vs pending vs outcome on a profile update. Preserve drafts when a conflict is detected.",
+        "inspect": [
+          {
+            "id": "observed",
+            "label": "Observed name / revision",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "draft",
+            "label": "Draft input",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "pending",
+            "label": "Pending intent?",
+            "placeholder": "yes / no"
+          },
+          {
+            "id": "read_ctx",
+            "label": "Read context (slot/commitment)",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "conflict",
+            "label": "Conflict detected?",
+            "placeholder": "yes / no / unsure"
+          }
+        ],
+        "explain_question": "Why should a failed refresh not be recorded as proof that an update did not execute?",
+        "transfer": "List the four client-side state buckets this lesson keeps separate."
+      }
     },
     {
       "id": "protecting-state-transitions",
@@ -243,10 +493,60 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.1",
+      "content_version": "2026-11-18.2",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "learning_loop": {
+        "objective": "Explain expected-revision checks \u2014 and why silently refreshing then resubmitting is unsafe.",
+        "predict_question": "Tab A and Tab B both read revision 12. Tab A\u2019s update lands first (revision becomes 13). Tab B still submits expected_revision=12. What should a correctly guarded program do?",
+        "predict_options": [
+          {
+            "id": "accept",
+            "label": "Accept Tab B and overwrite Tab A\u2019s change"
+          },
+          {
+            "id": "reject",
+            "label": "Reject Tab B because expected_revision does not match current state"
+          },
+          {
+            "id": "auto",
+            "label": "Silently bump expected_revision to 13 and apply Tab B without review"
+          }
+        ],
+        "predict_answer": "reject",
+        "predict_why": "Expected-revision / concurrency checks reject stale writes. Silently refreshing the revision and resubmitting can overwrite intervening work the user never reviewed.",
+        "act": "Run Lesson 007\u2019s competing-edit cases. Record starting revision, each tab\u2019s expected revision, and which request the program accepts.",
+        "inspect": [
+          {
+            "id": "start_rev",
+            "label": "Starting revision",
+            "placeholder": "n"
+          },
+          {
+            "id": "tab_a",
+            "label": "Tab A expected / result",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "tab_b",
+            "label": "Tab B expected / result",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "final",
+            "label": "Final revision / name",
+            "placeholder": "\u2026"
+          },
+          {
+            "id": "conflict_action",
+            "label": "Your conflict handling",
+            "placeholder": "refresh+review / other"
+          }
+        ],
+        "explain_question": "Why must authorisation checks stay separate from the expected-revision check?",
+        "transfer": "After a stale-write rejection, what three steps replace \u201csilently refresh and resubmit\u201d?"
+      }
     }
   ]
 }
