@@ -300,8 +300,8 @@
   "Fix the leftover-accounts path so a proposal can only move funds from its own vault, and only once."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 SOL. A second wallet is useful for the 'other owner' steps.",
-  "[Friendstake](/lessons/friendstake/) and [UniProof](/lessons/chinesepowered-solana-cypherpunk/): you have practised spotting a missing `has_one`. This lesson is that idea at execute time."
+  "Phantom on Devnet with about 0.1–1.1 practice SOL for the creator. A second wallet is useful for the other-owner steps.",
+  "Complete Stage 1 ending at [Gifter escrow](/lessons/gifter-escrow/) — CipherVault opens [stage 2](/lessons/path/#stage-2). Elective lessons on missing `has_one` ([Friendstake](/lessons/friendstake/), [UniProof](/lessons/chinesepowered-solana-cypherpunk/)) help the audit section but are not required to walk propose → approve → execute."
  ],
  "concepts": [
   "pda",
@@ -321,5 +321,73 @@
   "test": "anchor test",
   "note": "The program crate is named `cipher-valut` (the typo is in the repo). Tests: `tests/cipher-valut.ts`."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Walk create → propose → approve → execute on a 2-of-2 vault, explain why execute waits for the threshold, and state which vault-binding checks are missing at execute.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can run a threshold multisig flow, explain when execute is allowed, and recognise missing vault/proposal bindings without treating UI success as a complete security model.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Walks propose → approve → execute at threshold",
+    "question": "Can the student complete a 2-of-2 (or stated threshold) cycle and name which instruction runs at each step?",
+    "not_yet": "Skips approve, or confuses create_transaction with execute.",
+    "support": "Names the sequence after revisiting try steps / Proof.",
+    "independent": "States create_multisig → create_transaction (self-approve) → approval from other owners → fn_execute when approvals ≥ threshold.",
+    "misconception": "Any owner can execute immediately after proposing."
+   },
+   {
+    "id": "c2",
+    "title": "Explains threshold gate before execute",
+    "question": "With threshold 2 and only one approval recorded, what should Execute do?",
+    "not_yet": "Expects execute to succeed with one approval on a 2-of-2.",
+    "support": "Correct after counting approval flags in Proof / Explorer.",
+    "independent": "States execute rejects until approvals meet the multisig threshold; the vault does not move lamports early.",
+    "misconception": "The proposer’s self-approve alone is enough for any threshold."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Recognises missing execute vault binding",
+    "question": "Without re-reading the audit section: what leftover-accounts / has_one gap should a student look for at execute, and why does a successful click-through not disprove it?",
+    "not_yet": "Assumes hosted success means accounts are fully constrained.",
+    "support": "Names unbound vault/proposal after revisiting the missing-checks objective.",
+    "independent": "States execute may not bind the proposal to its own vault (leftover accounts / missing has_one); happy-path UI success does not prove the constraint exists.",
+    "misconception": "I finished because the happy path worked once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Reach threshold on a multisig proposal — then explain why execute must wait, and what vault binding may still be missing.",
+  "predict_question": "You created a multisig with Approval Threshold 2 and two owners. Account 1 proposed a 0.02 SOL payment (self-approved). Account 2 has not approved yet. What should Execute do?",
+  "predict_options": [
+   {"id": "pay", "label": "Succeed and move 0.02 SOL from the vault to the recipient"},
+   {"id": "wait", "label": "Reject — approvals are still below the threshold"},
+   {"id": "auto", "label": "Auto-approve for every owner and then pay"}
+  ],
+  "predict_answer": "wait",
+  "predict_why": "fn_execute checks that recorded approvals meet the multisig threshold before moving vault lamports. create_transaction records the proposer’s approval only. A second owner must call approval before execute can pay on a threshold-2 vault.",
+  "act": "In observation mode, open the recorded propose / approve / execute signatures under Proof and count approvals before execute. In practical mode on Devnet with two wallets: create a 2-of-2 vault, propose 0.02 SOL, approve as the second owner, then execute. Prefer the hosted UI. SPL-token option in the dialog is not covered. Treat the missing execute constraints as an audit reading task unless you reproduce them locally.",
+  "inspect": [
+   {"id": "threshold", "label": "Threshold / owners", "placeholder": "e.g. 2 / 2"},
+   {"id": "approvals", "label": "Approvals before execute", "placeholder": "e.g. 1 then 2"},
+   {"id": "ix", "label": "Instruction observed", "placeholder": "create_transaction / approval / fn_execute"},
+   {"id": "amount", "label": "Amount (SOL)", "placeholder": "e.g. 0.02"},
+   {"id": "result", "label": "Result", "placeholder": "below threshold / paid / error"}
+  ],
+  "explain_question": "Why does a successful happy-path Execute not prove that the proposal is bound to its own vault — and which class of missing check should you look for in the execute accounts?",
+  "transfer": "Without re-reading the full walkthrough: if threshold is 3 and only two owners have approved, what should Execute do, and what Explorer evidence would show the vault lamports unchanged?"
+ }
 }

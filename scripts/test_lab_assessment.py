@@ -120,6 +120,17 @@ class LabAssessment(unittest.TestCase):
             self.assertIn('assessment', L, slug)
             self.assertTrue(L['assessment'].get('criteria'), slug)
 
+    def test_ciphervault_has_learning_loop_and_threshold_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/ciphervault.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'wait')
+        html = ll.assessment_html(L, 'ciphervault')
+        self.assertIn('threshold', html.lower())
+        self.assertIn('leftover', html.lower())
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
