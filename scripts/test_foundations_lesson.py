@@ -1,9 +1,10 @@
-"""Lesson 001 foundations gateway: release candidate teaching specification."""
+"""Foundations lessons 001–002: release candidate teaching specifications."""
 import unittest
 import foundations_lesson as f
+import foundations_l002 as l2
 
 
-class FoundationsLesson(unittest.TestCase):
+class FoundationsLesson001(unittest.TestCase):
     def test_status_is_release_candidate(self):
         html = f.lesson_html()
         self.assertIn('Release candidate', html)
@@ -42,10 +43,61 @@ class FoundationsLesson(unittest.TestCase):
         )
         self.assertLessEqual(len(lesson_desc), 158)
 
-    def test_card_and_path_section_link_assessment(self):
-        self.assertIn('/lessons/first-transaction/', f.foundations_card_html())
-        self.assertIn('/lessons/first-transaction/assessment/', f.foundations_card_html())
-        self.assertIn('release candidate', f.foundations_path_section().lower())
+    def test_links_to_lesson_002(self):
+        self.assertIn('/lessons/accounts-ownership/', f.lesson_html())
+
+
+class FoundationsLesson002(unittest.TestCase):
+    def test_status_is_release_candidate(self):
+        html = l2.lesson_html()
+        self.assertIn('Release candidate', html)
+        self.assertIn('Not yet technically or learner verified', html)
+        self.assertIn('yet provide verified live addresses', html.lower())
+        self.assertIn('Do not treat schematic addresses', html)
+
+    def test_separates_ownership_and_authority(self):
+        html = l2.lesson_html()
+        low = html.lower()
+        self.assertIn('program ownership', low)
+        self.assertIn('update_authority', low)
+        self.assertIn('owner field', low)
+        self.assertIn('system program', low)
+        self.assertIn('does not, by itself, enforce permission', low)
+
+    def test_no_fake_live_specimen_addresses(self):
+        html = l2.lesson_html()
+        self.assertIn('Do not treat schematic addresses or decoded panels on this RC page as live account evidence', html)
+        self.assertIn('no placeholder address on this page is labelled as a live verified specimen', html.lower())
+
+    def test_assessment_five_criteria_and_checks(self):
+        html = l2.assessment_html()
+        self.assertIn('Criterion 1', html)
+        self.assertIn('Criterion 5', html)
+        self.assertIn('Mandatory conceptual checks', html)
+        self.assertIn('Signer versus included address', html)
+        self.assertIn('but A has not signed', html)
+        self.assertIn('scenarios A–C', html)
+
+    def test_meta_descriptions_fit(self):
+        self.assertLessEqual(len(l2.LESSON_DESC), 158)
+        self.assertLessEqual(len(l2.ASSESS_DESC), 158)
+
+    def test_read_only_assessment(self):
+        html = l2.assessment_html()
+        self.assertIn('No practical transaction is required', html)
+        self.assertIn('Captured-evidence route', html)
+
+
+class FoundationsIndexWiring(unittest.TestCase):
+    def test_card_and_path_section_include_both(self):
+        cards = f.foundations_card_html()
+        self.assertIn('/lessons/first-transaction/', cards)
+        self.assertIn('/lessons/accounts-ownership/', cards)
+        self.assertIn('/lessons/accounts-ownership/assessment/', cards)
+        path = f.foundations_path_section().lower()
+        self.assertIn('release candidate', path)
+        self.assertIn('ownership versus application authority', path)
+        self.assertIn('/lessons/accounts-ownership/', path)
 
 
 if __name__ == '__main__':

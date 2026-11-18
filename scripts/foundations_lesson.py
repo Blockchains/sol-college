@@ -5,12 +5,14 @@ Teaches: review intent, verify execution and commitment separately, stop when un
 """
 from __future__ import annotations
 import html, json, os
+import foundations_l002 as l002
 
 SITE = 'https://sol.college'
 PUBLISHED = '2026-11-18'
 SLUG = 'first-transaction'
 PATH = f'/lessons/{SLUG}/'
 ASSESS_PATH = f'/lessons/{SLUG}/assessment/'
+L002_PATH = l002.PATH
 E = lambda s: html.escape(str(s if s is not None else ''), quote=True)
 
 STATUS_ROWS = [
@@ -292,11 +294,11 @@ This record does not establish ______.</pre>
 </ul>
 
 <h2 id=next>17. Next</h2>
-<p>When this foundations lesson is verified, the next live practice step on the path is <a href="/lessons/picassol-hackathon/">Picassol</a> — paint an on-chain pixel and meet PDAs. Until then, treat Picassol as optional practice that still assumes you understand approval and verification.</p>
+<p>Next foundations step: <a href="{L002_PATH}">Lesson 002 — Accounts, Ownership, and Authority</a> (release candidate). After foundations, the first live Stage 1 practice is <a href="/lessons/picassol-hackathon/">Picassol</a> — paint an on-chain pixel and meet PDAs.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="{L002_PATH}">Next: Lesson 002</a>
 <a class="btn ghost" href="/lessons/path/">Learning path</a>
-<a class="btn ghost" href="/lessons/guide/">How to use a lesson</a>
 </p>
 <p class=note>Final judgment for this RC: it teaches three habits — review intent, verify evidence, stop when uncertain — but it is not “the best lesson” until a real beginner uses it, a technical reviewer reproduces it, and accessibility review is done.</p>
 '''
@@ -320,7 +322,7 @@ This record does not establish ______.</pre>
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="/lessons/picassol-hackathon/">Next live lesson: Picassol</a>
+<a class="btn ghost" href="{L002_PATH}">Next: Lesson 002</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''
@@ -453,8 +455,8 @@ Reassessment needed:</pre>
 
 
 def foundations_card_html():
-  """Card for lessons index / path: gateway before Stage 1."""
-  return (
+  """Cards for lessons index: foundations gateway before Stage 1."""
+  l001 = (
     f'<article class="card ready-preview" data-lesson data-slug="{SLUG}" data-diff="Beginner" data-format="foundations" '
     f'data-text="first transaction authorise verify execution commitment fee mismatch foundations">'
     f'<p class="eyebrow status-preview">Foundations · Lesson 001 · release candidate</p>'
@@ -466,24 +468,53 @@ def foundations_card_html():
     f'<p class=cta><a class=btn href="{PATH}">Open Lesson 001</a> · <a href="{ASSESS_PATH}">Assessment rubric</a></p>'
     f'</article>'
   )
+  return l001 + l002.card_html()
 
 
 def foundations_path_section():
   return (
     '<section class=path-stage id=foundations>'
     '<h2>Foundations · before Stage 1</h2>'
-    '<p>Start here if you are new to Solana wallets and transfers. '
-    'Lesson 001 teaches review, verification of <b>execution and commitment as separate questions</b>, '
-    'and safe responses to mismatch and uncertainty. '
-    'It is a <b>release candidate</b>: not yet technically or learner verified, and it is not a live dApp walkthrough.</p>'
-    f'<p><a class=btn href="{PATH}">Start Lesson 001: Your First Solana Transaction</a> '
-    f'<a class="btn ghost" href="{ASSESS_PATH}">Assessment rubric</a></p>'
+    '<p>Start here if you are new to Solana. '
+    'Lesson 001 teaches review and verification of <b>execution and commitment as separate questions</b>. '
+    'Lesson 002 teaches <b>program ownership versus application authority</b> through account investigation. '
+    'Both are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
+    f'<a class="btn ghost" href="{L002_PATH}">Lesson 002: Accounts and ownership</a> '
+    f'<a class="btn ghost" href="{ASSESS_PATH}">001 rubric</a> '
+    f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002 rubric</a></p>'
     '</section>'
   )
 
 
+def _write_one(S, page, css, path, assess_path, lesson_body, assess_body, title, assess_title, lesson_desc, assess_desc):
+  assert len(lesson_desc) <= 158 and len(assess_desc) <= 158, (len(lesson_desc), len(assess_desc))
+  os.makedirs(f'{S}{path}', exist_ok=True)
+  os.makedirs(f'{S}{assess_path}', exist_ok=True)
+  open(f'{S}{path}index.html', 'w').write(page(lesson_body, title, lesson_desc, path))
+  open(f'{S}{assess_path}index.html', 'w').write(page(assess_body, assess_title, assess_desc, assess_path))
+  for p, h, d in ((path, title.split(' |')[0], lesson_desc), (assess_path, assess_title.split(' |')[0], assess_desc)):
+    fp = f'{S}{p}index.html'
+    data = {
+      '@context': 'https://schema.org', '@type': 'LearningResource',
+      'headline': h, 'description': d,
+      'datePublished': PUBLISHED, 'dateModified': PUBLISHED,
+      'educationalLevel': 'Beginner',
+      'learningResourceType': 'Lesson',
+      'isAccessibleForFree': True,
+      'provider': {'@type': 'Organization', 'name': 'Sol.College', 'url': SITE + '/'},
+      'url': SITE + p,
+    }
+    t = open(fp).read()
+    blob = json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
+    if '"@type": "LearningResource"' not in t and '"@type":"LearningResource"' not in t:
+      t = t.replace('</head>', f'<script type="application/ld+json">{blob}</script></head>', 1)
+      open(fp, 'w').write(t)
+  return [path, assess_path]
+
+
 def write(S, page, css):
-  """Write lesson + assessment pages. Returns list of paths for sitemap."""
+  """Write foundations lesson + assessment pages. Returns paths for sitemap."""
   lesson_desc = (
     'RC foundations lesson: review a devnet SOL transfer, check execution and commitment separately, '
     'reconcile the fee. Not yet technically verified.'
@@ -492,34 +523,18 @@ def write(S, page, css):
     'Rubric for Lesson 001: authorisation, execution vs commitment, accounting, uncertainty. '
     'Release candidate; every criterion required.'
   )
-  assert len(lesson_desc) <= 158 and len(assess_desc) <= 158, (len(lesson_desc), len(assess_desc))
-  os.makedirs(f'{S}{PATH}', exist_ok=True)
-  os.makedirs(f'{S}{ASSESS_PATH}', exist_ok=True)
-  open(f'{S}{PATH}index.html', 'w').write(
-    page(lesson_html(css), 'Your First Solana Transaction | Sol.College', lesson_desc, PATH)
+  paths = _write_one(
+    S, page, css, PATH, ASSESS_PATH,
+    lesson_html(css), assessment_html(css),
+    'Your First Solana Transaction | Sol.College',
+    'Lesson 001 assessment rubric | Sol.College',
+    lesson_desc, assess_desc,
   )
-  open(f'{S}{ASSESS_PATH}index.html', 'w').write(
-    page(assessment_html(css), 'Lesson 001 assessment rubric | Sol.College', assess_desc, ASSESS_PATH)
+  paths += _write_one(
+    S, page, css, l002.PATH, l002.ASSESS_PATH,
+    l002.lesson_html(css), l002.assessment_html(css),
+    'Accounts, Ownership, and Authority | Sol.College',
+    'Lesson 002 assessment rubric | Sol.College',
+    l002.LESSON_DESC, l002.ASSESS_DESC,
   )
-  # ld+json light touch
-  for path, title, desc in (
-    (PATH, 'Your First Solana Transaction', lesson_desc),
-    (ASSESS_PATH, 'Lesson 001 assessment rubric', assess_desc),
-  ):
-    fp = f'{S}{path}index.html'
-    data = {
-      '@context': 'https://schema.org', '@type': 'LearningResource',
-      'headline': title, 'description': desc,
-      'datePublished': PUBLISHED, 'dateModified': PUBLISHED,
-      'educationalLevel': 'Beginner',
-      'learningResourceType': 'Lesson',
-      'isAccessibleForFree': True,
-      'provider': {'@type': 'Organization', 'name': 'Sol.College', 'url': SITE + '/'},
-      'url': SITE + path,
-    }
-    t = open(fp).read()
-    blob = json.dumps(data, ensure_ascii=False).replace('</', '<\\/')
-    if 'application/ld+json' not in t:
-      t = t.replace('</head>', f'<script type="application/ld+json">{blob}</script></head>', 1)
-      open(fp, 'w').write(t)
-  return [PATH, ASSESS_PATH]
+  return paths
