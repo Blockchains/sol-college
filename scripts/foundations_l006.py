@@ -53,6 +53,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'application-state',
+    act_anchor='#model',
+    act_cta_label='Jump to client state model',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -245,6 +254,7 @@ Read A returns afterwards with an older observation.</pre>
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
+    '<a href="#workspace">Workspace</a>'
     '<a href="#outcomes">Outcomes</a><a href="#scope">Scope</a><a href="#app">Profile Card</a>'
     '<a href="#editor">Editor</a><a href="#starter">Starter</a><a href="#sequence">Sequence</a>'
     '<a href="#misleading">Misleading UI</a><a href="#model">Model</a><a href="#read">Read</a>'
@@ -260,6 +270,7 @@ Read A returns afterwards with an older observation.</pre>
 <p class="eyebrow status-preview">Foundations · Lesson 006 · release candidate</p>
 <h1>Read and Write Application State</h1>
 <p class=lead>Build a client that knows the difference between a request and reality.</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

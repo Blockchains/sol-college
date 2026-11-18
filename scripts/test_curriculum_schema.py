@@ -26,12 +26,25 @@ class CurriculumSchema(unittest.TestCase):
         audit = cs.audit_inventory(ROOT)
         self.assertEqual(audit['summary']['foundations'], 7)
         self.assertEqual(audit['summary']['foundations_missing_required'], 0)
-        self.assertGreaterEqual(audit['summary']['foundations_with_learning_loop'], 1)
+        self.assertEqual(audit['summary']['foundations_with_learning_loop'], 7)
         first = next(r for r in audit['foundations'] if r['id'] == 'first-transaction')
         self.assertEqual(first['track'], 'foundations')
         self.assertEqual(first['schema_status'], 'ok')
         self.assertTrue(first['has_learning_loop'])
         self.assertEqual(first['verified'], 'release_candidate')
+
+    def test_foundations_loops_have_predict_answers(self):
+        catalog = json.loads((ROOT / 'dapps' / 'foundations' / 'catalog.json').read_text())
+        for row in catalog['lessons']:
+            loop = row.get('learning_loop') or {}
+            self.assertTrue(loop.get('predict_question'), row['id'])
+            self.assertTrue(loop.get('predict_options'), row['id'])
+            self.assertTrue(loop.get('predict_answer'), row['id'])
+            ids = {o['id'] for o in loop['predict_options']}
+            self.assertIn(loop['predict_answer'], ids, row['id'])
+            self.assertTrue(loop.get('inspect'), row['id'])
+            self.assertTrue(loop.get('explain_question'), row['id'])
+            self.assertTrue(loop.get('transfer'), row['id'])
 
     def test_former_gap_lessons_have_objectives_and_prereqs(self):
         for slug in (

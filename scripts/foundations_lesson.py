@@ -34,30 +34,54 @@ STATUS_ROWS = [
 ]
 
 
-def _foundations_workspace_html() -> str:
-  """Shared learning-loop workspace for Lesson 001 from the foundations catalog."""
+def foundations_workspace_html(
+  slug: str,
+  *,
+  act_anchor: str = '#review',
+  prepare_note: str | None = None,
+  act_cta_label: str = 'Jump to lesson practice',
+) -> str:
+  """Shared learning-loop workspace from dapps/foundations/catalog.json."""
   try:
     import learning_layer as ll
     root = os.path.join(os.path.dirname(__file__), '..')
     catalog = json.loads(open(os.path.join(root, 'dapps/foundations/catalog.json'), encoding='utf-8').read())
-    row = next((x for x in catalog.get('lessons') or [] if x.get('id') == SLUG), None)
+    row = next((x for x in catalog.get('lessons') or [] if x.get('id') == slug), None)
     loop = (row or {}).get('learning_loop') or {}
     if not loop:
       return ''
+    path = (row or {}).get('path') or f'/lessons/{slug}/'
+    assess = (row or {}).get('assess_path') or f'{path}assessment/'
+    anchor = act_anchor if act_anchor.startswith('#') else f'#{act_anchor}'
+    href = f'{path.rstrip("/")}/{anchor}'
+    note = prepare_note or (
+      'Read the environment and safety notes below. Prefer Devnet. '
+      'Choose observation or the practical route. Then continue to Predict.'
+    )
     return ll.workspace_html(
       loop,
-      PATH + '#review',
+      href,
       content_version=(row or {}).get('content_version') or '',
-      assess_href=ASSESS_PATH,
+      assess_href=assess,
       eyebrow='Foundations workspace · release candidate',
-      prepare_note=(
-        'Read the environment and safety notes below. Prefer Devnet. '
-        'Choose observation or the practical transfer route. Then continue to Predict.'
-      ),
-      act_cta_label='Jump to review and act',
+      prepare_note=note,
+      act_cta_label=act_cta_label,
     )
   except Exception:
     return ''
+
+
+def _foundations_workspace_html() -> str:
+  """Lesson 001 convenience wrapper."""
+  return foundations_workspace_html(
+    SLUG,
+    act_anchor='#review',
+    prepare_note=(
+      'Read the environment and safety notes below. Prefer Devnet. '
+      'Choose observation or the practical transfer route. Then continue to Predict.'
+    ),
+    act_cta_label='Jump to review and act',
+  )
 
 
 def status_panel():

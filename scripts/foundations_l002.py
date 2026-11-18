@@ -52,6 +52,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'accounts-ownership',
+    act_anchor='#predict',
+    act_cta_label='Jump to predict and test',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -311,6 +320,7 @@ Expected:
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
+    '<a href="#workspace">Workspace</a>'
     '<a href="#safety">Safety</a><a href="#outcomes">Outcomes</a><a href="#scope">Scope</a>'
     '<a href="#environment">Environment</a><a href="#sequence">Sequence</a><a href="#reconnect">Reconnect</a>'
     '<a href="#inspect">Inspect</a><a href="#compare">Compare</a><a href="#authority">Authority</a>'
@@ -325,6 +335,7 @@ Expected:
 <p class="eyebrow status-preview">Foundations · Lesson 002 · release candidate</p>
 <h1>Accounts, Ownership, and Authority</h1>
 <p class=lead>An address tells you where. The rules tell you who can act.</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

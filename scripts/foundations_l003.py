@@ -54,6 +54,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'instructions-programs',
+    act_anchor='#predict',
+    act_cta_label='Jump to predict state change',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -127,7 +136,7 @@ Documented update operation must:
 </tbody>
 </table>
 
-<h2 id=workspace>6. Lesson workspace (product requirement)</h2>
+<h2 id=workspace-req>6. Lesson workspace (product requirement)</h2>
 <pre class=diagram>LESSON 003 — INSTRUCTIONS AND PROGRAMS
 Steps: Understand → Inspect → Predict → Review → Verify → Independent investigation
 
@@ -315,8 +324,8 @@ No intended SOL transfer beyond the network fee.
   rail = (
     '<nav class=rail aria-label="On this page">'
     '<a href="#not">Scope</a><a href="#outcomes">Outcomes</a><a href="#safety">Safety</a>'
-    '<a href="#app">Teaching app</a><a href="#sequence">Sequence</a><a href="#workspace">Workspace</a>'
-    '<a href="#concepts">Concepts</a><a href="#inspect">Inspect</a><a href="#predict">Predict</a>'
+    '<a href="#workspace">Workspace</a><a href="#app">Teaching app</a><a href="#sequence">Sequence</a>'
+    '<a href="#workspace-req">Workspace req</a><a href="#concepts">Concepts</a><a href="#inspect">Inspect</a><a href="#predict">Predict</a>'
     '<a href="#review">Review</a><a href="#verify">Verify</a><a href="#failures">Failures</a>'
     '<a href="#challenge">Challenge</a><a href="#assessment">Assessment</a><a href="#recovery">Recovery</a>'
     '<a href="#gates">Release gates</a><a href="#next">Next</a></nav>'
@@ -328,6 +337,7 @@ No intended SOL transfer beyond the network fee.
 <p class="eyebrow status-preview">Foundations · Lesson 003 · release candidate</p>
 <h1>Instructions and Programs</h1>
 <p class=lead>How an action becomes an account change</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

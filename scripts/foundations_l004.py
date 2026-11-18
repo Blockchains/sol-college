@@ -54,6 +54,15 @@ def status_panel():
   )
 
 
+
+def _workspace():
+  import foundations_lesson as foundations_meta
+  return foundations_meta.foundations_workspace_html(
+    'transaction-atomicity',
+    act_anchor='#fail',
+    act_cta_label='Jump to failure case',
+  )
+
 def lesson_html(css=''):
   docs = (
     '<p class=note>Official references: '
@@ -261,6 +270,7 @@ Transaction B: assert_revision(6)      → fails</pre>
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
+    '<a href="#workspace">Workspace</a>'
     '<a href="#outcomes">Outcomes</a><a href="#safety">Safety</a><a href="#app">Teaching ops</a>'
     '<a href="#sequence">Sequence</a><a href="#boundary">Boundary</a><a href="#success">Success</a>'
     '<a href="#inspect-ok">Inspect OK</a><a href="#fail">Failure</a><a href="#inspect-fail">Inspect fail</a>'
@@ -274,6 +284,7 @@ Transaction B: assert_revision(6)      → fails</pre>
 <p class="eyebrow status-preview">Foundations · Lesson 004 · release candidate</p>
 <h1>When One Transaction Contains Several Instructions</h1>
 <p class=lead>Understand the order. Predict the outcome. Find the boundary.</p>
+{_workspace()}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">

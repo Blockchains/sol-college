@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-d2',
+    'title': 'Release D.2 — Foundations 001–007 shared learning loops',
+    'summary': (
+      'Every Foundations lesson now has a catalog learning_loop and the shared '
+      'Predict→Act→Inspect workspace. Verification status remains release_candidate.'
+    ),
+    'changes': [
+      'Catalog learning_loop entries for Lessons 002–007 (001 already present).',
+      'Inject shared foundations workspace into all seven Foundations lesson pages.',
+      'Rename Lesson 003 product-requirement section id to avoid colliding with #workspace.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-d1',
     'title': 'Release D.1 — Foundations in curriculum source of truth',
     'summary': (
