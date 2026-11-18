@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c9',
+    'title': 'Release C.9 — ZeroAI learning loop',
+    'summary': (
+      'Stage 2 ZeroAI joins the shared learning layer with stale-Pyth zero-snapshot '
+      'criteria so successful addgame is not mistaken for live oracle prices.'
+    ),
+    'changes': [
+      'zeroai gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment requires honesty about closegame and stale Devnet Pyth feeds.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c8',
     'title': 'Release C.8 — Trust Protocol learning loop',
     'summary': (
