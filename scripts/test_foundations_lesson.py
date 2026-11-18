@@ -162,18 +162,59 @@ class FoundationsLesson004(unittest.TestCase):
         self.assertIn('never required', l4.assessment_html().lower())
 
 
+class FoundationsLesson005(unittest.TestCase):
+    def test_status_is_release_candidate(self):
+        import foundations_l005 as l5
+        html = l5.lesson_html()
+        self.assertIn('Release candidate', html)
+        self.assertIn('classify before retrying', html.lower())
+        self.assertIn('Do not invent signatures', html)
+
+    def test_failure_stages_and_timeout(self):
+        import foundations_l005 as l5
+        html = l5.lesson_html().lower()
+        self.assertIn('wallet rejection', html)
+        self.assertIn('simulation', html)
+        self.assertIn('timeout', html)
+        self.assertIn('null', html)
+        self.assertIn('lastvalidblockheight', html)
+        self.assertIn('not the same as proving the operation never happened', html)
+
+    def test_assessment_six_criteria(self):
+        import foundations_l005 as l5
+        html = l5.assessment_html()
+        self.assertIn('Criterion 6', html)
+        self.assertIn('Mandatory conceptual checks', html)
+        self.assertIn('Replacement risk', html)
+        self.assertIn('Secret protection', html)
+
+    def test_meta_descriptions_fit(self):
+        import foundations_l005 as l5
+        self.assertLessEqual(len(l5.LESSON_DESC), 158)
+        self.assertLessEqual(len(l5.ASSESS_DESC), 158)
+
+    def test_no_deliberate_fail_required(self):
+        import foundations_l005 as l5
+        self.assertIn('never required', l5.assessment_html().lower())
+
+    def test_links_from_lesson_004(self):
+        import foundations_l004 as l4
+        self.assertIn('/lessons/transaction-failures/', l4.lesson_html())
+
+
 class FoundationsIndexWiring(unittest.TestCase):
-    def test_card_and_path_section_include_all_four(self):
+    def test_card_and_path_section_include_all_five(self):
         cards = f.foundations_card_html()
         self.assertIn('/lessons/first-transaction/', cards)
         self.assertIn('/lessons/accounts-ownership/', cards)
         self.assertIn('/lessons/instructions-programs/', cards)
         self.assertIn('/lessons/transaction-atomicity/', cards)
-        self.assertIn('/lessons/transaction-atomicity/assessment/', cards)
+        self.assertIn('/lessons/transaction-failures/', cards)
+        self.assertIn('/lessons/transaction-failures/assessment/', cards)
         path = f.foundations_path_section().lower()
         self.assertIn('release candidate', path)
-        self.assertIn('atomicity', path)
-        self.assertIn('/lessons/transaction-atomicity/', path)
+        self.assertIn('recover safely', path)
+        self.assertIn('/lessons/transaction-failures/', path)
 
 
 if __name__ == '__main__':
