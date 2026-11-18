@@ -8,6 +8,7 @@ import html, json, os
 import foundations_l002 as l002
 import foundations_l003 as l003
 import foundations_l004 as l004
+import foundations_l005 as l005
 
 SITE = 'https://sol.college'
 PUBLISHED = '2026-11-18'
@@ -470,7 +471,7 @@ def foundations_card_html():
     f'<p class=cta><a class=btn href="{PATH}">Open Lesson 001</a> · <a href="{ASSESS_PATH}">Assessment rubric</a></p>'
     f'</article>'
   )
-  return l001 + l002.card_html() + l003.card_html() + l004.card_html()
+  return l001 + l002.card_html() + l003.card_html() + l004.card_html() + l005.card_html()
 
 
 def foundations_path_section():
@@ -478,19 +479,22 @@ def foundations_path_section():
     '<section class=path-stage id=foundations>'
     '<h2>Foundations · before Stage 1</h2>'
     '<p>Start here if you are new to Solana. '
-    'Lesson 001: <b>execution and commitment as separate questions</b>. '
-    'Lesson 002: <b>program ownership versus application authority</b>. '
-    'Lesson 003: how an <b>instruction</b> becomes a verified account change. '
-    'Lesson 004: <b>multi-instruction atomicity</b> and transaction boundaries. '
-    'All four are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    'Lesson 001: <b>execution vs commitment</b>. '
+    'Lesson 002: <b>ownership vs authority</b>. '
+    'Lesson 003: <b>instructions → account changes</b>. '
+    'Lesson 004: <b>multi-instruction atomicity</b>. '
+    'Lesson 005: <b>diagnose failures and recover safely</b>. '
+    'All five are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
     f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
     f'<a class="btn ghost" href="{L002_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.PATH}">003</a> '
     f'<a class="btn ghost" href="{l004.PATH}">004</a> '
+    f'<a class="btn ghost" href="{l005.PATH}">005</a> '
     f'<a class="btn ghost" href="{ASSESS_PATH}">001 rubric</a> '
     f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.ASSESS_PATH}">003</a> '
-    f'<a class="btn ghost" href="{l004.ASSESS_PATH}">004</a></p>'
+    f'<a class="btn ghost" href="{l004.ASSESS_PATH}">004</a> '
+    f'<a class="btn ghost" href="{l005.ASSESS_PATH}">005</a></p>'
     '</section>'
   )
 
@@ -558,5 +562,12 @@ def write(S, page, css):
     'When One Transaction Contains Several Instructions | Sol.College',
     'Lesson 004 assessment rubric | Sol.College',
     l004.LESSON_DESC, l004.ASSESS_DESC,
+  )
+  paths += _write_one(
+    S, page, css, l005.PATH, l005.ASSESS_PATH,
+    l005.lesson_html(css), l005.assessment_html(css),
+    'When Transactions Fail | Sol.College',
+    'Lesson 005 assessment rubric | Sol.College',
+    l005.LESSON_DESC, l005.ASSESS_DESC,
   )
   return paths

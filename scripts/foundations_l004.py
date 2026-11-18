@@ -252,11 +252,11 @@ Transaction B: assert_revision(6)      → fails</pre>
 <p><b>Understanding to leave with.</b> Instructions run in order, but their application-state changes only persist if the transaction succeeds as a whole. A failed executed transaction can still charge a fee. Separate transactions have separate outcomes.</p>
 
 <h2 id=next>15. Next</h2>
-<p>Next foundations step (not yet published): <b>When Transactions Fail — Read Errors, Diagnose Causes, Recover Safely</b>. Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
+<p>Next foundations step: <a href="/lessons/transaction-failures/">Lesson 005 — When Transactions Fail</a> (release candidate). Until foundations are verified, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="/lessons/transaction-failures/">Next: Lesson 005</a>
 <a class="btn ghost" href="{L003_PATH}">Previous: Lesson 003</a>
-<a class="btn ghost" href="/lessons/path/">Learning path</a>
 </p>
 '''
   rail = (
@@ -278,7 +278,7 @@ Transaction B: assert_revision(6)      → fails</pre>
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="{L003_PATH}">Lesson 003</a>
+<a class="btn ghost" href="/lessons/transaction-failures/">Next: Lesson 005</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''
