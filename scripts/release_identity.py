@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c13',
+    'title': 'Release C.13 — sentient.send Stage 3 learning loop',
+    'summary': (
+      'Stage 3 opens with sentient.send on the shared learning layer: '
+      'winner-takes-all payout reasoning and 32-byte seed-limit criteria.'
+    ),
+    'changes': [
+      'sentient-send gains learning_loop, lab-specific criteria, and path-aligned prereqs from Stage 2.',
+      'Release C continues into Stage 3 after completing Stage 1–2 path labs.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c12',
     'title': 'Release C.12 — NAIM learning loop (Stage 2 complete)',
     'summary': (
