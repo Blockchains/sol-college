@@ -305,11 +305,11 @@ No intended SOL transfer beyond the network fee.
 <p><b>Understanding to leave with.</b> An instruction tells a specific program what operation is requested, which accounts participate, and what inputs to use. The program and runtime still enforce the rules. Verify the submitted request and the resulting state rather than trusting the button label.</p>
 
 <h2 id=next>17. Next</h2>
-<p>Next foundations step (not yet published): <b>When One Transaction Contains Several Instructions</b>. Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
+<p>Next foundations step: <a href="/lessons/transaction-atomicity/">Lesson 004 — When One Transaction Contains Several Instructions</a> (release candidate). Until foundations are verified, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="/lessons/transaction-atomicity/">Next: Lesson 004</a>
 <a class="btn ghost" href="{L002_PATH}">Previous: Lesson 002</a>
-<a class="btn ghost" href="/lessons/path/">Learning path</a>
 </p>
 '''
   rail = (
@@ -332,7 +332,7 @@ No intended SOL transfer beyond the network fee.
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="{L002_PATH}">Lesson 002</a>
+<a class="btn ghost" href="/lessons/transaction-atomicity/">Next: Lesson 004</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''

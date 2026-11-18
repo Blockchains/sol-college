@@ -122,18 +122,58 @@ class FoundationsLesson003(unittest.TestCase):
     def test_links_from_lesson_002(self):
         self.assertIn('/lessons/instructions-programs/', l2.lesson_html())
 
+    def test_links_to_lesson_004(self):
+        import foundations_l003 as l3
+        self.assertIn('/lessons/transaction-atomicity/', l3.lesson_html())
+
+
+class FoundationsLesson004(unittest.TestCase):
+    def test_status_is_release_candidate(self):
+        import foundations_l004 as l4
+        html = l4.lesson_html()
+        self.assertIn('Release candidate', html)
+        self.assertIn('assert_revision', html)
+        self.assertIn('not live observations', html.lower())
+
+    def test_atomicity_and_fee_distinction(self):
+        import foundations_l004 as l4
+        html = l4.lesson_html().lower()
+        self.assertIn('atomic', html)
+        self.assertIn('fee', html)
+        self.assertIn('nothing happens if it fails', html)
+        self.assertIn('transaction boundary', html)
+        self.assertIn('simulation does', html)  # simulation does not establish fee
+
+    def test_assessment_six_criteria(self):
+        import foundations_l004 as l4
+        html = l4.assessment_html()
+        self.assertIn('Criterion 6', html)
+        self.assertIn('Mandatory conceptual checks', html)
+        self.assertIn('Separate outcomes', html)
+        self.assertIn('Cedar', html)
+
+    def test_meta_descriptions_fit(self):
+        import foundations_l004 as l4
+        self.assertLessEqual(len(l4.LESSON_DESC), 158)
+        self.assertLessEqual(len(l4.ASSESS_DESC), 158)
+
+    def test_failing_tx_not_required(self):
+        import foundations_l004 as l4
+        self.assertIn('never required', l4.assessment_html().lower())
+
 
 class FoundationsIndexWiring(unittest.TestCase):
-    def test_card_and_path_section_include_all_three(self):
+    def test_card_and_path_section_include_all_four(self):
         cards = f.foundations_card_html()
         self.assertIn('/lessons/first-transaction/', cards)
         self.assertIn('/lessons/accounts-ownership/', cards)
         self.assertIn('/lessons/instructions-programs/', cards)
-        self.assertIn('/lessons/instructions-programs/assessment/', cards)
+        self.assertIn('/lessons/transaction-atomicity/', cards)
+        self.assertIn('/lessons/transaction-atomicity/assessment/', cards)
         path = f.foundations_path_section().lower()
         self.assertIn('release candidate', path)
-        self.assertIn('instruction', path)
-        self.assertIn('/lessons/instructions-programs/', path)
+        self.assertIn('atomicity', path)
+        self.assertIn('/lessons/transaction-atomicity/', path)
 
 
 if __name__ == '__main__':
