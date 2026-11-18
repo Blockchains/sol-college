@@ -265,6 +265,9 @@
  "student_outcome": "Paint a pixel. Explain where it is stored.",
  "delivery": "Browser practice + evidence inspection",
  "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can decide create vs update from account evidence, explain PDA address stability when colour changes, label evidence honestly, and transfer the rule to a fresh coordinate."
+ },
  "learning_loop": {
   "objective": "Decide create vs update from account existence — then explain why the address stays the same when colour changes.",
   "predict_question": "This pixel account already exists at the derived address. Should the application create another account or update the existing one?",

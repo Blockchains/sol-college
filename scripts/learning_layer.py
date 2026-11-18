@@ -132,7 +132,14 @@ def _opt(value: str, label: str) -> str:
   return f'<label class="loop-opt"><input type="radio" name="loop-predict" value="{E(value)}"> {E(label)}</label>'
 
 
-def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None) -> str:
+def workspace_html(
+  loop: dict,
+  app_href: str,
+  platform_sigs: list | None = None,
+  *,
+  content_version: str = '',
+  assess_href: str = '',
+) -> str:
   """Focused Predict → Act → Inspect → Explain → Transfer workspace."""
   if not loop:
     return ''
@@ -158,13 +165,20 @@ def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None)
       f'<a href="https://explorer.solana.com/tx/{E(s)}?cluster=devnet"><code>{E(s[:16])}…</code></a></li>'
       for a, s in platform_sigs[:4] if s
     )
-    hist = f'<ul class="ev-list">{items}</ul>'
+    hist = (
+      '<ul class="ev-list">' + items + '</ul>'
+      '<p class="note">These are Sol.College records, not your completion proof.</p>'
+    )
   app = E(app_href)
+  ver = E(content_version or '')
+  assess = E(assess_href or '#exercises')
+  assess_label = 'Open assessment rubric' if assess_href else 'Open full exercises'
   def p(text):
     return f'<p>{E(text)}</p>' if text else ''
 
   return f'''
-<section class="lab-workspace" id="workspace" data-learning="workspace" data-predict-answer="{predict_ok}">
+<section class="lab-workspace" id="workspace" data-learning="workspace" data-predict-answer="{predict_ok}" data-content-version="{ver}">
+  <div class="lab-version-banner" id="lab-version-banner" hidden role="status"></div>
   <header class="lab-bar">
     <div>
       <p class="eyebrow">Application lab workspace</p>
@@ -220,6 +234,10 @@ def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None)
             <option value="guided">Guided investigation</option>
           </select>
         </label>
+        <label class="loop-opt">Public signature (optional)
+          <input type="text" id="attempt-sig" data-inspect="sig" placeholder="Base58 signature if you sent one" autocomplete="off">
+        </label>
+        <p class="note" id="inspect-stale" hidden>Restored observation notes may be stale — shared canvas state can change. Re-check account existence before treating Create/Update as current.</p>
         <button type="button" class="btn" data-loop-mark="inspect">Save inspection notes</button>
         <button type="button" class="btn ghost" data-loop-next="explain">Continue to Explain</button>
       </div>
@@ -242,9 +260,10 @@ def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None)
             <option value="paused">Assessment paused</option>
           </select>
         </label>
+        <p class="note">Self-marked outcome is a draft. Independent completion requires the <a href="{assess}">assessment rubric</a>.</p>
         <button type="button" class="btn" data-loop-mark="transfer">Save demonstration status</button>
         <p class="cta-row">
-          <a class="btn ghost" href="#exercises">Open full exercises</a>
+          <a class="btn" href="{assess}">{assess_label}</a>
           <a class="btn ghost" href="#proof">Platform proof records</a>
           <a class="btn ghost" href="/lessons/path/">Choose next step</a>
         </p>
@@ -252,13 +271,16 @@ def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None)
     </div>
     <aside class="lab-evidence" aria-label="Evidence drawer">
       <h3>Evidence drawer</h3>
-      <p class="note">Platform signatures below are historical Sol.College records — not proof of your action.</p>
+      <p class="note">Tag every item by provenance. Platform history is not your completion proof.</p>
       {hist or '<p class="note">No platform signatures attached.</p>'}
       <h4>Your attempt</h4>
+      <p><span class="ev-tag" id="ev-route-tag">Unspecified</span></p>
       <dl class="ev-attempt" id="ev-attempt">
         <dt>Mode</dt><dd id="ev-mode">Not chosen</dd>
         <dt>Prediction</dt><dd id="ev-predict">—</dd>
         <dt>Route</dt><dd id="ev-route">—</dd>
+        <dt>Signature</dt><dd id="ev-sig">—</dd>
+        <dt>Observed at</dt><dd id="ev-observed">—</dd>
         <dt>Outcome</dt><dd id="ev-outcome">—</dd>
       </dl>
       <p><a href="#stuck">I am stuck</a></p>
@@ -300,4 +322,112 @@ def environment_panel_html(verified: str = '', ui_check: str = '') -> str:
     <dt>If unavailable</dt><dd>Save progress, use observation/captured evidence, or pause — do not invent a transaction.</dd>
   </dl>
 </aside>
+'''
+
+
+def assessment_html(lesson: dict, slug: str) -> str:
+  """Independent rubric page for an application lab (not exercise ticks)."""
+  title = E(lesson.get('title') or slug)
+  path = f'/lessons/{E(slug)}/'
+  assess = lesson.get('assessment') or {}
+  purpose = E(assess.get('purpose') or (
+    'Determine whether the student can decide create vs update from account evidence, '
+    'explain PDA address stability, and label evidence honestly.'
+  ))
+  criteria = assess.get('criteria') or []
+  if not criteria:
+    criteria = [
+      {
+        'id': 'c1',
+        'title': 'Decides Create vs Update from account existence',
+        'question': 'Does the student base the action on whether the Pixel account exists at the derived address?',
+        'not_yet': 'Treats a white-looking cell as empty, or invents Create/Update without account observation.',
+        'support': 'Correct after a prompt to check getAccountInfo / Explorer at the derived address.',
+        'independent': 'Records coordinate, derived address, Account exists Yes/No, and chooses Create or Update from that evidence.',
+        'misconception': '“White means no account.”',
+      },
+      {
+        'id': 'c2',
+        'title': 'Explains address stability when colour changes',
+        'question': 'Can the student explain why update_pixel keeps the same PDA?',
+        'not_yet': 'Claims colour change creates a new account, or cannot name the seeds.',
+        'support': 'Names seeds after a prompt to compare create vs update in Proof.',
+        'independent': 'States seeds ["pixel", x, y] (and bump on update) and that colour is data inside the same account.',
+        'misconception': '“A new colour needs a new address.”',
+      },
+      {
+        'id': 'c3',
+        'title': 'Labels evidence provenance',
+        'question': 'Does the student distinguish platform historical proof from their own attempt?',
+        'not_yet': 'Treats a Sol.College Proof signature as proof they completed the action.',
+        'support': 'Corrects the mix-up after a prompt about historical vs my attempt tags.',
+        'independent': 'Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.',
+        'misconception': '“Any successful signature on the lesson page counts as my mastery.”',
+      },
+      {
+        'id': 'c4',
+        'title': 'Transfers to a fresh coordinate',
+        'question': 'On a new coordinate, can the student state Create or Update and what evidence would prove it?',
+        'not_yet': 'Cannot generalise beyond the walked-through pixel.',
+        'support': 'States the rule after revisiting the predict-why note.',
+        'independent': 'Picks a different coordinate, derives or looks up the address, and states Create vs Update with the evidence needed.',
+        'misconception': '“I finished because I followed the buttons once.”',
+      },
+    ]
+  crit_html = []
+  for i, c in enumerate(criteria, 1):
+    crit_html.append(
+      f'<h2 id="{E(c.get("id") or f"c{i}")}">Criterion {i} — {E(c.get("title") or "")}</h2>'
+      f'<p><b>Question.</b> {E(c.get("question") or "")}</p>'
+      f'<ul>'
+      f'<li><b>Not yet:</b> {E(c.get("not_yet") or "")}</li>'
+      f'<li><b>With support:</b> {E(c.get("support") or "")}</li>'
+      f'<li><b>Independently:</b> {E(c.get("independent") or "")}</li>'
+      f'</ul>'
+      + (f'<p><b>Critical misconception.</b> {E(c["misconception"])}</p>' if c.get('misconception') else '')
+    )
+  return f'''
+<nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <a href="{path}">{title}</a> / <span>Assessment</span></nav>
+<p class="eyebrow">Assessment rubric</p>
+<h1>{title}: assessment</h1>
+<p class="lead">{purpose}</p>
+<p>This rubric assesses the application-lab outcomes in <a href="{path}">the lesson</a>. Self-marked workspace outcomes are drafts. Exercise checklist ticks are not mastery.</p>
+
+<h2 id="levels">Performance levels</h2>
+<table>
+<thead><tr><th>Level</th><th>Meaning</th></tr></thead>
+<tbody>
+<tr><td>Not yet demonstrated</td><td>Evidence missing, materially incorrect, or shows an unresolved misconception</td></tr>
+<tr><td>Demonstrated with support</td><td>Correct after a conceptual prompt</td></tr>
+<tr><td>Demonstrated independently</td><td>Correct without a conceptual prompt</td></tr>
+<tr><td>Not assessable</td><td>Infrastructure, accessibility, or evidence problems prevent a fair judgement</td></tr>
+</tbody>
+</table>
+
+{''.join(crit_html)}
+
+<h2 id="gates">Mandatory honesty gates</h2>
+<table>
+<thead><tr><th>Gate</th><th>Required demonstration</th></tr></thead>
+<tbody>
+<tr><td>Devnet practice environment</td><td>Does not treat mainnet funds as required for completion</td></tr>
+<tr><td>No secrets</td><td>Does not submit recovery phrases or private keys</td></tr>
+<tr><td>Evidence provenance</td><td>Does not claim platform historical signatures as personal completion</td></tr>
+<tr><td>Observation ≠ practical mastery</td><td>Observation mode alone cannot award independent practical completion</td></tr>
+</tbody>
+</table>
+
+<h2 id="decisions">Completion decisions</h2>
+<table>
+<thead><tr><th>Decision</th><th>Requirements</th></tr></thead>
+<tbody>
+<tr><td>Completed independently</td><td>All criteria independent; all honesty gates</td></tr>
+<tr><td>Completed with support</td><td>All criteria at least with support; all honesty gates</td></tr>
+<tr><td>Further practice needed</td><td>A criterion not demonstrated, or a gate unresolved</td></tr>
+<tr><td>Assessment paused</td><td>Infrastructure/accessibility/evidence issues prevent fair completion</td></tr>
+<tr><td>Observation completed</td><td>Conceptual / captured-evidence route only; not practical mastery</td></tr>
+</tbody>
+</table>
+<p>Never convert “assessment paused” into a failing grade. A successful transaction alone must not automatically award the whole lesson.</p>
+<p class="cta-row"><a class="btn" href="{path}#workspace">Return to workspace</a> <a class="btn ghost" href="{path}#exercises">Practice exercises</a></p>
 '''
