@@ -236,11 +236,11 @@ Read A returns afterwards with an older observation.</pre>
 <p><b>Understanding to leave with.</b> My application keeps the user’s intention separate from what it has actually observed. It can track a successful transaction while still admitting that a refresh is unresolved. When new evidence arrives, it updates carefully rather than pretending the screen is always the chain.</p>
 
 <h2 id=next>19. Next</h2>
-<p>Next foundations step (not yet published): <b>Protecting State Transitions — Expected Revisions and Program-Enforced Checks</b>. Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
+<p>Next foundations step: <a href="/lessons/protecting-state-transitions/">Lesson 007 — Protecting State Transitions</a> (release candidate). Until foundations are verified, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="/lessons/protecting-state-transitions/">Next: Lesson 007</a>
 <a class="btn ghost" href="{L005_PATH}">Previous: Lesson 005</a>
-<a class="btn ghost" href="/lessons/path/">Learning path</a>
 </p>
 '''
   rail = (
@@ -264,7 +264,7 @@ Read A returns afterwards with an older observation.</pre>
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="{L005_PATH}">Lesson 005</a>
+<a class="btn ghost" href="/lessons/protecting-state-transitions/">Next: Lesson 007</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''

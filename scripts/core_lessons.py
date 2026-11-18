@@ -423,7 +423,8 @@ if starter:
     f'<a href="/lessons/instructions-programs/">003</a>–'
     f'<a href="/lessons/transaction-atomicity/">004</a>–'
     f'<a href="/lessons/transaction-failures/">005</a>–'
-    f'<a href="/lessons/application-state/">006</a> (release candidates). '
+    f'<a href="/lessons/application-state/">006</a>–'
+    f'<a href="/lessons/protecting-state-transitions/">007</a> (release candidates). '
     f'Then: {E(SL["title"])}</p><p class=task>{md(task)}</p><p class=meta>{E(bits)}</p>'
     f'{lim_html}{pre_html}'
     f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> '
@@ -432,12 +433,13 @@ if starter:
     f'<a class="btn ghost" href="/lessons/transaction-atomicity/">004</a> '
     f'<a class="btn ghost" href="/lessons/transaction-failures/">005</a> '
     f'<a class="btn ghost" href="/lessons/application-state/">006</a> '
+    f'<a class="btn ghost" href="/lessons/protecting-state-transitions/">007</a> '
     f'<a class="btn ghost" href="/lessons/{E(starter["slug"])}/">Skip to Picassol</a></p>'
-    f'<p class=note>Foundations teach review/verification, ownership, instructions, atomicity, failure recovery, and honest client state. '
+    f'<p class=note>Foundations teach review/verification, ownership, instructions, atomicity, failure recovery, honest client state, and program-enforced revisions. '
     f'They are release candidates — not yet technically or learner verified.</p></section>')
 picks=''
 picks+=('<a class=path-pick href="#foundations"><b>Solana Foundations</b>'
-        '<span><span class="chip beg">Beginner</span> · Lessons 001–006 · release candidates</span></a>')
+        '<span><span class="chip beg">Beginner</span> · Lessons 001–007 · release candidates</span></a>')
 for st in PATH.get('stages',[]):
   items=[x for x in GUIDED if lesson_of(x).get('path_stage')==st['id']]
   if not items: continue
@@ -523,11 +525,12 @@ path_parts.append('<p>New to Solana? Start with foundations before Stage 1: '
   '<a href="/lessons/accounts-ownership/">Lesson 002</a> (ownership vs authority), '
   '<a href="/lessons/instructions-programs/">Lesson 003</a> (instructions → account changes), '
   '<a href="/lessons/transaction-atomicity/">Lesson 004</a> (multi-instruction atomicity), '
-  '<a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), then '
-  '<a href="/lessons/application-state/">Lesson 006</a> (honest client state). '
+  '<a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), '
+  '<a href="/lessons/application-state/">Lesson 006</a> (honest client state), then '
+  '<a href="/lessons/protecting-state-transitions/">Lesson 007</a> (expected revisions). '
   'All are release candidates — not yet technically or learner verified.</p>')
 path_parts.append('<p>When you finish the live path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
-path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/accounts-ownership/">002</a> <a class="btn ghost" href="/lessons/instructions-programs/">003</a> <a class="btn ghost" href="/lessons/transaction-atomicity/">004</a> <a class="btn ghost" href="/lessons/transaction-failures/">005</a> <a class="btn ghost" href="/lessons/application-state/">006</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live: {E(lesson_of(first)["title"])}</a></p>')
+path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/accounts-ownership/">002</a> <a class="btn ghost" href="/lessons/instructions-programs/">003</a> <a class="btn ghost" href="/lessons/transaction-atomicity/">004</a> <a class="btn ghost" href="/lessons/transaction-failures/">005</a> <a class="btn ghost" href="/lessons/application-state/">006</a> <a class="btn ghost" href="/lessons/protecting-state-transitions/">007</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live: {E(lesson_of(first)["title"])}</a></p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
 path_parts.append(_foundations.foundations_path_section())
 path_parts.append(stage_blocks(False, GUIDED))
@@ -569,7 +572,7 @@ learner = '''<div class=readbar aria-hidden=true><span></span></div>
 <h1>How to use a lesson</h1>
 <p class=lead>A lesson is a devnet app you can open, plus the accounts, instructions and transactions that explain it. Nothing here asks you to wait for a cohort.</p>
 <section class=path-stage id=s0><h2><span class=num>0</span>Foundations first (new to Solana)</h2>
-<p>Start with <a href="/lessons/first-transaction/">Lesson 001</a> (execution vs commitment), <a href="/lessons/accounts-ownership/">Lesson 002</a> (ownership vs authority), <a href="/lessons/instructions-programs/">Lesson 003</a> (instructions → account changes), <a href="/lessons/transaction-atomicity/">Lesson 004</a> (multi-instruction atomicity), <a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), then <a href="/lessons/application-state/">Lesson 006</a> (honest client state). All are release candidates — not yet technically or learner verified — and are not live dApp walkthroughs.</p></section>
+<p>Start with <a href="/lessons/first-transaction/">Lesson 001</a> (execution vs commitment), <a href="/lessons/accounts-ownership/">Lesson 002</a> (ownership vs authority), <a href="/lessons/instructions-programs/">Lesson 003</a> (instructions → account changes), <a href="/lessons/transaction-atomicity/">Lesson 004</a> (multi-instruction atomicity), <a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), <a href="/lessons/application-state/">Lesson 006</a> (honest client state), then <a href="/lessons/protecting-state-transitions/">Lesson 007</a> (expected revisions). All are release candidates — not yet technically or learner verified — and are not live dApp walkthroughs.</p></section>
 <section class=path-stage id=s1><h2><span class=num>1</span>Start from the path</h2>
 <p>The <a href="/lessons/">lessons index</a> separates foundations, guided lessons, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists guided lessons only, ordered by concept: accounts and PDAs, then authorization, then markets, staking and oracles. You can read a lesson without connecting a wallet.</p></section>
 <section class=path-stage id=s2><h2><span class=num>2</span>Use your own devnet wallet</h2>

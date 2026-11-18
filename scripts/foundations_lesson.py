@@ -10,6 +10,7 @@ import foundations_l003 as l003
 import foundations_l004 as l004
 import foundations_l005 as l005
 import foundations_l006 as l006
+import foundations_l007 as l007
 
 SITE = 'https://sol.college'
 PUBLISHED = '2026-11-18'
@@ -472,7 +473,10 @@ def foundations_card_html():
     f'<p class=cta><a class=btn href="{PATH}">Open Lesson 001</a> · <a href="{ASSESS_PATH}">Assessment rubric</a></p>'
     f'</article>'
   )
-  return l001 + l002.card_html() + l003.card_html() + l004.card_html() + l005.card_html() + l006.card_html()
+  return (
+    l001 + l002.card_html() + l003.card_html() + l004.card_html()
+    + l005.card_html() + l006.card_html() + l007.card_html()
+  )
 
 
 def foundations_path_section():
@@ -486,19 +490,22 @@ def foundations_path_section():
     'Lesson 004: <b>multi-instruction atomicity</b>. '
     'Lesson 005: <b>diagnose failures and recover safely</b>. '
     'Lesson 006: <b>read/write application state honestly</b>. '
-    'All six are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    'Lesson 007: <b>expected revisions and program-enforced checks</b>. '
+    'All seven are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
     f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
     f'<a class="btn ghost" href="{L002_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.PATH}">003</a> '
     f'<a class="btn ghost" href="{l004.PATH}">004</a> '
     f'<a class="btn ghost" href="{l005.PATH}">005</a> '
     f'<a class="btn ghost" href="{l006.PATH}">006</a> '
+    f'<a class="btn ghost" href="{l007.PATH}">007</a> '
     f'<a class="btn ghost" href="{ASSESS_PATH}">001 rubric</a> '
     f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.ASSESS_PATH}">003</a> '
     f'<a class="btn ghost" href="{l004.ASSESS_PATH}">004</a> '
     f'<a class="btn ghost" href="{l005.ASSESS_PATH}">005</a> '
-    f'<a class="btn ghost" href="{l006.ASSESS_PATH}">006</a></p>'
+    f'<a class="btn ghost" href="{l006.ASSESS_PATH}">006</a> '
+    f'<a class="btn ghost" href="{l007.ASSESS_PATH}">007</a></p>'
     '</section>'
   )
 
@@ -580,5 +587,12 @@ def write(S, page, css):
     'Read and Write Application State | Sol.College',
     'Lesson 006 assessment rubric | Sol.College',
     l006.LESSON_DESC, l006.ASSESS_DESC,
+  )
+  paths += _write_one(
+    S, page, css, l007.PATH, l007.ASSESS_PATH,
+    l007.lesson_html(css), l007.assessment_html(css),
+    'Protecting State Transitions | Sol.College',
+    'Lesson 007 assessment rubric | Sol.College',
+    l007.LESSON_DESC, l007.ASSESS_DESC,
   )
   return paths
