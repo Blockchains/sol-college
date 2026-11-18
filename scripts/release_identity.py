@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c12',
+    'title': 'Release C.12 — NAIM learning loop (Stage 2 complete)',
+    'summary': (
+      'Stage 2 NAIM joins the shared learning layer. All Stage 2 path labs now '
+      'share preflight → Predict→Act→Inspect → assessment.'
+    ),
+    'changes': [
+      'naim gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Stage 2 path coverage for reusable learning components is complete.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c11',
     'title': 'Release C.11 — AgentX learning loop',
     'summary': (
