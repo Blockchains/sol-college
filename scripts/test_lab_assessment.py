@@ -74,6 +74,16 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_gree_has_learning_loop_and_metaplex_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/gree.json').read_text())
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'new_mint')
+        html = ll.assessment_html(L, 'gree')
+        self.assertIn('Metaplex', html)
+        self.assertIn('fresh mint keypair', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

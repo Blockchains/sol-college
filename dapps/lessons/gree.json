@@ -227,8 +227,8 @@
   "See why a program signs a CPI as a PDA (`invoke_signed`) when it is the mint authority."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 devnet SOL (minting creates several accounts).",
-  "[Proof of Estimate](/lessons/poe-solana/) or equivalent: you have seen a PDA-signed CPI to the Token Program."
+  "Phantom on Devnet with practice SOL (about 0.1 SOL — minting creates several accounts).",
+  "Complete [Proof of Estimate](/lessons/poe-solana/) or equivalent CPI familiarity — gree is the next Stage 1 step on the [learning path](/lessons/path/)."
  ],
  "concepts": [
   "cpi",
@@ -247,5 +247,74 @@
   "test": "anchor test",
   "note": "The program lives under `anchor/`. It depends on `anchor-spl` with the `metadata` feature (Metaplex)."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Mint a 1-of-1 via init_nft, confirm Metaplex metadata on Explorer, and explain why a second Run program creates a different mint instead of updating the first.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "not_covered": "Hosted UI mints with fixed name/symbol/URI from the patched app. Custom name/symbol and deliberate empty-name failures are local/script exercises. Image URI is the author's IPFS link and may load slowly or not at all in Phantom.",
+ "assessment": {
+  "purpose": "Determine whether the student can explain one-instruction mint+Metaplex CPIs, who owns the metadata PDA, why a second Run creates a new mint, and how the master edition locks supply.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains one-instruction mint + Metaplex CPIs",
+    "question": "What does a successful Run program transaction accomplish beyond minting one token?",
+    "not_yet": "Stops at mint_to, or invents a separate client-side Metaplex transaction.",
+    "support": "Names create_metadata_accounts_v3 and create_master_edition_v3 after inspecting Proof / Explorer inner instructions.",
+    "independent": "States Token mint (supply 1, 0 decimals) plus Metaplex metadata and master-edition CPIs in the same instruction/transaction.",
+    "misconception": "The wallet attaches metadata in a follow-up transaction after minting."
+   },
+   {
+    "id": "c2",
+    "title": "Names Metaplex as metadata PDA owner",
+    "question": "Whose program ID seeds the metadata account, and what happens to mint authority after master edition?",
+    "not_yet": "Claims gree owns the metadata PDA, or says the wallet keeps mint authority forever.",
+    "support": "Correct after revisiting seeds [\"metadata\", metaplex, mint] and master-edition authority hand-off.",
+    "independent": "States metadata/edition are Metaplex PDAs; master edition takes mint (and freeze) authority so supply stays 1.",
+    "misconception": "gree owns the metadata account because gree paid for it."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a second Run program",
+    "question": "Without re-reading the walkthrough: after one successful mint, what should a second Run program produce, and what evidence proves it is not the same mint?",
+    "not_yet": "Expects reuse of the same mint keypair, or cannot name Explorer evidence.",
+    "support": "States a fresh mint keypair after revisiting try steps / frontend notes.",
+    "independent": "States a new mint address; cites different Minted NFT address / Explorer mint pubkey.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Mint a 1-of-1 with Metaplex metadata — then explain why a second Run program creates a different mint.",
+  "predict_question": "You already minted one NFT with Run program. You press Run program again with the same wallet. What should happen?",
+  "predict_options": [
+   {"id": "reuse_fail", "label": "The app reuses the same mint keypair and the transaction fails (account in use)"},
+   {"id": "new_mint", "label": "The app generates a fresh mint keypair and you get a second, different NFT"},
+   {"id": "update_meta", "label": "The same mint updates its Metaplex name/symbol in place"}
+  ],
+  "predict_answer": "new_mint",
+  "predict_why": "The client generates a new mint keypair on every Run program and co-signs with it. Metadata is locked (is_mutable = false) and tied to that mint; a second click does not update the first NFT. Reusing the same mint keypair would fail at Anchor init (account already in use) — that is a separate deliberate exercise, not the hosted button path.",
+  "act": "In observation mode, open the recorded mint signature under Proof and confirm Token + Metaplex inner instructions. In practical mode, connect on Devnet, Run program once, note the minted address, then Run program again and compare the new address. Prefer the hosted UI at /dapps/gree/#/gree.",
+  "inspect": [
+   {"id": "mint1", "label": "First minted address (short)", "placeholder": "e.g. Gp7N…"},
+   {"id": "supply", "label": "Mint supply / decimals", "placeholder": "1 / 0"},
+   {"id": "meta", "label": "Metadata name / symbol", "placeholder": "GLC-20240317 / GRLC"},
+   {"id": "mint2", "label": "Second minted address (if run twice)", "placeholder": "different from first / n/a"},
+   {"id": "owner", "label": "Who owns metadata PDA?", "placeholder": "Metaplex / gree / wallet"}
+  ],
+  "explain_question": "Why are the metadata and master-edition accounts PDAs of Metaplex rather than of gree — and what does create_master_edition_v3 do to mint authority?",
+  "transfer": "Without re-reading the full walkthrough: if a script called init_nft twice with the same mint keypair, what should fail first, and what Explorer evidence would show after one successful mint that supply cannot increase?"
+ }
 }
