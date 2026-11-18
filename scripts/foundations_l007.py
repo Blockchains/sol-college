@@ -16,7 +16,7 @@ L005_PATH = '/lessons/transaction-failures/'
 E = lambda s: html.escape(str(s if s is not None else ''), quote=True)
 
 STATUS_ROWS = [
-  ('Status', 'Release candidate. Not yet technically or learner verified.'),
+  ('Status', 'Release candidate. Automated structural checks recorded; learner testing and live specimens not completed.'),
   ('Version', '1.0'),
   ('Track', 'Solana Foundations'),
   ('Prerequisites', 'Lessons 001–006, or equivalent understanding'),
@@ -24,7 +24,7 @@ STATUS_ROWS = [
   ('Environment', 'Local test environment first; optional devnet verification'),
   ('Core learning time', 'About 75–90 minutes (design estimate, not a measured claim)'),
   ('Achievement', 'State Guardian: Enforce Before Updating — not awarded until verification gates pass'),
-  ('Technical verification', 'Not completed — starter program, guarded path, and conflict UI not yet verified for this RC'),
+  ('Technical verification', 'Automated structural checks only; learner testing and live specimens not completed'),
   ('Learner testing', 'Not completed for this release candidate'),
 ]
 
@@ -300,7 +300,7 @@ F: Client refreshes after a conflict and silently resubmits the old draft using 
 <p><b>Understanding to leave with.</b> My client can warn about a changed profile, but the program must enforce any condition that needs to hold at execution. An expected revision prevents a stale update from applying through the guarded path. If it is rejected, I refresh and review—not silently overwrite.</p>
 
 <h2 id=next>17. Next</h2>
-<p>Next foundations step (not yet published): <b>Program-Derived Addresses — Give Application State a Predictable Home</b>. Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
+<p>Foundations 001–007 end here for the current release candidate. The first live Stage 1 practice is <a href="/lessons/picassol-hackathon/">Picassol</a> — paint an on-chain pixel and meet PDAs in an application lab. A future foundations lesson on Program-Derived Addresses may be added later; it does not block Stage 1.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
 <a class="btn ghost" href="{L006_PATH}">Previous: Lesson 006</a>

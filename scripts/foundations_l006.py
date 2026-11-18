@@ -16,7 +16,7 @@ L004_PATH = '/lessons/transaction-atomicity/'
 E = lambda s: html.escape(str(s if s is not None else ''), quote=True)
 
 STATUS_ROWS = [
-  ('Status', 'Release candidate. Not yet technically or learner verified.'),
+  ('Status', 'Release candidate. Automated structural checks recorded; learner testing and live specimens not completed.'),
   ('Version', '1.0'),
   ('Track', 'Solana Foundations'),
   ('Prerequisites', 'Lessons 001–005, or equivalent understanding'),
@@ -24,7 +24,7 @@ STATUS_ROWS = [
   ('Environment', 'Devnet, with deterministic fixtures and a captured-evidence alternative'),
   ('Core learning time', 'About 75 minutes (design estimate, not a measured claim)'),
   ('Achievement', 'State Steward: Read, Update, Reconcile — not awarded until verification gates pass'),
-  ('Technical verification', 'Not completed — starter project and fault harness not yet verified for this RC'),
+  ('Technical verification', 'Automated structural checks only; learner testing and live specimens not completed'),
   ('Learner testing', 'Not completed for this release candidate'),
 ]
 

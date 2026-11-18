@@ -19,6 +19,20 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-d3',
+    'title': 'Release D.3 — Foundations → Stage 1 handoff + structural verification',
+    'summary': (
+      'Foundations 007 hands off to Picassol as Stage 1. Catalog records automated '
+      'structural technical checks while learner testing remains open. Picassol prereqs '
+      'recommend Foundations 001–007 for newcomers.'
+    ),
+    'changes': [
+      'Lesson 007 next-step copy: Foundations sequence ends; Picassol is Stage 1 (future PDA lesson does not block).',
+      'Catalog next_id / stage1_handoff / technical_checks; STATUS_ROWS technical line updated across 001–007.',
+      'Picassol prereqs recommend Foundations 001–007; automated handoff tests added.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-d2',
     'title': 'Release D.2 — Foundations 001–007 shared learning loops',
     'summary': (
