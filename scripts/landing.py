@@ -279,9 +279,12 @@ def marquee_html(apps):
     if not names:
         return ''
     chips = ''.join(f'<span>{E(n)}</span>' for n in names)
+    # Decorative ticker only: the duplicated chip stream stays out of the
+    # accessibility tree. Sighted users see motion; assistive tech gets the label.
     return (
-        '<div class="marquee">'
-        '<p class="marquee-label">Practice environments on devnet</p>'
+        '<div class="marquee" role="presentation">'
+        f'<p class="marquee-label">Practice environments on devnet '
+        f'<span class="visually-hidden">({len(names)} named; decorative ticker)</span></p>'
         f'<div class="marquee-mask" aria-hidden="true"><div class="marquee-track">{chips}{chips}</div></div>'
         '</div>'
     )
@@ -850,7 +853,7 @@ def write_home(site='site'):
 COMMIT_BLOCK = '''<!--sc-commit-->
 <section class="note" id="commit-suggestion">
 <h2>Turn a finding into a commit suggestion</h2>
-<p>Lessons and findings on this practice fork are meant to end in something the repository can take: a patch or pull request against the <a href="{fork}">practice fork</a>, with a regression test and the devnet transaction that proves it. Verified fixes are pushed to the working fork and opened as pull requests to the original project, for the team to accept or decline.</p>
+<p>Every lesson should produce evidence of understanding. Suitable investigations can develop into tests, patches, or a pull request against the <a href="{fork}">practice fork</a>, with a regression test and the devnet transaction that proves it. Verified fixes may be opened as pull requests to the original project, for the team to accept or decline.</p>
 <p><a class="btn" href="{url}">Submit a commit suggestion</a></p>
 </section>
 <!--/sc-commit-->'''

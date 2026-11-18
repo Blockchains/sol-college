@@ -234,18 +234,10 @@ def editorial_page():
 {mast(False)}
 <p class=label>Editorial · not reporting</p>
 <h1>The Chain Needs a Student Paper</h1>
-<p class=byline>By Sol.College · 17 Nov 2026</p>
+<p class=byline>By Sol.College · 17 Nov 2026 · Publisher editorial</p>
 <aside class=box>
-<p class=label>Status</p>
-<dl class=facts>
-<dt>Type</dt><dd>Editorial. A statement of intent.</dd>
-<dt>Reporting</dt><dd>None. This page does not report an event.</dd>
-<dt>Author</dt><dd>Sol.College, the publisher. No person is named. The “we” is the publisher, not a student staff.</dd>
-<dt>Published</dt><dd>17 Nov 2026. That is the page date. It is not an edition date.</dd>
-<dt>Sources</dt><dd>None. The editorial does not cite an event, a document, or a person.</dd>
-<dt>Disclosure</dt><dd>The publisher wrote the page and can change it. No holding is disclosed, because no person is named. That absence is not a claim that nobody at Sol.College holds a token.</dd>
-<dt>Corrections</dt><dd>None. <a href="/degen/corrections/">The log</a>.</dd>
-</dl>
+<p class=label>Article type</p>
+<p><b>Editorial</b> — a statement of intent by the publisher. Not a report. No interview, site visit, or observation. No student staff is implied. Full publication rules: <a href="/degen/policies/">policies</a> · <a href="/degen/corrections/">corrections</a>.</p>
 </aside>
 {EDITORIAL}
 <p>The <a href="/degen/readings/">reading edition</a> examines public pages about fees, leverage, launches, and custody. Those pages are readings. They are not market stories, and they are not reports. Further arguments that cite those readings are in the <a href="/degen/editorial/">editorial series</a>.</p>
