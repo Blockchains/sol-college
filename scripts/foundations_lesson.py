@@ -6,6 +6,7 @@ Teaches: review intent, verify execution and commitment separately, stop when un
 from __future__ import annotations
 import html, json, os
 import foundations_l002 as l002
+import foundations_l003 as l003
 
 SITE = 'https://sol.college'
 PUBLISHED = '2026-11-18'
@@ -468,7 +469,7 @@ def foundations_card_html():
     f'<p class=cta><a class=btn href="{PATH}">Open Lesson 001</a> · <a href="{ASSESS_PATH}">Assessment rubric</a></p>'
     f'</article>'
   )
-  return l001 + l002.card_html()
+  return l001 + l002.card_html() + l003.card_html()
 
 
 def foundations_path_section():
@@ -476,13 +477,16 @@ def foundations_path_section():
     '<section class=path-stage id=foundations>'
     '<h2>Foundations · before Stage 1</h2>'
     '<p>Start here if you are new to Solana. '
-    'Lesson 001 teaches review and verification of <b>execution and commitment as separate questions</b>. '
-    'Lesson 002 teaches <b>program ownership versus application authority</b> through account investigation. '
-    'Both are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    'Lesson 001: review and verification of <b>execution and commitment as separate questions</b>. '
+    'Lesson 002: <b>program ownership versus application authority</b>. '
+    'Lesson 003: how an <b>instruction</b> becomes a verified account change. '
+    'All three are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
     f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
-    f'<a class="btn ghost" href="{L002_PATH}">Lesson 002: Accounts and ownership</a> '
+    f'<a class="btn ghost" href="{L002_PATH}">Lesson 002</a> '
+    f'<a class="btn ghost" href="{l003.PATH}">Lesson 003</a> '
     f'<a class="btn ghost" href="{ASSESS_PATH}">001 rubric</a> '
-    f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002 rubric</a></p>'
+    f'<a class="btn ghost" href="{l002.ASSESS_PATH}">002 rubric</a> '
+    f'<a class="btn ghost" href="{l003.ASSESS_PATH}">003 rubric</a></p>'
     '</section>'
   )
 
@@ -536,5 +540,12 @@ def write(S, page, css):
     'Accounts, Ownership, and Authority | Sol.College',
     'Lesson 002 assessment rubric | Sol.College',
     l002.LESSON_DESC, l002.ASSESS_DESC,
+  )
+  paths += _write_one(
+    S, page, css, l003.PATH, l003.ASSESS_PATH,
+    l003.lesson_html(css), l003.assessment_html(css),
+    'Instructions and Programs | Sol.College',
+    'Lesson 003 assessment rubric | Sol.College',
+    l003.LESSON_DESC, l003.ASSESS_DESC,
   )
   return paths

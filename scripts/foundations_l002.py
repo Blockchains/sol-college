@@ -302,11 +302,11 @@ Expected:
 <p><b>Central question.</b> Who can change what—and what evidence supports that answer?</p>
 
 <h2 id=next>17. Next</h2>
-<p>After this foundations lesson is verified: <b>Instructions and Programs — How an Action Becomes an Account Change</b> (Lesson 003, not yet published). Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>, which assumes you can reason about accounts and authority.</p>
+<p>Next foundations step: <a href="/lessons/instructions-programs/">Lesson 003 — Instructions and Programs</a> (release candidate). Until foundations are verified, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>, which assumes you can reason about accounts and authority.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="/lessons/instructions-programs/">Next: Lesson 003</a>
 <a class="btn ghost" href="{L001_PATH}">Previous: Lesson 001</a>
-<a class="btn ghost" href="/lessons/path/">Learning path</a>
 </p>
 '''
   rail = (
@@ -329,7 +329,7 @@ Expected:
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="{L001_PATH}">Lesson 001</a>
+<a class="btn ghost" href="/lessons/instructions-programs/">Next: Lesson 003</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''
