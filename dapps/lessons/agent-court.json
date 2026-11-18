@@ -1,36 +1,39 @@
 {
-  "title": "Agent Court",
-  "summary": "Lock SPL tokens between two agents, file a dispute, render a Release verdict, and claim the payout to agent_b.",
-  "what": "Agent Court is an Anchor 0.32.1 escrow used with an off-chain judge. deposit writes a PDA (seeds [\"escrow\", agent_a, agent_b, service_hash]) and a vault ATA. Either agent can file_dispute. render_verdict records Release, Refund, or Split. claim then pays according to the verdict and can close the vault.",
-  "app_note": "The page at /dapps/agent-court/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agent-court. The lab only changed declare_id to a unique lab program.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/agent-court/, switch to Devnet, and connect a wallet. The lab already ran deposit, file_dispute, render_verdict(Release) and claim for 1_000_000 lab tokens.",
-      "see": "Program CCBhwgCA\u2026. Escrow 4JGCYPoe\u2026. Agent_b 2NArPtvu\u2026 received 1_000_000.",
-      "ran": "deposit 4VXTKE1B\u2026; file_dispute 5LiKYDjp\u2026; render_verdict 3UMuS92X\u2026; claim 62QNHz1C\u2026"
-    }
-  ],
-  "diagram": "agent_a --deposit--> escrow+vault; either agent --file_dispute--> Disputed; judge --render_verdict(Release)--> Resolved; claimer --claim--> agent_b ATA.",
-  "accounts": [
-    "escrow PDA seeds [\"escrow\", agent_a, agent_b, service_hash]",
-    "vault PDA seeds [\"vault\", escrow] (token authority = escrow)"
-  ],
-  "instructions": [
-    "deposit",
-    "file_dispute",
-    "submit_evidence",
-    "render_verdict",
-    "claim",
-    "timeout_release (min 3600s, not exercised)"
-  ],
-  "innovation": "The on-chain program stores evidence hashes and a verdict; release/refund/split math runs in claim. timeout_release pays agent_b if no dispute is filed before timeout_at.",
-  "frontend": "Generic IDL console at /dapps/agent-court/.",
-  "exercises": [
-    "Derive the escrow PDA and confirm it matches 4JGCYPoe\u2026.",
-    "What status must the escrow be in before claim?"
-  ],
-  "not_covered": [
-    "timeout_release and Split/Refund verdicts",
-    "The off-chain judge services in the upstream repo"
-  ]
+ "title": "Agent Court",
+ "summary": "Lock SPL tokens between two agents, file a dispute, render a Release verdict, and claim the payout to agent_b.",
+ "what": "Agent Court is an Anchor 0.32.1 escrow used with an off-chain judge. deposit writes a PDA (seeds [\"escrow\", agent_a, agent_b, service_hash]) and a vault ATA. Either agent can file_dispute. render_verdict records Release, Refund, or Split. claim then pays according to the verdict and can close the vault.",
+ "app_note": "The page at /dapps/agent-court/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agent-court. The lab only changed declare_id to a unique lab program.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/agent-court/, switch to Devnet, and connect a wallet. The lab already ran deposit, file_dispute, render_verdict(Release) and claim for 1_000_000 lab tokens.",
+   "see": "Program CCBhwgCA…. Escrow 4JGCYPoe…. Agent_b 2NArPtvu… received 1_000_000.",
+   "ran": "deposit 4VXTKE1B…; file_dispute 5LiKYDjp…; render_verdict 3UMuS92X…; claim 62QNHz1C…"
+  }
+ ],
+ "diagram": "agent_a --deposit--> escrow+vault; either agent --file_dispute--> Disputed; judge --render_verdict(Release)--> Resolved; claimer --claim--> agent_b ATA.",
+ "accounts": [
+  "escrow PDA seeds [\"escrow\", agent_a, agent_b, service_hash]",
+  "vault PDA seeds [\"vault\", escrow] (token authority = escrow)"
+ ],
+ "instructions": [
+  "deposit",
+  "file_dispute",
+  "submit_evidence",
+  "render_verdict",
+  "claim",
+  "timeout_release (min 3600s, not exercised)"
+ ],
+ "innovation": "The on-chain program stores evidence hashes and a verdict; release/refund/split math runs in claim. timeout_release pays agent_b if no dispute is filed before timeout_at.",
+ "frontend": "Generic IDL console at /dapps/agent-court/.",
+ "exercises": [
+  "Derive the escrow PDA and confirm it matches 4JGCYPoe….",
+  "What status must the escrow be in before claim?"
+ ],
+ "not_covered": [
+  "timeout_release and Split/Refund verdicts",
+  "The off-chain judge services in the upstream repo"
+ ],
+ "difficulty": "Intermediate",
+ "time": "30 min",
+ "functional": "full"
 }

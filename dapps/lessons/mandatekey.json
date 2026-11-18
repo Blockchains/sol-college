@@ -1,182 +1,182 @@
 {
-  "title": "MandateKey: on-chain spending limits for AI agent wallets",
-  "summary": "Create a mandate PDA that lets an AI-agent wallet spend only inside a time window, optional destination list and per-mint caps, then revoke it.",
-  "what": "MandateKey is an open spending-mandate program for AI agents on Solana. An owner initialises a mandate account (a PDA seeded by the owner's wallet, the agent pubkey and a u64 id) with a validity window, an optional co-signer, up to eight per-mint limits (per-payment and per-period caps) and an optional destination allowlist. Later, the agent signs pay, which enforces those rules in a fixed order and transfers tokens from a vault the mandate PDA owns. The owner can revoke the mandate so later payments fail. Upstream is the program and SPEC.md; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
-  "app_note": "The fork has no first-party frontend. The page at /dapps/mandatekey/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/mandatekey/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
-      "see": "The page lists create_mandate, pay and revoke, and shows program 89goH4n3\u2026",
-      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
-    },
-    {
-      "do": "Submit create_mandate: pick any agent pubkey, a fresh mandate_id, valid_from in the past, expires_at in the future, allow_any_destination true, empty token_limits and destination_allowlist.",
-      "see": "A confirmed devnet transaction and a new mandate PDA.",
-      "ran": "create_mandate sig 3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh created mandate 4snfZuq19MV93vc7kumcGfDu1u8kebSWksp8kgHQ3927 for agent 3kUXzp3MKkACNYwdriniXJK6tLd823asEsaqQ3PNAGWC."
-    },
-    {
-      "do": "Fetch the mandate account from the console (or an explorer link) and confirm revoked is false.",
-      "see": "owner is your wallet, agent and mandate_id match, payment_count is 0.",
-      "ran": "Read-back after create_mandate: revoked=false, payment_count=0."
-    },
-    {
-      "do": "Try create_mandate again with expires_at earlier than valid_from.",
-      "see": "The transaction is rejected with InvalidWindow.",
-      "ran": "The lab run caught InvalidWindow, as expected."
-    },
-    {
-      "do": "Submit revoke on the mandate you created.",
-      "see": "A confirmed transaction; fetching the account now shows revoked=true.",
-      "ran": "revoke sig 3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8; fetch showed revoked=true."
-    }
+ "title": "MandateKey: on-chain spending limits for AI agent wallets",
+ "summary": "Create a mandate PDA that lets an AI-agent wallet spend only inside a time window, optional destination list and per-mint caps, then revoke it.",
+ "what": "MandateKey is an open spending-mandate program for AI agents on Solana. An owner initialises a mandate account (a PDA seeded by the owner's wallet, the agent pubkey and a u64 id) with a validity window, an optional co-signer, up to eight per-mint limits (per-payment and per-period caps) and an optional destination allowlist. Later, the agent signs pay, which enforces those rules in a fixed order and transfers tokens from a vault the mandate PDA owns. The owner can revoke the mandate so later payments fail. Upstream is the program and SPEC.md; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+ "app_note": "The fork has no first-party frontend. The page at /dapps/mandatekey/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/mandatekey/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
+   "see": "The page lists create_mandate, pay and revoke, and shows program 89goH4n3…",
+   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  },
+  {
+   "do": "Submit create_mandate: pick any agent pubkey, a fresh mandate_id, valid_from in the past, expires_at in the future, allow_any_destination true, empty token_limits and destination_allowlist.",
+   "see": "A confirmed devnet transaction and a new mandate PDA.",
+   "ran": "create_mandate sig 3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh created mandate 4snfZuq19MV93vc7kumcGfDu1u8kebSWksp8kgHQ3927 for agent 3kUXzp3MKkACNYwdriniXJK6tLd823asEsaqQ3PNAGWC."
+  },
+  {
+   "do": "Fetch the mandate account from the console (or an explorer link) and confirm revoked is false.",
+   "see": "owner is your wallet, agent and mandate_id match, payment_count is 0.",
+   "ran": "Read-back after create_mandate: revoked=false, payment_count=0."
+  },
+  {
+   "do": "Try create_mandate again with expires_at earlier than valid_from.",
+   "see": "The transaction is rejected with InvalidWindow.",
+   "ran": "The lab run caught InvalidWindow, as expected."
+  },
+  {
+   "do": "Submit revoke on the mandate you created.",
+   "see": "A confirmed transaction; fetching the account now shows revoked=true.",
+   "ran": "revoke sig 3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8; fetch showed revoked=true."
+  }
+ ],
+ "diagram": "owner ─ create_mandate(agent, id, window, limits) ─▶ Mandate PDA [\"mandate\", owner, agent, id]\nagent ─ pay(amount, memo) ─▶ checks window / mint / destination / caps / co-signer ─▶ vault transfer_checked\nowner ─ revoke() ─▶ mandate.revoked = true  (later pay fails)",
+ "accounts": [
+  [
+   "Mandate",
+   "PDA `[\"mandate\", owner, agent, mandate_id le bytes]`",
+   "The spending policy: window, caps, allowlist, revoked flag, payment_count."
   ],
-  "diagram": "owner \u2500 create_mandate(agent, id, window, limits) \u2500\u25b6 Mandate PDA [\"mandate\", owner, agent, id]\nagent \u2500 pay(amount, memo) \u2500\u25b6 checks window / mint / destination / caps / co-signer \u2500\u25b6 vault transfer_checked\nowner \u2500 revoke() \u2500\u25b6 mandate.revoked = true  (later pay fails)",
-  "accounts": [
+  [
+   "owner",
+   "Signer on create_mandate and revoke",
+   "The human (or treasury) that issues and can revoke the mandate."
+  ],
+  [
+   "agent",
+   "Signer on pay; pubkey stored on the mandate",
+   "The AI-agent wallet allowed to spend under the policy."
+  ],
+  [
+   "vault / recipient / mint",
+   "Token accounts for pay",
+   "The vault must be a token account owned by the mandate PDA. Not exercised in this run."
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "create_mandate",
+   "refs": [
     [
-      "Mandate",
-      "PDA `[\"mandate\", owner, agent, mandate_id le bytes]`",
-      "The spending policy: window, caps, allowlist, revoked flag, payment_count."
-    ],
-    [
-      "owner",
-      "Signer on create_mandate and revoke",
-      "The human (or treasury) that issues and can revoke the mandate."
-    ],
-    [
-      "agent",
-      "Signer on pay; pubkey stored on the mandate",
-      "The AI-agent wallet allowed to spend under the policy."
-    ],
-    [
-      "vault / recipient / mint",
-      "Token accounts for pay",
-      "The vault must be a token account owned by the mandate PDA. Not exercised in this run."
+     "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L21-L70",
+     "programs/mandatekey/src/lib.rs L21-L70"
     ]
-  ],
-  "instructions": [
-    {
-      "name": "create_mandate",
-      "refs": [
-        [
-          "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L21-L70",
-          "programs/mandatekey/src/lib.rs L21-L70"
-        ]
-      ],
-      "steps": [
-        "Rejects an empty or inverted validity window, too many limits, zero period_secs, or per_payment_max > period_max.",
-        "Initialises the mandate PDA, paid by the owner, and emits MandateCreated."
-      ]
-    },
-    {
-      "name": "pay",
-      "refs": [
-        [
-          "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L73-L166",
-          "programs/mandatekey/src/lib.rs L73-L166"
-        ]
-      ],
-      "steps": [
-        "Checks, in order: not revoked, inside the window, mint is listed, destination allowed, period roll-over, per-payment cap, period cap, co-signer if above threshold, vault balance.",
-        "Transfers tokens with transfer_checked, signed by the mandate PDA seeds."
-      ]
-    },
-    {
-      "name": "revoke",
-      "refs": [
-        [
-          "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L169-L176",
-          "programs/mandatekey/src/lib.rs L169-L176"
-        ]
-      ],
-      "steps": [
-        "Owner-only. Sets revoked=true and emits MandateRevoked. The program does not yet close the account or withdraw the vault (those are TODOs)."
-      ]
-    }
-  ],
-  "innovation": {
-    "title": "A reusable on-chain policy for agent wallets, not a one-off allowance",
-    "text": "Instead of giving an agent a raw key with no limits, the owner records a mandate the runtime itself enforces: time window, per-mint caps, optional destinations and an optional co-signer above a threshold. That is the interesting DeAI idea \u2014 agent payments with an inspectable policy \u2014 even though pay itself is a standard token transfer.",
-    "refs": [
-      [
-        "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/SPEC.md",
-        "SPEC.md"
-      ]
-    ],
-    "more": "Milestone 1 still has TODOs: update_mandate, withdraw, close_mandate, and Token-2022 extension rejection."
+   ],
+   "steps": [
+    "Rejects an empty or inverted validity window, too many limits, zero period_secs, or per_payment_max > period_max.",
+    "Initialises the mandate PDA, paid by the owner, and emits MandateCreated."
+   ]
   },
-  "frontend": [
-    {
-      "title": "Generic IDL console",
-      "refs": [
-        [
-          "/dapps/mandatekey/",
-          "Hosted app"
-        ]
-      ],
-      "steps": [
-        "Connect a devnet wallet.",
-        "Fill create_mandate arguments; the console derives the mandate PDA from the documented seeds.",
-        "Call revoke on an existing mandate address."
-      ]
-    }
-  ],
-  "exercises": [
-    {
-      "title": "Derive the mandate PDA yourself",
-      "steps": [
-        "Use seeds [\"mandate\", owner, agent, mandate_id as 8 little-endian bytes] and the program id.",
-        "Compare with the address created on devnet."
-      ],
-      "expect": "The address matches  the PDA from findProgramAddress.",
-      "hint": "mandate_id is u64 little-endian, not a string.",
-      "approach": "PublicKey.findProgramAddressSync in @solana/web3.js, or equivalent."
-    },
-    {
-      "title": "Reason about pay without sending it",
-      "steps": [
-        "Read the check order in pay.",
-        "List what happens if the mandate is revoked, if the mint is missing from token_limits, or if the destination is not allowlisted and allow_any_destination is false."
-      ],
-      "expect": "Revoked, MintNotAllowed, DestinationNotAllowed in that policy order (after the window check).",
-      "hint": "The comments in lib.rs number the checks 1\u20139.",
-      "approach": "Read L73-L130 and the MandateError enum."
-    },
-    {
-      "title": "What is still missing?",
-      "steps": [
-        "Find the TODO comment in lib.rs.",
-        "Name the three owner instructions that are specified but not implemented."
-      ],
-      "expect": "update_mandate, withdraw, close_mandate.",
-      "hint": "Just below revoke.",
-      "approach": "Read the comment at the end of the program module."
-    }
-  ],
-  "not_covered": "pay was not sent: it needs a mint, a vault token account owned by the mandate, and a recipient. update_mandate, withdraw and close_mandate are unimplemented. The hosted UI was not clicked in headless Chromium in this run.",
-  "path_order": 19,
-  "path_stage": 2,
-  "difficulty": "Intermediate",
-  "time": "35 min",
-  "objectives": [
-    "Create a mandate PDA seeded by owner, agent and id, and read it back from devnet.",
-    "Explain the pay check order and why a revoked mandate cannot spend.",
-    "Revoke a mandate as the owner."
-  ],
-  "prereqs": [
-    "A wallet on devnet with a little SOL (create_mandate pays rent).",
-    "Comfort with PDAs and Anchor accounts."
-  ],
-  "concepts": [
-    "pda",
-    "anchor",
-    "token-account",
-    "ai-agent-payments"
-  ],
-  "build": {
-    "dir": "programs/mandatekey",
-    "anchor": "0.31.1",
-    "test": "tests/devnet/mandatekey.mjs",
-    "note": "Program id on this lab deployment is 89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft."
+  {
+   "name": "pay",
+   "refs": [
+    [
+     "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L73-L166",
+     "programs/mandatekey/src/lib.rs L73-L166"
+    ]
+   ],
+   "steps": [
+    "Checks, in order: not revoked, inside the window, mint is listed, destination allowed, period roll-over, per-payment cap, period cap, co-signer if above threshold, vault balance.",
+    "Transfers tokens with transfer_checked, signed by the mandate PDA seeds."
+   ]
   },
-  "functional": "full"
+  {
+   "name": "revoke",
+   "refs": [
+    [
+     "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/programs/mandatekey/src/lib.rs#L169-L176",
+     "programs/mandatekey/src/lib.rs L169-L176"
+    ]
+   ],
+   "steps": [
+    "Owner-only. Sets revoked=true and emits MandateRevoked. The program does not yet close the account or withdraw the vault (those are TODOs)."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "A reusable on-chain policy for agent wallets, not a one-off allowance",
+  "text": "Instead of giving an agent a raw key with no limits, the owner records a mandate the runtime itself enforces: time window, per-mint caps, optional destinations and an optional co-signer above a threshold. That is the interesting DeAI idea — agent payments with an inspectable policy — even though pay itself is a standard token transfer.",
+  "refs": [
+   [
+    "https://github.com/Blockchains/mandatekey/blob/0f685ad32babef2abee1a1c9dff078fcf5956915/SPEC.md",
+    "SPEC.md"
+   ]
+  ],
+  "more": "Milestone 1 still has TODOs: update_mandate, withdraw, close_mandate, and Token-2022 extension rejection."
+ },
+ "frontend": [
+  {
+   "title": "Generic IDL console",
+   "refs": [
+    [
+     "/dapps/mandatekey/",
+     "Hosted app"
+    ]
+   ],
+   "steps": [
+    "Connect a devnet wallet.",
+    "Fill create_mandate arguments; the console derives the mandate PDA from the documented seeds.",
+    "Call revoke on an existing mandate address."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Derive the mandate PDA yourself",
+   "steps": [
+    "Use seeds [\"mandate\", owner, agent, mandate_id as 8 little-endian bytes] and the program id.",
+    "Compare with the address created on devnet."
+   ],
+   "expect": "The address matches  the PDA from findProgramAddress.",
+   "hint": "mandate_id is u64 little-endian, not a string.",
+   "approach": "PublicKey.findProgramAddressSync in @solana/web3.js, or equivalent."
+  },
+  {
+   "title": "Reason about pay without sending it",
+   "steps": [
+    "Read the check order in pay.",
+    "List what happens if the mandate is revoked, if the mint is missing from token_limits, or if the destination is not allowlisted and allow_any_destination is false."
+   ],
+   "expect": "Revoked, MintNotAllowed, DestinationNotAllowed in that policy order (after the window check).",
+   "hint": "The comments in lib.rs number the checks 1–9.",
+   "approach": "Read L73-L130 and the MandateError enum."
+  },
+  {
+   "title": "What is still missing?",
+   "steps": [
+    "Find the TODO comment in lib.rs.",
+    "Name the three owner instructions that are specified but not implemented."
+   ],
+   "expect": "update_mandate, withdraw, close_mandate.",
+   "hint": "Just below revoke.",
+   "approach": "Read the comment at the end of the program module."
+  }
+ ],
+ "not_covered": "pay was not sent: it needs a mint, a vault token account owned by the mandate, and a recipient. update_mandate, withdraw and close_mandate are unimplemented. The hosted UI was not clicked in headless Chromium in this run.",
+ "path_order": 8,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "35 min",
+ "objectives": [
+  "Create a mandate PDA seeded by owner, agent and id, and read it back from devnet.",
+  "Explain the pay check order and why a revoked mandate cannot spend.",
+  "Revoke a mandate as the owner."
+ ],
+ "prereqs": [
+  "A wallet on devnet with a little SOL (create_mandate pays rent).",
+  "Comfort with PDAs and Anchor accounts."
+ ],
+ "concepts": [
+  "pda",
+  "anchor",
+  "token-account",
+  "ai-agent-payments"
+ ],
+ "build": {
+  "dir": "programs/mandatekey",
+  "anchor": "0.31.1",
+  "test": "tests/devnet/mandatekey.mjs",
+  "note": "Program id on this lab deployment is 89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft."
+ },
+ "functional": "full"
 }

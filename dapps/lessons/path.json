@@ -10,7 +10,7 @@
    "id": 2,
    "name": "Authorization and the checks that go missing",
    "level": "Intermediate",
-   "blurb": "has_one, PDA signing, multisig and roles — and how to read a program for the account check that isn't there. Several of these apps have real, proven bugs."
+   "blurb": "has_one, PDA signing, multisig and roles — and how to read a program for the account check that isn't there. Apps with a still-broken named core flow sit in Debug challenges, not in these numbered stages."
   },
   {
    "id": 3,

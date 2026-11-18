@@ -1,40 +1,43 @@
 {
-  "title": "AgentEscrow",
-  "summary": "Create and fund an SPL-token escrow, let the provider start and submit work, then confirm so the provider is paid (minus a 0.5% protocol fee).",
-  "what": "AgentEscrow is an Anchor 0.30.1 rail for AI-agent payments: the payer creates and funds a vault PDA, the provider starts and submits work, and confirm_completion releases 99.5% of the amount to the provider and 0.5% to a treasury token account. This lesson covers that happy path. Dispute/timeout/verifier instructions exist in the program but are not in this IDL.",
-  "app_note": "The page at /dapps/agentescrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The hosted IDL is a hand-derived subset; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/agentescrow (unique declare_id plus a vault-PDA bump fix so signed SPL transfers work).",
-  "try_steps": [
-    {
-      "do": "Open /dapps/agentescrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow \u2192 fund_escrow \u2192 start_work \u2192 submit_work \u2192 confirm_completion with 1_000_000 units of the lab mint.",
-      "see": "Program 9bMFKrje\u2026. Escrow 3X8DZn9u\u2026 should be Released; vault 4PPYT1tJ\u2026 should be empty; provider ATA gained 995_000, treasury ATA gained 5_000.",
-      "ran": "create_escrow 36H5JNsW\u2026; fund_escrow 2VvQvDcx\u2026; start_work 2GwpuTVq\u2026; submit_work 5V25q1Av\u2026; confirm_completion 2xdASUju\u2026."
-    },
-    {
-      "do": "A second create_escrow for the same payer should fail (seeds [payer, \"escrow\"] allow only one escrow PDA per payer).",
-      "see": "The account already exists (Simulation failed / account in use).",
-      "ran": "Rejected in tests/devnet/agentescrow.mjs (negative_recreate)."
-    }
-  ],
-  "diagram": "payer --create_escrow--> escrow [payer, \"escrow\"] ; payer --fund_escrow--> vault [escrow, \"vault\"] (SPL) ; provider --start_work/submit_work--> PendingReview ; payer --confirm_completion--> provider 99.5% + treasury 0.5%",
-  "accounts": [
-    "escrow (seeds [payer, \"escrow\"])",
-    "vault (SPL token account PDA, seeds [escrow, \"vault\"], authority = vault)",
-    "payer / provider / treasury associated token accounts of the escrow mint"
-  ],
-  "instructions": [
-    "create_escrow",
-    "fund_escrow",
-    "start_work",
-    "submit_work",
-    "confirm_completion",
-    "trigger_timeout / open_dispute / cast_vote / resolve_dispute / register_verifier exist in the program but are not in this IDL"
-  ],
-  "innovation": "A self-authorized vault PDA for SPL escrow between two agents, with a fixed 0.5% protocol fee on release.",
-  "frontend": "Generic Sol.College IDL console.",
-  "exercises": [
-    "Fetch the lab escrow and confirm state is Released.",
-    "Explain why the signed transfer must use the vault PDA bump, not escrow.bump.",
-    "Sketch how a second escrow for the same payer would need a different seed (for example a nonce)."
-  ],
-  "not_covered": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions."
+ "title": "AgentEscrow",
+ "summary": "Create and fund an SPL-token escrow, let the provider start and submit work, then confirm so the provider is paid (minus a 0.5% protocol fee).",
+ "what": "AgentEscrow is an Anchor 0.30.1 rail for AI-agent payments: the payer creates and funds a vault PDA, the provider starts and submits work, and confirm_completion releases 99.5% of the amount to the provider and 0.5% to a treasury token account. This lesson covers that happy path. Dispute/timeout/verifier instructions exist in the program but are not in this IDL.",
+ "app_note": "The page at /dapps/agentescrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The hosted IDL is a hand-derived subset; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/agentescrow (unique declare_id plus a vault-PDA bump fix so signed SPL transfers work).",
+ "try_steps": [
+  {
+   "do": "Open /dapps/agentescrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow → fund_escrow → start_work → submit_work → confirm_completion with 1_000_000 units of the lab mint.",
+   "see": "Program 9bMFKrje…. Escrow 3X8DZn9u… should be Released; vault 4PPYT1tJ… should be empty; provider ATA gained 995_000, treasury ATA gained 5_000.",
+   "ran": "create_escrow 36H5JNsW…; fund_escrow 2VvQvDcx…; start_work 2GwpuTVq…; submit_work 5V25q1Av…; confirm_completion 2xdASUju…."
+  },
+  {
+   "do": "A second create_escrow for the same payer should fail (seeds [payer, \"escrow\"] allow only one escrow PDA per payer).",
+   "see": "The account already exists (Simulation failed / account in use).",
+   "ran": "Rejected in tests/devnet/agentescrow.mjs (negative_recreate)."
+  }
+ ],
+ "diagram": "payer --create_escrow--> escrow [payer, \"escrow\"] ; payer --fund_escrow--> vault [escrow, \"vault\"] (SPL) ; provider --start_work/submit_work--> PendingReview ; payer --confirm_completion--> provider 99.5% + treasury 0.5%",
+ "accounts": [
+  "escrow (seeds [payer, \"escrow\"])",
+  "vault (SPL token account PDA, seeds [escrow, \"vault\"], authority = vault)",
+  "payer / provider / treasury associated token accounts of the escrow mint"
+ ],
+ "instructions": [
+  "create_escrow",
+  "fund_escrow",
+  "start_work",
+  "submit_work",
+  "confirm_completion",
+  "trigger_timeout / open_dispute / cast_vote / resolve_dispute / register_verifier exist in the program but are not in this IDL"
+ ],
+ "innovation": "A self-authorized vault PDA for SPL escrow between two agents, with a fixed 0.5% protocol fee on release.",
+ "frontend": "Generic Sol.College IDL console.",
+ "exercises": [
+  "Fetch the lab escrow and confirm state is Released.",
+  "Explain why the signed transfer must use the vault PDA bump, not escrow.bump.",
+  "Sketch how a second escrow for the same payer would need a different seed (for example a nonce)."
+ ],
+ "not_covered": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
+ "difficulty": "Intermediate",
+ "time": "25 min",
+ "functional": "full"
 }

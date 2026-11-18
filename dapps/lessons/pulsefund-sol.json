@@ -253,8 +253,8 @@
   }
  ],
  "not_covered": "Create and Contribute were clicked through in the app. Donating to another wallet's campaign, the withdrawals and every rejected case were run by script (run 1 was aborted by an RPC 503 outage; all results come from run 2). Not exercised: over-long strings in create (the 9,000-byte limit), and plain transfers that bypass donate.",
- "path_order": 2,
- "path_stage": 1,
+ "path_order": null,
+ "path_stage": null,
  "difficulty": "Beginner",
  "time": "30 min",
  "objectives": [
@@ -286,5 +286,5 @@
   "note": "The program is a single `lib.rs`. Tests are Rust (`tests/smart-contracts.test.rs`). Goal amounts in the app are lamports, not SOL.",
   "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout 50e0873` and `/home/box/.avm/bin/anchor-0.29.0 build` with `RUSTUP_TOOLCHAIN=1.89.0`. It wrote `target/deploy/smart_contracts.so` (219,912 bytes, a valid ELF). The default host rustc (1.99) failed first, with a `bytemuck_derive` compile error — use 1.89 (or another 1.8x) as the host toolchain. We did not run `anchor test`: the bundled `tests/smart-contracts.test.rs` is a mock sketch (`MockContext`) and is not an Anchor test suite."
  },
- "functional": "full"
+ "functional": "partial"
 }

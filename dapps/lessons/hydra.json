@@ -1,55 +1,55 @@
 {
-  "title": "Hydra: register a root agent in a hierarchical registry",
-  "summary": "Initialise the Hydra registry, register a root agent, and see why a 33-byte name is rejected.",
-  "what": "Hydra is an Anchor 0.32 program for a tree of agents: a registry holds root agents, which can later spawn children and share earnings. This lesson covers initialize and register_root_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
-  "app_note": "The page at /dapps/hydra/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/hydra/, switch to Devnet, and connect a wallet. initialize and register_root_agent campus-scout are already done.",
-      "see": "Program EKEHJMZi\u2026 . Fetch registry 7x3F2GgY\u2026 and agent 8E5gYQxr\u2026.",
-      "ran": "initialize 5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS; register_root_agent Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH."
-    },
-    {
-      "do": "A register_root_agent with a 33-byte name should fail.",
-      "see": "NameTooLong.",
-      "ran": "Rejected in tests/devnet/hydra.mjs."
-    }
-  ],
-  "diagram": "authority --initialize--> registry [\"registry\"] ; authority --register_root_agent--> agent [\"agent\", wallet]",
-  "accounts": [
-    "registry (seeds [\"registry\"])",
-    "agent (seeds [\"agent\", wallet])"
-  ],
-  "instructions": [
-    "initialize",
-    "register_root_agent",
-    "spawn_child / earnings ixs exist in the program but are not in this IDL"
-  ],
-  "innovation": "A hierarchical on-chain agent tree with parent revenue share.",
-  "frontend": "Generic Sol.College IDL console.",
-  "exercises": [
-    "Fetch the lab root agent.",
-    "Explain NameTooLong.",
-    "Sketch spawn_child."
-  ],
-  "not_covered": "spawn_child and earnings distribution were not exercised.",
-  "path_order": 30,
-  "path_stage": "apply",
-  "difficulty": "intermediate",
-  "time": "15 min",
-  "objectives": [
-    "Initialise the registry",
-    "Register a root agent",
-    "Name NameTooLong"
-  ],
-  "prereqs": [
-    "forge-agent-bounty"
-  ],
-  "concepts": [
-    "registry PDA",
-    "root agent",
-    "agent tree"
-  ],
-  "build": "Anchor 0.32.1 program at EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8 on devnet. IDL hand-derived subset, tx-confirmed.",
-  "functional": "full"
+ "title": "Hydra: register a root agent in a hierarchical registry",
+ "summary": "Initialise the Hydra registry, register a root agent, and see why a 33-byte name is rejected.",
+ "what": "Hydra is an Anchor 0.32 program for a tree of agents: a registry holds root agents, which can later spawn children and share earnings. This lesson covers initialize and register_root_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
+ "app_note": "The page at /dapps/hydra/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/hydra/, switch to Devnet, and connect a wallet. initialize and register_root_agent campus-scout are already done.",
+   "see": "Program EKEHJMZi… . Fetch registry 7x3F2GgY… and agent 8E5gYQxr….",
+   "ran": "initialize 5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS; register_root_agent Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH."
+  },
+  {
+   "do": "A register_root_agent with a 33-byte name should fail.",
+   "see": "NameTooLong.",
+   "ran": "Rejected in tests/devnet/hydra.mjs."
+  }
+ ],
+ "diagram": "authority --initialize--> registry [\"registry\"] ; authority --register_root_agent--> agent [\"agent\", wallet]",
+ "accounts": [
+  "registry (seeds [\"registry\"])",
+  "agent (seeds [\"agent\", wallet])"
+ ],
+ "instructions": [
+  "initialize",
+  "register_root_agent",
+  "spawn_child / earnings ixs exist in the program but are not in this IDL"
+ ],
+ "innovation": "A hierarchical on-chain agent tree with parent revenue share.",
+ "frontend": "Generic Sol.College IDL console.",
+ "exercises": [
+  "Fetch the lab root agent.",
+  "Explain NameTooLong.",
+  "Sketch spawn_child."
+ ],
+ "not_covered": "spawn_child and earnings distribution were not exercised.",
+ "path_order": 31,
+ "path_stage": "apply",
+ "difficulty": "Intermediate",
+ "time": "15 min",
+ "objectives": [
+  "Initialise the registry",
+  "Register a root agent",
+  "Name NameTooLong"
+ ],
+ "prereqs": [
+  "forge-agent-bounty"
+ ],
+ "concepts": [
+  "registry PDA",
+  "root agent",
+  "agent tree"
+ ],
+ "build": "Anchor 0.32.1 program at EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8 on devnet. IDL hand-derived subset, tx-confirmed.",
+ "functional": "full"
 }

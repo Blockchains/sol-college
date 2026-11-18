@@ -271,8 +271,8 @@
   }
  ],
  "not_covered": "Create, deposit and claim were clicked through for a single-recipient splitter. Multi-recipient payouts can't work correctly because of the claim bugs (only the authority can claim, and it receives the whole balance). The app's QR deposit link points at the author's Cloud Run endpoint, which we don't use, and the balance column shows NaN.",
- "path_order": 11,
- "path_stage": 2,
+ "path_order": null,
+ "path_stage": null,
  "difficulty": "Intermediate",
  "time": "50 min",
  "objectives": [

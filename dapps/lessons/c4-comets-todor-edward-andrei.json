@@ -43,7 +43,7 @@
    ]
   },
   {
-   "do": "Optional: from a second wallet, try to change the first wallet\u2019s PDA.",
+   "do": "Optional: from a second wallet, try to change the first wallet’s PDA.",
    "see": "The transaction fails at account constraints (`ConstraintSeeds` before any `NotOwner` branch). Your PDA stays unchanged.",
    "ran": [
     [
@@ -53,7 +53,7 @@
    ]
   }
  ],
- "diagram": "wallet A \u2500 init_user \u2500\u25b6 UserData PDA seeds=[\"user\", authority]\nwallet A \u2500 set_name([u8;64]) \u2500\u25b6 same PDA\nwallet A \u2500 clear_name \u2500\u25b6 same PDA (name zeros)\nwallet B \u2500 set_name on A\u2019s PDA \u2500\u25b6 ConstraintSeeds (wrong seeds for B)",
+ "diagram": "wallet A ─ init_user ─▶ UserData PDA seeds=[\"user\", authority]\nwallet A ─ set_name([u8;64]) ─▶ same PDA\nwallet A ─ clear_name ─▶ same PDA (name zeros)\nwallet B ─ set_name on A’s PDA ─▶ ConstraintSeeds (wrong seeds for B)",
  "accounts": [
   [
    "UserData",
@@ -93,7 +93,7 @@
    ],
    "steps": [
     "Name is a fixed `[u8; 64]` field.",
-    "A second wallet cannot satisfy the PDA seeds for someone else\u2019s authority, so the constraint fails first."
+    "A second wallet cannot satisfy the PDA seeds for someone else’s authority, so the constraint fails first."
    ]
   }
  ],
@@ -128,10 +128,10 @@
   }
  ],
  "not_covered": "No ENS-style secondary market; no UTF-8 validation beyond fitting 64 bytes; the redundant NotOwner branch is noted in the deployment limits because seeds already bind the account.",
- "path_order": 3,
+ "path_order": 2,
  "path_stage": 1,
  "difficulty": "Beginner",
- "time": "25 minutes",
+ "time": "25 min",
  "objectives": [
   "Create a per-wallet PDA",
   "Write and clear a fixed-size name field",
@@ -144,5 +144,6 @@
   "pda",
   "seeds",
   "signer"
- ]
+ ],
+ "functional": "full"
 }

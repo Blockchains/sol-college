@@ -1,186 +1,186 @@
 {
-  "title": "Oculus: rolling spending limits for AI agent wallets",
-  "summary": "Create a policy PDA for an agent, let the agent pass check_spend inside a window budget, then pause and close the policy.",
-  "what": "Oculus Policy is an open Anchor program that enforces a rolling spending budget for an AI-agent wallet. An owner initialises a policy PDA seeded by [\"policy\", agent] with a daily limit (USDC micro-units) and a window between 60 and 86400 seconds. The agent must sign check_spend, which rolls the window if it has expired, rejects over-budget attempts, and otherwise increments spent_window. The owner can pause or close the policy. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
-  "app_note": "The fork has no first-party frontend. The page at /dapps/oculus/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/oculus/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
-      "see": "The page lists init_policy, check_spend, pause_agent and close_policy, and shows program AwKpHm52\u2026",
-      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
-    },
-    {
-      "do": "Submit init_policy with a fresh agent pubkey, daily_limit_usdc=1000000 and window_seconds=3600.",
-      "see": "A confirmed transaction and a new policy PDA.",
-      "ran": "init_policy sig 5bLBoCJe3gzqf5QyAAtsrYpkvSH3wYd1Rtmjt2Y1nDKeiCvGowNQjtH4Up6dNreKacqZJmeShp1b5KHBTojAMibg created policy ACn7AUPThZMpCk2GC1ek7kdCeZMh8noyMQrD4dNvCTLZ for agent Cr1k16TPgTPhxjPp6bnGs3d2zWbNtSxYiRWV8Gh5Dv6Q."
-    },
-    {
-      "do": "Have the agent wallet sign check_spend with amount_usdc=100 and a 32-byte memo.",
-      "see": "spent_window becomes 100.",
-      "ran": "check_spend sig 5drX5AJtMtF1yFTDm2cLgi4uDeknCewg2tC3FLNzGNzEKqqNMn9zXTumWGX9jrw83WXhe7MJygJ5wjWjAFrfFjc9; fetch showed spent_window=100."
-    },
-    {
-      "do": "Try check_spend with an amount that would exceed the remaining budget, then pause_agent and try again.",
-      "see": "LimitExceeded, then PolicyPaused after pause.",
-      "ran": "The lab run caught LimitExceeded, pause_agent sig 5cSzvNWLVeR15ixvhpbJaBcotMYiNduUW2XVaq7fUNLW7Y8imdnjbdyhwJeaYNHtvNa3nVm5Tftci6LnqLxSRjfT, then PolicyPaused."
-    },
-    {
-      "do": "Submit close_policy as the owner.",
-      "see": "The policy account disappears and rent returns to the owner.",
-      "ran": "close_policy sig 51tw9GxStficyTxj7szSACadkXpKbaN7tam2uRiKXL9GyRYP5M2hvb8x9ViK4MHdubhKuzWphxYuzamXMfbDBJ3X; a later fetch found no account."
-    }
+ "title": "Oculus: rolling spending limits for AI agent wallets",
+ "summary": "Create a policy PDA for an agent, let the agent pass check_spend inside a window budget, then pause and close the policy.",
+ "what": "Oculus Policy is an open Anchor program that enforces a rolling spending budget for an AI-agent wallet. An owner initialises a policy PDA seeded by [\"policy\", agent] with a daily limit (USDC micro-units) and a window between 60 and 86400 seconds. The agent must sign check_spend, which rolls the window if it has expired, rejects over-budget attempts, and otherwise increments spent_window. The owner can pause or close the policy. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+ "app_note": "The fork has no first-party frontend. The page at /dapps/oculus/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/oculus/, switch the console to Devnet, and connect Phantom or Solflare (set the wallet itself to Devnet). Get free devnet SOL from faucet.solana.com if you need it.",
+   "see": "The page lists init_policy, check_spend, pause_agent and close_policy, and shows program AwKpHm52…",
+   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  },
+  {
+   "do": "Submit init_policy with a fresh agent pubkey, daily_limit_usdc=1000000 and window_seconds=3600.",
+   "see": "A confirmed transaction and a new policy PDA.",
+   "ran": "init_policy sig 5bLBoCJe3gzqf5QyAAtsrYpkvSH3wYd1Rtmjt2Y1nDKeiCvGowNQjtH4Up6dNreKacqZJmeShp1b5KHBTojAMibg created policy ACn7AUPThZMpCk2GC1ek7kdCeZMh8noyMQrD4dNvCTLZ for agent Cr1k16TPgTPhxjPp6bnGs3d2zWbNtSxYiRWV8Gh5Dv6Q."
+  },
+  {
+   "do": "Have the agent wallet sign check_spend with amount_usdc=100 and a 32-byte memo.",
+   "see": "spent_window becomes 100.",
+   "ran": "check_spend sig 5drX5AJtMtF1yFTDm2cLgi4uDeknCewg2tC3FLNzGNzEKqqNMn9zXTumWGX9jrw83WXhe7MJygJ5wjWjAFrfFjc9; fetch showed spent_window=100."
+  },
+  {
+   "do": "Try check_spend with an amount that would exceed the remaining budget, then pause_agent and try again.",
+   "see": "LimitExceeded, then PolicyPaused after pause.",
+   "ran": "The lab run caught LimitExceeded, pause_agent sig 5cSzvNWLVeR15ixvhpbJaBcotMYiNduUW2XVaq7fUNLW7Y8imdnjbdyhwJeaYNHtvNa3nVm5Tftci6LnqLxSRjfT, then PolicyPaused."
+  },
+  {
+   "do": "Submit close_policy as the owner.",
+   "see": "The policy account disappears and rent returns to the owner.",
+   "ran": "close_policy sig 51tw9GxStficyTxj7szSACadkXpKbaN7tam2uRiKXL9GyRYP5M2hvb8x9ViK4MHdubhKuzWphxYuzamXMfbDBJ3X; a later fetch found no account."
+  }
+ ],
+ "diagram": "owner ─ init_policy(agent, limit, window) ─▶ Policy PDA [\"policy\", agent]\nagent ─ check_spend(amount, memo) ─▶ roll window if expired; reject if paused or over limit; else spent_window += amount\nowner ─ pause_agent(reason) ─▶ paused=true\nowner ─ close_policy() ─▶ account closed to owner",
+ "accounts": [
+  [
+   "Policy",
+   "PDA `[\"policy\", agent]`",
+   "Owner, agent, daily_limit_usdc, window_seconds, spent_window, paused, bump."
   ],
-  "diagram": "owner \u2500 init_policy(agent, limit, window) \u2500\u25b6 Policy PDA [\"policy\", agent]\nagent \u2500 check_spend(amount, memo) \u2500\u25b6 roll window if expired; reject if paused or over limit; else spent_window += amount\nowner \u2500 pause_agent(reason) \u2500\u25b6 paused=true\nowner \u2500 close_policy() \u2500\u25b6 account closed to owner",
-  "accounts": [
+  [
+   "owner",
+   "Signer on init_policy, pause_agent, close_policy",
+   "The human or treasury that issues and can pause or close the policy."
+  ],
+  [
+   "agent",
+   "Signer on check_spend; pubkey is a seed of the PDA",
+   "The AI-agent wallet whose spends must pass the budget check."
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "init_policy",
+   "refs": [
     [
-      "Policy",
-      "PDA `[\"policy\", agent]`",
-      "Owner, agent, daily_limit_usdc, window_seconds, spent_window, paused, bump."
-    ],
-    [
-      "owner",
-      "Signer on init_policy, pause_agent, close_policy",
-      "The human or treasury that issues and can pause or close the policy."
-    ],
-    [
-      "agent",
-      "Signer on check_spend; pubkey is a seed of the PDA",
-      "The AI-agent wallet whose spends must pass the budget check."
+     "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/init_policy.rs#L23-L50",
+     "init_policy.rs L23-L50"
     ]
-  ],
-  "instructions": [
-    {
-      "name": "init_policy",
-      "refs": [
-        [
-          "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/init_policy.rs#L23-L50",
-          "init_policy.rs L23-L50"
-        ]
-      ],
-      "steps": [
-        "Rejects zero or too-high limits and window_seconds outside 60..=86400.",
-        "Initialises the policy PDA, paid by the owner."
-      ]
-    },
-    {
-      "name": "check_spend",
-      "refs": [
-        [
-          "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/check_spend.rs#L19-L57",
-          "check_spend.rs L19-L57"
-        ]
-      ],
-      "steps": [
-        "Agent must match policy.agent and the policy must not be paused.",
-        "Rolls the window if expired, then rejects LimitExceeded or increments spent_window. Does not transfer tokens."
-      ]
-    },
-    {
-      "name": "pause_agent",
-      "refs": [
-        [
-          "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/pause_agent.rs#L19-L29",
-          "pause_agent.rs L19-L29"
-        ]
-      ],
-      "steps": [
-        "Owner-only. Sets paused=true and stores a u8 reason."
-      ]
-    },
-    {
-      "name": "close_policy",
-      "refs": [
-        [
-          "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/close_policy.rs#L5-L22",
-          "close_policy.rs L5-L22"
-        ]
-      ],
-      "steps": [
-        "Owner-only. Closes the PDA and returns rent to the owner."
-      ]
-    }
-  ],
-  "innovation": {
-    "title": "A reusable on-chain budget check for agent wallets, not a token transfer",
-    "text": "check_spend is deliberately a gate, not a payment: another program or off-chain flow can require a successful check before settlement. The interesting DeAI idea is an inspectable rolling budget the runtime itself enforces, plus pause and close for the owner.",
-    "refs": [
-      [
-        "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/lib.rs",
-        "lib.rs"
-      ]
-    ],
-    "more": "The window-reset path was not waited out in this run."
+   ],
+   "steps": [
+    "Rejects zero or too-high limits and window_seconds outside 60..=86400.",
+    "Initialises the policy PDA, paid by the owner."
+   ]
   },
-  "frontend": [
-    {
-      "title": "Generic IDL console",
-      "refs": [
-        [
-          "/dapps/oculus/",
-          "Hosted app"
-        ]
-      ],
-      "steps": [
-        "Connect a devnet wallet.",
-        "init_policy derives the policy PDA from [\"policy\", agent].",
-        "check_spend must be signed by that agent key."
-      ]
-    }
-  ],
-  "exercises": [
-    {
-      "title": "Derive the policy PDA",
-      "steps": [
-        "Use seeds [\"policy\", agent pubkey] and program id AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js."
-      ],
-      "expect": "It matches the policy created for that agent.",
-      "hint": "The agent pubkey is the seed, not the owner.",
-      "approach": "PublicKey.findProgramAddressSync in @solana/web3.js."
-    },
-    {
-      "title": "Why does an over-limit check emit LimitBreached but not change spent_window?",
-      "steps": [
-        "Read the LimitExceeded branch in check_spend."
-      ],
-      "expect": "It emits and returns err before assigning spent_window = next.",
-      "hint": "check_spend.rs around the next > daily_limit_usdc test.",
-      "approach": "Read L38-L48."
-    },
-    {
-      "title": "What windows are legal?",
-      "steps": [
-        "Find the require! on window_seconds in init_policy."
-      ],
-      "expect": "60 through 86400 inclusive; 30 is InvalidWindow.",
-      "hint": "(60..=86_400).contains",
-      "approach": "Read init_policy.rs handler."
-    }
-  ],
-  "not_covered": "The window-reset path was not waited out (would need window_seconds to elapse). check_spend does not transfer tokens. The hosted UI was not clicked in headless Chromium in this run.",
-  "path_order": 22,
-  "path_stage": 2,
-  "difficulty": "Intermediate",
-  "time": "30 min",
-  "objectives": [
-    "Create a policy PDA seeded by an agent pubkey and read it back.",
-    "Explain the check_spend budget and pause checks.",
-    "Pause and close a policy as the owner."
-  ],
-  "prereqs": [
-    "A wallet on devnet with a little SOL (init_policy pays rent).",
-    "Comfort with PDAs and Anchor account constraints."
-  ],
-  "concepts": [
-    "pda",
-    "anchor",
-    "ai-agent-payments",
-    "spending-policy"
-  ],
-  "build": {
-    "dir": "programs/oculus-policy",
-    "anchor": "0.30.1",
-    "test": "tests/devnet/oculus.mjs",
-    "note": "Program id on this lab deployment is AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js."
+  {
+   "name": "check_spend",
+   "refs": [
+    [
+     "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/check_spend.rs#L19-L57",
+     "check_spend.rs L19-L57"
+    ]
+   ],
+   "steps": [
+    "Agent must match policy.agent and the policy must not be paused.",
+    "Rolls the window if expired, then rejects LimitExceeded or increments spent_window. Does not transfer tokens."
+   ]
   },
-  "functional": "full"
+  {
+   "name": "pause_agent",
+   "refs": [
+    [
+     "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/pause_agent.rs#L19-L29",
+     "pause_agent.rs L19-L29"
+    ]
+   ],
+   "steps": [
+    "Owner-only. Sets paused=true and stores a u8 reason."
+   ]
+  },
+  {
+   "name": "close_policy",
+   "refs": [
+    [
+     "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/instructions/close_policy.rs#L5-L22",
+     "close_policy.rs L5-L22"
+    ]
+   ],
+   "steps": [
+    "Owner-only. Closes the PDA and returns rent to the owner."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "A reusable on-chain budget check for agent wallets, not a token transfer",
+  "text": "check_spend is deliberately a gate, not a payment: another program or off-chain flow can require a successful check before settlement. The interesting DeAI idea is an inspectable rolling budget the runtime itself enforces, plus pause and close for the owner.",
+  "refs": [
+   [
+    "https://github.com/Blockchains/oculus-program/blob/d5b8939a57af79b80be9877afb294cec991c157b/programs/oculus-policy/src/lib.rs",
+    "lib.rs"
+   ]
+  ],
+  "more": "The window-reset path was not waited out in this run."
+ },
+ "frontend": [
+  {
+   "title": "Generic IDL console",
+   "refs": [
+    [
+     "/dapps/oculus/",
+     "Hosted app"
+    ]
+   ],
+   "steps": [
+    "Connect a devnet wallet.",
+    "init_policy derives the policy PDA from [\"policy\", agent].",
+    "check_spend must be signed by that agent key."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Derive the policy PDA",
+   "steps": [
+    "Use seeds [\"policy\", agent pubkey] and program id AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js."
+   ],
+   "expect": "It matches the policy created for that agent.",
+   "hint": "The agent pubkey is the seed, not the owner.",
+   "approach": "PublicKey.findProgramAddressSync in @solana/web3.js."
+  },
+  {
+   "title": "Why does an over-limit check emit LimitBreached but not change spent_window?",
+   "steps": [
+    "Read the LimitExceeded branch in check_spend."
+   ],
+   "expect": "It emits and returns err before assigning spent_window = next.",
+   "hint": "check_spend.rs around the next > daily_limit_usdc test.",
+   "approach": "Read L38-L48."
+  },
+  {
+   "title": "What windows are legal?",
+   "steps": [
+    "Find the require! on window_seconds in init_policy."
+   ],
+   "expect": "60 through 86400 inclusive; 30 is InvalidWindow.",
+   "hint": "(60..=86_400).contains",
+   "approach": "Read init_policy.rs handler."
+  }
+ ],
+ "not_covered": "The window-reset path was not waited out (would need window_seconds to elapse). check_spend does not transfer tokens. The hosted UI was not clicked in headless Chromium in this run.",
+ "path_order": 11,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "30 min",
+ "objectives": [
+  "Create a policy PDA seeded by an agent pubkey and read it back.",
+  "Explain the check_spend budget and pause checks.",
+  "Pause and close a policy as the owner."
+ ],
+ "prereqs": [
+  "A wallet on devnet with a little SOL (init_policy pays rent).",
+  "Comfort with PDAs and Anchor account constraints."
+ ],
+ "concepts": [
+  "pda",
+  "anchor",
+  "ai-agent-payments",
+  "spending-policy"
+ ],
+ "build": {
+  "dir": "programs/oculus-policy",
+  "anchor": "0.30.1",
+  "test": "tests/devnet/oculus.mjs",
+  "note": "Program id on this lab deployment is AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js."
+ },
+ "functional": "full"
 }

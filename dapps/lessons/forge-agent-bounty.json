@@ -1,50 +1,50 @@
 {
-  "title": "Forge Agent Bounty: initialise the bounty marketplace",
-  "summary": "Initialise the marketplace, create an SPL-escrowed bounty, claim it, submit completion, and approve so the agent is paid 95%.",
-  "what": "Forge Agent Bounty is an Anchor 0.30 program for an agent bounty board with SPL escrow. This lesson covers initialize, which writes a marketplace PDA. Later instructions create, claim and review bounties; those need a mint and were not exercised. The hosted IDL is a hand-derived initialize-only subset confirmed on-chain.",
-  "app_note": "The page at /dapps/forge-agent-bounty/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/forge-agent-bounty/, switch to Devnet, and connect a wallet. initialize is already done.",
-      "see": "Program 782W4V1w\u2026 . Fetch marketplace 4yWx7jjP\u2026 (seeds [\"marketplace\"]).",
-      "ran": "initialize sig 2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK."
-    },
-    {
-      "do": "A second initialize should fail because the marketplace PDA already exists.",
-      "see": "account already in use / simulation failure.",
-      "ran": "A second initialize was rejected in tests/devnet/forge-agent-bounty.mjs."
-    }
-  ],
-  "diagram": "authority --initialize--> marketplace PDA [\"marketplace\"]",
-  "accounts": [
-    "marketplace (seeds [\"marketplace\"])"
-  ],
-  "instructions": [
-    "initialize (hosted IDL)",
-    "create_bounty, claim_bounty, submit_completion, approve_completion, reject_completion exist in the program but are not in this IDL"
-  ],
-  "innovation": "An on-chain bounty board for agents with SPL escrow.",
-  "frontend": "Generic Sol.College IDL console.",
-  "exercises": [
-    "Fetch the lab marketplace.",
-    "Sketch the SPL escrow create_bounty would open."
-  ],
-  "not_covered": "reject_completion was not exercised. The 5% platform fee stays in the escrow account.",
-  "path_order": 29,
-  "path_stage": "apply",
-  "difficulty": "beginner",
-  "time": "15 min",
-  "objectives": [
-    "Initialise the marketplace",
-    "Read total_bounties"
-  ],
-  "prereqs": [
-    "agenc-protocol"
-  ],
-  "concepts": [
-    "marketplace PDA",
-    "bounty escrow"
-  ],
-  "build": "Anchor 0.30.1 program at 782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu on devnet. IDL hand-derived subset, tx-confirmed.",
-  "functional": "full"
+ "title": "Forge Agent Bounty: initialise the bounty marketplace",
+ "summary": "Initialise the marketplace, create an SPL-escrowed bounty, claim it, submit completion, and approve so the agent is paid 95%.",
+ "what": "Forge Agent Bounty is an Anchor 0.30 program for an agent bounty board with SPL escrow. This lesson covers initialize, which writes a marketplace PDA. Later instructions create, claim and review bounties; those need a mint and were not exercised. The hosted IDL is a hand-derived initialize-only subset confirmed on-chain.",
+ "app_note": "The page at /dapps/forge-agent-bounty/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/forge-agent-bounty/, switch to Devnet, and connect a wallet. initialize is already done.",
+   "see": "Program 782W4V1w… . Fetch marketplace 4yWx7jjP… (seeds [\"marketplace\"]).",
+   "ran": "initialize sig 2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK."
+  },
+  {
+   "do": "A second initialize should fail because the marketplace PDA already exists.",
+   "see": "account already in use / simulation failure.",
+   "ran": "A second initialize was rejected in tests/devnet/forge-agent-bounty.mjs."
+  }
+ ],
+ "diagram": "authority --initialize--> marketplace PDA [\"marketplace\"]",
+ "accounts": [
+  "marketplace (seeds [\"marketplace\"])"
+ ],
+ "instructions": [
+  "initialize (hosted IDL)",
+  "create_bounty, claim_bounty, submit_completion, approve_completion, reject_completion exist in the program but are not in this IDL"
+ ],
+ "innovation": "An on-chain bounty board for agents with SPL escrow.",
+ "frontend": "Generic Sol.College IDL console.",
+ "exercises": [
+  "Fetch the lab marketplace.",
+  "Sketch the SPL escrow create_bounty would open."
+ ],
+ "not_covered": "reject_completion was not exercised. The 5% platform fee stays in the escrow account.",
+ "path_order": 30,
+ "path_stage": "apply",
+ "difficulty": "Beginner",
+ "time": "15 min",
+ "objectives": [
+  "Initialise the marketplace",
+  "Read total_bounties"
+ ],
+ "prereqs": [
+  "agenc-protocol"
+ ],
+ "concepts": [
+  "marketplace PDA",
+  "bounty escrow"
+ ],
+ "build": "Anchor 0.30.1 program at 782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu on devnet. IDL hand-derived subset, tx-confirmed.",
+ "functional": "full"
 }

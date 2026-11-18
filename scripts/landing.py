@@ -6,13 +6,13 @@ CI must call this after lesson pages are generated (end of core_lessons.py) so
 this file replaces site/index.html and is not used as the lesson-page shell.
 
 Honesty rules:
-- Live environment cards list ONLY apps whose core flows completed on devnet.
-  live.json has no `status` field today; when one is present ('fully working'
-  and synonyms) it wins. Otherwise a documented exclusion list is used.
+- Live environment cards list ONLY apps whose recorded core flows completed
+  on devnet (live.json `functional` == full). Partial apps are debug challenges.
 - Counts are computed, never invented. Fix-commit metrics are omitted until
   real suggested-commit patches exist (static-host build patches do not count).
 - Practice environments are open-source dApps redeployed on devnet — not
   evidence that original teams are participating partners.
+- Finding cards must not contradict current functional status (past-tense a fixed bug).
 """
 from __future__ import annotations
 import html, json, os, re, shutil, sys
@@ -24,7 +24,7 @@ ROOT = HERE.parent
 SITE = 'https://sol.college'
 E = lambda s: html.escape(str(s), quote=True)
 
-# Overwritten by core_lessons with the first fully working path lesson before write_home.
+# Overwritten by core_lessons with the first guided path lesson before write_home.
 START_LESSON = '/lessons/'
 WAITLIST = 'https://github.com/Blockchains/sol-college/issues/new?template=learner-waitlist.yml'
 WAITLIST_DEV = WAITLIST + '&role=Developer'
@@ -42,8 +42,10 @@ DESCRIPTION = (
 # Core-flow failures documented in dapps/live.json limits / negative (2026-11-13).
 # These are excluded from the "fully working" list. Reasons are for operators;
 # featured findings on the page are a subset, quoted from the same evidence.
+# Historical operator notes for apps once excluded from the live list.
+# live.json `functional` is the source of truth now; this map is only a fallback
+# when a row has no functional field. Do not treat entries here as current status.
 CORE_BROKEN = {
-    'gifter-escrow': 'take_and_close aborts with an access violation; a swap cannot complete',
     'hackathon-prediction-market-solana': 'withdraw_liquidity moves 0 SOL; there is no claim or redeem, so winnings cannot be cashed out',
     'web3-splitter': 'claim pays the whole balance to the authority; a multi-recipient payout does not work',
     'pulsefund-sol': 'Contribute always donates to the connected wallet’s own campaign, not the selected one',
@@ -62,12 +64,12 @@ FEATURED_FINDINGS = [
     dict(
         slug='barn',
         title='Barn: reject calls accept',
-        text='The program’s reject_grant_milestone entry point calls accept_milestone, so “rejecting” a milestone in review accepts it, and the sponsor can then be asked to pay it.',
+        text='The program’s reject_grant_milestone entry point calls accept_milestone, so “rejecting” a milestone in review accepts it, and the sponsor can then be asked to pay it. Still recorded as a debug challenge until a verified fix lands.',
     ),
     dict(
         slug='gifter-escrow',
-        title='Gifter escrow: take_and_close aborts',
-        text='take_and_close aborts with an access violation, so a taker can never complete the swap. The handler’s first statement is a println in the take path. Create and refund work.',
+        title='Gifter escrow: take was broken, then fixed',
+        text='An earlier program aborted take_and_close with an access violation (println in the take path). Create and refund already worked. The hosted program now completes take; the opened upstream PR records the patch. This card is the finding history, not a claim that take is still broken.',
     ),
     dict(
         slug='hackathon-prediction-market-solana',
@@ -279,16 +281,26 @@ def marquee_html(apps):
     chips = ''.join(f'<span>{E(n)}</span>' for n in names)
     return (
         '<div class="marquee">'
-        '<p class="marquee-label">Running on devnet now</p>'
+        '<p class="marquee-label">Practice environments on devnet</p>'
         f'<div class="marquee-mask" aria-hidden="true"><div class="marquee-track">{chips}{chips}</div></div>'
         '</div>'
     )
 
 
 def plain_pitch(x):
-    """One sentence a newcomer can read. The lesson summary is that sentence; the instruction list stays on the lesson page."""
+    """A short newcomer pitch. Prefer the lesson summary; do not cut mid-clause when a full sentence fits."""
     doc = lesson_doc(x.get('slug'))
-    return first_sentence(doc.get('summary') or x.get('learn') or '', 160)
+    raw = ' '.join(str(doc.get('summary') or x.get('learn') or '').split())
+    if not raw:
+        return ''
+    if len(raw) <= 180:
+        return raw
+    # Prefer ending on a sentence boundary inside the budget.
+    cut = raw[:180]
+    dot = cut.rfind('. ')
+    if dot >= 80:
+        return cut[:dot + 1]
+    return cut.rsplit(' ', 1)[0].rstrip('.,;:—-') + '…'
 
 
 def relation_html(slug, ownership, submitted):
@@ -402,13 +414,13 @@ def example_html(prs):
     return (
         '<section class="band" id="example"><div class="inner">'
         '<p class="eyebrow">One complete pass</p>'
-        '<h2>A broken swap, a regression test, an opened pull request.</h2>'
-        '<p class="lead">Gifter escrow is an independent practice fork. This is the recorded path. It is not a claim that the original team has accepted the change.</p>'
+        '<h2>A finding, a fix, an opened pull request.</h2>'
+        '<p class="lead">Gifter escrow is an independent practice fork. This is the recorded path for one finding. It is not a claim that the original team has accepted the change, and it is not a claim that every listed environment still has a broken core flow.</p>'
         '<ol class="example-steps">'
-        '<li><strong>Finding.</strong> <span>take_and_close aborted with an access violation, so a taker could not finish the swap.</span></li>'
+        '<li><strong>Finding.</strong> <span>On an earlier program, take_and_close aborted with an access violation, so a taker could not finish the swap. Create and refund already completed.</span></li>'
         '<li><strong>Regression test.</strong> <span>The patch records a test that opens an escrow, runs take_and_close, and checks both token balances and that the accounts close.</span></li>'
-        '<li><strong>Patch.</strong> <span>The fix removes an invalid println and binds the PDA seed bytes in the handler.</span></li>'
-        f'<li><strong>Pull request.</strong> <span><a href="{url}">Opened upstream</a>. Recorded as submitted, not as merged.</span></li>'
+        '<li><strong>Fork patch.</strong> <span>The fix removes an invalid println and binds the PDA seed bytes in the handler. The hosted program now completes take.</span></li>'
+        f'<li><strong>Upstream PR.</strong> <span><a href="{url}">Opened upstream</a>. Recorded as submitted, not as reviewed or merged.</span></li>'
         '</ol>'
         '<p class="links-inline"><a href="/live/#gifter-escrow">View the evidence</a> · <a href="/lessons/gifter-escrow/">Read the lesson</a></p>'
         '</div></section>'
@@ -692,12 +704,22 @@ def campus_hero_html(projects: list[dict]) -> str:
         rooms.append(
             f'<li class="ch-room ch-{sid.lower()}"><h3>{E(sid)} room</h3><p class="ch-blurb">{E(blurb)}</p>{body}</li>')
     n_act = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'active')
-    active_line = f'{n_act} active CTO agent{"" if n_act == 1 else "s"}'
+    n_pau = sum(1 for p in projects if (p.get('agent') or {}).get('state') == 'paused')
+    n_demo = sum(1 for p in projects if p.get('demonstration'))
+    active_line = (
+        f'{len(projects)} campus projects · {n_act} active CTO agent{"" if n_act == 1 else "s"}'
+        + (f' · {n_pau} paused' if n_pau else '')
+        + (f' · {n_demo} demonstration forks' if n_demo else '')
+    )
     data = json.dumps(projects, ensure_ascii=False).replace('<', '\\u003c')
     return (
         '<section class="campus-hero" id="campus-hero" aria-labelledby="ch-title">\n'
         '  <div class="ch-head">\n'
-        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Live campus · </span>{E(active_line)}</p><h2 id="ch-title">Sol.College campus</h2></div>\n'
+        f'    <div><p class="eyebrow ch-live"><span class="live-dot" aria-hidden="true"></span><span class="ch-live-pre">Campus · </span>{E(active_line)}</p>'
+        '<p class="ch-blurb">Campus projects are mostly independent demonstration forks with optional CTO automation. '
+        '“Active” and “Paused” describe the agent, not whether the practice app can be opened. '
+        'Practice environments on the homepage are a separate count from this campus roster.</p>'
+        f'<h2 id="ch-title">Sol.College campus</h2></div>\n'
         '    <a class="btn ghost ch-explore" href="/campus/">Explore campus</a>\n'
         '  </div>\n'
         '  <div class="ch-stage" id="ch-stage" data-mode="2d">\n'

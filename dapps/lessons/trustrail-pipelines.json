@@ -1,41 +1,44 @@
 {
-  "title": "TrustRail Pipelines",
-  "summary": "Lock input tokens against a min-output commitment, withdraw to a staging account, run a 1:1 mock swap, submit on-chain proof, and release the output to the payer.",
-  "what": "TrustRail is an Anchor 1.2.0 settlement layer: funds are locked, a swap venue (here mock_swap at a fixed 1:1 rate) produces output, and submit_proof compares the output ATA balance to min_output_amount with no off-chain judge. This lesson covers the Passed path through release.",
-  "app_note": "The page at /dapps/trustrail-pipelines/ is the generic IDL console pointed at trustrail_pipelines. mock_swap is a separate lab-deployed program used as the swap venue. The hosted IDLs are hand-derived subsets; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/trustrail-pipelines (unique declare_ids).",
-  "try_steps": [
-    {
-      "do": "Open /dapps/trustrail-pipelines/ on Devnet. The lab already ran create_commitment \u2192 withdraw_for_swap \u2192 mock_swap_execute \u2192 submit_proof \u2192 release for 1_000_000 input units.",
-      "see": "Program 5fjCsDhw\u2026. Commitment Gu9K13nu\u2026 should be Released; the payer received 1_000_000 of output mint 7xP1NAVv\u2026.",
-      "ran": "create_commitment 5iTu1jSz\u2026; withdraw MwyX2md6\u2026; mock_swap 5vzHuKg6\u2026; submit_proof 2PD31SxG\u2026; release 2HQsUUms\u2026."
-    },
-    {
-      "do": "A second create_commitment with the same task_id should fail.",
-      "see": "Account already in use / Simulation failed.",
-      "ran": "Rejected in tests/devnet/trustrail-pipelines.mjs."
-    }
-  ],
-  "diagram": "payer --create_commitment--> commitment [\"commitment\", task_id] + escrow/output ATAs ; settler --withdraw_for_swap--> staging (delegated) ; worker --mock_swap_execute--> output_ata ; worker --submit_proof--> Passed ; settler --release--> payer output ATA",
-  "accounts": [
-    "commitment (seeds [\"commitment\", task_id])",
-    "escrow_ata / output_ata (ATAs owned by the commitment)",
-    "swap staging token account (delegated to the commitment)",
-    "mock_swap pool_authority [\"pool_authority\"] and pool vaults"
-  ],
-  "instructions": [
-    "create_commitment",
-    "withdraw_for_swap",
-    "submit_proof",
-    "release",
-    "mock_swap initialize_mock_pool / mock_swap_execute",
-    "refund / cancel / recover exist but were not exercised"
-  ],
-  "innovation": "Deterministic on-chain outcome verification: submit_proof compares the real output ATA balance to min_output_amount, with no LLM judge.",
-  "frontend": "Generic Sol.College IDL console for trustrail_pipelines (mock_swap is a separate program).",
-  "exercises": [
-    "Fetch commitment Gu9K13nu\u2026 and confirm status is Released.",
-    "Explain why the staging account must be delegated to the commitment before withdraw_for_swap.",
-    "Sketch the FailedSlippage path if output is below min_output_amount."
-  ],
-  "not_covered": "refund, cancel, recover, and a real AMM venue were not exercised. mock_swap is a 1:1 transfer stand-in, disclosed as such."
+ "title": "TrustRail Pipelines",
+ "summary": "Lock input tokens against a min-output commitment, withdraw to a staging account, run a 1:1 mock swap, submit on-chain proof, and release the output to the payer.",
+ "what": "TrustRail is an Anchor 1.2.0 settlement layer: funds are locked, a swap venue (here mock_swap at a fixed 1:1 rate) produces output, and submit_proof compares the output ATA balance to min_output_amount with no off-chain judge. This lesson covers the Passed path through release.",
+ "app_note": "The page at /dapps/trustrail-pipelines/ is the generic IDL console pointed at trustrail_pipelines. mock_swap is a separate lab-deployed program used as the swap venue. The hosted IDLs are hand-derived subsets; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/trustrail-pipelines (unique declare_ids).",
+ "try_steps": [
+  {
+   "do": "Open /dapps/trustrail-pipelines/ on Devnet. The lab already ran create_commitment → withdraw_for_swap → mock_swap_execute → submit_proof → release for 1_000_000 input units.",
+   "see": "Program 5fjCsDhw…. Commitment Gu9K13nu… should be Released; the payer received 1_000_000 of output mint 7xP1NAVv….",
+   "ran": "create_commitment 5iTu1jSz…; withdraw MwyX2md6…; mock_swap 5vzHuKg6…; submit_proof 2PD31SxG…; release 2HQsUUms…."
+  },
+  {
+   "do": "A second create_commitment with the same task_id should fail.",
+   "see": "Account already in use / Simulation failed.",
+   "ran": "Rejected in tests/devnet/trustrail-pipelines.mjs."
+  }
+ ],
+ "diagram": "payer --create_commitment--> commitment [\"commitment\", task_id] + escrow/output ATAs ; settler --withdraw_for_swap--> staging (delegated) ; worker --mock_swap_execute--> output_ata ; worker --submit_proof--> Passed ; settler --release--> payer output ATA",
+ "accounts": [
+  "commitment (seeds [\"commitment\", task_id])",
+  "escrow_ata / output_ata (ATAs owned by the commitment)",
+  "swap staging token account (delegated to the commitment)",
+  "mock_swap pool_authority [\"pool_authority\"] and pool vaults"
+ ],
+ "instructions": [
+  "create_commitment",
+  "withdraw_for_swap",
+  "submit_proof",
+  "release",
+  "mock_swap initialize_mock_pool / mock_swap_execute",
+  "refund / cancel / recover exist but were not exercised"
+ ],
+ "innovation": "Deterministic on-chain outcome verification: submit_proof compares the real output ATA balance to min_output_amount, with no LLM judge.",
+ "frontend": "Generic Sol.College IDL console for trustrail_pipelines (mock_swap is a separate program).",
+ "exercises": [
+  "Fetch commitment Gu9K13nu… and confirm status is Released.",
+  "Explain why the staging account must be delegated to the commitment before withdraw_for_swap.",
+  "Sketch the FailedSlippage path if output is below min_output_amount."
+ ],
+ "not_covered": "refund, cancel, recover, and a real AMM venue were not exercised. mock_swap is a 1:1 transfer stand-in, disclosed as such.",
+ "difficulty": "Intermediate",
+ "time": "30 min",
+ "functional": "full"
 }

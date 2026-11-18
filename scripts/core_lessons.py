@@ -175,15 +175,15 @@ def stage_of(L):
   return None
 def readiness(x):
   """Walkthrough readiness is not the same as the app being deployed.
-  preview: no written lesson yet. challenge: a core flow does not complete.
-  guided: a written walkthrough of an app recorded as fully working."""
+  preview: no written lesson yet. challenge: a named core flow does not complete.
+  guided: a written walkthrough of an app whose recorded core flows completed."""
   if lesson_of(x).get('draft'): return 'preview'
   if functional_of(x)=='partial': return 'challenge'
   return 'guided'
 READY_LABEL={'guided':'Guided lesson','challenge':'Debug challenge','preview':'Project preview'}
 READY_NOTE={
-  'guided':'A written walkthrough. The app’s core flow is recorded as working.',
-  'challenge':'The app is on devnet, but a core flow does not complete. It is practice for finding the bug, not a finished environment.',
+  'guided':'A written walkthrough. The recorded core flows completed on the verification date below. Known limits stay listed on the card and lesson.',
+  'challenge':'The app is on devnet, but a named core flow does not complete. It is investigation practice, not a guided “core flows completed” environment.',
   'preview':'The app is on devnet. This page was generated from the deployment record. The full walkthrough is still being written.',
 }
 def task_html(s):
@@ -210,8 +210,21 @@ def render(x,L,n):
   rail='<nav class=rail aria-label="On this page">'+''.join(f'<a href="#{i}">{E(name)}</a>' for i,name in sections)+'</nav>'
   h=[CSS,'<div class=readbar aria-hidden=true><span></span></div>',f'<article class=lesson data-slug="{E(sl)}">','<div class=lesson-layout><div class=lesson-main>',nav]
   eyebrow=READY_LABEL[ready]+' · live on Solana devnet'
-  if pn>1:
-    eyebrow+=f' · {si+1} of {pn}'
+  # Path position only for lessons inside numbered stages 1–3. Catalogue extras must not look like path steps.
+  if stg and isinstance(stg.get('id'), int) and L.get('path_order'):
+    staged=[]
+    for y in PATH_LIVE:
+      so=stage_of(lesson_of(y))
+      if so and so.get('id')==stg['id']:
+        staged.append(y)
+    if len(staged)>1:
+      try:
+        local=next(i for i,y in enumerate(staged) if y['slug']==sl)+1
+        eyebrow+=f' · stage {stg["id"]}, step {local} of {len(staged)} (path {L["path_order"]})'
+      except StopIteration:
+        pass
+  elif ready=='guided' and not stg:
+    eyebrow+=' · catalogue lesson (not a numbered path step)'
   h.append(f'<p class="eyebrow status-{ready}">{E(eyebrow)}</p><h1>{E(L["title"])}</h1>')
   if L.get('summary'): h.append(f'<p class=lead>{md(L["summary"])}</p>')
   h.append(f'<p class="status status-{ready}">{E(READY_NOTE[ready])}</p>')
@@ -400,7 +413,7 @@ if starter:
   SL=lesson_of(starter)
   task=(SL.get('objectives') or [None])[0] or SL.get('summary') or SL['title']
   pre=(SL.get('prereqs') or [None])[0]
-  bits=' · '.join(b for b in [canon_diff(SL.get('difficulty')), (SL.get('time')+' recorded') if SL.get('time') else '', 'Guided lesson'] if b)
+  bits=' · '.join(b for b in [(SL.get('time')+' recorded') if SL.get('time') else '', 'Guided lesson'] if b)
   lim=one_line(limit_of(starter), 180)
   lim_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   pre_html=f'<p class=prereq>Before this: {md(pre)}</p>' if pre else ''
@@ -417,20 +430,24 @@ choose=f'<section class=choose id=paths><h2>Choose a path</h2><div class=path-pi
 debug=''
 if CHALLENGES:
   dbg_cards=''.join(cards[PATH_I[x['slug']]] for x in CHALLENGES)
-  debug='<section class=path-stage id=debug-challenges><h2>Debug challenges</h2><p>These apps are on devnet, but a core flow does not complete. They are investigation practice, not guided lessons, and they are not on the <a href="/lessons/path/">learning path</a>.</p><div class=grid>'+dbg_cards+'</div></section>'
+  debug='<section class=path-stage id=debug-challenges><h2>Debug challenges</h2><p>These apps are on devnet, but a named core flow does not complete. They are investigation practice, not guided lessons, and they are not on the <a href="/lessons/path/">learning path</a>. A broken flow can still be an excellent lesson — it is not labelled as a completed core-flow environment.</p><div class=grid>'+dbg_cards+'</div></section>'
 staged_ids={st['id'] for st in PATH.get('stages',[])}
 rest=[x for x in GUIDED if lesson_of(x).get('path_stage') not in staged_ids]
 more=''
 if rest:
   more=('<section class=path-stage id=more-live><h2>More guided lessons</h2>'
-        '<p>These '+str(len(rest))+' have a written walkthrough and a core flow recorded as working. They are not a numbered step on the <a href="/lessons/path/">learning path</a> yet.</p>'
+        '<p>These '+str(len(rest))+' have a written walkthrough and recorded core-flow completion. '
+        'They are catalogue lessons, not numbered steps on the <a href="/lessons/path/">three-stage learning path</a>. '
+        'Cards show difficulty, duration, and the verification date when those fields exist in the lesson record.</p>'
         '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in rest)+'</div></section>')
 preview=''
 if PREVIEWS:
   preview=('<section class=path-stage id=previews><h2>Project previews</h2>'
     '<p>The app is deployed. The full teaching sequence is not written yet, so these are not shown as guided lessons.</p>'
     '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in PREVIEWS)+'</div></section>')
-count_line=f'{ng} guided lessons, {nc} debug challenges, and {nv} project preview{"s" if nv!=1 else ""}. A deployed app is counted as a guided lesson only when the walkthrough is written and the core flow is recorded as working.'
+count_line=(f'{ng} guided lessons, {nc} debug challenges, and {nv} project preview{"s" if nv!=1 else ""}. '
+  'A guided lesson requires a written walkthrough and recorded completion of the flows the lesson teaches. '
+  'Verification dates on cards are per-app evidence dates; they are not a live “running right now” check.')
 finder='''<div class=finder id=browse><label>Search lessons <input id=lesson-q type=search placeholder="escrow, PDA, oracle, beginner" autocomplete=off></label>
 <div class="finder-row finder-diff" role=group aria-label=Level>
 <button type=button data-diff="" aria-pressed=true>All levels</button>
@@ -446,7 +463,15 @@ finder='''<div class=finder id=browse><label>Search lessons <input id=lesson-q t
 </div>
 <p class=meta id=lesson-count></p></div>
 <p class=meta id=lesson-empty hidden>No lesson matches that search.</p>'''
-intro='<p>A guided lesson is a written walkthrough of an app whose core flow we recorded as working. A debug challenge is an app that is deployed but does not complete a core flow. A project preview has the app and the recorded proof, and the teaching sequence is still being written. The <a href="/articles/">articles</a> explain the same recorded work without asking you to practise it. The <a href="/library/">library</a> is the catalogue of those pages, the lessons, and the official references that were checked. The <a href="/lessons/glossary/">glossary</a> explains the terms. You can read any lesson without a wallet. The wallet is needed only when a step asks you to send a transaction.</p>'
+intro=('<p>A guided lesson is a written walkthrough of an app whose recorded core flows completed on a stated verification date. '
+  'A debug challenge is an app that is deployed but does not complete a named core flow. '
+  'A project preview has the app and the recorded proof, and the teaching sequence is still being written. '
+  'The <a href="/articles/">articles</a> explain the same recorded work without asking you to practise it. '
+  'The <a href="/library/">library</a> is the catalogue of those pages, the lessons, and the official references that were checked. '
+  'The <a href="/lessons/glossary/">glossary</a> explains the terms. You can read any lesson without a wallet. '
+  'The wallet is needed only when a step asks you to send a transaction.</p>'
+  '<p class=note>Dates on this site mean different things: a lesson’s “verified” date is when that app’s recorded flows were last reproduced; '
+  'footer “catalogue generated” dates mark when the static pages were built from the inventory. Neither is a live uptime claim.</p>')
 idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav>{CSS}'
   f'<h1>Learn Solana by making real things work.</h1>'
   f'<p class=lead>Run a transaction on a devnet app, see what changed, and check it against the recorded proof.</p>'
