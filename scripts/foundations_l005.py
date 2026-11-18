@@ -238,11 +238,11 @@ Investigation order:
 <p><b>Understanding to leave with.</b> I do not treat every problem as a failed transaction. I locate the stage, inspect the relevant evidence, explain what remains unknown, and resolve the original attempt before deciding whether to act again.</p>
 
 <h2 id=next>16. Next</h2>
-<p>Next foundations step (not yet published): <b>Read and Write Application State — Build a Reliable Client Workflow</b>. Until then, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
+<p>Next foundations step: <a href="/lessons/application-state/">Lesson 006 — Read and Write Application State</a> (release candidate). Until foundations are verified, the first live Stage 1 practice remains <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>
 <p class=cta>
 <a class=btn href="{ASSESS_PATH}">Open the assessment rubric</a>
+<a class="btn ghost" href="/lessons/application-state/">Next: Lesson 006</a>
 <a class="btn ghost" href="{L004_PATH}">Previous: Lesson 004</a>
-<a class="btn ghost" href="/lessons/path/">Learning path</a>
 </p>
 '''
   rail = (
@@ -265,7 +265,7 @@ Investigation order:
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
 <a class=btn href="{ASSESS_PATH}">Assessment rubric</a>
-<a class="btn ghost" href="{L004_PATH}">Lesson 004</a>
+<a class="btn ghost" href="/lessons/application-state/">Next: Lesson 006</a>
 <button type=button class="btn ghost" data-jump>Next section</button>
 </div>
 </article>'''
