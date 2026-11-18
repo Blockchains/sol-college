@@ -54,7 +54,8 @@ def code(x,r):
   except Exception:
     url=r.get('url') or f'https://github.com/{repo}/blob/{ref}/{r["path"]}#L{a}-L{b}'
     return f'<p><a href="{E(url)}"><code>{E(r["path"])} L{a}–L{b}</code></a></p>'
-  body=''.join(f'<span class=ln data-n={n}>{E(L[n-1])}</span>' for n in range(a,min(b,len(L))+1) if 1<=n<=len(L))
+  # Newlines between spans keep plain-text extraction readable; CSS still stacks .ln as blocks.
+  body='\n'.join(f'<span class=ln data-n={n}>{E(L[n-1])}</span>' for n in range(a,min(b,len(L))+1) if 1<=n<=len(L))
   url=f'https://github.com/{repo}/blob/{ref}/{r["path"]}#L{a}-L{b}'
   cap=f'<a href="{E(url)}"><code>{E(r["path"])}</code> L{a}–L{b}</a> · {E(repo)} @ <code>{E(ref[:7])}</code>'+(f' · {E(r["note"])}' if r.get('note') else '')
   return f'<figure class=excerpt><figcaption>{cap}</figcaption><pre>{body}</pre></figure>'
@@ -220,9 +221,9 @@ def render(x,L,n):
   stg=stage_of(L)
   nav=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <a href="/lessons/path/">Path</a> / <span>{E(L["title"])}</span></nav>'
   sections=[]
-  if L.get('objectives') or L.get('prereqs') or L.get('concepts'): sections.append(('goals','Objectives'))
-  sections+=[('what','What it does'),('try','Try it'),('how','How it works'),('key','Key idea'),('frontend','Frontend'),('proof','Proof'),('exercises','Exercises')]
-  if L.get('build'): sections.append(('build','Build locally'))
+  if L.get('objectives') or L.get('prereqs') or L.get('concepts'): sections.append(('goals','What you will practise'))
+  sections+=[('try','Guided lesson'),('how','Explanation'),('proof','Evidence'),('exercises','Assessment')]
+  if L.get('build'): sections.append(('build','Build lab'))
   rail='<nav class=rail aria-label="On this page">'+''.join(f'<a href="#{i}">{E(name)}</a>' for i,name in sections)+'</nav>'
   h=[CSS,'<div class=readbar aria-hidden=true><span></span></div>',f'<article class=lesson data-slug="{E(sl)}">','<div class=lesson-layout><div class=lesson-main>',nav]
   eyebrow=READY_LABEL[ready]+' · live on Solana devnet'
@@ -253,13 +254,28 @@ def render(x,L,n):
   if x.get('verified'): meta.append(f'<span>Verified {E(x["verified"])}</span>')
   if stg: meta.append(f'<span>Stage {stg["id"]}: <a href="/lessons/path/#stage-{stg["id"]}">{E(stg["name"])}</a></span>')
   if meta: h.append('<p class=meta-bar>'+' · '.join(meta)+'</p>')
+  # Layer map: keep the primary learner flow short; later sections are optional depth.
+  layer_bits=[
+    ('#try','Guided lesson'),
+    ('#how','Technical explanation'),
+    ('#proof','Evidence'),
+  ]
+  if L.get('build'): layer_bits.append(('#build','Build laboratory'))
+  layer_bits.append(('#exercises','Assessment'))
+  h.append(
+    '<nav class=layers aria-label="Lesson layers">'
+    +''.join(f'<a href="{href}">{E(label)}</a>' for href,label in layer_bits)
+    +'</nav>'
+    '<p class=note>Start with <b>Try it</b>. Technical explanation, evidence, build steps, and exercises are linked layers — you do not need to absorb them all at once.</p>'
+  )
   dock=f'<div class=dock role=region aria-label="Lesson actions"><a class=btn href="{E(x["app"])}">Open the app</a><button type=button class="btn ghost" data-jump>Next section</button>'
   # next lesson is filled in after seq is known; placeholder replaced below
   h.append('<!--dock-->')
   if L.get('objectives') or L.get('prereqs') or L.get('concepts'):
     g=['<aside class=goals>']
     if L.get('objectives'):
-      g.append('<h2 id=goals>What you will be able to do</h2><ul>'+''.join(f'<li>{md(o)}</li>' for o in L['objectives'])+'</ul>')
+      g.append('<h2 id=goals>What you will practise</h2><ul>'+''.join(f'<li>{md(o)}</li>' for o in L['objectives'])+'</ul>')
+      g.append('<p class=note>Completing the reading alone does not by itself demonstrate these abilities. Exercises and recorded evidence are where you show understanding.</p>')
     if L.get('prereqs'):
       g.append('<h3>Prerequisites</h3><ul>'+''.join(f'<li>{md(format_prereq(p))}</li>' for p in L['prereqs'])+'</ul>')
     if L.get('concepts'):
@@ -286,7 +302,9 @@ def render(x,L,n):
     +(f'<span class=see>{md(s["see"])}</span>' if s.get('see') else '')
     +ev(s)+'</li>'
     for i,s in enumerate(steps_all))
-  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>Check a step when you have done it. This browser remembers the ticks for this lesson. ✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><p class=meta id=step-status></p><ol class=steps>{st}</ol>')
+  h.append(f'<h2 id=try><span class=num>2</span>Try it yourself</h2><p>This is the guided lesson. Check a step when you have done it. This browser remembers the ticks for this lesson. ✅ marks a step we clicked through in the hosted app ourselves, with its devnet transaction.</p><p class=meta id=step-status></p><ol class=steps>{st}</ol>')
+  h.append('<div class=layer-block id=explain-layer>')
+  h.append('<p class="eyebrow">Technical explanation</p>')
   h.append('<h2 id=how><span class=num>3</span>How it works</h2>')
   if L.get('diagram'): h.append(f'<pre class=diagram>{E(L["diagram"])}</pre>')
   if L.get('accounts'): h.append('<table><tr><th>Account</th><th>Address (seeds)</th><th>Holds</th></tr>'+''.join('<tr>'+''.join(f'<td>{md(c)}</td>' for c in r)+'</tr>' for r in L['accounts'])+'</table>')
@@ -297,9 +315,11 @@ def render(x,L,n):
   if not L['frontend']: h.append('<p>Not written yet for this app.</p>')
   for f in L['frontend']:
     h.append(f'<section class=instr><h3>{md(f["title"])}</h3>'+''.join(code(x,r) for r in f.get('refs',[]))+(('<ol class=steps>'+''.join(f'<li>{md(s)}</li>' for s in f['steps'])+'</ol>') if f.get('steps') else '')+'</section>')
+  h.append('</div>')
   sig=''.join(f'<li class=ok>✅ {E(a)}<br><a href="{TX(s)}"><code>{E(s)}</code></a></li>' for a,s in x['steps'])
   neg=''.join(f'<li class=bad>⛔ {E(n_)}</li>' for n_ in x.get('negative',[]))
   proof_limit = format_limit_text(L.get('not_covered') or x.get('limits') or '')
+  h.append('<p class="eyebrow">Evidence record</p>')
   h.append(f'<h2 id=proof><span class=num>6</span>Proof: real devnet transactions</h2><p>Recorded on {E(x["verified"])} by <a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["flow"])}"><code>{E(x["flow"])}</code></a> (<a href="https://github.com/Blockchains/sol-college/blob/main/{E(x["log"])}">log</a>) and by clicking through the hosted app. Click a signature to open it on Solana Explorer. We do not invent signatures or logs.</p><ul class=sigs>{sig}</ul><h3>Rejected, as the program should</h3><ul>{neg}</ul>'+(f'<p><b>App check:</b> {E(x["ui_check"])}</p>' if x.get('ui_check') else '')+(f'<p><b>Not covered yet:</b> {md(proof_limit)}</p>' if proof_limit else ''))
   def ex_block(j,e):
     b=f'<div class=ex><h3>Exercise {j}: {md(e["title"])}</h3><ol>'+''.join(f'<li>{md(s)}</li>' for s in e['steps'])+f'</ol><p><b>Expected result:</b> {md(e["expect"])}</p>'
@@ -307,11 +327,12 @@ def render(x,L,n):
     if e.get('approach'): b+=f'<details class=sol><summary>How to approach it (a reference method, not a recorded run)</summary><p>{md(e["approach"])}</p></details>'
     return b+'</div>'
   ex=''.join(ex_block(j,e) for j,e in enumerate(L['exercises'],1))
-  h.append(f'<h2 id=exercises><span class=num>7</span>Exercises</h2><p>Several exercises are real bugs we found in the program and proved on devnet. Hints are visible; the reference approach is folded so you can try first. We describe a method and, where we have them, recorded results — we do not invent outputs.</p>{ex}')
+  h.append('<p class="eyebrow">Assessment</p>')
+  h.append(f'<h2 id=exercises><span class=num>7</span>Exercises</h2><p>Several exercises are real bugs we found in the program and proved on devnet. Hints are visible; the reference approach is folded so you can try first. We describe a method and, where we have them, recorded results — we do not invent outputs. Completing an exercise is where you demonstrate understanding.</p>{ex}')
   cs=L.get('commit_suggestion')
   if cs:
     h.append('<section class=instr id=commit-suggestion><h3>Worked example: a commit suggestion</h3>')
-    h.append('<p>A finding is useful when it comes back as a patch the project can review: the bug, the change, a regression test, and a retest on devnet. This is one we wrote, committed to our working fork, and (where noted) opened as a pull request on the original project.</p>')
+    h.append('<p>A finding is useful when it comes back as a patch the project can review: the bug, the change, a regression test, and a retest on devnet. This is one we wrote, committed to our working fork, and (where noted) opened as a pull request on the original project. Suitable investigations can develop into tests, patches, or upstream contributions — not every exercise must become a patch.</p>')
     if cs.get('finding'): h.append(f'<p><b>Finding.</b> {md(cs["finding"])}</p>')
     if cs.get('patch'): h.append(f'<p><b>Patch.</b> {md(cs["patch"])}</p>')
     h.extend(code(x,r) for r in cs.get('refs',[]))
@@ -336,6 +357,7 @@ def render(x,L,n):
     cmds+='#   # or invoke it directly, e.g. ~/.avm/bin/anchor-'+str(b.get('anchor','VERSION'))+'\n'
     cmds+='anchor build\n'
     if b.get('test'): cmds+=b['test']+'\n'
+    h.append('<p class="eyebrow">Build laboratory</p>')
     h.append(f'<h2 id=build><span class=num>8</span>Build it yourself locally</h2><p>These commands clone the <b>exact commit</b> this lesson is built on and compile the program. Where we have run them, we say so and quote the result. We do not claim a successful build we have not produced.</p><pre class=diagram>{E(cmds)}</pre>')
     if b.get('note'): h.append(f'<p>{md(b["note"])}</p>')
     if b.get('ran'): h.append(f'<p><b>What we ran:</b> {md(b["ran"])}</p>')

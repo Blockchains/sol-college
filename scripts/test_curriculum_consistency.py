@@ -67,7 +67,9 @@ class InventoryRecords(unittest.TestCase):
         self.assertIn('scheduling opportunities still depend', blob)
         self.assertIn('Faucet availability', blob)
         self.assertNotIn('About 1 SOL arrives within a few seconds', blob)
-        self.assertIn('Account count is the source of truth', blob)
+        self.assertIn('selected-pixel', blob)
+        self.assertIn('Account exists', blob)
+        self.assertIn('hosted UI', blob)
 
     def test_list_not_covered_formats_for_proof(self):
         root = os.path.join(os.path.dirname(__file__), '..')
@@ -78,6 +80,20 @@ class InventoryRecords(unittest.TestCase):
         self.assertTrue(text)
         self.assertNotIn('[', text)
         self.assertIn(';', text)
+
+    def test_landing_template_avoids_full_inventory_grid(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        html = open(os.path.join(root, 'scripts/landing.html')).read()
+        self.assertNotIn('{{LIVE_CARDS}}', html)
+        self.assertIn('Browse the full directory', html)
+        self.assertIn('id="featured"', html)
+
+    def test_marquee_keeps_duplicate_chips_out_of_a11y_tree(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        src = open(os.path.join(root, 'scripts/landing.py')).read()
+        self.assertIn('aria-hidden="true"', src)
+        self.assertIn('role="presentation"', src)
+        self.assertIn('decorative ticker', src)
 
 
 if __name__ == '__main__':

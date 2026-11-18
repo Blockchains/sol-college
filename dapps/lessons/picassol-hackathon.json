@@ -9,7 +9,11 @@
    "see": "A 200 × 200 grid. Painted pixels load from devnet. A cell that looks white may still be a painted account whose colour is RGB white — treat appearance as a hint, not proof of account absence."
   },
   {
-   "do": "Pick a colour in the colour bar at the top, then click a cell you believe is empty. Approve `create_pixel`. If the wallet shows `update_pixel` instead, that coordinate already has an account — pick another cell.",
+   "do": "Before painting, pick one coordinate and fill a selected-pixel checklist (on paper or notes): coordinate (x, y); derived PDA address; account exists Yes/No (Explorer or `getAccountInfo`); observed colour if the account exists; available action Create or Update. Base the action on account observation, not on whether the cell looks white.",
+   "see": "A white-looking cell can still be a painted account (RGB white is valid). Create vs Update must follow whether the account exists at the derived address."
+  },
+  {
+   "do": "Pick a colour in the colour bar at the top, then click a cell whose checklist says Create. Approve `create_pixel`. If the wallet shows `update_pixel` instead, that coordinate already has an account — update your checklist and pick another cell.",
    "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open.",
    "ran": [
     [
@@ -23,9 +27,9 @@
    ]
   },
   {
-   "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Approve.",
-   "see": "This time the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet). The pixel changes colour.",
-   "ran_note": "Recolouring was run from the test script (`update_pixel` 37Ri7VJH…, in Proof), not clicked in the UI yet."
+   "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Prefer the hosted UI path. If the wallet does not offer `update_pixel`, use the observation route: open the recorded `update_pixel` signature under Proof and compare logs to your create transaction.",
+   "see": "On a successful UI recolour the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet) and the pixel changes colour. Until that UI path is recorded here, treat script evidence under Proof as the verified recolour.",
+   "ran_note": "Recolouring was run from the test script (`update_pixel` 37Ri7VJH…, in Proof), not yet clicked through the hosted UI. Create → recolour → inspect on the hosted interface remains the next verification task."
   },
   {
    "do": "Click again within 33 seconds of a successful paint.",
@@ -194,9 +198,10 @@
    "title": "Count accounts, not colours",
    "steps": [
     "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter).",
-    "Pick one coordinate from the result and confirm its RGB values — including when the colour is visually white."
+    "Pick one coordinate and complete the selected-pixel inspector: coordinate; derived address; Account exists Yes/No; observed colour; Available action Create/Update.",
+    "Confirm RGB values for that account — including when the colour is visually white."
    ],
-   "expect": "One account per painted pixel. Account count is the source of truth; a white-looking cell can still be a painted account.",
+   "expect": "One account per painted pixel. Account existence at the derived address decides Create vs Update; a white-looking cell can still be a painted account.",
    "hint": "Filter by `dataSize: 14` so you don't pick up any other account the program might own.",
    "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Do not treat white cells as empty accounts: the documented RGB range includes white. Base create vs update decisions on whether the account exists at the derived address."
   },
