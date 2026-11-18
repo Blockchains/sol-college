@@ -231,7 +231,7 @@
  ],
  "prereqs": [
   "A Phantom (or Solflare) wallet set to Solana Devnet, and about 0.05 devnet SOL from [faucet.solana.com](https://faucet.solana.com).",
-  "No earlier Sol.College lesson is required. This is the first step on the [learning path](/lessons/path/)."
+  "Complete [Lesson 001: Your First Solana Transaction](/lessons/first-transaction/) first if you have never reviewed and verified a Solana transfer. That foundations lesson is a release candidate: it teaches execution vs commitment as separate checks. Picassol is the first live Stage 1 practice on the [learning path](/lessons/path/)."
  ],
  "concepts": [
   "pda",

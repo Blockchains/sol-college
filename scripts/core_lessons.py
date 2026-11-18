@@ -417,11 +417,17 @@ if starter:
   lim=one_line(limit_of(starter), 180)
   lim_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   pre_html=f'<p class=prereq>Before this: {md(pre)}</p>' if pre else ''
-  next_step=(f'<section class=next-step id=next><p class=eyebrow>Your next step</p><h2>New here? Start with this one.</h2>'
-    f'<p class=project>{E(SL["title"])}</p><p class=task>{md(task)}</p><p class=meta>{E(bits)}</p>'
+  next_step=(f'<section class=next-step id=next><p class=eyebrow>Your next step</p><h2>New here? Start with foundations, then this live lesson.</h2>'
+    f'<p class=project>First: <a href="/lessons/first-transaction/">Your First Solana Transaction</a> (Lesson 001 · release candidate). '
+    f'Then: {E(SL["title"])}</p><p class=task>{md(task)}</p><p class=meta>{E(bits)}</p>'
     f'{lim_html}{pre_html}'
-    f'<p class=cta><a class=btn href="/lessons/{E(starter["slug"])}/">Start this lesson</a></p></section>')
+    f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> '
+    f'<a class="btn ghost" href="/lessons/{E(starter["slug"])}/">Skip to Picassol</a></p>'
+    f'<p class=note>Lesson 001 teaches review, execution vs commitment, and safe rejection before you paint a pixel. '
+    f'It is a release candidate — not yet technically or learner verified.</p></section>')
 picks=''
+picks+=('<a class=path-pick href="#foundations"><b>Solana Foundations</b>'
+        '<span><span class="chip beg">Beginner</span> · Lesson 001 · release candidate</span></a>')
 for st in PATH.get('stages',[]):
   items=[x for x in GUIDED if lesson_of(x).get('path_stage')==st['id']]
   if not items: continue
@@ -472,13 +478,15 @@ intro=('<p>A guided lesson is a written walkthrough of an app whose recorded cor
   'The wallet is needed only when a step asks you to send a transaction.</p>'
   '<p class=note>Dates on this site mean different things: a lesson’s “verified” date is when that app’s recorded flows were last reproduced; '
   'footer “catalogue generated” dates mark when the static pages were built from the inventory. Neither is a live uptime claim.</p>')
+import foundations_lesson as _foundations
+foundations_block=_foundations.foundations_path_section()+_foundations.foundations_card_html()
 idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav>{CSS}'
   f'<h1>Learn Solana by making real things work.</h1>'
   f'<p class=lead>Run a transaction on a devnet app, see what changed, and check it against the recorded proof.</p>'
   f'<p class=counts>{count_line}</p>'
   f'<p class=resume id=resume hidden></p>'
-  f'<p class=cta><a class=btn href="#next">Find my starting point</a> <a class="btn ghost" href="#browse">Browse all lessons</a></p>'
-  f'{next_step}{choose}{finder}{stage_blocks(pool=GUIDED)}{more}{debug}{preview}'
+  f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="#browse">Browse all lessons</a></p>'
+  f'{next_step}{choose}{finder}{foundations_block}{stage_blocks(pool=GUIDED)}{more}{debug}{preview}'
   f'<div class=index-intro>{intro}<p><a href="/lessons/guide/">How to use a lesson</a> · <a href="/how-to-build/">How to build your own</a></p></div>'
   f'<p class=note>Looking for the 2,000+ code walkthroughs generated from source? They are in the <a href="/explore/">Source library (not yet live)</a>. They have not been built or run, so they are not lessons.</p>')
 desc=f'{ng} guided Solana lessons, {nc} debug challenges, and {nv} project preview. Counts come from the same records as the catalogue.'
@@ -500,9 +508,11 @@ path_parts.append('<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> 
 path_parts.append(CSS)
 path_parts.append('<h1>The path: become a Solana developer with live apps</h1>')
 path_parts.append('<p class=lead>%s guided lessons, ordered by the concept they teach. Each one has a written walkthrough and a core flow recorded as working. The recorded times on these lessons add to about %s hours. Debug challenges and project previews stay on the <a href="/lessons/">lessons index</a>.</p>' % (ng, hours))
-path_parts.append('<p>When you finish this path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
-path_parts.append(f'<p class=cta><a class=btn href="/lessons/{E(first["slug"])}/">Start with lesson 1: {E(lesson_of(first)["title"])}</a> <a class="btn ghost" href="/lessons/">All lessons</a> <a class="btn ghost" href="/lessons/guide/">How to use a lesson</a></p>')
+path_parts.append('<p>New to Solana? Start with <a href="/lessons/first-transaction/">Lesson 001: Your First Solana Transaction</a> (foundations · release candidate) before Stage 1. It teaches reviewing a transfer and checking <b>execution result</b> and <b>commitment</b> as separate questions — not treating “Confirmed” as success.</p>')
+path_parts.append('<p>When you finish the live path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
+path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live lesson: {E(lesson_of(first)["title"])}</a> <a class="btn ghost" href="/lessons/guide/">How to use a lesson</a></p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
+path_parts.append(_foundations.foundations_path_section())
 path_parts.append(stage_blocks(False, GUIDED))
 path_parts.append(debug_path)
 path_parts.append('<p class=note>Stages list guided lessons only: a written walkthrough, and a core flow recorded as working. Debug challenges and project previews stay on the <a href="/lessons/">lessons index</a>. The 2,000+ source-only walkthroughs stay in the <a href="/explore/">Source library</a>. They have not been deployed or run, so they are not on this path.</p>')
@@ -541,23 +551,25 @@ learner = '''<div class=readbar aria-hidden=true><span></span></div>
 <p class=eyebrow>Guide</p>
 <h1>How to use a lesson</h1>
 <p class=lead>A lesson is a devnet app you can open, plus the accounts, instructions and transactions that explain it. Nothing here asks you to wait for a cohort.</p>
+<section class=path-stage id=s0><h2><span class=num>0</span>Foundations first (new to Solana)</h2>
+<p>If you have never approved a Solana transfer, start with <a href="/lessons/first-transaction/">Lesson 001: Your First Solana Transaction</a>. It teaches the five checks before approval, and that a transaction’s <b>confirmation status</b> and its <b>execution result</b> are different questions. It is a release candidate — not yet technically or learner verified — and it is not a live dApp walkthrough.</p></section>
 <section class=path-stage id=s1><h2><span class=num>1</span>Start from the path</h2>
-<p>The <a href="/lessons/">lessons index</a> separates guided lessons, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists guided lessons only, ordered by concept: accounts and PDAs, then authorization, then markets, staking and oracles. You can read a lesson without connecting a wallet.</p></section>
+<p>The <a href="/lessons/">lessons index</a> separates foundations, guided lessons, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists guided lessons only, ordered by concept: accounts and PDAs, then authorization, then markets, staking and oracles. You can read a lesson without connecting a wallet.</p></section>
 <section class=path-stage id=s2><h2><span class=num>2</span>Use your own devnet wallet</h2>
-<p>Install Phantom or Solflare, switch it to Solana devnet, and request test SOL from <a href="https://faucet.solana.com">faucet.solana.com</a> while you are signed in. The public RPC airdrop is closed. Devnet SOL has no value. Open the app from the lesson and approve each transaction yourself.</p></section>
+<p>Install Phantom or Solflare, switch it to Solana <b>devnet</b>, and request test SOL from <a href="https://faucet.solana.com">faucet.solana.com</a> while you are signed in. The public RPC airdrop is closed. Devnet SOL has no value. Open the app from the lesson and approve each transaction yourself. Reject anything unexpected.</p></section>
 <section class=path-stage id=s3><h2><span class=num>3</span>Check off the steps</h2>
 <p>On Try it, tick a step when you have done it. The ticks stay in this browser, on this device. A green check with an explorer link is a step we already ran, with the real signature. A signature is never invented.</p></section>
 <section class=path-stage id=s4><h2><span class=num>4</span>Read the proof before you trust the prose</h2>
-<p>Section 6 lists the recorded devnet transactions. Open one on Solana Explorer and read the instruction and the program logs. If a step has no signature, the lesson says so.</p></section>
+<p>Section 6 lists the recorded devnet transactions. Open one on Solana Explorer and read the instruction and the program logs. Check execution result and commitment separately when the lesson asks. If a step has no signature, the lesson says so.</p></section>
 <section class=path-stage id=s5><h2><span class=num>5</span>Try an exercise before you open the approach</h2>
 <p>Hints stay visible. The reference approach is folded. A checked step means you followed the instruction. It does not, by itself, mean you can explain the accounts. The exercises are the check. Debug challenges are apps whose core flow does not complete. They are practice for finding the bug, not guided lessons.</p></section>
 <section class=path-stage id=s6><h2><span class=num>6</span>Build your own after the path</h2>
 <p>The <a href="/how-to-build/">how to build</a> guides cover the toolchain, the Anchor workflow, tests, deploy and a security checklist. They link the official docs because commands change.</p></section>
-<p class=cta><a class=btn href="/lessons/path/">Start the path</a> <a class="btn ghost" href="/how-to-build/">How to build</a></p>
+<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/path/">Open the path</a> <a class="btn ghost" href="/how-to-build/">How to build</a></p>
 </div>
-<nav class=rail aria-label="On this page"><a href="#s1">1. Start from the path</a><a href="#s2">2. Your wallet</a><a href="#s3">3. Check off steps</a><a href="#s4">4. Read the proof</a><a href="#s5">5. Exercises</a><a href="#s6">6. Build your own</a></nav>
+<nav class=rail aria-label="On this page"><a href="#s0">0. Foundations</a><a href="#s1">1. Start from the path</a><a href="#s2">2. Your wallet</a><a href="#s3">3. Check off steps</a><a href="#s4">4. Read the proof</a><a href="#s5">5. Exercises</a><a href="#s6">6. Build your own</a></nav>
 </div>
-<div class=dock role=region aria-label="Guide actions"><a class=btn href="/lessons/path/">Open the path</a><button type=button class="btn ghost" data-jump>Next section</button></div>
+<div class=dock role=region aria-label="Guide actions"><a class=btn href="/lessons/first-transaction/">Lesson 001</a><a class="btn ghost" href="/lessons/path/">Open the path</a><button type=button class="btn ghost" data-jump>Next section</button></div>
 </article>'''
 os.makedirs(f'{S}/lessons/guide',exist_ok=True)
 open(f'{S}/lessons/guide/index.html','w').write(_guide_page(learner,'How to use a Sol.College lesson | Sol.College','Open a live devnet lesson, check off the steps in your browser, and read the recorded transactions before you trust the prose.','/lessons/guide/'))
@@ -571,7 +583,8 @@ def write_guides():
     c=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/how-to-build/">How to build</a> / <span>{E(g["title"])}</span></nav>'
     os.makedirs(f'{S}/how-to-build/{g["slug"]}',exist_ok=True)
     open(f'{S}/how-to-build/{g["slug"]}/index.html','w').write(page(c+CSS+content.guide_article(g),g['title']+' | Sol.College',g['title']+': a practical Solana guide with links to the official docs.',f'/how-to-build/{g["slug"]}/'))
-  return [f'/how-to-build/{g["slug"]}/' for g in guides]+['/how-to-build/','/lessons/guide/']
+  return [f'/how-to-build/{g["slug"]}/' for g in guides]+['/how-to-build/','/lessons/guide/']+FOUNDATIONS_PATHS
+FOUNDATIONS_PATHS=_foundations.write(S, page, CSS)
 GUIDE_PATHS=write_guides()
 import articles as _articles
 ARTICLE_PATHS=_articles.write(S, page, CSS)
@@ -610,7 +623,7 @@ if os.path.exists(sm):
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])
-_landing.START_LESSON=f'/lessons/{first["slug"]}/'
+_landing.START_LESSON='/lessons/first-transaction/'
 _landing.write_home(S)
 _landing.enrich_lessons(S)
 import seo as _seo
