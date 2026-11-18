@@ -1,41 +1,44 @@
 {
-  "title": "Atlantid Vault + Escrow",
-  "summary": "Register an 8004 agent with ATOM, open a policy-gated token vault, then lock a job in escrow and accept it so the vault is paid (minus a protocol fee).",
-  "what": "Atlantid is two Anchor 0.32.1 programs. agent_vault is gated on an official-devnet 8004 AgentAccount with atom_enabled: initialize_root_config (upgrade authority only), create_vault, update_policy, spend, and withdraw. agent_escrow takes a worker_vault account, locks client tokens, and on accept_work pays the vault ATA minus protocol_fee_bps.",
-  "app_note": "The page at /dapps/atlantid-programs/ is the generic IDL-driven wallet console pointed at agent_vault. The lab tree is branch sol-college-devnet of Blockchains/atlantid-programs. The lab changed declare_id for both programs. agent_escrow.json is also hosted in the same folder. Vault creation uses the official 8004 registry 8oo4J9tB\u2026 (not redeployed).",
-  "try_steps": [
-    {
-      "do": "Open /dapps/atlantid-programs/, switch to Devnet, and connect a wallet. The lab already registered 8004 agent CGAqB2P4\u2026 (asset J1TstbZR\u2026, ATOM on), created vault FZLnWzHm\u2026, spent and withdrew, then ran escrow job atl-job-1.",
-      "see": "Vault program 8nbe1vQx\u2026, escrow program 8m9ef1Yp\u2026. Vault ATA DoUoyAY1\u2026 holds 990_000 after accept_work (1_000_000 minus 100 bps). Escrow ATA was closed.",
-      "ran": "register_with_options 549HzQs8\u2026; initialize_root_config 27vjRYru\u2026; create_vault 5T3E3YnW\u2026; spend 2KNCjsrc\u2026; withdraw 52hk3PiV\u2026; create_escrow 5gBDpEvy\u2026; mark_completed 44R9A9vV\u2026; accept_work 5nE2e2xd\u2026"
-    }
-  ],
-  "diagram": "official 8004 register_with_options(ATOM) --> create_vault PDA [\"vault\", owner, agent_asset] --> fund/policy/spend/withdraw; client create_escrow --> worker mark_completed --> client accept_work pays vault ATA minus fee.",
-  "accounts": [
-    "8004 AgentAccount PDA seeds [\"agent\", asset] on 8oo4J9tB\u2026",
-    "vault PDA seeds [\"vault\", owner, agent_asset]",
-    "vault authority PDA",
-    "escrow record seeds [\"escrow\", job_id]"
-  ],
-  "instructions": [
-    "initialize_root_config",
-    "create_vault",
-    "update_policy",
-    "spend",
-    "withdraw",
-    "initialize_escrow_config",
-    "create_escrow",
-    "mark_completed",
-    "accept_work"
-  ],
-  "innovation": "The vault will not open unless a cross-program 8004 AgentAccount for a Metaplex Core asset exists with atom_enabled and matching owner. Escrow payouts go to that vault's ATA, not a raw wallet.",
-  "frontend": "Generic IDL console at /dapps/atlantid-programs/ (vault IDL). Creating a vault still requires a prior 8004 register_with_options against the official registry, which is not in this IDL.",
-  "exercises": [
-    "Derive the vault PDA from owner + asset and confirm it matches FZLnWzHm\u2026",
-    "Explain why a 3_000_000 owner spend succeeded despite a 2_000_000 per-tx cap."
-  ],
-  "not_covered": [
-    "set_agent_wallet and cap-enforced spend as the agent wallet",
-    "dispute_work, crank_timeout, and crank_dispute_timeout"
-  ]
+ "title": "Atlantid Vault + Escrow",
+ "summary": "Register an 8004 agent with ATOM, open a policy-gated token vault, then lock a job in escrow and accept it so the vault is paid (minus a protocol fee).",
+ "what": "Atlantid is two Anchor 0.32.1 programs. agent_vault is gated on an official-devnet 8004 AgentAccount with atom_enabled: initialize_root_config (upgrade authority only), create_vault, update_policy, spend, and withdraw. agent_escrow takes a worker_vault account, locks client tokens, and on accept_work pays the vault ATA minus protocol_fee_bps.",
+ "app_note": "The page at /dapps/atlantid-programs/ is the generic IDL-driven wallet console pointed at agent_vault. The lab tree is branch sol-college-devnet of Blockchains/atlantid-programs. The lab changed declare_id for both programs. agent_escrow.json is also hosted in the same folder. Vault creation uses the official 8004 registry 8oo4J9tB… (not redeployed).",
+ "try_steps": [
+  {
+   "do": "Open /dapps/atlantid-programs/, switch to Devnet, and connect a wallet. The lab already registered 8004 agent CGAqB2P4… (asset J1TstbZR…, ATOM on), created vault FZLnWzHm…, spent and withdrew, then ran escrow job atl-job-1.",
+   "see": "Vault program 8nbe1vQx…, escrow program 8m9ef1Yp…. Vault ATA DoUoyAY1… holds 990_000 after accept_work (1_000_000 minus 100 bps). Escrow ATA was closed.",
+   "ran": "register_with_options 549HzQs8…; initialize_root_config 27vjRYru…; create_vault 5T3E3YnW…; spend 2KNCjsrc…; withdraw 52hk3PiV…; create_escrow 5gBDpEvy…; mark_completed 44R9A9vV…; accept_work 5nE2e2xd…"
+  }
+ ],
+ "diagram": "official 8004 register_with_options(ATOM) --> create_vault PDA [\"vault\", owner, agent_asset] --> fund/policy/spend/withdraw; client create_escrow --> worker mark_completed --> client accept_work pays vault ATA minus fee.",
+ "accounts": [
+  "8004 AgentAccount PDA seeds [\"agent\", asset] on 8oo4J9tB…",
+  "vault PDA seeds [\"vault\", owner, agent_asset]",
+  "vault authority PDA",
+  "escrow record seeds [\"escrow\", job_id]"
+ ],
+ "instructions": [
+  "initialize_root_config",
+  "create_vault",
+  "update_policy",
+  "spend",
+  "withdraw",
+  "initialize_escrow_config",
+  "create_escrow",
+  "mark_completed",
+  "accept_work"
+ ],
+ "innovation": "The vault will not open unless a cross-program 8004 AgentAccount for a Metaplex Core asset exists with atom_enabled and matching owner. Escrow payouts go to that vault's ATA, not a raw wallet.",
+ "frontend": "Generic IDL console at /dapps/atlantid-programs/ (vault IDL). Creating a vault still requires a prior 8004 register_with_options against the official registry, which is not in this IDL.",
+ "exercises": [
+  "Derive the vault PDA from owner + asset and confirm it matches FZLnWzHm…",
+  "Explain why a 3_000_000 owner spend succeeded despite a 2_000_000 per-tx cap."
+ ],
+ "not_covered": [
+  "set_agent_wallet and cap-enforced spend as the agent wallet",
+  "dispute_work, crank_timeout, and crank_dispute_timeout"
+ ],
+ "difficulty": "Advanced",
+ "time": "35 min",
+ "functional": "full"
 }

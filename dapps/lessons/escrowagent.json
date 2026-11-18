@@ -1,35 +1,38 @@
 {
-  "title": "EscrowAgent",
-  "summary": "Lock SPL tokens in a client/provider escrow, let the provider submit proof, and have the client confirm so the provider is paid.",
-  "what": "EscrowAgent is an Anchor 0.32.1 escrow rail. initialize_protocol writes a singleton protocol_config PDA. create_escrow (seeds [\"escrow\", client, provider, task_hash]) funds a vault token account. The provider accepts, submits proof, and for MultiSigConfirm the client calls confirm_completion, which pays the provider, collects the protocol fee, and closes the escrow.",
-  "app_note": "The page at /dapps/escrowagent/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/escrowagent. The lab only changed declare_id to a unique lab program.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/escrowagent/, switch to Devnet, and connect a wallet. The lab already ran the MultiSigConfirm happy path for 1_000_000 lab tokens with a 0 bps fee.",
-      "see": "Program DZJpVeE9\u2026. Escrow 4EK362s6\u2026 should be closed; provider H2vegMao\u2026 received 1_000_000.",
-      "ran": "initialize_protocol 2hKEFgYd\u2026; create_escrow 3kEYjsfR\u2026; accept_escrow 3YCUf4kT\u2026; submit_proof 2zhxDCQ5\u2026; confirm_completion 29ihkALi\u2026"
-    }
-  ],
-  "diagram": "admin --initialize_protocol--> config; client --create_escrow--> escrow+vault; provider --accept/submit_proof--> ProofSubmitted; client --confirm_completion--> provider ATA, escrow closed.",
-  "accounts": [
-    "protocol_config seeds [\"protocol_config\"]",
-    "escrow PDA seeds [\"escrow\", client, provider, task_hash]",
-    "vault seeds [\"vault\", escrow], authority seeds [\"vault_authority\", escrow]"
-  ],
-  "instructions": [
-    "initialize_protocol",
-    "create_escrow",
-    "accept_escrow",
-    "submit_proof",
-    "confirm_completion"
-  ],
-  "innovation": "Funds never auto-release at proof submission. Release is always a later confirm_completion (client) or provider_release (after the grace period).",
-  "frontend": "Generic IDL console at /dapps/escrowagent/.",
-  "exercises": [
-    "Derive the escrow PDA from client, provider and task_hash.",
-    "Explain why OracleCallback is rejected at create_escrow."
-  ],
-  "not_covered": [
-    "Disputes, expiry, provider_release, and non-zero protocol fees"
-  ]
+ "title": "EscrowAgent",
+ "summary": "Lock SPL tokens in a client/provider escrow, let the provider submit proof, and have the client confirm so the provider is paid.",
+ "what": "EscrowAgent is an Anchor 0.32.1 escrow rail. initialize_protocol writes a singleton protocol_config PDA. create_escrow (seeds [\"escrow\", client, provider, task_hash]) funds a vault token account. The provider accepts, submits proof, and for MultiSigConfirm the client calls confirm_completion, which pays the provider, collects the protocol fee, and closes the escrow.",
+ "app_note": "The page at /dapps/escrowagent/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/escrowagent. The lab only changed declare_id to a unique lab program.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/escrowagent/, switch to Devnet, and connect a wallet. The lab already ran the MultiSigConfirm happy path for 1_000_000 lab tokens with a 0 bps fee.",
+   "see": "Program DZJpVeE9…. Escrow 4EK362s6… should be closed; provider H2vegMao… received 1_000_000.",
+   "ran": "initialize_protocol 2hKEFgYd…; create_escrow 3kEYjsfR…; accept_escrow 3YCUf4kT…; submit_proof 2zhxDCQ5…; confirm_completion 29ihkALi…"
+  }
+ ],
+ "diagram": "admin --initialize_protocol--> config; client --create_escrow--> escrow+vault; provider --accept/submit_proof--> ProofSubmitted; client --confirm_completion--> provider ATA, escrow closed.",
+ "accounts": [
+  "protocol_config seeds [\"protocol_config\"]",
+  "escrow PDA seeds [\"escrow\", client, provider, task_hash]",
+  "vault seeds [\"vault\", escrow], authority seeds [\"vault_authority\", escrow]"
+ ],
+ "instructions": [
+  "initialize_protocol",
+  "create_escrow",
+  "accept_escrow",
+  "submit_proof",
+  "confirm_completion"
+ ],
+ "innovation": "Funds never auto-release at proof submission. Release is always a later confirm_completion (client) or provider_release (after the grace period).",
+ "frontend": "Generic IDL console at /dapps/escrowagent/.",
+ "exercises": [
+  "Derive the escrow PDA from client, provider and task_hash.",
+  "Explain why OracleCallback is rejected at create_escrow."
+ ],
+ "not_covered": [
+  "Disputes, expiry, provider_release, and non-zero protocol fees"
+ ],
+ "difficulty": "Intermediate",
+ "time": "25 min",
+ "functional": "full"
 }

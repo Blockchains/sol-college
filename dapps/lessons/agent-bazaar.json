@@ -1,56 +1,56 @@
 {
-  "title": "Agent Bazaar: register an on-chain agent identity",
-  "summary": "Initialise the protocol with a platform fee, register an agent, and see why fee_bps=10001 is rejected.",
-  "what": "Agent Bazaar is an Anchor 0.31 program for an on-chain agent registry (identity + reputation). This lesson covers initialize and register_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
-  "app_note": "The page at /dapps/agent-bazaar/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/agent-bazaar/, switch to Devnet, and connect a wallet. initialize and register_agent campus-scout are already done.",
-      "see": "Program 4JLHcJkE\u2026 . Fetch protocol 8qBZ1HYD\u2026 and identity 8Phw1JZ7\u2026.",
-      "ran": "initialize 2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ; register_agent xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG."
-    },
-    {
-      "do": "initialize with platform_fee_bps=10001 should fail.",
-      "see": "InvalidFee.",
-      "ran": "Rejected in tests/devnet/agent-bazaar.mjs."
-    }
-  ],
-  "diagram": "authority --initialize--> protocol [\"protocol\"] ; owner --register_agent--> identity [\"agent\", count] + reputation [\"reputation\", count]",
-  "accounts": [
-    "protocol_state (seeds [\"protocol\"])",
-    "agent_identity (seeds [\"agent\", agent_count])",
-    "agent_reputation (seeds [\"reputation\", agent_count])"
-  ],
-  "instructions": [
-    "initialize",
-    "register_agent",
-    "update/deactivate/feedback ixs exist in the program but are not in this IDL"
-  ],
-  "innovation": "A public on-chain identity and reputation registry for AI agents.",
-  "frontend": "Generic Sol.College IDL console.",
-  "exercises": [
-    "Fetch the lab agent identity.",
-    "Explain InvalidFee.",
-    "Sketch submit_feedback."
-  ],
-  "not_covered": "update_agent, deactivate/reactivate/close, update_fee and submit_feedback were not exercised.",
-  "path_order": 31,
-  "path_stage": "apply",
-  "difficulty": "beginner",
-  "time": "15 min",
-  "objectives": [
-    "Initialise the protocol",
-    "Register an agent",
-    "Name InvalidFee"
-  ],
-  "prereqs": [
-    "hydra"
-  ],
-  "concepts": [
-    "protocol PDA",
-    "agent identity",
-    "fee bps"
-  ],
-  "build": "Anchor 0.31.1 program at 4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx on devnet. IDL hand-derived subset, tx-confirmed.",
-  "functional": "full"
+ "title": "Agent Bazaar: register an on-chain agent identity",
+ "summary": "Initialise the protocol with a platform fee, register an agent, and see why fee_bps=10001 is rejected.",
+ "what": "Agent Bazaar is an Anchor 0.31 program for an on-chain agent registry (identity + reputation). This lesson covers initialize and register_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
+ "app_note": "The page at /dapps/agent-bazaar/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/agent-bazaar/, switch to Devnet, and connect a wallet. initialize and register_agent campus-scout are already done.",
+   "see": "Program 4JLHcJkE… . Fetch protocol 8qBZ1HYD… and identity 8Phw1JZ7….",
+   "ran": "initialize 2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ; register_agent xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG."
+  },
+  {
+   "do": "initialize with platform_fee_bps=10001 should fail.",
+   "see": "InvalidFee.",
+   "ran": "Rejected in tests/devnet/agent-bazaar.mjs."
+  }
+ ],
+ "diagram": "authority --initialize--> protocol [\"protocol\"] ; owner --register_agent--> identity [\"agent\", count] + reputation [\"reputation\", count]",
+ "accounts": [
+  "protocol_state (seeds [\"protocol\"])",
+  "agent_identity (seeds [\"agent\", agent_count])",
+  "agent_reputation (seeds [\"reputation\", agent_count])"
+ ],
+ "instructions": [
+  "initialize",
+  "register_agent",
+  "update/deactivate/feedback ixs exist in the program but are not in this IDL"
+ ],
+ "innovation": "A public on-chain identity and reputation registry for AI agents.",
+ "frontend": "Generic Sol.College IDL console.",
+ "exercises": [
+  "Fetch the lab agent identity.",
+  "Explain InvalidFee.",
+  "Sketch submit_feedback."
+ ],
+ "not_covered": "update_agent, deactivate/reactivate/close, update_fee and submit_feedback were not exercised.",
+ "path_order": 32,
+ "path_stage": "apply",
+ "difficulty": "Beginner",
+ "time": "15 min",
+ "objectives": [
+  "Initialise the protocol",
+  "Register an agent",
+  "Name InvalidFee"
+ ],
+ "prereqs": [
+  "hydra"
+ ],
+ "concepts": [
+  "protocol PDA",
+  "agent identity",
+  "fee bps"
+ ],
+ "build": "Anchor 0.31.1 program at 4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx on devnet. IDL hand-derived subset, tx-confirmed.",
+ "functional": "full"
 }

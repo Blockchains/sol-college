@@ -7,7 +7,7 @@ S=sys.argv[1] if len(sys.argv)>1 else 'site'; E=lambda s:html.escape(str(s),quot
 LIVE_ALL=json.load(open('dapps/live.json'))
 def _func(x):
   return x.get('functional') or 'full'
-LIVE=[x for x in LIVE_ALL if _func(x)=='full']          # homepage and /live/ list only fully working apps
+LIVE=[x for x in LIVE_ALL if _func(x)=='full']          # homepage and /live/ list only apps with recorded core-flow completion
 LIVE_PARTIAL=[x for x in LIVE_ALL if _func(x)=='partial']
 LV={x['slug']:x for x in LIVE_ALL}
 BLK=json.load(open('dapps/blocked.json')) if os.path.exists('dapps/blocked.json') else {}
@@ -54,7 +54,7 @@ def live_section(x, partial=False):
   st += ''.join(f'<li>{E(a)}: {E(s)}</li>' for a,s in x['steps'] if not (isinstance(s,str) and s and s!='(no tx; read-only)' and not str(s).startswith('(sim')))
   ng=''.join(f'<li>{_neg(n)}</li>' for n in x['negative'])
   src=''.join(f'<li><a href="{E(u)}">{E(l)}</a></li>' for l,u in x['source'])
-  badge='<p><b>Fully functional on devnet.</b> {0}</p>'.format(E(x.get('functional_evidence') or '')) if not partial else '<p><b>Not yet fully functional.</b> {0} This app is listed here as evidence, not as a live environment.</p>'.format(E(x.get('functional_evidence') or ''))
+  badge='<p><b>Recorded core flows completed on devnet.</b> {0}</p>'.format(E(x.get('functional_evidence') or '')) if not partial else '<p><b>Named core flow still broken.</b> {0} This app is listed here as evidence and as a debug challenge, not as a completed core-flow environment.</p>'.format(E(x.get('functional_evidence') or ''))
   return f'''<section class=note id="{E(x["slug"])}"><h2>{E(x["name"])}</h2>{badge}<p><a class=btn href="{E(x["app"])}">Open the app (devnet)</a> <a class="btn ghost" href="{E(x["lesson"])}">Read the lesson</a></p>
 <p><b>You will learn:</b> {E(x["learn"])}</p><ul>{src}</ul>
 <p><b>App:</b> {E(x["app_kind"])}</p><p><b>Program on devnet:</b> <a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a> · fork <a href="{E(x["fork"])}/tree/{E(x["commit"])}">{E(x["fork"][19:])} @ <code>{E(x["commit"][:7])}</code></a></p>
@@ -93,8 +93,8 @@ home=_landing.page_shell(S) or _home
 if home and not _landing.is_landing(home) and 'data-landing=' not in (_home or ''):
     # First-run / rollback only: leave a pre-landing index alone for the lesson-page shell.
     pass
-# /live/ page in a non-landing shell. Only fully functional apps are listed as live environments.
-body=f'<h1>Live on devnet</h1><p class=lead>Solana forks from the SuperStack running as their own apps on devnet, each with its program deployed and its core flow exercised with real devnet transactions. Only apps whose core flow is fully functional are listed as live environments. Use a wallet set to devnet; devnet SOL is free at <a href="https://faucet.solana.com">faucet.solana.com</a> and has no value.</p>'+_landing.counts_note_html()+_findings_live+''.join(live_section(x) for x in LIVE)+(('<h2>Not yet fully functional</h2><p>These apps are hosted and were exercised on devnet, but a core path is still broken. They are not offered as live environments.</p>'+''.join(live_section(x, partial=True) for x in LIVE_PARTIAL)) if LIVE_PARTIAL else '')+'<h2>Status of every lesson</h2>'+summary
+# /live/ page in a non-landing shell. Only apps with recorded core-flow completion are listed as live environments.
+body=f'<h1>Live on devnet</h1><p class=lead>Solana forks from the SuperStack running as their own apps on devnet, each with its program deployed and its core flows exercised with real devnet transactions. Apps are listed as live environments only when the flows the lesson teaches completed in the evidence. Known broken flows stay in the debug section below. Verification dates are per-app reproductions, not a live uptime check. Use a wallet set to devnet; devnet SOL is free at <a href="https://faucet.solana.com">faucet.solana.com</a> and has no value.</p>'+_landing.counts_note_html()+_findings_live+''.join(live_section(x) for x in LIVE)+(('<h2>Named core flows still broken</h2><p>These apps are hosted and were exercised on devnet, but a named core path is still broken. They are debug challenges, not completed core-flow environments.</p>'+''.join(live_section(x, partial=True) for x in LIVE_PARTIAL)) if LIVE_PARTIAL else '')+'<h2>Status of every lesson</h2>'+summary
 lp=re.sub(r'<main id=main>.*</main>',lambda _:f'<main id=main>{body}</main>',re.sub(r'<!--sc-live-->.*?<!--/sc-live-->','',home,flags=re.S),count=1,flags=re.S) if home and '<main id=main>' in home else None
 if lp:
   lp=re.sub(r'<title>.*?</title>','<title>Live on devnet: verified Solana apps | Sol.College</title>',lp,count=1)

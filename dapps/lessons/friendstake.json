@@ -293,8 +293,8 @@
   }
  ],
  "not_covered": "Make, take, taker-wins and cancel were clicked through in the app with one wallet in all three roles. The three-wallet flow (M, O, J), the three payee bugs and every rejected case were run by script. Not exercised: the judge's refund (winner 0) and maker-wins with the correct maker, and the description seed limit (read from code).",
- "path_order": 9,
- "path_stage": 2,
+ "path_order": null,
+ "path_stage": null,
  "difficulty": "Intermediate",
  "time": "50 min",
  "objectives": [
@@ -325,5 +325,5 @@
   "test": "anchor test",
   "note": "The program is `programs/peer-to-peer-betting`. Tests: `tests/peer-to-peer-betting.ts`."
  },
- "functional": "full"
+ "functional": "partial"
 }

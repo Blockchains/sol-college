@@ -1,41 +1,44 @@
 {
-  "title": "SolAgents Agentic Commerce",
-  "summary": "Initialize the platform, create and fund an SPL job escrow, let the provider submit, and have the evaluator complete so the provider is paid (minus a 0.5% fee).",
-  "what": "SolAgents agentic_commerce is an Anchor 0.31.1 job escrow (EIP-8183-style) with client, provider and evaluator roles. This lesson covers initialize, create_job, set_budget, fund, submit and complete. bonding_curve was not deployed.",
-  "app_note": "The page at /dapps/solagents-commerce/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/solagents-programs. Only declare_id for agentic_commerce was changed to a unique lab program.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/solagents-commerce/, switch to Devnet, and connect a wallet. The lab already ran initialize \u2192 create_job \u2192 set_budget \u2192 fund \u2192 submit \u2192 complete with 1_000_000 units of the lab mint.",
-      "see": "Program GXskCGB6\u2026. Config tU8ugVHK\u2026 (fee 50 bps). Job C3VwDTjN\u2026 should be Completed; vault CheoMeAu\u2026 empty; provider +995_000, treasury +5_000.",
-      "ran": "initialize 2qcZ22Xu\u2026; create_job 35TFcNak\u2026; set_budget 3KbPJAZ2\u2026; fund Zg4PKG6F\u2026; submit bZAqsiat\u2026; complete 4qrg5aPT\u2026."
-    },
-    {
-      "do": "A second initialize should fail (config PDA already exists).",
-      "see": "Simulation failed / account already in use.",
-      "ran": "Rejected in tests/devnet/solagents-commerce.mjs (negative_reinit)."
-    }
-  ],
-  "diagram": "admin --initialize--> config [\"config\"] ; client --create_job--> job [\"job\", config, job_id] + vault [\"vault\", job] ; client --set_budget/fund--> vault ; provider --submit--> Submitted ; evaluator --complete--> provider 99.5% + treasury 0.5%",
-  "accounts": [
-    "config (seeds [\"config\"])",
-    "job (seeds [\"job\", config, job_id u64 LE])",
-    "vault (SPL token account PDA, seeds [\"vault\", job], authority = job)"
-  ],
-  "instructions": [
-    "initialize",
-    "create_job",
-    "set_budget",
-    "fund",
-    "submit",
-    "complete",
-    "reject / claim_refund / close_job / admin ixs exist in the IDL but were not exercised"
-  ],
-  "innovation": "A three-role job escrow (client, provider, evaluator) with a job-owned SPL vault and an optional hook program.",
-  "frontend": "Generic Sol.College IDL console.",
-  "exercises": [
-    "Fetch job C3VwDTjN\u2026 and confirm status is Completed.",
-    "Explain why the vault can be debited on complete (authority is the job PDA).",
-    "Sketch how claim_refund would work after expiry."
-  ],
-  "not_covered": "reject, claim_refund, close_job, hooks, set_provider after create, and the bonding_curve program were not exercised."
+ "title": "SolAgents Agentic Commerce",
+ "summary": "Initialize the platform, create and fund an SPL job escrow, let the provider submit, and have the evaluator complete so the provider is paid (minus a 0.5% fee).",
+ "what": "SolAgents agentic_commerce is an Anchor 0.31.1 job escrow (EIP-8183-style) with client, provider and evaluator roles. This lesson covers initialize, create_job, set_budget, fund, submit and complete. bonding_curve was not deployed.",
+ "app_note": "The page at /dapps/solagents-commerce/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/solagents-programs. Only declare_id for agentic_commerce was changed to a unique lab program.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/solagents-commerce/, switch to Devnet, and connect a wallet. The lab already ran initialize → create_job → set_budget → fund → submit → complete with 1_000_000 units of the lab mint.",
+   "see": "Program GXskCGB6…. Config tU8ugVHK… (fee 50 bps). Job C3VwDTjN… should be Completed; vault CheoMeAu… empty; provider +995_000, treasury +5_000.",
+   "ran": "initialize 2qcZ22Xu…; create_job 35TFcNak…; set_budget 3KbPJAZ2…; fund Zg4PKG6F…; submit bZAqsiat…; complete 4qrg5aPT…."
+  },
+  {
+   "do": "A second initialize should fail (config PDA already exists).",
+   "see": "Simulation failed / account already in use.",
+   "ran": "Rejected in tests/devnet/solagents-commerce.mjs (negative_reinit)."
+  }
+ ],
+ "diagram": "admin --initialize--> config [\"config\"] ; client --create_job--> job [\"job\", config, job_id] + vault [\"vault\", job] ; client --set_budget/fund--> vault ; provider --submit--> Submitted ; evaluator --complete--> provider 99.5% + treasury 0.5%",
+ "accounts": [
+  "config (seeds [\"config\"])",
+  "job (seeds [\"job\", config, job_id u64 LE])",
+  "vault (SPL token account PDA, seeds [\"vault\", job], authority = job)"
+ ],
+ "instructions": [
+  "initialize",
+  "create_job",
+  "set_budget",
+  "fund",
+  "submit",
+  "complete",
+  "reject / claim_refund / close_job / admin ixs exist in the IDL but were not exercised"
+ ],
+ "innovation": "A three-role job escrow (client, provider, evaluator) with a job-owned SPL vault and an optional hook program.",
+ "frontend": "Generic Sol.College IDL console.",
+ "exercises": [
+  "Fetch job C3VwDTjN… and confirm status is Completed.",
+  "Explain why the vault can be debited on complete (authority is the job PDA).",
+  "Sketch how claim_refund would work after expiry."
+ ],
+ "not_covered": "reject, claim_refund, close_job, hooks, set_provider after create, and the bonding_curve program were not exercised.",
+ "difficulty": "Intermediate",
+ "time": "25 min",
+ "functional": "full"
 }

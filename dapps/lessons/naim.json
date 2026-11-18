@@ -1,152 +1,152 @@
 {
-  "title": "NAIM: on-chain .agent names for AI agents",
-  "summary": "Initialise NAIM config and a $NAIM token config, then register a .agent name and read the name-record PDA.",
-  "what": "NAIM is an Anchor program for a .agent name registry and secondary market aimed at AI agents. An admin initialises a config PDA (treasury, fee tiers, registration and grace periods). Later instructions register and renew names, stake $NAIM for fee discounts, and list or buy names in $NAIM, SOL or USDC. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
-  "app_note": "The fork has no first-party frontend. The page at /dapps/naim/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/naim/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
-      "see": "The page lists initialize, register_name, stake, list_name, buy_with_sol and more, and shows program 3ASKx88k\u2026",
-      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
-    },
-    {
-      "do": "initialize is already done on this lab deployment. Fetch the config PDA (seeds [\"config\"]) and confirm admin, treasury and the registration period.",
-      "see": "admin and treasury are the lab wallet, registration_period=31536000, grace_period=2592000.",
-      "ran": "initialize sig 5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5 wrote config 3Ay28CirUWU6PNj1mRurZh6a2tPW7ccRpJvvaD7nwDze."
-    },
-    {
-      "do": "If you try initialize again, or submit initialize with registration_period=0, the transaction should fail.",
-      "see": "account already in use, or InvalidConfig.",
-      "ran": "The lab run caught InvalidConfig for a zero period and a failed second initialize."
-    }
+ "title": "NAIM: on-chain .agent names for AI agents",
+ "summary": "Initialise NAIM config and a $NAIM token config, then register a .agent name and read the name-record PDA.",
+ "what": "NAIM is an Anchor program for a .agent name registry and secondary market aimed at AI agents. An admin initialises a config PDA (treasury, fee tiers, registration and grace periods). Later instructions register and renew names, stake $NAIM for fee discounts, and list or buy names in $NAIM, SOL or USDC. Upstream is the program only; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+ "app_note": "The fork has no first-party frontend. The page at /dapps/naim/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/naim/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
+   "see": "The page lists initialize, register_name, stake, list_name, buy_with_sol and more, and shows program 3ASKx88k…",
+   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  },
+  {
+   "do": "initialize is already done on this lab deployment. Fetch the config PDA (seeds [\"config\"]) and confirm admin, treasury and the registration period.",
+   "see": "admin and treasury are the lab wallet, registration_period=31536000, grace_period=2592000.",
+   "ran": "initialize sig 5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5 wrote config 3Ay28CirUWU6PNj1mRurZh6a2tPW7ccRpJvvaD7nwDze."
+  },
+  {
+   "do": "If you try initialize again, or submit initialize with registration_period=0, the transaction should fail.",
+   "see": "account already in use, or InvalidConfig.",
+   "ran": "The lab run caught InvalidConfig for a zero period and a failed second initialize."
+  }
+ ],
+ "diagram": "admin ─ initialize(treasury, fees, periods) ─▶ Config PDA [\"config\"]\n(later) admin ─ init_token_config($NAIM mint, fee split)\npayer ─ register_name(name, sha256(name), uri) ─▶ NameRecord PDA [\"naim\", hash, \".agent\"]",
+ "accounts": [
+  [
+   "Config",
+   "PDA `[\"config\"]`",
+   "Admin, treasury, fee tiers, registration_period, grace_period."
   ],
-  "diagram": "admin \u2500 initialize(treasury, fees, periods) \u2500\u25b6 Config PDA [\"config\"]\n(later) admin \u2500 init_token_config($NAIM mint, fee split)\npayer \u2500 register_name(name, sha256(name), uri) \u2500\u25b6 NameRecord PDA [\"naim\", hash, \".agent\"]",
-  "accounts": [
+  [
+   "TokenConfig",
+   "PDA `[\"token_config\"]`",
+   "Created by init_token_config; pins the $NAIM mint and fee split. Not exercised in this run."
+  ],
+  [
+   "NameRecord",
+   "PDA `[\"naim\", name_hash, \".agent\"]`",
+   "Owner, resolver, metadata URI, expiry. Created by register_name."
+  ]
+ ],
+ "instructions": [
+  {
+   "name": "initialize",
+   "refs": [
     [
-      "Config",
-      "PDA `[\"config\"]`",
-      "Admin, treasury, fee tiers, registration_period, grace_period."
-    ],
-    [
-      "TokenConfig",
-      "PDA `[\"token_config\"]`",
-      "Created by init_token_config; pins the $NAIM mint and fee split. Not exercised in this run."
-    ],
-    [
-      "NameRecord",
-      "PDA `[\"naim\", name_hash, \".agent\"]`",
-      "Owner, resolver, metadata URI, expiry. Created by register_name."
+     "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L38-L52",
+     "lib.rs L38-L52"
     ]
-  ],
-  "instructions": [
-    {
-      "name": "initialize",
-      "refs": [
-        [
-          "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L38-L52",
-          "lib.rs L38-L52"
-        ]
-      ],
-      "steps": [
-        "Admin-signed, once-only. Rejects registration_period <= 0 or grace_period < 0.",
-        "Writes the config PDA."
-      ]
-    },
-    {
-      "name": "register_name",
-      "refs": [
-        [
-          "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194",
-          "lib.rs L122-L194"
-        ]
-      ],
-      "steps": [
-        "Validates the name and that name_hash is sha256(name), collects a $NAIM fee, and writes the name and reputation PDAs.",
-        "Not exercised in this run (needs init_token_config)."
-      ]
-    }
-  ],
-  "innovation": {
-    "title": "A human-readable .agent name layer for AI-agent wallets",
-    "text": "The interesting DeAI idea is a dedicated on-chain namespace and marketplace for agent identities (.agent names, metadata URIs, staking discounts), not just a raw pubkey. This lab run proves the once-only initialize foundation.",
-    "refs": [
-      [
-        "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194",
-        "register_name"
-      ]
-    ],
-    "more": "register_name, staking and the marketplace were not sent in this run."
+   ],
+   "steps": [
+    "Admin-signed, once-only. Rejects registration_period <= 0 or grace_period < 0.",
+    "Writes the config PDA."
+   ]
   },
-  "frontend": [
-    {
-      "title": "Generic IDL console",
-      "refs": [
-        [
-          "/dapps/naim/",
-          "Hosted app"
-        ]
-      ],
-      "steps": [
-        "Connect a devnet wallet.",
-        "initialize is already confirmed; fetch config.",
-        "Later name instructions need a $NAIM mint."
-      ]
-    }
+  {
+   "name": "register_name",
+   "refs": [
+    [
+     "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194",
+     "lib.rs L122-L194"
+    ]
+   ],
+   "steps": [
+    "Validates the name and that name_hash is sha256(name), collects a $NAIM fee, and writes the name and reputation PDAs.",
+    "Not exercised in this run (needs init_token_config)."
+   ]
+  }
+ ],
+ "innovation": {
+  "title": "A human-readable .agent name layer for AI-agent wallets",
+  "text": "The interesting DeAI idea is a dedicated on-chain namespace and marketplace for agent identities (.agent names, metadata URIs, staking discounts), not just a raw pubkey. This lab run proves the once-only initialize foundation.",
+  "refs": [
+   [
+    "https://github.com/Blockchains/naim-program/blob/b8ab06436ad2cd39a186581805d55d74771f70af/programs/naim/src/lib.rs#L122-L194",
+    "register_name"
+   ]
   ],
-  "exercises": [
-    {
-      "title": "Derive the config PDA",
-      "steps": [
-        "Seeds [\"config\"] and program id 3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3."
-      ],
-      "expect": "It matches 3Ay28CirUWU6PNj1mRurZh6a2tPW7ccRpJvvaD7nwDze.",
-      "hint": "A single constant seed.",
-      "approach": "PublicKey.findProgramAddressSync."
-    },
-    {
-      "title": "Why is registration_period=0 rejected?",
-      "steps": [
-        "Read the require! at the start of initialize."
-      ],
-      "expect": "InvalidConfig when registration_period is not > 0.",
-      "hint": "lib.rs L39.",
-      "approach": "Read the initialize handler."
-    },
-    {
-      "title": "What else is needed before register_name?",
-      "steps": [
-        "Look at RegisterName accounts and collect_fee."
-      ],
-      "expect": "init_token_config must exist, plus a $NAIM mint and the payer/treasury/stakers ATAs.",
-      "hint": "register_name calls collect_fee on token accounts.",
-      "approach": "Read L122-L194 and InitTokenConfig."
-    }
-  ],
-  "not_covered": "Staking, renew, and the list/buy marketplace were not exercised. The registered name is unverified.",
-  "path_order": 24,
-  "path_stage": 2,
-  "difficulty": "Intermediate",
-  "time": "30 min",
-  "objectives": [
-    "Explain what initialize writes to the config PDA.",
-    "Derive that PDA from the documented seeds.",
-    "State why register_name cannot run until init_token_config exists."
-  ],
-  "prereqs": [
-    "A wallet on devnet with a little SOL.",
-    "Comfort with PDAs and Anchor init constraints."
-  ],
-  "concepts": [
-    "pda",
-    "anchor",
-    "ai-agent-identity",
-    "name-service"
-  ],
-  "build": {
-    "dir": "programs/naim",
-    "anchor": "0.32.1",
-    "test": "tests/devnet/naim.mjs",
-    "note": "Program id on this lab deployment is 3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3."
+  "more": "register_name, staking and the marketplace were not sent in this run."
+ },
+ "frontend": [
+  {
+   "title": "Generic IDL console",
+   "refs": [
+    [
+     "/dapps/naim/",
+     "Hosted app"
+    ]
+   ],
+   "steps": [
+    "Connect a devnet wallet.",
+    "initialize is already confirmed; fetch config.",
+    "Later name instructions need a $NAIM mint."
+   ]
+  }
+ ],
+ "exercises": [
+  {
+   "title": "Derive the config PDA",
+   "steps": [
+    "Seeds [\"config\"] and program id 3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3."
+   ],
+   "expect": "It matches 3Ay28CirUWU6PNj1mRurZh6a2tPW7ccRpJvvaD7nwDze.",
+   "hint": "A single constant seed.",
+   "approach": "PublicKey.findProgramAddressSync."
   },
-  "functional": "full"
+  {
+   "title": "Why is registration_period=0 rejected?",
+   "steps": [
+    "Read the require! at the start of initialize."
+   ],
+   "expect": "InvalidConfig when registration_period is not > 0.",
+   "hint": "lib.rs L39.",
+   "approach": "Read the initialize handler."
+  },
+  {
+   "title": "What else is needed before register_name?",
+   "steps": [
+    "Look at RegisterName accounts and collect_fee."
+   ],
+   "expect": "init_token_config must exist, plus a $NAIM mint and the payer/treasury/stakers ATAs.",
+   "hint": "register_name calls collect_fee on token accounts.",
+   "approach": "Read L122-L194 and InitTokenConfig."
+  }
+ ],
+ "not_covered": "Staking, renew, and the list/buy marketplace were not exercised. The registered name is unverified.",
+ "path_order": 13,
+ "path_stage": 2,
+ "difficulty": "Intermediate",
+ "time": "30 min",
+ "objectives": [
+  "Explain what initialize writes to the config PDA.",
+  "Derive that PDA from the documented seeds.",
+  "State why register_name cannot run until init_token_config exists."
+ ],
+ "prereqs": [
+  "A wallet on devnet with a little SOL.",
+  "Comfort with PDAs and Anchor init constraints."
+ ],
+ "concepts": [
+  "pda",
+  "anchor",
+  "ai-agent-identity",
+  "name-service"
+ ],
+ "build": {
+  "dir": "programs/naim",
+  "anchor": "0.32.1",
+  "test": "tests/devnet/naim.mjs",
+  "note": "Program id on this lab deployment is 3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3."
+ },
+ "functional": "full"
 }

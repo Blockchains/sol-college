@@ -1,36 +1,39 @@
 {
-  "title": "Veedor Settlement",
-  "summary": "Lock SPL tokens in a job escrow, submit evidence, and release them only when a verifier signs the canonical attestation message (checked via the Ed25519 precompile).",
-  "what": "Veedor is a thin Anchor 0.32.1 shell over a no_std settlement state machine. create_job writes a PDA (seeds [\"job\", job_id]) and its escrow ATA. fund moves job.amount into that ATA. submit_evidence, signed by the recorded provider, starts the review window. release requires the immediately preceding instruction to be a genuine Ed25519SigVerify over attestation_message(job_id, spec_hash, evidence_hash, verdict), signed by job.verifier. A Pass verdict pays the provider; a Fail refunds the buyer.",
-  "app_note": "The page at /dapps/veedor/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/veedor. The lab only changed declare_id to a unique lab program. The hosted IDL is hand-derived; discriminators were confirmed by the verifying transactions.",
-  "try_steps": [
-    {
-      "do": "Open /dapps/veedor/, switch to Devnet, and connect a wallet. The lab already ran create_job, fund, submit_evidence and an attested release for job_id veedor-lab-job-1 (1_000_000 units of the lab mint).",
-      "see": "Program 8tfDUS6a\u2026. Job 3kxikPVi\u2026 should be Released; the provider ATA received 1_000_000 and the escrow ATA ended at 0.",
-      "ran": "create_job 3gqyMx9GnDWBTKRFNVp7MZ21MNLXvLjcdHZ5h6haT4ibEFyKg5Lt9geh6DTLhLuakuLHXaemx43PqJLZLq5BCnBY; fund 5EtS5NtvoG8UuHAHSMHcqoYwf2TQR3fxBdumPhVDUnWr5dER8HmTufYuMC3FP2BH2qx8ay8HZC9v8pFRFvsBBmKG; submit_evidence 4xiB1hha4XPKTsJB7brUirPXe812MZYuGsZMPeHs7LQzDkTSN9wbdNKL3JyK5z5ECMiahXHbUkJf7XB6HvncapHH; release zV2Zmb8JL4VDVkr2tgq9L2GyCK7mKmcW4fw377inv8AvEjvAZ2F2YR6KdzsxRZsS1AtofGvFospRJN4MsmsdoN8"
-    }
-  ],
-  "diagram": "buyer --create_job/fund--> job PDA + escrow ATA; provider --submit_evidence--> UnderReview; verifier Ed25519 attestation --release--> provider ATA (Pass) or buyer ATA (Fail).",
-  "accounts": [
-    "job PDA seeds [\"job\", job_id]",
-    "escrow ATA (authority = job PDA)",
-    "instructions sysvar (Ed25519 adjacency check)"
-  ],
-  "instructions": [
-    "create_job",
-    "fund",
-    "submit_evidence",
-    "release",
-    "dispute / resolve / crank_timeout (not exercised in this lesson)"
-  ],
-  "innovation": "Authorization for release is signature-based, not a tx signer: the Ed25519 precompile verifies the canonical 130-byte message (domain agentic-settlement/attestation/v1 || job_id || spec_hash || evidence_hash || verdict tag), and the program only checks that the previous instruction verified exactly that (pubkey, message, signature) triple for job.verifier.",
-  "frontend": "Generic IDL console at /dapps/veedor/. Building a release transaction requires a preceding Ed25519Program.createInstructionWithPublicKey; the generic console may need a custom pre-instruction for that step.",
-  "exercises": [
-    "Reconstruct the 130-byte attestation message and confirm a Pass tag is 1, not the Anchor enum discriminant 0.",
-    "Send release without the precompile and confirm MissingEd25519Instruction."
-  ],
-  "not_covered": [
-    "dispute, arbiter resolve, and crank_timeout",
-    "The x402 gateway and MCP services in the upstream repo"
-  ]
+ "title": "Veedor Settlement",
+ "summary": "Lock SPL tokens in a job escrow, submit evidence, and release them only when a verifier signs the canonical attestation message (checked via the Ed25519 precompile).",
+ "what": "Veedor is a thin Anchor 0.32.1 shell over a no_std settlement state machine. create_job writes a PDA (seeds [\"job\", job_id]) and its escrow ATA. fund moves job.amount into that ATA. submit_evidence, signed by the recorded provider, starts the review window. release requires the immediately preceding instruction to be a genuine Ed25519SigVerify over attestation_message(job_id, spec_hash, evidence_hash, verdict), signed by job.verifier. A Pass verdict pays the provider; a Fail refunds the buyer.",
+ "app_note": "The page at /dapps/veedor/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/veedor. The lab only changed declare_id to a unique lab program. The hosted IDL is hand-derived; discriminators were confirmed by the verifying transactions.",
+ "try_steps": [
+  {
+   "do": "Open /dapps/veedor/, switch to Devnet, and connect a wallet. The lab already ran create_job, fund, submit_evidence and an attested release for job_id veedor-lab-job-1 (1_000_000 units of the lab mint).",
+   "see": "Program 8tfDUS6a…. Job 3kxikPVi… should be Released; the provider ATA received 1_000_000 and the escrow ATA ended at 0.",
+   "ran": "create_job 3gqyMx9GnDWBTKRFNVp7MZ21MNLXvLjcdHZ5h6haT4ibEFyKg5Lt9geh6DTLhLuakuLHXaemx43PqJLZLq5BCnBY; fund 5EtS5NtvoG8UuHAHSMHcqoYwf2TQR3fxBdumPhVDUnWr5dER8HmTufYuMC3FP2BH2qx8ay8HZC9v8pFRFvsBBmKG; submit_evidence 4xiB1hha4XPKTsJB7brUirPXe812MZYuGsZMPeHs7LQzDkTSN9wbdNKL3JyK5z5ECMiahXHbUkJf7XB6HvncapHH; release zV2Zmb8JL4VDVkr2tgq9L2GyCK7mKmcW4fw377inv8AvEjvAZ2F2YR6KdzsxRZsS1AtofGvFospRJN4MsmsdoN8"
+  }
+ ],
+ "diagram": "buyer --create_job/fund--> job PDA + escrow ATA; provider --submit_evidence--> UnderReview; verifier Ed25519 attestation --release--> provider ATA (Pass) or buyer ATA (Fail).",
+ "accounts": [
+  "job PDA seeds [\"job\", job_id]",
+  "escrow ATA (authority = job PDA)",
+  "instructions sysvar (Ed25519 adjacency check)"
+ ],
+ "instructions": [
+  "create_job",
+  "fund",
+  "submit_evidence",
+  "release",
+  "dispute / resolve / crank_timeout (not exercised in this lesson)"
+ ],
+ "innovation": "Authorization for release is signature-based, not a tx signer: the Ed25519 precompile verifies the canonical 130-byte message (domain agentic-settlement/attestation/v1 || job_id || spec_hash || evidence_hash || verdict tag), and the program only checks that the previous instruction verified exactly that (pubkey, message, signature) triple for job.verifier.",
+ "frontend": "Generic IDL console at /dapps/veedor/. Building a release transaction requires a preceding Ed25519Program.createInstructionWithPublicKey; the generic console may need a custom pre-instruction for that step.",
+ "exercises": [
+  "Reconstruct the 130-byte attestation message and confirm a Pass tag is 1, not the Anchor enum discriminant 0.",
+  "Send release without the precompile and confirm MissingEd25519Instruction."
+ ],
+ "not_covered": [
+  "dispute, arbiter resolve, and crank_timeout",
+  "The x402 gateway and MCP services in the upstream repo"
+ ],
+ "difficulty": "Intermediate",
+ "time": "25 min",
+ "functional": "full"
 }

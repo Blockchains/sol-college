@@ -364,8 +364,8 @@
   }
  ],
  "not_covered": "Buy, create, vote and finalize were clicked through in the app; a passing proposal (2 voters) and every rejection case were run by script. Register Voter wasn't clicked (our wallet was already a voter). Not exercised: quadratic voting, retract, delegate (it can't succeed, see Exercise 5), cancel, withdraw and rewards; none of the token or SOL transfers exist in the program. The voting period (150 s), timelock (0) and quorum (2) were set by script; the app has no screen for update_config.",
- "path_order": 7,
- "path_stage": 2,
+ "path_order": null,
+ "path_stage": null,
  "difficulty": "Intermediate",
  "time": "45 min",
  "objectives": [
@@ -396,5 +396,5 @@
   "test": "anchor test",
   "note": "The program is in `votara/`. Anchor 0.32.1 matches `Cargo.toml`."
  },
- "functional": "full"
+ "functional": "partial"
 }
