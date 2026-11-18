@@ -1,0 +1,59 @@
+"""Picassol assessment rubric + resume-safety wiring."""
+from __future__ import annotations
+import json
+import os
+import tempfile
+import unittest
+from pathlib import Path
+
+import learning_layer as ll
+
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+class LabAssessment(unittest.TestCase):
+    def test_assessment_html_has_criteria_and_gates(self):
+        L = json.loads((ROOT / 'dapps/lessons/picassol-hackathon.json').read_text())
+        html = ll.assessment_html(L, 'picassol-hackathon')
+        self.assertIn('Assessment rubric', html)
+        self.assertIn('Criterion 1', html)
+        self.assertIn('Mandatory honesty gates', html)
+        self.assertIn('Observation ≠ practical mastery', html)
+        self.assertIn('/lessons/picassol-hackathon/', html)
+
+    def test_workspace_embeds_content_version_and_rubric_link(self):
+        L = json.loads((ROOT / 'dapps/lessons/picassol-hackathon.json').read_text())
+        html = ll.workspace_html(
+            L['learning_loop'],
+            '/dapps/picassol-hackathon/',
+            [['create', 'abc']],
+            content_version='2026-11-18.1',
+            assess_href='/lessons/picassol-hackathon/assessment/',
+        )
+        self.assertIn('data-content-version="2026-11-18.1"', html)
+        self.assertIn('/lessons/picassol-hackathon/assessment/', html)
+        self.assertIn('lab-version-banner', html)
+        self.assertIn('Live practical (my wallet)', html)
+        self.assertIn('ev-route-tag', html)
+        self.assertIn('attempt-sig', html)
+        self.assertIn('inspect-stale', html)
+
+    def test_lesson_js_restores_predict_lock_and_version(self):
+        js = (ROOT / 'scripts/lesson.js').read_text()
+        self.assertIn('data-content-version', js)
+        self.assertIn('showPredictLockedUi', js)
+        self.assertIn('lab-version-banner', js)
+        self.assertIn('content_version', js)
+        self.assertIn('observedAt', js)
+        self.assertIn('routeTag', js)
+        self.assertIn('My attempt (live)', js)
+
+    def test_picassol_has_assessment_block(self):
+        L = json.loads((ROOT / 'dapps/lessons/picassol-hackathon.json').read_text())
+        self.assertIn('assessment', L)
+        self.assertTrue(L['assessment'].get('purpose'))
+
+
+if __name__ == '__main__':
+    unittest.main()

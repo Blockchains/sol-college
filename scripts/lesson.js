@@ -214,8 +214,10 @@
     var workspace = document.getElementById('workspace');
     if (workspace && slug) {
       var loops = load(LOOP) || {};
+      var pageVersion = workspace.getAttribute('data-content-version') || '';
       var state = loops[slug] || {
         version: 1,
+        content_version: pageVersion,
         mode: '',
         step: 'prepare',
         predict: '',
@@ -224,13 +226,24 @@
         route: '',
         explain: '',
         outcome: '',
+        observedAt: '',
         marked: {},
         visited: ['prepare']
       };
 
+      function routeTag(route) {
+        return ({
+          observe: 'Captured / observation',
+          live: 'My attempt (live)',
+          local: 'Local test',
+          guided: 'Guided investigation'
+        })[route] || 'Unspecified';
+      }
+
       function persist() {
         state.href = location.pathname;
         state.at = Date.now();
+        if (pageVersion) state.content_version = pageVersion;
         loops[slug] = state;
         save(LOOP, loops);
         var saveEl = document.getElementById('lab-save');
@@ -242,10 +255,31 @@
         var pred = document.getElementById('ev-predict');
         var route = document.getElementById('ev-route');
         var out = document.getElementById('ev-outcome');
+        var sig = document.getElementById('ev-sig');
+        var observed = document.getElementById('ev-observed');
+        var tag = document.getElementById('ev-route-tag');
         if (mode) mode.textContent = state.mode || 'Not chosen';
         if (pred) pred.textContent = state.predict || '—';
         if (route) route.textContent = state.route || '—';
         if (out) out.textContent = state.outcome || '—';
+        if (sig) sig.textContent = (state.inspect && state.inspect.sig) || '—';
+        if (observed) observed.textContent = state.observedAt || '—';
+        if (tag) tag.textContent = routeTag(state.route);
+      }
+
+      function showPredictLockedUi() {
+        var fb = document.getElementById('predict-feedback');
+        var why = document.getElementById('predict-why');
+        var cont = document.getElementById('predict-continue');
+        var answer = workspace.getAttribute('data-predict-answer') || '';
+        if (fb) {
+          fb.hidden = false;
+          fb.textContent = state.predict === answer
+            ? 'Your prediction matches the intended outcome. Continue to Act.'
+            : 'Interesting choice. Compare it with the intended path, then continue — a wrong prediction is still useful learning.';
+        }
+        if (why) why.hidden = false;
+        if (cont) cont.hidden = false;
       }
 
       function showStep(name) {
@@ -255,7 +289,9 @@
           p.hidden = p.getAttribute('data-panel') !== name;
         });
         workspace.querySelectorAll('[data-loop-step]').forEach(function (b) {
-          b.classList.toggle('is-current', b.getAttribute('data-loop-step') === name);
+          var stepName = b.getAttribute('data-loop-step');
+          b.classList.toggle('is-current', stepName === name);
+          if (state.visited.indexOf(stepName) >= 0) b.classList.add('is-visited');
         });
         persist();
       }
@@ -328,6 +364,9 @@
             state.inspect = insp;
             var er = document.getElementById('evidence-route');
             if (er) state.route = er.value;
+            state.observedAt = new Date().toISOString();
+            var stale = document.getElementById('inspect-stale');
+            if (stale) stale.hidden = true;
           }
           if (which === 'explain') {
             var ta = document.getElementById('loop-explain');
@@ -344,6 +383,40 @@
       });
 
       // restore
+      if (pageVersion && state.content_version && state.content_version !== pageVersion) {
+        var banner = document.getElementById('lab-version-banner');
+        if (banner) {
+          banner.hidden = false;
+          banner.innerHTML = '<p style="margin:0 0 8px">This lesson content changed since your last visit (saved <code>' +
+            esc(state.content_version) + '</code>, now <code>' + esc(pageVersion) +
+            '</code>). Historical evidence is kept; re-check predictions and observations before treating them as current.</p>' +
+            '<button type="button" class="btn ghost" id="lab-version-keep">Keep saved progress</button> ' +
+            '<button type="button" class="btn" id="lab-version-reset">Reset loop answers</button>';
+          var keep = document.getElementById('lab-version-keep');
+          var reset = document.getElementById('lab-version-reset');
+          if (keep) keep.addEventListener('click', function () {
+            state.content_version = pageVersion;
+            persist();
+            banner.hidden = true;
+          });
+          if (reset) reset.addEventListener('click', function () {
+            state.predict = '';
+            state.predictLocked = false;
+            state.inspect = {};
+            state.route = '';
+            state.explain = '';
+            state.outcome = '';
+            state.observedAt = '';
+            state.marked = {};
+            state.content_version = pageVersion;
+            state.step = 'prepare';
+            persist();
+            location.reload();
+          });
+        }
+      } else if (pageVersion && !state.content_version) {
+        state.content_version = pageVersion;
+      }
       if (state.mode) {
         var st0 = document.getElementById('preflight-status');
         if (st0) st0.textContent = 'Restored mode: ' + state.mode;
@@ -354,6 +427,7 @@
         var radio = workspace.querySelector('input[name="loop-predict"][value="' + state.predict + '"]');
         if (radio) radio.checked = true;
       }
+      if (state.predictLocked) showPredictLockedUi();
       Object.keys(state.inspect || {}).forEach(function (k) {
         var inp = workspace.querySelector('[data-inspect="' + k + '"]');
         if (inp) inp.value = state.inspect[k];
@@ -364,6 +438,15 @@
       if (ta0 && state.explain) ta0.value = state.explain;
       var oc0 = document.getElementById('loop-outcome');
       if (oc0 && state.outcome) oc0.value = state.outcome;
+      if (state.observedAt) {
+        var staleNote = document.getElementById('inspect-stale');
+        if (staleNote) staleNote.hidden = false;
+      }
+      workspace.querySelectorAll('[data-loop-step]').forEach(function (b) {
+        var name = b.getAttribute('data-loop-step');
+        if (state.visited && state.visited.indexOf(name) >= 0) b.classList.add('is-visited');
+        if (state.marked && state.marked[name]) b.classList.add('is-marked');
+      });
       showStep(state.step || 'prepare');
     }
 

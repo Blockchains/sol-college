@@ -31,8 +31,9 @@ Legend: `done` · `partial` · `todo`
 | Lesson preview / contract | partial | Picassol learning_loop |
 | Preflight | done (Picassol) | observation + practical |
 | Predict → Act → Inspect → Explain | done (Picassol) | workspace |
-| Independent assessment | todo | Rubric pages exist; workflow incomplete |
-| Saved outcome + resume | partial | localStorage last/loop |
+| Independent assessment | done (Picassol) | `/lessons/picassol-hackathon/assessment/` |
+| Saved outcome + resume | partial | content_version + predict lock restore; pending-tx still open |
+| Evidence provenance tags | done (Picassol) | route tag + optional signature + stale note |
 | Failure routes observed with learners | todo | — |
 
 ## Later releases

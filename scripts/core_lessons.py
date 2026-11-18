@@ -224,12 +224,16 @@ def render(x,L,n):
   stg=stage_of(L)
   nav=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <a href="/lessons/path/">Path</a> / <span>{E(L["title"])}</span></nav>'
   sections=[]
+  assess_href=f'/lessons/{sl}/assessment/' if (L.get('learning_loop') or L.get('assessment')) else ''
   if L.get('learning_loop'):
     sections+=[('preflight','Preflight'),('workspace','Workspace'),('stuck','Stuck')]
   if L.get('objectives') or L.get('prereqs') or L.get('concepts'): sections.append(('goals','What you will practise'))
-  sections+=[('try','Guided lesson'),('how','Explanation'),('proof','Evidence'),('exercises','Assessment')]
+  sections+=[('try','Guided lesson'),('how','Explanation'),('proof','Evidence'),('exercises','Exercises')]
   if L.get('build'): sections.append(('build','Build lab'))
-  rail='<nav class=rail aria-label="On this page">'+''.join(f'<a href="#{i}">{E(name)}</a>' for i,name in sections)+'</nav>'
+  rail_links=''.join(f'<a href="#{i}">{E(name)}</a>' for i,name in sections)
+  if assess_href:
+    rail_links+=f'<a href="{E(assess_href)}">Rubric</a>'
+  rail='<nav class=rail aria-label="On this page">'+rail_links+'</nav>'
   h=[CSS,'<div class=readbar aria-hidden=true><span></span></div>',f'<article class=lesson data-slug="{E(sl)}">','<div class=lesson-layout><div class=lesson-main>',nav]
   eyebrow=READY_LABEL[ready]+' · live on Solana devnet'
   # Path position only for lessons inside numbered stages 1–3. Catalogue extras must not look like path steps.
@@ -266,12 +270,14 @@ def render(x,L,n):
     ('#proof','Evidence'),
   ]
   if L.get('build'): layer_bits.append(('#build','Build laboratory'))
-  layer_bits.append(('#exercises','Assessment'))
+  layer_bits.append(('#exercises','Exercises'))
+  if assess_href:
+    layer_bits.append((assess_href,'Assessment rubric'))
   h.append(
     '<nav class=layers aria-label="Lesson layers">'
     +''.join(f'<a href="{href}">{E(label)}</a>' for href,label in layer_bits)
     +'</nav>'
-    '<p class=note>Start with <b>Try it</b>. Technical explanation, evidence, build steps, and exercises are linked layers — you do not need to absorb them all at once.</p>'
+    '<p class=note>Start with <b>Try it</b> or the workspace. Technical explanation, evidence, build steps, and exercises are linked layers — you do not need to absorb them all at once. The assessment rubric is separate from exercise ticks.</p>'
   )
   dock=f'<div class=dock role=region aria-label="Lesson actions"><a class=btn href="{E(x["app"])}">Open the app</a><button type=button class="btn ghost" data-jump>Next section</button>'
   # next lesson is filled in after seq is known; placeholder replaced below
@@ -296,7 +302,11 @@ def render(x,L,n):
     h.append(_ll.preflight_html(x['app'], L.get('student_outcome') or L.get('title') or 'this lab'))
     h.append(_ll.environment_panel_html(x.get('verified') or '', x.get('ui_check') or ''))
     sigs = list(x.get('steps') or [])
-    h.append(_ll.workspace_html(L['learning_loop'], x['app'], sigs))
+    h.append(_ll.workspace_html(
+      L['learning_loop'], x['app'], sigs,
+      content_version=str(L.get('content_version') or ''),
+      assess_href=assess_href,
+    ))
     h.append(_ll.stuck_html())
     h.append('<p class=note id=reference-layers>Reference layers below stay available. The workspace above is the focused student path.</p>')
   h.append(f'<h2 id=what><span class=num>1</span>What the app does</h2><p>{md(L["what"])}</p>')
@@ -411,7 +421,8 @@ def page(main,title,desc,path):
   for a in ('name=description','property=og:description','name=twitter:description'): t=re.sub(f'(<meta {a} content=")[^"]*',lambda m:m.group(1)+E(desc),t,count=1)
   for a in ('property=og:title','name=twitter:title'): t=re.sub(f'(<meta {a} content=")[^"]*',lambda m:m.group(1)+E(title),t,count=1)
   return t
-n=len(LIVE); cards=[]
+n=len(LIVE); cards=[]; LAB_ASSESS_PATHS=[]
+import learning_layer as _ll_write
 for x in PATH_LIVE:
   L=lesson_of(x); sl=x['slug']; body=render(x,L,n)
   raw=' '.join(str(L.get('summary') or L['what']).split())
@@ -419,6 +430,13 @@ for x in PATH_LIVE:
   pg=page(body,f'{L["title"]}: step-by-step Solana lesson, live on devnet | Sol.College',desc,f'/lessons/{sl}/')
   os.makedirs(f'{S}/lessons/{sl}',exist_ok=True); open(f'{S}/lessons/{sl}/index.html','w').write(pg)
   os.makedirs(f'{S}/explore/{sl}',exist_ok=True); open(f'{S}/explore/{sl}/index.html','w').write(pg)
+  if L.get('learning_loop') or L.get('assessment'):
+    assess_body=CSS+_ll_write.assessment_html(L,sl)
+    assess_desc=(f'Assessment rubric for {L.get("title") or sl}: independent criteria, honesty gates, and completion decisions.')
+    if len(assess_desc)>158: assess_desc=assess_desc[:157].rsplit(' ',1)[0]+'…'
+    ap=page(assess_body,f'{L["title"]}: assessment rubric | Sol.College',assess_desc,f'/lessons/{sl}/assessment/')
+    os.makedirs(f'{S}/lessons/{sl}/assessment',exist_ok=True); open(f'{S}/lessons/{sl}/assessment/index.html','w').write(ap)
+    LAB_ASSESS_PATHS.append(f'/lessons/{sl}/assessment/')
   ready=readiness(x)
   diff=canon_diff(L.get('difficulty') or '')
   task=L.get('student_outcome') or (L.get('objectives') or [None])[0] or L.get('summary') or L.get('what') or L['title']
@@ -820,7 +838,7 @@ for fp in glob.glob(f'{S}/**/*.html',recursive=True):
   if t!=o: open(fp,'w').write(t)
 sm=f'{S}/sitemap.xml'
 if os.path.exists(sm):
-  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+GUIDE_PATHS+ARTICLE_PATHS+JOURNAL_PATHS+LIBRARY_PATHS+STANDARD_PATHS+EVENT_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
+  t=open(sm).read(); add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/lessons/','/lessons/path/','/lessons/glossary/','/lessons/guide/']+[f'/lessons/{x["slug"]}/' for x in LIVE]+LAB_ASSESS_PATHS+GUIDE_PATHS+ARTICLE_PATHS+JOURNAL_PATHS+LIBRARY_PATHS+STANDARD_PATHS+EVENT_PATHS if f'<loc>{SITE}{p}</loc>' not in t)
   if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 json.dump(CACHE,open(CACHE_F,'w'),indent=0)
 print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'full'),functional_of(x)) for x in PATH_LIVE])

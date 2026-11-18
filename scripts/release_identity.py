@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-b',
+    'title': 'Release B — Picassol assessment and safer resume',
+    'summary': (
+      'Independent Picassol assessment rubric, content-version resume safety, '
+      'restored prediction lock UI, and clearer evidence provenance tags.'
+    ),
+    'changes': [
+      'Picassol ships /lessons/picassol-hackathon/assessment/ with criteria and honesty gates.',
+      'Workspace stores content_version and warns when lesson content changes.',
+      'Evidence drawer tags attempt route; optional public signature field; stale observation note on resume.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-a2',
     'title': 'Release A.2 — schema audit, update notice, Picassol honesty',
     'summary': (
