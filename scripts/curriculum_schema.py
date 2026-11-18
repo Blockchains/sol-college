@@ -96,6 +96,60 @@ def normalize_record(live_row: dict, lesson: dict) -> dict[str, Any]:
   }
 
 
+def load_foundations_catalog(root: Path) -> list[dict[str, Any]]:
+  fp = root / 'dapps' / 'foundations' / 'catalog.json'
+  if not fp.is_file():
+    return []
+  try:
+    data = json.loads(fp.read_text(encoding='utf-8'))
+  except Exception:
+    return []
+  return list(data.get('lessons') or [])
+
+
+def normalize_foundation(row: dict[str, Any]) -> dict[str, Any]:
+  """Schema row for foundations (not live.json apps)."""
+  missing_required = []
+  missing_recommended = []
+  for key in ('title', 'student_outcome', 'content_version', 'objectives', 'prereqs'):
+    val = row.get(key)
+    if val is None or val == '' or val == []:
+      missing_required.append(key)
+  for key in ('content_review', 'content_owner', 'delivery', 'verification_status'):
+    val = row.get(key)
+    if val is None or val == '' or val == []:
+      missing_recommended.append(key)
+  status = 'ok'
+  if missing_required:
+    status = 'missing_required'
+  elif missing_recommended:
+    status = 'missing_recommended'
+  return {
+    'id': row.get('id') or '',
+    'title': row.get('title') or row.get('id') or '',
+    'resource_type': row.get('resource_type') or 'lesson',
+    'track': 'foundations',
+    'path_stage': 0,
+    'path_order': row.get('number'),
+    'time': row.get('time') or '',
+    'difficulty': row.get('difficulty') or '',
+    'student_outcome': row.get('student_outcome') or '',
+    'content_version': row.get('content_version') or '',
+    'content_review': row.get('content_review') or '',
+    'content_owner': row.get('content_owner') or '',
+    'prereqs': row.get('prereqs') or [],
+    'objectives': row.get('objectives') or [],
+    'verified': row.get('verification_status') or 'release_candidate',
+    'functional': 'foundations_rc',
+    'ui_check': '',
+    'schema_status': status,
+    'missing_required': missing_required,
+    'missing_recommended': missing_recommended,
+    'assessment_available': bool(row.get('assessment_available')),
+    'has_learning_loop': bool(row.get('learning_loop')),
+  }
+
+
 def audit_inventory(root: str | Path = '.') -> dict[str, Any]:
   root = Path(root)
   live = json.loads((root / 'dapps' / 'live.json').read_text(encoding='utf-8'))
@@ -110,13 +164,19 @@ def audit_inventory(root: str | Path = '.') -> dict[str, Any]:
       missing_required_total += 1
     if rec['missing_recommended']:
       missing_recommended_total += 1
+  foundations = [normalize_foundation(r) for r in load_foundations_catalog(root)]
+  foundations_missing_required = sum(1 for r in foundations if r['missing_required'])
   return {
     'lessons': records,
+    'foundations': foundations,
     'summary': {
       'live_apps': len(live),
       'missing_required_lessons': missing_required_total,
       'missing_recommended_lessons': missing_recommended_total,
       'ok_lessons': sum(1 for r in records if r['schema_status'] == 'ok'),
+      'foundations': len(foundations),
+      'foundations_missing_required': foundations_missing_required,
+      'foundations_with_learning_loop': sum(1 for r in foundations if r.get('has_learning_loop')),
     },
   }
 

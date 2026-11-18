@@ -34,6 +34,32 @@ STATUS_ROWS = [
 ]
 
 
+def _foundations_workspace_html() -> str:
+  """Shared learning-loop workspace for Lesson 001 from the foundations catalog."""
+  try:
+    import learning_layer as ll
+    root = os.path.join(os.path.dirname(__file__), '..')
+    catalog = json.loads(open(os.path.join(root, 'dapps/foundations/catalog.json'), encoding='utf-8').read())
+    row = next((x for x in catalog.get('lessons') or [] if x.get('id') == SLUG), None)
+    loop = (row or {}).get('learning_loop') or {}
+    if not loop:
+      return ''
+    return ll.workspace_html(
+      loop,
+      PATH + '#review',
+      content_version=(row or {}).get('content_version') or '',
+      assess_href=ASSESS_PATH,
+      eyebrow='Foundations workspace · release candidate',
+      prepare_note=(
+        'Read the environment and safety notes below. Prefer Devnet. '
+        'Choose observation or the practical transfer route. Then continue to Predict.'
+      ),
+      act_cta_label='Jump to review and act',
+    )
+  except Exception:
+    return ''
+
+
 def status_panel():
   body = ''.join(f'<dt>{E(k)}</dt><dd>{E(v)}</dd>' for k, v in STATUS_ROWS)
   return (
@@ -309,13 +335,14 @@ This record does not establish ______.</pre>
 '''
   rail = (
     '<nav class=rail aria-label="On this page">'
-    '<a href="#promise">Scope</a><a href="#outcomes">Outcomes</a><a href="#environment">Environment</a>'
+    '<a href="#workspace">Workspace</a><a href="#promise">Scope</a><a href="#outcomes">Outcomes</a><a href="#environment">Environment</a>'
     '<a href="#sequence">Sequence</a><a href="#five-checks">Five checks</a><a href="#example">Example</a>'
     '<a href="#predict">Predict</a><a href="#review">Review</a><a href="#verify">Verify</a>'
     '<a href="#accounting">Accounting</a><a href="#explain">Explain</a><a href="#challenge">Challenge</a>'
     '<a href="#scenarios">Scenarios</a><a href="#assessment">Assessment</a><a href="#recovery">Recovery</a>'
     '<a href="#gates">Release gates</a><a href="#next">Next</a></nav>'
   )
+  workspace = _foundations_workspace_html()
   return f'''{css}<div class=readbar aria-hidden=true><span></span></div>
 <article class=lesson data-slug="{SLUG}">
 <div class=lesson-layout><div class=lesson-main>
@@ -323,6 +350,7 @@ This record does not establish ______.</pre>
 <p class="eyebrow status-preview">Foundations · Lesson 001 · release candidate</p>
 <h1>Your First Solana Transaction</h1>
 <p class=lead>Know what you approve. Prove what happened.</p>
+{workspace}
 {body}
 </div>{rail}</div>
 <div class=dock role=region aria-label="Lesson actions">
