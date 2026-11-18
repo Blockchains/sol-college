@@ -70,6 +70,33 @@ PROTOCOLS = [
   outputs=['A study protocol detailed enough to follow.', 'Lesson materials.', 'An assessment rubric.', 'Appropriately anonymised results.', 'Analysis code.', 'Threats to validity.'],
   contribution='Evidence about teaching, if the study is run. Completion rates are not that evidence.',
   ethics='No participant has been recruited. No consent form exists. No ethics review is recorded. The study does not start until those exist. This page is not that protocol.'),
+ dict(slug='finality-under-named-rules', n=7, section='Protocol and runtime',
+  title='Finality Under Named Rules',
+  subtitle='A documentary and observational protocol for Solana consensus claims',
+  question='When a public design file names a finality, resilience, or round rule, which of those claims can be checked as observations on a named cluster, and which remain only document sentences?',
+  why='White papers and SIMDs on the shelf (including Proof of History / Tower wording and Alpenglow versions) supply sentences readers repeat as network facts. A study is useful only if it separates the file’s sentence from a stored cluster observation.',
+  comparisons=['Documentary extraction from named shelf files (version pinned).', 'A named cluster and client versions (not chosen).', 'Commitment / vote / slot records the harness can store.', 'Claims that cannot be operationalised, recorded as non-operationalised.', 'Version drift: the same title at v1 vs v1.2 treated as different documents.'],
+  outputs=['A claim inventory with document anchors.', 'Operationalisation rules written before any run.', 'Observation tables where a claim was checkable.', 'A residual list of claims that stayed documentary.', 'Threats to validity for both the extraction and the observation arms.'],
+  contribution='A method for reading Solana consensus documents without laundering them into cluster measurements.',
+  ethics='No validator keys. No mainnet disruption. Devnet or a local validator is the intended setting if the observational arm is ever built. Unpublished attack detail does not belong in the journal record.'),
+ dict(slug='fee-and-rent-observation', n=8, section='Payments and applications',
+  title='Fee and Rent Observation',
+  subtitle='Walking balance changes against displayed costs on Solana workflows',
+  question='For a named workflow, which balance changes appear in the records that a displayed fee or rent figure leaves out?',
+  why='Shelf documents and product UIs name fees, rent, and compute charges. Users meet the sum of balance changes. The cost sketch is not enough: a protocol needs a fixed workflow and a column for every transfer.',
+  comparisons=['A declared workflow (not chosen).', 'Displayed fee or rent figure as the product states it.', 'Full balance-change set across accounts touched.', 'Failed attempts and account-creation transfers as separate lines.', 'Official fee sentences retrieved for the library, cited as documents only.'],
+  outputs=['Workflow definition.', 'Balance-change tables.', 'Omitted-cost inventory.', 'Exact program and client versions.', 'Limits of generalisation.'],
+  contribution='A reproducible cost audit method for Solana application workflows.',
+  ethics='Test assets only. No valuable mainnet funds. No human subjects.'),
+ dict(slug='upgrade-bytes-and-disclosure', n=9, section='Security and authority',
+  title='Upgrade Bytes and Disclosure',
+  subtitle='Comparing loader authorities with what a signer is told',
+  question='For named program deployments, does a user-reachable disclosure identify the upgrade authority the loader record names?',
+  why='An upgradeable program can change what a prior signature effectively authorised. Marketing “immutable” and loader authorities are different records. Core BPF and loader SIMDs on the shelf supply design language; they are not the observation.',
+  comparisons=['On-chain loader/authority reads (method fixed first).', 'User-reachable disclosures (site, docs, explorer text).', 'Programs labelled immutable vs upgradeable.', 'Mismatch cases counted separately from missing disclosures.', 'Documentary priors from upgrade SIMDs, cited as documents.'],
+  outputs=['A disclosure rubric.', 'Paired (chain, disclosure) records.', 'Mismatch rates on the chosen set.', 'Exact slot/versions.', 'What the set cannot support.'],
+  contribution='An evaluable method for upgrade-authority transparency claims.',
+  ethics='Public deployments only. No unpublished exploit detail. No social engineering of authority holders.'),
 ]
 SECTIONS = [
  ('Protocol and runtime', 'What behaviour follows from a particular execution rule or implementation?'),
@@ -128,6 +155,7 @@ def meta_line(prefix, question):
   return text
 def protocol_page(p):
   import journal_depth as depth
+  import journal_priors as priors
   extra = depth.DEPTH[p['slug']]
   comps = _lis(p['comparisons'])
   outs = _lis(p['outputs'])
@@ -151,8 +179,7 @@ def protocol_page(p):
 <p>{E(extra['illustration'])}</p>
 <h2>What a negative result would mean</h2>
 <p>{E(extra['negative'])}</p>
-<h2>Prior work</h2>
-<p>Not yet surveyed. A completed paper would name the work it uses and say what this study adds. This protocol does not invent that survey, and it does not cite a paper it has not read.</p>
+{priors.priors_html(E, p['slug'])}
 <h2>Hypotheses</h2>
 <p>Exploratory. No hypothesis is registered. If the study is run without a question fixed first, the write-up stays labelled as exploratory.</p>
 <h2>System, sample, and analysis</h2>
@@ -174,6 +201,7 @@ def protocol_page(p):
   html = shell('Protocol · Volume 1 · not started', title, E(p['subtitle']), body, [f'<span>{E(title)}</span>'])
   return p['slug'], title, desc, html
 def sketch_page(s):
+  import journal_priors as priors
   body = f'''{status_panel('Research sketch. Not a full protocol. Not a completed study.')}
 <p><b>This is a sketch.</b> It names the question, the terms, and the records a study would keep. It is not a protocol a team could run tomorrow: the sample, the environment, and the analysis are not specified. No observations have been collected.</p>
 <h2>Research question</h2>
@@ -195,6 +223,7 @@ def sketch_page(s):
 <li>Exclusion rules and a primary outcome written tightly enough to score.</li>
 <li>An ethics note where people or valuable assets would be involved. Several of these sketches must not recruit anyone until that note exists.</li>
 </ul>
+{priors.priors_html(E, s['slug'])}
 <p>It is not peer-reviewed research. A sketch that sounds specific is still a sketch.</p>
 <p><a href="/journal/programme/#sketches">Back to the programme</a> · <a href="/journal/methods/">How to read a protocol</a></p>'''
   title = s['title']
@@ -263,7 +292,7 @@ def call_page():
 <p>The Journal of Solana Studies invites original research into the reliability, security, performance, usability, and operation of Solana systems.</p>
 <p>We welcome empirical studies, reproducible systems papers, replication work, negative results, research artifacts, and critical reviews.</p>
 <p>Submissions should state a clear research question, explain their methods, distinguish observations from interpretation, and provide the materials necessary to evaluate their claims wherever that is ethically and technically possible.</p>
-<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, and developer education. Those six items are protocols on this site. Twelve further questions are sketches. A source-appraisal series reads documents the library already retrieved. None of them is a finding.</p>
+<p>The founding programme focuses on transaction-state handling, recovery and idempotency, authority boundaries, restricted fee sponsorship, token compatibility, developer education, consensus document claims, fee and rent observation, and upgrade-authority disclosure. Those nine items are protocols on this site. Further questions are sketches. A source-appraisal series reads documents the library already retrieved. None of them is a finding.</p>
 <p>The journal does not publish promotional investment material, unsupported performance claims, or work whose conclusion is fixed by a sponsor.</p>
 <p>Review status, conflicts, funding, artifact availability, and material limits will be disclosed for every publication. Today those disclosures are: not reviewed, no named author, no external funding, no artifacts, and no completed study.</p>
 </blockquote>
@@ -285,17 +314,17 @@ def programme_page():
     f'<a class=card href="/journal/sketches/{E(s["slug"])}/"><p class=eyebrow>Sketch · {E(s["section"])}</p><h3>{E(s["title"])}</h3><p>{E(s["question"])}</p></a>'
     for s in depth.SKETCHES)
   body = f'''{status_panel('Research programme. Not an issue of papers.')}
-<p>Volume 1 is the name of this programme: reliability, authority, and evidence. It is not a bound issue. No paper has been accepted into it. The aim is six studies that are actually run, not sixty titles.</p>
+<p>Volume 1 is the name of this programme: reliability, authority, and evidence. It is not a bound issue. No paper has been accepted into it. The aim is studies that are actually run, not sixty titles. Nine prospective protocols are listed below; each cites retrieved library documents as documentary priors only.</p>
 <p>Each protocol below says how a study would have to define its terms and which records it would keep. The sample is still not chosen. No observations have been collected.</p>
 <div class=hub-grid>{cards}</div>
-<h2 id=sketches>Twelve sketches</h2>
-<p>A sketch is a question with its terms. It is not yet a protocol: the system, the sample, and the analysis are missing. None of them has a result.</p>
+<h2 id=sketches>Research sketches</h2>
+<p>A sketch is a question with its terms. It is not yet a protocol: the system, the sample, and the analysis are missing. None of them has a result. Several sketches cite the same library shelf as documentary priors.</p>
 <div class=hub-grid>{sketches}</div>
 <h2 id=appraisals>Source appraisals</h2>
-<p>The <a href="/journal/notes/">appraisal series</a> applies one instrument to every document the library retrieved on 17 Nov 2026. An appraisal quotes the catalogue’s stored sentences and says what a citation may not infer. It is not a line-by-line review, and it is not a study that was run.</p>
+<p>The <a href="/journal/notes/">appraisal series</a> applies one instrument to every document the library retrieved on 17 Nov 2026. An appraisal quotes the catalogue’s stored sentences and says what a citation may not infer. It is not a line-by-line review, and it is not a study that was run. Consensus, fee, upgrade, and related files now point at the matching open protocols where a later study could cite them.</p>
 <p><a href="/journal/methods/">How to read a protocol</a> · <a href="/journal/call/">Call for papers</a></p>'''
   return shell('Volume 1', 'Reliability, authority, and evidence',
-    'Six proposed studies. None has been run.',
+    'Nine prospective protocols and research sketches. None has been run.',
     body, ['<span>Programme</span>'])
 def home_page():
   kinds = [
@@ -321,7 +350,7 @@ def home_page():
 <p>Reproducible experiments, systems research, replication studies, negative results, and critical investigations are in scope. The purpose is to improve understanding. It is not to promote a token, a project, or a conclusion chosen in advance.</p>
 <p>Every publication is supposed to state what was investigated, how the evidence was obtained, what the evidence supports, and what remains uncertain. The pages in this release cannot do the middle two of those, because no study has been run.</p>
 <aside class=status-panel>
-<p><b>What this release contains.</b> The charter, the policies, the call for papers, a methods note, six prospective protocols, twelve sketches, and a source-appraisal series over documents the library retrieved. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
+<p><b>What this release contains.</b> The charter, the policies, the call for papers, a methods note, nine prospective protocols with documentary priors from the Solana Library shelf, research sketches, and a source-appraisal series over documents the library retrieved. No research paper has been published. No peer review has been conducted. No editor is named. Editorial independence is not established: Sol.College is the publisher and the only party that can change these pages.</p>
 </aside>
 <p class=cta><a class=btn href="/journal/programme/">Read the protocols</a> <a class="btn ghost" href="/journal/call/#submit">Submit a proposal</a></p>
 <h2>How a journal paper differs</h2>
@@ -331,7 +360,7 @@ def home_page():
 <p>There are no completed publications. A protocol is not a paper. A source appraisal is not a paper. Review status for each item below is: not peer reviewed. The <a href="/journal/notes/">appraisal series</a> is a reading of retrieved documents, not a results issue.</p>
 <div class=hub-grid>{cards}</div>
 <h2 id=programme>Current research programme</h2>
-<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Six protocols, twelve sketches, and <a href="/journal/notes/">source appraisals</a> of retrieved documents. No data. <a href="/journal/methods/">How to read them</a>.</p>
+<p><a href="/journal/programme/">Reliability, authority, and evidence</a>. Nine protocols (including finality under named rules, fee and rent observation, and upgrade disclosure), research sketches, and <a href="/journal/notes/">source appraisals</a> of retrieved documents. No data. <a href="/journal/methods/">How to read them</a>.</p>
 <h2 id=scope>Scope</h2>
 <p>Sections open when there is a credible study and someone competent to review it. Opening a row here does not open a section.</p>
 <table><thead><tr><th>Section</th><th>The sort of question</th><th>Publications</th></tr></thead><tbody>{sections}</tbody></table>
@@ -359,7 +388,7 @@ def methods_page():
 <p>This page is how to read the rest of the journal. It is not a result, and it is not a textbook of the Solana protocol. No observations have been collected.</p>
 <h2>What a protocol is for</h2>
 <p>A protocol is a promise about the records a study will keep, written before those records exist. It fixes the words, the comparison, and the difference between a stored response and a sentence about that response. A protocol that is written after the numbers is a description of a result, and this journal would label it as one.</p>
-<p>The six founding protocols are detailed enough to argue with. They are not detailed enough to run: versions, samples, and analyses are deliberately still open, and the page says so. Filling those blanks after seeing the data would be a different study.</p>
+<p>The nine founding protocols are detailed enough to argue with. They cite retrieved library documents as priors, not as results. They are not detailed enough to run: versions, samples, and analyses are deliberately still open, and the page says so. Filling those blanks after seeing the data would be a different study.</p>
 <h2>What a sketch is for</h2>
 <p>A sketch holds the question and the terms so the question does not get replaced by a vaguer one later. It is missing the sample, the system, and the scoring rule. Treating a sketch as a method is the mistake the label is there to prevent.</p>
 <h2>Observation and interpretation</h2>
@@ -420,7 +449,7 @@ def write(S, page, css):
   write_page(S, page, css, '/journal/call/', 'Founding call for papers', cdesc, call, ld('Founding call for papers', cdesc, '/journal/call/'))
   pages.append(('/journal/call/', 'Founding call for papers', cdesc))
   prog = programme_page()
-  gdesc = 'Volume 1 proposes six studies of reliability, authority, and evidence. None has been run.'
+  gdesc = 'Volume 1 proposes nine studies of reliability, authority, consensus claims, and evidence. None has been run.'
   write_page(S, page, css, '/journal/programme/', 'Reliability, authority, and evidence', gdesc, prog, ld('Reliability, authority, and evidence', gdesc, '/journal/programme/'))
   pages.append(('/journal/programme/', 'Reliability, authority, and evidence', gdesc))
   import journal_depth as depth
