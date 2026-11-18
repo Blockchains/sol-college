@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c14',
+    'title': 'Release C.14 — Novengrid/colosseum learning loop',
+    'summary': (
+      'Stage 3 Novengrid SOL staking joins the shared learning layer with '
+      'early-unstake refusal and per-second reward criteria.'
+    ),
+    'changes': [
+      'colosseum gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment requires honesty about 7-day UI lock vs script-verified unlock.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c13',
     'title': 'Release C.13 — sentient.send Stage 3 learning loop',
     'summary': (

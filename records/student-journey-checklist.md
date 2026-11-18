@@ -39,7 +39,7 @@ Legend: `done` · `partial` · `todo`
 
 ## Later releases
 
-- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; Stage 1–2 complete; Stage 3 started with sentient.send; colosseum + orboracle open)
+- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; Stage 1–2 complete; Stage 3: sentient.send + colosseum; orboracle open)
 - Release D: Foundations migration + rubrics — foundations 001–007 RC exist; verification open
 - Release E: AI tutor, personalisation, community — `todo` (P2)
 
