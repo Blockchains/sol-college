@@ -54,6 +54,18 @@ class LabAssessment(unittest.TestCase):
         self.assertIn('assessment', L)
         self.assertTrue(L['assessment'].get('purpose'))
 
+    def test_attempt_recovery_panel_and_js(self):
+        html = ll.stuck_html()
+        self.assertIn('attempt-recovery', html)
+        self.assertIn('submitted_unknown', html)
+        self.assertIn('wallet_rejected', html)
+        self.assertIn('Do not send a second transaction', html)
+        js = (ROOT / 'scripts/lesson.js').read_text()
+        self.assertIn('ATTEMPT_GUIDE', js)
+        self.assertIn('paintAttempt', js)
+        self.assertIn('submitted_unknown', js)
+        self.assertIn('attempt-recovery', js)
+
 
 if __name__ == '__main__':
     unittest.main()

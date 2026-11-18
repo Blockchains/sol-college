@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-b2',
+    'title': 'Release B.2 — pending-attempt recovery',
+    'summary': (
+      'Attempt recovery panel separates wallet rejection, unknown submission, pending, '
+      'failure, and success — and tells learners not to blind-resubmit.'
+    ),
+    'changes': [
+      'Stuck → transaction flow opens Attempt recovery with status-specific next steps.',
+      'Attempt state persists in local lesson loop storage and surfaces in the evidence drawer.',
+      'Explorer deep-link uses a recorded signature when present.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-b',
     'title': 'Release B — Picassol assessment and safer resume',
     'summary': (

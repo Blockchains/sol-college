@@ -32,8 +32,9 @@ Legend: `done` · `partial` · `todo`
 | Preflight | done (Picassol) | observation + practical |
 | Predict → Act → Inspect → Explain | done (Picassol) | workspace |
 | Independent assessment | done (Picassol) | `/lessons/picassol-hackathon/assessment/` |
-| Saved outcome + resume | partial | content_version + predict lock restore; pending-tx still open |
+| Saved outcome + resume | done (Picassol) | content_version + predict lock restore + attempt recovery |
 | Evidence provenance tags | done (Picassol) | route tag + optional signature + stale note |
+| Pending / unclear tx recovery | done (Picassol) | Attempt recovery panel; no blind resubmit guidance |
 | Failure routes observed with learners | todo | — |
 
 ## Later releases
