@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c15',
+    'title': 'Release C.15 — OrbOracle learning loop (path complete)',
+    'summary': (
+      'Stage 3 OrbOracle joins the shared learning layer. All staged path labs '
+      '(1–16) now share preflight → Predict→Act→Inspect → assessment.'
+    ),
+    'changes': [
+      'orboracle-solana gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Release C path migration for reusable learning components is complete; electives remain open.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c14',
     'title': 'Release C.14 — Novengrid/colosseum learning loop',
     'summary': (
