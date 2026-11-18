@@ -186,6 +186,34 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_naim_has_learning_loop_and_token_config_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/naim.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'need_token_cfg')
+        html = ll.assessment_html(L, 'naim')
+        self.assertIn('init_token_config', html)
+        self.assertIn('registration_period', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
+    def test_all_stage2_path_labs_have_learning_loop(self):
+        stage2 = [
+            'ciphervault',
+            'mandatekey',
+            'trust-protocol',
+            'zeroai',
+            'oculus',
+            'agentx',
+            'naim',
+        ]
+        for slug in stage2:
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('path_stage'), 2, slug)
+            self.assertIn('learning_loop', L, slug)
+            self.assertIn('assessment', L, slug)
+            self.assertTrue(L['assessment'].get('criteria'), slug)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

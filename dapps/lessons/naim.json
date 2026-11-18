@@ -133,8 +133,8 @@
   "State why register_name cannot run until init_token_config exists."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL.",
-  "Comfort with PDAs and Anchor init constraints."
+  "A wallet on Devnet with a little practice SOL.",
+  "Complete [AgentX](/lessons/agentx/) — NAIM closes [stage 2](/lessons/path/#stage-2). Comfort with PDAs and Anchor init constraints."
  ],
  "concepts": [
   "pda",
@@ -148,5 +148,73 @@
   "test": "tests/devnet/naim.mjs",
   "note": "Program id on this lab deployment is 3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Explain what initialize writes to config, why registration_period=0 is rejected, and why register_name still needs init_token_config — without claiming unverified marketplace mastery.",
+ "delivery": "Console / observation practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain NAIM config init, invalid registration_period rejection, and the init_token_config prerequisite for register_name — without inventing staking/marketplace mastery.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Names what initialize writes",
+    "question": "What does initialize write to the config PDA, and which seeds identify it?",
+    "not_yet": "Cannot name config seeds or invents unrelated accounts.",
+    "support": "Correct after fetching config under Proof / console.",
+    "independent": "States config PDA (seeds [\"config\"]) holds admin, treasury, fee tiers, and registration/grace periods.",
+    "misconception": "initialize also registers the first .agent name."
+   },
+   {
+    "id": "c2",
+    "title": "Explains register_name prerequisites",
+    "question": "Why can register_name fail even after initialize succeeded?",
+    "not_yet": "Expects register_name from config alone, or ignores token-config/ATAs.",
+    "support": "Correct after revisiting InitTokenConfig / collect_fee accounts.",
+    "independent": "States init_token_config must exist, plus $NAIM mint and payer/treasury/stakers ATAs that collect_fee uses.",
+    "misconception": "Any initialized NAIM deployment can register names with SOL only."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and avoid claiming staking/marketplace mastery?",
+    "not_yet": "Claims renew/list/buy completed, or treats an unverified registered name as proven.",
+    "support": "Corrects after reading not_covered.",
+    "independent": "Tags observation/live; notes staking, renew, and list/buy were not exercised; registered name may be unverified.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of the NAIM marketplace."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to invalid registration_period",
+    "question": "Without re-reading the walkthrough: what should initialize do when registration_period=0?",
+    "not_yet": "Expects success with a zero period.",
+    "support": "States rejection after revisiting try step 3 / exercises.",
+    "independent": "States initialize rejects registration_period=0; no usable config from that call.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Read the NAIM config PDA — then explain why register_name still needs init_token_config.",
+  "predict_question": "On this lab deployment, initialize has already created the config PDA. You have not run init_token_config. What should register_name do?",
+  "predict_options": [
+   {"id": "ok_sol", "label": "Succeed paying only SOL rent/fees from the wallet"},
+   {"id": "need_token_cfg", "label": "Fail or be blocked until init_token_config (and fee token accounts) exist"},
+   {"id": "re_init", "label": "Automatically re-run initialize and then register"}
+  ],
+  "predict_answer": "need_token_cfg",
+  "predict_why": "register_name’s accounts and collect_fee path expect init_token_config plus $NAIM mint and related ATAs. Config alone (admin, treasury, periods) is not enough. Separately, initialize rejects registration_period=0, and a second initialize fails once config exists.",
+  "act": "In observation mode, fetch config (seeds [\"config\"]) under Proof / console and review why register_name needs token config. In practical mode on Devnet via /dapps/naim/: read config; optionally attempt initialize again or with registration_period=0 (expect failure). Do not treat staking, renew, or list/buy as required — they were not exercised. Treat any registered name as unverified unless you reproduce it.",
+  "inspect": [
+   {"id": "config", "label": "config PDA (short)", "placeholder": "PDA…"},
+   {"id": "admin", "label": "admin / treasury noted", "placeholder": "yes / fields"},
+   {"id": "token_cfg", "label": "init_token_config present?", "placeholder": "yes / no / unknown"},
+   {"id": "second_init", "label": "Second initialize / period=0", "placeholder": "failed / not tried"},
+   {"id": "register", "label": "register_name attempted?", "placeholder": "blocked / observation only / verified"}
+  ],
+  "explain_question": "Why does collect_fee mean register_name depends on more than the config PDA?",
+  "transfer": "Without re-reading the full walkthrough: if initialize is submitted with registration_period=0, what should happen, and which marketplace paths remain outside this lab’s verified coverage?"
+ }
 }
