@@ -153,6 +153,17 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_zeroai_has_learning_loop_and_stale_pyth_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/zeroai.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'zeros_ok')
+        html = ll.assessment_html(L, 'zeroai')
+        self.assertIn('closeprice', html.lower())
+        self.assertIn('60', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

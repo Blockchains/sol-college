@@ -159,8 +159,8 @@
   "Explain why addgame can succeed with closeprice all zeros."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL (initvault and initgames pay rent).",
-  "Comfort with Anchor accounts and Pyth price-feed accounts."
+  "A wallet on Devnet with a little practice SOL (initvault and initgames pay rent).",
+  "Complete [Trust Protocol](/lessons/trust-protocol/) or equivalent Stage 2 progress — ZeroAI is next on the [learning path](/lessons/path/#stage-2). Comfort with Anchor accounts and Pyth price-feed accounts."
  ],
  "concepts": [
   "anchor",
@@ -174,5 +174,73 @@
   "test": "tests/devnet/zeroai.mjs",
   "note": "Program id on this lab deployment is Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Init a Pyth-feed vault and games PDA, publish an addgame snapshot, and explain why closeprice can be all zeros when feeds are stale — without treating zeros as proof the oracles were live.",
+ "delivery": "Console / observation practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can set up vault+games, explain stale-Pyth zero snapshots, and stay honest that closegame was not verified and zeros do not prove live oracle prices.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Initialises vault and games PDA",
+    "question": "Can the student create a vault of Pyth feed addresses and init the games PDA seeded [\"games\", admin]?",
+    "not_yet": "Cannot name vault signer/admin roles or games seeds.",
+    "support": "Correct after revisiting initvault/initgames try steps / Proof.",
+    "independent": "Creates vault (fresh keypair co-signs) with six feeds, inits games PDA, and reads both back.",
+    "misconception": "The games account is a fixed global PDA unrelated to the admin."
+   },
+   {
+    "id": "c2",
+    "title": "Explains zero closeprice on stale feeds",
+    "question": "Why can addgame succeed while recording closeprice all zeros?",
+    "not_yet": "Treats zeros as proof Pyth returned live zero prices, or expects addgame to fail on stale feeds.",
+    "support": "Correct after revisiting the 60-second freshness rule.",
+    "independent": "States addgame snapshots each feed if price age ≤ 60s, otherwise records 0; classic Devnet feeds were stale in the recorded run.",
+    "misconception": "A successful addgame proves all six oracles were fresh."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and avoid claiming closegame mastery?",
+    "not_yet": "Claims closegame completed, or treats zeros as personal oracle verification.",
+    "support": "Corrects after reading not_covered.",
+    "independent": "Tags observation/live; notes closegame was not sent on the verified path.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of the full ZeroAI game lifecycle."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a second initvault",
+    "question": "Without re-reading the walkthrough: what should initvault do when reused with the same vault keypair?",
+    "not_yet": "Expects overwrite success.",
+    "support": "States account-in-use failure after revisiting try step 5.",
+    "independent": "States second initvault with the same vault keypair fails because the account already exists.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Publish a ZEROAI prediction snapshot — then explain why closeprice can be all zeros without the transaction failing.",
+  "predict_question": "You call addgame with six classic Devnet Pyth feed accounts whose prices are older than 60 seconds. What should happen?",
+  "predict_options": [
+   {"id": "fail_stale", "label": "addgame fails because every feed is stale"},
+   {"id": "zeros_ok", "label": "addgame succeeds and records closeprice all zeros"},
+   {"id": "mainnet_prices", "label": "addgame pulls mainnet prices automatically and fills non-zero closes"}
+  ],
+  "predict_answer": "zeros_ok",
+  "predict_why": "addgame snapshots each Pyth feed only when the price is no older than 60 seconds; otherwise it records 0 for that feed. Stale classic Devnet feeds therefore yield an all-zero closeprice vector without aborting the instruction. That is not proof the oracles were live at zero.",
+  "act": "In observation mode, open recorded initvault / initgames / addgame under Proof and inspect closeprice. In practical mode on Devnet via /dapps/zeroai/: initvault with a fresh vault keypair and six feeds, initgames with seeds [\"games\", your pubkey], then addgame with symbols and targets. Prefer observation if Pyth accounts are awkward to pass. Do not treat closegame as required — it was not on the verified path.",
+  "inspect": [
+   {"id": "vault", "label": "Vault address (short)", "placeholder": "Vault…"},
+   {"id": "games", "label": "Games PDA (short)", "placeholder": "PDA…"},
+   {"id": "feeds", "label": "Feed freshness noted", "placeholder": "stale / fresh / mixed"},
+   {"id": "closeprice", "label": "closeprice observed", "placeholder": "all zeros / mixed / non-zero"},
+   {"id": "ix", "label": "Instruction observed", "placeholder": "initvault / initgames / addgame"}
+  ],
+  "explain_question": "Why is an all-zero closeprice after a successful addgame not evidence that BTC/ETH/… traded at price zero?",
+  "transfer": "Without re-reading the full walkthrough: if you retry initvault with the same vault keypair, what should happen, and who is allowed to addgame afterward?"
+ }
 }
