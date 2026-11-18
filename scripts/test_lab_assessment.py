@@ -227,6 +227,17 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_colosseum_has_learning_loop_and_lock_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/colosseum.json').read_text())
+        self.assertEqual(L.get('path_stage'), 3)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'refuse')
+        html = ll.assessment_html(L, 'colosseum')
+        self.assertIn('lock', html.lower())
+        self.assertIn('31,536,000', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

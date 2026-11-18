@@ -312,8 +312,8 @@
   "Spot an overflow at a realistic stake size, and the way principal and rewards share one balance."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 SOL.",
-  "[sentient.send](/lessons/sentient-send/) (deadlines, pools) and [TrustLock](/lessons/trustlock/) (Clock). Bring a calculator for the reward exercise."
+  "Phantom on Devnet with about 0.1 practice SOL.",
+  "Complete [sentient.send](/lessons/sentient-send/) — Novengrid staking is next on [stage 3](/lessons/path/#stage-3). [TrustLock](/lessons/trustlock/) (Clock) helps. Bring a calculator for the reward exercise."
  ],
  "concepts": [
   "pda",
@@ -332,5 +332,73 @@
   "test": "anchor test",
   "note": "The program is in `contract/programs/staking`. Some frontends live next to it."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Stake into the time-locked SOL vault, explain why early unstake fails, predict a per-second reward from Clock, and note that re-staking wipes unclaimed rewards.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain the time lock, compute a reward from rate×time, and recognise re-stake wiping unclaimed rewards — without claiming unverified post-lock unstake via the hosted shortest UI path alone.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains early-unstake refusal",
+    "question": "Right after staking with a 7-day lock, what should UnStake do?",
+    "not_yet": "Expects immediate principal return.",
+    "support": "Correct after revisiting sol_unstake / Proof early refusal.",
+    "independent": "States unstake is refused until the lock ends per Clock; principal stays in the vault.",
+    "misconception": "Get Reward and UnStake are the same instruction."
+   },
+   {
+    "id": "c2",
+    "title": "Predicts reward from rate and elapsed time",
+    "question": "Can the student compute an expected claim from staked × apy_rate × seconds / 31,536,000 before pressing Get Reward?",
+    "not_yet": "Guesses a fixed APY UI number without relating Clock elapsed time.",
+    "support": "Works the formula after revisiting claim_rewards notes.",
+    "independent": "States rewards accrue every second from Clock using the documented formula and come from the same vault balance as principal.",
+    "misconception": "Rewards are minted as a separate token outside the vault."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and note that the hosted UI’s shortest lock is 7 days?",
+    "not_yet": "Claims completed post-lock unstake from a one-minute wait, or treats Proof as personal mastery.",
+    "support": "Corrects after reading not_covered.",
+    "independent": "Tags observation/live; notes post-lock unstake/admin withdraw may be script-verified when the UI forces a 7-day lock.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of unlock."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to re-stake wiping rewards",
+    "question": "Without re-reading the walkthrough: if you stake again before claiming, what happens to unclaimed rewards and the lock clock?",
+    "not_yet": "Expects unclaimed rewards to remain and the lock to continue unchanged.",
+    "support": "States wipe/restart after revisiting the re-staking exercise.",
+    "independent": "States re-staking wipes unclaimed rewards and restarts the lock per the lesson.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Stake into a time-locked SOL vault — then explain why early UnStake fails while Get Reward can still accrue.",
+  "predict_question": "You just staked 0.05 SOL with a 7-day lock. You immediately press UnStake. What should happen?",
+  "predict_options": [
+   {"id": "refund", "label": "Succeed and return principal plus any tiny accrued reward"},
+   {"id": "refuse", "label": "Refuse — the lock has not ended yet"},
+   {"id": "reward_only", "label": "UnStake automatically converts into Get Reward and leaves principal locked"}
+  ],
+  "predict_answer": "refuse",
+  "predict_why": "sol_unstake checks the Clock against the stake’s lock end. Early unstake is refused; principal stays vaulted. claim_rewards is a separate path that pays per-second accrual from the same vault without unlocking principal. Re-staking before claim can wipe unclaimed rewards and restart the lock.",
+  "act": "In observation mode, open recorded stake / early-unstake refusal / claim under Proof and compute a sample reward from rate×elapsed seconds. In practical mode on Devnet via /dapps/colosseum/: stake a small amount (7-day lock in the UI), try UnStake immediately (expect refusal), wait briefly and Get Reward. Prefer observation/script evidence for post-lock unstake and admin withdraw when you cannot wait 7 days.",
+  "inspect": [
+   {"id": "stake", "label": "Staked amount (SOL)", "placeholder": "e.g. 0.05"},
+   {"id": "lock", "label": "Lock duration", "placeholder": "7 days / other"},
+   {"id": "early_ix", "label": "Early UnStake result", "placeholder": "refused / error code"},
+   {"id": "reward_math", "label": "Expected reward (rough)", "placeholder": "staked×rate×sec/31536000"},
+   {"id": "claim", "label": "Get Reward observed", "placeholder": "claimed / observation only"}
+  ],
+  "explain_question": "Why can Get Reward succeed while UnStake still fails during the lock — and where do those reward lamports come from?",
+  "transfer": "Without re-reading the full walkthrough: if you stake again before claiming, what happens to unclaimed rewards, and what overflow risk appears at a realistic stake size?"
+ }
 }
