@@ -127,23 +127,55 @@
    "expect": "ConstraintSeeds (or equivalent), not a successful overwrite."
   }
  ],
- "not_covered": "No ENS-style secondary market; no UTF-8 validation beyond fitting 64 bytes; the redundant NotOwner branch is noted in the deployment limits because seeds already bind the account.",
+ "not_covered": "No ENS-style secondary market; no UTF-8 validation beyond fitting 64 bytes; the redundant NotOwner branch is noted in the deployment limits because seeds already bind the account. Foreign-wallet overwrite is shown via recorded rejection; optional second-wallet practical is not required for observation completion.",
  "path_order": 2,
  "path_stage": 1,
  "difficulty": "Beginner",
  "time": "25 min",
  "objectives": [
-  "Create a per-wallet PDA",
-  "Write and clear a fixed-size name field",
-  "See why another wallet cannot edit your PDA"
+  "Create a per-wallet PDA seeded [\"user\", authority].",
+  "Write and clear a fixed-size 64-byte name field on that PDA.",
+  "Explain why another wallet cannot edit your PDA (ConstraintSeeds)."
  ],
  "prereqs": [
-  "A Solana address is not always a wallet"
+  "A Phantom or Solflare wallet on Solana Devnet with practice SOL.",
+  "Complete [Picassol](/lessons/picassol-hackathon/) or already understand PDAs from seeds — NameGen is the next Stage 1 step after Picassol on the [learning path](/lessons/path/)."
  ],
  "concepts": [
   "pda",
   "seeds",
   "signer"
  ],
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Init your NameGen PDA, set a name, and explain why another wallet cannot change it.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can derive a per-wallet PDA, distinguish init from set_name, and explain why foreign writes fail at the seeds constraint."
+ },
+ "learning_loop": {
+  "objective": "Decide whether your NameGen account needs init or set_name — then explain why another wallet cannot write yours.",
+  "predict_question": "Your wallet already has a NameGen UserData PDA at seeds [\"user\", your authority]. You want to change the display name. Which instruction should succeed?",
+  "predict_options": [
+   {"id": "init", "label": "init_user again to create a second PDA"},
+   {"id": "set", "label": "set_name on the existing PDA"},
+   {"id": "either", "label": "Either works — Solana will pick the right one"}
+  ],
+  "predict_answer": "set",
+  "predict_why": "init_user uses init at seeds [\"user\", authority]. When that account already exists, a second init fails (account in use). set_name writes the 64-byte name field on the same PDA.",
+  "act": "In observation mode, open the recorded init and set_name signatures under Proof and compare accounts. In practical mode, connect on Devnet: if your PDA does not exist, run Init once; then Save a name. Prefer the hosted UI — Init and Save are recorded there. Do not treat a second Init as the name-change path.",
+  "inspect": [
+   {"id": "authority", "label": "Authority wallet (short)", "placeholder": "e.g. GNSx…mKoF"},
+   {"id": "address", "label": "UserData PDA address", "placeholder": "PDA…"},
+   {"id": "exists", "label": "Account exists before action", "placeholder": "Yes / No"},
+   {"id": "ix", "label": "Instruction observed", "placeholder": "init_user / set_name / clear_name"},
+   {"id": "name", "label": "On-chain name (after)", "placeholder": "e.g. shadow-4662"}
+  ],
+  "explain_question": "Why does a second wallet fail when it tries to set_name on your PDA — and which constraint fails first?",
+  "transfer": "Without re-reading the full walkthrough: if wallet B has never initialised NameGen, what is B’s first required instruction? What evidence would prove the PDA exists afterward?"
+ }
 }
+

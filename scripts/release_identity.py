@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c',
+    'title': 'Release C — second application lab learning loop (NameGen)',
+    'summary': (
+      'Stage 1 lesson NameGen now uses the same preflight → Predict→Act→Inspect → '
+      'assessment → attempt-recovery components as Picassol.'
+    ),
+    'changes': [
+      'c4-comets-todor-edward-andrei gains learning_loop, assessment rubric page, and lab metadata.',
+      'Proves the learning-layer components reuse beyond Picassol without a shell redesign.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-a3',
     'title': 'Release A.3 — curriculum required-field backfill',
     'summary': (

@@ -54,6 +54,15 @@ class LabAssessment(unittest.TestCase):
         self.assertIn('assessment', L)
         self.assertTrue(L['assessment'].get('purpose'))
 
+    def test_namegen_has_learning_loop_and_assessment(self):
+        L = json.loads((ROOT / 'dapps/lessons/c4-comets-todor-edward-andrei.json').read_text())
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'set')
+        self.assertIn('assessment', L)
+        html = ll.assessment_html(L, 'c4-comets-todor-edward-andrei')
+        self.assertIn('NameGen', html)
+        self.assertIn('Criterion 1', html)
+
     def test_attempt_recovery_panel_and_js(self):
         html = ll.stuck_html()
         self.assertIn('attempt-recovery', html)
