@@ -34,5 +34,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Create or fund an EscrowAgent vault and name its authorities.",
+  "Complete one release or refund path on Devnet.",
+  "Explain who can move funds at each state."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Accounts and authority basics."
+ ],
+ "student_outcome": "Deposit into EscrowAgent and follow release or refund to the correct party.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

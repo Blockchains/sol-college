@@ -20,7 +20,7 @@ Legend: `done` · `partial` · `todo`
 | Beginner entrance | P1 | done | `#start` + learning_layer | `test_learning_layer.py` |
 | Honest status labels | P0 | done | env-health panel + Picassol ui_check | Program flow vs hosted UI vs frontend/RPC |
 | Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour observation/script until hosted UI lands |
-| Canonical per-lesson schema (owner, content_version, …) | P0 | partial | `curriculum_schema.py` + `/curriculum.json` schema_status | Picassol OK; catalogue-wide backfill still open |
+| Canonical per-lesson schema (owner, content_version, …) | P0 | partial | `curriculum_schema.py` + backfill | Required fields complete for all live guided lessons; recommended fields still open on ~24 |
 | Cache / old-tab update notice | P0 | done | `scripts/release-notice.js` | Banner when `/release.json` app/curriculum changes |
 
 ## Release B — One complete learning journey

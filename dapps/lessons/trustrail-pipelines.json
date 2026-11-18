@@ -40,5 +40,20 @@
  "not_covered": "refund, cancel, recover, and a real AMM venue were not exercised. mock_swap is a 1:1 transfer stand-in, disclosed as such.",
  "difficulty": "Intermediate",
  "time": "30 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Identify the pipeline accounts and their roles.",
+  "Submit one pipeline action on Devnet and find it on Explorer.",
+  "Explain how later steps depend on earlier account state."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Comfortable reading multi-instruction transactions."
+ ],
+ "student_outcome": "Run one TrustRail pipeline step and inspect the resulting account updates.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

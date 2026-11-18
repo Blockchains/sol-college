@@ -40,5 +40,20 @@
  ],
  "difficulty": "Advanced",
  "time": "35 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Identify the Atlantid program ID and relevant PDAs.",
+  "Complete one guided transaction on Devnet.",
+  "Match program logs to the instruction you intended."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Basic program/instruction literacy from Foundations 003 or equivalent."
+ ],
+ "student_outcome": "Invoke one Atlantid program path and verify the intended account changes.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

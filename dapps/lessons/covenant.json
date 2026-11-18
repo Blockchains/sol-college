@@ -36,5 +36,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Identify covenant accounts and the release condition.",
+  "Fund a covenant and observe locked balances.",
+  "Walk one release or cancel path with Explorer evidence."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "PDA and authority basics."
+ ],
+ "student_outcome": "Open a covenant escrow and verify the condition that releases funds.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

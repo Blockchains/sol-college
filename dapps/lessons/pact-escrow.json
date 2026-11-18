@@ -34,5 +34,20 @@
  "not_covered": "refund was not exercised. The escrow PDA is not closed after release (rent remains). v2 instructions in instructions_v2.rs are not the deployed entrypoint.",
  "difficulty": "Beginner",
  "time": "20 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Locate the pact escrow PDA and the tokens it controls.",
+  "Walk the create → fund → release (or cancel) flow on the hosted app.",
+  "Read a successful transaction and name the instruction that moved funds."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Basic familiarity with SPL token accounts."
+ ],
+ "student_outcome": "Open a pact escrow and follow the release path using the recorded accounts.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

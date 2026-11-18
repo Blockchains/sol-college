@@ -35,5 +35,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "30 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Deposit SPL tokens into a two-agent escrow PDA.",
+  "Explain how a Release verdict unlocks a claim.",
+  "Locate the claim transaction and name who received funds."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds and the lesson mint.",
+  "Understanding of escrow authorities and dispute outcomes."
+ ],
+ "student_outcome": "Deposit into Agent Court, follow a dispute path, and verify the payout claim.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

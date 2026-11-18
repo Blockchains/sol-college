@@ -39,5 +39,20 @@
  "not_covered": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Create and fund an SPL-token escrow vault PDA for an agent job.",
+  "Explain the provider start → submit → payer confirm sequence.",
+  "Identify which accounts hold funds before and after confirmation."
+ ],
+ "prereqs": [
+  "A Phantom or Solflare wallet on Solana Devnet with practice SOL and the lesson mint if required.",
+  "Comfortable with [accounts and authority](/lessons/accounts-ownership/) or equivalent."
+ ],
+ "student_outcome": "Fund an agent escrow and confirm a provider submission so payout can proceed.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

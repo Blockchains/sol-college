@@ -35,5 +35,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Create a job escrow PDA and fund it with SPL tokens.",
+  "Submit evidence and identify the verifier’s role in release.",
+  "Distinguish locked funds from released funds in account state."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds and the lesson mint.",
+  "Understanding of [accounts and authority](/lessons/accounts-ownership/)."
+ ],
+ "student_outcome": "Lock tokens in a Veedor job and explain how verifier attestation unlocks release.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }
