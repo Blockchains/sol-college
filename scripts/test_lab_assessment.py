@@ -62,6 +62,32 @@ class LabAssessment(unittest.TestCase):
         html = ll.assessment_html(L, 'c4-comets-todor-edward-andrei')
         self.assertIn('NameGen', html)
         self.assertIn('Criterion 1', html)
+        self.assertIn('init_user vs set_name', html)
+        self.assertNotIn('Pixel account', html)
+
+    def test_poe_has_learning_loop_and_lab_specific_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/poe-solana.json').read_text())
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'register_create')
+        html = ll.assessment_html(L, 'poe-solana')
+        self.assertIn('register_user then create_poll', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
+    def test_assessment_fallback_is_not_picassol_specific(self):
+        html = ll.assessment_html({
+            'title': 'Example Lab',
+            'student_outcome': 'Explain a PDA seed',
+            'learning_loop': {
+                'explain_question': 'Why did seeds fail?',
+                'transfer': 'Apply seeds on a fresh wallet.',
+            },
+            'assessment': {'purpose': 'Example purpose only.'},
+        }, 'example-lab')
+        self.assertIn('Example Lab', html)
+        self.assertIn('Why did seeds fail?', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
 
     def test_attempt_recovery_panel_and_js(self):
         html = ll.stuck_html()

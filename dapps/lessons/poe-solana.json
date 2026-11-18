@@ -279,8 +279,8 @@
   "Recompute a weighted running average, and fix an underflow when a range is reversed."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 devnet SOL.",
-  "[PulseFund](/lessons/pulsefund-sol/) (PDAs, rent) or equivalent. Some comfort reading Rust `u16`/`u64` arithmetic helps for the underflow exercise."
+  "Phantom on Devnet with practice SOL (about 0.1 SOL).",
+  "Complete [NameGen](/lessons/c4-comets-todor-edward-andrei/) or already understand per-wallet PDAs — Proof of Estimate is the next Stage 1 step on the [learning path](/lessons/path/). Some comfort reading Rust `u16`/`u64` arithmetic helps for the underflow exercise."
  ],
  "concepts": [
   "pda",
@@ -301,5 +301,73 @@
   "test": "anchor test",
   "note": "`anchor-lang` 0.30.0; Anchor CLI 0.30.1 is the closest match. The Next.js app lives in `app/`."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create a poll (with first-time registration), submit a range estimate, and explain why a narrow range moves the crowd estimate more than a wide one at the same midpoint.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain the first-create registration bundle, stake movement into escrow, and why estimate range width changes weight.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains the first-create instruction bundle",
+    "question": "For a brand-new wallet, which POE instructions appear in the first successful Create Poll transaction?",
+    "not_yet": "Expects only create_poll, or invents make_estimate as the create path.",
+    "support": "Names register_user then create_poll after inspecting the recorded create signature under Proof.",
+    "independent": "States register_user (user PDA + 1,000 POEKEN mint) then create_poll in one transaction when the wallet is new.",
+    "misconception": "Create Poll is always a single create_poll instruction."
+   },
+   {
+    "id": "c2",
+    "title": "Explains stake and weighted crowd update",
+    "question": "What moves on make_estimate, and why does a narrow range at midpoint 90 pull the collective further than a wide range at the same midpoint?",
+    "not_yet": "Ignores the 100 POEKEN escrow transfer, or treats all midpoints as equal weight.",
+    "support": "Correct after revisiting weight = (1 − uncertainty) × score × recency.",
+    "independent": "States 100 POEKEN wallet→escrow via Token CPI, and that wider ranges raise uncertainty and lower weight.",
+    "misconception": "Only the midpoint matters; range width is cosmetic."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a second forecaster",
+    "question": "Without re-reading the full walkthrough: if wallet B has never used POE, what must happen before B’s first make_estimate on an existing poll, and what evidence shows the crowd moved?",
+    "not_yet": "Says make_estimate alone is enough for a never-registered wallet, or cannot name read-back evidence.",
+    "support": "States register_user first after revisiting try steps / Proof.",
+    "independent": "States register_user (often bundled by the UI) then make_estimate; cites poll card forecaster count / collective estimate or history entry.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Explain the first-create registration bundle — then why a narrow estimate range weighs more than a wide one at the same midpoint.",
+  "predict_question": "You open Create Poll with a brand-new Devnet wallet that has never used Proof of Estimate. After you Submit and approve, which POE program instructions should that first successful transaction contain?",
+  "predict_options": [
+   {"id": "create_only", "label": "Only create_poll"},
+   {"id": "register_create", "label": "register_user then create_poll"},
+   {"id": "estimate", "label": "Only make_estimate"}
+  ],
+  "predict_answer": "register_create",
+  "predict_why": "A new wallet has no user PDA and no POEKEN. The app prepends register_user (init user PDA + mint 1,000 POEKEN via the program-owned mint PDA) before create_poll in the same transaction. make_estimate is the later forecasting step, not the create path.",
+  "act": "In observation mode, open the recorded Create Poll signature under Proof and confirm register_user then create_poll. In practical mode, connect on Devnet with a fresh practice wallet (or one that has not registered), create a poll, then submit one estimate range. Prefer the hosted UI. Second-wallet / second-forecaster UI remains optional observation if you cannot switch wallets.",
+  "inspect": [
+   {"id": "wallet", "label": "Authority wallet (short)", "placeholder": "e.g. GNSx…"},
+   {"id": "create_ix", "label": "Instructions in create tx", "placeholder": "register_user + create_poll / create_poll only"},
+   {"id": "poll_id", "label": "Poll id observed", "placeholder": "e.g. 0"},
+   {"id": "estimate_ix", "label": "Estimate instruction", "placeholder": "make_estimate"},
+   {"id": "crowd", "label": "Crowd estimate / forecasters after", "placeholder": "e.g. Yes 60%, 1 forecaster"}
+  ],
+  "explain_question": "Why does submitting 90–90 move the collective estimate further toward 90 than submitting 80–100 when both midpoints are 90?",
+  "transfer": "Without re-reading the full walkthrough: wallet B has never used POE and opens an existing poll. What must happen before B’s first make_estimate succeeds, and what on-chain or UI evidence would show the crowd moved afterward?"
+ }
 }

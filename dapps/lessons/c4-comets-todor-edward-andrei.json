@@ -154,7 +154,45 @@
  "delivery": "Browser practice + evidence inspection",
  "track": "application-lab",
  "assessment": {
-  "purpose": "Determine whether the student can derive a per-wallet PDA, distinguish init from set_name, and explain why foreign writes fail at the seeds constraint."
+  "purpose": "Determine whether the student can derive a per-wallet PDA, distinguish init from set_name, and explain why foreign writes fail at the seeds constraint.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Chooses init_user vs set_name from account existence",
+    "question": "Does the student decide init vs set_name from whether the UserData PDA already exists?",
+    "not_yet": "Tries init again to change a name, or invents the instruction without checking the PDA.",
+    "support": "Correct after a prompt to inspect the PDA at seeds [\"user\", authority].",
+    "independent": "Records authority, PDA address, exists Yes/No, and chooses init_user or set_name from that evidence.",
+    "misconception": "Init creates a second PDA for a new name."
+   },
+   {
+    "id": "c2",
+    "title": "Explains foreign-write failure",
+    "question": "Why does another wallet fail when it tries set_name on your PDA — and which constraint fails first?",
+    "not_yet": "Claims the name is secret, or invents a token check, or cannot name ConstraintSeeds.",
+    "support": "Names seeds after comparing the foreign rejection in Proof.",
+    "independent": "States seeds [\"user\", authority] bind the PDA to the signer; ConstraintSeeds fails before any NotOwner branch.",
+    "misconception": "Any connected wallet can edit any NameGen account."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a never-initialised wallet",
+    "question": "If wallet B has never initialised NameGen, what is B’s first required instruction, and what evidence proves the PDA exists afterward?",
+    "not_yet": "Says set_name first, or cannot name the evidence.",
+    "support": "States init_user first after revisiting the predict-why note.",
+    "independent": "States init_user, then set_name; cites Explorer/account existence at seeds [\"user\", B].",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
  },
  "learning_loop": {
   "objective": "Decide whether your NameGen account needs init or set_name — then explain why another wallet cannot write yours.",

@@ -369,24 +369,30 @@ def assessment_html(lesson: dict, slug: str) -> str:
   ))
   criteria = assess.get('criteria') or []
   if not criteria:
+    # Generic fallback — never Picassol-specific wording for other labs.
+    loop = lesson.get('learning_loop') or {}
+    outcome = (lesson.get('student_outcome') or loop.get('objective')
+               or 'the stated lab outcome')
+    explain_q = loop.get('explain_question') or 'Why did the observed result follow from the instruction chosen?'
+    transfer = loop.get('transfer') or 'Apply the same rule on a fresh example without re-reading the walkthrough.'
     criteria = [
       {
         'id': 'c1',
-        'title': 'Decides Create vs Update from account existence',
-        'question': 'Does the student base the action on whether the Pixel account exists at the derived address?',
-        'not_yet': 'Treats a white-looking cell as empty, or invents Create/Update without account observation.',
-        'support': 'Correct after a prompt to check getAccountInfo / Explorer at the derived address.',
-        'independent': 'Records coordinate, derived address, Account exists Yes/No, and chooses Create or Update from that evidence.',
-        'misconception': '“White means no account.”',
+        'title': 'Chooses the correct action from account evidence',
+        'question': f'Does the student decide the next instruction from observed account state for: {outcome}?',
+        'not_yet': 'Picks an instruction without checking whether the relevant account exists or matches seeds.',
+        'support': 'Correct after a prompt to inspect getAccountInfo / Explorer at the derived address.',
+        'independent': 'Records the relevant address, account existence, and the instruction that follows from that evidence.',
+        'misconception': '“The UI button alone tells me which instruction to send.”',
       },
       {
         'id': 'c2',
-        'title': 'Explains address stability when colour changes',
-        'question': 'Can the student explain why update_pixel keeps the same PDA?',
-        'not_yet': 'Claims colour change creates a new account, or cannot name the seeds.',
-        'support': 'Names seeds after a prompt to compare create vs update in Proof.',
-        'independent': 'States seeds ["pixel", x, y] (and bump on update) and that colour is data inside the same account.',
-        'misconception': '“A new colour needs a new address.”',
+        'title': 'Explains the observed result',
+        'question': explain_q,
+        'not_yet': 'Cannot connect seeds, authority, or CPI behaviour to the result.',
+        'support': 'Gives a correct explanation after a conceptual prompt tied to Proof or the program path.',
+        'independent': 'Names the constraint or state transition that produced the observed outcome.',
+        'misconception': '“A successful signature means I understand the accounts.”',
       },
       {
         'id': 'c3',
@@ -399,11 +405,11 @@ def assessment_html(lesson: dict, slug: str) -> str:
       },
       {
         'id': 'c4',
-        'title': 'Transfers to a fresh coordinate',
-        'question': 'On a new coordinate, can the student state Create or Update and what evidence would prove it?',
-        'not_yet': 'Cannot generalise beyond the walked-through pixel.',
+        'title': 'Transfers to a fresh example',
+        'question': transfer,
+        'not_yet': 'Cannot generalise beyond the walked-through example.',
         'support': 'States the rule after revisiting the predict-why note.',
-        'independent': 'Picks a different coordinate, derives or looks up the address, and states Create vs Update with the evidence needed.',
+        'independent': 'Applies the same decision rule on a fresh case with the evidence needed.',
         'misconception': '“I finished because I followed the buttons once.”',
       },
     ]

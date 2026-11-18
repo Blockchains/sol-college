@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c2',
+    'title': 'Release C.2 — Proof of Estimate loop + lab-specific rubrics',
+    'summary': (
+      'Stage 1 lesson Proof of Estimate joins the shared learning loop. Assessment '
+      'criteria are lab-specific so NameGen and POE no longer inherit Picassol wording.'
+    ),
+    'changes': [
+      'poe-solana gains learning_loop, assessment criteria, and lab metadata.',
+      'Picassol and NameGen store explicit criteria; assessment HTML fallback is generic.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c',
     'title': 'Release C — second application lab learning loop (NameGen)',
     'summary': (
