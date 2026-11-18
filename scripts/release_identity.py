@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c11',
+    'title': 'Release C.11 — AgentX learning loop',
+    'summary': (
+      'Stage 2 AgentX joins the shared learning layer with Active-status and '
+      'oracle=authority criteria, keeping claim_reward out of required mastery.'
+    ),
+    'changes': [
+      'agentx gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment notes initialize_registry is a lab patch and claim_reward was unverified.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c10',
     'title': 'Release C.10 — Oculus learning loop',
     'summary': (
