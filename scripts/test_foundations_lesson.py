@@ -88,16 +88,52 @@ class FoundationsLesson002(unittest.TestCase):
         self.assertIn('Captured-evidence route', html)
 
 
+class FoundationsLesson003(unittest.TestCase):
+    def test_status_is_release_candidate(self):
+        import foundations_l003 as l3
+        html = l3.lesson_html()
+        self.assertIn('Release candidate', html)
+        self.assertIn('Not yet technically or learner verified', html)
+        self.assertIn('not interchangeable', html.lower())
+
+    def test_instruction_three_components(self):
+        import foundations_l003 as l3
+        html = l3.lesson_html().lower()
+        self.assertIn('program id', html)
+        self.assertIn('instruction data', html)
+        self.assertIn('signer', html)
+        self.assertIn('writable', html)
+        self.assertIn('simulation', html)
+        self.assertIn('finalized', html)
+
+    def test_assessment_six_criteria(self):
+        import foundations_l003 as l3
+        html = l3.assessment_html()
+        self.assertIn('Criterion 6', html)
+        self.assertIn('Mandatory conceptual checks', html)
+        self.assertIn('Request versus outcome', html)
+        self.assertIn('wrong target program', html.lower())
+
+    def test_meta_descriptions_fit(self):
+        import foundations_l003 as l3
+        self.assertLessEqual(len(l3.LESSON_DESC), 158)
+        self.assertLessEqual(len(l3.ASSESS_DESC), 158)
+
+    def test_links_from_lesson_002(self):
+        self.assertIn('/lessons/instructions-programs/', l2.lesson_html())
+
+
 class FoundationsIndexWiring(unittest.TestCase):
-    def test_card_and_path_section_include_both(self):
+    def test_card_and_path_section_include_all_three(self):
         cards = f.foundations_card_html()
         self.assertIn('/lessons/first-transaction/', cards)
         self.assertIn('/lessons/accounts-ownership/', cards)
-        self.assertIn('/lessons/accounts-ownership/assessment/', cards)
+        self.assertIn('/lessons/instructions-programs/', cards)
+        self.assertIn('/lessons/instructions-programs/assessment/', cards)
         path = f.foundations_path_section().lower()
         self.assertIn('release candidate', path)
-        self.assertIn('ownership versus application authority', path)
-        self.assertIn('/lessons/accounts-ownership/', path)
+        self.assertIn('instruction', path)
+        self.assertIn('/lessons/instructions-programs/', path)
 
 
 if __name__ == '__main__':
