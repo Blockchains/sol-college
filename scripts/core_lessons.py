@@ -824,5 +824,19 @@ print('core_lessons:',[(x['slug'],('draft' if lesson_of(x).get('draft') else 'fu
 _landing.START_LESSON='/lessons/first-transaction/'
 _landing.write_home(S)
 _landing.enrich_lessons(S)
+import release_identity as _release
+_rel=_release.write_artifacts(S, os.path.join(_here,'..'))
+# Stamp release identity on every HTML page (including homepage) so reviewers can identify the build.
+for fp in glob.glob(f'{S}/**/*.html',recursive=True):
+  if '/dapps/' in fp or '/legacy/' in fp: continue
+  t=open(fp,errors='replace').read(); o=t
+  t=_release.inject_into_html(t,_rel)
+  if t!=o: open(fp,'w').write(t)
+# Keep curriculum summary in sync with sitemap when present.
+sm=f'{S}/sitemap.xml'
+if os.path.exists(sm):
+  t=open(sm).read()
+  add=''.join(f'<url><loc>{SITE}{p}</loc></url>\n' for p in ['/releases/'] if f'<loc>{SITE}{p}</loc>' not in t)
+  if add: open(sm,'w').write(t.replace('</urlset>',add+'</urlset>'))
 import seo as _seo
 _seo.apply(S)

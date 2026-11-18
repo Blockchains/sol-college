@@ -19,6 +19,7 @@ import html, json, os, re, shutil, sys
 from pathlib import Path
 import findings as _findings  # records/public/findings -> landing card, proof stat, /findings/ pages
 import learning_layer as _learning_layer
+import release_identity as _release
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -815,7 +816,10 @@ def write_home(site='site'):
         'ICO_COMMIT': ICO['COMMIT'],
         'ICO_LOOP': ICO['LOOP'],
         'ICO_X': ICO['X'],
+        'RELEASE_FOOTER': '',  # filled after release artifacts are written
     }
+    rel = _release.write_artifacts(site, ROOT)
+    tokens['RELEASE_FOOTER'] = _release.footer_html(rel)
     page = tpl
     # Replace longer tokens first so WAITLIST is not replaced inside WAITLIST_DEV, etc.
     for k in sorted(tokens, key=lambda s: -len(s)):
@@ -823,6 +827,7 @@ def write_home(site='site'):
     leftover = re.findall(r'\{\{[A-Z0-9_]+\}\}', page)
     if leftover:
         raise SystemExit('unreplaced landing placeholders: ' + ', '.join(sorted(set(leftover))))
+    page = _release.inject_into_html(page, rel)
     (site / 'index.html').write_text(page, encoding='utf-8')
     assets = site / 'assets'
     assets.mkdir(exist_ok=True)
