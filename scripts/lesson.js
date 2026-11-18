@@ -208,5 +208,184 @@
         });
       });
     }
+
+    /* Learning-layer vertical slice: preflight, workspace loop, stuck help */
+    var LOOP = 'sc-lesson-loop';
+    var workspace = document.getElementById('workspace');
+    if (workspace && slug) {
+      var loops = load(LOOP) || {};
+      var state = loops[slug] || {
+        version: 1,
+        mode: '',
+        step: 'prepare',
+        predict: '',
+        predictLocked: false,
+        inspect: {},
+        route: '',
+        explain: '',
+        outcome: '',
+        marked: {},
+        visited: ['prepare']
+      };
+
+      function persist() {
+        state.href = location.pathname;
+        state.at = Date.now();
+        loops[slug] = state;
+        save(LOOP, loops);
+        var saveEl = document.getElementById('lab-save');
+        if (saveEl) {
+          saveEl.textContent = 'Saved on this device · step: ' + state.step +
+            (state.outcome ? ' · outcome: ' + state.outcome : '');
+        }
+        var mode = document.getElementById('ev-mode');
+        var pred = document.getElementById('ev-predict');
+        var route = document.getElementById('ev-route');
+        var out = document.getElementById('ev-outcome');
+        if (mode) mode.textContent = state.mode || 'Not chosen';
+        if (pred) pred.textContent = state.predict || '—';
+        if (route) route.textContent = state.route || '—';
+        if (out) out.textContent = state.outcome || '—';
+      }
+
+      function showStep(name) {
+        state.step = name;
+        if (state.visited.indexOf(name) < 0) state.visited.push(name);
+        workspace.querySelectorAll('.loop-panel').forEach(function (p) {
+          p.hidden = p.getAttribute('data-panel') !== name;
+        });
+        workspace.querySelectorAll('[data-loop-step]').forEach(function (b) {
+          b.classList.toggle('is-current', b.getAttribute('data-loop-step') === name);
+        });
+        persist();
+      }
+
+      workspace.querySelectorAll('[data-loop-step]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          showStep(b.getAttribute('data-loop-step'));
+        });
+      });
+      workspace.querySelectorAll('[data-loop-next]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          showStep(b.getAttribute('data-loop-next'));
+        });
+      });
+
+      var preflight = document.getElementById('preflight');
+      if (preflight) {
+        preflight.querySelectorAll('[data-mode]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var mode = btn.getAttribute('data-mode');
+            state.mode = mode;
+            var prac = document.getElementById('preflight-practical');
+            if (prac) prac.hidden = mode !== 'practical';
+            var st = document.getElementById('preflight-status');
+            if (st) {
+              st.textContent = mode === 'practical'
+                ? 'Practical mode: complete wallet setup below, then continue in the workspace. Progress is saved before you leave for the faucet or app.'
+                : 'Observation mode: read accounts and platform proof without sending a transaction. This is not equivalent to practical completion.';
+            }
+            persist();
+          });
+        });
+      }
+
+      var checkPredict = workspace.querySelector('[data-loop-check-predict]');
+      if (checkPredict) {
+        checkPredict.addEventListener('click', function () {
+          var picked = workspace.querySelector('input[name="loop-predict"]:checked');
+          var fb = document.getElementById('predict-feedback');
+          var why = document.getElementById('predict-why');
+          var cont = document.getElementById('predict-continue');
+          if (!picked) {
+            if (fb) { fb.hidden = false; fb.textContent = 'Choose a prediction first.'; }
+            return;
+          }
+          state.predict = picked.value;
+          state.predictLocked = true;
+          var answer = workspace.getAttribute('data-predict-answer') || '';
+          if (fb) {
+            fb.hidden = false;
+            fb.textContent = picked.value === answer
+              ? 'Your prediction matches the intended outcome. Continue to Act.'
+              : 'Interesting choice. Compare it with the intended path, then continue — a wrong prediction is still useful learning.';
+          }
+          if (why) why.hidden = false;
+          if (cont) cont.hidden = false;
+          persist();
+        });
+      }
+
+      workspace.querySelectorAll('[data-loop-mark]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var which = btn.getAttribute('data-loop-mark');
+          state.marked[which] = true;
+          if (which === 'inspect') {
+            var insp = {};
+            workspace.querySelectorAll('[data-inspect]').forEach(function (inp) {
+              insp[inp.getAttribute('data-inspect')] = inp.value;
+            });
+            state.inspect = insp;
+            var er = document.getElementById('evidence-route');
+            if (er) state.route = er.value;
+          }
+          if (which === 'explain') {
+            var ta = document.getElementById('loop-explain');
+            if (ta) state.explain = ta.value;
+          }
+          if (which === 'transfer') {
+            var oc = document.getElementById('loop-outcome');
+            if (oc) state.outcome = oc.value;
+          }
+          persist();
+          btn.textContent = 'Saved';
+          setTimeout(function () { btn.textContent = btn.getAttribute('data-label') || 'Saved'; }, 1200);
+        });
+      });
+
+      // restore
+      if (state.mode) {
+        var st0 = document.getElementById('preflight-status');
+        if (st0) st0.textContent = 'Restored mode: ' + state.mode;
+        var prac0 = document.getElementById('preflight-practical');
+        if (prac0) prac0.hidden = state.mode !== 'practical';
+      }
+      if (state.predict) {
+        var radio = workspace.querySelector('input[name="loop-predict"][value="' + state.predict + '"]');
+        if (radio) radio.checked = true;
+      }
+      Object.keys(state.inspect || {}).forEach(function (k) {
+        var inp = workspace.querySelector('[data-inspect="' + k + '"]');
+        if (inp) inp.value = state.inspect[k];
+      });
+      var er0 = document.getElementById('evidence-route');
+      if (er0 && state.route) er0.value = state.route;
+      var ta0 = document.getElementById('loop-explain');
+      if (ta0 && state.explain) ta0.value = state.explain;
+      var oc0 = document.getElementById('loop-outcome');
+      if (oc0 && state.outcome) oc0.value = state.outcome;
+      showStep(state.step || 'prepare');
+    }
+
+    var stuck = document.getElementById('stuck');
+    if (stuck) {
+      var help = {
+        concept: 'Restate the goal in one sentence, then open the Technical explanation layer for the key distinction. Hint ladder: (1) goal, (2) evidence drawer, (3) predict-why note, (4) worked Proof example.',
+        wallet: 'Confirm Devnet, a practice wallet, and that “not connected” is not “unsupported.” Use observation mode if the faucet or wallet fails — do not buy tokens to bypass it. Your workspace progress is already saved on this device.',
+        tx: 'Preserve the original signature. Compare Explorer logs to the intended instruction. Do not send a second transaction until you know whether the first confirmed, failed, or is still pending.',
+        ui: 'The hosted UI may differ from screenshots. Prefer account observation over appearance. Report a product defect if the documented control is missing — then use platform Proof as an alternative evidence route.',
+        diff: 'Shared mutable state can change. A historical November colour may differ from today’s account. That is a teaching moment, not an automatic fail. Record both values and the time you observed them.',
+        a11y: 'Use observation mode and keyboard-accessible Explorer links. Ask for an equivalent task if a control is inaccessible. Escalation: open a GitHub issue labelled accessibility.'
+      };
+      var panel = document.getElementById('stuck-panel');
+      stuck.querySelectorAll('[data-stuck]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var key = btn.getAttribute('data-stuck');
+          if (!panel) return;
+          panel.hidden = false;
+          panel.innerHTML = '<p><b>' + esc(btn.textContent) + '</b></p><p>' + esc(help[key] || '') + '</p><p class="note">Do not respond to every category with “try again.”</p>';
+        });
+      });
+    }
   });
 })();

@@ -82,10 +82,10 @@
         <a href="{{PROJECT}}">Bring a dApp</a>
       </div>
     </details>
-    <a class="btn nav-cta" href="{{START_LESSON}}">Start a lesson</a>
+    <a class="btn nav-cta" href="#start">Start learning</a>
   </nav>
   <div class="top-cta">
-    <a class="btn" href="{{START_LESSON}}">Start a lesson</a>
+    <a class="btn" href="#start">Start learning</a>
   </div>
   {{MARQUEE}}
 </header>
@@ -106,9 +106,10 @@
       <p class="hero-promise">Help make them better.</p>
       <p class="lead">Work a real application, produce evidence of understanding, and offer improvements back when a change is warranted. These are forks we ran ourselves, not a claim that the original team is a partner.</p>
       <p class="cta-row">
-        <a class="btn" href="{{START_LESSON}}">Start a lesson</a>
-        <a class="btn ghost" href="{{PROJECT}}">Bring your project</a>
+        <a class="btn" href="#start">Start learning</a>
+        <a class="btn ghost" href="{{START_LESSON}}">Skip to Foundations 001</a>
       </p>
+      <p class="hero-quiet">Find the right first lesson in two minutes — then prepare, practise, and leave evidence.</p>
     </div>
 
     <div id="hero-teams" class="hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
@@ -136,10 +137,12 @@
   </div>
 </section>
 
+{{START_SECTION}}
+
 <section class="band" id="featured">
   <div class="inner">
-    <p class="eyebrow">Start here</p>
-    <h2>Three environments, three starting points.</h2>
+    <p class="eyebrow">Featured applications</p>
+    <h2>Three environments after you know where to begin.</h2>
     <p class="lead">A plain-language summary first. The instruction-level detail stays on the lesson page. The level is the one recorded for that lesson.</p>
     <div class="grid feature-grid">
       {{FEATURED}}
@@ -151,6 +154,8 @@
 
 <section class="band" id="campus">
   <div class="inner">
+    <p class="eyebrow">Optional discovery</p>
+    <p class="lead honest">The campus shows where agents and project rooms are. It is not required to start or resume a lesson — use <a href="#start">Start learning</a> or your saved progress instead.</p>
     {{CAMPUS_HERO}}
   </div>
 </section>

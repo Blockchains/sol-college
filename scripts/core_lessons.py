@@ -221,6 +221,8 @@ def render(x,L,n):
   stg=stage_of(L)
   nav=f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <a href="/lessons/path/">Path</a> / <span>{E(L["title"])}</span></nav>'
   sections=[]
+  if L.get('learning_loop'):
+    sections+=[('preflight','Preflight'),('workspace','Workspace'),('stuck','Stuck')]
   if L.get('objectives') or L.get('prereqs') or L.get('concepts'): sections.append(('goals','What you will practise'))
   sections+=[('try','Guided lesson'),('how','Explanation'),('proof','Evidence'),('exercises','Assessment')]
   if L.get('build'): sections.append(('build','Build lab'))
@@ -273,6 +275,8 @@ def render(x,L,n):
   h.append('<!--dock-->')
   if L.get('objectives') or L.get('prereqs') or L.get('concepts'):
     g=['<aside class=goals>']
+    if L.get('student_outcome'):
+      g.append(f'<p class=lead><b>You will:</b> {md(L["student_outcome"])}</p>')
     if L.get('objectives'):
       g.append('<h2 id=goals>What you will practise</h2><ul>'+''.join(f'<li>{md(o)}</li>' for o in L['objectives'])+'</ul>')
       g.append('<p class=note>Completing the reading alone does not by itself demonstrate these abilities. Exercises and recorded evidence are where you show understanding.</p>')
@@ -280,13 +284,27 @@ def render(x,L,n):
       g.append('<h3>Prerequisites</h3><ul>'+''.join(f'<li>{md(format_prereq(p))}</li>' for p in L['prereqs'])+'</ul>')
     if L.get('concepts'):
       g.append('<h3>Concepts you will meet</h3><p>'+' '.join(concept_chip(c) for c in L['concepts'])+' · <a href="/lessons/glossary/">Glossary</a></p>')
+    if L.get('delivery'):
+      g.append(f'<p class=meta>Delivery: {E(L["delivery"])}</p>')
     g.append('</aside>')
     h.append(''.join(g))
+  import learning_layer as _ll
+  if L.get('learning_loop'):
+    h.append(_ll.preflight_html(x['app'], L.get('student_outcome') or L.get('title') or 'this lab'))
+    h.append(_ll.environment_panel_html(x.get('verified') or '', x.get('ui_check') or ''))
+    sigs = list(x.get('steps') or [])
+    h.append(_ll.workspace_html(L['learning_loop'], x['app'], sigs))
+    h.append(_ll.stuck_html())
+    h.append('<p class=note id=reference-layers>Reference layers below stay available. The workspace above is the focused student path.</p>')
   h.append(f'<h2 id=what><span class=num>1</span>What the app does</h2><p>{md(L["what"])}</p>')
   h.append(f'<p><a class=btn href="{E(x["app"])}">Open the live app (devnet)</a> <a class="btn ghost" href="{E(x["fork"])}/tree/{E(x["commit"])}">Source @ {E(x["commit"][:7])}</a></p>')
   h.append(f'<dl class=facts><dt>Program (devnet)</dt><dd><a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a></dd><dt>Fork</dt><dd><a href="{E(x["fork"])}">{E(x["fork"][19:])}</a> @ <code>{E(x["commit"][:7])}</code></dd><dt>Verified</dt><dd>{E(x["verified"])} (see <a href="#proof">Proof</a>)</dd>'+(f'<dt>What we changed</dt><dd>{md(L["app_note"])}</dd>' if L.get('app_note') else '')+'</dl>')
-  pre=[dict(do='Install [Phantom](https://phantom.com) (or Solflare). In Phantom open Settings → Developer Settings, turn on Testnet Mode and pick Solana Devnet.',see='The wallet shows a devnet badge. Devnet SOL is free and worthless.'),
-       dict(do='Copy your wallet address and request enough practice funds at [faucet.solana.com](https://faucet.solana.com) for the estimated costs shown in this lesson.',see='Faucet availability, limits, and timing vary. If funding is unavailable, save your progress or use the observation route (read accounts and recorded proofs without sending a transaction). Do not treat faucet access as a graded requirement.')]
+  # Wallet/faucet stay in preflight for loop lessons; keep them in try steps for others.
+  if L.get('learning_loop'):
+    pre=[]
+  else:
+    pre=[dict(do='Install [Phantom](https://phantom.com) (or Solflare). In Phantom open Settings → Developer Settings, turn on Testnet Mode and pick Solana Devnet.',see='The wallet shows a devnet badge. Devnet SOL is free and worthless.'),
+         dict(do='Copy your wallet address and request enough practice funds at [faucet.solana.com](https://faucet.solana.com) for the estimated costs shown in this lesson.',see='Faucet availability, limits, and timing vary. If funding is unavailable, save your progress or use the observation route (read accounts and recorded proofs without sending a transaction). Do not treat faucet access as a graded requirement.')]
   def ev(s):
     bits=[]
     for a,g in ran_pairs(s.get('ran')):
@@ -400,14 +418,18 @@ for x in PATH_LIVE:
   os.makedirs(f'{S}/explore/{sl}',exist_ok=True); open(f'{S}/explore/{sl}/index.html','w').write(pg)
   ready=readiness(x)
   diff=canon_diff(L.get('difficulty') or '')
-  task=(L.get('objectives') or [None])[0] or L.get('summary') or L.get('what') or L['title']
+  task=L.get('student_outcome') or (L.get('objectives') or [None])[0] or L.get('summary') or L.get('what') or L['title']
   pre=format_prereq((L.get('prereqs') or [None])[0])
   lim=one_line(limit_of(x), 140)
   chips=' '.join(concept_chip(c) for c in (L.get('concepts') or [])[:4])
   plain=re.sub(r'\[([^\]]+)\]\([^)]+\)',r'\1', task+' '+(L.get('summary') or ''))
   blob=' '.join([plain, L['title'], diff, READY_LABEL[ready], ' '.join(L.get('concepts') or [])]).lower()
   bits=[dchip(diff) if diff else '', E(L['time'])+' recorded' if L.get('time') else '', 'verified '+E(x['verified']) if x.get('verified') else '']
-  action='Start the lesson' if ready=='guided' else ('Open the challenge' if ready=='challenge' else 'Read the preview')
+  if L.get('track')=='application-lab':
+    bits.insert(0, 'Application lab')
+  if L.get('delivery'):
+    bits.append(E(L['delivery']))
+  action='Start the lab' if L.get('learning_loop') else ('Start the lesson' if ready=='guided' else ('Open the challenge' if ready=='challenge' else 'Read the preview'))
   limit_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   prereq_html=f'<p class=prereq>Before this: {md(one_line(pre, 180))}</p>' if pre else ''
   if lim and ('[' in lim or lim.startswith('{')):

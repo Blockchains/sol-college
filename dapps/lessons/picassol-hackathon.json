@@ -258,5 +258,29 @@
   "test": "anchor test",
   "note": "Written for Anchor 0.26.0, which is older than the CLIs on this machine (0.29–0.32). `anchor build` against 0.26 may need that exact CLI. The program itself is small: one `lib.rs` with `create_pixel` and `update_pixel`."
  },
- "functional": "full"
+ "functional": "full",
+ "student_outcome": "Paint a pixel. Explain where it is stored.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "learning_loop": {
+  "objective": "Decide create vs update from account existence — then explain why the address stays the same when colour changes.",
+  "predict_question": "This pixel account already exists at the derived address. Should the application create another account or update the existing one?",
+  "predict_options": [
+   {"id": "create", "label": "Create another Pixel account at a new address"},
+   {"id": "update", "label": "Update the existing account (recolour)"},
+   {"id": "fail", "label": "The transaction must fail because the account exists"}
+  ],
+  "predict_answer": "update",
+  "predict_why": "create_pixel uses init at seeds [\"pixel\", x, y]. When that account already exists, the correct path is update_pixel on the same PDA — colour changes; address does not.",
+  "act": "In observation mode, open the recorded update_pixel signature under Proof and compare it to create_pixel. In practical mode, after the 33-second client cooldown, recolour the same coordinate through the hosted UI if your wallet offers update_pixel; otherwise stay on the observation route. Hosted UI recolour remains the next platform verification task.",
+  "inspect": [
+   {"id": "coord", "label": "Coordinate (x, y)", "placeholder": "e.g. 128, 152"},
+   {"id": "address", "label": "Derived address", "placeholder": "PDA…"},
+   {"id": "exists", "label": "Account exists", "placeholder": "Yes / No"},
+   {"id": "ix", "label": "Instruction observed", "placeholder": "create_pixel / update_pixel"},
+   {"id": "colour", "label": "Observed colour", "placeholder": "r, g, b"}
+  ],
+  "explain_question": "Why did the account address stay the same when the colour changed?",
+  "transfer": "Pick a different coordinate. Derive its address (or look it up). Without re-reading the full walkthrough, state whether the next permitted action is Create or Update — and what evidence would prove it."
+ }
 }
