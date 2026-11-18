@@ -773,6 +773,10 @@ def write_home(site='site'):
         'JSON_LD': json_ld(),  # raw JSON inside a script tag; no HTML escaping
         'LIVE_COUNT': str(len(functional)),
         'LESSON_COUNT': str(len(apps)),
+        'LESSON_BREAKDOWN': (
+            f'{len(functional)} guided-ready environments and '
+            f'{len(apps) - len(functional)} debug or preview activities in the live inventory'
+        ),
         'BUG_COUNT': str(len(bugs)),
         'FIX_CARD': fix_card_html(fix_prs) + _findings.proof_card(sec_findings),
         'BUG_NOTE': E(bug_note).replace('“', '“').replace('”', '”'),  # keep unicode
