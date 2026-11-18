@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c4',
+    'title': 'Release C.4 — TrustLock learning loop',
+    'summary': (
+      'Stage 1 TrustLock joins the shared learning layer with Clock-deadline '
+      'guards, claim/cancel criteria, and curriculum metadata.'
+    ),
+    'changes': [
+      'trustlock gains learning_loop, lab-specific assessment criteria, and path-aligned prereqs.',
+      'Five Stage 1 path labs now share reusable preflight → loop → assessment components.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c3',
     'title': 'Release C.3 — gree NFT lab learning loop',
     'summary': (

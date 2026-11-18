@@ -84,6 +84,16 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_trustlock_has_learning_loop_and_deadline_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/trustlock.json').read_text())
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'reject')
+        html = ll.assessment_html(L, 'trustlock')
+        self.assertIn('DeadlineExceeded', html)
+        self.assertIn('Clock', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
