@@ -836,6 +836,7 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing-campus.js', assets / 'landing-campus.js')
     shutil.copy(HERE / 'landing-bg.js', assets / 'landing-bg.js')
     shutil.copy(HERE / 'landing-film.js', assets / 'landing-film.js')
+    shutil.copy(HERE / 'release-notice.js', assets / 'release-notice.js')
     shutil.copy(HERE / 'hero-wide.jpg', assets / 'hero-wide.jpg')
     shutil.copy(HERE / 'hero-tall.jpg', assets / 'hero-tall.jpg')
     for name in (

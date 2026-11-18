@@ -22,11 +22,21 @@ Every full lesson has the same structure:
 
 ## `dapps/lessons/<slug>.json`
 
+Recommended Release A fields (validated in `scripts/curriculum_schema.py`; exported on `/curriculum.json`):
+
+- `student_outcome` — one short public outcome statement
+- `content_version`, `content_review`, `content_owner`
+- `track` — e.g. `application-lab`, `core-path`, `elective`
+- `delivery` — how the learner practises (browser, observation, …)
+- `learning_loop` — optional Predict→Act→Inspect workspace (Picassol today)
+
 ```json
 {
  "title": "…", "summary": "one line for cards", "what": "one paragraph", "app_note": "what we changed to host it",
  "difficulty": "Beginner|Intermediate|Advanced", "time": "30 min",
  "path_order": 1, "path_stage": 1,
+ "student_outcome": "…", "content_version": "YYYY-MM-DD.N", "content_review": "YYYY-MM-DD", "content_owner": "…",
+ "track": "application-lab", "delivery": "Browser practice + evidence inspection",
  "objectives": ["what you will be able to do"],
  "prereqs": ["wallet, earlier lessons — markdown allowed"],
  "concepts": ["pda", "cpi"],

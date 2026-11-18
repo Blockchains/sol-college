@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-a2',
+    'title': 'Release A.2 — schema audit, update notice, Picassol honesty',
+    'summary': (
+      'Curriculum schema status on /curriculum.json, stale-tab reload notice from '
+      '/release.json, and clearer Picassol hosted-UI vs script verification labels.'
+    ),
+    'changes': [
+      'Curriculum export includes schema_status and missing-field lists per lesson.',
+      'Open tabs that see a new app or curriculum version get a reload banner.',
+      'Picassol states hosted create is verified; recolour remains observation/script until hosted UI is recorded.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-a',
     'title': 'Release A — correctness and clarity',
     'summary': (
@@ -258,6 +271,13 @@ def write_artifacts(site: str | Path, root: str | Path = '.') -> dict:
   site.mkdir(parents=True, exist_ok=True)
   rel = build_release(root)
   snap = curriculum_snapshot(Path(root))
+  try:
+    import curriculum_schema as _schema
+    audit = _schema.audit_inventory(root)
+    by_id = {r['id']: r for r in audit['lessons']}
+  except Exception:
+    audit = {'summary': {}}
+    by_id = {}
   public_curriculum = {
     'schema': 'sol.college.curriculum/v1',
     'curriculum_version': snap['curriculum_digest'],
@@ -270,6 +290,7 @@ def write_artifacts(site: str | Path, root: str | Path = '.') -> dict:
       'electives': snap['electives'],
       'learning_activities': snap['learning_activities'],
     },
+    'schema_summary': audit.get('summary') or {},
     'lessons': [
       {
         'id': r['id'],
@@ -281,8 +302,11 @@ def write_artifacts(site: str | Path, root: str | Path = '.') -> dict:
         'time': r['time'],
         'verified': r['verified'],
         'status': r['status'],
-        'student_outcome': r['student_outcome'],
-        'content_version': r['content_version'],
+        'student_outcome': r['student_outcome'] or (by_id.get(r['id']) or {}).get('student_outcome') or '',
+        'content_version': r['content_version'] or (by_id.get(r['id']) or {}).get('content_version') or '',
+        'schema_status': (by_id.get(r['id']) or {}).get('schema_status') or 'unknown',
+        'missing_required': (by_id.get(r['id']) or {}).get('missing_required') or [],
+        'missing_recommended': (by_id.get(r['id']) or {}).get('missing_recommended') or [],
       }
       for r in snap['lessons']
     ],
