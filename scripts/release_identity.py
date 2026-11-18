@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c5',
+    'title': 'Release C.5 — Gifter escrow learning loop (Stage 1 complete)',
+    'summary': (
+      'Stage 1 Gifter escrow joins the shared learning layer. All six Stage 1 '
+      'path labs now share preflight → Predict→Act→Inspect → assessment.'
+    ),
+    'changes': [
+      'gifter-escrow gains learning_loop, lab-specific criteria, and curriculum metadata.',
+      'Stage 1 path coverage for reusable learning components is complete.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c4',
     'title': 'Release C.4 — TrustLock learning loop',
     'summary': (

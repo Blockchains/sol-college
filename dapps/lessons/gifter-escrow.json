@@ -247,8 +247,8 @@
   "Tell a completed take (33yMgZzA… on 45C1bSkF…) from the earlier abort (ck53TqoU… on 6Z5cvVUc…)."
  ],
  "prereqs": [
-  "Phantom on devnet and a little devnet SOL. On the 13 Nov 2026 hosted build the token dropdown filled after connect.",
-  "[TrustLock](/lessons/trustlock/) immediately before this: you have just seen a SOL escrow with a Clock deadline. Here the vault is an SPL-token ATA, and there is no expiry. This is the last lesson in [stage 1](/lessons/path/#stage-1)."
+  "Phantom on Devnet with a little practice SOL. On the 13 Nov 2026 hosted build the token dropdown filled after connect.",
+  "Complete [TrustLock](/lessons/trustlock/) immediately before this: you have just seen a SOL escrow with a Clock deadline. Here the vault is an SPL-token ATA, and there is no expiry. This is the last lesson in [stage 1](/lessons/path/#stage-1)."
  ],
  "concepts": [
   "pda",
@@ -275,5 +275,73 @@
   "note": "The Anchor workspace is `contract/` (`Cargo.toml` is Anchor 0.30.1). The fork's `declare_id!` is `9HP45DvS…`. The hosted program recorded on 13 Nov 2026 is `45C1bSkF…`. The build log below checked out an earlier commit, `a9c3a417…`, not the hosted commit `fb2bbfd`.",
   "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout a9c3a417d2d78294f58975b1461859ffb20df05a` and `/home/box/.avm/bin/anchor-0.30.1 build` in `contract/` with `RUSTUP_TOOLCHAIN=1.89.0`. Cargo finished a release build in 1 m 13 s and wrote `target/deploy/gifter_escrow.so` (311,808 bytes, a valid ELF). Anchor then failed at 'Building IDL failed' with a `proc-macro-error` Span trait error — the same host-toolchain issue as DeVos, not a problem in this program. The default host rustc (1.99) is too new; use 1.89 (or another 1.8x). We did not run `anchor test`."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create a two-mint escrow with a PDA-owned vault, refund as maker (PDA-signed transfer + close), and distinguish a completed take on the hosted program from the earlier aborting program.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain PDA-owned vault deposits, maker-only refund with invoke_signed, and honest program/evidence provenance for take vs abort.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains PDA-owned vault deposit",
+    "question": "Where does mint A sit after create_escrow, and who is the vault authority?",
+    "not_yet": "Thinks mint A stays in the maker ATA, or that the maker remains vault authority.",
+    "support": "Names the vault ATA after inspecting Proof / Explorer token accounts.",
+    "independent": "States mint A is in a vault ATA whose authority is the GifterEscrow PDA seeded [\"gifter_escrow\", maker, escrow_id].",
+    "misconception": "The maker wallet still owns the deposited tokens until take."
+   },
+   {
+    "id": "c2",
+    "title": "Explains maker-only refund with PDA signature",
+    "question": "Who can refund, how does mint A leave the vault, and what happens to the accounts?",
+    "not_yet": "Allows any wallet to refund, or cannot name invoke_signed / close.",
+    "support": "Correct after revisiting refund steps and outsider rejection in Proof.",
+    "independent": "States only the maker refunds; the PDA signs transfer_checked back to the maker; vault and escrow close.",
+    "misconception": "Any connected wallet can Cancel/refund someone else's escrow."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and program provenance",
+    "question": "Can the student separate the hosted program’s completed take from the earlier aborting program — and historical Proof from their own attempt?",
+    "not_yet": "Treats ck53TqoU… abort as the hosted take, or claims Proof signatures as personal mastery.",
+    "support": "Corrects program IDs after comparing 45C1bSkF… vs 6Z5cvVUc… notes.",
+    "independent": "States completed take 33yMgZzA… is on hosted 45C1bSkF…; abort ck53TqoU… is on an earlier program not hosted here; tags observation vs live.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery on the live program."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a take scenario",
+    "question": "Without re-reading the walkthrough: what must a taker provide for take_and_close, and what UI claim should they distrust until verified on-chain?",
+    "not_yet": "Cannot name paying expected mint B amount, or trusts the GFT reward card blindly.",
+    "support": "States mint B payment after revisiting take steps / not_covered.",
+    "independent": "States taker pays expected_price of mint B and receives vault mint A; notes the card may promise a GFT reward the program does not mint.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Deposit mint A into a PDA-owned vault — then explain why only the maker’s refund can pull it back with a PDA signature.",
+  "predict_question": "An open Gifter escrow holds mint A in its vault. A stranger wallet (not the maker) presses Cancel/refund. What should happen?",
+  "predict_options": [
+   {"id": "anyone", "label": "Refund succeeds — anyone can empty an open vault"},
+   {"id": "maker_only", "label": "Refund fails for the stranger — only the maker can refund"},
+   {"id": "auto_take", "label": "The program treats Cancel as take_and_close and swaps mint B automatically"}
+  ],
+  "predict_answer": "maker_only",
+  "predict_why": "refund constrains the signer to the stored maker. The vault authority is the escrow PDA, so the program must invoke_signed to transfer mint A back; an outsider cannot satisfy the maker constraint. take_and_close is a different path that requires the taker to pay mint B.",
+  "act": "In observation mode, open the recorded create + refund under Proof, and compare the completed take (33yMgZzA… on 45C1bSkF…) with the earlier abort (ck53TqoU… on 6Z5cvVUc…). In practical mode on Devnet: connect, create an escrow if the form offers tokens, then Cancel/refund as maker. Do not treat Accept as required for Stage 1 completion when no foreign maker escrow is available — use the recorded take. Prefer the hosted app; reload if the escrow list looks stale.",
+  "inspect": [
+   {"id": "maker", "label": "Maker wallet (short)", "placeholder": "e.g. Acc1…"},
+   {"id": "escrow", "label": "Escrow PDA / id", "placeholder": "PDA… / id"},
+   {"id": "vault", "label": "Vault ATA holds mint A?", "placeholder": "Yes / amount"},
+   {"id": "ix", "label": "Instruction observed", "placeholder": "create_escrow / refund / take_and_close"},
+   {"id": "program", "label": "Program id (short)", "placeholder": "45C1… hosted / other"}
+  ],
+  "explain_question": "Why must the program sign as the escrow PDA to move mint A on refund — and why is that different from the maker simply transferring from their own ATA?",
+  "transfer": "Without re-reading the full walkthrough: what must a taker provide for take_and_close to succeed on the hosted program, and which UI promise should you verify on-chain before trusting it?"
+ }
 }
