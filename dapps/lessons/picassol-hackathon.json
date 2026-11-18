@@ -266,7 +266,45 @@
  "delivery": "Browser practice + evidence inspection",
  "track": "application-lab",
  "assessment": {
-  "purpose": "Determine whether the student can decide create vs update from account evidence, explain PDA address stability when colour changes, label evidence honestly, and transfer the rule to a fresh coordinate."
+  "purpose": "Determine whether the student can decide create vs update from account evidence, explain PDA address stability when colour changes, label evidence honestly, and transfer the rule to a fresh coordinate.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Decides Create vs Update from account existence",
+    "question": "Does the student base the action on whether the Pixel account exists at the derived address?",
+    "not_yet": "Treats a white-looking cell as empty, or invents Create/Update without account observation.",
+    "support": "Correct after a prompt to check getAccountInfo / Explorer at the derived address.",
+    "independent": "Records coordinate, derived address, Account exists Yes/No, and chooses Create or Update from that evidence.",
+    "misconception": "White means no account."
+   },
+   {
+    "id": "c2",
+    "title": "Explains address stability when colour changes",
+    "question": "Can the student explain why update_pixel keeps the same PDA?",
+    "not_yet": "Claims colour change creates a new account, or cannot name the seeds.",
+    "support": "Names seeds after a prompt to compare create vs update in Proof.",
+    "independent": "States seeds [\"pixel\", x, y] (and bump on update) and that colour is data inside the same account.",
+    "misconception": "A new colour needs a new address."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to a fresh coordinate",
+    "question": "On a new coordinate, can the student state Create or Update and what evidence would prove it?",
+    "not_yet": "Cannot generalise beyond the walked-through pixel.",
+    "support": "States the rule after revisiting the predict-why note.",
+    "independent": "Picks a different coordinate, derives or looks up the address, and states Create vs Update with the evidence needed.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
  },
  "learning_loop": {
   "objective": "Decide create vs update from account existence — then explain why the address stays the same when colour changes.",
