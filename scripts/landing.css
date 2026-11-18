@@ -1045,6 +1045,8 @@ section.band h2 { letter-spacing: -0.02em; }
   left: 0;
   z-index: 20;
   min-width: 230px;
+  max-height: min(70vh, 520px);
+  overflow: auto;
   padding: 8px;
   display: flex;
   flex-direction: column;

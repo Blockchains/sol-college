@@ -287,6 +287,28 @@ class FoundationsIndexWiring(unittest.TestCase):
         self.assertIn('expected revisions', path)
         self.assertIn('/lessons/protecting-state-transitions/', path)
 
+    def test_main_nav_lists_all_seven(self):
+        nav = f.foundations_main_nav_items()
+        for slug in (
+            'first-transaction',
+            'accounts-ownership',
+            'instructions-programs',
+            'transaction-atomicity',
+            'transaction-failures',
+            'application-state',
+            'protecting-state-transitions',
+        ):
+            self.assertIn(f'/lessons/{slug}/', nav)
+        self.assertIn('/lessons/#foundations', nav)
+        self.assertIn('/lessons/path/', nav)
+
+    def test_sequence_nav_marks_current(self):
+        html = f.foundations_sequence_nav('/lessons/application-state/')
+        self.assertIn('aria-current=page', html)
+        self.assertIn('title="Application state"', html)
+        self.assertIn('/lessons/protecting-state-transitions/', html)
+        self.assertIn('/lessons/first-transaction/', html)
+
 
 if __name__ == '__main__':
     unittest.main()
