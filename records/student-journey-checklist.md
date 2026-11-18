@@ -39,7 +39,7 @@ Legend: `done` · `partial` · `todo`
 
 ## Later releases
 
-- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; Picassol + NameGen + POE + gree + TrustLock wired; lab-specific rubrics)
+- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all six Stage 1 path labs wired with lab-specific rubrics; Stage 2+ still open)
 - Release D: Foundations migration + rubrics — foundations 001–007 RC exist; verification open
 - Release E: AI tutor, personalisation, community — `todo` (P2)
 

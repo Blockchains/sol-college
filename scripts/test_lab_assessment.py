@@ -94,6 +94,32 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_gifter_has_learning_loop_and_vault_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/gifter-escrow.json').read_text())
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'maker_only')
+        html = ll.assessment_html(L, 'gifter-escrow')
+        self.assertIn('maker', html.lower())
+        self.assertIn('PDA', html)
+        self.assertIn('45C1bSkF', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
+    def test_all_stage1_path_labs_have_learning_loop(self):
+        stage1 = [
+            'picassol-hackathon',
+            'c4-comets-todor-edward-andrei',
+            'poe-solana',
+            'gree',
+            'trustlock',
+            'gifter-escrow',
+        ]
+        for slug in stage1:
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertIn('learning_loop', L, slug)
+            self.assertIn('assessment', L, slug)
+            self.assertTrue(L['assessment'].get('criteria'), slug)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
