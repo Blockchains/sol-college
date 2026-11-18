@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c8',
+    'title': 'Release C.8 — Trust Protocol learning loop',
+    'summary': (
+      'Stage 2 Trust Protocol joins the shared learning layer with second-initialize '
+      'and bond-vault-v2 criteria, keeping unverified dispute/insurance out of mastery claims.'
+    ),
+    'changes': [
+      'trust-protocol gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment requires honesty about contract/dispute/insurance not being on the verified path.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c7',
     'title': 'Release C.7 — MandateKey learning loop',
     'summary': (
