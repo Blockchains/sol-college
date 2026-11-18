@@ -78,3 +78,18 @@ class JournalNotes(unittest.TestCase):
         self.assertIn('not peer reviewed', home.lower())
         self.assertIn('/journal/notes/', home)
         self.assertNotIn('award', home.lower())
+
+    def test_research_programme_has_nine_protocols_with_priors(self):
+        import journal_depth as depth
+        import journal_priors as priors
+        self.assertEqual(len(journal.PROTOCOLS), 9)
+        self.assertEqual({p['slug'] for p in journal.PROTOCOLS}, set(depth.DEPTH))
+        self.assertGreaterEqual(len(depth.SKETCHES), 18)
+        self.assertIn('finality-under-named-rules', {p['slug'] for p in journal.PROTOCOLS})
+        for p in journal.PROTOCOLS:
+            html = journal.protocol_page(p)[3]
+            self.assertIn('Documentary priors from the library', html)
+            self.assertIn('/library/papers/', html)
+            self.assertTrue(priors.priors_for(p['slug']))
+        alpenglow = self.by_slug['solana-alpenglow-consensus-v1-2']
+        self.assertEqual(alpenglow.get('related') and alpenglow['related'][0], 'finality-under-named-rules')

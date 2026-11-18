@@ -87,8 +87,8 @@ def bearing(row):
       'This file supplies a sentence a reader might repeat as a number. The sketch’s rule is that the sentence is not yet a measurement. '
       'Nothing on this page re-runs the analysis, times a client, or decides whether failed transactions would have counted.'),
      (('fee', 'rent', 'lamport', 'compute budget', 'priority'),
-      'the-cost-of-a-payment', 'The Cost of a Payment',
-      'The cost sketch says a displayed fee is an interpretation, and the observation would be the set of balance changes. '
+      'fee-and-rent-observation', 'Fee and Rent Observation',
+      'The fee-and-rent protocol separates a displayed figure from the balance-change set a workflow actually records. '
       'This file may name a fee, a rent rule, or a compute charge. Naming it is not the same as walking a payment and listing every balance that moved. '
       'No workflow was costed for this note.'),
      (('blockhash', 'confirmation', 'commitment', 'receipt', 'nonce', 'pending'),
@@ -101,8 +101,8 @@ def bearing(row):
       'The second protocol separates a signed message from the business act a second signature might repeat. '
       'A proposal about duplicates or replay can be prior reading for that protocol. It is not a fault-injection result, and no operation identifier was scored.'),
      (('upgrade', 'loader', 'immutable', 'authority'),
-      'upgrade-authority', 'Upgrade Authority Disclosure',
-      'The upgrade sketch compares an on-chain authority with a statement a user can open. '
+      'upgrade-bytes-and-disclosure', 'Upgrade Bytes and Disclosure',
+      'The upgrade-bytes protocol compares an on-chain loader authority with a statement a user can open. '
       'This file is neither of those records. It does not show what a loader account currently names, and it does not show what a website tells a signer. '
       'No deployment was inspected.'),
      (('token', 'spl', 'mint', 'transfer', 'nft'),
@@ -113,10 +113,25 @@ def bearing(row):
       'indexer-recovery', 'Indexer Recovery After Interruption',
       'An indexer or an RPC history can be described in a file and still not be shown to recover a gap. '
       'The sketch’s observation would be the slots in a store compared with a source that is not the store. This note has no store and no gap.'),
+     (('slash', 'slashable'),
+      'slashable-evidence-records', 'Slashable Evidence Records',
+      'This file’s sentences touch slashable behaviour or slashing rules. '
+      'The nearest open sketch keeps suspected, verified, and acted-on evidence in different sentences. '
+      'A design note is not a verified evidence object, and no stake account was read for this appraisal.'),
+     (('vote credit', 'vote credits', 'leader schedule', 'timely vote', 'timely-vote'),
+      'vote-credits-and-schedule', 'Vote Credits and Leader Schedule',
+      'This file names vote-credit or leader-schedule design language. '
+      'The sketch asks what before/after records a study would store; this appraisal does not store them. '
+      'A SIMD status label is not a credit table from a named cluster.'),
+     (('stake delegation', 'staking reward', 'staking rewards', 'delegat'),
+      'stake-delegation-disclosure', 'Stake Delegation Disclosure',
+      'This file discusses stake, delegation, or rewards as design text. '
+      'The sketch compares on-chain fields with public statements. '
+      'No stake account was read, and no pool UI was scored for this note.'),
      (('vote', 'consensus', 'tower', 'alpenglow', 'proof of history', 'votor', 'rotor', 'fork'),
-      None, None,
+      'finality-under-named-rules', 'Finality Under Named Rules',
       'This file’s stored sentences are about agreement: a vote, a fork, a consensus rule, or a named design such as Proof of History, Tower, or Alpenglow. '
-      'None of the six founding protocols is a consensus study, and this appraisal does not invent one. '
+      'The nearest open protocol on this site is Finality Under Named Rules, which keeps document claims and cluster observations in different columns. '
       'A round count, a stake threshold, or a resilience figure in the file stays the file’s claim. It is not a finality measurement from a cluster, because no cluster was queried.'),
      (('wallet', 'signer', 'preview'),
       'wallet-preview', 'Wallet Preview Comprehension',
