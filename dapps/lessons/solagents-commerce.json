@@ -40,5 +40,20 @@
  "not_covered": "reject, claim_refund, close_job, hooks, set_provider after create, and the bonding_curve program were not exercised.",
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Identify buyer, seller, and settlement accounts in the commerce program.",
+  "Execute one recorded purchase/settlement path on Devnet.",
+  "Explain what evidence proves the payment settled."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice SOL/tokens for the lesson mint.",
+  "Read [instructions and programs](/lessons/instructions-programs/) or equivalent."
+ ],
+ "student_outcome": "Complete one commerce flow between agent roles and verify the on-chain settlement.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

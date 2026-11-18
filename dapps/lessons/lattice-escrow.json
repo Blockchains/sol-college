@@ -34,5 +34,20 @@
  "not_covered": "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains).",
  "difficulty": "Intermediate",
  "time": "20 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Derive or locate the escrow PDA used by Lattice.",
+  "Fund the escrow and observe locked token balances.",
+  "Explain which condition unlocks release vs reclaim."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Understanding of PDA seeds from [Picassol](/lessons/picassol-hackathon/) or Foundations."
+ ],
+ "student_outcome": "Create a lattice escrow and verify release conditions against account state.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

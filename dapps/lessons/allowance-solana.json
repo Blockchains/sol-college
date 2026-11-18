@@ -36,5 +36,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "25 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Explain what an allowance account authorises.",
+  "Perform one allowance set or spend on Devnet.",
+  "Show how a spend beyond the limit is rejected (or cite recorded rejection)."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds.",
+  "Familiarity with signer vs owned accounts."
+ ],
+ "student_outcome": "Set or use an allowance and verify spending limits on-chain.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }

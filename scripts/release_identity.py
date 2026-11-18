@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-a3',
+    'title': 'Release A.3 — curriculum required-field backfill',
+    'summary': (
+      'All live guided lessons now carry objectives and prerequisites; the twelve former '
+      'schema gaps also get student_outcome, content_version, and elective track labels.'
+    ),
+    'changes': [
+      'curriculum_schema reports missing_required_lessons = 0 for the live inventory.',
+      'Escrow/agent electives (AgentEscrow, Veedor, Otomat, Agent Court, and peers) have decision-ready outcomes.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-b2',
     'title': 'Release B.2 — pending-attempt recovery',
     'summary': (

@@ -32,5 +32,20 @@
  ],
  "difficulty": "Intermediate",
  "time": "30 min",
- "functional": "full"
+ "functional": "full",
+ "objectives": [
+  "Open a channel PDA and lock tokens for payer→payee.",
+  "Explain why the Ed25519 pre-instruction matters for settle.",
+  "Settle a signed check and verify balances after settlement."
+ ],
+ "prereqs": [
+  "A Devnet wallet with practice funds and the lesson mint.",
+  "Comfortable with multi-instruction transactions (Foundations 004 or equivalent)."
+ ],
+ "student_outcome": "Open a payment channel and settle a payer-signed check with the Ed25519 pre-instruction.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "track": "elective",
+ "delivery": "Browser practice + evidence inspection"
 }
