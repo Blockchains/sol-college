@@ -273,16 +273,30 @@ def workspace_html(loop: dict, app_href: str, platform_sigs: list | None = None)
 '''
 
 
+def _hosted_ui_label(ui_check: str) -> str:
+  t = (ui_check or '').lower()
+  if not t:
+    return 'Unspecified — see Proof for method details.'
+  if 'not yet' in t or ('script' in t and 'ui' in t):
+    return 'Partial: some steps are script-verified; hosted UI may still be open.'
+  if 'clicked' in t or 'hosted' in t or 'browser' in t or 'phantom' in t:
+    return 'Hosted UI notes recorded (not a live uptime claim).'
+  return 'Method notes recorded (see Proof).'
+
+
 def environment_panel_html(verified: str = '', ui_check: str = '') -> str:
   v = E(verified or 'unknown')
   ui = E(ui_check or 'See lesson Proof for method details.')
+  hosted = E(_hosted_ui_label(ui_check))
   return f'''
 <aside class="env-health" id="env-health">
   <p class="eyebrow">Environment health</p>
-  <p>Separate from your performance. A broken lab is not a failed student.</p>
+  <p>Separate from your performance. A broken lab is not a failed student. These labels are not live uptime.</p>
   <dl class="facts">
-    <dt>Recorded flow</dt><dd>Last reproduced: {v}</dd>
-    <dt>Method</dt><dd>{ui}</dd>
+    <dt>Program flow</dt><dd>Last recorded reproduction: {v}</dd>
+    <dt>Hosted UI</dt><dd>{hosted}</dd>
+    <dt>Method detail</dt><dd>{ui}</dd>
+    <dt>Frontend / RPC</dt><dd>Checked when you open the app; failures here are infrastructure, not assessment.</dd>
     <dt>If unavailable</dt><dd>Save progress, use observation/captured evidence, or pause — do not invent a transaction.</dd>
   </dl>
 </aside>
