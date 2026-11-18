@@ -149,8 +149,8 @@
   "State why a second initialize fails and what is still needed before register_agent."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL (initialize pays rent for two PDAs).",
-  "Comfort with PDAs, Anchor init constraints, and SPL mints."
+  "A wallet on Devnet with a little practice SOL (initialize pays rent for two PDAs).",
+  "Complete [MandateKey](/lessons/mandatekey/) or equivalent Stage 2 progress — Trust Protocol is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs, Anchor init constraints, and SPL mints."
  ],
  "concepts": [
   "pda",
@@ -165,5 +165,73 @@
   "note": "Program id on this lab deployment is EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f."
  },
  "functional": "full",
- "functional_evidence": "initialize landed and protocol_config was read back; setup_bond_vault and migrate_bond_vault created the v2 bond vault; register_agent locked a 3 SWORN identity bond and the AgentIdentity account was read back; a second register_agent was rejected."
+ "functional_evidence": "initialize landed and protocol_config was read back; setup_bond_vault and migrate_bond_vault created the v2 bond vault; register_agent locked a 3 SWORN identity bond and the AgentIdentity account was read back; a second register_agent was rejected.",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Explain what initialize writes, why a second initialize fails, and why register_agent needs the bond-vault-v2 path after setup/migrate.",
+ "delivery": "Console / observation practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain protocol-config/insurance-pool init, second-initialize failure, and the bond-vault vs bond-vault-v2 prerequisite for register_agent — without inventing unverified contract/dispute/insurance mastery.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Names what initialize creates",
+    "question": "What PDAs does initialize write, and which seeds identify them?",
+    "not_yet": "Cannot name protocol-config and insurance-pool, or invents unrelated accounts.",
+    "support": "Names both after fetching documented PDAs under Proof / console.",
+    "independent": "States protocol-config and insurance-pool PDAs (documented seeds) holding mint/bond/fee parameters and pool state.",
+    "misconception": "initialize only creates a single agent identity account."
+   },
+   {
+    "id": "c2",
+    "title": "Explains second-initialize failure",
+    "question": "Why does a second initialize with the same PDAs fail?",
+    "not_yet": "Expects overwrite or a new config account each time.",
+    "support": "Correct after revisiting Anchor init constraints on those PDAs.",
+    "independent": "States both accounts use init at fixed seeds, so a second call fails because the addresses already exist.",
+    "misconception": "Admins can re-run initialize to reset protocol parameters in place."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof/script evidence from their attempt, and avoid claiming contract/dispute/insurance mastery?",
+    "not_yet": "Claims full protocol mastery from initialize reads alone, or treats Proof as personal completion.",
+    "support": "Corrects after reading not_covered.",
+    "independent": "Tags observation/live; notes contract, dispute, and insurance ixs were not required for this lab’s verified path.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of the full Trust Protocol."
+   },
+   {
+    "id": "c4",
+    "title": "Explains bond-vault-v2 before register_agent",
+    "question": "Without re-reading the walkthrough: why can setup_bond_vault alone be insufficient for register_agent on this deployment?",
+    "not_yet": "Ignores the seed mismatch / migration.",
+    "support": "Names bond-vault vs bond-vault-v2 after revisiting the exercise.",
+    "independent": "States setup_bond_vault uses bond-vault while register_agent reads bond-vault-v2; migrate_bond_vault bridges them on this lab deployment.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Read the initialized Trust Protocol PDAs — then explain why initialize cannot run twice and what must exist before register_agent.",
+  "predict_question": "On this lab deployment, initialize has already created the protocol-config and insurance-pool PDAs. You submit initialize again with the same accounts. What should happen?",
+  "predict_options": [
+   {"id": "reset", "label": "Succeed and overwrite protocol parameters in place"},
+   {"id": "fail_exists", "label": "Fail — those PDAs already exist (Anchor init)"},
+   {"id": "new_agent", "label": "Succeed and create a new AgentIdentity instead"}
+  ],
+  "predict_answer": "fail_exists",
+  "predict_why": "initialize uses init on fixed-seed PDAs (protocol-config and insurance-pool). Once they exist, a second initialize cannot recreate them at the same addresses. Agent registration is a separate path that also depends on the bond vault (v2 after migrate on this deployment).",
+  "act": "In observation mode, fetch the protocol-config PDA (seeds [\"protocol-config\"]) and insurance-pool under Proof / console, and review the recorded second-initialize rejection if present. In practical mode on Devnet: connect the IDL console at /dapps/trust-protocol/, read the existing PDAs, optionally attempt a second initialize (expect failure), then review setup_bond_vault → migrate_bond_vault before any register_agent work. Prefer observation when you lack SWORN for bonding. Do not treat contract/dispute/insurance as required for this lab’s verified path.",
+  "inspect": [
+   {"id": "config", "label": "protocol-config PDA (short)", "placeholder": "PDA…"},
+   {"id": "pool", "label": "insurance-pool PDA (short)", "placeholder": "PDA…"},
+   {"id": "second_ix", "label": "Second initialize result", "placeholder": "failed account in use / not tried"},
+   {"id": "vault_path", "label": "Bond vault path noted", "placeholder": "bond-vault → migrate → bond-vault-v2"},
+   {"id": "register", "label": "register_agent observed?", "placeholder": "yes (script/UI) / observation only"}
+  ],
+  "explain_question": "Why must register_agent care about bond-vault-v2 on this deployment even after setup_bond_vault succeeded once?",
+  "transfer": "Without re-reading the full walkthrough: if someone claims they “re-initialized” the protocol on the same program id and seeds, what on-chain evidence would contradict them?"
+ }
 }
