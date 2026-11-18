@@ -167,8 +167,8 @@
   "Pause and close a policy as the owner."
  ],
  "prereqs": [
-  "A wallet on devnet with a little SOL (init_policy pays rent).",
-  "Comfort with PDAs and Anchor account constraints."
+  "A wallet on Devnet with a little practice SOL (init_policy pays rent). A second agent keypair is useful for check_spend.",
+  "Complete [ZeroAI](/lessons/zeroai/) or equivalent Stage 2 progress — Oculus is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor account constraints."
  ],
  "concepts": [
   "pda",
@@ -182,5 +182,73 @@
   "test": "tests/devnet/oculus.mjs",
   "note": "Program id on this lab deployment is AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create a policy PDA, explain budget and pause checks on check_spend, and pause/close as owner — without treating check_spend as a token transfer.",
+ "delivery": "Console / observation practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can create a policy PDA, explain LimitBreached vs pause behaviour, and stay honest that check_spend does not move tokens and window-reset was not waited out.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Creates and reads a policy PDA",
+    "question": "Can the student init a policy seeded [\"policy\", agent] and read daily_limit / window fields back?",
+    "not_yet": "Cannot name seeds or invents success without an account read.",
+    "support": "Correct after revisiting init_policy / Proof.",
+    "independent": "Creates with a legal window (60–86400s), reads the PDA, and records the agent binding.",
+    "misconception": "The policy PDA is seeded only by the owner wallet."
+   },
+   {
+    "id": "c2",
+    "title": "Explains pause and over-limit checks",
+    "question": "After pause_agent, what should check_spend do — and what happens to spent_window on LimitBreached?",
+    "not_yet": "Expects spend to continue while paused, or thinks LimitBreached still increments spent_window.",
+    "support": "Correct after revisiting budget/pause checks and the LimitBreached exercise.",
+    "independent": "States paused policies reject check_spend; over-limit emits LimitBreached without changing spent_window.",
+    "misconception": "check_spend always transfers USDC when it succeeds."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and avoid claiming window-reset or token-transfer mastery?",
+    "not_yet": "Claims tokens moved or window rolled without waiting, or treats Proof as personal completion.",
+    "support": "Corrects after reading not_covered.",
+    "independent": "Tags observation/live; notes check_spend is an allowance check (no transfer) and window-reset was not waited out.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of rolling budgets and transfers."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to close_policy",
+    "question": "Without re-reading the walkthrough: who can close_policy, and what should remain afterward?",
+    "not_yet": "Expects the agent to close, or invents leftover spendable policy state.",
+    "support": "States owner closes after revisiting try step 5.",
+    "independent": "States owner close_policy closes the PDA; further agent check_spend cannot use that policy.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Enforce a rolling agent spend policy — then pause it and explain why over-limit checks leave spent_window unchanged.",
+  "predict_question": "A policy is active with daily_limit_usdc=1_000_000 and spent_window already near the cap. The owner then pause_agent. What should the next agent check_spend do?",
+  "predict_options": [
+   {"id": "still_ok", "label": "Succeed if the amount still fits the remaining budget"},
+   {"id": "paused", "label": "Fail because the policy is paused"},
+   {"id": "auto_close", "label": "Automatically close the policy and refund rent to the agent"}
+  ],
+  "predict_answer": "paused",
+  "predict_why": "pause_agent flips the policy pause flag. check_spend rejects paused policies before applying budget math. Separately, an over-limit attempt emits LimitBreached without incrementing spent_window. check_spend does not transfer tokens — it is an on-chain allowance check.",
+  "act": "In observation mode, open recorded init_policy / check_spend / pause_agent / close_policy under Proof. In practical mode on Devnet via /dapps/oculus/: init_policy for an agent, have the agent sign a small check_spend, try an over-limit amount, pause_agent, retry check_spend (expect failure), then close_policy as owner. Prefer observation if you lack a second signer. Do not wait out window_seconds unless you intend to study reset; that path was not verified here.",
+  "inspect": [
+   {"id": "agent", "label": "Agent pubkey (short)", "placeholder": "Agt…"},
+   {"id": "policy", "label": "Policy PDA (short)", "placeholder": "PDA…"},
+   {"id": "spent", "label": "spent_window before/after", "placeholder": "e.g. 100 → 100 on LimitBreached"},
+   {"id": "paused", "label": "Paused when checking?", "placeholder": "yes / no"},
+   {"id": "result", "label": "check_spend result", "placeholder": "ok / LimitBreached / paused / error"}
+  ],
+  "explain_question": "Why does LimitBreached leave spent_window unchanged — and why is a successful check_spend still not proof that USDC left a vault?",
+  "transfer": "Without re-reading the full walkthrough: which windows are legal at init_policy, and who is allowed to close_policy afterward?"
+ }
 }

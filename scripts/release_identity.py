@@ -19,6 +19,18 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-c10',
+    'title': 'Release C.10 — Oculus learning loop',
+    'summary': (
+      'Stage 2 Oculus joins the shared learning layer with pause/LimitBreached '
+      'criteria and honesty that check_spend does not transfer tokens.'
+    ),
+    'changes': [
+      'oculus gains learning_loop, lab-specific criteria, and path-aligned prereqs.',
+      'Assessment requires honesty about window-reset and non-transferring check_spend.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c9',
     'title': 'Release C.9 — ZeroAI learning loop',
     'summary': (
