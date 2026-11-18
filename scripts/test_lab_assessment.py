@@ -238,6 +238,26 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_orboracle_has_learning_loop_and_weight_lock_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/orboracle-solana.json').read_text())
+        self.assertEqual(L.get('path_stage'), 3)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'after_lock')
+        html = ll.assessment_html(L, 'orboracle-solana')
+        self.assertIn('half-life', html.lower())
+        self.assertIn('lock', html.lower())
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
+    def test_all_stage3_path_labs_have_learning_loop(self):
+        stage3 = ['sentient-send', 'colosseum', 'orboracle-solana']
+        for slug in stage3:
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('path_stage'), 3, slug)
+            self.assertIn('learning_loop', L, slug)
+            self.assertIn('assessment', L, slug)
+            self.assertTrue(L['assessment'].get('criteria'), slug)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

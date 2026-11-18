@@ -321,8 +321,8 @@
   "See a lock release and a quorum that may not be a real percentage."
  ],
  "prereqs": [
-  "Phantom on devnet and about 0.1 SOL, plus the oracle's stake token if the app mints one.",
-  "[stakes.wtf](/lessons/stakes-main/) (staking, rewards) and [Votara](/lessons/votara/) (quorum). This is an oracle, not a market: the output is a number other programs could read."
+  "Phantom on Devnet with about 0.1 practice SOL, plus a 0-decimal weight token mint for Create/Deposit.",
+  "Complete [Novengrid staking](/lessons/colosseum/) — OrbOracle closes [stage 3](/lessons/path/#stage-3). This is an oracle feed other programs could read, not a sentiment market like sentient.send."
  ],
  "concepts": [
   "oracle",
@@ -342,5 +342,73 @@
   "test": "anchor test",
   "note": "The program is in `anchor/programs/oracle`. Tests: `anchor/tests/oracle.test.ts`."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create or use an OrbOracle feed, deposit weight tokens, submit a price, and explain stake-weighted time-decayed aggregation plus deposit lock before weight counts.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can explain stake-weighted time-decayed aggregation, deposit lock before weight counts, and honest coverage of fund/blacklist paths — without confusing quorum UI with a proven percentage.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Explains stake-weighted time-decayed aggregate",
+    "question": "What does submit_value do to the oracle’s published number?",
+    "not_yet": "Thinks the last submitter alone sets the price with no weights/decay.",
+    "support": "Correct after revisiting submit_value / Proof aggregate notes.",
+    "independent": "States each submit updates a token-weighted average whose older weight decays with the configured half-life.",
+    "misconception": "OrbOracle resolves like sentient.send’s winner-takes-all market."
+   },
+   {
+    "id": "c2",
+    "title": "Explains deposit lock before weight",
+    "question": "Right after Deposit Tokens, do those tokens immediately count as voting/submission weight?",
+    "not_yet": "Assumes deposit instantly grants full weight.",
+    "support": "Correct after revisiting lock-period / withdraw try steps.",
+    "independent": "States tokens count as weight after the lock period ends; withdraw is gated by that lock.",
+    "misconception": "Deposit and Submit Value are the same instruction."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence and coverage honestly",
+    "question": "Does the student distinguish Proof from their attempt, and note which moderation/fund paths were script-only?",
+    "not_yet": "Claims fund/blacklist UI mastery the app lacks, or treats Proof as personal completion.",
+    "support": "Corrects after reading not_covered (no Fund button; blacklist scripted).",
+    "independent": "Tags observation/live; notes fund/blacklist/whitelist gaps and slow getProgramAccounts explorer lists.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery of moderation quorum."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to recomputing the aggregate",
+    "question": "Without re-reading the walkthrough: given two recorded submissions with stakes and ages, can the student state how to recompute the aggregate and what half-life does to the older one?",
+    "not_yet": "Cannot relate weight×price and time decay.",
+    "support": "States the approach after revisiting the recompute exercise.",
+    "independent": "Outlines weighted average with half-life decay on older submissions; cites recorded amounts.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Submit into a stake-weighted oracle — then explain time decay and why freshly deposited tokens may not yet count as weight.",
+  "predict_question": "You just deposited weight tokens into an OrbOracle vault. The deposit lock has not ended. You immediately Submit Value. How should the program treat your new deposit’s weight?",
+  "predict_options": [
+   {"id": "full_weight", "label": "Full deposit amount counts immediately in the weighted average"},
+   {"id": "after_lock", "label": "Those tokens do not count as weight until the lock period ends"},
+   {"id": "no_submit", "label": "Submit Value is impossible until you also press Fund"}
+  ],
+  "predict_answer": "after_lock",
+  "predict_why": "Deposited weight tokens unlock after a configured lock period before they count as voting/submission weight. submit_value updates a stake-weighted average that also time-decays older submissions via half-life. Fund is a separate SOL reward path — the hosted app may not even expose a Fund button.",
+  "act": "In observation mode, open recorded create/deposit/submit under Proof and note lock vs submit timing. In practical mode on Devnet: create a 0-decimal weight mint, Create an oracle, Deposit, wait if needed, Submit Value. Prefer observation/script evidence for withdraw-after-lock and blacklist. Do not treat Fund/whitelist as required hosted steps.",
+  "inspect": [
+   {"id": "mint", "label": "Weight mint decimals", "placeholder": "0"},
+   {"id": "deposit", "label": "Deposited amount", "placeholder": "e.g. 50"},
+   {"id": "lock", "label": "Lock ended before submit?", "placeholder": "yes / no / unknown"},
+   {"id": "price", "label": "Submitted price", "placeholder": "e.g. 123.45"},
+   {"id": "aggregate", "label": "Aggregate after submit", "placeholder": "value / observation"}
+  ],
+  "explain_question": "Why does half-life matter for two submitters with equal stake but different ages — and how is that different from a winner-takes-all market pool?",
+  "transfer": "Without re-reading the full walkthrough: after the withdrawal lock, what should Withdraw Tokens do, and why might on-chain quorum settings still not be a trustworthy “percentage” in the UI?"
+ }
 }
