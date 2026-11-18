@@ -1,0 +1,252 @@
+{
+  "schema": "sol.college.foundations/v1",
+  "note": "Canonical foundations records for curriculum.json. Pages remain authored in scripts/foundations_*.py as release candidates until technical and learner verification complete.",
+  "lessons": [
+    {
+      "id": "first-transaction",
+      "number": 1,
+      "title": "Authorise and verify a transaction",
+      "path": "/lessons/first-transaction/",
+      "assess_path": "/lessons/first-transaction/assessment/",
+      "student_outcome": "Authorise a practice transfer on Devnet and verify execution separately from commitment.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "A practice wallet on Solana Devnet; no prior Solana required."
+      ],
+      "objectives": [
+        "Separate submission, execution result, and commitment.",
+        "Reject a wallet request that does not match intention.",
+        "Verify a transfer on the intended network before claiming success."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "learning_loop": {
+        "objective": "Predict fee and balance changes \u2014 then verify execution separately from commitment.",
+        "predict_question": "You approve a Devnet transfer of 0.01 SOL from A to B. What must be true before you treat it as a successful practical transfer?",
+        "predict_options": [
+          {
+            "id": "sig_only",
+            "label": "A transaction signature appears in the wallet UI"
+          },
+          {
+            "id": "exec_commit",
+            "label": "It is observed on Devnet, execution succeeded, and it reached the required commitment"
+          },
+          {
+            "id": "fee_zero",
+            "label": "The fee was zero, so commitment does not matter"
+          }
+        ],
+        "predict_answer": "exec_commit",
+        "predict_why": "A signature identifier is not proof of successful execution or of the required commitment. Check network, execution result, and commitment as separate dimensions.",
+        "act": "Use the lesson\u2019s practice transfer or observation route. Review the wallet request against your prediction before approving. Prefer Devnet. Do not use mainnet funds.",
+        "inspect": [
+          {
+            "id": "network",
+            "label": "Network observed",
+            "placeholder": "devnet / other"
+          },
+          {
+            "id": "sig",
+            "label": "Signature (short)",
+            "placeholder": "sig\u2026"
+          },
+          {
+            "id": "execution",
+            "label": "Execution result",
+            "placeholder": "succeeded / failed / unknown"
+          },
+          {
+            "id": "commitment",
+            "label": "Commitment observed",
+            "placeholder": "processed / confirmed / finalized / unresolved"
+          },
+          {
+            "id": "balances",
+            "label": "Balance change matched prediction?",
+            "placeholder": "yes / no / unsure"
+          }
+        ],
+        "explain_question": "Why can a transaction be confirmed on the network and still have failed execution while charging a fee?",
+        "transfer": "Without re-reading the full lesson: a transaction id is visible. What three checks do you make before claiming success?"
+      },
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "accounts-ownership",
+      "number": 2,
+      "title": "Accounts, ownership, and authority",
+      "path": "/lessons/accounts-ownership/",
+      "assess_path": "/lessons/accounts-ownership/assessment/",
+      "student_outcome": "Separate program ownership from authority and predict which signatures an update needs.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 001 \u2014 Authorise and verify a transaction (or equivalent)."
+      ],
+      "objectives": [
+        "Identify an account\u2019s owner program vs authorities in its data.",
+        "Predict who must sign an update.",
+        "Explain why the wrong signer fails."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "instructions-programs",
+      "number": 3,
+      "title": "Instructions and programs",
+      "path": "/lessons/instructions-programs/",
+      "assess_path": "/lessons/instructions-programs/assessment/",
+      "student_outcome": "Trace an instruction to expected account changes and verify them after submission.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 002 \u2014 Accounts, ownership, and authority."
+      ],
+      "objectives": [
+        "Name the program and accounts an instruction touches.",
+        "Predict state change before sending.",
+        "Verify observed accounts match the prediction."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "transaction-atomicity",
+      "number": 4,
+      "title": "Multi-instruction transactions and atomicity",
+      "path": "/lessons/transaction-atomicity/",
+      "assess_path": "/lessons/transaction-atomicity/assessment/",
+      "student_outcome": "Explain why several instructions in one transaction succeed or fail together.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 003 \u2014 Instructions and programs."
+      ],
+      "objectives": [
+        "Identify multiple instructions in one transaction.",
+        "Predict all-or-nothing outcomes.",
+        "Relate atomicity to fees when execution fails."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "transaction-failures",
+      "number": 5,
+      "title": "Failure diagnosis and recovery",
+      "path": "/lessons/transaction-failures/",
+      "assess_path": "/lessons/transaction-failures/assessment/",
+      "student_outcome": "Classify wallet rejection, simulation failure, execution failure, and unresolved status \u2014 and choose the next safe action.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 004 \u2014 Multi-instruction transactions and atomicity."
+      ],
+      "objectives": [
+        "Separate rejection, simulation, execution, and commitment failures.",
+        "Avoid blind resubmit after unresolved status.",
+        "Reconcile before a corrected attempt."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "application-state",
+      "number": 6,
+      "title": "Reliable client state",
+      "path": "/lessons/application-state/",
+      "assess_path": "/lessons/application-state/assessment/",
+      "student_outcome": "Keep observed account data separate from drafts and pending updates; reconcile after refresh failures.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 005 \u2014 Failure diagnosis and recovery."
+      ],
+      "objectives": [
+        "Label observed vs draft vs pending vs outcome.",
+        "Avoid treating a failed refresh as proof of non-execution.",
+        "Preserve drafts across detected conflicts."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    },
+    {
+      "id": "protecting-state-transitions",
+      "number": 7,
+      "title": "Program-enforced expected revisions",
+      "path": "/lessons/protecting-state-transitions/",
+      "assess_path": "/lessons/protecting-state-transitions/assessment/",
+      "student_outcome": "Explain expected-revision / concurrency checks and why silently refreshing a revision and resubmitting is unsafe.",
+      "time": "45\u201375 min",
+      "difficulty": "Beginner",
+      "prereqs": [
+        "Lesson 006 \u2014 Reliable client state."
+      ],
+      "objectives": [
+        "State what an expected revision check protects.",
+        "Distinguish client races from program-enforced checks.",
+        "Choose review-before-resubmit after conflicts."
+      ],
+      "verification_status": "release_candidate",
+      "technical_verification": "Not completed for this release candidate",
+      "learner_testing": "Not completed for this release candidate",
+      "track": "foundations",
+      "resource_type": "lesson",
+      "delivery": "Guided foundations (release candidate)",
+      "content_version": "2026-11-18.1",
+      "content_review": "2026-11-18",
+      "content_owner": "Sol.College curriculum",
+      "assessment_available": true
+    }
+  ]
+}

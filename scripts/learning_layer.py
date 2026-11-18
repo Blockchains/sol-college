@@ -171,11 +171,15 @@ def workspace_html(
   *,
   content_version: str = '',
   assess_href: str = '',
+  eyebrow: str = 'Application lab workspace',
+  prepare_note: str = 'Complete <a href="#preflight">preflight</a>. Choose observation or practical mode. Then continue to Predict.',
+  act_cta_label: str = 'Open practice app',
 ) -> str:
   """Focused Predict → Act → Inspect → Explain → Transfer workspace."""
   if not loop:
     return ''
   objective = E(loop.get('objective') or 'Complete one focused task')
+  eyebrow_e = E(eyebrow)
   predict_q = E(loop.get('predict_question') or 'What do you expect to happen?')
   options = loop.get('predict_options') or []
   opts = ''.join(_opt(o.get('id', str(i)), o.get('label', '')) for i, o in enumerate(options))
@@ -213,7 +217,7 @@ def workspace_html(
   <div class="lab-version-banner" id="lab-version-banner" hidden role="status"></div>
   <header class="lab-bar">
     <div>
-      <p class="eyebrow">Application lab workspace</p>
+      <p class="eyebrow">{eyebrow_e}</p>
       <h2 id="workspace-title">{objective}</h2>
     </div>
     <p class="lab-save" id="lab-save" aria-live="polite">Not saved yet on this device</p>
@@ -233,7 +237,7 @@ def workspace_html(
     <div class="lab-main">
       <div class="loop-panel" data-panel="prepare">
         <h3>Prepare</h3>
-        <p>Complete <a href="#preflight">preflight</a>. Choose observation or practical mode. Then continue to Predict.</p>
+        <p>{prepare_note}</p>
         <button type="button" class="btn" data-loop-next="predict">Continue to Predict</button>
       </div>
       <div class="loop-panel" data-panel="predict" hidden>
@@ -249,7 +253,7 @@ def workspace_html(
         <h3>Act</h3>
         {p(act)}
         <p class="cta-row">
-          <a class="btn" href="{app}" target="_blank" rel="noopener">Open practice app</a>
+          <a class="btn" href="{app}" target="_blank" rel="noopener">{E(act_cta_label)}</a>
           <button type="button" class="btn ghost" data-loop-mark="act">I completed the allowed action</button>
         </p>
         <button type="button" class="btn" data-loop-next="inspect">Continue to Inspect</button>

@@ -19,6 +19,20 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-18-release-d1',
+    'title': 'Release D.1 — Foundations in curriculum source of truth',
+    'summary': (
+      'Foundations Lessons 001–007 are registered in dapps/foundations/catalog.json '
+      'and emitted on /curriculum.json. Lesson 001 gains the shared learning-loop workspace; '
+      'all seven remain honest release candidates until verification completes.'
+    ),
+    'changes': [
+      'Canonical foundations catalog with outcomes, prereqs, verification_status, and 001 learning_loop.',
+      'curriculum_schema audit includes foundations track; curriculum.json lists them separately from live apps.',
+      'Lesson 001 page injects Predict→Act→Inspect workspace from the catalog loop.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-c15',
     'title': 'Release C.15 — OrbOracle learning loop (path complete)',
     'summary': (
@@ -496,10 +510,11 @@ def write_artifacts(site: str | Path, root: str | Path = '.') -> dict:
   except Exception:
     audit = {'summary': {}}
     by_id = {}
+  foundations_rows = audit.get('foundations') or []
   public_curriculum = {
     'schema': 'sol.college.curriculum/v1',
     'curriculum_version': snap['curriculum_digest'],
-    'generated_from': 'dapps/live.json + dapps/lessons/*.json',
+    'generated_from': 'dapps/live.json + dapps/lessons/*.json + dapps/foundations/catalog.json',
     'counts': {
       'live_apps': snap['live_apps'],
       'guided_lessons': snap['guided_lessons'],
@@ -507,8 +522,28 @@ def write_artifacts(site: str | Path, root: str | Path = '.') -> dict:
       'core_path_lessons': snap['core_path_lessons'],
       'electives': snap['electives'],
       'learning_activities': snap['learning_activities'],
+      'foundations': len(foundations_rows),
     },
     'schema_summary': audit.get('summary') or {},
+    'foundations': [
+      {
+        'id': r['id'],
+        'title': r['title'],
+        'resource_type': r['resource_type'],
+        'track': 'foundations',
+        'number': r.get('path_order'),
+        'time': r.get('time') or '',
+        'student_outcome': r.get('student_outcome') or '',
+        'content_version': r.get('content_version') or '',
+        'verification_status': r.get('verified') or 'release_candidate',
+        'assessment_available': bool(r.get('assessment_available')),
+        'has_learning_loop': bool(r.get('has_learning_loop')),
+        'schema_status': r.get('schema_status') or 'unknown',
+        'missing_required': r.get('missing_required') or [],
+        'missing_recommended': r.get('missing_recommended') or [],
+      }
+      for r in foundations_rows
+    ],
     'lessons': [
       {
         'id': r['id'],

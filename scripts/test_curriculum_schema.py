@@ -22,6 +22,17 @@ class CurriculumSchema(unittest.TestCase):
         self.assertIn('content_version', pic)
         self.assertTrue(pic['content_version'])
 
+    def test_foundations_catalog_in_audit(self):
+        audit = cs.audit_inventory(ROOT)
+        self.assertEqual(audit['summary']['foundations'], 7)
+        self.assertEqual(audit['summary']['foundations_missing_required'], 0)
+        self.assertGreaterEqual(audit['summary']['foundations_with_learning_loop'], 1)
+        first = next(r for r in audit['foundations'] if r['id'] == 'first-transaction')
+        self.assertEqual(first['track'], 'foundations')
+        self.assertEqual(first['schema_status'], 'ok')
+        self.assertTrue(first['has_learning_loop'])
+        self.assertEqual(first['verified'], 'release_candidate')
+
     def test_former_gap_lessons_have_objectives_and_prereqs(self):
         for slug in (
             'agentescrow', 'pact-escrow', 'solagents-commerce', 'lattice-escrow',
