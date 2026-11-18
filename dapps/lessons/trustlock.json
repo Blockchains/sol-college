@@ -344,8 +344,8 @@
   "Tell the two guards apart: the beneficiary cannot claim early, and the owner cannot check in after the deadline."
  ],
  "prereqs": [
-  "Two Phantom accounts (owner and beneficiary) and about 0.2 devnet SOL in the owner's.",
-  "[PulseFund](/lessons/pulsefund-sol/) (SOL into a PDA, rent) and [Picassol](/lessons/picassol-hackathon/) (PDAs from seeds)."
+  "Two Phantom accounts (owner and beneficiary) and about 0.2 Devnet SOL in the owner's.",
+  "Complete [gree](/lessons/gree/) or equivalent PDA/CPI familiarity — TrustLock is the next Stage 1 step on the [learning path](/lessons/path/). Clock sysvar and escrow close are new here."
  ],
  "concepts": [
   "pda",
@@ -366,5 +366,73 @@
   "test": "anchor test",
   "note": "The program is in `switch/`. The app is a Next.js 14 frontend at the repo root."
  },
- "functional": "full"
+ "functional": "full",
+ "content_version": "2026-11-18.1",
+ "content_review": "2026-11-18",
+ "content_owner": "Sol.College curriculum",
+ "student_outcome": "Create a SOL escrow with a beneficiary, see Clock-enforced deadline guards, and explain why an expired Check In fails while a beneficiary Claim after expiry succeeds.",
+ "delivery": "Browser practice + evidence inspection",
+ "track": "application-lab",
+ "assessment": {
+  "purpose": "Determine whether the student can separate Clock-enforced deadline guards (no early claim, no late check-in), follow SOL into and out of the escrow PDA, and label evidence honestly.",
+  "criteria": [
+   {
+    "id": "c1",
+    "title": "Separates the two deadline guards",
+    "question": "After the escrow deadline passes, what happens if the owner presses Check In — and who can Claim?",
+    "not_yet": "Expects Check In to extend an expired escrow, or thinks the owner can still claim after expiry.",
+    "support": "Names DeadlineExceeded (6002) after inspecting the failed Check In under Proof.",
+    "independent": "States owner Check In fails after deadline; beneficiary Claim succeeds and closes the escrow.",
+    "misconception": "The frontend timer alone decides whether Check In or Claim is allowed."
+   },
+   {
+    "id": "c2",
+    "title": "Follows SOL and rent through claim/cancel",
+    "question": "Where do deposited lamports and rent go on beneficiary Claim versus owner Cancel?",
+    "not_yet": "Cannot say funds return to owner on Cancel, or invents a fee sink on Claim.",
+    "support": "Traces close destination after revisiting Proof / Explorer balances.",
+    "independent": "States Claim sends escrow lamports to the stored beneficiary and closes the account; Cancel returns everything to the owner.",
+    "misconception": "Cancel and Claim both pay the same wallet."
+   },
+   {
+    "id": "c3",
+    "title": "Labels evidence provenance",
+    "question": "Does the student distinguish platform historical proof from their own attempt?",
+    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+    "misconception": "Any successful signature on the lesson page counts as my mastery."
+   },
+   {
+    "id": "c4",
+    "title": "Transfers to an early Claim scenario",
+    "question": "Without re-reading the walkthrough: before the deadline, what should happen if the beneficiary presses Claim, and what on-chain evidence proves the guard?",
+    "not_yet": "Expects early Claim to succeed, or cannot name Clock/constraint evidence.",
+    "support": "States early Claim fails after revisiting the two-guards objective.",
+    "independent": "States Claim fails while now < deadline; cites program error / unchanged escrow balance.",
+    "misconception": "I finished because I followed the buttons once."
+   }
+  ]
+ },
+ "learning_loop": {
+  "objective": "Use Clock-enforced deadlines on a SOL escrow — then separate late Check In failure from post-deadline Claim.",
+  "predict_question": "An escrow’s badge already says Expired. The owner enters Days=1 and presses Check In. What should the program do?",
+  "predict_options": [
+   {"id": "extend", "label": "Succeed and move the deadline forward by one day"},
+   {"id": "reject", "label": "Reject with DeadlineExceeded — you cannot check in after the deadline"},
+   {"id": "auto_claim", "label": "Automatically send the SOL to the beneficiary"}
+  ],
+  "predict_answer": "reject",
+  "predict_why": "checkin requires the on-chain Clock to still be before the stored deadline. After expiry the owner cannot extend; only the beneficiary path (claim) can take the funds. The UI badge is a hint — the Clock sysvar is the authority.",
+  "act": "In observation mode, open the recorded expired Check In failure and beneficiary Claim under Proof. In practical mode on Devnet: create a short-deadline escrow (15 min), wait until Expired, attempt Check In as owner (expect failure), then Claim as the beneficiary account. Prefer the hosted dashboard. A successful mid-life Check In may use the longer date-picked escrow if still open.",
+  "inspect": [
+   {"id": "owner", "label": "Owner wallet (short)", "placeholder": "e.g. Acc1…"},
+   {"id": "beneficiary", "label": "Beneficiary wallet (short)", "placeholder": "e.g. Acc2…"},
+   {"id": "status", "label": "Escrow status when acting", "placeholder": "Active / Expired"},
+   {"id": "ix", "label": "Instruction attempted", "placeholder": "checkin / claim / cancel"},
+   {"id": "result", "label": "Result / error", "placeholder": "DeadlineExceeded / claimed / cancelled"}
+  ],
+  "explain_question": "Why can the beneficiary Claim after expiry while the owner’s Check In fails — and which sysvar makes that decision independent of the browser clock?",
+  "transfer": "Without re-reading the full walkthrough: before the deadline, what should happen if the beneficiary presses Claim, and what Explorer evidence would show the escrow was unchanged?"
+ }
 }
