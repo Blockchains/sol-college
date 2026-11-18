@@ -84,4 +84,46 @@
       if (a.getAttribute('href') === '#build') selectAudience('teams', true);
     });
   });
+
+  /* Front-door recommender (#start) */
+  var form = document.getElementById('start-form');
+  var result = document.getElementById('start-result');
+  if (form && result) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var d = new FormData(form);
+      var q1 = d.get('q1');
+      var q2 = d.get('q2');
+      var q3 = d.get('q3');
+      var q4 = d.get('q4');
+      var href = '/lessons/first-transaction/';
+      var title = 'Foundations 1 — Your First Transaction';
+      var why = 'You want a guided introduction and have not yet inspected a transaction result.';
+      if (q4 === 'challenge') {
+        href = '/lessons/#challenges';
+        title = 'Debug laboratory';
+        why = 'You asked for an independent challenge. Start from the debug catalogue — not a patch requirement.';
+      } else if (q1 === 'yes' && q2 === 'yes' && q3 === 'yes') {
+        href = '/lessons/picassol-hackathon/';
+        title = 'Picassol application lab';
+        why = 'You already know transactions and accounts, and you want guided practice on a live app.';
+      } else if (q1 === 'yes' && q2 === 'no') {
+        href = '/lessons/accounts-ownership/';
+        title = 'Foundations 2 — Accounts & authority';
+        why = 'You have sent a transaction; next is ownership and authority before application labs.';
+      }
+      document.getElementById('start-result-title').textContent = title;
+      document.getElementById('start-result-why').textContent = 'Why: ' + why;
+      var go = document.getElementById('start-result-go');
+      go.href = href;
+      result.hidden = false;
+      try {
+        localStorage.setItem('sc-start-route', JSON.stringify({ href: href, title: title, at: Date.now() }));
+      } catch (err) {}
+      result.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
+    });
+    form.addEventListener('reset', function () {
+      result.hidden = true;
+    });
+  }
 })();

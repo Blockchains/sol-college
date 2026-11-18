@@ -18,11 +18,16 @@ from __future__ import annotations
 import html, json, os, re, shutil, sys
 from pathlib import Path
 import findings as _findings  # records/public/findings -> landing card, proof stat, /findings/ pages
+import learning_layer as _learning_layer
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 SITE = 'https://sol.college'
 E = lambda s: html.escape(str(s), quote=True)
+
+
+def _learning_layer_start():
+  return _learning_layer.start_section_html()
 
 # Overwritten by core_lessons with the first guided path lesson before write_home.
 START_LESSON = '/lessons/'
@@ -791,6 +796,7 @@ def write_home(site='site'):
         'MARQUEE': marquee_html(functional),
         'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),
         'START_LESSON': START_LESSON,
+        'START_SECTION': _learning_layer_start(),
         'WAITLIST': WAITLIST,
         'WAITLIST_DEV': WAITLIST_DEV,
         'WAITLIST_SEC': WAITLIST_SEC,
