@@ -418,16 +418,18 @@ if starter:
   lim_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   pre_html=f'<p class=prereq>Before this: {md(pre)}</p>' if pre else ''
   next_step=(f'<section class=next-step id=next><p class=eyebrow>Your next step</p><h2>New here? Start with foundations, then this live lesson.</h2>'
-    f'<p class=project>First: <a href="/lessons/first-transaction/">Your First Solana Transaction</a> (Lesson 001 · release candidate). '
+    f'<p class=project>First: <a href="/lessons/first-transaction/">Lesson 001</a> and '
+    f'<a href="/lessons/accounts-ownership/">Lesson 002</a> (foundations · release candidates). '
     f'Then: {E(SL["title"])}</p><p class=task>{md(task)}</p><p class=meta>{E(bits)}</p>'
     f'{lim_html}{pre_html}'
     f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> '
+    f'<a class="btn ghost" href="/lessons/accounts-ownership/">Lesson 002</a> '
     f'<a class="btn ghost" href="/lessons/{E(starter["slug"])}/">Skip to Picassol</a></p>'
-    f'<p class=note>Lesson 001 teaches review, execution vs commitment, and safe rejection before you paint a pixel. '
-    f'It is a release candidate — not yet technically or learner verified.</p></section>')
+    f'<p class=note>Foundations teach review/verification and ownership vs authority before you paint a pixel. '
+    f'They are release candidates — not yet technically or learner verified.</p></section>')
 picks=''
 picks+=('<a class=path-pick href="#foundations"><b>Solana Foundations</b>'
-        '<span><span class="chip beg">Beginner</span> · Lesson 001 · release candidate</span></a>')
+        '<span><span class="chip beg">Beginner</span> · Lessons 001–002 · release candidates</span></a>')
 for st in PATH.get('stages',[]):
   items=[x for x in GUIDED if lesson_of(x).get('path_stage')==st['id']]
   if not items: continue
@@ -508,9 +510,12 @@ path_parts.append('<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> 
 path_parts.append(CSS)
 path_parts.append('<h1>The path: become a Solana developer with live apps</h1>')
 path_parts.append('<p class=lead>%s guided lessons, ordered by the concept they teach. Each one has a written walkthrough and a core flow recorded as working. The recorded times on these lessons add to about %s hours. Debug challenges and project previews stay on the <a href="/lessons/">lessons index</a>.</p>' % (ng, hours))
-path_parts.append('<p>New to Solana? Start with <a href="/lessons/first-transaction/">Lesson 001: Your First Solana Transaction</a> (foundations · release candidate) before Stage 1. It teaches reviewing a transfer and checking <b>execution result</b> and <b>commitment</b> as separate questions — not treating “Confirmed” as success.</p>')
+path_parts.append('<p>New to Solana? Start with foundations before Stage 1: '
+  '<a href="/lessons/first-transaction/">Lesson 001</a> (review a transfer; check <b>execution</b> and <b>commitment</b> separately) then '
+  '<a href="/lessons/accounts-ownership/">Lesson 002</a> (program ownership versus application authority). '
+  'Both are release candidates — not yet technically or learner verified.</p>')
 path_parts.append('<p>When you finish the live path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
-path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live lesson: {E(lesson_of(first)["title"])}</a> <a class="btn ghost" href="/lessons/guide/">How to use a lesson</a></p>')
+path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/accounts-ownership/">Lesson 002</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live lesson: {E(lesson_of(first)["title"])}</a></p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
 path_parts.append(_foundations.foundations_path_section())
 path_parts.append(stage_blocks(False, GUIDED))
@@ -552,7 +557,7 @@ learner = '''<div class=readbar aria-hidden=true><span></span></div>
 <h1>How to use a lesson</h1>
 <p class=lead>A lesson is a devnet app you can open, plus the accounts, instructions and transactions that explain it. Nothing here asks you to wait for a cohort.</p>
 <section class=path-stage id=s0><h2><span class=num>0</span>Foundations first (new to Solana)</h2>
-<p>If you have never approved a Solana transfer, start with <a href="/lessons/first-transaction/">Lesson 001: Your First Solana Transaction</a>. It teaches the five checks before approval, and that a transaction’s <b>confirmation status</b> and its <b>execution result</b> are different questions. It is a release candidate — not yet technically or learner verified — and it is not a live dApp walkthrough.</p></section>
+<p>Start with <a href="/lessons/first-transaction/">Lesson 001: Your First Solana Transaction</a> (five checks; execution vs commitment), then <a href="/lessons/accounts-ownership/">Lesson 002: Accounts, Ownership, and Authority</a> (program ownership vs application authority). Both are release candidates — not yet technically or learner verified — and are not live dApp walkthroughs.</p></section>
 <section class=path-stage id=s1><h2><span class=num>1</span>Start from the path</h2>
 <p>The <a href="/lessons/">lessons index</a> separates foundations, guided lessons, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists guided lessons only, ordered by concept: accounts and PDAs, then authorization, then markets, staking and oracles. You can read a lesson without connecting a wallet.</p></section>
 <section class=path-stage id=s2><h2><span class=num>2</span>Use your own devnet wallet</h2>
