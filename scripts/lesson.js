@@ -227,8 +227,17 @@
         explain: '',
         outcome: '',
         observedAt: '',
+        attempt: null,
         marked: {},
         visited: ['prepare']
+      };
+
+      var ATTEMPT_GUIDE = {
+        wallet_rejected: 'No chain effect from this attempt. Review the wallet request, then you may try again with a corrected request. Do not reuse a partially built transaction blindly.',
+        submitted_unknown: 'Preserve the signature if you have one. Check Explorer before sending again — missing UI status is not proof of failure. Do not replace the transaction until you reconcile.',
+        pending: 'Wait and reconcile on Explorer. Do not automatically resubmit. A second send can create a duplicate if the first still lands.',
+        failed: 'Read the program logs for the failed signature. Fix the cause, then send a new approved transaction. Do not claim a simulated fee was paid.',
+        confirmed: 'Record the signature as your attempt evidence. Refresh account state before the next action — do not overwrite observation with the draft you intended.'
       };
 
       function routeTag(route) {
@@ -258,13 +267,52 @@
         var sig = document.getElementById('ev-sig');
         var observed = document.getElementById('ev-observed');
         var tag = document.getElementById('ev-route-tag');
+        var att = document.getElementById('ev-attempt-status');
         if (mode) mode.textContent = state.mode || 'Not chosen';
         if (pred) pred.textContent = state.predict || '—';
         if (route) route.textContent = state.route || '—';
         if (out) out.textContent = state.outcome || '—';
-        if (sig) sig.textContent = (state.inspect && state.inspect.sig) || '—';
+        if (sig) {
+          var fromAttempt = state.attempt && state.attempt.sig;
+          sig.textContent = fromAttempt || (state.inspect && state.inspect.sig) || '—';
+        }
         if (observed) observed.textContent = state.observedAt || '—';
         if (tag) tag.textContent = routeTag(state.route);
+        if (att) {
+          att.textContent = (state.attempt && state.attempt.status) || '—';
+        }
+      }
+
+      function paintAttempt() {
+        var a = state.attempt || {};
+        var op = document.getElementById('attempt-op');
+        var net = document.getElementById('attempt-network');
+        var st = document.getElementById('attempt-status');
+        var sig = document.getElementById('attempt-pending-sig');
+        var guide = document.getElementById('attempt-guidance');
+        var expl = document.getElementById('attempt-explorer');
+        var saveSt = document.getElementById('attempt-save-status');
+        if (op) op.value = a.op || '';
+        if (net) net.value = a.network || 'devnet';
+        if (st) st.value = a.status || '';
+        if (sig) sig.value = a.sig || '';
+        if (guide) {
+          var text = ATTEMPT_GUIDE[a.status] || '';
+          guide.hidden = !text;
+          guide.textContent = text;
+        }
+        if (expl) {
+          if (a.sig) {
+            expl.href = 'https://explorer.solana.com/tx/' + encodeURIComponent(a.sig) + '?cluster=devnet';
+            expl.textContent = 'Open this signature on Explorer';
+          } else {
+            expl.href = 'https://explorer.solana.com/?cluster=devnet';
+            expl.textContent = 'Open Explorer (devnet)';
+          }
+        }
+        if (saveSt && a.at) {
+          saveSt.textContent = 'Attempt saved · ' + (a.status || 'status unset') + ' · ' + a.at;
+        }
       }
 
       function showPredictLockedUi() {
@@ -407,6 +455,7 @@
             state.explain = '';
             state.outcome = '';
             state.observedAt = '';
+            state.attempt = null;
             state.marked = {};
             state.content_version = pageVersion;
             state.step = 'prepare';
@@ -417,6 +466,46 @@
       } else if (pageVersion && !state.content_version) {
         state.content_version = pageVersion;
       }
+
+      var attemptSave = document.getElementById('attempt-save');
+      if (attemptSave) {
+        attemptSave.addEventListener('click', function () {
+          state.attempt = {
+            op: (document.getElementById('attempt-op') || {}).value || '',
+            network: (document.getElementById('attempt-network') || {}).value || 'devnet',
+            status: (document.getElementById('attempt-status') || {}).value || '',
+            sig: (document.getElementById('attempt-pending-sig') || {}).value || '',
+            at: new Date().toISOString()
+          };
+          if (state.attempt.sig && state.inspect) {
+            state.inspect.sig = state.attempt.sig;
+          } else if (state.attempt.sig) {
+            state.inspect = Object.assign({}, state.inspect || {}, { sig: state.attempt.sig });
+          }
+          persist();
+          paintAttempt();
+        });
+        ['attempt-status', 'attempt-pending-sig'].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.addEventListener('change', function () {
+            // Live guidance while editing; persist on Save.
+            var status = (document.getElementById('attempt-status') || {}).value || '';
+            var guide = document.getElementById('attempt-guidance');
+            if (guide) {
+              var text = ATTEMPT_GUIDE[status] || '';
+              guide.hidden = !text;
+              guide.textContent = text;
+            }
+            var sig = (document.getElementById('attempt-pending-sig') || {}).value || '';
+            var expl = document.getElementById('attempt-explorer');
+            if (expl && sig) {
+              expl.href = 'https://explorer.solana.com/tx/' + encodeURIComponent(sig) + '?cluster=devnet';
+              expl.textContent = 'Open this signature on Explorer';
+            }
+          });
+        });
+      }
+      paintAttempt();
       if (state.mode) {
         var st0 = document.getElementById('preflight-status');
         if (st0) st0.textContent = 'Restored mode: ' + state.mode;
@@ -455,7 +544,7 @@
       var help = {
         concept: 'Restate the goal in one sentence, then open the Technical explanation layer for the key distinction. Hint ladder: (1) goal, (2) evidence drawer, (3) predict-why note, (4) worked Proof example.',
         wallet: 'Confirm Devnet, a practice wallet, and that “not connected” is not “unsupported.” Use observation mode if the faucet or wallet fails — do not buy tokens to bypass it. Your workspace progress is already saved on this device.',
-        tx: 'Preserve the original signature. Compare Explorer logs to the intended instruction. Do not send a second transaction until you know whether the first confirmed, failed, or is still pending.',
+        tx: 'Open Attempt recovery below. Preserve the original signature. Separate wallet rejection from submission, and execution from commitment. Do not send a second transaction until you know whether the first confirmed, failed, or is still pending.',
         ui: 'The hosted UI may differ from screenshots. Prefer account observation over appearance. Report a product defect if the documented control is missing — then use platform Proof as an alternative evidence route.',
         diff: 'Shared mutable state can change. A historical November colour may differ from today’s account. That is a teaching moment, not an automatic fail. Record both values and the time you observed them.',
         a11y: 'Use observation mode and keyboard-accessible Explorer links. Ask for an equivalent task if a control is inaccessible. Escalation: open a GitHub issue labelled accessibility.'
@@ -467,6 +556,10 @@
           if (!panel) return;
           panel.hidden = false;
           panel.innerHTML = '<p><b>' + esc(btn.textContent) + '</b></p><p>' + esc(help[key] || '') + '</p><p class="note">Do not respond to every category with “try again.”</p>';
+          if (key === 'tx') {
+            var rec = document.getElementById('attempt-recovery');
+            if (rec) rec.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
         });
       });
     }

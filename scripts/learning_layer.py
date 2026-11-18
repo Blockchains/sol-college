@@ -124,6 +124,38 @@ def stuck_html() -> str:
     <button type="button" role="listitem" data-stuck="a11y">I need accessibility support</button>
   </div>
   <div class="stuck-panel" id="stuck-panel" hidden></div>
+  <aside class="attempt-recovery" id="attempt-recovery" data-learning="attempt">
+    <h3>Attempt recovery</h3>
+    <p>Timeout, rejection, failure, and success need different next steps. Do not send a second transaction until you know what happened to the first.</p>
+    <label class="loop-opt">Intended operation
+      <input type="text" id="attempt-op" placeholder="e.g. create_pixel at (12, 34)" autocomplete="off">
+    </label>
+    <label class="loop-opt">Network
+      <select id="attempt-network">
+        <option value="devnet">Devnet</option>
+        <option value="other">Other / unsure</option>
+      </select>
+    </label>
+    <label class="loop-opt">Status
+      <select id="attempt-status">
+        <option value="">Not recorded</option>
+        <option value="wallet_rejected">Wallet rejected / closed (not submitted)</option>
+        <option value="submitted_unknown">Submitted — result unknown / timed out</option>
+        <option value="pending">Pending / still processing</option>
+        <option value="failed">Failed on-chain (execution error)</option>
+        <option value="confirmed">Confirmed success</option>
+      </select>
+    </label>
+    <label class="loop-opt">Signature if known
+      <input type="text" id="attempt-pending-sig" placeholder="Base58 signature" autocomplete="off">
+    </label>
+    <p class="note" id="attempt-guidance" hidden></p>
+    <p class="cta-row">
+      <button type="button" class="btn" id="attempt-save">Save attempt state</button>
+      <a class="btn ghost" id="attempt-explorer" href="https://explorer.solana.com/?cluster=devnet" target="_blank" rel="noopener">Open Explorer (devnet)</a>
+    </p>
+    <p class="lab-save" id="attempt-save-status" aria-live="polite"></p>
+  </aside>
 </section>
 '''
 
@@ -281,9 +313,10 @@ def workspace_html(
         <dt>Route</dt><dd id="ev-route">—</dd>
         <dt>Signature</dt><dd id="ev-sig">—</dd>
         <dt>Observed at</dt><dd id="ev-observed">—</dd>
+        <dt>Attempt status</dt><dd id="ev-attempt-status">—</dd>
         <dt>Outcome</dt><dd id="ev-outcome">—</dd>
       </dl>
-      <p><a href="#stuck">I am stuck</a></p>
+      <p><a href="#stuck">I am stuck</a> · <a href="#attempt-recovery">Attempt recovery</a></p>
     </aside>
   </div>
   <nav class="lab-mobile-tabs" aria-label="Mobile workspace tabs">

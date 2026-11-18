@@ -30,6 +30,10 @@ main,#main,.lesson,.lesson-layout,.lesson-main{max-width:100%;min-width:0}
 .stuck-choices{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
 .stuck-choices button{font:inherit;font-weight:700;font-size:13px;background:#0b0a14;color:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer}
 .stuck-panel{margin-top:10px;padding:12px;border:1px dashed var(--line);border-radius:12px}
+.attempt-recovery{margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.attempt-recovery h3{margin:0 0 8px;font-size:1.05rem}
+.attempt-recovery .loop-opt{margin:8px 0}
+#attempt-guidance{color:#ffd18a;border-left:3px solid #c9a227;padding-left:10px}
 .lab-mobile-tabs{display:none;gap:12px;margin-top:12px;font-weight:800}
 @media(max-width:900px){
  .lab-grid{grid-template-columns:1fr}
