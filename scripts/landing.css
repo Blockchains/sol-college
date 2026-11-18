@@ -22,12 +22,23 @@
   --header-h: 72px;
 }
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  max-width: 100%;
+}
 html, body { margin: 0; background: var(--bg); color: var(--ink); }
 body {
   font: 17px/1.6 var(--font);
   min-height: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
+  position: relative;
+}
+main, .inner, section.band, .top {
+  max-width: 100%;
+  min-width: 0;
 }
 body::before {
   content: "";
@@ -535,7 +546,15 @@ h3 { font-size: 1.2rem; font-weight: 700; }
   background: linear-gradient(180deg, rgba(20,241,149,0.08), rgba(153,69,255,0.07));
   color: var(--ink);
 }
-.compare-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid var(--line); }
+.compare-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+}
+.compare-wrap > .compare { min-width: 36rem; }
 
 /* ---------- brief ---------- */
 .briefs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
@@ -632,7 +651,7 @@ footer p { margin: 0; max-width: 52rem; }
   .principles, .pathways, .findings, .briefs, .gets, .rules, .proof-strip { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 760px) {
-  .top { flex-wrap: wrap; }
+  .top { flex-wrap: wrap; max-width: 100%; }
   .nav-toggle { display: inline-flex; margin-left: auto; }
   .top .top-cta .btn { display: none; }
   .top nav {
@@ -640,11 +659,25 @@ footer p { margin: 0; max-width: 52rem; }
     flex-direction: column;
     align-items: stretch;
     width: 100%;
+    max-width: 100%;
     padding: 8px 0 12px;
+    min-width: 0;
   }
   .top nav.is-open { display: flex; }
   .top nav a { padding: 12px 8px; }
   .top nav.is-open .nav-cta { display: inline-flex; margin: 12px 0 4px; align-self: flex-start; }
+  /* In the mobile drawer, expand folds in-flow instead of absolute panels that escape the viewport. */
+  .top nav .nav-fold > div {
+    position: static;
+    left: auto;
+    top: auto;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    box-shadow: none;
+    border-radius: 12px;
+    margin: 4px 0 8px;
+  }
   .principles, .pathways, .findings, .briefs, .gets, .rules, .proof-strip { grid-template-columns: 1fr; }
   .audience { width: 100%; }
   .audience button { flex: 1; padding-inline: 10px; font-size: 0.95rem; }
@@ -1001,7 +1034,11 @@ section.band h2 { letter-spacing: -0.02em; }
   .hero-panel:not([hidden]) > div:first-child > * { animation: none; }
   .ch-poster .ch-load { animation: none; }
 }
-@media (max-width: 760px) { .ch-live-pre { display: none; } .campus-hero .ch-live { white-space: nowrap; } }
+@media (max-width: 760px) {
+  .ch-live-pre { display: none; }
+  .campus-hero .ch-live { white-space: normal; overflow-wrap: anywhere; }
+  .c3-nav { overflow-x: auto; max-width: 100%; }
+}
 .ch-agent .live-dot { display: inline-block; margin-right: 6px; vertical-align: middle; }
 
 /* ================= stage: a poster, not a document ================= */
@@ -1040,21 +1077,23 @@ section.band h2 { letter-spacing: -0.02em; }
 .nav-fold summary::after { content: " ▾"; font-size: 0.7em; }
 .nav-fold[open] summary { color: #fff; background: rgba(255,255,255,0.06); }
 .nav-fold > div {
+  display: none;
   position: absolute;
   top: calc(100% + 14px);
   left: 0;
   z-index: 20;
-  min-width: 230px;
+  min-width: min(230px, 92vw);
+  max-width: min(92vw, calc(100vw - 24px));
   max-height: min(70vh, 520px);
   overflow: auto;
   padding: 8px;
-  display: flex;
   flex-direction: column;
   border-radius: 16px;
   background: rgba(10, 8, 26, 0.96);
   border: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 24px 60px rgba(0,0,0,0.5);
 }
+.nav-fold[open] > div { display: flex; }
 .hero.band { padding: 28px 0 12px; }
 .hero h1 { font-size: clamp(3.3rem, 7.4vw, 6.7rem); line-height: 0.92; margin-bottom: 0.08em; }
 .hero-kicker {
@@ -1186,10 +1225,16 @@ section.band h2 { letter-spacing: -0.02em; }
 .hero .score .proof-card:last-child { border-right: 0; }
 .hero .score .proof-card:hover { transform: none; background: rgba(255,255,255,0.04); }
 .hero .score .proof-card b { font-size: clamp(2.6rem, 4vw, 3.8rem); }
-.marquee { width: 100vw; margin: 34px 0 8px calc(50% - 50vw); }
+/* Never use 100vw here — it includes the scrollbar and creates horizontal scroll. */
+.marquee {
+  width: 100%;
+  max-width: 100%;
+  margin: 34px 0 8px;
+  overflow: hidden;
+}
 .marquee-label {
   margin: 0 0 8px;
-  padding-left: max(16px, calc(50vw - 560px));
+  padding-left: clamp(16px, 4vw, 48px);
   color: var(--mut-2);
   font-size: 0.72rem;
   font-weight: 750;
@@ -1198,6 +1243,7 @@ section.band h2 { letter-spacing: -0.02em; }
 }
 .marquee-mask {
   overflow: hidden;
+  max-width: 100%;
   border-block: 1px solid rgba(255,255,255,0.08);
   background: rgba(0,0,0,0.28);
   mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
@@ -1207,6 +1253,7 @@ section.band h2 { letter-spacing: -0.02em; }
   display: flex;
   gap: 32px;
   width: max-content;
+  max-width: none;
   padding: 14px 0;
   animation: ticker 70s linear infinite;
 }
@@ -1652,8 +1699,26 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
   .stage-hero .lead { margin-inline: auto; text-align: center; }
   .stage-hero .hero-promise { font-size: 1.05rem; }
   .stage-hero .lead { font-size: 0.92rem; max-width: 34ch; }
-  .stage-hero .cta-row { flex-wrap: nowrap; justify-content: center; gap: 8px; margin-top: 0.8rem; }
-  .stage-hero .cta-row .btn { flex: 1 1 0; min-height: 48px; font-size: 0.92rem; padding-inline: 8px; }
+  .stage-hero .cta-row { flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 0.8rem; }
+  .stage-hero .cta-row .btn { flex: 1 1 auto; min-width: min(100%, 9.5rem); min-height: 48px; font-size: 0.92rem; padding-inline: 8px; }
+  .top .marquee { max-width: 100%; overflow: hidden; }
+  .start-routes { grid-template-columns: 1fr; }
+  .start-route { min-height: 0; }
+  .proof-strip, .feature-grid, .grid { min-width: 0; }
+  .path-extras { gap: 10px 14px; }
+  .path-extras .btn { max-width: 100%; }
+  img, canvas, svg, video, iframe { max-width: 100%; height: auto; }
+  .bg-aurora, .bg-particles, .grain {
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    contain: paint;
+  }
+  /* Decorative aurora may paint outside the viewport; never expand layout. */
+  .bg-aurora { inset: 0; }
+  .bg-aurora span { max-width: none; }
 }
 
 /* The page under the campus is a light sheet. The hero keeps its own type colors. */
