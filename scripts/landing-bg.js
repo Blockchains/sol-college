@@ -16,7 +16,16 @@
   var g = c.getContext('2d'), dpr = Math.min(window.devicePixelRatio || 1, 1.5), W = 0, H = 0, dots = [], last = 0, raf = 0;
   var N = mq('(max-width: 760px)') ? 22 : 48;
   var cols = ['153,69,255', '120,110,255', '20,241,149', '255,184,107'];
-  function size() { W = innerWidth; H = innerHeight; c.width = W * dpr; c.height = H * dpr; g.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function size() {
+    // Use layout viewport, not innerWidth (avoids scrollbar/100vw inflation on mobile).
+    W = document.documentElement.clientWidth || innerWidth;
+    H = document.documentElement.clientHeight || innerHeight;
+    c.style.width = '100%';
+    c.style.maxWidth = '100%';
+    c.width = Math.max(1, Math.floor(W * dpr));
+    c.height = Math.max(1, Math.floor(H * dpr));
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
   function seed() {
     dots = [];
     for (var i = 0; i < N; i++) dots.push({ x: Math.random() * W, y: Math.random() * H, r: 0.6 + Math.random() * 1.6, vx: (Math.random() - 0.5) * 0.08, vy: -0.05 - Math.random() * 0.12, a: 0.15 + Math.random() * 0.45, c: cols[i % 7 === 0 ? 2 : i % 11 === 0 ? 3 : i % 2] });
