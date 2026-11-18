@@ -69,6 +69,16 @@ class InventoryRecords(unittest.TestCase):
         self.assertNotIn('About 1 SOL arrives within a few seconds', blob)
         self.assertIn('Account count is the source of truth', blob)
 
+    def test_list_not_covered_formats_for_proof(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        L = json.load(open(os.path.join(root, 'dapps/lessons/veedor.json')))
+        raw = L.get('not_covered')
+        self.assertIsInstance(raw, list)
+        text = cc.format_limit_text(raw)
+        self.assertTrue(text)
+        self.assertNotIn('[', text)
+        self.assertIn(';', text)
+
 
 if __name__ == '__main__':
     unittest.main()
