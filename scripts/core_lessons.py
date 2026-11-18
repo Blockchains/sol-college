@@ -193,8 +193,24 @@ def one_line(text, n=160):
   t=' '.join(str(text or '').split())
   if not t or len(t)<=n: return t
   return t[:n].rsplit(' ',1)[0]+'…'
+import curriculum_copy as _cc
+format_limit_text = _cc.format_limit_text
+
+
+def format_prereq(p):
+  """Resolve lesson-slug prerequisites to titled links; leave prose alone."""
+  def resolve(slug):
+    if slug not in LV:
+      return None
+    title = lesson_of(LV[slug]).get('title') or slug
+    short = title.split(':')[0].strip()
+    return f'[{short}](/lessons/{slug}/)'
+  return _cc.format_prereq(p, resolve)
+
+
 def limit_of(x):
-  return lesson_of(x).get('not_covered') or x.get('limits') or ''
+  raw = lesson_of(x).get('not_covered') or x.get('limits') or ''
+  return format_limit_text(raw)
 def render(x,L,n):
   sl=x['slug']
   ready=readiness(x)
@@ -245,7 +261,7 @@ def render(x,L,n):
     if L.get('objectives'):
       g.append('<h2 id=goals>What you will be able to do</h2><ul>'+''.join(f'<li>{md(o)}</li>' for o in L['objectives'])+'</ul>')
     if L.get('prereqs'):
-      g.append('<h3>Prerequisites</h3><ul>'+''.join(f'<li>{md(p)}</li>' for p in L['prereqs'])+'</ul>')
+      g.append('<h3>Prerequisites</h3><ul>'+''.join(f'<li>{md(format_prereq(p))}</li>' for p in L['prereqs'])+'</ul>')
     if L.get('concepts'):
       g.append('<h3>Concepts you will meet</h3><p>'+' '.join(concept_chip(c) for c in L['concepts'])+' · <a href="/lessons/glossary/">Glossary</a></p>')
     g.append('</aside>')
@@ -254,7 +270,7 @@ def render(x,L,n):
   h.append(f'<p><a class=btn href="{E(x["app"])}">Open the live app (devnet)</a> <a class="btn ghost" href="{E(x["fork"])}/tree/{E(x["commit"])}">Source @ {E(x["commit"][:7])}</a></p>')
   h.append(f'<dl class=facts><dt>Program (devnet)</dt><dd><a href="{AD(x["program"])}"><code>{E(x["program"])}</code></a></dd><dt>Fork</dt><dd><a href="{E(x["fork"])}">{E(x["fork"][19:])}</a> @ <code>{E(x["commit"][:7])}</code></dd><dt>Verified</dt><dd>{E(x["verified"])} (see <a href="#proof">Proof</a>)</dd>'+(f'<dt>What we changed</dt><dd>{md(L["app_note"])}</dd>' if L.get('app_note') else '')+'</dl>')
   pre=[dict(do='Install [Phantom](https://phantom.com) (or Solflare). In Phantom open Settings → Developer Settings, turn on Testnet Mode and pick Solana Devnet.',see='The wallet shows a devnet badge. Devnet SOL is free and worthless.'),
-       dict(do='Copy your wallet address and request devnet SOL at [faucet.solana.com](https://faucet.solana.com).',see='About 1 SOL arrives within a few seconds. That covers every step below.')]
+       dict(do='Copy your wallet address and request enough practice funds at [faucet.solana.com](https://faucet.solana.com) for the estimated costs shown in this lesson.',see='Faucet availability, limits, and timing vary. If funding is unavailable, save your progress or use the observation route (read accounts and recorded proofs without sending a transaction). Do not treat faucet access as a graded requirement.')]
   def ev(s):
     bits=[]
     for a,g in ran_pairs(s.get('ran')):
@@ -362,7 +378,7 @@ for x in PATH_LIVE:
   ready=readiness(x)
   diff=canon_diff(L.get('difficulty') or '')
   task=(L.get('objectives') or [None])[0] or L.get('summary') or L.get('what') or L['title']
-  pre=(L.get('prereqs') or [None])[0]
+  pre=format_prereq((L.get('prereqs') or [None])[0])
   lim=one_line(limit_of(x), 140)
   chips=' '.join(concept_chip(c) for c in (L.get('concepts') or [])[:4])
   plain=re.sub(r'\[([^\]]+)\]\([^)]+\)',r'\1', task+' '+(L.get('summary') or ''))
@@ -371,6 +387,9 @@ for x in PATH_LIVE:
   action='Start the lesson' if ready=='guided' else ('Open the challenge' if ready=='challenge' else 'Read the preview')
   limit_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   prereq_html=f'<p class=prereq>Before this: {md(one_line(pre, 180))}</p>' if pre else ''
+  if lim and ('[' in lim or lim.startswith('{')):
+    # format_limit_text should already have cleaned this; refuse raw arrays in cards.
+    limit_html=f'<p class=limit>Known limit: see the lesson page for recorded gaps.</p>'
   cards.append(
     f'<article class="card ready-{ready}" data-lesson data-slug="{E(sl)}" data-diff="{E(diff)}" data-format="{ready}" data-text="{E(blob)}">'
     f'<p class="eyebrow status-{ready}">{E(READY_LABEL[ready])}</p>'
@@ -407,12 +426,26 @@ GUIDED=[x for x in PATH_LIVE if readiness(x)=='guided']
 CHALLENGES=[x for x in PATH_LIVE if readiness(x)=='challenge']
 PREVIEWS=[x for x in PATH_LIVE if readiness(x)=='preview']
 ng,nc,nv=len(GUIDED),len(CHALLENGES),len(PREVIEWS)
+staged_ids={st['id'] for st in PATH.get('stages',[])}
+STAGED=[x for x in GUIDED if lesson_of(x).get('path_stage') in staged_ids]
+ELECTIVES=[x for x in GUIDED if lesson_of(x).get('path_stage') not in staged_ids]
+ns,ne=len(STAGED),len(ELECTIVES)
+def _mins(x):
+  m=re.search(r'(\d+)',lesson_of(x).get('time') or '0'); return int(m.group(1)) if m else 0
+hours_staged=round(sum(_mins(x) for x in STAGED)/60,1)
+hours_electives=round(sum(_mins(x) for x in ELECTIVES)/60,1)
+hours_guided=round(sum(_mins(x) for x in GUIDED)/60,1)
+hours_challenges=round(sum(_mins(x) for x in CHALLENGES)/60,1)
+inventory_line=(
+  f'{ng} guided lessons ({ns} on the core staged path, {ne} electives), '
+  f'{nc} debug challenges, and {nv} project preview{"s" if nv!=1 else ""}.'
+)
 starter=next((x for x in GUIDED if canon_diff(lesson_of(x).get('difficulty'))=='Beginner'), GUIDED[0] if GUIDED else None)
 next_step=''
 if starter:
   SL=lesson_of(starter)
   task=(SL.get('objectives') or [None])[0] or SL.get('summary') or SL['title']
-  pre=(SL.get('prereqs') or [None])[0]
+  pre=format_prereq((SL.get('prereqs') or [None])[0])
   bits=' · '.join(b for b in [(SL.get('time')+' recorded') if SL.get('time') else '', 'Guided lesson'] if b)
   lim=one_line(limit_of(starter), 180)
   lim_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
@@ -440,32 +473,61 @@ if starter:
 picks=''
 picks+=('<a class=path-pick href="#foundations"><b>Solana Foundations</b>'
         '<span><span class="chip beg">Beginner</span> · Lessons 001–007 · release candidates</span></a>')
+picks+=('<a class=path-pick href="#entry-routes"><b>Choose your entry</b>'
+        '<span>New to Solana → Foundations · Already comfortable → application labs</span></a>')
 for st in PATH.get('stages',[]):
   items=[x for x in GUIDED if lesson_of(x).get('path_stage')==st['id']]
   if not items: continue
-  picks+=f'<a class=path-pick href="#stage-{st["id"]}"><b>{E(st["name"])}</b><span>{dchip(st["level"])} · {len(items)} guided lessons</span></a>'
+  picks+=f'<a class=path-pick href="#stage-{st["id"]}"><b>{E(st["name"])}</b><span>{dchip(st["level"])} · {len(items)} core-path lessons</span></a>'
+if ELECTIVES:
+  picks+=f'<a class=path-pick href="#electives"><b>Electives</b><span>{ne} additional guided lessons</span></a>'
+if CHALLENGES:
+  picks+=f'<a class=path-pick href="#debug-challenges"><b>Debug laboratory</b><span>{nc} independent challenges</span></a>'
 choose=f'<section class=choose id=paths><h2>Choose a path</h2><div class=path-picks>{picks}</div></section>' if picks else ''
 debug=''
 if CHALLENGES:
   dbg_cards=''.join(cards[PATH_I[x['slug']]] for x in CHALLENGES)
-  debug='<section class=path-stage id=debug-challenges><h2>Debug challenges</h2><p>These apps are on devnet, but a named core flow does not complete. They are investigation practice, not guided lessons, and they are not on the <a href="/lessons/path/">learning path</a>. A broken flow can still be an excellent lesson — it is not labelled as a completed core-flow environment.</p><div class=grid>'+dbg_cards+'</div></section>'
-staged_ids={st['id'] for st in PATH.get('stages',[])}
-rest=[x for x in GUIDED if lesson_of(x).get('path_stage') not in staged_ids]
+  debug=(''
+    '<section class=path-stage id=debug-challenges><h2>Debug laboratory</h2>'
+    f'<p>{nc} independent challenges. These apps are on devnet, but a named core flow does not complete. '
+    'They are investigation practice, not guided lessons, and they are <b>not required</b> to finish the core staged path. '
+    'A broken flow can still be an excellent lesson — it is not labelled as a completed core-flow environment.</p>'
+    '<div class=grid>'+dbg_cards+'</div></section>')
 more=''
-if rest:
-  more=('<section class=path-stage id=more-live><h2>More guided lessons</h2>'
-        '<p>These '+str(len(rest))+' have a written walkthrough and recorded core-flow completion. '
-        'They are catalogue lessons, not numbered steps on the <a href="/lessons/path/">three-stage learning path</a>. '
+if ELECTIVES:
+  more=('<section class=path-stage id=electives><h2>Electives</h2>'
+        f'<p>These {ne} guided lessons have a written walkthrough and recorded core-flow completion. '
+        'They are electives — catalogue lessons outside the numbered three-stage core path. '
         'Cards show difficulty, duration, and the verification date when those fields exist in the lesson record.</p>'
-        '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in rest)+'</div></section>')
+        '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in ELECTIVES)+'</div></section>')
 preview=''
 if PREVIEWS:
   preview=('<section class=path-stage id=previews><h2>Project previews</h2>'
     '<p>The app is deployed. The full teaching sequence is not written yet, so these are not shown as guided lessons.</p>'
     '<div class=grid>'+''.join(cards[PATH_I[x['slug']]] for x in PREVIEWS)+'</div></section>')
-count_line=(f'{ng} guided lessons, {nc} debug challenges, and {nv} project preview{"s" if nv!=1 else ""}. '
+count_line=(
+  f'{inventory_line} '
+  f'Core staged path recorded time ≈ {hours_staged} h; electives ≈ {hours_electives} h; '
+  f'all guided lessons ≈ {hours_guided} h'
+  + (f'; debug laboratory ≈ {hours_challenges} h' if hours_challenges else '')
+  + '. '
   'A guided lesson requires a written walkthrough and recorded completion of the flows the lesson teaches. '
-  'Verification dates on cards are per-app evidence dates; they are not a live “running right now” check.')
+  'Verification dates on cards are per-app evidence dates; they are not a live “running right now” check.'
+)
+entry_routes=(''
+  '<section class=path-stage id=entry-routes>'
+  '<h2>Start here: two entry routes</h2>'
+  '<p><b>New to Solana?</b> Begin with <a href="/lessons/first-transaction/">Foundations Lesson 001</a> '
+  '(release candidates 001–007). Learn execution vs commitment, accounts, instructions, atomicity, failures, '
+  'client state, and expected revisions before Stage 1 application labs.</p>'
+  f'<p><b>Already comfortable with transactions and accounts?</b> Start the core application path at '
+  f'<a href="/lessons/{E((starter or GUIDED[0])["slug"])}/">{E(lesson_of(starter or GUIDED[0])["title"])}</a> '
+  '(Stage 1). Foundations remain optional enrichment.</p>'
+  '<p class=cta>'
+  '<a class=btn href="/lessons/first-transaction/">New to Solana: Foundations 001</a> '
+  f'<a class="btn ghost" href="/lessons/{E((starter or GUIDED[0])["slug"])}/">Application labs: Stage 1</a> '
+  '<a class="btn ghost" href="/lessons/path/">Open the learning path</a>'
+  '</p></section>')
 finder='''<div class=finder id=browse><label>Search lessons <input id=lesson-q type=search placeholder="escrow, PDA, oracle, beginner" autocomplete=off></label>
 <div class="finder-row finder-diff" role=group aria-label=Level>
 <button type=button data-diff="" aria-pressed=true>All levels</button>
@@ -489,7 +551,9 @@ intro=('<p>A guided lesson is a written walkthrough of an app whose recorded cor
   'The <a href="/lessons/glossary/">glossary</a> explains the terms. You can read any lesson without a wallet. '
   'The wallet is needed only when a step asks you to send a transaction.</p>'
   '<p class=note>Dates on this site mean different things: a lesson’s “verified” date is when that app’s recorded flows were last reproduced; '
-  'footer “catalogue generated” dates mark when the static pages were built from the inventory. Neither is a live uptime claim.</p>')
+  'footer “catalogue generated” dates mark when the static pages were built from the inventory. Neither is a live uptime claim.</p>'
+  '<p class=note>Every lesson should produce evidence of understanding. Suitable investigations can develop into tests, patches, or upstream contributions — '
+  'an explanation or evidence record is a valid outcome when a code change is not appropriate.</p>')
 import foundations_lesson as _foundations
 foundations_block=_foundations.foundations_path_section()+_foundations.foundations_card_html()
 idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Lessons</span></nav>{CSS}'
@@ -497,16 +561,14 @@ idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Less
   f'<p class=lead>Run a transaction on a devnet app, see what changed, and check it against the recorded proof.</p>'
   f'<p class=counts>{count_line}</p>'
   f'<p class=resume id=resume hidden></p>'
-  f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="#browse">Browse all lessons</a></p>'
+  f'{entry_routes}'
   f'{next_step}{choose}{finder}{foundations_block}{stage_blocks(pool=GUIDED)}{more}{debug}{preview}'
   f'<div class=index-intro>{intro}<p><a href="/lessons/guide/">How to use a lesson</a> · <a href="/how-to-build/">How to build your own</a></p></div>'
   f'<p class=note>Looking for the 2,000+ code walkthroughs generated from source? They are in the <a href="/explore/">Source library (not yet live)</a>. They have not been built or run, so they are not lessons.</p>')
-desc=f'{ng} guided Solana lessons, {nc} debug challenges, and {nv} project preview. Counts come from the same records as the catalogue.'
+desc=(f'{ng} guided Solana lessons ({ns} core path, {ne} electives), {nc} debug challenges, and {nv} project preview. '
+      'Counts come from the same records as the catalogue.')
 os.makedirs(f'{S}/lessons',exist_ok=True); open(f'{S}/lessons/index.html','w').write(page(idx,'Lessons | Sol.College',desc,'/lessons/'))
 # ---- learning path page
-def _mins(x):
-  m=re.search(r'(\d+)',lesson_of(x).get('time') or '0'); return int(m.group(1)) if m else 0
-hours=round(sum(_mins(x) for x in GUIDED)/60,1)
 first=starter or (GUIDED[0] if GUIDED else LIVE[0])
 debug_path=''
 if PARTIAL:
@@ -514,31 +576,57 @@ if PARTIAL:
   for x in PARTIAL:
     L=lesson_of(x); st=stage_of(L); stn=('Stage %s' % st['id']) if st else ''
     lis+=f'<li><a href="/lessons/{E(x["slug"])}/"><b>{E(L["title"])}</b></a> · {E(L.get("time") or "")} · {E(stn)} · {E(L.get("summary") or "")}</li>'
-  debug_path='<section class=path-stage id=debug-challenges><h2>Debug challenges</h2><p>These apps are live on devnet but a core flow is not fully working yet. They are not counted as live environments on this path. Work them as investigation practice: find the bug, propose a patch and a regression test, then retest on devnet. When our fork is fully working, the lesson moves into the stage above.</p><ol>'+lis+'</ol></section>'
+  debug_path=(''
+    '<section class=path-stage id=debug-challenges><h2>Debug laboratory</h2>'
+    f'<p>{nc} independent challenges. These apps are live on devnet but a core flow is not fully working yet. '
+    'They are listed here for investigation practice and are <b>not required</b> to complete the core staged path. '
+    'Find the bug, propose a patch and a regression test, then retest on devnet. '
+    'When our fork is fully working, the lesson can move into a stage above.</p>'
+    f'<ol>{lis}</ol></section>')
+electives_path=''
+if ELECTIVES:
+  lis=''
+  for x in ELECTIVES:
+    L=lesson_of(x)
+    lis+=f'<li><a href="/lessons/{E(x["slug"])}/"><b>{E(L["title"])}</b></a> · {E(L.get("time") or "")} · {E(L.get("summary") or "")}</li>'
+  electives_path=(''
+    '<section class=path-stage id=electives><h2>Electives</h2>'
+    f'<p>{ne} additional guided lessons with recorded core-flow completion. '
+    f'Recorded times add to about {hours_electives} hours. They are optional after or alongside the core staged path.</p>'
+    f'<ol>{lis}</ol></section>')
 path_parts=[]
 path_parts.append('<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <a href="/lessons/">Lessons</a> / <span>Learning path</span></nav>')
 path_parts.append(CSS)
 path_parts.append('<h1>The path: become a Solana developer with live apps</h1>')
-path_parts.append('<p class=lead>%s guided lessons, ordered by the concept they teach. Each one has a written walkthrough and a core flow recorded as working. The recorded times on these lessons add to about %s hours. Debug challenges and project previews stay on the <a href="/lessons/">lessons index</a>.</p>' % (ng, hours))
-path_parts.append('<p>New to Solana? Start with foundations before Stage 1: '
-  '<a href="/lessons/first-transaction/">Lesson 001</a> (execution vs commitment), '
-  '<a href="/lessons/accounts-ownership/">Lesson 002</a> (ownership vs authority), '
-  '<a href="/lessons/instructions-programs/">Lesson 003</a> (instructions → account changes), '
-  '<a href="/lessons/transaction-atomicity/">Lesson 004</a> (multi-instruction atomicity), '
-  '<a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), '
-  '<a href="/lessons/application-state/">Lesson 006</a> (honest client state), then '
-  '<a href="/lessons/protecting-state-transitions/">Lesson 007</a> (expected revisions). '
-  'All are release candidates — not yet technically or learner verified.</p>')
-path_parts.append('<p>When you finish the live path you will be able to derive PDAs, move SOL and tokens with CPIs, lock funds against the on-chain clock, authorize with <code>has_one</code>, find a missing account check, and read a market, a staking program or an oracle. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
-path_parts.append(f'<p class=cta><a class=btn href="/lessons/first-transaction/">Start Lesson 001</a> <a class="btn ghost" href="/lessons/accounts-ownership/">002</a> <a class="btn ghost" href="/lessons/instructions-programs/">003</a> <a class="btn ghost" href="/lessons/transaction-atomicity/">004</a> <a class="btn ghost" href="/lessons/transaction-failures/">005</a> <a class="btn ghost" href="/lessons/application-state/">006</a> <a class="btn ghost" href="/lessons/protecting-state-transitions/">007</a> <a class="btn ghost" href="/lessons/{E(first["slug"])}/">First live: {E(lesson_of(first)["title"])}</a></p>')
+path_parts.append(
+  f'<p class=lead>One curriculum inventory: <b>{ns} core staged lessons</b> (about {hours_staged} h), '
+  f'<b>{ne} electives</b> (about {hours_electives} h), and a <b>debug laboratory</b> of {nc} challenges. '
+  f'Together with foundations, that is the learner route. The wider catalogue lists {ng} guided lessons and {nc} debug challenges. '
+  'Project previews stay on the <a href="/lessons/">lessons index</a>.</p>'
+)
+path_parts.append(entry_routes)
+path_parts.append('<p>When you finish the <b>core staged path</b> you will have practised deriving PDAs, moving SOL and tokens with CPIs, '
+  'locking funds against the on-chain clock, authorizing with <code>has_one</code>, finding a missing account check, '
+  'and reading a market, a staking program or an oracle. Completing the reading alone does not by itself demonstrate those abilities — '
+  'exercises and assessments establish what you showed. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
 path_parts.append(_foundations.foundations_path_section())
+path_parts.append('<h2 id=core-path>Core application path</h2>')
+path_parts.append(f'<p>{ns} guided lessons across the numbered stages below. Recorded times add to about {hours_staged} hours.</p>')
 path_parts.append(stage_blocks(False, GUIDED))
+path_parts.append(electives_path)
 path_parts.append(debug_path)
-path_parts.append('<p class=note>Stages list guided lessons only: a written walkthrough, and a core flow recorded as working. Debug challenges and project previews stay on the <a href="/lessons/">lessons index</a>. The 2,000+ source-only walkthroughs stay in the <a href="/explore/">Source library</a>. They have not been deployed or run, so they are not on this path.</p>')
+path_parts.append('<p class=note>Core stages list guided lessons only: a written walkthrough, and a core flow recorded as working. '
+  'Electives and the debug laboratory are optional. The 2,000+ source-only walkthroughs stay in the <a href="/explore/">Source library</a>. '
+  'They have not been deployed or run, so they are not on this path.</p>')
 path_body='\n'.join(path_parts)
 os.makedirs(f'{S}/lessons/path',exist_ok=True)
-open(f'{S}/lessons/path/index.html','w').write(page(path_body,'The path: become a Solana developer with live apps | Sol.College',f'A beginner-to-advanced path through {ng} guided Solana lessons. Debug challenges and project previews are listed separately.','/lessons/path/'))
+open(f'{S}/lessons/path/index.html','w').write(page(
+  path_body,
+  'The path: become a Solana developer with live apps | Sol.College',
+  f'Core path: {ns} staged lessons (~{hours_staged} h). Electives: {ne}. Debug laboratory: {nc}. Catalogue: {ng} guided + {nc} challenges.',
+  '/lessons/path/',
+))
 # ---- glossary, with "shown in these lessons"
 shown={}
 for x in PATH_LIVE:
@@ -571,10 +659,10 @@ learner = '''<div class=readbar aria-hidden=true><span></span></div>
 <p class=eyebrow>Guide</p>
 <h1>How to use a lesson</h1>
 <p class=lead>A lesson is a devnet app you can open, plus the accounts, instructions and transactions that explain it. Nothing here asks you to wait for a cohort.</p>
-<section class=path-stage id=s0><h2><span class=num>0</span>Foundations first (new to Solana)</h2>
-<p>Start with <a href="/lessons/first-transaction/">Lesson 001</a> (execution vs commitment), <a href="/lessons/accounts-ownership/">Lesson 002</a> (ownership vs authority), <a href="/lessons/instructions-programs/">Lesson 003</a> (instructions → account changes), <a href="/lessons/transaction-atomicity/">Lesson 004</a> (multi-instruction atomicity), <a href="/lessons/transaction-failures/">Lesson 005</a> (diagnose failures), <a href="/lessons/application-state/">Lesson 006</a> (honest client state), then <a href="/lessons/protecting-state-transitions/">Lesson 007</a> (expected revisions). All are release candidates — not yet technically or learner verified — and are not live dApp walkthroughs.</p></section>
+<section class=path-stage id=s0><h2><span class=num>0</span>Choose your entry route</h2>
+<p><b>New to Solana:</b> start with <a href="/lessons/first-transaction/">Foundations Lesson 001</a> through 007 (release candidates — not yet technically or learner verified). <b>Already comfortable with transactions and accounts:</b> start Stage 1 on the <a href="/lessons/path/#core-path">core application path</a>. Do not require a complete beginner to learn PDAs and instruction construction in the same first hour as reviewing a transfer.</p></section>
 <section class=path-stage id=s1><h2><span class=num>1</span>Start from the path</h2>
-<p>The <a href="/lessons/">lessons index</a> separates foundations, guided lessons, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists guided lessons only, ordered by concept: accounts and PDAs, then authorization, then markets, staking and oracles. You can read a lesson without connecting a wallet.</p></section>
+<p>The <a href="/lessons/">lessons index</a> separates foundations, the core staged path, electives, debug challenges and project previews, and it remembers the last lesson you opened in this browser. The <a href="/lessons/path/">learning path</a> lists the core staged lessons first, then electives and the debug laboratory. You can read a lesson without connecting a wallet.</p></section>
 <section class=path-stage id=s2><h2><span class=num>2</span>Use your own devnet wallet</h2>
 <p>Install Phantom or Solflare, switch it to Solana <b>devnet</b>, and request test SOL from <a href="https://faucet.solana.com">faucet.solana.com</a> while you are signed in. The public RPC airdrop is closed. Devnet SOL has no value. Open the app from the lesson and approve each transaction yourself. Reject anything unexpected.</p></section>
 <section class=path-stage id=s3><h2><span class=num>3</span>Check off the steps</h2>

@@ -6,10 +6,10 @@
  "try_steps": [
   {
    "do": "Open [the canvas](/dapps/picassol-hackathon/) and connect Phantom with **Select Wallet** in the top bar.",
-   "see": "A 200 × 200 grid. Painted pixels load from devnet; empty ones are white."
+   "see": "A 200 × 200 grid. Painted pixels load from devnet. A cell that looks white may still be a painted account whose colour is RGB white — treat appearance as a hint, not proof of account absence."
   },
   {
-   "do": "Pick a colour in the colour bar at the top, then click a **white** pixel. Approve.",
+   "do": "Pick a colour in the colour bar at the top, then click a cell you believe is empty. Approve `create_pixel`. If the wallet shows `update_pixel` instead, that coordinate already has an account — pick another cell.",
    "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open.",
    "ran": [
     [
@@ -96,7 +96,7 @@
  ],
  "innovation": {
   "title": "coordinates are the address",
-  "text": "Instead of one big canvas account that everyone writes to, every pixel is its own account at a PDA seeded by its coordinates. Nobody has to store or look up an index: given (x, y) the app computes the address, and the program refuses any account that is not at that address. Separate accounts also mean two people painting different pixels never touch the same account, so their transactions can run in parallel.",
+  "text": "Instead of one big canvas account that everyone writes to, every pixel is its own account at a PDA seeded by its coordinates. Nobody has to store or look up an index: given (x, y) the app computes the address, and the program refuses any account that is not at that address. Separate pixel accounts reduce shared writable state. Actual scheduling opportunities still depend on all accounts and instructions in each transaction (including the fee payer and any fee-transfer destination).",
   "refs": [
    {
     "path": "Picassol/programs/picassol/src/lib.rs",
@@ -191,23 +191,25 @@
    "approach": "Skip 8 bytes, then read unsigned bytes: x, y, r, g, b, bump. After our `update_pixel` they were 128, 152, 20, 241, 149, and the bump. If someone has painted that pixel since, the colour will have changed — the address will not."
   },
   {
-   "title": "Count the canvas",
+   "title": "Count accounts, not colours",
    "steps": [
-    "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter)."
+    "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter).",
+    "Pick one coordinate from the result and confirm its RGB values — including when the colour is visually white."
    ],
-   "expect": "One account per painted pixel; the number matches the coloured cells on the live canvas.",
+   "expect": "One account per painted pixel. Account count is the source of truth; a white-looking cell can still be a painted account.",
    "hint": "Filter by `dataSize: 14` so you don't pick up any other account the program might own.",
-   "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Compare the length to the coloured cells on the live canvas: empty cells have no account yet."
+   "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Do not treat white cells as empty accounts: the documented RGB range includes white. Base create vs update decisions on whether the account exists at the derived address."
   },
   {
    "title": "Make painting owner-only",
    "steps": [
+    "Use a fresh local deployment and fresh accounts. Existing 14-byte Pixel accounts do not automatically become compatible with an expanded schema.",
     "Add `owner: Pubkey` to `Pixel` (and 32 bytes to `LEN`), set it in `create_pixel`, and add a `pub user: Signer<'info>` to `UpdatePixel` with `constraint = pixel.owner == user.key()`.",
-    "`anchor build` and test `update_pixel` from a different wallet."
+    "`anchor build` and test `update_pixel` from a different wallet against accounts created by the new program."
    ],
-   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour.",
-   "hint": "`UpdatePixel` currently takes no user account at all. You need a `Signer` and a constraint that compares it to a new `owner` field.",
-   "approach": "Add `owner: Pubkey` to `Pixel`, increase `LEN` by 32, set `owner = user.key()` in `create_pixel`, and on `UpdatePixel` add `pub user: Signer` with `constraint = pixel.owner == user.key()`. Build, then from a second wallet call `update_pixel` on a pixel the first wallet created: it should fail the constraint, while the creator can still recolour."
+   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour. Old 14-byte accounts on a previous deployment are out of scope for this exercise.",
+   "hint": "`UpdatePixel` currently takes no user account at all. You need a `Signer` and a constraint that compares it to a new `owner` field. Schema size changes require a migration boundary — do not edit handlers against incompatible live accounts.",
+   "approach": "Deploy locally with the expanded `LEN`. Add `owner: Pubkey` to `Pixel`, increase `LEN` by 32, set `owner = user.key()` in `create_pixel`, and on `UpdatePixel` add `pub user: Signer` with `constraint = pixel.owner == user.key()`. Create a new pixel with wallet A, then from wallet B call `update_pixel`: it should fail the constraint, while A can still recolour."
   },
   {
    "title": "Fix the error messages",
@@ -230,8 +232,8 @@
   "Tell create (`init`) from update (re-derive the same PDA from stored fields), and find the `PixelChanged` event in the logs."
  ],
  "prereqs": [
-  "A Phantom (or Solflare) wallet set to Solana Devnet, and about 0.05 devnet SOL from [faucet.solana.com](https://faucet.solana.com).",
-  "Complete [Lesson 001: Your First Solana Transaction](/lessons/first-transaction/) first if you have never reviewed and verified a Solana transfer. That foundations lesson is a release candidate: it teaches execution vs commitment as separate checks. Picassol is the first live Stage 1 practice on the [learning path](/lessons/path/)."
+  "A Phantom (or Solflare) wallet set to Solana Devnet, and enough practice SOL from [faucet.solana.com](https://faucet.solana.com) for the estimated costs (about 0.05 SOL is typical for this lesson). Faucet availability and timing vary; faucet access is not graded.",
+  "If you are new to Solana, complete [Lesson 001: Your First Solana Transaction](/lessons/first-transaction/) first. If you already understand execution vs commitment, you may start here as Stage 1 on the [learning path](/lessons/path/)."
  ],
  "concepts": [
   "pda",
