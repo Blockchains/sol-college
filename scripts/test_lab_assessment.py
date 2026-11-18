@@ -164,6 +164,17 @@ class LabAssessment(unittest.TestCase):
         self.assertNotIn('Pixel account', html)
         self.assertNotIn('update_pixel', html)
 
+    def test_oculus_has_learning_loop_and_pause_criteria(self):
+        L = json.loads((ROOT / 'dapps/lessons/oculus.json').read_text())
+        self.assertEqual(L.get('path_stage'), 2)
+        self.assertIn('learning_loop', L)
+        self.assertEqual(L['learning_loop'].get('predict_answer'), 'paused')
+        html = ll.assessment_html(L, 'oculus')
+        self.assertIn('paused', html.lower())
+        self.assertIn('LimitBreached', html)
+        self.assertNotIn('Pixel account', html)
+        self.assertNotIn('update_pixel', html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
