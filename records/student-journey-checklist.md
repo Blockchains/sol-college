@@ -39,7 +39,7 @@ Legend: `done` · `partial` · `todo`
 
 ## Later releases
 
-- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; staged path 1–16 + Foundations 001–007 + electives through batch 5; remaining: pulsefund/stakes/votara/devos + previews)
+- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all guided live lessons + Foundations 001–007 have loops; project previews / debug lab polish and learner verification still open)
 - Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
 - Release E: AI tutor, personalisation, community — `todo` (P2)
 

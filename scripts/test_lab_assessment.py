@@ -371,6 +371,39 @@ class LabAssessment(unittest.TestCase):
             self.assertNotIn('Pixel account', html, slug)
             self.assertNotIn('update_pixel', html, slug)
 
+    def test_elective_batch6_final_catalogue_loops(self):
+        batch = {
+            'pulsefund-sol': 'connected',
+            'stakes-main': 'stale',
+            'votara': 'reject_quorum',
+            'devos-decentralized-voting': 'reopen',
+        }
+        for slug, answer in batch.items():
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
+            ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
+            self.assertIn(answer, ids, slug)
+            html = ll.assessment_html(L, slug)
+            self.assertNotIn('Pixel account', html, slug)
+
+    def test_all_guided_live_lessons_have_learning_loop(self):
+        skip = {'excerpts', 'glossary', 'path'}
+        live = {row['slug'] for row in json.loads((ROOT / 'dapps' / 'live.json').read_text())}
+        missing = []
+        for slug in sorted(live):
+            if slug in skip:
+                continue
+            path = ROOT / 'dapps' / 'lessons' / f'{slug}.json'
+            if not path.is_file():
+                continue
+            L = json.loads(path.read_text())
+            if not (L.get('title') or L.get('summary')):
+                continue
+            if not L.get('learning_loop'):
+                missing.append(slug)
+        self.assertEqual(missing, [], f'live lessons missing learning_loop: {missing}')
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

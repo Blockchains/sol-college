@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c21',
+    'title': 'Release C.21 — Final catalogue learning loops (guided live complete)',
+    'summary': (
+      'PulseFund, stakes.wtf, Votara, and DeVos join the shared learning layer. '
+      'Every guided live lesson JSON now has a learning_loop.'
+    ),
+    'changes': [
+      'pulsefund-sol / stakes-main / votara / devos-decentralized-voting: track=elective, loops, rubrics.',
+      'Loops cover wrong Contribute PDA, stale gov price, quorum-before-percentage, and missing finished election state.',
+      'Test gate: all guided live lessons expose learning_loop.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c20',
     'title': 'Release C.20 — Catalogue debug electives batch 5',
     'summary': (
