@@ -17,6 +17,16 @@ class LearningLayerHtml(unittest.TestCase):
         self.assertIn('/lessons/first-transaction/', html)
         self.assertIn('/lessons/picassol-hackathon/', html)
         self.assertIn('id="start-form"', html)
+        self.assertIn('id="start-resume"', html)
+        self.assertIn('not proof of mastery', html)
+        self.assertIn('/lessons/path/', html)
+
+    def test_landing_js_wires_homepage_resume(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        js = open(os.path.join(root, 'scripts/landing.js'), encoding='utf-8').read()
+        self.assertIn("getElementById('start-resume')", js)
+        self.assertIn('sc-lesson-last', js)
+        self.assertIn('start-resume-go', js)
 
     def test_preflight_offers_observation_and_practical(self):
         html = ll.preflight_html('/dapps/picassol-hackathon/', 'Picassol')

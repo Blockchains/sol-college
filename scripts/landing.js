@@ -85,6 +85,32 @@
     });
   });
 
+  /* Homepage resume from device-local last lesson (Release E.5) */
+  function esc(s) {
+    return String(s || '').replace(/[&<>"']/g, function (c) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+    });
+  }
+  var startResume = document.getElementById('start-resume');
+  if (startResume) {
+    try {
+      var lastLesson = JSON.parse(localStorage.getItem('sc-lesson-last') || 'null');
+      if (lastLesson && lastLesson.href) {
+        var body = document.getElementById('start-resume-body');
+        var goResume = document.getElementById('start-resume-go');
+        if (body) {
+          body.innerHTML = 'Pick up where you left off: <a href="' + esc(lastLesson.href) + '"><strong>' +
+            esc(lastLesson.title || 'your last lesson') + '</strong></a>';
+        }
+        if (goResume) {
+          goResume.href = lastLesson.href;
+          goResume.textContent = 'Continue ' + (lastLesson.title || 'lesson');
+        }
+        startResume.hidden = false;
+      }
+    } catch (err) {}
+  }
+
   /* Front-door recommender (#start) */
   var form = document.getElementById('start-form');
   var result = document.getElementById('start-result');

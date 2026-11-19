@@ -15,6 +15,16 @@ def start_section_html():
     <p class="eyebrow">Front door</p>
     <h2>Find the right first lesson in two minutes</h2>
     <p class="lead">Multiple catalogues are fine. Multiple unexplained “first” choices are not. Pick a route — or answer four questions and get one recommendation. No wallet required.</p>
+    <div class="start-resume" id="start-resume" hidden data-learning="resume">
+      <p class="eyebrow">On this device</p>
+      <p id="start-resume-body"></p>
+      <p class="cta-row">
+        <a class="btn" id="start-resume-go" href="#">Continue</a>
+        <a class="btn ghost" href="/lessons/path/">View path progress</a>
+        <a class="btn ghost" href="/lessons/">Browse lessons</a>
+      </p>
+      <p class="honest">Resume links and path progress are not proof of mastery. They stay in this browser only.</p>
+    </div>
     <div class="start-routes" role="list">
       <a class="start-route" role="listitem" href="/lessons/first-transaction/">
         <b>New to Solana</b>
