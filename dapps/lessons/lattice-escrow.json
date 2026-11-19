@@ -1,53 +1,144 @@
 {
- "title": "Lattice Escrow",
- "summary": "Lock native SOL in a program-owned escrow PDA, then have the Lattice authority release it to the agent (minus a 1/67 protocol fee).",
- "what": "Lattice Escrow is a small Anchor 0.32.1 SOL rail: the payer creates a program-owned PDA, and the lattice_wallet authority later releases the amount to the agent (fee = amount / 67) or refunds the payer after timeout. This lesson covers create_escrow and release_escrow.",
- "app_note": "The page at /dapps/lattice-escrow/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/lattice-escrow. The lab only changed declare_id to a unique lab program and pointed the Anchor.toml wallet at the local CLI keypair.",
- "try_steps": [
-  {
-   "do": "Open /dapps/lattice-escrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow and release_escrow for transaction_id campus-scout-1 with 1_000_000 lamports.",
-   "see": "Program BTDakBxR…. Escrow EdmCgtFn… should be Released, with 1_696_720 lamports of rent still in the PDA; the agent received 985_075 and the lattice wallet received a 14_925 fee.",
-   "ran": "create_escrow iACYvtQd…; release_escrow 4ZWabJmK…."
+  "title": "Lattice Escrow",
+  "summary": "Lock native SOL in a program-owned escrow PDA, then have the Lattice authority release it to the agent (minus a 1/67 protocol fee).",
+  "what": "Lattice Escrow is a small Anchor 0.32.1 SOL rail: the payer creates a program-owned PDA, and the lattice_wallet authority later releases the amount to the agent (fee = amount / 67) or refunds the payer after timeout. This lesson covers create_escrow and release_escrow.",
+  "app_note": "The page at /dapps/lattice-escrow/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/lattice-escrow. The lab only changed declare_id to a unique lab program and pointed the Anchor.toml wallet at the local CLI keypair.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/lattice-escrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow and release_escrow for transaction_id campus-scout-1 with 1_000_000 lamports.",
+      "see": "Program BTDakBxR\u2026. Escrow EdmCgtFn\u2026 should be Released, with 1_696_720 lamports of rent still in the PDA; the agent received 985_075 and the lattice wallet received a 14_925 fee.",
+      "ran": "create_escrow iACYvtQd\u2026; release_escrow 4ZWabJmK\u2026."
+    },
+    {
+      "do": "release_escrow signed by anyone other than lattice_wallet should fail.",
+      "see": "Unauthorized.",
+      "ran": "Rejected in tests/devnet/lattice-escrow.mjs (negative_wrong_authority)."
+    }
+  ],
+  "diagram": "payer --create_escrow--> escrow [\"escrow\", payer, transaction_id] (program-owned, rent + amount) ; lattice_wallet --release_escrow--> agent (amount - fee) + lattice_wallet (fee = amount/67)",
+  "accounts": [
+    "escrow (seeds [\"escrow\", payer, transaction_id bytes], owner = this program)"
+  ],
+  "instructions": [
+    "create_escrow",
+    "release_escrow",
+    "refund_escrow (not exercised)"
+  ],
+  "innovation": "A tiny program-owned SOL escrow with a fixed 1/67 Lattice fee, released only by the recorded lattice_wallet.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch escrow EdmCgtFn\u2026 and confirm status is Released.",
+    "Explain why release can debit this PDA.",
+    "Sketch the timeout path for refund_escrow."
+  ],
+  "not_covered": "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains).",
+  "difficulty": "Intermediate",
+  "time": "20 min",
+  "functional": "full",
+  "objectives": [
+    "Derive or locate the escrow PDA used by Lattice.",
+    "Fund the escrow and observe locked token balances.",
+    "Explain which condition unlocks release vs reclaim."
+  ],
+  "prereqs": [
+    "A Devnet wallet with practice funds.",
+    "Understanding of PDA seeds from [Picassol](/lessons/picassol-hackathon/) or Foundations."
+  ],
+  "student_outcome": "Create a lattice escrow and verify that only the Lattice authority can release.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "learning_loop": {
+    "objective": "Inspect a Released Lattice escrow \u2014 then predict who may call release_escrow.",
+    "predict_question": "release_escrow is signed by a wallet that is not lattice_wallet. What should happen?",
+    "predict_options": [
+      {
+        "id": "ok",
+        "label": "Anyone can release once the escrow exists"
+      },
+      {
+        "id": "fail",
+        "label": "Release fails; only lattice_wallet may release"
+      },
+      {
+        "id": "agent",
+        "label": "Only the agent payee may release"
+      }
+    ],
+    "predict_answer": "fail",
+    "predict_why": "Lattice gates release_escrow to lattice_wallet. A non-authority signer is rejected even if the escrow is funded.",
+    "act": "Open /dapps/lattice-escrow/ on Devnet. Fetch escrow EdmCgtFn\u2026 (Released). Prefer recorded create/fund/release proofs; explain why foreign signers fail release.",
+    "inspect": [
+      {
+        "id": "escrow",
+        "label": "Escrow status",
+        "placeholder": "Released / \u2026"
+      },
+      {
+        "id": "authority",
+        "label": "lattice_wallet observed",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "reject",
+        "label": "Foreign release attempt",
+        "placeholder": "fail / explained"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why is authority-gated release different from a timeout refund path?",
+    "transfer": "Name who can release now, and which refund path this lesson did not exercise."
   },
-  {
-   "do": "release_escrow signed by anyone other than lattice_wallet should fail.",
-   "see": "Unauthorized.",
-   "ran": "Rejected in tests/devnet/lattice-escrow.mjs (negative_wrong_authority)."
+  "assessment": {
+    "purpose": "Independent elective criteria; no Picassol leakage.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Locates escrow PDA",
+        "question": "Can the student identify the Lattice escrow account?",
+        "not_yet": "No.",
+        "support": "Finds EdmCgtFn\u2026 after prompt.",
+        "independent": "Records PDA + status.",
+        "misconception": "Agent wallet is the escrow."
+      },
+      {
+        "id": "c2",
+        "title": "Explains authority gate",
+        "question": "Can the student predict non-lattice_wallet release failure?",
+        "not_yet": "Assumes anyone.",
+        "support": "Correct after exercise.",
+        "independent": "States lattice_wallet constraint.",
+        "misconception": "Funded escrow means anyone may release."
+      },
+      {
+        "id": "c3",
+        "title": "Scopes refund_escrow out",
+        "question": "Does the student note timeout/refund was not exercised?",
+        "not_yet": "Claims refund mastery.",
+        "support": "Scopes after prompt.",
+        "independent": "Notes not_covered refund.",
+        "misconception": "Release proves timeout refund."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Lab release is my authority."
+      }
+    ]
   }
- ],
- "diagram": "payer --create_escrow--> escrow [\"escrow\", payer, transaction_id] (program-owned, rent + amount) ; lattice_wallet --release_escrow--> agent (amount - fee) + lattice_wallet (fee = amount/67)",
- "accounts": [
-  "escrow (seeds [\"escrow\", payer, transaction_id bytes], owner = this program)"
- ],
- "instructions": [
-  "create_escrow",
-  "release_escrow",
-  "refund_escrow (not exercised)"
- ],
- "innovation": "A tiny program-owned SOL escrow with a fixed 1/67 Lattice fee, released only by the recorded lattice_wallet.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch escrow EdmCgtFn… and confirm status is Released.",
-  "Explain why release can debit this PDA.",
-  "Sketch the timeout path for refund_escrow."
- ],
- "not_covered": "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains).",
- "difficulty": "Intermediate",
- "time": "20 min",
- "functional": "full",
- "objectives": [
-  "Derive or locate the escrow PDA used by Lattice.",
-  "Fund the escrow and observe locked token balances.",
-  "Explain which condition unlocks release vs reclaim."
- ],
- "prereqs": [
-  "A Devnet wallet with practice funds.",
-  "Understanding of PDA seeds from [Picassol](/lessons/picassol-hackathon/) or Foundations."
- ],
- "student_outcome": "Create a lattice escrow and verify release conditions against account state.",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "track": "elective",
- "delivery": "Browser practice + evidence inspection"
 }

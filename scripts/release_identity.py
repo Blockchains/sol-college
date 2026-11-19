@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c18',
+    'title': 'Release C.18 — Elective learning loops batch 3',
+    'summary': (
+      'Catalogue electives AgentEscrow, Pact Escrow, Lattice Escrow, EscrowAgent, '
+      'Agent Court, and Allowance join the shared learning layer.'
+    ),
+    'changes': [
+      'Six escrow/allowance electives gain learning_loop + lab-specific assessment criteria.',
+      'Loops emphasise vault PDA bumps, authority-gated release, OracleCallback rejection, claim status, and OverRequestCap.',
+      'Tests cover batch 3 predict answers and no Picassol leakage.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c17',
     'title': 'Release C.17 — Elective learning loops batch 2',
     'summary': (

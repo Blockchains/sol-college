@@ -1,53 +1,144 @@
 {
- "title": "Pact Escrow",
- "summary": "Create a program-owned SOL escrow PDA, then release the amount to the seller. Refund (seller-signed) was not exercised in the lab proof.",
- "what": "Pact is a no_std pinocchio program (not Anchor): instruction 0 creates and funds a program-owned escrow PDA, 1 releases the amount to the seller by direct lamport debit, and 2 refunds the buyer. Because the PDA is program-owned, release does not need a signed system transfer.",
- "app_note": "The page at /dapps/pact-escrow/ is a small custom wallet console for this pinocchio program (not the generic Anchor IDL console). The lab tree is branch sol-college-devnet of Blockchains/pact-escrow (Blockchains/pact is a different Tempo project). declare_id was replaced with a unique lab program; pinocchio's nostd_panic_handler! was replaced so the crate builds on current platform-tools rustc.",
- "try_steps": [
-  {
-   "do": "Open /dapps/pact-escrow/, switch to Devnet, connect a wallet, and fetch the lab escrow (seller GpUq5UH3…, seed 20261115) or create a new one with a fresh seed.",
-   "see": "Program BA6gPuCD…. Lab escrow 3xNd7gWF… should be Released, with 1_061_720 lamports of rent still in the PDA and the seller paid 1_000_000.",
-   "ran": "create_escrow 3L9d3bFx…; release 3p4DERSe…."
+  "title": "Pact Escrow",
+  "summary": "Create a program-owned SOL escrow PDA, then release the amount to the seller. Refund (seller-signed) was not exercised in the lab proof.",
+  "what": "Pact is a no_std pinocchio program (not Anchor): instruction 0 creates and funds a program-owned escrow PDA, 1 releases the amount to the seller by direct lamport debit, and 2 refunds the buyer. Because the PDA is program-owned, release does not need a signed system transfer.",
+  "app_note": "The page at /dapps/pact-escrow/ is a small custom wallet console for this pinocchio program (not the generic Anchor IDL console). The lab tree is branch sol-college-devnet of Blockchains/pact-escrow (Blockchains/pact is a different Tempo project). declare_id was replaced with a unique lab program; pinocchio's nostd_panic_handler! was replaced so the crate builds on current platform-tools rustc.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/pact-escrow/, switch to Devnet, connect a wallet, and fetch the lab escrow (seller GpUq5UH3\u2026, seed 20261115) or create a new one with a fresh seed.",
+      "see": "Program BA6gPuCD\u2026. Lab escrow 3xNd7gWF\u2026 should be Released, with 1_061_720 lamports of rent still in the PDA and the seller paid 1_000_000.",
+      "ran": "create_escrow 3L9d3bFx\u2026; release 3p4DERSe\u2026."
+    },
+    {
+      "do": "create_escrow with amount=0 should fail.",
+      "see": "InvalidInstructionData / Simulation failed.",
+      "ran": "Rejected in tests/devnet/pact-escrow.mjs (negative_zero_amount)."
+    }
+  ],
+  "diagram": "buyer --create_escrow (ix 0)--> escrow [\"escrow\", buyer, seller, seed] (program-owned, rent + amount) ; buyer --release (ix 1)--> seller +amount (rent remains)",
+  "accounts": [
+    "escrow (seeds [\"escrow\", buyer, seller, seed u64 LE], owner = this program, 81 bytes)"
+  ],
+  "instructions": [
+    "create_escrow (0)",
+    "release (1)",
+    "refund (2)"
+  ],
+  "innovation": "A tiny pinocchio (no_std) SOL escrow whose PDA is program-owned, so release can debit lamports directly.",
+  "frontend": "Custom Sol.College wallet console for this pinocchio program (esm.sh @solana/web3.js).",
+  "exercises": [
+    "Fetch the lab escrow and confirm status is Released.",
+    "Explain why this release can debit the PDA when Guild's original vault debit could not.",
+    "Sketch a close instruction that returns remaining rent to the buyer."
+  ],
+  "not_covered": "refund was not exercised. The escrow PDA is not closed after release (rent remains). v2 instructions in instructions_v2.rs are not the deployed entrypoint.",
+  "difficulty": "Beginner",
+  "time": "20 min",
+  "functional": "full",
+  "objectives": [
+    "Locate the pact escrow PDA and the tokens it controls.",
+    "Walk the create \u2192 fund \u2192 release (or cancel) flow on the hosted app.",
+    "Read a successful transaction and name the instruction that moved funds."
+  ],
+  "prereqs": [
+    "A Devnet wallet with practice funds.",
+    "Basic familiarity with SPL token accounts."
+  ],
+  "student_outcome": "Open a pact escrow and follow the release path using recorded accounts \u2014 explaining PDA debit.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "learning_loop": {
+    "objective": "Inspect a Released Pact escrow \u2014 then explain why release can debit the program-owned PDA.",
+    "predict_question": "create_escrow is called with amount=0. What should happen?",
+    "predict_options": [
+      {
+        "id": "ok",
+        "label": "Escrow opens with zero locked funds"
+      },
+      {
+        "id": "fail",
+        "label": "Create fails; amount must be non-zero"
+      },
+      {
+        "id": "ui",
+        "label": "Only the UI blocks it; on-chain create still succeeds"
+      }
+    ],
+    "predict_answer": "fail",
+    "predict_why": "Pact rejects amount=0 on create. A valid escrow requires a real locked amount before release can debit the PDA.",
+    "act": "Open /dapps/pact-escrow/ on Devnet. Fetch the lab escrow (Released). Prefer recorded create\u2192fund\u2192release proofs. Compare why this release can debit the PDA when some vault designs cannot.",
+    "inspect": [
+      {
+        "id": "escrow",
+        "label": "Escrow PDA / status",
+        "placeholder": "Released / \u2026"
+      },
+      {
+        "id": "amount",
+        "label": "Amount evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "release",
+        "label": "Release instruction observed",
+        "placeholder": "yes / proof"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why can Pact\u2019s release debit the escrow PDA when a mis-seeded vault debit would fail?",
+    "transfer": "State one create failure (amount=0) and one post-release limit (rent not reclaimed if PDA not closed)."
   },
-  {
-   "do": "create_escrow with amount=0 should fail.",
-   "see": "InvalidInstructionData / Simulation failed.",
-   "ran": "Rejected in tests/devnet/pact-escrow.mjs (negative_zero_amount)."
+  "assessment": {
+    "purpose": "Independent elective criteria; no Picassol leakage.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Reads Released escrow",
+        "question": "Can the student fetch escrow status from evidence?",
+        "not_yet": "No status recorded.",
+        "support": "Finds lab escrow after prompt.",
+        "independent": "Records PDA + Released.",
+        "misconception": "UI list equals on-chain status."
+      },
+      {
+        "id": "c2",
+        "title": "Explains amount=0 failure",
+        "question": "Can the student predict create with amount=0 fails?",
+        "not_yet": "Assumes success.",
+        "support": "Correct after exercise.",
+        "independent": "States failure independently.",
+        "misconception": "Zero-amount escrow is valid."
+      },
+      {
+        "id": "c3",
+        "title": "Explains PDA debit on release",
+        "question": "Can the student explain program-authorized debit?",
+        "not_yet": "Unclear.",
+        "support": "Correct after comparison exercise.",
+        "independent": "States PDA signing/debit clearly.",
+        "misconception": "Seller wallet alone pulls escrow lamports/tokens without program rules."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled; refund not invented?",
+        "not_yet": "Claims untested refund.",
+        "support": "Corrects after prompt.",
+        "independent": "Honest about refund not exercised.",
+        "misconception": "Release proof is also refund proof."
+      }
+    ]
   }
- ],
- "diagram": "buyer --create_escrow (ix 0)--> escrow [\"escrow\", buyer, seller, seed] (program-owned, rent + amount) ; buyer --release (ix 1)--> seller +amount (rent remains)",
- "accounts": [
-  "escrow (seeds [\"escrow\", buyer, seller, seed u64 LE], owner = this program, 81 bytes)"
- ],
- "instructions": [
-  "create_escrow (0)",
-  "release (1)",
-  "refund (2)"
- ],
- "innovation": "A tiny pinocchio (no_std) SOL escrow whose PDA is program-owned, so release can debit lamports directly.",
- "frontend": "Custom Sol.College wallet console for this pinocchio program (esm.sh @solana/web3.js).",
- "exercises": [
-  "Fetch the lab escrow and confirm status is Released.",
-  "Explain why this release can debit the PDA when Guild's original vault debit could not.",
-  "Sketch a close instruction that returns remaining rent to the buyer."
- ],
- "not_covered": "refund was not exercised. The escrow PDA is not closed after release (rent remains). v2 instructions in instructions_v2.rs are not the deployed entrypoint.",
- "difficulty": "Beginner",
- "time": "20 min",
- "functional": "full",
- "objectives": [
-  "Locate the pact escrow PDA and the tokens it controls.",
-  "Walk the create → fund → release (or cancel) flow on the hosted app.",
-  "Read a successful transaction and name the instruction that moved funds."
- ],
- "prereqs": [
-  "A Devnet wallet with practice funds.",
-  "Basic familiarity with SPL token accounts."
- ],
- "student_outcome": "Open a pact escrow and follow the release path using the recorded accounts.",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "track": "elective",
- "delivery": "Browser practice + evidence inspection"
 }
