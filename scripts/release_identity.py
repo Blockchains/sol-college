@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-d4',
+    'title': 'Release D.4 — Foundations stuck help with rubric misconceptions',
+    'summary': (
+      'Foundations 001–007 workspaces now include stuck help with assessment misconceptions '
+      'from the foundations catalog — same tutor-lite coach as application labs.'
+    ),
+    'changes': [
+      'assessment_misconceptions added to dapps/foundations/catalog.json for lessons 001–007.',
+      'foundations_workspace_html() appends stuck_html() when misconceptions are present.',
+      'Still release candidates: learner testing and live specimens remain open.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e9',
     'title': 'Release E.9 — Honest community contribution section',
     'summary': (

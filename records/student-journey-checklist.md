@@ -40,7 +40,7 @@ Legend: `done` · `partial` · `todo`
 ## Later releases
 
 - Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all live lessons + Foundations have loops; debug labs tagged + labelled in workspace/cards; learner verification / Picassol hosted recolour still open)
-- Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
+- Release D: Foundations migration + rubrics — `partial` (D.4: stuck help + catalog misconceptions on 001–007; structural checks remain; learner testing / live specimens still open)
 - Release E: AI tutor, personalisation, community — `partial` (E.9: honest community section + tutor-lite + personalisation E.1–E.7; live generative AI tutor still open; learner-observed failure routes still open)
 
 ## Definition of done (product)

@@ -9,7 +9,7 @@
       "path": "/lessons/first-transaction/",
       "assess_path": "/lessons/first-transaction/assessment/",
       "student_outcome": "Authorise a practice transfer on Devnet and verify execution separately from commitment.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
         "A practice wallet on Solana Devnet; no prior Solana required."
@@ -20,10 +20,10 @@
         "Verify a transfer on the intended network before claiming success."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "learning_loop": {
-        "objective": "Predict fee and balance changes \u2014 then verify execution separately from commitment.",
+        "objective": "Predict fee and balance changes — then verify execution separately from commitment.",
         "predict_question": "You approve a Devnet transfer of 0.01 SOL from A to B. What must be true before you treat it as a successful practical transfer?",
         "predict_options": [
           {
@@ -41,7 +41,7 @@
         ],
         "predict_answer": "exec_commit",
         "predict_why": "A signature identifier is not proof of successful execution or of the required commitment. Check network, execution result, and commitment as separate dimensions.",
-        "act": "Use the lesson\u2019s practice transfer or observation route. Review the wallet request against your prediction before approving. Prefer Devnet. Do not use mainnet funds.",
+        "act": "Use the lesson’s practice transfer or observation route. Review the wallet request against your prediction before approving. Prefer Devnet. Do not use mainnet funds.",
         "inspect": [
           {
             "id": "network",
@@ -51,7 +51,7 @@
           {
             "id": "sig",
             "label": "Signature (short)",
-            "placeholder": "sig\u2026"
+            "placeholder": "sig…"
           },
           {
             "id": "execution",
@@ -75,7 +75,7 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -88,7 +88,21 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Reviews and authorises the intended action",
+          "misconception": "I should approve it because the lesson told me to make a transfer."
+        },
+        {
+          "title": "Verifies execution and commitment separately",
+          "misconception": "Confirmed means every instruction succeeded."
+        },
+        {
+          "title": "Handles uncertainty and evidence limits",
+          "misconception": "If the page times out, the safe option is to send again immediately."
+        }
+      ]
     },
     {
       "id": "accounts-ownership",
@@ -97,29 +111,29 @@
       "path": "/lessons/accounts-ownership/",
       "assess_path": "/lessons/accounts-ownership/assessment/",
       "student_outcome": "Separate program ownership from authority and predict which signatures an update needs.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 001 \u2014 Authorise and verify a transaction (or equivalent)."
+        "Lesson 001 — Authorise and verify a transaction (or equivalent)."
       ],
       "objectives": [
-        "Identify an account\u2019s owner program vs authorities in its data.",
+        "Identify an account’s owner program vs authorities in its data.",
         "Predict who must sign an update.",
         "Explain why the wrong signer fails."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
       "learning_loop": {
-        "objective": "Separate program ownership from authority \u2014 then predict who must sign an update.",
-        "predict_question": "A profile account\u2019s owner program is ProfileProgram. The profile data names Alice as authority. Who must sign a name update that ProfileProgram will accept?",
+        "objective": "Separate program ownership from authority — then predict who must sign an update.",
+        "predict_question": "A profile account’s owner program is ProfileProgram. The profile data names Alice as authority. Who must sign a name update that ProfileProgram will accept?",
         "predict_options": [
           {
             "id": "owner_prog",
@@ -127,7 +141,7 @@
           },
           {
             "id": "alice",
-            "label": "Alice (the authority named in the account data), per the program\u2019s rules"
+            "label": "Alice (the authority named in the account data), per the program’s rules"
           },
           {
             "id": "any_holder",
@@ -135,13 +149,13 @@
           }
         ],
         "predict_answer": "alice",
-        "predict_why": "The owner program enforces the update rules. Authority lives in the account\u2019s data (or related accounts), not in \u201cI can see the address.\u201d The wrong signer fails even if the owner program is correct.",
+        "predict_why": "The owner program enforces the update rules. Authority lives in the account’s data (or related accounts), not in “I can see the address.” The wrong signer fails even if the owner program is correct.",
         "act": "Inspect the Lesson 002 cases: authorised vs unauthorised update. Record owner program, data length, and who is named as authority before claiming control.",
         "inspect": [
           {
             "id": "address",
             "label": "Account address (short)",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "owner",
@@ -156,7 +170,7 @@
           {
             "id": "signer",
             "label": "Who signed / who should sign",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "outcome",
@@ -164,7 +178,7 @@
             "placeholder": "yes / no / simulation"
           }
         ],
-        "explain_question": "Why can \u201cthis is my wallet\u201d and \u201cthis account\u2019s owner is a program\u201d both be true without contradiction?",
+        "explain_question": "Why can “this is my wallet” and “this account’s owner is a program” both be true without contradiction?",
         "transfer": "Given only an address, list three things you will not infer about control or real-world identity."
       },
       "next_id": "instructions-programs",
@@ -176,7 +190,13 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Authority vs ownership",
+          "misconception": "Putting my address in the authority field automatically prevents other people from changing the data."
+        }
+      ]
     },
     {
       "id": "instructions-programs",
@@ -185,10 +205,10 @@
       "path": "/lessons/instructions-programs/",
       "assess_path": "/lessons/instructions-programs/assessment/",
       "student_outcome": "Trace an instruction to expected account changes and verify them after submission.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 002 \u2014 Accounts, ownership, and authority."
+        "Lesson 002 — Accounts, ownership, and authority."
       ],
       "objectives": [
         "Name the program and accounts an instruction touches.",
@@ -196,18 +216,18 @@
         "Verify observed accounts match the prediction."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
       "learning_loop": {
-        "objective": "Trace an instruction\u2019s program, accounts, and data \u2014 then predict the state change.",
-        "predict_question": "You prepare an \u201cUpdate profile\u201d instruction. Which three components must you identify before predicting the account change?",
+        "objective": "Trace an instruction’s program, accounts, and data — then predict the state change.",
+        "predict_question": "You prepare an “Update profile” instruction. Which three components must you identify before predicting the account change?",
         "predict_options": [
           {
             "id": "ui_only",
@@ -229,7 +249,7 @@
           {
             "id": "program",
             "label": "Program ID / name",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "accounts",
@@ -239,7 +259,7 @@
           {
             "id": "data",
             "label": "Instruction intent (decoded)",
-            "placeholder": "update name \u2192 \u2026"
+            "placeholder": "update name → …"
           },
           {
             "id": "expected",
@@ -264,7 +284,17 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Button label vs instruction",
+          "misconception": "The button label is the instruction, so it tells us exactly what will happen."
+        },
+        {
+          "title": "Signature vs success",
+          "misconception": "A valid signature guarantees success."
+        }
+      ]
     },
     {
       "id": "transaction-atomicity",
@@ -273,10 +303,10 @@
       "path": "/lessons/transaction-atomicity/",
       "assess_path": "/lessons/transaction-atomicity/assessment/",
       "student_outcome": "Explain why several instructions in one transaction succeed or fail together.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 003 \u2014 Instructions and programs."
+        "Lesson 003 — Instructions and programs."
       ],
       "objectives": [
         "Identify multiple instructions in one transaction.",
@@ -284,12 +314,12 @@
         "Relate atomicity to fees when execution fails."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -303,7 +333,7 @@
           },
           {
             "id": "rollback",
-            "label": "Neither instruction\u2019s application-state change remains \u2014 the transaction rolls back"
+            "label": "Neither instruction’s application-state change remains — the transaction rolls back"
           },
           {
             "id": "fee_keeps",
@@ -317,7 +347,7 @@
           {
             "id": "order",
             "label": "Instruction order",
-            "placeholder": "1\u2026 2\u2026"
+            "placeholder": "1… 2…"
           },
           {
             "id": "fail_at",
@@ -352,7 +382,17 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Same button ≠ same transaction",
+          "misconception": "They were launched by the same button, so they must succeed or fail together."
+        },
+        {
+          "title": "Partial logs vs persistence",
+          "misconception": "The logs say the first instruction succeeded, so the name must now be Beacon."
+        }
+      ]
     },
     {
       "id": "transaction-failures",
@@ -360,11 +400,11 @@
       "title": "Failure diagnosis and recovery",
       "path": "/lessons/transaction-failures/",
       "assess_path": "/lessons/transaction-failures/assessment/",
-      "student_outcome": "Classify wallet rejection, simulation failure, execution failure, and unresolved status \u2014 and choose the next safe action.",
-      "time": "45\u201375 min",
+      "student_outcome": "Classify wallet rejection, simulation failure, execution failure, and unresolved status — and choose the next safe action.",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 004 \u2014 Multi-instruction transactions and atomicity."
+        "Lesson 004 — Multi-instruction transactions and atomicity."
       ],
       "objectives": [
         "Separate rejection, simulation, execution, and commitment failures.",
@@ -372,17 +412,17 @@
         "Reconcile before a corrected attempt."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
       "learning_loop": {
-        "objective": "Locate the failure stage \u2014 then choose a recovery that avoids blind resubmit.",
+        "objective": "Locate the failure stage — then choose a recovery that avoids blind resubmit.",
         "predict_question": "The wallet UI shows a signature, then the app times out. You never saw a confirmed execution result. What is the safest next move?",
         "predict_options": [
           {
@@ -395,7 +435,7 @@
           },
           {
             "id": "assume_fail",
-            "label": "Treat \u201cnot observed\u201d as proof it never happened and move on"
+            "label": "Treat “not observed” as proof it never happened and move on"
           }
         ],
         "predict_answer": "reconcile",
@@ -410,7 +450,7 @@
           {
             "id": "error",
             "label": "Error / code (if any)",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "sig",
@@ -428,7 +468,7 @@
             "placeholder": "reconcile / fix / stop"
           }
         ],
-        "explain_question": "Why must you separate \u201cnot observed\u201d from \u201cdid not happen\u201d?",
+        "explain_question": "Why must you separate “not observed” from “did not happen”?",
         "transfer": "Name four failure stages and one recovery rule that applies to all of them."
       },
       "next_id": "application-state",
@@ -440,7 +480,17 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "UI error vs on-chain execution",
+          "misconception": "The page displayed an error, so the transaction must have executed and failed."
+        },
+        {
+          "title": "Timeout as proof of non-execution",
+          "misconception": "Treating a timeout or one null status as proof that the operation never happened."
+        }
+      ]
     },
     {
       "id": "application-state",
@@ -449,10 +499,10 @@
       "path": "/lessons/application-state/",
       "assess_path": "/lessons/application-state/assessment/",
       "student_outcome": "Keep observed account data separate from drafts and pending updates; reconcile after refresh failures.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 005 \u2014 Failure diagnosis and recovery."
+        "Lesson 005 — Failure diagnosis and recovery."
       ],
       "objectives": [
         "Label observed vs draft vs pending vs outcome.",
@@ -460,12 +510,12 @@
         "Preserve drafts across detected conflicts."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -493,12 +543,12 @@
           {
             "id": "observed",
             "label": "Observed name / revision",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "draft",
             "label": "Draft input",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "pending",
@@ -508,7 +558,7 @@
           {
             "id": "read_ctx",
             "label": "Read context (slot/commitment)",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "conflict",
@@ -528,7 +578,13 @@
         "prereq_chain": true,
         "learner_testing": false,
         "live_specimens_verified": false
-      }
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Input vs account state",
+          "misconception": "The input contains the new name, so the profile is updated."
+        }
+      ]
     },
     {
       "id": "protecting-state-transitions",
@@ -537,10 +593,10 @@
       "path": "/lessons/protecting-state-transitions/",
       "assess_path": "/lessons/protecting-state-transitions/assessment/",
       "student_outcome": "Explain expected-revision / concurrency checks and why silently refreshing a revision and resubmitting is unsafe.",
-      "time": "45\u201375 min",
+      "time": "45–75 min",
       "difficulty": "Beginner",
       "prereqs": [
-        "Lesson 006 \u2014 Reliable client state."
+        "Lesson 006 — Reliable client state."
       ],
       "objectives": [
         "State what an expected revision check protects.",
@@ -548,22 +604,22 @@
         "Choose review-before-resubmit after conflicts."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed — remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.3",
+      "content_version": "2026-11-18.4",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
       "learning_loop": {
-        "objective": "Explain expected-revision checks \u2014 and why silently refreshing then resubmitting is unsafe.",
-        "predict_question": "Tab A and Tab B both read revision 12. Tab A\u2019s update lands first (revision becomes 13). Tab B still submits expected_revision=12. What should a correctly guarded program do?",
+        "objective": "Explain expected-revision checks — and why silently refreshing then resubmitting is unsafe.",
+        "predict_question": "Tab A and Tab B both read revision 12. Tab A’s update lands first (revision becomes 13). Tab B still submits expected_revision=12. What should a correctly guarded program do?",
         "predict_options": [
           {
             "id": "accept",
-            "label": "Accept Tab B and overwrite Tab A\u2019s change"
+            "label": "Accept Tab B and overwrite Tab A’s change"
           },
           {
             "id": "reject",
@@ -576,7 +632,7 @@
         ],
         "predict_answer": "reject",
         "predict_why": "Expected-revision / concurrency checks reject stale writes. Silently refreshing the revision and resubmitting can overwrite intervening work the user never reviewed.",
-        "act": "Run Lesson 007\u2019s competing-edit cases. Record starting revision, each tab\u2019s expected revision, and which request the program accepts.",
+        "act": "Run Lesson 007’s competing-edit cases. Record starting revision, each tab’s expected revision, and which request the program accepts.",
         "inspect": [
           {
             "id": "start_rev",
@@ -586,17 +642,17 @@
           {
             "id": "tab_a",
             "label": "Tab A expected / result",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "tab_b",
             "label": "Tab B expected / result",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "final",
             "label": "Final revision / name",
-            "placeholder": "\u2026"
+            "placeholder": "…"
           },
           {
             "id": "conflict_action",
@@ -605,7 +661,7 @@
           }
         ],
         "explain_question": "Why must authorisation checks stay separate from the expected-revision check?",
-        "transfer": "After a stale-write rejection, what three steps replace \u201csilently refresh and resubmit\u201d?"
+        "transfer": "After a stale-write rejection, what three steps replace “silently refresh and resubmit”?"
       },
       "next_id": "picassol-hackathon",
       "technical_checks": {
@@ -619,8 +675,14 @@
       },
       "stage1_handoff": {
         "id": "picassol-hackathon",
-        "note": "After Foundations 001\u2013007, Stage 1 live practice is Picassol. A future PDA foundations lesson may be added later; it does not block Stage 1."
-      }
+        "note": "After Foundations 001–007, Stage 1 live practice is Picassol. A future PDA foundations lesson may be added later; it does not block Stage 1."
+      },
+      "assessment_misconceptions": [
+        {
+          "title": "Revision is not authority",
+          "misconception": "Anyone who supplies the right revision may update the profile."
+        }
+      ]
     }
   ]
 }
