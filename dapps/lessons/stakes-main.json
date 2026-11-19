@@ -363,7 +363,7 @@
     "note": "The program is `programs/stakes-wtf`. Tests: `tests/stakes-wtf.ts`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Compute gov exchange-rate movement after a bribe and explain join-before-sync risk.",
   "content_version": "2026-11-19.1",

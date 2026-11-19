@@ -20,7 +20,7 @@ Legend: `done` · `partial` · `todo`
 | Beginner entrance | P1 | done | `#start` + learning_layer | `test_learning_layer.py` |
 | Honest status labels | P0 | done | env-health panel + Picassol ui_check | Program flow vs hosted UI vs frontend/RPC |
 | Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour observation/script until hosted UI lands |
-| Canonical per-lesson schema (owner, content_version, …) | P0 | partial | `curriculum_schema.py` + backfill | Required fields complete for all live guided lessons; recommended fields still open on ~24 |
+| Canonical per-lesson schema (owner, content_version, …) | P0 | done | `curriculum_schema.py` + backfill | Required + recommended fields complete for live guided lessons (`missing_recommended_lessons=0`) |
 | Cache / old-tab update notice | P0 | done | `scripts/release-notice.js` | Banner when `/release.json` app/curriculum changes |
 
 ## Release B — One complete learning journey
@@ -39,7 +39,7 @@ Legend: `done` · `partial` · `todo`
 
 ## Later releases
 
-- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all guided live lessons + Foundations 001–007 have loops; project previews / debug lab polish and learner verification still open)
+- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all live lessons + Foundations have loops; partial labs tagged `debug-laboratory`; learner verification / Picassol hosted recolour still open)
 - Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
 - Release E: AI tutor, personalisation, community — `todo` (P2)
 

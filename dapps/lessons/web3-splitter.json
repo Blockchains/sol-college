@@ -303,7 +303,7 @@
     "note": "The program is in `splitterprogram/`. Tests: `tests/splitterprogram.ts`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Reproduce why splitter claim fails for non-creators (seeds/signer mismatch) and state the seed alignment fix.",
   "content_version": "2026-11-19.1",

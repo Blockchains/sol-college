@@ -397,7 +397,7 @@
     "note": "The program is in `votara/`. Anchor 0.32.1 matches `Cargo.toml`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Compute pass/reject from proof tallies and explain free voting-power registration risk.",
   "content_version": "2026-11-19.1",
