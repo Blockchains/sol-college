@@ -698,6 +698,43 @@ path_parts.append('<p>When you finish the <b>core staged path</b> you will have 
   'and reading a market, a staking program or an oracle. Completing the reading alone does not by itself demonstrate those abilities — '
   'exercises and assessments establish what you showed. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
+# Device-local progress panel (Release E.1) — filled by lesson.js from localStorage.
+_foundations_progress = [
+  {'id': 'first-transaction', 'title': '001 First transaction', 'href': '/lessons/first-transaction/'},
+  {'id': 'accounts-ownership', 'title': '002 Accounts & ownership', 'href': '/lessons/accounts-ownership/'},
+  {'id': 'instructions-programs', 'title': '003 Instructions & programs', 'href': '/lessons/instructions-programs/'},
+  {'id': 'transaction-atomicity', 'title': '004 Transaction atomicity', 'href': '/lessons/transaction-atomicity/'},
+  {'id': 'transaction-failures', 'title': '005 Transaction failures', 'href': '/lessons/transaction-failures/'},
+  {'id': 'application-state', 'title': '006 Application state', 'href': '/lessons/application-state/'},
+  {'id': 'protecting-state-transitions', 'title': '007 Protecting state transitions', 'href': '/lessons/protecting-state-transitions/'},
+]
+_core_progress = []
+for _x in PATH_LIVE:
+  _L = lesson_of(_x)
+  if _L.get('path_stage') in (1, 2, 3):
+    _core_progress.append({
+      'id': _x['slug'],
+      'title': _L.get('title') or _x['slug'],
+      'href': f"/lessons/{_x['slug']}/",
+      'stage': _L.get('path_stage'),
+      'order': _L.get('path_order'),
+    })
+_core_progress.sort(key=lambda r: (int(r.get('stage') or 0), int(r.get('order') or 0)))
+import json as _json
+_progress_payload = _json.dumps({
+  'foundations': _foundations_progress,
+  'core': _core_progress,
+}).replace('<', '\\u003c')
+path_parts.append(
+  '<section class="path-progress" id="path-progress" hidden data-learning="progress">'
+  '<p class="eyebrow">On this device</p>'
+  '<h2>Your learning progress</h2>'
+  '<p class="note">Visited or marked workspace steps are <b>not</b> proof of mastery. '
+  'Assessment rubrics are separate. Progress stays in this browser only — clearing site data clears it.</p>'
+  '<div id="path-progress-body"></div>'
+  f'<script type="application/json" id="path-progress-data">{_progress_payload}</script>'
+  '</section>'
+)
 path_parts.append(_foundations.foundations_path_section())
 path_parts.append('<h2 id=core-path>Core application path</h2>')
 path_parts.append(f'<p>{ns} guided lessons across the numbered stages below. Recorded times add to about {hours_staged} hours.</p>')

@@ -57,6 +57,17 @@ class LearningLayerHtml(unittest.TestCase):
         self.assertIn('href="#start"', html)
         self.assertIn('Start learning', html)
 
+    def test_path_progress_wiring_in_sources(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        core = open(os.path.join(root, 'scripts/core_lessons.py'), encoding='utf-8').read()
+        js = open(os.path.join(root, 'scripts/lesson.js'), encoding='utf-8').read()
+        self.assertIn('id="path-progress"', core)
+        self.assertIn('path-progress-data', core)
+        self.assertIn("not</b> proof of mastery", core)
+        self.assertIn("getElementById('path-progress')", js)
+        self.assertIn('sc-lesson-loop', js)
+        self.assertIn('touched on this device', js)
+
 
 if __name__ == '__main__':
     unittest.main()
