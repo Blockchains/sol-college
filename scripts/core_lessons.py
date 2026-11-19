@@ -669,6 +669,10 @@ finder='''<div class=finder id=browse><label>Search lessons <input id=lesson-q t
 <button type=button data-format=challenge>Debug challenge</button>
 <button type=button data-format=preview>Project preview</button>
 </div>
+<div class="finder-row finder-touch" role=group aria-label="Device progress">
+<button type=button data-touch="" aria-pressed=true>All lessons</button>
+<button type=button data-touch=touched>Touched on this device</button>
+</div>
 <p class=meta id=lesson-count></p></div>
 <p class=meta id=lesson-empty hidden>No lesson matches that search.</p>'''
 intro=('<p>A guided lesson is a written walkthrough of an app whose recorded core flows completed on a stated verification date. '

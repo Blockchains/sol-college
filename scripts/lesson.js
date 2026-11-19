@@ -222,6 +222,7 @@
     if (q && cards.length) {
       var buttons = [].slice.call(document.querySelectorAll('.finder-diff [data-diff]'));
       var formats = [].slice.call(document.querySelectorAll('.finder-format [data-format]'));
+      var touchFilters = [].slice.call(document.querySelectorAll('.finder-touch [data-touch]'));
       var empty = document.getElementById('lesson-empty');
       var count = document.getElementById('lesson-count');
       function apply() {
@@ -230,9 +231,14 @@
         var diff = pressed ? (pressed.getAttribute('data-diff') || '') : '';
         var fpressed = document.querySelector('.finder-format [data-format][aria-pressed="true"]');
         var format = fpressed ? (fpressed.getAttribute('data-format') || '') : '';
+        var tpressed = document.querySelector('.finder-touch [data-touch][aria-pressed="true"]');
+        var touch = tpressed ? (tpressed.getAttribute('data-touch') || '') : '';
         var n = 0;
         cards.forEach(function (c) {
-          var ok = (!s || (c.getAttribute('data-text') || '').indexOf(s) >= 0) && (!diff || c.getAttribute('data-diff') === diff) && (!format || c.getAttribute('data-format') === format);
+          var ok = (!s || (c.getAttribute('data-text') || '').indexOf(s) >= 0)
+            && (!diff || c.getAttribute('data-diff') === diff)
+            && (!format || c.getAttribute('data-format') === format)
+            && (!touch || c.classList.contains('is-touched'));
           c.hidden = !ok;
           if (ok) n++;
         });
@@ -245,7 +251,7 @@
         });
         if (count) count.textContent = n + (n === 1 ? ' lesson' : ' lessons');
         if (empty) empty.hidden = n !== 0;
-        var filtering = !!(s || diff || format);
+        var filtering = !!(s || diff || format || touch);
         document.querySelectorAll('.index-intro').forEach(function (el) { el.hidden = filtering; });
       }
       q.addEventListener('input', apply);
@@ -259,6 +265,7 @@
       }
       bind(buttons);
       bind(formats);
+      bind(touchFilters);
       var loopsIndex = load('sc-lesson-loop') || {};
       cards.forEach(function (card) {
         var id = card.getAttribute('data-slug');

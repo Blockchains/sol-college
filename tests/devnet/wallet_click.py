@@ -172,11 +172,36 @@ def run(pg):
         n = len(SENT); card.get_by_role('button', name=re.compile('Submit Estimate')).click(); pump(pg, 25000)
         t = body(pg); i = t.find(q); log(step='submit_estimate_via_ui', sent=sigs_new(n), card=t[i:i+200] if i >= 0 else None)
     elif app == 'picassol':
+        # Create on an empty cell, wait out the 33s client cooldown, change colour, recolour same cell.
+        # Hosted UI recolour is the remaining Picassol verification gate (needs a funded tester keypair).
         pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg); pump(pg, 10000)
         import random; x, y = random.randint(20, 180), random.randint(20, 180)
-        log(step='canvas', cells=pg.locator('td[id^="pixel-"]').count(), target=f'pixel-{x}-{y}')
-        n = len(SENT); pg.locator(f'#pixel-{x}-{y}').click(); pump(pg, 25000)
-        log(step='click_pixel', x=x, y=y, sent=sigs_new(n), style=pg.locator(f'#pixel-{x}-{y}').get_attribute('style'))
+        cell = f'pixel-{x}-{y}'
+        log(step='canvas', cells=pg.locator('td[id^="pixel-"]').count(), target=cell)
+        # Prefer an empty-looking cell (no background from prior paint). Retry a few random coords.
+        for _ in range(12):
+            style0 = (pg.locator(f'#{cell}').get_attribute('style') or '').lower()
+            if 'rgb(' not in style0 or 'rgb(255, 255, 255)' in style0 or style0.strip() in ('', 'background-color: white', 'background-color:white'):
+                break
+            x, y = random.randint(20, 180), random.randint(20, 180)
+            cell = f'pixel-{x}-{y}'
+        n = len(SENT); pg.locator(f'#{cell}').click(); pump(pg, 25000)
+        create_sigs = sigs_new(n)
+        log(step='click_pixel_create', x=x, y=y, sent=create_sigs, style=pg.locator(f'#{cell}').get_attribute('style'))
+        # Bypass remaining client cooldown so the second click can issue update_pixel.
+        pg.evaluate('localStorage.setItem("lastClickTime", String(Date.now() - 34000))')
+        # Pick a non-default colour swatch (index 2 = red in the built colour bar).
+        swatches = pg.locator('div.flex.flex-wrap.justify-center.ml-4 > div')
+        if swatches.count() == 0:
+            # Colour bar may be collapsed — open it via the selected-colour button.
+            pg.locator('button.w-10.h-10.rounded-full').first.click(); pump(pg, 500)
+            swatches = pg.locator('div.flex.flex-wrap.justify-center.ml-4 > div')
+        if swatches.count() > 2:
+            swatches.nth(2).click(); pump(pg, 400)
+        n = len(SENT); pg.locator(f'#{cell}').click(); pump(pg, 25000)
+        update_sigs = sigs_new(n)
+        log(step='click_pixel_recolour', x=x, y=y, sent=update_sigs, style=pg.locator(f'#{cell}').get_attribute('style'),
+            create_sent=create_sigs, note='Expect UpdatePixel when create succeeded and cooldown cleared')
     elif app in ('trustlock', 'trustlock-claim'):
         pg.goto(base, wait_until='domcontentloaded'); pump(pg, 4000); connect(pg, r'\bConnect$'); pump(pg, 6000)
         log(step='connected_dashboard', url=pg.url, text=body(pg)[:300])  # Homepage renders <Dashboard/> once connected

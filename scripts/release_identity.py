@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e4',
+    'title': 'Release E.4 — Touched-only catalogue filter + Picassol recolour harness',
+    'summary': (
+      'Learners can filter /lessons/ to cards touched on this device. The Picassol UI click '
+      'harness now attempts create → recolour after clearing the client cooldown (still needs a funded tester key to record).'
+    ),
+    'changes': [
+      'Finder row: All lessons / Touched on this device (uses is-touched from E.3).',
+      'wallet_click.py picassol path logs click_pixel_create and click_pixel_recolour.',
+      'Hosted UI recolour remains unverified in curriculum until a funded run lands a signature.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e3',
     'title': 'Release E.3 — Catalogue card touch marks from workspace activity',
     'summary': (

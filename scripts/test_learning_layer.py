@@ -77,12 +77,24 @@ class LearningLayerHtml(unittest.TestCase):
         root = os.path.join(os.path.dirname(__file__), '..')
         js = open(os.path.join(root, 'scripts/lesson.js'), encoding='utf-8').read()
         css = open(os.path.join(root, 'scripts/lesson.css'), encoding='utf-8').read()
+        core = open(os.path.join(root, 'scripts/core_lessons.py'), encoding='utf-8').read()
         self.assertIn("load('sc-lesson-loop')", js)
         self.assertIn('Touched on this device', js)
         self.assertIn('is-touched', js)
         self.assertIn('card-touch', js)
         self.assertIn('.card.is-touched', css)
         self.assertIn('.card .card-touch', css)
+        self.assertIn('finder-touch', core)
+        self.assertIn('data-touch=touched', core)
+        self.assertIn("c.classList.contains('is-touched')", js)
+
+    def test_picassol_recolour_harness_steps(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        harness = open(os.path.join(root, 'tests/devnet/wallet_click.py'), encoding='utf-8').read()
+        self.assertIn("elif app == 'picassol':", harness)
+        self.assertIn('click_pixel_create', harness)
+        self.assertIn('click_pixel_recolour', harness)
+        self.assertIn('lastClickTime', harness)
 
 
 if __name__ == '__main__':
