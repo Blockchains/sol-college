@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c23',
+    'title': 'Release C.23 — Debug laboratory workspace labelling',
+    'summary': (
+      'Debug laboratory lessons show a dedicated workspace eyebrow and prepare copy, '
+      'and catalogue cards label Debug laboratory instead of looking like ordinary labs.'
+    ),
+    'changes': [
+      'workspace_html eyebrow/prepare/CTA specialize when track=debug-laboratory or readiness=challenge.',
+      'Lesson cards insert a Debug laboratory chip and keep challenge CTA wording.',
+      'Tests assert Barn workspace copy is not labelled Application lab workspace.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c22',
     'title': 'Release C.22 — Debug laboratory track honesty',
     'summary': (

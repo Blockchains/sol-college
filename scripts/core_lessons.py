@@ -302,10 +302,23 @@ def render(x,L,n):
     h.append(_ll.preflight_html(x['app'], L.get('student_outcome') or L.get('title') or 'this lab'))
     h.append(_ll.environment_panel_html(x.get('verified') or '', x.get('ui_check') or ''))
     sigs = list(x.get('steps') or [])
-    h.append(_ll.workspace_html(
-      L['learning_loop'], x['app'], sigs,
+    is_debug = (L.get('track') == 'debug-laboratory') or (ready == 'challenge')
+    ws_kwargs = dict(
       content_version=str(L.get('content_version') or ''),
       assess_href=assess_href,
+    )
+    if is_debug:
+      ws_kwargs.update(
+        eyebrow='Debug laboratory workspace',
+        prepare_note=(
+          'Complete <a href="#preflight">preflight</a>. Prefer observation of recorded proofs. '
+          'Diagnose the documented gap — do not claim an unproven production fix. Then continue to Predict.'
+        ),
+        act_cta_label='Open the live app (observe carefully)',
+      )
+    h.append(_ll.workspace_html(
+      L['learning_loop'], x['app'], sigs,
+      **ws_kwargs,
     ))
     h.append(_ll.stuck_html())
     h.append('<p class=note id=reference-layers>Reference layers below stay available. The workspace above is the focused student path.</p>')
@@ -448,9 +461,18 @@ for x in PATH_LIVE:
   bits=[dchip(diff) if diff else '', E(L['time'])+' recorded' if L.get('time') else '', 'verified '+E(x['verified']) if x.get('verified') else '']
   if L.get('track')=='application-lab':
     bits.insert(0, 'Application lab')
+  elif L.get('track')=='debug-laboratory':
+    bits.insert(0, 'Debug laboratory')
   if L.get('delivery'):
     bits.append(E(L['delivery']))
-  action='Start the lab' if L.get('learning_loop') else ('Start the lesson' if ready=='guided' else ('Open the challenge' if ready=='challenge' else 'Read the preview'))
+  if ready=='challenge':
+    action='Open the challenge'
+  elif L.get('learning_loop'):
+    action='Start the lab'
+  elif ready=='guided':
+    action='Start the lesson'
+  else:
+    action='Read the preview'
   limit_html=f'<p class=limit>Known limit: {E(lim)}</p>' if lim else ''
   prereq_html=f'<p class=prereq>Before this: {md(one_line(pre, 180))}</p>' if pre else ''
   if lim and ('[' in lim or lim.startswith('{')):

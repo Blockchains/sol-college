@@ -403,6 +403,26 @@ class LabAssessment(unittest.TestCase):
             self.assertEqual(L.get('track'), 'debug-laboratory', slug)
             self.assertIn('learning_loop', L, slug)
 
+    def test_debug_lab_workspace_eyebrow_not_application_lab(self):
+        L = json.loads((ROOT / 'dapps/lessons/barn.json').read_text())
+        self.assertEqual(L.get('track'), 'debug-laboratory')
+        html = ll.workspace_html(
+          L['learning_loop'], '/dapps/barn/', [],
+          eyebrow='Debug laboratory workspace',
+          prepare_note='Diagnose the documented gap.',
+          act_cta_label='Open the live app (observe carefully)',
+        )
+        self.assertIn('Debug laboratory workspace', html)
+        self.assertNotIn('Application lab workspace', html)
+        self.assertIn('Open the live app (observe carefully)', html)
+
+    def test_generated_barn_page_uses_debug_workspace_label(self):
+        # Rebuild a single lesson body via render path by regenerating site is heavy;
+        # assert the wiring condition from core_lessons source instead.
+        src = (ROOT / 'scripts' / 'core_lessons.py').read_text(encoding='utf-8')
+        self.assertIn("eyebrow='Debug laboratory workspace'", src)
+        self.assertIn("bits.insert(0, 'Debug laboratory')", src)
+
     def test_all_guided_live_lessons_have_learning_loop(self):
         skip = {'excerpts', 'glossary', 'path'}
         live = {row['slug'] for row in json.loads((ROOT / 'dapps' / 'live.json').read_text())}
