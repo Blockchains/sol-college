@@ -1,63 +1,160 @@
 {
- "title": "AgentVault",
- "summary": "Initialise global state, register client and provider agents, list a service, escrow a task, accept it, and complete it so the provider is paid.",
- "what": "AgentVault is an Anchor 0.31 marketplace for AI agents: a global_state PDA tracks counters, agents register, providers list services, and clients escrow SOL into a task. This lesson covers initialize through accept_task. complete_task is in the hosted IDL but cannot settle on this program because it debits a system-owned escrow PDA.",
- "app_note": "The page at /dapps/agentvault/ is the generic IDL-driven wallet console, with this devnet program id filled in. The GitHub fork is named agentvault-protocol because Blockchains/agentvault was already taken by a different project.",
- "try_steps": [
-  {
-   "do": "Open /dapps/agentvault/, switch to Devnet, and connect a wallet. initialize, two register_agent calls, create_service, create_task and accept_task are already done.",
-   "see": "Program Di62pbYo…. Fetch global_state 7GNtYaqn… (total_agents=2, total_tasks=1, total_completed=0) and task 5mfPe9DT… (InProgress).",
-   "ran": "initialize 4DurFMvk…; register_agent client 51rpNWyN…; register_agent provider 4DwHuHmv…; create_service 4ePvLxqv…; create_task 28jspxT7…; accept_task 5aPQF4e2…."
+  "title": "AgentVault",
+  "summary": "Initialise global state, register client and provider agents, list a service, escrow a task, accept it, and complete it so the provider is paid.",
+  "what": "AgentVault is an Anchor 0.31 marketplace for AI agents: a global_state PDA tracks counters, agents register, providers list services, and clients escrow SOL into a task. This lesson covers initialize through accept_task. complete_task is in the hosted IDL but cannot settle on this program because it debits a system-owned escrow PDA.",
+  "app_note": "The page at /dapps/agentvault/ is the generic IDL-driven wallet console, with this devnet program id filled in. The GitHub fork is named agentvault-protocol because Blockchains/agentvault was already taken by a different project.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentvault/, switch to Devnet, and connect a wallet. initialize, two register_agent calls, create_service, create_task and accept_task are already done.",
+      "see": "Program Di62pbYo\u2026. Fetch global_state 7GNtYaqn\u2026 (total_agents=2, total_tasks=1, total_completed=0) and task 5mfPe9DT\u2026 (InProgress).",
+      "ran": "initialize 4DurFMvk\u2026; register_agent client 51rpNWyN\u2026; register_agent provider 4DwHuHmv\u2026; create_service 4ePvLxqv\u2026; create_task 28jspxT7\u2026; accept_task 5aPQF4e2\u2026."
+    },
+    {
+      "do": "A register_agent with an empty name, or a create_service with price=0, should fail. complete_task is expected to fail on this deployment.",
+      "see": "AgentNameEmpty; InvalidPrice; complete_task: instruction spent from the balance of an account it does not own.",
+      "ran": "Rejected / simulated in tests/devnet/agentvault.mjs."
+    }
+  ],
+  "diagram": "authority --initialize--> global_state [\"global_state\"] ; authority --register_agent--> agent [\"agent\", wallet] ; provider --create_service--> service [\"service\", agent, name] ; client --create_task--> task [\"task\", id] + escrow [\"escrow\", task] ; provider --accept_task--> task",
+  "accounts": [
+    "global_state (seeds [\"global_state\"])",
+    "agent (seeds [\"agent\", authority])",
+    "service (seeds [\"service\", agent, name])",
+    "task (seeds [\"task\", task_id u64 LE])",
+    "escrow (seeds [\"escrow\", task])"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "create_service",
+    "create_task",
+    "accept_task",
+    "complete_task (in the IDL; payout currently fails on a system-owned escrow debit)"
+  ],
+  "innovation": "A compact agent registry plus SOL-escrowed tasks between two registered agents, with reputation increment intended on completion.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch global_state and the InProgress lab task.",
+    "Explain why complete_task is rejected by the runtime.",
+    "Sketch an invoke_signed system transfer that would release the escrow."
+  ],
+  "not_covered": "cancel_task was patched the same way but not re-exercised. update_agent, deactivate_service and dispute_task were not exercised.",
+  "path_order": 33,
+  "path_stage": "apply",
+  "difficulty": "Intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Initialise global state",
+    "Register two agents and list a service",
+    "Escrow and accept a task",
+    "See why complete_task payout fails"
+  ],
+  "prereqs": [
+    "agent-bazaar"
+  ],
+  "concepts": [
+    "agent registry",
+    "service listing",
+    "SOL escrow PDA",
+    "system-owned account debit"
+  ],
+  "build": "Anchor 0.31.0 program at Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Inspect global state and an InProgress task, then explain why complete_task payout is rejected in the lab runtime path.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Inspect an accepted task \u2014 then predict why complete_task payout fails in this lab.",
+    "predict_question": "A lab task is InProgress after accept. complete_task is attempted on the recorded path. What is the honest learning goal?",
+    "predict_options": [
+      {
+        "id": "always_pays",
+        "label": "complete_task always pays the provider if the UI button exists"
+      },
+      {
+        "id": "explain_reject",
+        "label": "Explain why complete_task is rejected by the runtime \u2014 do not invent a successful payout"
+      },
+      {
+        "id": "ignore",
+        "label": "Skip task state; initialize alone proves escrow payouts"
+      }
+    ],
+    "predict_answer": "explain_reject",
+    "predict_why": "This elective includes a deliberate failure: students must explain the rejected complete_task path using evidence, not claim a payout that did not land.",
+    "act": "Open /dapps/agentvault/ on Devnet. Fetch global_state and the InProgress lab task. Trace initialize \u2192 register agents \u2192 service \u2192 task \u2192 accept, then document why complete_task fails.",
+    "inspect": [
+      {
+        "id": "global",
+        "label": "global_state",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "task",
+        "label": "Task status",
+        "placeholder": "InProgress / \u2026"
+      },
+      {
+        "id": "reject",
+        "label": "complete_task rejection reason",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signatures",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why must a rejected complete_task be recorded as a failure diagnosis rather than as provider payment?",
+    "transfer": "List the accounts you would re-read before claiming a provider was paid."
   },
-  {
-   "do": "A register_agent with an empty name, or a create_service with price=0, should fail. complete_task is expected to fail on this deployment.",
-   "see": "AgentNameEmpty; InvalidPrice; complete_task: instruction spent from the balance of an account it does not own.",
-   "ran": "Rejected / simulated in tests/devnet/agentvault.mjs."
+  "assessment": {
+    "purpose": "Independent criteria for AgentVault elective: task state + rejected payout honesty.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Reads global_state and task",
+        "question": "Can the student fetch global_state and the InProgress task?",
+        "not_yet": "No task evidence.",
+        "support": "Finds lab task after a prompt.",
+        "independent": "Records addresses and status from evidence.",
+        "misconception": "UI \u201caccepted\u201d alone is settlement."
+      },
+      {
+        "id": "c2",
+        "title": "Explains complete_task rejection",
+        "question": "Can the student explain why payout fails on the lab path?",
+        "not_yet": "Claims success or gives no cause.",
+        "support": "Names cause after exercise/docs.",
+        "independent": "States rejection cause from evidence.",
+        "misconception": "Button click means provider paid."
+      },
+      {
+        "id": "c3",
+        "title": "Separates escrow steps from payout",
+        "question": "Does the student distinguish create/accept from successful complete?",
+        "not_yet": "Collapses all steps into \u201cescrow worked.\u201d",
+        "support": "Separates after a prompt.",
+        "independent": "Separates without coaching.",
+        "misconception": "InProgress implies paid."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled; no fake payout proof?",
+        "not_yet": "Invented payout sig.",
+        "support": "Corrects after prompt.",
+        "independent": "Honest routes and no invented payout.",
+        "misconception": "Platform initialize proves my payout."
+      }
+    ]
   }
- ],
- "diagram": "authority --initialize--> global_state [\"global_state\"] ; authority --register_agent--> agent [\"agent\", wallet] ; provider --create_service--> service [\"service\", agent, name] ; client --create_task--> task [\"task\", id] + escrow [\"escrow\", task] ; provider --accept_task--> task",
- "accounts": [
-  "global_state (seeds [\"global_state\"])",
-  "agent (seeds [\"agent\", authority])",
-  "service (seeds [\"service\", agent, name])",
-  "task (seeds [\"task\", task_id u64 LE])",
-  "escrow (seeds [\"escrow\", task])"
- ],
- "instructions": [
-  "initialize",
-  "register_agent",
-  "create_service",
-  "create_task",
-  "accept_task",
-  "complete_task (in the IDL; payout currently fails on a system-owned escrow debit)"
- ],
- "innovation": "A compact agent registry plus SOL-escrowed tasks between two registered agents, with reputation increment intended on completion.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch global_state and the InProgress lab task.",
-  "Explain why complete_task is rejected by the runtime.",
-  "Sketch an invoke_signed system transfer that would release the escrow."
- ],
- "not_covered": "cancel_task was patched the same way but not re-exercised. update_agent, deactivate_service and dispute_task were not exercised.",
- "path_order": 33,
- "path_stage": "apply",
- "difficulty": "Intermediate",
- "time": "20 min",
- "objectives": [
-  "Initialise global state",
-  "Register two agents and list a service",
-  "Escrow and accept a task",
-  "See why complete_task payout fails"
- ],
- "prereqs": [
-  "agent-bazaar"
- ],
- "concepts": [
-  "agent registry",
-  "service listing",
-  "SOL escrow PDA",
-  "system-owned account debit"
- ],
- "build": "Anchor 0.31.0 program at Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA on devnet. IDL hand-derived subset, tx-confirmed.",
- "functional": "full"
 }
