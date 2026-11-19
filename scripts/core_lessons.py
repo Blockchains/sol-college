@@ -524,6 +524,46 @@ hours_staged=round(sum(_mins(x) for x in STAGED)/60,1)
 hours_electives=round(sum(_mins(x) for x in ELECTIVES)/60,1)
 hours_guided=round(sum(_mins(x) for x in GUIDED)/60,1)
 hours_challenges=round(sum(_mins(x) for x in CHALLENGES)/60,1)
+
+
+def path_progress_html():
+  """Device-local foundations + core path progress panel (Release E)."""
+  import json as _json
+  foundations = [
+    {'id': 'first-transaction', 'title': '001 First transaction', 'href': '/lessons/first-transaction/'},
+    {'id': 'accounts-ownership', 'title': '002 Accounts & ownership', 'href': '/lessons/accounts-ownership/'},
+    {'id': 'instructions-programs', 'title': '003 Instructions & programs', 'href': '/lessons/instructions-programs/'},
+    {'id': 'transaction-atomicity', 'title': '004 Transaction atomicity', 'href': '/lessons/transaction-atomicity/'},
+    {'id': 'transaction-failures', 'title': '005 Transaction failures', 'href': '/lessons/transaction-failures/'},
+    {'id': 'application-state', 'title': '006 Application state', 'href': '/lessons/application-state/'},
+    {'id': 'protecting-state-transitions', 'title': '007 Protecting state transitions', 'href': '/lessons/protecting-state-transitions/'},
+  ]
+  core = []
+  for x in PATH_LIVE:
+    L = lesson_of(x)
+    if L.get('path_stage') in (1, 2, 3):
+      core.append({
+        'id': x['slug'],
+        'title': L.get('title') or x['slug'],
+        'href': f"/lessons/{x['slug']}/",
+        'stage': L.get('path_stage'),
+        'order': L.get('path_order'),
+      })
+  core.sort(key=lambda r: (int(r.get('stage') or 0), int(r.get('order') or 0)))
+  payload = _json.dumps({'foundations': foundations, 'core': core}).replace('<', '\\u003c')
+  return (
+    '<section class="path-progress" id="path-progress" hidden data-learning="progress">'
+    '<p class="eyebrow">On this device</p>'
+    '<h2>Your learning progress</h2>'
+    '<p class="note">Visited or marked workspace steps are <b>not</b> proof of mastery. '
+    'Assessment rubrics are separate. Progress stays in this browser only.</p>'
+    '<div id="path-progress-body"></div>'
+    '<p class="path-progress-actions">'
+    '<button type="button" class="btn ghost" id="path-progress-clear">Clear local progress on this device</button>'
+    '</p>'
+    f'<script type="application/json" id="path-progress-data">{payload}</script>'
+    '</section>'
+  )
 inventory_line=(
   f'{ng} guided lessons ({ns} on the core staged path, {ne} electives), '
   f'{nc} debug challenges, and {nv} project preview{"s" if nv!=1 else ""}.'
@@ -649,6 +689,7 @@ idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Less
   f'<p class=lead>Run a transaction on a devnet app, see what changed, and check it against the recorded proof.</p>'
   f'<p class=counts>{count_line}</p>'
   f'<p class=resume id=resume hidden></p>'
+  f'{path_progress_html()}'
   f'{entry_routes}'
   f'{next_step}{choose}{finder}{foundations_block}{stage_blocks(pool=GUIDED)}{more}{debug}{preview}'
   f'<div class=index-intro>{intro}<p><a href="/lessons/guide/">How to use a lesson</a> · <a href="/how-to-build/">How to build your own</a></p></div>'
@@ -698,43 +739,7 @@ path_parts.append('<p>When you finish the <b>core staged path</b> you will have 
   'and reading a market, a staking program or an oracle. Completing the reading alone does not by itself demonstrate those abilities — '
   'exercises and assessments establish what you showed. Every concept links to the <a href="/lessons/glossary/">glossary</a>.</p>')
 path_parts.append('<p class=resume id=resume hidden></p>')
-# Device-local progress panel (Release E.1) — filled by lesson.js from localStorage.
-_foundations_progress = [
-  {'id': 'first-transaction', 'title': '001 First transaction', 'href': '/lessons/first-transaction/'},
-  {'id': 'accounts-ownership', 'title': '002 Accounts & ownership', 'href': '/lessons/accounts-ownership/'},
-  {'id': 'instructions-programs', 'title': '003 Instructions & programs', 'href': '/lessons/instructions-programs/'},
-  {'id': 'transaction-atomicity', 'title': '004 Transaction atomicity', 'href': '/lessons/transaction-atomicity/'},
-  {'id': 'transaction-failures', 'title': '005 Transaction failures', 'href': '/lessons/transaction-failures/'},
-  {'id': 'application-state', 'title': '006 Application state', 'href': '/lessons/application-state/'},
-  {'id': 'protecting-state-transitions', 'title': '007 Protecting state transitions', 'href': '/lessons/protecting-state-transitions/'},
-]
-_core_progress = []
-for _x in PATH_LIVE:
-  _L = lesson_of(_x)
-  if _L.get('path_stage') in (1, 2, 3):
-    _core_progress.append({
-      'id': _x['slug'],
-      'title': _L.get('title') or _x['slug'],
-      'href': f"/lessons/{_x['slug']}/",
-      'stage': _L.get('path_stage'),
-      'order': _L.get('path_order'),
-    })
-_core_progress.sort(key=lambda r: (int(r.get('stage') or 0), int(r.get('order') or 0)))
-import json as _json
-_progress_payload = _json.dumps({
-  'foundations': _foundations_progress,
-  'core': _core_progress,
-}).replace('<', '\\u003c')
-path_parts.append(
-  '<section class="path-progress" id="path-progress" hidden data-learning="progress">'
-  '<p class="eyebrow">On this device</p>'
-  '<h2>Your learning progress</h2>'
-  '<p class="note">Visited or marked workspace steps are <b>not</b> proof of mastery. '
-  'Assessment rubrics are separate. Progress stays in this browser only — clearing site data clears it.</p>'
-  '<div id="path-progress-body"></div>'
-  f'<script type="application/json" id="path-progress-data">{_progress_payload}</script>'
-  '</section>'
-)
+path_parts.append(path_progress_html())
 path_parts.append(_foundations.foundations_path_section())
 path_parts.append('<h2 id=core-path>Core application path</h2>')
 path_parts.append(f'<p>{ns} guided lessons across the numbered stages below. Recorded times add to about {hours_staged} hours.</p>')

@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e2',
+    'title': 'Release E.2 — Progress on lessons index + clear local progress',
+    'summary': (
+      'Device-local path progress also appears on /lessons/, with an explicit control to '
+      'clear browser-saved progress without claiming server-side accounts.'
+    ),
+    'changes': [
+      'Shared path_progress_html() on /lessons/ and /lessons/path/.',
+      'Clear local progress button removes sc-lesson-loop, section progress, and last-lesson resume after confirm.',
+      'Copy still states touched ≠ mastery; data stays on this device.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e1',
     'title': 'Release E.1 — Device-local path progress panel',
     'summary': (
