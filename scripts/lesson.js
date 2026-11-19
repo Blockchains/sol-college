@@ -216,6 +216,46 @@
             setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
           });
         }
+        var importInput = document.getElementById('path-progress-import');
+        if (importInput && !importInput.getAttribute('data-bound')) {
+          importInput.setAttribute('data-bound', '1');
+          importInput.addEventListener('change', function () {
+            var file = importInput.files && importInput.files[0];
+            importInput.value = '';
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function () {
+              try {
+                var data = JSON.parse(String(reader.result || ''));
+                if (!data || typeof data !== 'object') throw new Error('not an object');
+                var hasAny = ('sc-lesson-last' in data) || ('sc-lesson-progress' in data) || ('sc-lesson-loop' in data);
+                if (!hasAny) throw new Error('missing keys');
+                var ok = window.confirm(
+                  'Replace local progress in this browser with this file?\n\n' +
+                  'This overwrites saved workspace marks and the last-lesson resume link on this device. ' +
+                  'It does not prove mastery or change on-chain activity.'
+                );
+                if (!ok) return;
+                if ('sc-lesson-last' in data) {
+                  if (data['sc-lesson-last'] == null) localStorage.removeItem(LAST);
+                  else save(LAST, data['sc-lesson-last']);
+                }
+                if ('sc-lesson-progress' in data) {
+                  if (data['sc-lesson-progress'] == null) localStorage.removeItem(PROGRESS);
+                  else save(PROGRESS, data['sc-lesson-progress']);
+                }
+                if ('sc-lesson-loop' in data) {
+                  if (data['sc-lesson-loop'] == null) localStorage.removeItem('sc-lesson-loop');
+                  else save('sc-lesson-loop', data['sc-lesson-loop']);
+                }
+                location.reload();
+              } catch (err) {
+                window.alert('Could not restore that file. Use a JSON export from Sol.College local progress.');
+              }
+            };
+            reader.readAsText(file);
+          });
+        }
         var clearBtn = document.getElementById('path-progress-clear');
         if (clearBtn && !clearBtn.getAttribute('data-bound')) {
           clearBtn.setAttribute('data-bound', '1');
