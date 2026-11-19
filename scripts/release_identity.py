@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e8',
+    'title': 'Release E.8 — Tutor-lite misconception prompts in stuck help',
+    'summary': (
+      'Stuck help “I do not understand the concept” surfaces this lesson’s assessment '
+      'misconceptions as a static coach — explicitly not a live AI tutor.'
+    ),
+    'changes': [
+      'stuck_html() embeds assessment.criteria misconceptions as #stuck-misconceptions.',
+      'lesson.js appends Common traps for this lesson on the concept stuck path.',
+      'Copy labels the prompts as rubric-derived, not generative AI.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e7',
     'title': 'Release E.7 — Restore local progress from JSON',
     'summary': (

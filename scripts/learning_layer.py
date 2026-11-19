@@ -120,8 +120,22 @@ def preflight_html(app_href: str, title: str = 'this lab') -> str:
 '''
 
 
-def stuck_html() -> str:
-  return '''
+def stuck_html(misconceptions=None) -> str:
+  """Stuck help. Optional misconceptions come from assessment.criteria (tutor-lite, not an AI model)."""
+  import json as _json
+  rows = []
+  for c in (misconceptions or []):
+    if not isinstance(c, dict):
+      continue
+    m = (c.get('misconception') or '').strip()
+    if not m:
+      continue
+    rows.append({
+      'title': (c.get('title') or c.get('id') or 'Criterion').strip(),
+      'misconception': m,
+    })
+  payload = _json.dumps(rows).replace('<', '\\u003c')
+  return f'''
 <section class="stuck" id="stuck" data-learning="stuck">
   <p class="eyebrow">Stuck</p>
   <h2>What is stopping you?</h2>
@@ -134,6 +148,7 @@ def stuck_html() -> str:
     <button type="button" role="listitem" data-stuck="a11y">I need accessibility support</button>
   </div>
   <div class="stuck-panel" id="stuck-panel" hidden></div>
+  <script type="application/json" id="stuck-misconceptions">{payload}</script>
   <aside class="attempt-recovery" id="attempt-recovery" data-learning="attempt">
     <h3>Attempt recovery</h3>
     <p>Timeout, rejection, failure, and success need different next steps. Do not send a second transaction until you know what happened to the first.</p>

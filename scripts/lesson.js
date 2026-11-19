@@ -709,12 +709,26 @@
         a11y: 'Use observation mode and keyboard-accessible Explorer links. Ask for an equivalent task if a control is inaccessible. Escalation: open a GitHub issue labelled accessibility.'
       };
       var panel = document.getElementById('stuck-panel');
+      var misconceptionRows = [];
+      try {
+        var misEl = document.getElementById('stuck-misconceptions');
+        if (misEl) misconceptionRows = JSON.parse(misEl.textContent || '[]') || [];
+      } catch (err) { misconceptionRows = []; }
       stuck.querySelectorAll('[data-stuck]').forEach(function (btn) {
         btn.addEventListener('click', function () {
           var key = btn.getAttribute('data-stuck');
           if (!panel) return;
           panel.hidden = false;
-          panel.innerHTML = '<p><b>' + esc(btn.textContent) + '</b></p><p>' + esc(help[key] || '') + '</p><p class="note">Do not respond to every category with “try again.”</p>';
+          var html = '<p><b>' + esc(btn.textContent) + '</b></p><p>' + esc(help[key] || '') + '</p>';
+          if (key === 'concept' && misconceptionRows.length) {
+            html += '<div class="stuck-traps"><p class="eyebrow">Common traps for this lesson</p><p class="note">From this lesson’s assessment rubric — a static coach, not a live AI tutor.</p><ul>';
+            misconceptionRows.forEach(function (row) {
+              html += '<li><b>' + esc(row.title || 'Criterion') + ':</b> ' + esc(row.misconception || '') + '</li>';
+            });
+            html += '</ul><p class="note">Use these to check your explanation — then open the <a href="assessment/">assessment rubric</a> for full criteria.</p></div>';
+          }
+          html += '<p class="note">Do not respond to every category with “try again.”</p>';
+          panel.innerHTML = html;
           if (key === 'tx') {
             var rec = document.getElementById('attempt-recovery');
             if (rec) rec.scrollIntoView({ block: 'nearest', behavior: 'smooth' });

@@ -28,6 +28,20 @@ class LearningLayerHtml(unittest.TestCase):
         self.assertIn('sc-lesson-last', js)
         self.assertIn('start-resume-go', js)
 
+    def test_stuck_embeds_misconceptions_tutor_lite(self):
+        html = ll.stuck_html([
+            {'title': 'Address stability', 'misconception': 'A new colour needs a new address.'},
+            {'id': 'no-m'},
+        ])
+        self.assertIn('id="stuck-misconceptions"', html)
+        self.assertIn('A new colour needs a new address.', html)
+        self.assertIn('Address stability', html)
+        root = os.path.join(os.path.dirname(__file__), '..')
+        js = open(os.path.join(root, 'scripts/lesson.js'), encoding='utf-8').read()
+        self.assertIn('stuck-misconceptions', js)
+        self.assertIn('Common traps for this lesson', js)
+        self.assertIn('not a live AI tutor', js)
+
     def test_preflight_offers_observation_and_practical(self):
         html = ll.preflight_html('/dapps/picassol-hackathon/', 'Picassol')
         self.assertIn('data-mode="observe"', html)
