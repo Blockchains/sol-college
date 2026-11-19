@@ -1,58 +1,155 @@
 {
- "title": "Reddi Escrow",
- "summary": "Register an agent (0.01 SOL incinerator fee), lock native SOL into a program-owned escrow PDA, and release it to the payee.",
- "what": "Reddi's programs/escrow is an Anchor 1.1.2 marketplace rail: agents register on-chain, a payer locks SOL into a program-owned PDA, and later releases it to a payee (or cancels after a 7-day window). This lesson covers register_agent, lock_escrow and release_escrow. Only this escrow program was deployed; Quasar/PER was not used.",
- "app_note": "The page at /dapps/reddi-escrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The lab tree lives on branch sol-college-devnet of Blockchains/reddi-escrow-solana because Blockchains/reddi-agent-protocol already existed and had diverged.",
- "try_steps": [
-  {
-   "do": "Open /dapps/reddi-escrow/, switch to Devnet, and connect a wallet. register_agent, lock_escrow and release_escrow are already done; the lab escrow PDA is closed.",
-   "see": "Program 6T8dguHE…. Fetch agent 8qVcbPrW… (campus-scout, Primary, active). Escrow HNqz8V3p… should no longer exist.",
-   "ran": "register_agent 45k9qwLE…; lock_escrow 54JL3pBH…; release_escrow 4Pst7szi…."
+  "title": "Reddi Escrow",
+  "summary": "Register an agent (0.01 SOL incinerator fee), lock native SOL into a program-owned escrow PDA, and release it to the payee.",
+  "what": "Reddi's programs/escrow is an Anchor 1.1.2 marketplace rail: agents register on-chain, a payer locks SOL into a program-owned PDA, and later releases it to a payee (or cancels after a 7-day window). This lesson covers register_agent, lock_escrow and release_escrow. Only this escrow program was deployed; Quasar/PER was not used.",
+  "app_note": "The page at /dapps/reddi-escrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The lab tree lives on branch sol-college-devnet of Blockchains/reddi-escrow-solana because Blockchains/reddi-agent-protocol already existed and had diverged.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/reddi-escrow/, switch to Devnet, and connect a wallet. register_agent, lock_escrow and release_escrow are already done; the lab escrow PDA is closed.",
+      "see": "Program 6T8dguHE\u2026. Fetch agent 8qVcbPrW\u2026 (campus-scout, Primary, active). Escrow HNqz8V3p\u2026 should no longer exist.",
+      "ran": "register_agent 45k9qwLE\u2026; lock_escrow 54JL3pBH\u2026; release_escrow 4Pst7szi\u2026."
+    },
+    {
+      "do": "A 65-byte model, or lock_escrow with amount=0, should fail.",
+      "see": "ModelTooLong; ZeroAmount.",
+      "ran": "Rejected in tests/devnet/reddi-escrow.mjs."
+    }
+  ],
+  "diagram": "owner --register_agent--> agent [\"agent\", owner] + 0.01 SOL to incinerator ; payer --lock_escrow--> escrow [\"escrow\", payer, nonce] ; payer --release_escrow--> payee (escrow closed)",
+  "accounts": [
+    "agent (seeds [\"agent\", owner])",
+    "escrow (seeds [\"escrow\", payer, 16-byte nonce])",
+    "fee_collector (Solana incinerator 1nc1nerator11111111111111111111111111111111)"
+  ],
+  "instructions": [
+    "register_agent",
+    "lock_escrow",
+    "release_escrow",
+    "cancel / token escrow / ratings exist in the program but are not in this IDL"
+  ],
+  "innovation": "A program-owned SOL escrow PDA (so release can debit it) plus a cheap on-chain agent registry with an incinerator registration fee.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab agent.",
+    "Explain why release can debit this escrow when some other lab programs cannot.",
+    "Sketch the 7-day cancel window."
+  ],
+  "not_covered": "cancel_escrow, token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar/PER was not used.",
+  "path_order": 35,
+  "path_stage": "apply",
+  "difficulty": "Intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Register an agent",
+    "Lock SOL in a program-owned escrow",
+    "Release the escrow to a payee"
+  ],
+  "prereqs": [
+    "orrery"
+  ],
+  "concepts": [
+    "agent registry",
+    "program-owned escrow PDA",
+    "incinerator fee",
+    "close account"
+  ],
+  "build": "Anchor 1.1.2 programs/escrow at 6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Inspect an agent and a native-SOL escrow PDA, then explain how release pays the payee from program-owned escrow.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Trace lock \u2192 release on a program-owned SOL escrow \u2014 then explain who can debit it.",
+    "predict_question": "SOL is locked in a Reddi program-owned escrow PDA. release_escrow runs successfully. Where do the lamports go?",
+    "predict_options": [
+      {
+        "id": "payer_only",
+        "label": "Always back only to the original locker, regardless of payee"
+      },
+      {
+        "id": "payee",
+        "label": "To the designated payee per program rules (program signs for the escrow PDA)"
+      },
+      {
+        "id": "burn",
+        "label": "They are burned; release only emits a log"
+      }
+    ],
+    "predict_answer": "payee",
+    "predict_why": "Reddi locks native SOL in a program-owned escrow PDA and release moves lamports to the payee under program constraints \u2014 the program must authorize the PDA debit.",
+    "act": "Open /dapps/reddi-escrow/ on Devnet. Fetch the lab agent and escrow evidence for register \u2192 lock \u2192 release. Prefer observation of recorded proofs; compare why this release can debit the escrow when some other lab programs cannot.",
+    "inspect": [
+      {
+        "id": "agent",
+        "label": "Agent account",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "escrow",
+        "label": "Escrow PDA / lamports",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "payee",
+        "label": "Payee observed",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Lock / release evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why must the program sign for the escrow PDA to release lamports, and how is that different from the locker transferring from their own wallet?",
+    "transfer": "Contrast Reddi\u2019s releasable program-owned escrow with a program that cannot debit its vault the same way \u2014 one sentence each."
   },
-  {
-   "do": "A 65-byte model, or lock_escrow with amount=0, should fail.",
-   "see": "ModelTooLong; ZeroAmount.",
-   "ran": "Rejected in tests/devnet/reddi-escrow.mjs."
+  "assessment": {
+    "purpose": "Independent criteria for Reddi Escrow elective: lock/release PDA debit.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Identifies escrow PDA",
+        "question": "Can the student locate the program-owned escrow holding lamports?",
+        "not_yet": "Confuses locker wallet with escrow.",
+        "support": "Finds PDA after a prompt.",
+        "independent": "Records escrow address and lamports from evidence.",
+        "misconception": "Agent account is the escrow vault."
+      },
+      {
+        "id": "c2",
+        "title": "Explains release to payee",
+        "question": "Can the student state where released lamports go and who authorizes the debit?",
+        "not_yet": "Unclear payee/PDA signing.",
+        "support": "Correct after walkthrough.",
+        "independent": "States payee + program PDA authorization.",
+        "misconception": "Anyone can withdraw any escrow."
+      },
+      {
+        "id": "c3",
+        "title": "Registration fee awareness",
+        "question": "Does the student note the register_agent fee behaviour without confusing it with escrow principal?",
+        "not_yet": "Mixes incinerator fee with escrow lock.",
+        "support": "Separates after a prompt.",
+        "independent": "Separates fee vs locked principal.",
+        "misconception": "Registration fee is the escrow balance."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled for lock/release?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Platform release is automatically my funds movement."
+      }
+    ]
   }
- ],
- "diagram": "owner --register_agent--> agent [\"agent\", owner] + 0.01 SOL to incinerator ; payer --lock_escrow--> escrow [\"escrow\", payer, nonce] ; payer --release_escrow--> payee (escrow closed)",
- "accounts": [
-  "agent (seeds [\"agent\", owner])",
-  "escrow (seeds [\"escrow\", payer, 16-byte nonce])",
-  "fee_collector (Solana incinerator 1nc1nerator11111111111111111111111111111111)"
- ],
- "instructions": [
-  "register_agent",
-  "lock_escrow",
-  "release_escrow",
-  "cancel / token escrow / ratings exist in the program but are not in this IDL"
- ],
- "innovation": "A program-owned SOL escrow PDA (so release can debit it) plus a cheap on-chain agent registry with an incinerator registration fee.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch the lab agent.",
-  "Explain why release can debit this escrow when some other lab programs cannot.",
-  "Sketch the 7-day cancel window."
- ],
- "not_covered": "cancel_escrow, token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar/PER was not used.",
- "path_order": 35,
- "path_stage": "apply",
- "difficulty": "Intermediate",
- "time": "20 min",
- "objectives": [
-  "Register an agent",
-  "Lock SOL in a program-owned escrow",
-  "Release the escrow to a payee"
- ],
- "prereqs": [
-  "orrery"
- ],
- "concepts": [
-  "agent registry",
-  "program-owned escrow PDA",
-  "incinerator fee",
-  "close account"
- ],
- "build": "Anchor 1.1.2 programs/escrow at 6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R on devnet. IDL hand-derived subset, tx-confirmed.",
- "functional": "full"
 }

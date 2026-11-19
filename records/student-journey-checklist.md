@@ -39,7 +39,7 @@ Legend: `done` · `partial` · `todo`
 
 ## Later releases
 
-- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; staged path 1–16 + Foundations 001–007 + elective batch 1 (guild→forge); remaining electives/previews open)
+- Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; staged path 1–16 + Foundations 001–007 + elective batches 1–2 (guild→reddi apply path); remaining catalogue electives/previews open)
 - Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
 - Release E: AI tutor, personalisation, community — `todo` (P2)
 

@@ -1,55 +1,152 @@
 {
- "title": "Hydra: register a root agent in a hierarchical registry",
- "summary": "Initialise the Hydra registry, register a root agent, and see why a 33-byte name is rejected.",
- "what": "Hydra is an Anchor 0.32 program for a tree of agents: a registry holds root agents, which can later spawn children and share earnings. This lesson covers initialize and register_root_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
- "app_note": "The page at /dapps/hydra/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
- "try_steps": [
-  {
-   "do": "Open /dapps/hydra/, switch to Devnet, and connect a wallet. initialize and register_root_agent campus-scout are already done.",
-   "see": "Program EKEHJMZi… . Fetch registry 7x3F2GgY… and agent 8E5gYQxr….",
-   "ran": "initialize 5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS; register_root_agent Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH."
+  "title": "Hydra: register a root agent in a hierarchical registry",
+  "summary": "Initialise the Hydra registry, register a root agent, and see why a 33-byte name is rejected.",
+  "what": "Hydra is an Anchor 0.32 program for a tree of agents: a registry holds root agents, which can later spawn children and share earnings. This lesson covers initialize and register_root_agent. The hosted IDL is a hand-derived subset confirmed on-chain.",
+  "app_note": "The page at /dapps/hydra/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/hydra/, switch to Devnet, and connect a wallet. initialize and register_root_agent campus-scout are already done.",
+      "see": "Program EKEHJMZi\u2026 . Fetch registry 7x3F2GgY\u2026 and agent 8E5gYQxr\u2026.",
+      "ran": "initialize 5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS; register_root_agent Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH."
+    },
+    {
+      "do": "A register_root_agent with a 33-byte name should fail.",
+      "see": "NameTooLong.",
+      "ran": "Rejected in tests/devnet/hydra.mjs."
+    }
+  ],
+  "diagram": "authority --initialize--> registry [\"registry\"] ; authority --register_root_agent--> agent [\"agent\", wallet]",
+  "accounts": [
+    "registry (seeds [\"registry\"])",
+    "agent (seeds [\"agent\", wallet])"
+  ],
+  "instructions": [
+    "initialize",
+    "register_root_agent",
+    "spawn_child / earnings ixs exist in the program but are not in this IDL"
+  ],
+  "innovation": "A hierarchical on-chain agent tree with parent revenue share.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab root agent.",
+    "Explain NameTooLong.",
+    "Sketch spawn_child."
+  ],
+  "not_covered": "spawn_child and earnings distribution were not exercised.",
+  "path_order": 31,
+  "path_stage": "apply",
+  "difficulty": "Intermediate",
+  "time": "15 min",
+  "objectives": [
+    "Initialise the registry",
+    "Register a root agent",
+    "Name NameTooLong"
+  ],
+  "prereqs": [
+    "forge-agent-bounty"
+  ],
+  "concepts": [
+    "registry PDA",
+    "root agent",
+    "agent tree"
+  ],
+  "build": "Anchor 0.32.1 program at EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8 on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Inspect the Hydra registry and a root agent, then explain why a 33-byte name is rejected.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Read registry + root agent \u2014 then predict NameTooLong rejection.",
+    "predict_question": "register_root_agent is called with a 33-byte name. What should happen?",
+    "predict_options": [
+      {
+        "id": "trunc",
+        "label": "The name is truncated to 32 bytes and the agent is registered"
+      },
+      {
+        "id": "reject",
+        "label": "The instruction fails with NameTooLong (or equivalent); no root agent is written"
+      },
+      {
+        "id": "ok",
+        "label": "Any UTF-8 string length is accepted"
+      }
+    ],
+    "predict_answer": "reject",
+    "predict_why": "Hydra enforces a maximum root-agent name length in the program. Oversized names fail; the registry is not left with an illegal name.",
+    "act": "Open /dapps/hydra/ on Devnet. Fetch the lab root agent (campus-scout) and config/registry evidence. Prefer observation of recorded initialize/register_root_agent proofs; explain NameTooLong from the exercise.",
+    "inspect": [
+      {
+        "id": "registry",
+        "label": "Registry / config evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "agent",
+        "label": "Root agent name / address",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "reject",
+        "label": "NameTooLong observed?",
+        "placeholder": "yes / explained / no"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why should name-length limits be enforced on-chain rather than only in the form validator?",
+    "transfer": "State the rejected name condition and one field you would re-read on a root agent account."
   },
-  {
-   "do": "A register_root_agent with a 33-byte name should fail.",
-   "see": "NameTooLong.",
-   "ran": "Rejected in tests/devnet/hydra.mjs."
+  "assessment": {
+    "purpose": "Independent criteria for Hydra elective: registry inspect + NameTooLong.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Inspects registry/root agent",
+        "question": "Can the student locate registry and root-agent evidence?",
+        "not_yet": "No account evidence recorded.",
+        "support": "Finds lab agent after a prompt.",
+        "independent": "Records registry/agent addresses and name from evidence.",
+        "misconception": "UI list alone proves registry state."
+      },
+      {
+        "id": "c2",
+        "title": "Explains NameTooLong",
+        "question": "Can the student predict a 33-byte name rejection?",
+        "not_yet": "Assumes any length works or silent truncate.",
+        "support": "Correct after the exercise.",
+        "independent": "States NameTooLong without writing illegal state.",
+        "misconception": "Failed submit still created the agent."
+      },
+      {
+        "id": "c3",
+        "title": "Scopes to this slice",
+        "question": "Does the student avoid claiming full hierarchy mastery from root register alone?",
+        "not_yet": "Claims entire Hydra tree lifecycle.",
+        "support": "Scopes after a prompt.",
+        "independent": "Limits claims to init/root register/NameTooLong.",
+        "misconception": "Root register proves all child-agent flows."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Are platform proofs labelled separately from live attempts?",
+        "not_yet": "Mixed.",
+        "support": "Fixed after prompt.",
+        "independent": "Labelled correctly.",
+        "misconception": "Lab signature is my completion."
+      }
+    ]
   }
- ],
- "diagram": "authority --initialize--> registry [\"registry\"] ; authority --register_root_agent--> agent [\"agent\", wallet]",
- "accounts": [
-  "registry (seeds [\"registry\"])",
-  "agent (seeds [\"agent\", wallet])"
- ],
- "instructions": [
-  "initialize",
-  "register_root_agent",
-  "spawn_child / earnings ixs exist in the program but are not in this IDL"
- ],
- "innovation": "A hierarchical on-chain agent tree with parent revenue share.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch the lab root agent.",
-  "Explain NameTooLong.",
-  "Sketch spawn_child."
- ],
- "not_covered": "spawn_child and earnings distribution were not exercised.",
- "path_order": 31,
- "path_stage": "apply",
- "difficulty": "Intermediate",
- "time": "15 min",
- "objectives": [
-  "Initialise the registry",
-  "Register a root agent",
-  "Name NameTooLong"
- ],
- "prereqs": [
-  "forge-agent-bounty"
- ],
- "concepts": [
-  "registry PDA",
-  "root agent",
-  "agent tree"
- ],
- "build": "Anchor 0.32.1 program at EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8 on devnet. IDL hand-derived subset, tx-confirmed.",
- "functional": "full"
 }

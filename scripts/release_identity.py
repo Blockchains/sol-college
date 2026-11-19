@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c17',
+    'title': 'Release C.17 — Elective learning loops batch 2',
+    'summary': (
+      'Apply-path electives Hydra, Agent Bazaar, AgentVault, Orrery, and Reddi Escrow '
+      'join the shared learning layer with scoped loops and lab-specific rubrics.'
+    ),
+    'changes': [
+      'hydra / agent-bazaar / agentvault / orrery / reddi-escrow: track=elective, learning_loop, assessment criteria.',
+      'AgentVault loop emphasises explaining rejected complete_task rather than inventing payouts.',
+      'Tests cover batch 2 predict answers and no Picassol leakage.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c16',
     'title': 'Release C.16 — Elective learning loops batch 1',
     'summary': (
