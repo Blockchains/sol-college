@@ -1,306 +1,403 @@
 {
- "title": "Web3 Splitter: split token payments by percentage (and learn PDA signing from two real bugs)",
- "summary": "Create a vault that splits any SPL token between wallets by percentage. Then see, on devnet, why its claim only works for the creator.",
- "what": "Web3 Splitter lets you create a named **splitter vault** for one SPL token and a list of recipients with percentages that must add up to 100. Anyone who deposits tokens into it has the amount booked to each recipient by percentage, and each recipient can **claim** their share. The tokens sit in a token account owned by a PDA, so only the program can move them. Running it on devnet exposed two real bugs in the fork's `claim`: it signs with the wrong seeds, and it pays out the whole vault. This lesson uses them to show exactly how PDA signing works.",
- "app_note": "The fork's own Vue 3 + Vite app (`src/`), unchanged apart from this devnet program ID and its IDL, the base path, and hash routing (`#/create`, `#/action`, `#/list`) for static hosting.",
- "try_steps": [
-  {
-   "do": "You need a devnet SPL token. With the Solana CLI set to devnet and your Phantom keypair (or any funded keypair): `spl-token create-token`, then `spl-token create-account <MINT>` and `spl-token mint <MINT> 1000`. Then `spl-token transfer <MINT> 100 <your Phantom address> --fund-recipient` if you minted from another keypair.",
-   "see": "Your wallet holds a token you control. Copy its mint address."
-  },
-  {
-   "do": "Open [the Create page](/dapps/web3-splitter/#/create) and connect with **Select Wallet**.",
-   "see": "\"Craete New Splitter\" (sic) with Splitter Name, Token address and Add Address fields."
-  },
-  {
-   "do": "Type a short name, paste the mint into **Token address**. In **Add Address** replace the pre-filled address with **your own** wallet address, keep `100` %, and press the **+** button. Press **Create** and approve.",
-   "see": "An `initialize` transaction. It creates the vault PDA and the vault's token account. (Make yourself the only recipient for now: see step 6 for why.)",
-   "ran": [
-    [
-     "Create page: splitter 'sc-ui-0808', 100% to the test wallet: `initialize`",
-     "43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"
-    ]
-   ]
-  },
-  {
-   "do": "Open [the List page](/dapps/web3-splitter/#/list) and copy your vault's address.",
-   "see": "All vaults of the program, read with `program.account.vault.all()`."
-  },
-  {
-   "do": "Open [the Actions page](/dapps/web3-splitter/#/action), paste the vault address, press **Get it**. Enter `25` in the deposit field and press **Deposite**; approve.",
-   "see": "A `deposite` transaction: 25 tokens move from your token account into the vault's. The table lists your wallet with Share 100 %. (The balance column assumes 9 decimals and may show a wrong number or NaN.)",
-   "ran": [
-    [
-     "Actions page, Get it, Deposite 25: vault token account 0 → 25",
-     "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"
-    ]
-   ]
-  },
-  {
-   "do": "Press **Claim** on your row and approve.",
-   "see": "A `claim` transaction: the 25 tokens come back to you. Now repeat steps 3–6 with **two** recipients, 60 % you and 40 % a second wallet, and try Claim from the second wallet: it fails. Section 4 explains why.",
-   "ran": [
-    [
-     "Claim: 25 tokens back to the wallet (975 → 1000)",
-     "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"
-    ]
-   ],
-   "ran_note": "The two-recipient case (B's failing claim) was run by script; see Proof."
-  }
- ],
- "diagram": "authority ── initialize(name, percentages, recipients) ─▶ Vault PDA  [\"vault\", name[..32], authority, mint]\n                                                          name | authority | total | percentages | accounts_vault (booked) | accounts | token_id | bump\n                                                    └──▶ vault token account = ATA(owner = Vault PDA, mint)\nanyone  ── deposite(amount): tokens  your ATA ─────────▶ vault ATA;  accounts_vault[i] += amount × pct[i] / 100\nrecipient ── claim(): vault ATA ─▶ claimer's ATA, signed by the Vault PDA via seeds   (bugs: see §4)\nauthority ── update(percentages) / delete() (closes the Vault account only)",
- "accounts": [
-  [
-   "Vault",
-   "PDA, seeds `[\"vault\", name (max 32 bytes), authority, mint]`",
-   "Recipients, percentages, booked amounts, total, bump"
+  "title": "Web3 Splitter: split token payments by percentage (and learn PDA signing from two real bugs)",
+  "summary": "Create a vault that splits any SPL token between wallets by percentage. Then see, on devnet, why its claim only works for the creator.",
+  "what": "Web3 Splitter lets you create a named **splitter vault** for one SPL token and a list of recipients with percentages that must add up to 100. Anyone who deposits tokens into it has the amount booked to each recipient by percentage, and each recipient can **claim** their share. The tokens sit in a token account owned by a PDA, so only the program can move them. Running it on devnet exposed two real bugs in the fork's `claim`: it signs with the wrong seeds, and it pays out the whole vault. This lesson uses them to show exactly how PDA signing works.",
+  "app_note": "The fork's own Vue 3 + Vite app (`src/`), unchanged apart from this devnet program ID and its IDL, the base path, and hash routing (`#/create`, `#/action`, `#/list`) for static hosting.",
+  "try_steps": [
+    {
+      "do": "You need a devnet SPL token. With the Solana CLI set to devnet and your Phantom keypair (or any funded keypair): `spl-token create-token`, then `spl-token create-account <MINT>` and `spl-token mint <MINT> 1000`. Then `spl-token transfer <MINT> 100 <your Phantom address> --fund-recipient` if you minted from another keypair.",
+      "see": "Your wallet holds a token you control. Copy its mint address."
+    },
+    {
+      "do": "Open [the Create page](/dapps/web3-splitter/#/create) and connect with **Select Wallet**.",
+      "see": "\"Craete New Splitter\" (sic) with Splitter Name, Token address and Add Address fields."
+    },
+    {
+      "do": "Type a short name, paste the mint into **Token address**. In **Add Address** replace the pre-filled address with **your own** wallet address, keep `100` %, and press the **+** button. Press **Create** and approve.",
+      "see": "An `initialize` transaction. It creates the vault PDA and the vault's token account. (Make yourself the only recipient for now: see step 6 for why.)",
+      "ran": [
+        [
+          "Create page: splitter 'sc-ui-0808', 100% to the test wallet: `initialize`",
+          "43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"
+        ]
+      ]
+    },
+    {
+      "do": "Open [the List page](/dapps/web3-splitter/#/list) and copy your vault's address.",
+      "see": "All vaults of the program, read with `program.account.vault.all()`."
+    },
+    {
+      "do": "Open [the Actions page](/dapps/web3-splitter/#/action), paste the vault address, press **Get it**. Enter `25` in the deposit field and press **Deposite**; approve.",
+      "see": "A `deposite` transaction: 25 tokens move from your token account into the vault's. The table lists your wallet with Share 100 %. (The balance column assumes 9 decimals and may show a wrong number or NaN.)",
+      "ran": [
+        [
+          "Actions page, Get it, Deposite 25: vault token account 0 \u2192 25",
+          "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"
+        ]
+      ]
+    },
+    {
+      "do": "Press **Claim** on your row and approve.",
+      "see": "A `claim` transaction: the 25 tokens come back to you. Now repeat steps 3\u20136 with **two** recipients, 60 % you and 40 % a second wallet, and try Claim from the second wallet: it fails. Section 4 explains why.",
+      "ran": [
+        [
+          "Claim: 25 tokens back to the wallet (975 \u2192 1000)",
+          "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"
+        ]
+      ],
+      "ran_note": "The two-recipient case (B's failing claim) was run by script; see Proof."
+    }
   ],
-  [
-   "Vault token account",
-   "Associated token account of (Vault PDA, mint)",
-   "The deposited tokens; only the Vault PDA can sign for it"
+  "diagram": "authority \u2500\u2500 initialize(name, percentages, recipients) \u2500\u25b6 Vault PDA  [\"vault\", name[..32], authority, mint]\n                                                          name | authority | total | percentages | accounts_vault (booked) | accounts | token_id | bump\n                                                    \u2514\u2500\u2500\u25b6 vault token account = ATA(owner = Vault PDA, mint)\nanyone  \u2500\u2500 deposite(amount): tokens  your ATA \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6 vault ATA;  accounts_vault[i] += amount \u00d7 pct[i] / 100\nrecipient \u2500\u2500 claim(): vault ATA \u2500\u25b6 claimer's ATA, signed by the Vault PDA via seeds   (bugs: see \u00a74)\nauthority \u2500\u2500 update(percentages) / delete() (closes the Vault account only)",
+  "accounts": [
+    [
+      "Vault",
+      "PDA, seeds `[\"vault\", name (max 32 bytes), authority, mint]`",
+      "Recipients, percentages, booked amounts, total, bump"
+    ],
+    [
+      "Vault token account",
+      "Associated token account of (Vault PDA, mint)",
+      "The deposited tokens; only the Vault PDA can sign for it"
+    ],
+    [
+      "Claimer / depositor token account",
+      "Associated token account of (wallet, mint)",
+      "Where tokens come from / go to"
+    ]
   ],
-  [
-   "Claimer / depositor token account",
-   "Associated token account of (wallet, mint)",
-   "Where tokens come from / go to"
-  ]
- ],
- "instructions": [
-  {
-   "name": "`initialize`: create the vault",
-   "refs": [
+  "instructions": [
     {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 12,
-     "b": 50
+      "name": "`initialize`: create the vault",
+      "refs": [
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 12,
+          "b": 50
+        },
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 208,
+          "b": 242,
+          "note": "accounts"
+        }
+      ],
+      "steps": [
+        "It sums `percentages` and fails with `Unauthorized` unless the total is exactly 100 (our test with a total of 90 was rejected).",
+        "It also fails unless there is one percentage per recipient (rejected in our test with 1 percentage for 2 recipients).",
+        "`seeds = [\"vault\", name_seed(&name), authority, token]`: the same creator can have one vault per name per token. `name_seed` cuts the name to 32 bytes because a single seed can't be longer.",
+        "`associated_token::authority = vault` creates the vault's token account **owned by the PDA**. That is the only place tokens are held."
+      ]
     },
     {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 208,
-     "b": 242,
-     "note": "accounts"
-    }
-   ],
-   "steps": [
-    "It sums `percentages` and fails with `Unauthorized` unless the total is exactly 100 (our test with a total of 90 was rejected).",
-    "It also fails unless there is one percentage per recipient (rejected in our test with 1 percentage for 2 recipients).",
-    "`seeds = [\"vault\", name_seed(&name), authority, token]`: the same creator can have one vault per name per token. `name_seed` cuts the name to 32 bytes because a single seed can't be longer.",
-    "`associated_token::authority = vault` creates the vault's token account **owned by the PDA**. That is the only place tokens are held."
-   ]
-  },
-  {
-   "name": "`deposite`: book shares and move tokens in",
-   "refs": [
-    {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 112,
-     "b": 148
-    }
-   ],
-   "steps": [
-    "`total += amount`, then for each recipient `booked[i] += pct[i] × amount / 100` (integer division, so tiny remainders are not booked).",
-    "A token `transfer` CPI from the depositor's token account to the vault's, authorised by the depositor's signature.",
-    "Note what is **not** checked in `Deposite` (lines 256–275): the vault and `vault_token_account` have no seeds or address constraints, so the program trusts the client to pass the vault's real token account."
-   ]
-  },
-  {
-   "name": "`claim`: pay a recipient, signed by the PDA",
-   "refs": [
-    {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 152,
-     "b": 204
+      "name": "`deposite`: book shares and move tokens in",
+      "refs": [
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 112,
+          "b": 148
+        }
+      ],
+      "steps": [
+        "`total += amount`, then for each recipient `booked[i] += pct[i] \u00d7 amount / 100` (integer division, so tiny remainders are not booked).",
+        "A token `transfer` CPI from the depositor's token account to the vault's, authorised by the depositor's signature.",
+        "Note what is **not** checked in `Deposite` (lines 256\u2013275): the vault and `vault_token_account` have no seeds or address constraints, so the program trusts the client to pass the vault's real token account."
+      ]
     },
     {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 377,
-     "b": 388,
-     "note": "access control: claimer must be a recipient"
-    }
-   ],
-   "steps": [
-    "Access control: the claimer must be in `vault.accounts`, else `Unauthorized` (a stranger's claim was rejected in our test).",
-    "It finds the claimer's row and its booked amount `money`.",
-    "To move tokens out of an account owned by a PDA, the program calls `transfer` with `new_with_signer(seeds)`. The runtime re-derives an address from those seeds and the program ID; if it equals the authority of the token account, the transfer is signed.",
-    "Bug 1 (line 182): the seeds use `claimer` where the vault was created with `authority`. For anyone but the creator, the derived address is not the vault, and the transfer fails: our recipient-B claim failed with \"Could not create program address with signer seeds\".",
-    "Bug 2 (line 195): it transfers `vault_balance` (the whole vault total) instead of `money`. Our authority, booked for 60, received all 100 tokens."
-   ]
-  },
-  {
-   "name": "`update` and `delete` (authority only)",
-   "refs": [
-    {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 64,
-     "b": 109
+      "name": "`claim`: pay a recipient, signed by the PDA",
+      "refs": [
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 152,
+          "b": 204
+        },
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 377,
+          "b": 388,
+          "note": "access control: claimer must be a recipient"
+        }
+      ],
+      "steps": [
+        "Access control: the claimer must be in `vault.accounts`, else `Unauthorized` (a stranger's claim was rejected in our test).",
+        "It finds the claimer's row and its booked amount `money`.",
+        "To move tokens out of an account owned by a PDA, the program calls `transfer` with `new_with_signer(seeds)`. The runtime re-derives an address from those seeds and the program ID; if it equals the authority of the token account, the transfer is signed.",
+        "Bug 1 (line 182): the seeds use `claimer` where the vault was created with `authority`. For anyone but the creator, the derived address is not the vault, and the transfer fails: our recipient-B claim failed with \"Could not create program address with signer seeds\".",
+        "Bug 2 (line 195): it transfers `vault_balance` (the whole vault total) instead of `money`. Our authority, booked for 60, received all 100 tokens."
+      ]
     },
     {
-     "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-     "a": 244,
-     "b": 254,
-     "note": "has_one = authority"
+      "name": "`update` and `delete` (authority only)",
+      "refs": [
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 64,
+          "b": 109
+        },
+        {
+          "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+          "a": 244,
+          "b": 254,
+          "note": "has_one = authority"
+        }
+      ],
+      "steps": [
+        "`has_one = authority @ WrongOwner` and the `access_control` check refuse anyone but the creator (both rejections are in Proof).",
+        "`update` replaces the percentages for **future** deposits; amounts already booked stay as they were ([60, 40] stayed after updating to 70/30).",
+        "`delete` closes the Vault account and returns its rent. Despite the comment, it does not move any tokens out of the vault's token account."
+      ]
     }
-   ],
-   "steps": [
-    "`has_one = authority @ WrongOwner` and the `access_control` check refuse anyone but the creator (both rejections are in Proof).",
-    "`update` replaces the percentages for **future** deposits; amounts already booked stay as they were ([60, 40] stayed after updating to 70/30).",
-    "`delete` closes the Vault account and returns its rent. Despite the comment, it does not move any tokens out of the vault's token account."
-   ]
-  }
- ],
- "innovation": {
-  "title": "a PDA that owns a token account, and signs with seeds",
-  "text": "The vault's tokens are held in an associated token account whose owner is the Vault PDA. A PDA has no private key, so nobody can sign for it, except the program, by passing the exact seeds (plus bump) that produce that address to `CpiContext::new_with_signer`. That is what makes a trustless vault possible. And it is exactly what this fork gets wrong: the seeds must be the ones used at creation.",
-  "refs": [
-   {
-    "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-    "a": 211,
-    "b": 222,
-    "note": "seeds at creation: authority"
-   },
-   {
-    "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
-    "a": 179,
-    "b": 191,
-    "note": "seeds at claim: claimer (bug)"
-   }
   ],
-  "more": [
-   "Put the two excerpts side by side: `authority.to_account_info().key` at creation vs `ctx.accounts.claimer.key()` at claim. When claimer == authority they produce the same address and claim works (our UI run and the 60/40 script). For anyone else they don't, and the runtime refuses to sign.",
-   "The fix is one line: use the stored `vault.authority` in the claim seeds, and transfer `money`, not `vault_balance`. That is Exercise 1."
-  ]
- },
- "frontend": [
-  {
-   "title": "Create: derive the vault PDA and its token account in the browser",
-   "refs": [
+  "innovation": {
+    "title": "a PDA that owns a token account, and signs with seeds",
+    "text": "The vault's tokens are held in an associated token account whose owner is the Vault PDA. A PDA has no private key, so nobody can sign for it, except the program, by passing the exact seeds (plus bump) that produce that address to `CpiContext::new_with_signer`. That is what makes a trustless vault possible. And it is exactly what this fork gets wrong: the seeds must be the ones used at creation.",
+    "refs": [
+      {
+        "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+        "a": 211,
+        "b": 222,
+        "note": "seeds at creation: authority"
+      },
+      {
+        "path": "splitterprogram/programs/splitterprogram/src/lib.rs",
+        "a": 179,
+        "b": 191,
+        "note": "seeds at claim: claimer (bug)"
+      }
+    ],
+    "more": [
+      "Put the two excerpts side by side: `authority.to_account_info().key` at creation vs `ctx.accounts.claimer.key()` at claim. When claimer == authority they produce the same address and claim works (our UI run and the 60/40 script). For anyone else they don't, and the runtime refuses to sign.",
+      "The fix is one line: use the stored `vault.authority` in the claim seeds, and transfer `money`, not `vault_balance`. That is Exercise 1."
+    ]
+  },
+  "frontend": [
     {
-     "path": "src/lib/useWorkspace.ts",
-     "a": 53,
-     "b": 65
+      "title": "Create: derive the vault PDA and its token account in the browser",
+      "refs": [
+        {
+          "path": "src/lib/useWorkspace.ts",
+          "a": 53,
+          "b": 65
+        },
+        {
+          "path": "src/components/CreateSplitter.vue",
+          "a": 57,
+          "b": 82
+        }
+      ],
+      "steps": [
+        "`handlePDA` uses the same seeds as the program: `\"vault\"`, the name, the wallet, the mint.",
+        "`findAssociatedTokenAddress(PDA, mint)` computes the vault's token account; `initialize(...)` passes both and Anchor creates them."
+      ]
     },
     {
-     "path": "src/components/CreateSplitter.vue",
-     "a": 57,
-     "b": 82
-    }
-   ],
-   "steps": [
-    "`handlePDA` uses the same seeds as the program: `\"vault\"`, the name, the wallet, the mint.",
-    "`findAssociatedTokenAddress(PDA, mint)` computes the vault's token account; `initialize(...)` passes both and Anchor creates them."
-   ]
-  },
-  {
-   "title": "Deposit: amount × 10^decimals",
-   "refs": [
+      "title": "Deposit: amount \u00d7 10^decimals",
+      "refs": [
+        {
+          "path": "src/components/ClaimFromSplitter.vue",
+          "a": 28,
+          "b": 56
+        }
+      ],
+      "steps": [
+        "It reads the mint's `decimals` with `getMint` and sends `amount \u00d7 10^decimals` base units, with `accountsStrict` listing every account."
+      ]
+    },
     {
-     "path": "src/components/ClaimFromSplitter.vue",
-     "a": 28,
-     "b": 56
+      "title": "Claim",
+      "refs": [
+        {
+          "path": "src/components/ClaimFromSplitter.vue",
+          "a": 60,
+          "b": 88
+        }
+      ],
+      "steps": [
+        "The claimer's token account is its ATA for the mint (the program creates it with `init_if_needed` if missing). The Claim button only appears on the row whose address equals the connected wallet."
+      ]
     }
-   ],
-   "steps": [
-    "It reads the mint's `decimals` with `getMint` and sends `amount × 10^decimals` base units, with `accountsStrict` listing every account."
-   ]
-  },
-  {
-   "title": "Claim",
-   "refs": [
+  ],
+  "exercises": [
     {
-     "path": "src/components/ClaimFromSplitter.vue",
-     "a": 60,
-     "b": 88
+      "title": "Fix claim and prove it on a local validator",
+      "steps": [
+        "Clone the fork at `ced1cca` and open `splitterprogram/programs/splitterprogram/src/lib.rs`.",
+        "Line 182: replace `&ctx.accounts.claimer.key().to_bytes()` with `vault.authority.as_ref()`.",
+        "Line 195: replace `vault_balance` with `money`.",
+        "`anchor build`, `anchor test`, with a 60/40 vault, a deposit of 100, and claims from both recipients."
+      ],
+      "expect": "Recipient B's claim now succeeds and receives 40; the authority receives 60; the vault ends at 0.",
+      "hint": "The claim instruction signs with one set of seeds, but the token account is owned by a PDA derived from a different set. Look at both in the same file.",
+      "approach": "Align the `invoke_signed` seeds with the token-account owner's seeds (and the bump you stored). On a local validator, deposit as the creator, then `claim` as a recipient: after the fix it should transfer the recipient's share. Before the fix, the recorded devnet claims only succeed for the creator \u2014 that is the behaviour you are changing."
+    },
+    {
+      "title": "Watch the seeds error yourself",
+      "steps": [
+        "Create a 60/40 vault on the live app with a second wallet as the 40 % recipient, deposit, then press Claim from the second wallet."
+      ],
+      "expect": "The transaction fails; in the error logs: \"Could not create program address with signer seeds\" (as recorded in Proof).",
+      "hint": "The error in the logs is a seeds constraint, not a custom error. Simulate or send the same instruction the app sends.",
+      "approach": "Replay a claim as a non-creator against the live program (or a local deploy of the unfixed code). You should get the same seeds error the lesson's proof recorded. This is observation, not a new exploit."
+    },
+    {
+      "title": "Check the 100 % rule",
+      "steps": [
+        "On the Create page, the + button won't let the total pass 100. From a script, call `initialize` with percentages [50, 40]."
+      ],
+      "expect": "Rejected with `Unauthorized` (the program's own check, independent of the UI).",
+      "hint": "The 100% rule is a `require!` on the sum of shares at vault creation. What happens if you pass 99, or 101?",
+      "approach": "From a local test, create a vault whose shares sum to something other than 10,000 (basis points). It should fail the existing check. If it doesn't, that is a bug to fix; if it does, you've confirmed the rule."
+    },
+    {
+      "title": "Long names",
+      "steps": [
+        "Compare `name_seed` (program, line 389) with `handlePDA` in `src/lib/useWorkspace.ts`.",
+        "Create a vault whose name is 40 characters long."
+      ],
+      "expect": "The program would accept it (it truncates the seed to 32 bytes), but the app passes the full name to `findProgramAddressSync`, which throws \"Max seed length exceeded\" in the browser, so nothing is sent. Truncating the name to 32 bytes in `handlePDA` fixes it.",
+      "hint": "The vault name is a seed, so it has a 32-byte limit, the same as Friendstake's description.",
+      "approach": "Try a 33-byte name. It should fail at seed construction (or a check you add). Add a named error and a client-side length hint so the user sees a clear message."
+    },
+    {
+      "title": "Lock down deposits",
+      "steps": [
+        "In `Deposite`, add `constraint = vault_token_account.key() == vault.vault_token_account` to `vault_token_account`.",
+        "Rebuild and call `deposite` passing a token account that is not the vault's."
+      ],
+      "expect": "Rejected with a constraint error; deposits can no longer book shares without paying the real vault.",
+      "hint": "Today anyone who holds the token can deposit into a vault. That may be fine; locking it is a product choice.",
+      "approach": "If you want only the creator (or a whitelist) to deposit, add a `has_one` or a members list and a constraint on `deposit`. A stranger's deposit should then fail; the creator's should still work as in the recorded run."
     }
-   ],
-   "steps": [
-    "The claimer's token account is its ATA for the mint (the program creates it with `init_if_needed` if missing). The Claim button only appears on the row whose address equals the connected wallet."
-   ]
+  ],
+  "not_covered": "Create, deposit and claim were clicked through for a single-recipient splitter. Multi-recipient payouts can't work correctly because of the claim bugs (only the authority can claim, and it receives the whole balance). The app's QR deposit link points at the author's Cloud Run endpoint, which we don't use, and the balance column shows NaN.",
+  "path_order": null,
+  "path_stage": null,
+  "difficulty": "Intermediate",
+  "time": "50 min",
+  "objectives": [
+    "Follow an SPL-token vault that splits deposits by percentage, with a PDA as the token-account owner.",
+    "Reproduce, from the recorded transactions, why `claim` only works for the creator (a seeds / signer mismatch).",
+    "See a second, related bug in how the PDA is asked to sign, and write a local test that proves the fix."
+  ],
+  "prereqs": [
+    "Phantom on devnet and a little SOL. You will also need to be comfortable with token accounts.",
+    "[gree](/lessons/gree/) (CPI to the Token Program, PDA signing) and [Friendstake](/lessons/friendstake/) (missing account checks)."
+  ],
+  "concepts": [
+    "pda",
+    "seeds",
+    "bump",
+    "invoke-signed",
+    "cpi",
+    "ata",
+    "token-program",
+    "token-account",
+    "constraint",
+    "authority"
+  ],
+  "build": {
+    "dir": "splitterprogram",
+    "anchor": "0.30.1",
+    "test": "anchor test",
+    "note": "The program is in `splitterprogram/`. Tests: `tests/splitterprogram.ts`."
+  },
+  "functional": "partial",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Reproduce why splitter claim fails for non-creators (seeds/signer mismatch) and state the seed alignment fix.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Observe a non-creator claim \u2014 then explain the PDA seeds mismatch.",
+    "predict_question": "A 40% recipient presses Claim on the live/lab splitter. What does the recorded failure show?",
+    "predict_options": [
+      {
+        "id": "paid",
+        "label": "Recipient always receives 40%"
+      },
+      {
+        "id": "seeds",
+        "label": "Tx fails \u2014 invoke_signed seeds do not match the token-account owner PDA"
+      },
+      {
+        "id": "creator_only_ok",
+        "label": "Only creators can ever be paid by design, with no bug"
+      }
+    ],
+    "predict_answer": "seeds",
+    "predict_why": "Web3 Splitter\u2019s proof: non-creator claim fails with \u201cCould not create program address with signer seeds\u201d because claim signs with the wrong seeds versus the vault token-account owner.",
+    "act": "Open /dapps/web3-splitter/ on Devnet. Create/observe a 60/40 vault, deposit, attempt claim as the 40% recipient (or use recorded proof). State the seed alignment fix without claiming the hosted program is already patched.",
+    "inspect": [
+      {
+        "id": "vault",
+        "label": "Vault / splits",
+        "placeholder": "60/40"
+      },
+      {
+        "id": "owner",
+        "label": "Token-account owner PDA seeds",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "claim_seeds",
+        "label": "Claim invoke_signed seeds",
+        "placeholder": "mismatch / \u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence / error",
+        "placeholder": "seeds error"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why must invoke_signed seeds match the token-account owner PDA exactly?",
+    "transfer": "Name the two lines to align (seeds + amount) for a local fix test."
+  },
+  "assessment": {
+    "purpose": "Independent catalogue criteria; diagnose recorded bugs without inventing fixes as completed.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Uses recorded evidence",
+        "question": "Can the student cite lab/proof accounts for the bug?",
+        "not_yet": "Invented state.",
+        "support": "Finds proof after prompt.",
+        "independent": "Cites proof independently.",
+        "misconception": "UI copy proves on-chain correctness."
+      },
+      {
+        "id": "c2",
+        "title": "States the distinctive failure",
+        "question": "Can the student name the predict_answer failure mode?",
+        "not_yet": "Wrong mode.",
+        "support": "Correct after exercise.",
+        "independent": "States failure mode clearly.",
+        "misconception": "Bug is only cosmetic."
+      },
+      {
+        "id": "c3",
+        "title": "Does not claim unproven fix",
+        "question": "Avoids saying production is patched without evidence?",
+        "not_yet": "Claims fixed live.",
+        "support": "Scopes after prompt.",
+        "independent": "Scopes to diagnosis / local fix plan.",
+        "misconception": "Reading the exercise means mainnet is fixed."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled observe/guided/live?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Platform proof is my patch deployment."
+      }
+    ]
   }
- ],
- "exercises": [
-  {
-   "title": "Fix claim and prove it on a local validator",
-   "steps": [
-    "Clone the fork at `ced1cca` and open `splitterprogram/programs/splitterprogram/src/lib.rs`.",
-    "Line 182: replace `&ctx.accounts.claimer.key().to_bytes()` with `vault.authority.as_ref()`.",
-    "Line 195: replace `vault_balance` with `money`.",
-    "`anchor build`, `anchor test`, with a 60/40 vault, a deposit of 100, and claims from both recipients."
-   ],
-   "expect": "Recipient B's claim now succeeds and receives 40; the authority receives 60; the vault ends at 0.",
-   "hint": "The claim instruction signs with one set of seeds, but the token account is owned by a PDA derived from a different set. Look at both in the same file.",
-   "approach": "Align the `invoke_signed` seeds with the token-account owner's seeds (and the bump you stored). On a local validator, deposit as the creator, then `claim` as a recipient: after the fix it should transfer the recipient's share. Before the fix, the recorded devnet claims only succeed for the creator — that is the behaviour you are changing."
-  },
-  {
-   "title": "Watch the seeds error yourself",
-   "steps": [
-    "Create a 60/40 vault on the live app with a second wallet as the 40 % recipient, deposit, then press Claim from the second wallet."
-   ],
-   "expect": "The transaction fails; in the error logs: \"Could not create program address with signer seeds\" (as recorded in Proof).",
-   "hint": "The error in the logs is a seeds constraint, not a custom error. Simulate or send the same instruction the app sends.",
-   "approach": "Replay a claim as a non-creator against the live program (or a local deploy of the unfixed code). You should get the same seeds error the lesson's proof recorded. This is observation, not a new exploit."
-  },
-  {
-   "title": "Check the 100 % rule",
-   "steps": [
-    "On the Create page, the + button won't let the total pass 100. From a script, call `initialize` with percentages [50, 40]."
-   ],
-   "expect": "Rejected with `Unauthorized` (the program's own check, independent of the UI).",
-   "hint": "The 100% rule is a `require!` on the sum of shares at vault creation. What happens if you pass 99, or 101?",
-   "approach": "From a local test, create a vault whose shares sum to something other than 10,000 (basis points). It should fail the existing check. If it doesn't, that is a bug to fix; if it does, you've confirmed the rule."
-  },
-  {
-   "title": "Long names",
-   "steps": [
-    "Compare `name_seed` (program, line 389) with `handlePDA` in `src/lib/useWorkspace.ts`.",
-    "Create a vault whose name is 40 characters long."
-   ],
-   "expect": "The program would accept it (it truncates the seed to 32 bytes), but the app passes the full name to `findProgramAddressSync`, which throws \"Max seed length exceeded\" in the browser, so nothing is sent. Truncating the name to 32 bytes in `handlePDA` fixes it.",
-   "hint": "The vault name is a seed, so it has a 32-byte limit, the same as Friendstake's description.",
-   "approach": "Try a 33-byte name. It should fail at seed construction (or a check you add). Add a named error and a client-side length hint so the user sees a clear message."
-  },
-  {
-   "title": "Lock down deposits",
-   "steps": [
-    "In `Deposite`, add `constraint = vault_token_account.key() == vault.vault_token_account` to `vault_token_account`.",
-    "Rebuild and call `deposite` passing a token account that is not the vault's."
-   ],
-   "expect": "Rejected with a constraint error; deposits can no longer book shares without paying the real vault.",
-   "hint": "Today anyone who holds the token can deposit into a vault. That may be fine; locking it is a product choice.",
-   "approach": "If you want only the creator (or a whitelist) to deposit, add a `has_one` or a members list and a constraint on `deposit`. A stranger's deposit should then fail; the creator's should still work as in the recorded run."
-  }
- ],
- "not_covered": "Create, deposit and claim were clicked through for a single-recipient splitter. Multi-recipient payouts can't work correctly because of the claim bugs (only the authority can claim, and it receives the whole balance). The app's QR deposit link points at the author's Cloud Run endpoint, which we don't use, and the balance column shows NaN.",
- "path_order": null,
- "path_stage": null,
- "difficulty": "Intermediate",
- "time": "50 min",
- "objectives": [
-  "Follow an SPL-token vault that splits deposits by percentage, with a PDA as the token-account owner.",
-  "Reproduce, from the recorded transactions, why `claim` only works for the creator (a seeds / signer mismatch).",
-  "See a second, related bug in how the PDA is asked to sign, and write a local test that proves the fix."
- ],
- "prereqs": [
-  "Phantom on devnet and a little SOL. You will also need to be comfortable with token accounts.",
-  "[gree](/lessons/gree/) (CPI to the Token Program, PDA signing) and [Friendstake](/lessons/friendstake/) (missing account checks)."
- ],
- "concepts": [
-  "pda",
-  "seeds",
-  "bump",
-  "invoke-signed",
-  "cpi",
-  "ata",
-  "token-program",
-  "token-account",
-  "constraint",
-  "authority"
- ],
- "build": {
-  "dir": "splitterprogram",
-  "anchor": "0.30.1",
-  "test": "anchor test",
-  "note": "The program is in `splitterprogram/`. Tests: `tests/splitterprogram.ts`."
- },
- "functional": "partial"
 }

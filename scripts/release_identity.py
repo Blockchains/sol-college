@@ -19,6 +19,20 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c20',
+    'title': 'Release C.20 — Catalogue debug electives batch 5',
+    'summary': (
+      'Barn, UniProof, Friendstake, CS2 Prediction Market, and Web3 Splitter join the '
+      'shared learning layer with diagnosis-focused loops (reject→accept bug, unconstrained '
+      'sign, wrong payee, missing claim, claim seeds mismatch).'
+    ),
+    'changes': [
+      'Five formerly untracked catalogue lessons gain track=elective, learning_loop, and rubrics.',
+      'Loops emphasise diagnosing recorded bugs without claiming unproven production fixes.',
+      'Remaining unwired guided catalogue: pulsefund, stakes-main, votara, devos.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c19',
     'title': 'Release C.19 — Elective learning loops batch 4 (track=elective complete)',
     'summary': (
