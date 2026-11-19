@@ -268,7 +268,10 @@ class LabAssessment(unittest.TestCase):
         }
         for slug, answer in batch.items():
             L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
-            self.assertEqual(L.get('track'), 'elective', slug)
+            if slug == 'agenc-protocol':
+                self.assertEqual(L.get('track'), 'debug-laboratory', slug)
+            else:
+                self.assertEqual(L.get('track'), 'elective', slug)
             self.assertIn('learning_loop', L, slug)
             self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
             ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
@@ -363,7 +366,7 @@ class LabAssessment(unittest.TestCase):
         }
         for slug, answer in batch.items():
             L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
-            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertEqual(L.get('track'), 'debug-laboratory', slug)
             self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
             ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
             self.assertIn(answer, ids, slug)
@@ -380,12 +383,25 @@ class LabAssessment(unittest.TestCase):
         }
         for slug, answer in batch.items():
             L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
-            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertEqual(L.get('track'), 'debug-laboratory', slug)
             self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
             ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
             self.assertIn(answer, ids, slug)
             html = ll.assessment_html(L, slug)
             self.assertNotIn('Pixel account', html, slug)
+
+    def test_partial_labs_are_debug_laboratory(self):
+        live = {row['slug']: row for row in json.loads((ROOT / 'dapps' / 'live.json').read_text())}
+        guided_funcs = {
+            '', 'full', 'fully working', 'fully_working', 'fully-functional', 'fully functional',
+        }
+        for slug, row in live.items():
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            func = str(row.get('functional') or L.get('functional') or '').lower()
+            if func in guided_funcs:
+                continue
+            self.assertEqual(L.get('track'), 'debug-laboratory', slug)
+            self.assertIn('learning_loop', L, slug)
 
     def test_all_guided_live_lessons_have_learning_loop(self):
         skip = {'excerpts', 'glossary', 'path'}

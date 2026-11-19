@@ -326,7 +326,7 @@
     "note": "The program is `programs/peer-to-peer-betting`. Tests: `tests/peer-to-peer-betting.ts`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Explain Friendstake\u2019s Bet PDA + vault design and the missing has_one payee checks on cancel/decline.",
   "content_version": "2026-11-19.1",

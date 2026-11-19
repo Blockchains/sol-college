@@ -54,11 +54,11 @@
   ],
   "build": "Anchor 0.32.1 program (~2.4 MiB), declared at 2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i on devnet. IDL hand-derived subset, tx-confirmed.",
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Initialise or inspect the Agenc coordination config and state what this lesson covers versus the wider program surface.",
   "content_version": "2026-11-18.1",
-  "content_review": "2026-11-18",
+  "content_review": "2026-11-19",
   "content_owner": "Sol.College curriculum",
   "learning_loop": {
     "objective": "Initialise/inspect coordination config \u2014 then bound claims to this lesson\u2019s slice.",

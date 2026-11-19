@@ -19,6 +19,20 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c22',
+    'title': 'Release C.22 — Debug laboratory track honesty',
+    'summary': (
+      'Ten partial-functional labs are retagged track=debug-laboratory so the catalogue '
+      'does not present known-gap lessons as ordinary electives. Recommended curriculum '
+      'fields are complete for live guided lessons.'
+    ),
+    'changes': [
+      'Retag partial labs (Barn, UniProof, Friendstake, CS2 market, Web3 Splitter, PulseFund, stakes.wtf, Votara, DeVos, Agenc) as debug-laboratory.',
+      'Checklist: recommended schema fields marked done (0 missing_recommended).',
+      'Tests assert every non-full functional live lab uses debug-laboratory track.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c21',
     'title': 'Release C.21 — Final catalogue learning loops (guided live complete)',
     'summary': (

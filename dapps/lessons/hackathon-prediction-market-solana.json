@@ -456,7 +456,7 @@
     "note": "The program is `programs/prediction-market`. The React app is `prediction-market-frontend/`. `create_market` is close to the 1232-byte transaction limit \u2014 keep metadata URLs and Steam IDs short."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Explain CS2 market resolution vs the missing claim/redeem path and a withdraw_liquidity that transfers 0.",
   "content_version": "2026-11-19.1",

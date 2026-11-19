@@ -366,7 +366,7 @@
     "note": "`Cargo.toml` pins `anchor-lang` 0.31.1 (the `Anchor.toml` comment says 0.30.1; use the Cargo version). Tests: `tests/uniproof.ts`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Compare UniProof issue/revoke has_one locks with SignCredential\u2019s unconstrained signer, and explain cross-university signing risk.",
   "content_version": "2026-11-19.1",

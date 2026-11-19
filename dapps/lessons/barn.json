@@ -401,7 +401,7 @@
     "note": "The program is in `protocol/programs/barn`. The Next.js app is in `app/`."
   },
   "functional": "partial",
-  "track": "elective",
+  "track": "debug-laboratory",
   "delivery": "Browser practice + evidence inspection",
   "student_outcome": "Trace Barn\u2019s milestone PDA tree and explain why reject_grant_milestone can leave a milestone Accepted.",
   "content_version": "2026-11-19.1",
