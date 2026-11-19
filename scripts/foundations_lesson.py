@@ -58,7 +58,7 @@ def foundations_workspace_html(
       'Read the environment and safety notes below. Prefer Devnet. '
       'Choose observation or the practical route. Then continue to Predict.'
     )
-    return ll.workspace_html(
+    body = ll.workspace_html(
       loop,
       href,
       content_version=(row or {}).get('content_version') or '',
@@ -67,6 +67,10 @@ def foundations_workspace_html(
       prepare_note=note,
       act_cta_label=act_cta_label,
     )
+    mis = (row or {}).get('assessment_misconceptions') or []
+    if mis:
+      body += ll.stuck_html(mis)
+    return body
   except Exception:
     return ''
 

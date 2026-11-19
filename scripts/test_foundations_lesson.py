@@ -333,6 +333,20 @@ class FoundationsHandoffD3(unittest.TestCase):
         self.assertEqual(last['next_id'], 'picassol-hackathon')
         self.assertEqual(last.get('stage1_handoff', {}).get('id'), 'picassol-hackathon')
 
+    def test_catalog_misconceptions_and_stuck_help(self):
+        import json
+        from pathlib import Path
+        root = Path(__file__).resolve().parent.parent
+        catalog = json.loads((root / 'dapps' / 'foundations' / 'catalog.json').read_text())
+        for L in catalog['lessons']:
+            mis = L.get('assessment_misconceptions') or []
+            self.assertTrue(mis, L['id'])
+            self.assertTrue(all(m.get('misconception') for m in mis), L['id'])
+        html = f.foundations_workspace_html('first-transaction')
+        self.assertIn('id="stuck"', html)
+        self.assertIn('stuck-misconceptions', html)
+        self.assertIn('Confirmed means every instruction succeeded.', html)
+
     def test_all_seven_emit_workspace_and_assessment(self):
         import foundations_l003 as l3
         import foundations_l004 as l4
@@ -345,6 +359,8 @@ class FoundationsHandoffD3(unittest.TestCase):
             self.assertIn('id="workspace"', html, mod.SLUG)
             self.assertEqual(html.count('id="workspace"'), 1, mod.SLUG)
             self.assertIn('Foundations workspace', html, mod.SLUG)
+            self.assertIn('id="stuck"', html, mod.SLUG)
+            self.assertIn('stuck-misconceptions', html, mod.SLUG)
             assess = mod.assessment_html()
             self.assertIn('Criterion 1', assess, mod.SLUG)
             self.assertIn(mod.ASSESS_PATH, html)
