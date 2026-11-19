@@ -1,6 +1,6 @@
 {
   "schema": "sol.college.foundations/v1",
-  "note": "Canonical foundations records for curriculum.json. Pages remain authored in scripts/foundations_*.py as release candidates until technical and learner verification complete.",
+  "note": "Canonical foundations records for curriculum.json. Pages authored in scripts/foundations_*.py. verification_status remains release_candidate until learner testing and live specimen verification complete; technical_checks record automated structural gates only.",
   "lessons": [
     {
       "id": "first-transaction",
@@ -20,7 +20,7 @@
         "Verify a transfer on the intended network before claiming success."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "learning_loop": {
         "objective": "Predict fee and balance changes \u2014 then verify execution separately from commitment.",
@@ -75,10 +75,20 @@
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
-      "assessment_available": true
+      "assessment_available": true,
+      "next_id": "accounts-ownership",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
+      }
     },
     {
       "id": "accounts-ownership",
@@ -98,12 +108,12 @@
         "Explain why the wrong signer fails."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -156,6 +166,16 @@
         ],
         "explain_question": "Why can \u201cthis is my wallet\u201d and \u201cthis account\u2019s owner is a program\u201d both be true without contradiction?",
         "transfer": "Given only an address, list three things you will not infer about control or real-world identity."
+      },
+      "next_id": "instructions-programs",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
       }
     },
     {
@@ -176,12 +196,12 @@
         "Verify observed accounts match the prediction."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -234,6 +254,16 @@
         ],
         "explain_question": "Why is a successful simulation alone insufficient proof that the live account change matched your intention?",
         "transfer": "Without re-reading: name the three instruction components and one permission you must not confuse with unlimited authority."
+      },
+      "next_id": "transaction-atomicity",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
       }
     },
     {
@@ -254,12 +284,12 @@
         "Relate atomicity to fees when execution fails."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -312,6 +342,16 @@
         ],
         "explain_question": "How can a failed multi-instruction transaction leave profile state unchanged while still charging a fee?",
         "transfer": "Distinguish one multi-instruction transaction from two separate transactions in one sentence."
+      },
+      "next_id": "transaction-failures",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
       }
     },
     {
@@ -332,12 +372,12 @@
         "Reconcile before a corrected attempt."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -390,6 +430,16 @@
         ],
         "explain_question": "Why must you separate \u201cnot observed\u201d from \u201cdid not happen\u201d?",
         "transfer": "Name four failure stages and one recovery rule that applies to all of them."
+      },
+      "next_id": "application-state",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
       }
     },
     {
@@ -410,12 +460,12 @@
         "Preserve drafts across detected conflicts."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -468,6 +518,16 @@
         ],
         "explain_question": "Why should a failed refresh not be recorded as proof that an update did not execute?",
         "transfer": "List the four client-side state buckets this lesson keeps separate."
+      },
+      "next_id": "protecting-state-transitions",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
       }
     },
     {
@@ -488,12 +548,12 @@
         "Choose review-before-resubmit after conflicts."
       ],
       "verification_status": "release_candidate",
-      "technical_verification": "Not completed for this release candidate",
+      "technical_verification": "Automated structural checks recorded (pages, assessment, workspace, prereq chain). Teaching specimens and learner testing not completed \u2014 remains release candidate.",
       "learner_testing": "Not completed for this release candidate",
       "track": "foundations",
       "resource_type": "lesson",
       "delivery": "Guided foundations (release candidate)",
-      "content_version": "2026-11-18.2",
+      "content_version": "2026-11-18.3",
       "content_review": "2026-11-18",
       "content_owner": "Sol.College curriculum",
       "assessment_available": true,
@@ -546,6 +606,20 @@
         ],
         "explain_question": "Why must authorisation checks stay separate from the expected-revision check?",
         "transfer": "After a stale-write rejection, what three steps replace \u201csilently refresh and resubmit\u201d?"
+      },
+      "next_id": "picassol-hackathon",
+      "technical_checks": {
+        "lesson_page": true,
+        "assessment_page": true,
+        "learning_loop": true,
+        "shared_workspace": true,
+        "prereq_chain": true,
+        "learner_testing": false,
+        "live_specimens_verified": false
+      },
+      "stage1_handoff": {
+        "id": "picassol-hackathon",
+        "note": "After Foundations 001\u2013007, Stage 1 live practice is Picassol. A future PDA foundations lesson may be added later; it does not block Stage 1."
       }
     }
   ]

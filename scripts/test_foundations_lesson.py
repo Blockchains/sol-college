@@ -8,7 +8,8 @@ class FoundationsLesson001(unittest.TestCase):
     def test_status_is_release_candidate(self):
         html = f.lesson_html()
         self.assertIn('Release candidate', html)
-        self.assertIn('Not yet technically or learner verified', html)
+        self.assertIn('Automated structural checks recorded', html)
+        self.assertIn('learner testing and live specimens not completed', html.lower())
         self.assertNotIn('award-winning', html.lower())
 
     def test_separates_execution_and_commitment(self):
@@ -51,7 +52,8 @@ class FoundationsLesson002(unittest.TestCase):
     def test_status_is_release_candidate(self):
         html = l2.lesson_html()
         self.assertIn('Release candidate', html)
-        self.assertIn('Not yet technically or learner verified', html)
+        self.assertIn('Automated structural checks recorded', html)
+        self.assertIn('learner testing and live specimens not completed', html.lower())
         self.assertIn('yet provide verified live addresses', html.lower())
         self.assertIn('Do not treat schematic addresses', html)
 
@@ -93,7 +95,8 @@ class FoundationsLesson003(unittest.TestCase):
         import foundations_l003 as l3
         html = l3.lesson_html()
         self.assertIn('Release candidate', html)
-        self.assertIn('Not yet technically or learner verified', html)
+        self.assertIn('Automated structural checks recorded', html)
+        self.assertIn('learner testing and live specimens not completed', html.lower())
         self.assertIn('not interchangeable', html.lower())
 
     def test_instruction_three_components(self):
@@ -308,6 +311,63 @@ class FoundationsIndexWiring(unittest.TestCase):
         self.assertIn('title="Application state"', html)
         self.assertIn('/lessons/protecting-state-transitions/', html)
         self.assertIn('/lessons/first-transaction/', html)
+
+
+
+class FoundationsHandoffD3(unittest.TestCase):
+    def test_catalog_chain_and_stage1_handoff(self):
+        import json
+        from pathlib import Path
+        root = Path(__file__).resolve().parent.parent
+        catalog = json.loads((root / 'dapps' / 'foundations' / 'catalog.json').read_text())
+        lessons = catalog['lessons']
+        self.assertEqual(len(lessons), 7)
+        ids = [L['id'] for L in lessons]
+        self.assertEqual(ids[0], 'first-transaction')
+        self.assertEqual(ids[-1], 'protecting-state-transitions')
+        for i, L in enumerate(lessons[:-1]):
+            self.assertEqual(L['next_id'], ids[i + 1], L['id'])
+            self.assertTrue(L.get('technical_checks', {}).get('shared_workspace'))
+            self.assertFalse(L.get('technical_checks', {}).get('learner_testing'))
+        last = lessons[-1]
+        self.assertEqual(last['next_id'], 'picassol-hackathon')
+        self.assertEqual(last.get('stage1_handoff', {}).get('id'), 'picassol-hackathon')
+
+    def test_all_seven_emit_workspace_and_assessment(self):
+        import foundations_l003 as l3
+        import foundations_l004 as l4
+        import foundations_l005 as l5
+        import foundations_l006 as l6
+        import foundations_l007 as l7
+        modules = [f, l2, l3, l4, l5, l6, l7]
+        for mod in modules:
+            html = mod.lesson_html()
+            self.assertIn('id="workspace"', html, mod.SLUG)
+            self.assertEqual(html.count('id="workspace"'), 1, mod.SLUG)
+            self.assertIn('Foundations workspace', html, mod.SLUG)
+            assess = mod.assessment_html()
+            self.assertIn('Criterion 1', assess, mod.SLUG)
+            self.assertIn(mod.ASSESS_PATH, html)
+
+    def test_lesson_007_hands_off_to_picassol(self):
+        import foundations_l007 as l7
+        html = l7.lesson_html().lower()
+        self.assertIn('/lessons/picassol-hackathon/', html)
+        self.assertIn('stage 1', html)
+        self.assertIn('does not block stage 1', html)
+        self.assertNotIn('next foundations step (not yet published)', html)
+
+    def test_picassol_prereqs_recommend_foundations_sequence(self):
+        import json
+        from pathlib import Path
+        root = Path(__file__).resolve().parent.parent
+        L = json.loads((root / 'dapps' / 'lessons' / 'picassol-hackathon.json').read_text())
+        blob = ' '.join(L.get('prereqs') or [])
+        self.assertIn('/lessons/first-transaction/', blob)
+        self.assertIn('/lessons/protecting-state-transitions/', blob)
+        self.assertIn('001', blob)
+        self.assertIn('007', blob)
+
 
 
 if __name__ == '__main__':

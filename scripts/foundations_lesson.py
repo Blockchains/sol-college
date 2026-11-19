@@ -21,7 +21,7 @@ L002_PATH = l002.PATH
 E = lambda s: html.escape(str(s if s is not None else ''), quote=True)
 
 STATUS_ROWS = [
-  ('Status', 'Release candidate. Not yet technically or learner verified.'),
+  ('Status', 'Release candidate. Automated structural checks recorded; learner testing and live specimens not completed.'),
   ('Version', '1.1'),
   ('Track', 'Solana Foundations'),
   ('Audience', 'People new to Solana; no programming required'),
@@ -29,7 +29,7 @@ STATUS_ROWS = [
   ('Core learning time', 'About 45–60 minutes (design estimate, not a measured claim)'),
   ('Setup allowance', 'Up to 15 additional minutes; not assessed'),
   ('Achievement', 'First Transaction: Authorise and Verify — not awarded until verification gates pass'),
-  ('Technical verification', 'Not completed for this release candidate'),
+  ('Technical verification', 'Automated structural checks only; learner testing and live specimens not completed'),
   ('Learner testing', 'Not completed for this release candidate'),
 ]
 
@@ -588,7 +588,10 @@ def foundations_path_section():
     'Lesson 005: <b>diagnose failures and recover safely</b>. '
     'Lesson 006: <b>read/write application state honestly</b>. '
     'Lesson 007: <b>expected revisions and program-enforced checks</b>. '
-    'All seven are <b>release candidates</b>: not yet technically or learner verified, and not live dApp walkthroughs.</p>'
+    'All seven are <b>release candidates</b>: automated structural checks are recorded '
+    '(pages, rubrics, shared workspaces, prereq chain); learner testing and live specimen '
+    'verification are still open. They are not live dApp walkthroughs. '
+    'After 007, Stage 1 live practice is <a href="/lessons/picassol-hackathon/">Picassol</a>.</p>'
     f'<p><a class=btn href="{PATH}">Start Lesson 001</a> '
     f'<a class="btn ghost" href="{L002_PATH}">002</a> '
     f'<a class="btn ghost" href="{l003.PATH}">003</a> '

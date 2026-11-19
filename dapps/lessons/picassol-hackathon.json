@@ -1,330 +1,359 @@
 {
- "title": "Picassol: a 200×200 pixel canvas where every pixel is an account",
- "summary": "Click a pixel to paint it on-chain. Each pixel is its own tiny account at an address derived from its x and y, so anyone can find and recolour it.",
- "what": "Picassol is a shared pixel canvas, 200 × 200, stored on Solana. Clicking an empty pixel creates an account for that pixel with your colour; clicking a painted pixel recolours it. Every pixel is a separate 14-byte account at an address computed from `\"pixel\"` and its x, y coordinates, so the app can load the whole canvas with one query and keep it live by listening to the program's `PixelChanged` events.",
- "app_note": "The fork's own Next.js 12 frontend (`frontend/`), static export. Changes: base path, devnet RPC, this program ID, and the recolour fee set to 0 SOL. The author's MongoDB points API is not hosted, so the points counter stays at 0; pixels are unaffected.",
- "try_steps": [
-  {
-   "do": "Open [the canvas](/dapps/picassol-hackathon/) and connect Phantom with **Select Wallet** in the top bar.",
-   "see": "A 200 × 200 grid. Painted pixels load from devnet. A cell that looks white may still be a painted account whose colour is RGB white — treat appearance as a hint, not proof of account absence."
-  },
-  {
-   "do": "Before painting, pick one coordinate and fill a selected-pixel checklist (on paper or notes): coordinate (x, y); derived PDA address; account exists Yes/No (Explorer or `getAccountInfo`); observed colour if the account exists; available action Create or Update. Base the action on account observation, not on whether the cell looks white.",
-   "see": "A white-looking cell can still be a painted account (RGB white is valid). Create vs Update must follow whether the account exists at the derived address."
-  },
-  {
-   "do": "Pick a colour in the colour bar at the top, then click a cell whose checklist says Create. Approve `create_pixel`. If the wallet shows `update_pixel` instead, that coordinate already has an account — update your checklist and pick another cell.",
-   "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open.",
-   "ran": [
+  "title": "Picassol: a 200\u00d7200 pixel canvas where every pixel is an account",
+  "summary": "Click a pixel to paint it on-chain. Each pixel is its own tiny account at an address derived from its x and y, so anyone can find and recolour it.",
+  "what": "Picassol is a shared pixel canvas, 200 \u00d7 200, stored on Solana. Clicking an empty pixel creates an account for that pixel with your colour; clicking a painted pixel recolours it. Every pixel is a separate 14-byte account at an address computed from `\"pixel\"` and its x, y coordinates, so the app can load the whole canvas with one query and keep it live by listening to the program's `PixelChanged` events.",
+  "app_note": "The fork's own Next.js 12 frontend (`frontend/`), static export. Changes: base path, devnet RPC, this program ID, and the recolour fee set to 0 SOL. The author's MongoDB points API is not hosted, so the points counter stays at 0; pixels are unaffected.",
+  "try_steps": [
+    {
+      "do": "Open [the canvas](/dapps/picassol-hackathon/) and connect Phantom with **Select Wallet** in the top bar.",
+      "see": "A 200 \u00d7 200 grid. Painted pixels load from devnet. A cell that looks white may still be a painted account whose colour is RGB white \u2014 treat appearance as a hint, not proof of account absence."
+    },
+    {
+      "do": "Before painting, pick one coordinate and fill a selected-pixel checklist (on paper or notes): coordinate (x, y); derived PDA address; account exists Yes/No (Explorer or `getAccountInfo`); observed colour if the account exists; available action Create or Update. Base the action on account observation, not on whether the cell looks white.",
+      "see": "A white-looking cell can still be a painted account (RGB white is valid). Create vs Update must follow whether the account exists at the derived address."
+    },
+    {
+      "do": "Pick a colour in the colour bar at the top, then click a cell whose checklist says Create. Approve `create_pixel`. If the wallet shows `update_pixel` instead, that coordinate already has an account \u2014 update your checklist and pick another cell.",
+      "see": "A `create_pixel` transaction. Within a few seconds the pixel turns your colour, for everyone who has the page open.",
+      "ran": [
+        [
+          "Clicked an empty pixel on the live sol.college page: `create_pixel`",
+          "2yj2GAqcniqCBFkL2yekqVRtJk4fjKopQNvVRgY1bGCGJjZioTd9gFwMGU7fgy8CedBt6QEwy4oaxXVqy6EUhtGb"
+        ],
+        [
+          "Same click on a local copy of the same build",
+          "oEiRugSzpXXjSNMJGoYe1JQUuPxgYVmhkLqtwUchNwDfpEeSBxVbWGc9WHfxdW6ERHgUV2DFP7ZvGWofUBNwdha"
+        ]
+      ]
+    },
+    {
+      "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Prefer the hosted UI path. If the wallet does not offer `update_pixel`, use the observation route: open the recorded `update_pixel` signature under Proof and compare logs to your create transaction.",
+      "see": "On a successful UI recolour the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet) and the pixel changes colour. Until that UI path is recorded here, treat script evidence under Proof as the verified recolour.",
+      "ran_note": "Recolouring was run from the test script (`update_pixel` 37Ri7VJH\u2026, in Proof), not yet clicked through the hosted UI. Create \u2192 recolour \u2192 inspect on the hosted interface remains the next verification task."
+    },
+    {
+      "do": "Click again within 33 seconds of a successful paint.",
+      "see": "Nothing happens and no wallet pop-up appears: the app's client-side cooldown (stored in your browser) blocks it. The program itself has no cooldown."
+    },
+    {
+      "do": "Open the transaction in Phantom's activity or on Explorer and expand the program logs.",
+      "see": "`Program data: \u2026` lines: that is the `PixelChanged` event the canvas listens for."
+    }
+  ],
+  "diagram": "wallet \u2500 create_pixel(x, y, r, g, b) \u2500\u25b6 Pixel PDA  seeds = [\"pixel\", [x, y]]   (14 bytes)\n                                          pos_x | pos_y | col_r | col_g | col_b | bump\nanyone \u2500 update_pixel(r, g, b) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u25b6 same PDA, re-derived from its stored x, y, bump\nboth   \u2500 emit!(PixelChanged{x, y, r, g, b}) \u2500\u25b6 program logs \u2500\u25b6 every open canvas updates that cell\n\n40,000 possible pixels = 40,000 possible accounts; only painted ones exist.",
+  "accounts": [
     [
-     "Clicked an empty pixel on the live sol.college page: `create_pixel`",
-     "2yj2GAqcniqCBFkL2yekqVRtJk4fjKopQNvVRgY1bGCGJjZioTd9gFwMGU7fgy8CedBt6QEwy4oaxXVqy6EUhtGb"
+      "Pixel",
+      "PDA of the program, seeds `[\"pixel\", [x, y]]` (two single bytes)",
+      "x, y, r, g, b and the bump: 8-byte discriminator + 6 bytes = 14 bytes"
     ],
     [
-     "Same click on a local copy of the same build",
-     "oEiRugSzpXXjSNMJGoYe1JQUuPxgYVmhkLqtwUchNwDfpEeSBxVbWGc9WHfxdW6ERHgUV2DFP7ZvGWofUBNwdha"
+      "User",
+      "Your wallet (signer, payer)",
+      "Pays the pixel account's rent on create"
     ]
-   ]
-  },
-  {
-   "do": "Wait about 35 seconds, choose a different colour and click the **same** pixel. Prefer the hosted UI path. If the wallet does not offer `update_pixel`, use the observation route: open the recorded `update_pixel` signature under Proof and compare logs to your create transaction.",
-   "see": "On a successful UI recolour the transaction contains `update_pixel` (plus a 0-SOL transfer, the fee hook set to zero on devnet) and the pixel changes colour. Until that UI path is recorded here, treat script evidence under Proof as the verified recolour.",
-   "ran_note": "Recolouring was run from the test script (`update_pixel` 37Ri7VJH…, in Proof), not yet clicked through the hosted UI. Create → recolour → inspect on the hosted interface remains the next verification task."
-  },
-  {
-   "do": "Click again within 33 seconds of a successful paint.",
-   "see": "Nothing happens and no wallet pop-up appears: the app's client-side cooldown (stored in your browser) blocks it. The program itself has no cooldown."
-  },
-  {
-   "do": "Open the transaction in Phantom's activity or on Explorer and expand the program logs.",
-   "see": "`Program data: …` lines: that is the `PixelChanged` event the canvas listens for."
-  }
- ],
- "diagram": "wallet ─ create_pixel(x, y, r, g, b) ─▶ Pixel PDA  seeds = [\"pixel\", [x, y]]   (14 bytes)\n                                          pos_x | pos_y | col_r | col_g | col_b | bump\nanyone ─ update_pixel(r, g, b) ─────────▶ same PDA, re-derived from its stored x, y, bump\nboth   ─ emit!(PixelChanged{x, y, r, g, b}) ─▶ program logs ─▶ every open canvas updates that cell\n\n40,000 possible pixels = 40,000 possible accounts; only painted ones exist.",
- "accounts": [
-  [
-   "Pixel",
-   "PDA of the program, seeds `[\"pixel\", [x, y]]` (two single bytes)",
-   "x, y, r, g, b and the bump: 8-byte discriminator + 6 bytes = 14 bytes"
   ],
-  [
-   "User",
-   "Your wallet (signer, payer)",
-   "Pays the pixel account's rent on create"
-  ]
- ],
- "instructions": [
-  {
-   "name": "`create_pixel`: claim an empty pixel",
-   "refs": [
+  "instructions": [
     {
-     "path": "Picassol/programs/picassol/src/lib.rs",
-     "a": 14,
-     "b": 62
+      "name": "`create_pixel`: claim an empty pixel",
+      "refs": [
+        {
+          "path": "Picassol/programs/picassol/src/lib.rs",
+          "a": 14,
+          "b": 62
+        },
+        {
+          "path": "Picassol/programs/picassol/src/lib.rs",
+          "a": 102,
+          "b": 116,
+          "note": "accounts"
+        }
+      ],
+      "steps": [
+        "Bounds: `pos_x` and `pos_y` must be 0\u2013199, otherwise `InvalidXCoordinate` / `InvalidYCoordinate`. Our test sent x = 200 and got `InvalidXCoordinate`.",
+        "The colour checks compare a `u8` with 0 and 255, which a `u8` always satisfies, so they can never fail. Worth noticing: the type already enforces them.",
+        "`init` with `seeds = [b\"pixel\", [pos_x, pos_y]]` creates the account at the one address that belongs to that coordinate, paid by `user`. Painting the same empty pixel twice is impossible: the second `init` fails because the account exists (see Proof).",
+        "It stores coordinates, colour and the bump, then `emit!`s `PixelChanged`."
+      ]
     },
     {
-     "path": "Picassol/programs/picassol/src/lib.rs",
-     "a": 102,
-     "b": 116,
-     "note": "accounts"
+      "name": "`update_pixel`: recolour an existing pixel",
+      "refs": [
+        {
+          "path": "Picassol/programs/picassol/src/lib.rs",
+          "a": 64,
+          "b": 99
+        },
+        {
+          "path": "Picassol/programs/picassol/src/lib.rs",
+          "a": 118,
+          "b": 126,
+          "note": "accounts"
+        }
+      ],
+      "steps": [
+        "The only account is the pixel. Its address is checked by re-deriving `[\"pixel\", [pixel.pos_x, pixel.pos_y]]` with the stored `bump`, so a fake account can't be passed in.",
+        "There is **no signer** in `UpdatePixel`: anyone can recolour any pixel. That is the game. The fee payer of the transaction is the only signature needed.",
+        "It writes the new colour and emits `PixelChanged` again."
+      ]
     }
-   ],
-   "steps": [
-    "Bounds: `pos_x` and `pos_y` must be 0–199, otherwise `InvalidXCoordinate` / `InvalidYCoordinate`. Our test sent x = 200 and got `InvalidXCoordinate`.",
-    "The colour checks compare a `u8` with 0 and 255, which a `u8` always satisfies, so they can never fail. Worth noticing: the type already enforces them.",
-    "`init` with `seeds = [b\"pixel\", [pos_x, pos_y]]` creates the account at the one address that belongs to that coordinate, paid by `user`. Painting the same empty pixel twice is impossible: the second `init` fails because the account exists (see Proof).",
-    "It stores coordinates, colour and the bump, then `emit!`s `PixelChanged`."
-   ]
+  ],
+  "innovation": {
+    "title": "coordinates are the address",
+    "text": "Instead of one big canvas account that everyone writes to, every pixel is its own account at a PDA seeded by its coordinates. Nobody has to store or look up an index: given (x, y) the app computes the address, and the program refuses any account that is not at that address. Separate pixel accounts reduce shared writable state. Actual scheduling opportunities still depend on all accounts and instructions in each transaction (including the fee payer and any fee-transfer destination).",
+    "refs": [
+      {
+        "path": "Picassol/programs/picassol/src/lib.rs",
+        "a": 105,
+        "b": 112,
+        "note": "seeds on create"
+      },
+      {
+        "path": "Picassol/programs/picassol/src/lib.rs",
+        "a": 120,
+        "b": 125,
+        "note": "same seeds, stored bump, on update"
+      }
+    ],
+    "more": [
+      "A coordinate fits in one byte (0\u2013199 < 256), so the seed is just two bytes, `[x, y]`.",
+      "Events (`emit!`) make the canvas real-time without polling: they are written to the transaction logs, and Anchor's `addEventListener` decodes them on the client."
+    ]
   },
-  {
-   "name": "`update_pixel`: recolour an existing pixel",
-   "refs": [
+  "frontend": [
     {
-     "path": "Picassol/programs/picassol/src/lib.rs",
-     "a": 64,
-     "b": 99
+      "title": "Load the canvas: one `all()` query",
+      "refs": [
+        {
+          "path": "frontend/components/Canvas.tsx",
+          "a": 28,
+          "b": 47
+        }
+      ],
+      "steps": [
+        "`program.account.pixel.all()` fetches every account of type `Pixel` owned by the program. The app keys them by `posY * 200 + posX` to paint the grid."
+      ]
     },
     {
-     "path": "Picassol/programs/picassol/src/lib.rs",
-     "a": 118,
-     "b": 126,
-     "note": "accounts"
+      "title": "Stay live: listen for `PixelChanged`",
+      "refs": [
+        {
+          "path": "frontend/components/Canvas.tsx",
+          "a": 57,
+          "b": 88
+        }
+      ],
+      "steps": [
+        "On each event the app re-derives that pixel's PDA, fetches the account, and replaces it in state, so every visitor sees new paint without reloading."
+      ]
+    },
+    {
+      "title": "Click an empty pixel: `createPixel(...).rpc()`",
+      "refs": [
+        {
+          "path": "frontend/components/Pixel.tsx",
+          "a": 26,
+          "b": 55
+        }
+      ],
+      "steps": [
+        "The PDA is derived with `Buffer.from([posX, posY])`, the same bytes as the program's seed.",
+        "The 33-second cooldown is checked against `localStorage` before sending: a client-side rule only."
+      ]
+    },
+    {
+      "title": "Click a painted pixel: `updatePixel` + fee transfer in one transaction",
+      "refs": [
+        {
+          "path": "frontend/components/Pixel.tsx",
+          "a": 80,
+          "b": 106
+        }
+      ],
+      "steps": [
+        "The app builds a `Transaction`, adds the `updatePixel` instruction and a `SystemProgram.transfer` of `NEXT_PUBLIC_FEE_AMOUNT_SOL` to a fee recipient, and sends both with `sendAndConfirm`. On Sol.College the fee is 0."
+      ]
     }
-   ],
-   "steps": [
-    "The only account is the pixel. Its address is checked by re-deriving `[\"pixel\", [pixel.pos_x, pixel.pos_y]]` with the stored `bump`, so a fake account can't be passed in.",
-    "There is **no signer** in `UpdatePixel`: anyone can recolour any pixel. That is the game. The fee payer of the transaction is the only signature needed.",
-    "It writes the new colour and emits `PixelChanged` again."
-   ]
-  }
- ],
- "innovation": {
-  "title": "coordinates are the address",
-  "text": "Instead of one big canvas account that everyone writes to, every pixel is its own account at a PDA seeded by its coordinates. Nobody has to store or look up an index: given (x, y) the app computes the address, and the program refuses any account that is not at that address. Separate pixel accounts reduce shared writable state. Actual scheduling opportunities still depend on all accounts and instructions in each transaction (including the fee payer and any fee-transfer destination).",
-  "refs": [
-   {
-    "path": "Picassol/programs/picassol/src/lib.rs",
-    "a": 105,
-    "b": 112,
-    "note": "seeds on create"
-   },
-   {
-    "path": "Picassol/programs/picassol/src/lib.rs",
-    "a": 120,
-    "b": 125,
-    "note": "same seeds, stored bump, on update"
-   }
   ],
-  "more": [
-   "A coordinate fits in one byte (0–199 < 256), so the seed is just two bytes, `[x, y]`.",
-   "Events (`emit!`) make the canvas real-time without polling: they are written to the transaction logs, and Anchor's `addEventListener` decodes them on the client."
-  ]
- },
- "frontend": [
-  {
-   "title": "Load the canvas: one `all()` query",
-   "refs": [
+  "exercises": [
     {
-     "path": "frontend/components/Canvas.tsx",
-     "a": 28,
-     "b": 47
-    }
-   ],
-   "steps": [
-    "`program.account.pixel.all()` fetches every account of type `Pixel` owned by the program. The app keys them by `posY * 200 + posX` to paint the grid."
-   ]
-  },
-  {
-   "title": "Stay live: listen for `PixelChanged`",
-   "refs": [
+      "title": "Compute a pixel's address",
+      "steps": [
+        "In Node: `PublicKey.findProgramAddressSync([Buffer.from('pixel'), Buffer.from([128,152])], new PublicKey('GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY'))`."
+      ],
+      "expect": "`GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89`, the pixel our test painted (see the devnet log).",
+      "hint": "The second seed is two raw bytes, `Buffer.from([128, 152])`, not the strings `\"128\"` and `\"152\"`.",
+      "approach": "Call `PublicKey.findProgramAddressSync` with exactly those seeds and the lesson's program ID. The first element of the result is the address; it must equal the recorded pixel `GLR36DP6\u2026` from the devnet log. If it doesn't, your seeds are a different length or encoding."
+    },
     {
-     "path": "frontend/components/Canvas.tsx",
-     "a": 57,
-     "b": 88
-    }
-   ],
-   "steps": [
-    "On each event the app re-derives that pixel's PDA, fetches the account, and replaces it in state, so every visitor sees new paint without reloading."
-   ]
-  },
-  {
-   "title": "Click an empty pixel: `createPixel(...).rpc()`",
-   "refs": [
+      "title": "Read a pixel's bytes",
+      "steps": [
+        "Open that address on Solana Explorer (devnet) and look at the account data."
+      ],
+      "expect": "14 bytes: an 8-byte discriminator, then 128, 152, then the colour 20, 241, 149 set by the recorded `update_pixel`, then the bump (unless someone has repainted it since).",
+      "hint": "On Explorer, open the account and look at the raw hex, not the parsed Anchor fields: the first 8 bytes are the discriminator.",
+      "approach": "Skip 8 bytes, then read unsigned bytes: x, y, r, g, b, bump. After our `update_pixel` they were 128, 152, 20, 241, 149, and the bump. If someone has painted that pixel since, the colour will have changed \u2014 the address will not."
+    },
     {
-     "path": "frontend/components/Pixel.tsx",
-     "a": 26,
-     "b": 55
-    }
-   ],
-   "steps": [
-    "The PDA is derived with `Buffer.from([posX, posY])`, the same bytes as the program's seed.",
-    "The 33-second cooldown is checked against `localStorage` before sending: a client-side rule only."
-   ]
-  },
-  {
-   "title": "Click a painted pixel: `updatePixel` + fee transfer in one transaction",
-   "refs": [
+      "title": "Count accounts, not colours",
+      "steps": [
+        "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter).",
+        "Pick one coordinate and complete the selected-pixel inspector: coordinate; derived address; Account exists Yes/No; observed colour; Available action Create/Update.",
+        "Confirm RGB values for that account \u2014 including when the colour is visually white."
+      ],
+      "expect": "One account per painted pixel. Account existence at the derived address decides Create vs Update; a white-looking cell can still be a painted account.",
+      "hint": "Filter by `dataSize: 14` so you don't pick up any other account the program might own.",
+      "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Do not treat white cells as empty accounts: the documented RGB range includes white. Base create vs update decisions on whether the account exists at the derived address."
+    },
     {
-     "path": "frontend/components/Pixel.tsx",
-     "a": 80,
-     "b": 106
+      "title": "Make painting owner-only",
+      "steps": [
+        "Use a fresh local deployment and fresh accounts. Existing 14-byte Pixel accounts do not automatically become compatible with an expanded schema.",
+        "Add `owner: Pubkey` to `Pixel` (and 32 bytes to `LEN`), set it in `create_pixel`, and add a `pub user: Signer<'info>` to `UpdatePixel` with `constraint = pixel.owner == user.key()`.",
+        "`anchor build` and test `update_pixel` from a different wallet against accounts created by the new program."
+      ],
+      "expect": "The other wallet's update fails with a constraint error; the creator can still recolour. Old 14-byte accounts on a previous deployment are out of scope for this exercise.",
+      "hint": "`UpdatePixel` currently takes no user account at all. You need a `Signer` and a constraint that compares it to a new `owner` field. Schema size changes require a migration boundary \u2014 do not edit handlers against incompatible live accounts.",
+      "approach": "Deploy locally with the expanded `LEN`. Add `owner: Pubkey` to `Pixel`, increase `LEN` by 32, set `owner = user.key()` in `create_pixel`, and on `UpdatePixel` add `pub user: Signer` with `constraint = pixel.owner == user.key()`. Create a new pixel with wallet A, then from wallet B call `update_pixel`: it should fail the constraint, while A can still recolour."
+    },
+    {
+      "title": "Fix the error messages",
+      "steps": [
+        "The `#[msg]` strings say \"between 0-99\" but `MAX_POS` is 199. Correct them and rebuild."
+      ],
+      "expect": "Sending x = 200 now reports \"between 0-199\".",
+      "hint": "Search the source for `0-99` \u2014 the constant `MAX_POS` is already 199.",
+      "approach": "Edit the `#[msg]` strings (and any client-side copy) so they say `0-199`, rebuild, and send `x = 200`. The error text should now match the actual limit. This is a documentation fix only; the program already rejects 200."
     }
-   ],
-   "steps": [
-    "The app builds a `Transaction`, adds the `updatePixel` instruction and a `SystemProgram.transfer` of `NEXT_PUBLIC_FEE_AMOUNT_SOL` to a fee recipient, and sends both with `sendAndConfirm`. On Sol.College the fee is 0."
-   ]
-  }
- ],
- "exercises": [
-  {
-   "title": "Compute a pixel's address",
-   "steps": [
-    "In Node: `PublicKey.findProgramAddressSync([Buffer.from('pixel'), Buffer.from([128,152])], new PublicKey('GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY'))`."
-   ],
-   "expect": "`GLR36DP6xjf9rnGmTvEQveow1YTCg3zqe6XJprL9qb89`, the pixel our test painted (see the devnet log).",
-   "hint": "The second seed is two raw bytes, `Buffer.from([128, 152])`, not the strings `\"128\"` and `\"152\"`.",
-   "approach": "Call `PublicKey.findProgramAddressSync` with exactly those seeds and the lesson's program ID. The first element of the result is the address; it must equal the recorded pixel `GLR36DP6…` from the devnet log. If it doesn't, your seeds are a different length or encoding."
-  },
-  {
-   "title": "Read a pixel's bytes",
-   "steps": [
-    "Open that address on Solana Explorer (devnet) and look at the account data."
-   ],
-   "expect": "14 bytes: an 8-byte discriminator, then 128, 152, then the colour 20, 241, 149 set by the recorded `update_pixel`, then the bump (unless someone has repainted it since).",
-   "hint": "On Explorer, open the account and look at the raw hex, not the parsed Anchor fields: the first 8 bytes are the discriminator.",
-   "approach": "Skip 8 bytes, then read unsigned bytes: x, y, r, g, b, bump. After our `update_pixel` they were 128, 152, 20, 241, 149, and the bump. If someone has painted that pixel since, the colour will have changed — the address will not."
-  },
-  {
-   "title": "Count accounts, not colours",
-   "steps": [
-    "In Node with Anchor, run `program.account.pixel.all()` against devnet (or call `getProgramAccounts` for the program with a `dataSize: 14` filter).",
-    "Pick one coordinate and complete the selected-pixel inspector: coordinate; derived address; Account exists Yes/No; observed colour; Available action Create/Update.",
-    "Confirm RGB values for that account — including when the colour is visually white."
-   ],
-   "expect": "One account per painted pixel. Account existence at the derived address decides Create vs Update; a white-looking cell can still be a painted account.",
-   "hint": "Filter by `dataSize: 14` so you don't pick up any other account the program might own.",
-   "approach": "`getProgramAccounts` (or `program.account.pixel.all()`) returns one entry per painted pixel. Do not treat white cells as empty accounts: the documented RGB range includes white. Base create vs update decisions on whether the account exists at the derived address."
-  },
-  {
-   "title": "Make painting owner-only",
-   "steps": [
-    "Use a fresh local deployment and fresh accounts. Existing 14-byte Pixel accounts do not automatically become compatible with an expanded schema.",
-    "Add `owner: Pubkey` to `Pixel` (and 32 bytes to `LEN`), set it in `create_pixel`, and add a `pub user: Signer<'info>` to `UpdatePixel` with `constraint = pixel.owner == user.key()`.",
-    "`anchor build` and test `update_pixel` from a different wallet against accounts created by the new program."
-   ],
-   "expect": "The other wallet's update fails with a constraint error; the creator can still recolour. Old 14-byte accounts on a previous deployment are out of scope for this exercise.",
-   "hint": "`UpdatePixel` currently takes no user account at all. You need a `Signer` and a constraint that compares it to a new `owner` field. Schema size changes require a migration boundary — do not edit handlers against incompatible live accounts.",
-   "approach": "Deploy locally with the expanded `LEN`. Add `owner: Pubkey` to `Pixel`, increase `LEN` by 32, set `owner = user.key()` in `create_pixel`, and on `UpdatePixel` add `pub user: Signer` with `constraint = pixel.owner == user.key()`. Create a new pixel with wallet A, then from wallet B call `update_pixel`: it should fail the constraint, while A can still recolour."
-  },
-  {
-   "title": "Fix the error messages",
-   "steps": [
-    "The `#[msg]` strings say \"between 0-99\" but `MAX_POS` is 199. Correct them and rebuild."
-   ],
-   "expect": "Sending x = 200 now reports \"between 0-199\".",
-   "hint": "Search the source for `0-99` — the constant `MAX_POS` is already 199.",
-   "approach": "Edit the `#[msg]` strings (and any client-side copy) so they say `0-199`, rebuild, and send `x = 200`. The error text should now match the actual limit. This is a documentation fix only; the program already rejects 200."
-  }
- ],
- "not_covered": "Hosted-UI create is recorded. Hosted-UI recolour is not yet recorded — use the observation route (Proof → update_pixel signature) or the script path until that verification lands. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected.",
- "path_order": 1,
- "path_stage": 1,
- "difficulty": "Beginner",
- "time": "30 min",
- "objectives": [
-  "Derive a Program Derived Address from seeds you choose — here, a pixel's x and y as single bytes.",
-  "Explain why each pixel is its own 14-byte account, and what those 14 bytes hold (discriminator, position, colour, bump).",
-  "Tell create (`init`) from update (re-derive the same PDA from stored fields), and find the `PixelChanged` event in the logs."
- ],
- "prereqs": [
-  "A Phantom (or Solflare) wallet set to Solana Devnet, and enough practice SOL from [faucet.solana.com](https://faucet.solana.com) for the estimated costs (about 0.05 SOL is typical for this lesson). Faucet availability and timing vary; faucet access is not graded.",
-  "If you are new to Solana, complete [Lesson 001: Your First Solana Transaction](/lessons/first-transaction/) first. If you already understand execution vs commitment, you may start here as Stage 1 on the [learning path](/lessons/path/)."
- ],
- "concepts": [
-  "pda",
-  "seeds",
-  "bump",
-  "init",
-  "account",
-  "discriminator",
-  "event",
-  "rent",
-  "signer",
-  "payer"
- ],
- "build": {
-  "dir": "Picassol",
-  "anchor": "0.26.0",
-  "test": "anchor test",
-  "note": "Written for Anchor 0.26.0, which is older than the CLIs on this machine (0.29–0.32). `anchor build` against 0.26 may need that exact CLI. The program itself is small: one `lib.rs` with `create_pixel` and `update_pixel`."
- },
- "functional": "full",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "student_outcome": "Paint a pixel. Explain where it is stored.",
- "delivery": "Browser practice + evidence inspection",
- "track": "application-lab",
- "assessment": {
-  "purpose": "Determine whether the student can decide create vs update from account evidence, explain PDA address stability when colour changes, label evidence honestly, and transfer the rule to a fresh coordinate.",
-  "criteria": [
-   {
-    "id": "c1",
-    "title": "Decides Create vs Update from account existence",
-    "question": "Does the student base the action on whether the Pixel account exists at the derived address?",
-    "not_yet": "Treats a white-looking cell as empty, or invents Create/Update without account observation.",
-    "support": "Correct after a prompt to check getAccountInfo / Explorer at the derived address.",
-    "independent": "Records coordinate, derived address, Account exists Yes/No, and chooses Create or Update from that evidence.",
-    "misconception": "White means no account."
-   },
-   {
-    "id": "c2",
-    "title": "Explains address stability when colour changes",
-    "question": "Can the student explain why update_pixel keeps the same PDA?",
-    "not_yet": "Claims colour change creates a new account, or cannot name the seeds.",
-    "support": "Names seeds after a prompt to compare create vs update in Proof.",
-    "independent": "States seeds [\"pixel\", x, y] (and bump on update) and that colour is data inside the same account.",
-    "misconception": "A new colour needs a new address."
-   },
-   {
-    "id": "c3",
-    "title": "Labels evidence provenance",
-    "question": "Does the student distinguish platform historical proof from their own attempt?",
-    "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
-    "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
-    "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
-    "misconception": "Any successful signature on the lesson page counts as my mastery."
-   },
-   {
-    "id": "c4",
-    "title": "Transfers to a fresh coordinate",
-    "question": "On a new coordinate, can the student state Create or Update and what evidence would prove it?",
-    "not_yet": "Cannot generalise beyond the walked-through pixel.",
-    "support": "States the rule after revisiting the predict-why note.",
-    "independent": "Picks a different coordinate, derives or looks up the address, and states Create vs Update with the evidence needed.",
-    "misconception": "I finished because I followed the buttons once."
-   }
-  ]
- },
- "learning_loop": {
-  "objective": "Decide create vs update from account existence — then explain why the address stays the same when colour changes.",
-  "predict_question": "This pixel account already exists at the derived address. Should the application create another account or update the existing one?",
-  "predict_options": [
-   {"id": "create", "label": "Create another Pixel account at a new address"},
-   {"id": "update", "label": "Update the existing account (recolour)"},
-   {"id": "fail", "label": "The transaction must fail because the account exists"}
   ],
-  "predict_answer": "update",
-  "predict_why": "create_pixel uses init at seeds [\"pixel\", x, y]. When that account already exists, the correct path is update_pixel on the same PDA — colour changes; address does not.",
-  "act": "In observation mode, open the recorded update_pixel signature under Proof and compare it to create_pixel. In practical mode, after the 33-second client cooldown, recolour the same coordinate through the hosted UI if your wallet offers update_pixel; otherwise stay on the observation route. Hosted UI recolour remains the next platform verification task.",
-  "inspect": [
-   {"id": "coord", "label": "Coordinate (x, y)", "placeholder": "e.g. 128, 152"},
-   {"id": "address", "label": "Derived address", "placeholder": "PDA…"},
-   {"id": "exists", "label": "Account exists", "placeholder": "Yes / No"},
-   {"id": "ix", "label": "Instruction observed", "placeholder": "create_pixel / update_pixel"},
-   {"id": "colour", "label": "Observed colour", "placeholder": "r, g, b"}
+  "not_covered": "Hosted-UI create is recorded. Hosted-UI recolour is not yet recorded \u2014 use the observation route (Proof \u2192 update_pixel signature) or the script path until that verification lands. The points counter and leaderboard need the author's MongoDB API, which a static host can't serve, so they stay at 0; the pixel transactions are unaffected.",
+  "path_order": 1,
+  "path_stage": 1,
+  "difficulty": "Beginner",
+  "time": "30 min",
+  "objectives": [
+    "Derive a Program Derived Address from seeds you choose \u2014 here, a pixel's x and y as single bytes.",
+    "Explain why each pixel is its own 14-byte account, and what those 14 bytes hold (discriminator, position, colour, bump).",
+    "Tell create (`init`) from update (re-derive the same PDA from stored fields), and find the `PixelChanged` event in the logs."
   ],
-  "explain_question": "Why did the account address stay the same when the colour changed?",
-  "transfer": "Pick a different coordinate. Derive its address (or look it up). Without re-reading the full walkthrough, state whether the next permitted action is Create or Update — and what evidence would prove it."
- }
+  "prereqs": [
+    "A Phantom (or Solflare) wallet set to Solana Devnet, and enough practice SOL from [faucet.solana.com](https://faucet.solana.com) for the estimated costs (about 0.05 SOL is typical for this lesson). Faucet availability and timing vary; faucet access is not graded.",
+    "If you are new to Solana, complete Foundations Lessons [001](/lessons/first-transaction/)\u2013[007](/lessons/protecting-state-transitions/) first (start at Lesson 001). If you already understand execution vs commitment, accounts, and safe recovery habits, you may start here as Stage 1 on the [learning path](/lessons/path/)."
+  ],
+  "concepts": [
+    "pda",
+    "seeds",
+    "bump",
+    "init",
+    "account",
+    "discriminator",
+    "event",
+    "rent",
+    "signer",
+    "payer"
+  ],
+  "build": {
+    "dir": "Picassol",
+    "anchor": "0.26.0",
+    "test": "anchor test",
+    "note": "Written for Anchor 0.26.0, which is older than the CLIs on this machine (0.29\u20130.32). `anchor build` against 0.26 may need that exact CLI. The program itself is small: one `lib.rs` with `create_pixel` and `update_pixel`."
+  },
+  "functional": "full",
+  "content_version": "2026-11-18.1",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "student_outcome": "Paint a pixel. Explain where it is stored.",
+  "delivery": "Browser practice + evidence inspection",
+  "track": "application-lab",
+  "assessment": {
+    "purpose": "Determine whether the student can decide create vs update from account evidence, explain PDA address stability when colour changes, label evidence honestly, and transfer the rule to a fresh coordinate.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Decides Create vs Update from account existence",
+        "question": "Does the student base the action on whether the Pixel account exists at the derived address?",
+        "not_yet": "Treats a white-looking cell as empty, or invents Create/Update without account observation.",
+        "support": "Correct after a prompt to check getAccountInfo / Explorer at the derived address.",
+        "independent": "Records coordinate, derived address, Account exists Yes/No, and chooses Create or Update from that evidence.",
+        "misconception": "White means no account."
+      },
+      {
+        "id": "c2",
+        "title": "Explains address stability when colour changes",
+        "question": "Can the student explain why update_pixel keeps the same PDA?",
+        "not_yet": "Claims colour change creates a new account, or cannot name the seeds.",
+        "support": "Names seeds after a prompt to compare create vs update in Proof.",
+        "independent": "States seeds [\"pixel\", x, y] (and bump on update) and that colour is data inside the same account.",
+        "misconception": "A new colour needs a new address."
+      },
+      {
+        "id": "c3",
+        "title": "Labels evidence provenance",
+        "question": "Does the student distinguish platform historical proof from their own attempt?",
+        "not_yet": "Treats a Sol.College Proof signature as proof they completed the action.",
+        "support": "Corrects the mix-up after a prompt about historical vs my attempt tags.",
+        "independent": "Tags route (observation / live / local / guided) and does not claim historical signatures as personal completion.",
+        "misconception": "Any successful signature on the lesson page counts as my mastery."
+      },
+      {
+        "id": "c4",
+        "title": "Transfers to a fresh coordinate",
+        "question": "On a new coordinate, can the student state Create or Update and what evidence would prove it?",
+        "not_yet": "Cannot generalise beyond the walked-through pixel.",
+        "support": "States the rule after revisiting the predict-why note.",
+        "independent": "Picks a different coordinate, derives or looks up the address, and states Create vs Update with the evidence needed.",
+        "misconception": "I finished because I followed the buttons once."
+      }
+    ]
+  },
+  "learning_loop": {
+    "objective": "Decide create vs update from account existence \u2014 then explain why the address stays the same when colour changes.",
+    "predict_question": "This pixel account already exists at the derived address. Should the application create another account or update the existing one?",
+    "predict_options": [
+      {
+        "id": "create",
+        "label": "Create another Pixel account at a new address"
+      },
+      {
+        "id": "update",
+        "label": "Update the existing account (recolour)"
+      },
+      {
+        "id": "fail",
+        "label": "The transaction must fail because the account exists"
+      }
+    ],
+    "predict_answer": "update",
+    "predict_why": "create_pixel uses init at seeds [\"pixel\", x, y]. When that account already exists, the correct path is update_pixel on the same PDA \u2014 colour changes; address does not.",
+    "act": "In observation mode, open the recorded update_pixel signature under Proof and compare it to create_pixel. In practical mode, after the 33-second client cooldown, recolour the same coordinate through the hosted UI if your wallet offers update_pixel; otherwise stay on the observation route. Hosted UI recolour remains the next platform verification task.",
+    "inspect": [
+      {
+        "id": "coord",
+        "label": "Coordinate (x, y)",
+        "placeholder": "e.g. 128, 152"
+      },
+      {
+        "id": "address",
+        "label": "Derived address",
+        "placeholder": "PDA\u2026"
+      },
+      {
+        "id": "exists",
+        "label": "Account exists",
+        "placeholder": "Yes / No"
+      },
+      {
+        "id": "ix",
+        "label": "Instruction observed",
+        "placeholder": "create_pixel / update_pixel"
+      },
+      {
+        "id": "colour",
+        "label": "Observed colour",
+        "placeholder": "r, g, b"
+      }
+    ],
+    "explain_question": "Why did the account address stay the same when the colour changed?",
+    "transfer": "Pick a different coordinate. Derive its address (or look it up). Without re-reading the full walkthrough, state whether the next permitted action is Create or Update \u2014 and what evidence would prove it."
+  }
 }
