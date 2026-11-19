@@ -1,12 +1,12 @@
 {
   "schema": "sc-cto-status/1",
   "project": "gifter-escrow",
-  "updatedAt": "2026-11-18T17:18:18.063Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/44357087985",
+  "updatedAt": "2026-11-19T00:26:11.868Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/44428935136",
   "report": {
     "summary": "Status for gifter-escrow from supplied records only. In flight: two open lab pull requests, three packages, three validations requested. No completed or slipped items are recorded for this period, and no period dates or cognition-usage figures were supplied, so completion and usage cannot be reported. Validation status is unknown; it comes only from GitHub workflow evidence, none of which was included. Sources: github.com/berkaycirak/gifter-escrow, github.com/Blockchains/gifter-escrow, and github.com/Blockchains/sol-college issue 1.",
-    "at": "2026-11-18T07:34:17.065Z",
-    "taskId": "report-gifter-escrow-2026111722"
+    "at": "2026-11-19T00:26:11.868Z",
+    "taskId": "report-gifter-escrow-2026111817"
   },
   "activity": [
     {
@@ -60,7 +60,7 @@
       "text": "Triaging a lab pull request (Blockchains/gifter-escrow/pull/1)"
     }
   ],
-  "pendingTasks": 2,
+  "pendingTasks": 1,
   "operatorReview": 2,
   "upstreamHead": "a9c3a417d2d78294f58975b1461859ffb20df05a",
   "openLabPullRequests": 2
