@@ -19,7 +19,7 @@ Legend: `done` · `partial` · `todo`
 | Metadata rendering guards | P0 | done | `curriculum_copy.format_limit_text` | No raw array syntax |
 | Beginner entrance | P1 | done | `#start` + learning_layer | `test_learning_layer.py` |
 | Honest status labels | P0 | done | env-health panel + Picassol ui_check | Program flow vs hosted UI vs frontend/RPC |
-| Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour observation/script until hosted UI lands |
+| Picassol correctness (create/account) | P0 | partial | lesson JSON + live ui_check | Hosted create recorded; recolour still observation/script — `wallet_click.py` now has create→recolour path pending funded key run |
 | Canonical per-lesson schema (owner, content_version, …) | P0 | done | `curriculum_schema.py` + backfill | Required + recommended fields complete for live guided lessons (`missing_recommended_lessons=0`) |
 | Cache / old-tab update notice | P0 | done | `scripts/release-notice.js` | Banner when `/release.json` app/curriculum changes |
 
@@ -41,7 +41,7 @@ Legend: `done` · `partial` · `todo`
 
 - Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all live lessons + Foundations have loops; debug labs tagged + labelled in workspace/cards; learner verification / Picassol hosted recolour still open)
 - Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
-- Release E: AI tutor, personalisation, community — `partial` (E.3: catalogue cards mark touched lessons from loop/progress; path progress + clear remain; AI tutor / community still open)
+- Release E: AI tutor, personalisation, community — `partial` (E.4: touched-only catalogue filter; Picassol recolour harness ready; AI tutor / community still open)
 
 ## Definition of done (product)
 
