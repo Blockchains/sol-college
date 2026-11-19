@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e7',
+    'title': 'Release E.7 — Restore local progress from JSON',
+    'summary': (
+      'Learners can restore a previously downloaded local-progress JSON into this browser, '
+      'with confirm-before-replace and the same not-mastery honesty.'
+    ),
+    'changes': [
+      'Restore from JSON file input beside export/clear on path-progress.',
+      'Requires at least one of sc-lesson-last / progress / loop; confirms before overwrite.',
+      'Still device-local only — no accounts or mastery claims.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e6',
     'title': 'Release E.6 — Export local progress JSON',
     'summary': (
