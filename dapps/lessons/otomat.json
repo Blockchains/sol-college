@@ -1,51 +1,142 @@
 {
- "title": "Otomat",
- "summary": "Open a payment channel, lock tokens, and settle a payer-signed check through an Ed25519 pre-instruction.",
- "what": "Otomat is an Anchor 0.31.1 payment-channel rail. open_channel (seeds [\"channel\", payer, payee, mint]) funds an ATA owned by an escrow_auth PDA (seeds [\"escrow_auth\", channel]). close_channel, signed by the facilitator, settles a cumulative amount to the payee and refunds the rest, but only after instruction 0 is an Ed25519 verification of the payer's check: `otomat/v2/check|` || channel || cumulative_le || nonce_le || expiry_le.",
- "app_note": "The page at /dapps/otomat/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/otomat. The lab only changed declare_id to a unique lab program.",
- "try_steps": [
-  {
-   "do": "Open /dapps/otomat/, switch to Devnet, and connect a wallet. The lab already opened a 2_000_000-token channel, rejected a close without Ed25519, then settled a 1_000_000 check.",
-   "see": "Program 343pmZcq…. Channel 3zfGyMqw… and escrow ATA 9GeU2hYH… should be closed; payee 4262h4DM… received 1_000_000.",
-   "ran": "open_channel 34PspCsJ…; close_channel 4AQp5jvY…"
+  "title": "Otomat",
+  "summary": "Open a payment channel, lock tokens, and settle a payer-signed check through an Ed25519 pre-instruction.",
+  "what": "Otomat is an Anchor 0.31.1 payment-channel rail. open_channel (seeds [\"channel\", payer, payee, mint]) funds an ATA owned by an escrow_auth PDA (seeds [\"escrow_auth\", channel]). close_channel, signed by the facilitator, settles a cumulative amount to the payee and refunds the rest, but only after instruction 0 is an Ed25519 verification of the payer's check: `otomat/v2/check|` || channel || cumulative_le || nonce_le || expiry_le.",
+  "app_note": "The page at /dapps/otomat/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/otomat. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/otomat/, switch to Devnet, and connect a wallet. The lab already opened a 2_000_000-token channel, rejected a close without Ed25519, then settled a 1_000_000 check.",
+      "see": "Program 343pmZcq\u2026. Channel 3zfGyMqw\u2026 and escrow ATA 9GeU2hYH\u2026 should be closed; payee 4262h4DM\u2026 received 1_000_000.",
+      "ran": "open_channel 34PspCsJ\u2026; close_channel 4AQp5jvY\u2026"
+    }
+  ],
+  "diagram": "payer --open_channel--> channel+escrow ATA; facilitator --close_channel + Ed25519(payer check)--> payee ATA + refund, accounts closed.",
+  "accounts": [
+    "channel PDA seeds [\"channel\", payer, payee, mint]",
+    "escrow_auth PDA seeds [\"escrow_auth\", channel]",
+    "escrow ATA (authority = escrow_auth)"
+  ],
+  "instructions": [
+    "open_channel",
+    "close_channel",
+    "dispute_channel / resolve_dispute / timeout_reclaim (not exercised)"
+  ],
+  "innovation": "Settlement is a facilitator-submitted, payer-signed off-chain check verified by the Ed25519 precompile; the program also checks that the pre-instruction's offsets point at its own data.",
+  "frontend": "Generic IDL console at /dapps/otomat/. close_channel requires an Ed25519 pre-instruction as ix 0.",
+  "exercises": [
+    "Reconstruct the check message for a 1_000_000 cumulative and nonce 1.",
+    "What error is returned if close_channel has no Ed25519 pre-instruction?"
+  ],
+  "not_covered": [
+    "Unilateral dispute, timeout reclaim, receipts, and facilitator bonds"
+  ],
+  "difficulty": "Intermediate",
+  "time": "30 min",
+  "functional": "full",
+  "objectives": [
+    "Open a channel PDA and lock tokens for payer\u2192payee.",
+    "Explain why the Ed25519 pre-instruction matters for settle.",
+    "Settle a signed check and verify balances after settlement."
+  ],
+  "prereqs": [
+    "A Devnet wallet with practice funds and the lesson mint.",
+    "Comfortable with multi-instruction transactions (Foundations 004 or equivalent)."
+  ],
+  "student_outcome": "Settle a payer-signed check and explain why close/settle needs the Ed25519 pre-instruction.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "learning_loop": {
+    "objective": "Inspect channel settle/close \u2014 then predict Missing Ed25519 pre-instruction failure.",
+    "predict_question": "close_channel (or settle path that requires the check) is sent without an Ed25519 pre-instruction. What should happen?",
+    "predict_options": [
+      {
+        "id": "ok",
+        "label": "Channel closes; signature is optional"
+      },
+      {
+        "id": "err",
+        "label": "Instruction fails because the Ed25519 pre-instruction is missing"
+      },
+      {
+        "id": "soft",
+        "label": "Close succeeds but skips balance updates"
+      }
+    ],
+    "predict_answer": "err",
+    "predict_why": "Otomat verifies payer-signed checks via an Ed25519 pre-instruction. Without it, close/settle fails rather than moving channel funds on an unchecked path.",
+    "act": "Open /dapps/otomat/ on Devnet. Prefer recorded open channel + rejected close-without-precompile + successful settle proofs. Reconstruct the check message for cumulative 1_000_000 / nonce 1 when prompted by the exercise.",
+    "inspect": [
+      {
+        "id": "channel",
+        "label": "Channel PDA / locked",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "precompile",
+        "label": "Ed25519 pre-ix present?",
+        "placeholder": "yes / no / rejected"
+      },
+      {
+        "id": "settle",
+        "label": "Settle/close evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why must the Ed25519 pre-instruction accompany settle/close instead of trusting a raw payer pubkey field?",
+    "transfer": "Name one check field (cumulative/nonce) and one not_covered path (unilateral dispute/timeout)."
+  },
+  "assessment": {
+    "purpose": "Independent elective criteria; no Picassol leakage.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Locates channel PDA",
+        "question": "Can the student identify the channel and locked tokens?",
+        "not_yet": "No.",
+        "support": "Finds lab channel after prompt.",
+        "independent": "Records channel + amounts.",
+        "misconception": "Payer wallet is the channel vault."
+      },
+      {
+        "id": "c2",
+        "title": "Explains Ed25519 requirement",
+        "question": "Can the student predict failure without the pre-instruction?",
+        "not_yet": "Assumes optional.",
+        "support": "Correct after exercise.",
+        "independent": "States missing pre-ix error.",
+        "misconception": "Pubkey field alone authorizes settle."
+      },
+      {
+        "id": "c3",
+        "title": "Scopes disputes out",
+        "question": "Notes unilateral dispute not covered?",
+        "not_yet": "Claims it.",
+        "support": "Scopes after prompt.",
+        "independent": "Notes not_covered.",
+        "misconception": "Settle proves timeout reclaim."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Lab settle is my dispute win."
+      }
+    ]
   }
- ],
- "diagram": "payer --open_channel--> channel+escrow ATA; facilitator --close_channel + Ed25519(payer check)--> payee ATA + refund, accounts closed.",
- "accounts": [
-  "channel PDA seeds [\"channel\", payer, payee, mint]",
-  "escrow_auth PDA seeds [\"escrow_auth\", channel]",
-  "escrow ATA (authority = escrow_auth)"
- ],
- "instructions": [
-  "open_channel",
-  "close_channel",
-  "dispute_channel / resolve_dispute / timeout_reclaim (not exercised)"
- ],
- "innovation": "Settlement is a facilitator-submitted, payer-signed off-chain check verified by the Ed25519 precompile; the program also checks that the pre-instruction's offsets point at its own data.",
- "frontend": "Generic IDL console at /dapps/otomat/. close_channel requires an Ed25519 pre-instruction as ix 0.",
- "exercises": [
-  "Reconstruct the check message for a 1_000_000 cumulative and nonce 1.",
-  "What error is returned if close_channel has no Ed25519 pre-instruction?"
- ],
- "not_covered": [
-  "Unilateral dispute, timeout reclaim, receipts, and facilitator bonds"
- ],
- "difficulty": "Intermediate",
- "time": "30 min",
- "functional": "full",
- "objectives": [
-  "Open a channel PDA and lock tokens for payer→payee.",
-  "Explain why the Ed25519 pre-instruction matters for settle.",
-  "Settle a signed check and verify balances after settlement."
- ],
- "prereqs": [
-  "A Devnet wallet with practice funds and the lesson mint.",
-  "Comfortable with multi-instruction transactions (Foundations 004 or equivalent)."
- ],
- "student_outcome": "Open a payment channel and settle a payer-signed check with the Ed25519 pre-instruction.",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "track": "elective",
- "delivery": "Browser practice + evidence inspection"
 }

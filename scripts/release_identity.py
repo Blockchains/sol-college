@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c19',
+    'title': 'Release C.19 — Elective learning loops batch 4 (track=elective complete)',
+    'summary': (
+      'Final track=elective catalogue lessons join the shared learning layer: Atlantid, '
+      'Covenant, Otomat, SolAgents Commerce, TrustRail Pipelines, and Veedor.'
+    ),
+    'changes': [
+      'Six electives gain learning_loop + lab-specific criteria (owner vs cap, init co-signer, Ed25519, job PDA vault, staging delegation, MissingEd25519).',
+      'All lessons with track=elective now have learning_loop and assessment criteria.',
+      'Remaining unwired catalogue items are untracked/preview-style lessons outside track=elective.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c18',
     'title': 'Release C.18 — Elective learning loops batch 3',
     'summary': (
