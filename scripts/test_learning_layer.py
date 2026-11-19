@@ -61,12 +61,17 @@ class LearningLayerHtml(unittest.TestCase):
         root = os.path.join(os.path.dirname(__file__), '..')
         core = open(os.path.join(root, 'scripts/core_lessons.py'), encoding='utf-8').read()
         js = open(os.path.join(root, 'scripts/lesson.js'), encoding='utf-8').read()
+        self.assertIn('def path_progress_html', core)
         self.assertIn('id="path-progress"', core)
         self.assertIn('path-progress-data', core)
+        self.assertIn('path-progress-clear', core)
         self.assertIn("not</b> proof of mastery", core)
         self.assertIn("getElementById('path-progress')", js)
+        self.assertIn('path-progress-clear', js)
         self.assertIn('sc-lesson-loop', js)
         self.assertIn('touched on this device', js)
+        # Used on both catalogue and path pages
+        self.assertGreaterEqual(core.count('path_progress_html()'), 2)
 
 
 if __name__ == '__main__':

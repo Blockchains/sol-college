@@ -102,6 +102,7 @@ button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
 .path-progress h2{margin:0 0 8px}
 .path-progress .note{margin:0 0 12px}
 .path-progress .cta-row{margin:12px 0 0}
+.path-progress-actions{margin:14px 0 0}
 .card[hidden],.path-stage[hidden],dt[hidden],dd[hidden],#lesson-empty[hidden],#resume[hidden]{display:none}
 pre.diagram,pre.sh{position:relative}
 .copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}

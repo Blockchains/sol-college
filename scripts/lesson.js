@@ -194,6 +194,24 @@
           html += '<p class="note">Every listed foundations and core path lesson has local activity on this device. Rubrics still decide mastery.</p>';
         }
         pathProgressBody.innerHTML = html;
+        var clearBtn = document.getElementById('path-progress-clear');
+        if (clearBtn && !clearBtn.getAttribute('data-bound')) {
+          clearBtn.setAttribute('data-bound', '1');
+          clearBtn.addEventListener('click', function () {
+            var ok = window.confirm(
+              'Clear lesson progress saved in this browser?\n\n' +
+              'This removes local workspace marks and the last-lesson resume link on this device. ' +
+              'It does not change on-chain activity or assessment records elsewhere.'
+            );
+            if (!ok) return;
+            try {
+              localStorage.removeItem('sc-lesson-loop');
+              localStorage.removeItem(PROGRESS);
+              localStorage.removeItem(LAST);
+            } catch (e) {}
+            location.reload();
+          });
+        }
       } catch (err) {
         pathProgress.hidden = true;
       }
