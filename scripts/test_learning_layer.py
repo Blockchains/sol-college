@@ -75,9 +75,13 @@ class LearningLayerHtml(unittest.TestCase):
         self.assertIn('id="path-progress"', core)
         self.assertIn('path-progress-data', core)
         self.assertIn('path-progress-clear', core)
+        self.assertIn('path-progress-export', core)
         self.assertIn("not</b> proof of mastery", core)
         self.assertIn("getElementById('path-progress')", js)
         self.assertIn('path-progress-clear', js)
+        self.assertIn('path-progress-export', js)
+        self.assertIn('sol-college-local-progress.json', js)
+        self.assertIn('Not mastery or assessment completion', js)
         self.assertIn('sc-lesson-loop', js)
         self.assertIn('touched on this device', js)
         # Used on both catalogue and path pages

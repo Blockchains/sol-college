@@ -28,7 +28,7 @@ Legend: `done` · `partial` · `todo`
 | Item | Status | Notes |
 |---|---|---|
 | Front door → route selection | done | `#start` |
-| Lesson preview / contract | partial | Picassol learning_loop |
+| Lesson preview / contract | done (Picassol) | learning_loop objective + student_outcome + workspace |
 | Preflight | done (Picassol) | observation + practical |
 | Predict → Act → Inspect → Explain | done (Picassol) | workspace |
 | Independent assessment | done (Picassol) | `/lessons/picassol-hackathon/assessment/` |
@@ -41,7 +41,7 @@ Legend: `done` · `partial` · `todo`
 
 - Release C: reusable workspace/preflight/evidence/help/assessment components — `partial` (shared `learning_layer.py`; all live lessons + Foundations have loops; debug labs tagged + labelled in workspace/cards; learner verification / Picassol hosted recolour still open)
 - Release D: Foundations migration + rubrics — `partial` (D.3: 001–007 loops/workspaces + Stage 1 handoff + automated structural checks; learner testing / live specimens still open)
-- Release E: AI tutor, personalisation, community — `partial` (E.5: homepage #start resume from last lesson; catalogue touch filter + path progress remain; AI tutor / community still open)
+- Release E: AI tutor, personalisation, community — `partial` (E.6: export local progress JSON; homepage resume + catalogue touch filter remain; AI tutor / community still open)
 
 ## Definition of done (product)
 

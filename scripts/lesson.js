@@ -194,6 +194,28 @@
           html += '<p class="note">Every listed foundations and core path lesson has local activity on this device. Rubrics still decide mastery.</p>';
         }
         pathProgressBody.innerHTML = html;
+        var exportBtn = document.getElementById('path-progress-export');
+        if (exportBtn && !exportBtn.getAttribute('data-bound')) {
+          exportBtn.setAttribute('data-bound', '1');
+          exportBtn.addEventListener('click', function () {
+            var payload = {
+              exported_at: new Date().toISOString(),
+              note: 'Browser-local Sol.College progress only. Not mastery or assessment completion.',
+              'sc-lesson-last': load(LAST),
+              'sc-lesson-progress': load(PROGRESS) || {},
+              'sc-lesson-loop': load('sc-lesson-loop') || {},
+            };
+            var blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'sol-college-local-progress.json';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+          });
+        }
         var clearBtn = document.getElementById('path-progress-clear');
         if (clearBtn && !clearBtn.getAttribute('data-bound')) {
           clearBtn.setAttribute('data-bound', '1');

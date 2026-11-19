@@ -559,6 +559,7 @@ def path_progress_html():
     'Assessment rubrics are separate. Progress stays in this browser only.</p>'
     '<div id="path-progress-body"></div>'
     '<p class="path-progress-actions">'
+    '<button type="button" class="btn ghost" id="path-progress-export">Download local progress (JSON)</button> '
     '<button type="button" class="btn ghost" id="path-progress-clear">Clear local progress on this device</button>'
     '</p>'
     f'<script type="application/json" id="path-progress-data">{payload}</script>'

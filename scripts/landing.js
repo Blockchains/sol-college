@@ -104,7 +104,7 @@
         }
         if (goResume) {
           goResume.href = lastLesson.href;
-          goResume.textContent = 'Continue ' + (lastLesson.title || 'lesson');
+          goResume.textContent = 'Continue';
         }
         startResume.hidden = false;
       }
