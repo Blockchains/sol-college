@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e9',
+    'title': 'Release E.9 — Honest community contribution section',
+    'summary': (
+      'Homepage and lessons catalogue gain a Community section that routes to waitlist, '
+      'commit suggestions, findings, and project intake — explicitly not a social feed.'
+    ),
+    'changes': [
+      'community_section_html() on homepage (#community) and /lessons/.',
+      'Copy states Sol.College does not host a forum feed on-site.',
+      'Links reuse existing GitHub issue templates and /findings/.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e8',
     'title': 'Release E.8 — Tutor-lite misconception prompts in stuck help',
     'summary': (

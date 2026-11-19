@@ -698,6 +698,7 @@ idx=(f'<nav class=crumbs aria-label=Breadcrumb><a href="/">Home</a> / <span>Less
   f'<p class=resume id=resume hidden></p>'
   f'{path_progress_html()}'
   f'{entry_routes}'
+  f'{_ll_write.community_section_html()}'
   f'{next_step}{choose}{finder}{foundations_block}{stage_blocks(pool=GUIDED)}{more}{debug}{preview}'
   f'<div class=index-intro>{intro}<p><a href="/lessons/guide/">How to use a lesson</a> · <a href="/how-to-build/">How to build your own</a></p></div>'
   f'<p class=note>Looking for the 2,000+ code walkthroughs generated from source? They are in the <a href="/explore/">Source library (not yet live)</a>. They have not been built or run, so they are not lessons.</p>')

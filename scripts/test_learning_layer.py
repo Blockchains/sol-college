@@ -78,8 +78,18 @@ class LearningLayerHtml(unittest.TestCase):
         root = os.path.join(os.path.dirname(__file__), '..')
         html = open(os.path.join(root, 'scripts/landing.html')).read()
         self.assertIn('{{START_SECTION}}', html)
+        self.assertIn('{{COMMUNITY_SECTION}}', html)
         self.assertIn('href="#start"', html)
         self.assertIn('Start learning', html)
+
+    def test_community_section_is_honest(self):
+        html = ll.community_section_html()
+        self.assertIn('id="community"', html)
+        self.assertIn('does not host a forum feed', html)
+        self.assertIn('learner-waitlist.yml', html)
+        self.assertIn('commit-suggestion.yml', html)
+        self.assertIn('/findings/', html)
+        self.assertIn('not enrolment', html.lower())
 
     def test_path_progress_wiring_in_sources(self):
         root = os.path.join(os.path.dirname(__file__), '..')

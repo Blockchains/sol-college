@@ -87,6 +87,53 @@ def start_section_html():
 '''
 
 
+# Public GitHub issue templates (same destinations as scripts/landing.py).
+_WAITLIST = 'https://github.com/Blockchains/sol-college/issues/new?template=learner-waitlist.yml'
+_COMMIT = 'https://github.com/Blockchains/sol-college/issues/new?template=commit-suggestion.yml'
+_PROJECT = 'https://github.com/Blockchains/sol-college/issues/new?template=project-partnership.yml'
+
+
+def community_section_html(
+  waitlist: str = _WAITLIST,
+  commit: str = _COMMIT,
+  project: str = _PROJECT,
+  findings: str = '/findings/',
+) -> str:
+  """Honest community routes — issue templates and findings, not a social feed."""
+  return f'''
+<section class="band community-band" id="community" data-learning="community">
+  <div class="inner">
+    <p class="eyebrow">Community</p>
+    <h2>Practice with others — without inventing a social network</h2>
+    <p class="lead">Sol.College does not host a forum feed or private chat on this site. Community today means structured GitHub issues, published findings, and the improvement loop.</p>
+    <div class="start-routes community-routes" role="list">
+      <a class="start-route" role="listitem" href="{E(waitlist)}">
+        <b>Join a learner cohort</b>
+        <span>Open a waitlist issue so we can invite you when the next cohort forms.</span>
+        <em>GitHub issue template</em>
+      </a>
+      <a class="start-route" role="listitem" href="{E(commit)}">
+        <b>Submit a commit suggestion</b>
+        <span>Share a reproducible finding with a patch and regression test when a change is warranted.</span>
+        <em>Evidence first</em>
+      </a>
+      <a class="start-route" role="listitem" href="{E(findings)}">
+        <b>Read published findings</b>
+        <span>Bugs we reproduced on the isolated forks — labelled honestly, not an audit claim.</span>
+        <em>Public records</em>
+      </a>
+      <a class="start-route" role="listitem" href="{E(project)}">
+        <b>Bring a dApp</b>
+        <span>Teams can propose an isolated practice fork. Partnership is not implied by a listing.</span>
+        <em>Project intake</em>
+      </a>
+    </div>
+    <p class="honest">Joining the waitlist or opening an issue is not enrolment, grading, or a security guarantee.</p>
+  </div>
+</section>
+'''
+
+
 def preflight_html(app_href: str, title: str = 'this lab') -> str:
   """Reusable setup gate before practical mode."""
   app = E(app_href)
