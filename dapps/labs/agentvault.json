@@ -1,0 +1,73 @@
+{
+  "lab_id": "agentvault",
+  "lab_version": "5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/agentvault-protocol",
+    "commit": "5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agentvault-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agentvault.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy program Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA to devnet",
+          "4R21Yene7uU55kHV57rz2rkMyzHsYhRxtBq26KqtEStntLBpXx2bWP2sgbgYb84tnB2vWDWErrBBD2fdAJXtB8pb"
+        ],
+        [
+          "initialize wrote global_state 7GNtYaqn\u2026",
+          "4DurFMvkaYU3Fsobf8WU2rR92iZ6iy7arv3CEx7EoDoRwf2RbqWhtuCm6LkwkxMfHc36YT6fwAKvKJPdTPGpKFR5"
+        ],
+        [
+          "register_agent campus-scout (client 4zLnBLF1\u2026)",
+          "51rpNWyNYj2oSFa8rh5LNx9q83a7A5wepswdH8xbn8AHEY5tCbDNHMiSV1FYaywd9wwC7a2eiSH9EbLy8nETr7EN"
+        ],
+        [
+          "register_agent campus-provider (provider 88a6Bf93\u2026, tester wallet)",
+          "4DwHuHmv713P9CaMqXcmGUj5T6eKy1MKEBtkbuZ4UaHgVYnzW59gKT9YSRuVmgDPoKWq33wHB3axjtFGBUbEdhJP"
+        ],
+        [
+          "create_service campus-scout-svc, price=1_000_000 lamports (service DCG2cymi\u2026)",
+          "4ePvLxqv3b8FdQXaQeC8A4B8zdzCgMUVofXeRyG8hrNdq7zyFcSwVMctrmduujxAsQcYFi9Qy2xUDcUqH9fibgDy"
+        ],
+        [
+          "create_task escrowed 1_000_000 lamports (task 5mfPe9DT\u2026, escrow 8QjZ1YGL\u2026)",
+          "28jspxT7hHUgg9RPEHdViUmvqsZ9q4sfexZ3xtph88otxCNFgzTaUhQMjKY3nW9Q1hohmc6Y4WXDm5DY7diGzsoc"
+        ],
+        [
+          "accept_task by the provider; task status=InProgress",
+          "5aPQF4e2bQLvaeXqhhKbezGFiJPw6kuK4qy6VrHEWxPJuMJKECZdacqtgHBiTKBKqoJbjqMyKbUzavv53WG8oq12"
+        ],
+        [
+          "Upgraded the program with an invoke_signed system-transfer escrow payout fix",
+          "2WENELb7kbqFmgekVDinibfA8vBrZgZcX8BppZ6HJcu3oAYJjyx1NbXWTQjjEi5pp4nxFKqp59SJbjzdtk3qK6Ji"
+        ],
+        [
+          "complete_task on task 1: escrow 8QjZ1YGL\u2026 emptied, provider received 1_000_000 lamports, status=Completed, tasks_completed=1, reputation=10",
+          "XRMQsR4u4ArMJFgf5PA8jVV3CQK9TktoUkcUh9icrQ4PNCSs2XuTtgPQa1pTs5yxdiDZ5XgA5KRBKZ1i9D9B1us"
+        ]
+      ],
+      "functional_evidence": "initialize, register_agent, create_service, create_task and accept_task had already landed; after upgrading with an invoke_signed escrow-payout fix, complete_task finished task 5mfPe9DTRHJxE3KYZP94dEiEnnnuVQpjjb3JY6pzE2o4, emptied escrow 8QjZ1YGLKJ4xPsrfejimPTUyu1AyxoozKXMy8kGGYFbf, paid the provider 1_000_000 lamports, and set status=Completed / tasks_completed=1 / reputation=10.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through complete_task were sent with the lab and tester wallets through the IDL client in tests/devnet/agentvault.mjs.",
+      "log": "tests/devnet/logs/agentvault-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "cancel_task was patched the same way but not re-exercised after the upgrade (no pending task was left). update_agent, deactivate_service and dispute_task were not exercised. A lab patch replaces direct lamport mutation of the system-owned escrow with an invoke_signed system transfer; the same fix is offered upstream as https://github.com/sepivip/agentvault/pull/2"
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

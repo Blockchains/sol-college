@@ -1,0 +1,45 @@
+{
+  "lab_id": "gree",
+  "lab_version": "7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/gree",
+    "commit": "7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/gree-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/gree.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Clicked 'Run program' in the hosted app with an injected test wallet: NFT Gp7Ncuci\u2026 minted",
+          "4FEMzQBpHbPKGSdhpfC21rkVDSEA43gCucL9U7kHPdDH9wGd9tv9cz66WSi7KsfvsezVB6tNUGGQvMT7rGPphMY1"
+        ],
+        [
+          "init_nft from the flow script: supply 1, decimals 0, metadata owned by Metaplex with name GLC-20240317",
+          "neBi5ox4KkDhLL5bevKygpDfm2oi2Thtc2A3XHNBVLXNJnhw7Eg3QfZBHtu3LBQERqEXDmBgcY1fQ14iixR3UUp"
+        ]
+      ],
+      "functional_evidence": "init_nft minted on devnet with Metaplex metadata. Inventory URI fetch was not checked but does not block minting.",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py): the app auto-connected, 'Run program' sent the transaction, and the page showed 'Minted NFT: Gp7Ncuci1Mb4FbuXjDtfLW9Penz6R5iLEhBYECYAkBEQ'.",
+      "log": "tests/devnet/logs/gree-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "The metadata URI is the author's IPFS link; the Inventory page fetches it through Metaplex JS, which we did not check."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

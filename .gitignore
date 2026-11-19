@@ -16,3 +16,6 @@ site_new/
 pilot/node_modules/
 site-pilot/
 .minds-private/
+
+# Private maintainer backups (never published to site/)
+records/private/

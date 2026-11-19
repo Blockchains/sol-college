@@ -1,0 +1,57 @@
+{
+  "lab_id": "naim",
+  "lab_version": "b8ab06436ad2cd39a186581805d55d74771f70af",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/naim-program",
+    "commit": "b8ab06436ad2cd39a186581805d55d74771f70af",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/naim-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/naim.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "3oXX7gg8VgGjY5UqyxfmGKgRcPsRuWoCFWRRaQ22UB6Ke5oX2g2RwSYeUQ4JRrCAufQRXhGik4pQ7zMYCRydMeum"
+        ],
+        [
+          "initialize with a 1-year registration period and 30-day grace (config 3Ay28Cir\u2026)",
+          "5ybt7K9tg7c8MXsPHstCinpSDuq55aLfafr4uQ78RaKapmPjN57tJ9CUXvbPcpGDYKo64S7o5tXHcLUtD5iT28f5"
+        ],
+        [
+          "Fetched config: admin and treasury are the lab wallet, registration_period=31536000",
+          "(no tx; read-only)"
+        ],
+        [
+          "init_token_config with lab $NAIM mint A9keuhfy\u2026 (6 decimals; all fees 0, treasury_bps=10000; token_config BWmYXFwX\u2026, stakers vault 7TZegKxQ\u2026)",
+          "2xYYha8TGCwu6q52KSwx5gvUnJufi4NeFVGHMTrRzoBrvyMAVE3RDKpRQ6J5NSY4igzT9eCgiMixA7mqAg1tq57n"
+        ],
+        [
+          "register_name campus-scout (sha256, uri https://sol.college/dapps/naim/; record AzM1S31c\u2026, verified=false)",
+          "qWqaBPeBmDYz1WUVJ3mmKcSnE9D2TqoRPdNc5JmHKH5TAJAYucoq3zgvmKGGbfyhocAGbnwDDSa1cUTzbz3KPV7"
+        ]
+      ],
+      "functional_evidence": "initialize landed and the config was read back; init_token_config pinned lab mint A9keuhfy58ayz3SsovWahrX2cGwJFqx14h45KUtjNNCt; register_name wrote name-record AzM1S31crSSqo2R6ifk4ZEoemW9TAdWdV7NFcpGw27eB for campus-scout (owner=lab wallet, verified=false); InvalidConfig, a second initialize, and NameAlreadyRegistered were rejected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, init_token_config and register_name were sent with the lab wallet through the IDL client in tests/devnet/naim.mjs.",
+      "log": "tests/devnet/logs/naim-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "Staking, renew, and the list/buy marketplace were not exercised in this run. collect_fee is a no-op when the registration fee is 0, so no payer $NAIM ATA funding was required beyond the init_if_needed vault ATAs. The registered name is unverified (verified=false)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

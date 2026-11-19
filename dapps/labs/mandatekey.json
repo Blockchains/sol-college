@@ -1,0 +1,53 @@
+{
+  "lab_id": "mandatekey",
+  "lab_version": "0f685ad32babef2abee1a1c9dff078fcf5956915",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/mandatekey",
+    "commit": "0f685ad32babef2abee1a1c9dff078fcf5956915",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/mandatekey-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/mandatekey.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "qUa3fsXhXnoFFePUeMdWfrsmHYTkJ8BQTurGYB6kXEjg8wTB6uvN7HLeDufNcm821HKTHB7me517STR2bG8z6jK"
+        ],
+        [
+          "create_mandate for a new agent, empty token limits, allow_any_destination, 30-day window (mandate PDA 4snfZuq1\u2026)",
+          "3VouLoxvizSVPzmKRdUNfWdC8k51LE9Efm7Ph54aqLfRHv1uqvioqsy8Xn7ospnzvXjsc5S6W8B3akjxGXVBV7Mh"
+        ],
+        [
+          "Fetched the mandate account: revoked=false, payment_count=0, owner and agent match",
+          "(no tx; read-only)"
+        ],
+        [
+          "revoke by the owner; fetched the account again and revoked=true",
+          "3g1now8ar47HHb2wHmG2PxmdxLuLb9d7t2ydNCXju1u1F7rdrA5zv4TczsXn3fBMnvSXUxnkFADRzYGTkxUyPyA8"
+        ]
+      ],
+      "functional_evidence": "create_mandate landed, the mandate account was read back from devnet, an invalid window was rejected, and revoke flipped revoked to true. The pay path was not exercised.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit create_mandate / revoke). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/mandatekey.mjs.",
+      "log": "tests/devnet/logs/mandatekey-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "pay was not exercised: it needs a token vault owned by the mandate PDA and a listed mint. update_mandate, withdraw and close_mandate are still TODOs in the program."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

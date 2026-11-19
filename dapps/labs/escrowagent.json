@@ -1,0 +1,61 @@
+{
+  "lab_id": "escrowagent",
+  "lab_version": "dff2f7007c8674373db52dd9dae7d81a5122b794",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/escrowagent",
+    "commit": "dff2f7007c8674373db52dd9dae7d81a5122b794",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/escrowagent-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/escrowagent.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy escrowagent as DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp on devnet",
+          "2DCqPB4H4i2D7hUPKofQ59mqdRTnAvw2iigxmosCCfMECLzLDiJ3oqqbqzCU7Ud6XrDvoxh1BqnTr7Udhc388Zgj"
+        ],
+        [
+          "initialize_protocol (config HeohivfGSgX3jCGtRD4RakhYj8QAxzh8EUYjwDamctqm, 0 bps fees)",
+          "2hKEFgYdbcSqQHeyQXVRY4hNdPe776Fy6G2svRvBTMGt8RvF2UStVKBxS9w4jKpgwYmS3Rw3oZhCXGp3ZB288ziM"
+        ],
+        [
+          "create_escrow 1_000_000 (escrow 4EK362s6ytPUkzq7z676eCDgXwy1pVVSdxKC3ghQhHXe, vault 6butfk6y\u2026)",
+          "3kEYjsfR8rGS2QhELuBuduxZBmZq5LpTV8Be6tR7TXVUS37LUKbTaoLCMJNwA9HyHngNXD8VexwzqwAYYj8PMvtf"
+        ],
+        [
+          "accept_escrow by provider H2vegMao5SMA5khB2psDqtJRV92B5TdEpuKHUwKJVyRk",
+          "3YCUf4kTsRvSmT12WugatfstFDp7q9mKsHbLtXpNsHRytfKGbfvJoctinwAAosLWJS9hcu9jNfmPmQYUzJHxW1QV"
+        ],
+        [
+          "submit_proof SignedConfirmation",
+          "2zhxDCQ5DzTMizcufV9xeXz1PPnmztc3typMjG6ThtXTWQD7T1keGFdVTb6qsgaz37Ju7owEcQsgwBQ5ZeJvWFQg"
+        ],
+        [
+          "confirm_completion paid the provider +1_000_000 and closed the escrow",
+          "29ihkALiV7C8kYaCDNpfwGbXh8kPCsUNW1hV55iPCHzhHPChrExH6CkYH1eKpiJJLLXpL2MiP9BfMvXotpsCxPzz"
+        ]
+      ],
+      "functional_evidence": "initialize_protocol 2hKEFgYd\u2026 wrote config HeohivfGSgX3jCGtRD4RakhYj8QAxzh8EUYjwDamctqm. create_escrow 3kEYjsfR\u2026 locked 1_000_000 lab tokens in vault 6butfk6ygXbKCvtkT7Ax2Kaaueg9u5gepkxxCfFEyhR4 (escrow 4EK362s6ytPUkzq7z676eCDgXwy1pVVSdxKC3ghQhHXe). accept_escrow 3YCUf4kT\u2026 and submit_proof 2zhxDCQ5\u2026 moved it to ProofSubmitted. confirm_completion 29ihkALi\u2026 paid provider H2vegMao5SMA5khB2psDqtJRV92B5TdEpuKHUwKJVyRk exactly 1_000_000 (0 bps fee) and closed the escrow account.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and provider keys through tests/devnet/escrowagent.mjs.",
+      "log": "tests/devnet/logs/escrowagent-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "Disputes, expiry, provider_release, and non-zero protocol fees were not exercised. The official program id was not reused."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

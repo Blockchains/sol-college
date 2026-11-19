@@ -65,7 +65,7 @@
     <a href="/events/">Events</a>
     <a href="/campus/">Campus</a>
     <a href="#loop">How it works</a>
-    <a href="#for-teams">For teams</a>
+    <a href="/for-teams/">For teams</a>
     <details class="nav-fold">
       <summary>More</summary>
       <div>
@@ -82,10 +82,10 @@
         <a href="{{PROJECT}}">Bring a dApp</a>
       </div>
     </details>
-    <a class="btn nav-cta" href="#start">Start learning</a>
+    <a class="btn nav-cta" href="/lessons/path/">Explore the learning path</a>
   </nav>
   <div class="top-cta">
-    <a class="btn" href="#start">Start learning</a>
+    <a class="btn" href="/lessons/path/">Explore the learning path</a>
   </div>
   {{MARQUEE}}
 </header>
@@ -102,23 +102,23 @@
     </div>
 
     <div id="hero-learn" class="hero-panel" role="tabpanel" aria-labelledby="tab-learn">
-      <h1>Learn on real Solana dApps.</h1>
-      <p class="hero-promise">Help make them better.</p>
-      <p class="lead">Work a real application, produce evidence of understanding, and offer improvements back when a change is warranted. These are forks we ran ourselves, not a claim that the original team is a partner.</p>
+      <h1>Understand the code. Investigate the behaviour. Explain your work.</h1>
+      <p class="lead">Learn Solana through guided application walkthroughs, controlled debugging exercises and practical engineering tasks.</p>
       <p class="cta-row">
-        <a class="btn" href="#start">Start learning</a>
-        <a class="btn ghost" href="{{START_LESSON}}">Skip to Foundations 001</a>
+        <a class="btn" href="/lessons/path/">Explore the learning path</a>
+        <a class="btn ghost" href="/lessons/">Browse lessons</a>
+        <a class="btn ghost" href="{{WAITLIST}}">Register launch interest</a>
       </p>
-      <p class="hero-quiet">Find the right first lesson in two minutes — then prepare, practise, and leave evidence.</p>
+      <p class="hero-quiet">Sol.College connects Solana concepts with application code. Public lessons may be explored without enrolment — admissions are not open yet. Practice forks are independent environments we ran ourselves, not a claim that the original team is a partner.</p>
     </div>
 
     <div id="hero-teams" class="hero-panel" role="tabpanel" aria-labelledby="tab-teams" hidden>
       <p class="eyebrow">For Solana teams</p>
-      <h1>Your dApp comes back as <em>a patch</em>.</h1>
-      <p class="lead">An isolated devnet fork. Learners test it. You get a reproducible finding and a commit suggestion. You accept or decline.</p>
+      <h1>Explore a Solana learning pilot</h1>
+      <p class="lead">Guided experiences built around application code, controlled debugging and reviewable engineering tasks. Discuss a suitable pilot for your team.</p>
       <p class="cta-row">
-        <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
-        <a class="btn ghost" href="#loop">See the loop</a>
+        <a class="btn purple" href="/for-teams/">Discuss a pilot</a>
+        <a class="btn ghost" href="/learn/">Open the learning hub</a>
       </p>
     </div>
   </div>
@@ -126,14 +126,23 @@
 
 <section class="band proof-band">
   <div class="inner">
-    <div class="score proof-strip" aria-label="Evidence from our own work">
-      <a class="proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>environments with recorded core flows</span><small>Listed only when the recorded flows completed. Known broken flows are labelled separately.</small></a>
-      <a class="proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>bugs found in the forks</span><small>Explicit records in our evidence, not a formal audit.</small></a>
+    <p class="eyebrow">How it works</p>
+    <h2>From concept to explained result</h2>
+    <ol class="pipeline how-steps">
+      <li><strong>Learn the relevant concept</strong> <span>Read the objective and prerequisites for the lesson.</span></li>
+      <li><strong>Open the specified code and environment</strong> <span>Use the lab version and network named on the page.</span></li>
+      <li><strong>Follow the investigation</strong> <span>Reproduce behaviour and gather evidence.</span></li>
+      <li><strong>Complete the task</strong> <span>Explanation, test, transaction or proposed change — as the lesson states.</span></li>
+      <li><strong>Explain what happened and why</strong> <span>Leave evidence another engineer can review.</span></li>
+    </ol>
+    <div class="score proof-strip" aria-label="Maintainer-recorded practice inventory">
+      <a class="proof-card" href="#environments"><b>{{LIVE_COUNT}}</b><span><span class="live-dot" aria-hidden="true"></span>practice environments with recorded core flows</span><small>Maintainer-recorded evidence. Known broken flows are labelled separately. Not a live uptime claim.</small></a>
+      <a class="proof-card" href="#findings"><b>{{BUG_COUNT}}</b><span>maintainer-recorded findings in the forks</span><small>Explicit records from our preparation work — not student-generated results.</small></a>
       {{FIX_CARD}}
-      <a class="proof-card" href="/lessons/"><b>{{LESSON_COUNT}}</b><span>learning activities</span><small>{{LESSON_BREAKDOWN}} — evidence of understanding first; patches when appropriate.</small></a>
+      <a class="proof-card" href="/lessons/"><b>{{GUIDED_COUNT}}</b><span>published guided lessons</span><small>{{LESSON_BREAKDOWN}}</small></a>
     </div>
     {{RESULTS}}
-    <p class="hero-quiet">Lessons are open now. <a href="{{WAITLIST}}">Join a cohort</a>, <a href="{{PROJECT}}">bring a dApp</a>, or <a href="/lessons/path/">follow the path</a>.</p>
+    <p class="hero-quiet"><a href="/lessons/path/">Explore the learning path</a> · <a href="/lessons/">Browse lessons</a> · <a href="{{WAITLIST}}">Register launch interest</a> · <a href="/for-teams/">Discuss a team pilot</a></p>
   </div>
 </section>
 
@@ -283,7 +292,7 @@
           <li>Propose fixes and feature improvements.</li>
           <li>Build an understanding of performance and scaling constraints.</li>
         </ul>
-        <a class="btn" href="{{WAITLIST_DEV}}">Join as a developer</a>
+        <a class="btn" href="{{WAITLIST_DEV}}">Register interest as a developer</a>
       </article>
       <article class="glass path-card sec">
         <p class="who">For security researchers</p>
@@ -297,7 +306,7 @@
           <li>Produce reproducible proofs of concept within scope.</li>
           <li>Explain impact, limitations and remediation options.</li>
         </ul>
-        <a class="btn" href="{{WAITLIST_SEC}}">Join as a security researcher</a>
+        <a class="btn" href="{{WAITLIST_SEC}}">Register interest as a security researcher</a>
       </article>
       <article class="glass path-card hunt">
         <p class="who">For bug bounty hunters</p>
@@ -311,7 +320,7 @@
           <li>Write concise, evidence-led reports.</li>
           <li>Respond to triage questions and retest proposed fixes.</li>
         </ul>
-        <a class="btn" href="{{WAITLIST_HUNT}}">Join as a bug bounty hunter</a>
+        <a class="btn" href="{{WAITLIST_HUNT}}">Register interest as a bug bounty hunter</a>
       </article>
     </div>
     <p class="disclaimer"><em>Learning challenges do not automatically carry a bounty. Any rewards, eligibility requirements and payment terms are stated separately for each participating programme.</em></p>
@@ -393,9 +402,10 @@
 <section class="band" id="for-teams">
   <div class="inner">
     <p class="eyebrow">For Solana teams</p>
-    <h2>For teams</h2>
-    <p class="lead">Learners work an isolated devnet fork. You get a finding and a commit suggestion. You accept or decline.</p>
-    <p class="cta-row"><a class="btn purple" href="{{PROJECT}}">Bring your dApp</a> <a class="btn ghost" href="#loop">See the loop</a></p>
+    <h2>Explore a Solana learning pilot</h2>
+    <p class="lead">Sol.College is preparing guided learning experiences built around application code, controlled debugging and reviewable engineering tasks. Programme scope is agreed individually.</p>
+    <p class="cta-row"><a class="btn purple" href="/for-teams/">Discuss a pilot</a> <a class="btn ghost" href="{{PROJECT}}">Open the enquiry form</a></p>
+    <p class="honest">Submitting an enquiry does not constitute enrolment or an accepted partnership.</p>
 
     <h3>What your team gets</h3>
     <div class="gets">
@@ -589,13 +599,15 @@
 <section class="band close" id="close">
   <div class="close-bg" aria-hidden="true"></div>
   <div class="inner">
-    <h2>Come build on the campus.</h2>
-    <p>Learn on a live practice fork. Or bring a dApp and get the work back as a patch.</p>
+    <h2>Understand the code. Investigate the behaviour. Explain your work.</h2>
+    <p>Guided Solana application practice—from core concepts to reproducible tests and reviewable changes. Admissions are not open yet; you may explore published lessons without enrolment.</p>
     <p class="cta-row">
-      <a class="btn" href="{{WAITLIST}}">Join the learner waitlist</a>
-      <a class="btn purple" href="{{PROJECT}}">Bring your dApp</a>
+      <a class="btn" href="/lessons/path/">Explore the learning path</a>
+      <a class="btn ghost" href="/lessons/">Browse lessons</a>
+      <a class="btn ghost" href="{{WAITLIST}}">Register launch interest</a>
+      <a class="btn purple" href="/for-teams/">Discuss a pilot</a>
     </p>
-    <p class="tagline">Learn on real applications. Leave something better behind.</p>
+    <p class="tagline">Sol.College — Learn Solana by working through real application code.</p>
   </div>
 </section>
 
@@ -623,7 +635,7 @@
       <a href="/campus/">Campus</a>
       <a href="/explore/">Source library (not yet live)</a>
       <a href="/how-to-build/">How to build</a>
-      <a href="#for-teams">For teams</a>
+      <a href="/for-teams/">For teams</a>
       <a href="#faq">FAQ</a>
       <a href="/legal/terms/">Terms</a>
       <a href="/legal/privacy/">Privacy</a>

@@ -1,0 +1,108 @@
+{
+  "lab_id": "chinesepowered-solana-cypherpunk",
+  "lab_version": "da92087162570fa502513579c33f596bdb1edc38",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/chinesepowered-solana-cypherpunk",
+    "commit": "da92087162570fa502513579c33f596bdb1edc38",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/chinesepowered-solana-cypherpunk-2026-11-10.jsonl",
+    "test_status": "failed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/chinesepowered-solana-cypherpunk.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: test wallet m4Ac\u2026 on /university/: Initialize University (name 'sol.college UI University')",
+          "2dCYLFDQs3pFWVCb9YgM5w9WJijAekYtkr8JNxBePZhrUzgu4Gar966kT5xQcZM48ZJaghBefD7x6qwK7eG5Ytzt"
+        ],
+        [
+          "UI: Issue Credential to its own wallet (Bachelor of Science, Computer Science, 2026-06-30); the dialog shows credential FuuEaM9d\u2026",
+          "2FGh1M5NJgvekvzDoGjGG9bNxHxmMFX4qyMuxvWzQjCvkKuY9iph34nVdmjSiPXpBQQ54JpvVt2eAe43asDpvnNy"
+        ],
+        [
+          "UI: paste the credential address, sign as registrar",
+          "7nLNCndCUnBj56bSDvmicLFsokQqXou61FPfDESVqJLCW1B4SyePwMvDRqTZMzzTD5FiXVi1RgckEhckDLmLm4D"
+        ],
+        [
+          "UI: sign as dean; /verify/ then shows 'Verified Credential' and /student/ lists it with both signatures",
+          "hRUFgzUWra1cahBhXbGLC7dN6NLad71ejhLwU8MBzSg4dXWR1LsuHnHFU7DJyjsy77x6aJckiMnxHsoeHy2hhaY"
+        ],
+        [
+          "Script: fund U 0.05, R 0.01, S 0.02, X 0.02 SOL",
+          "pqAbBiWu4EY87i2kcDJfSxGYYTBkkdbYR2xpaKNQuEtzRRiuSw25h1WeyxAR4dFRaHGfxm3KhcnbetqyPp7E8yL"
+        ],
+        [
+          "Script: U initializes its university (PDA [\"university\", U])",
+          "E4MNaYNH1QHUogwKFWofJgWgbh2D3rvVpYjAwWPmT7Umqv3YSmNBbpzskfVck1Jun6fZHawQTAAwtWB29h1dYM1"
+        ],
+        [
+          "Script: U issues credential #0 to student S (PDA [\"credential\", university, 0])",
+          "mukLMFVdNb6rKBkstBT76eBDrUcYgBPjAvCRkRdru8Rhd7hCFTCAXWgFLzsRj4ucg1UJNXihguJfetukKWhZE3S"
+        ],
+        [
+          "Script: R, an unrelated wallet, signs as registrar: accepted (sign_as_registrar checks no role)",
+          "3N3CnFKru81Har8doEUoBDzu6DHH9NWATGncVADuDFSt4EJtUyqHNi7G46HKyaf9143w4N2Ptrqdwkdtem9q6tVy"
+        ],
+        [
+          "Script: U signs as dean",
+          "sD9AvNdmLBFGmoBXVq9LxT9FCjMduhJ2dcXsy8DnVPe3SSXmJztnyEK3ZUodoETgZpg2TNsjvRu5MsZucwR3aqp"
+        ],
+        [
+          "Script: S creates a degree-only disclosure proof (nonce 1)",
+          "RHgGTUieiYU4jZpaEJizRbHg5ypnBt3UUYTqWCTBNZ4t57irqQQzQFagYGm8CW3dc7H65TCcBvr4dNNisJWaQPv"
+        ],
+        [
+          "Script: U revokes credential #0",
+          "36gFR1YfkF97N1moD51v8nGwxHntpJG4hsVj7PeHAbW2QnxAieUphoUHuzaS6sP9xSRFwd6fiY57XCnzX2CwfnZ2"
+        ],
+        [
+          "Script: X initializes a university naming U as its authority (the argument is stored, the PDA is seeded by X)",
+          "6y9eMYSQVehSDPVUQYZPhfdWgFQxg7TvQ6M52RPy9rxq6RRkw1XTgBSmEFbdT6vK7S63LcGUF3griVkCyQGuweP"
+        ],
+        [
+          "Script: return unspent SOL to the payer",
+          "DSmhFDLEu1RykpNAqKjecTSTRuKLzBNfStQvwh3ssxjNg3bzbQfK66rvjxPkujGzP1zJ3BcP8hWVxgzejKSLm1M"
+        ],
+        [
+          "Script: return unspent SOL to the payer",
+          "NYNcFqWrKKghRuiDYQ5efPm6BNDyTAiNjperAsXSK21A2unEGqcLdMdyqtWLDV2Cmao241wbubNaUhwYgeVyEs5"
+        ],
+        [
+          "Script: return unspent SOL to the payer",
+          "3W27j89BXuiuYWVsABQna2gumSs7EuesqGX5RZKfDY4pHmqnULCAcSr6yS7veDgw13fS4LHbBG1R7uV7Sx4tuV8K"
+        ],
+        [
+          "Script: return unspent SOL to the payer",
+          "3mJnCDTFKggjFtJrC84bNpxn7ctyR7pZdVFLvYT8wryQL8WuCvf7RHh6CZRn8oCPAXFWnQPGPdEfr6PoPbifQXMo"
+        ]
+      ],
+      "functional_evidence": "sign_as_registrar and sign_as_dean accept any signer, so the multi-sig credential can be forged by an outsider. The core trust path is broken.",
+      "ui_check": "tests/devnet/wallet_click.py uniproof (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+      "log": "tests/devnet/logs/chinesepowered-solana-cypherpunk-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    [
+      "BUG: sign_as_registrar and sign_as_dean accept any signer. SignCredential has a signer but never compares it to a registrar, a dean or the university authority, so any wallet can supply either signature. The script shows an unrelated wallet R setting registrar_signed. One outsider can call both and make any unrevoked credential verify as valid.",
+      "BUG: SignCredential doesn't tie the credential to the university it passes (no has_one = university), and nothing stops the same wallet signing twice in both roles. The \"multi-sig\" is two flags anyone can set.",
+      "BUG: initialize_university stores the authority argument but seeds the PDA by the signer. If they differ, the account can never be used: issue_credential re-derives the PDA from the stored authority and fails ConstraintSeeds, as the script shows with X naming U. The app always passes the connected wallet, so it is only reachable from a script.",
+      "create_disclosure_proof takes any credential_key and never checks the credential exists or belongs to the signing student (code reading; the script only exercised a student's own credential).",
+      "Revocation needs the university authority (has_one), which the script confirms. Revoked credentials reject new signatures and verify as false.",
+      "One university per wallet, because the PDA is seeded only by the authority. Credential metadata is stored as plain text on chain; there is no privacy layer despite the \"selective disclosure\" naming."
+    ]
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

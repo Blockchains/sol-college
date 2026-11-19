@@ -1,0 +1,49 @@
+{
+  "lab_id": "agenc-protocol",
+  "lab_version": "2e15cc8b9a12e221f5baedd269637cd977e5e9fc",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/agenc-protocol",
+    "commit": "2e15cc8b9a12e221f5baedd269637cd977e5e9fc",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agenc-protocol-2026-11-15.jsonl",
+    "test_status": "failed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agenc-protocol.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet; max-len 3000000)",
+          "2Afxexc3LzAq64Bw61MVT6WfY5n1EG4ZoSzn3RirM1Xnm4wpALynKvejGMPYxcLt5bcNttiu1gL51HoWGavBKF8b"
+        ],
+        [
+          "initialize_protocol dispute_threshold=51, fee_bps=100, min_stake=1_000_000, 2-of-3 lab multisig (config BhScAVMz\u2026; ProgramData 6FLRyNkS\u2026)",
+          "61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v"
+        ],
+        [
+          "Fetched protocol config (351 bytes): authority and treasury are the lab wallet",
+          "(no tx; read-only)"
+        ]
+      ],
+      "functional_evidence": "initialize_protocol verified; register_agent and create_task were not completed because this production build starts paused until stamp_release_surface (ProtocolPaused).",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). initialize_protocol is already done; register_agent is expected to fail with ProtocolPaused until the protocol is stamped and unpaused.",
+      "log": "tests/devnet/logs/agenc-protocol-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "The production (non-canary) build starts protocol_paused=true until stamp_release_surface; register_agent therefore failed with ProtocolPaused and create_task was not sent. The hosted IDL is a hand-derived subset (initialize_protocol, plus unverified register_agent/create_task account layouts). The on-chain program is large (~2.4 MiB)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

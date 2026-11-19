@@ -1,0 +1,94 @@
+{
+  "lab_id": "gifter-escrow",
+  "lab_version": "fb2bbfd2e101c9e2600f6f6558c3335f691d5384",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/gifter-escrow",
+    "commit": "fb2bbfd2e101c9e2600f6f6558c3335f691d5384",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/gifter-escrow-2026-11-13-take-fix.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-13",
+    "method": "tests/devnet/gifter-escrow.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Script: fund M 0.12, T 0.12, X 0.03 SOL (tx confirmed; later steps reused these wallets and did not resend the fund)",
+          "2MW9wB2HSUBQebXq7PUCRpGSkfZ4hV95CfKsi6um3bVFCe5gzsTXeK2TXvASkgGeBtFGr5DJyXEtjeeAY1dF7pH1"
+        ],
+        [
+          "Script: create mint A (the deposited token) (6 decimals)",
+          "mPajP3Y2k8CBqtnMCSdBA5G53ztgMrjiKgKvz2EAEB7crHubgXnPufBdnuvDv1Z68AvCYmfdBVzTmPTangzTRgE"
+        ],
+        [
+          "Script: create mint B (what the maker wants in return) (6 decimals)",
+          "5thvYTzotCMvwGu1qnGQHSW3mvSFbo2bCmfF6Wm8rML14x2xG8MEgcW8THaPGsYMhxNvdcdHNjJn99UiPcuLkH3k"
+        ],
+        [
+          "Script: M creates escrow #1: deposits 10 of mint A, wants 5 of mint B",
+          "5RDyzRVttAn6hPFeYjBaT7Wtbhugj7m6TvqbFhfGer7VgxwbdzF8jdxqznwWMNDSZJdxch9WswPQnm1HFuBwfsVP"
+        ],
+        [
+          "Script: T takes escrow #1 \u2014 take_and_close completes: T pays 5 of mint B, receives 10 of mint A, vault and state close",
+          "33yMgZzAaH3mMcHgSmQBRVb4FeRmu5gX6nkAMfJU2T8F8sAwqMDTVfgsVcg7MXPM28GoAo7RPC7E35NhkNSrLXZd"
+        ],
+        [
+          "Script: M creates escrow #2 asking for 10_000 of mint B (more than T holds)",
+          "jJPixCQg6zuKBfimt6fRZkvi9sg1m755EgbUSFLwatqLVkGbhXZx7tq9Tbi75VK6DRyXpuLQrQrkrrZQKRzbgxx"
+        ],
+        [
+          "Script: M refunds escrow #2 after the take was rejected",
+          "3qwx8QBC6Ai7a6ANH4PoaCqJS6DszHDXfPBFaVbN2wKZEtW9Rtu2PVmG3jChfZi4sffywm5npuJhir6RYgCiHjqJ"
+        ],
+        [
+          "Script: mint 50 of mint A to the UI test wallet for the DAS token list",
+          "4zVtHhNqMxrRMEkGN1GwcZpzVNvj8ksYU7v5WxHBtKXGQsFsENDdE2JqTjaV8ReTUJDzvTNRaRDdc1J8Tx7JyavJ"
+        ],
+        [
+          "Script: mint 50 of mint B to the UI test wallet for the DAS token list",
+          "4bocVpNLdXBKUWvvjog1xkrUBrPwzz6Nw5iQKC3QeaLbH1KcwSrZTVmoGXnkD7W9vs61Ej9KS6UP9swCx3mz4auS"
+        ],
+        [
+          "Upgrade of 45C1\u2026 that landed the PDA seed-byte fix (after an earlier deploy whose take still failed)",
+          "4HaARQTeA2dbGcQ73QuD3GDyrtd5xvZJHcDKZRKARioDdHNEjnYziDauM8d2Pi3tVZSZVhEunxkHvC872aafvs9n"
+        ],
+        [
+          "UI: token dropdown populated (18 options including mint A and mint B); create escrow giving 1 of A, wanting 1 of B",
+          "2c6QNtYzCDr2McZcXG9dsyD6e951w8EvA5QBAgwxCYG9uDjYD2a3B4xf9UV7QGk3rdJ7oDNNfex9bBHZTiMzujCk"
+        ],
+        [
+          "UI: maker cancels leftover escrow #535 (refund, vault and state close)",
+          "3GUdvNGQr6BWp28q4KLwjHVS4AU8y4wHCouiN26kpa4nwN3LkfbC3BBSB61mAFdEtjbfE1sgh2HrB9uevLsDL193"
+        ],
+        [
+          "UI: maker cancels new escrow #772 (refund, vault and state close)",
+          "2GsfGiPtjNWfe32hunPNwEX7tLqVzP6v5zUmXe8j1XmbNWJzwzYnE84QbZKnGm5EHJNHrk4TXKgYM3RgX9rPPTTD"
+        ]
+      ],
+      "functional_evidence": "After the fix, take_and_close completes on devnet: T paid 5 of mint B, received 10 of mint A, and the vault and state closed (33yMgZzA\u2026). Refund still works (script 3qwx8QBC\u2026; UI 3GUdvNGQ\u2026 and 2GsfGiPt\u2026). Before, on program 6Z5cvVUc\u2026, take aborted with an access violation (ck53TqoU\u2026). The token-dropdown query-key bug is also fixed: the hosted-build click-through listed 18 tokens including mint A and mint B, then created an escrow (2c6QNtYz\u2026) and refunded it.",
+      "ui_check": "tests/devnet/wallet_click.py gifter \u2014 log tests/devnet/logs/gifter-escrow-2026-11-13-ui.jsonl. After connect, the Create Escrow dialog's token dropdown listed 18 options including mint A (6yHzRT\u2026) and mint B (13WYoT\u2026). UI create (give 1 of A, want 1 of B) 2c6QNtYzCDr2McZcXG9dsyD6e951w8EvA5QBAgwxCYG9uDjYD2a3B4xf9UV7QGk3rdJ7oDNNfex9bBHZTiMzujCk; UI refund of leftover escrow #535 3GUdvNGQr6BWp28q4KLwjHVS4AU8y4wHCouiN26kpa4nwN3LkfbC3BBSB61mAFdEtjbfE1sgh2HrB9uevLsDL193; UI refund of new escrow #772 2GsfGiPtjNWfe32hunPNwEX7tLqVzP6v5zUmXe8j1XmbNWJzwzYnE84QbZKnGm5EHJNHrk4TXKgYM3RgX9rPPTTD. (The list is fetched once on connect, so the harness reloads after create/cancel to show the new card.) take_and_close was proven by the script (33yMgZzA\u2026); no open foreign escrow was left to Accept in this click-through.",
+      "log": "tests/devnet/logs/gifter-escrow-2026-11-13-take-fix.jsonl"
+    }
+  },
+  "limitations": [
+    [
+      "The earlier college program 6Z5cvVUc\u2026 (unfixed take) is still on devnet but is no longer the hosted app; its failing take is ck53TqoU\u2026 (access violation). This entry is the fixed program 45C1bSkF\u2026.",
+      "The Create form's token dropdown was empty because useWalletTokens used walletAddress?.toBase58 (the function) in the query key; this hosted build uses the base58 string.",
+      "The card still mentions a GFT token reward; the program has no reward-mint instruction (navbar read only).",
+      "The escrow list is fetched once when the wallet connects and does not auto-refresh after Create or Cancel; a reload shows the new or closed card. This is a UX gap, not a broken create/refund/take."
+    ]
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

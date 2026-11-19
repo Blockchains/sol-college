@@ -1,0 +1,53 @@
+{
+  "lab_id": "picassol-hackathon",
+  "lab_version": "40b6e480b3babeae8689452cfede52e946f6c617",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/picassol-hackathon",
+    "commit": "40b6e480b3babeae8689452cfede52e946f6c617",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/picassol-hackathon-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/picassol-hackathon.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Clicked an empty pixel on sol.college/dapps/picassol-hackathon/ with an injected test wallet: create_pixel",
+          "2yj2GAqcniqCBFkL2yekqVRtJk4fjKopQNvVRgY1bGCGJjZioTd9gFwMGU7fgy8CedBt6QEwy4oaxXVqy6EUhtGb"
+        ],
+        [
+          "Same click on a local copy of the same build (pixel 33,173): create_pixel",
+          "oEiRugSzpXXjSNMJGoYe1JQUuPxgYVmhkLqtwUchNwDfpEeSBxVbWGc9WHfxdW6ERHgUV2DFP7ZvGWofUBNwdha"
+        ],
+        [
+          "create_pixel (128,152) rgb(153,69,255)",
+          "2Md3npkuJzNT5m7qziNmCAsBtiNHQABzvRmmLhAqEGVjhx84uX4845ejFvQonJ6rjqC7RDrkaNFsC7xwZFvzsupM"
+        ],
+        [
+          "update_pixel \u2192 rgb(20,241,149), read back from the account",
+          "37Ri7VJHRydxi4uqHRJ57TmSSAWgmiDEdFGeMhnzVk4yo6teQpYiB29538g4fLToSh27brHxzKm7q8dubAXGnrYa"
+        ]
+      ],
+      "functional_evidence": "create_pixel landed on devnet from the hosted app. Recolour is script-verified. The points/leaderboard API is a separate backend and does not block painting.",
+      "ui_check": "Hosted UI create verified: headless Chromium + injected Wallet Standard wallet on the live sol.college page sent create_pixel from the app's own click handler (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl). Hosted UI recolour (update_pixel via click) is not yet recorded \u2014 update_pixel is verified by the program test script only (see Proof).",
+      "log": "tests/devnet/logs/picassol-hackathon-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "Hosted UI recolour not yet recorded. Points/leaderboard need the author's MongoDB backend and its /api/updateUserPoints route, which a static host can't serve (the app's POST gets 501; the pixel tx is unaffected)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

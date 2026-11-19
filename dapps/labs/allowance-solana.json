@@ -1,0 +1,61 @@
+{
+  "lab_id": "allowance-solana",
+  "lab_version": "f04b282d8e2372b41de18498933ee1000b5ac084",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/allowance-solana",
+    "commit": "f04b282d8e2372b41de18498933ee1000b5ac084",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/allowance-solana-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/allowance-solana.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy allowance as EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN on devnet",
+          "fqJnE3Uw3jxoQWgnWKTxNpAoteTbqhhFrouEDjWH8P2rz46Nuh9WsdELnvgfso9AstfAAhksJvZyk15baE3gFsZ"
+        ],
+        [
+          "init_vault (vault HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR)",
+          "aUy7KApmkrWBqJr4xF4TcbsL5Hst4pSX7A5mSTYZhM5qCWrP1oSaJdv2r6rocGmBwMyBMNBS2t4FERZmP3joqHQ"
+        ],
+        [
+          "deposit (first fund, 5_000_000 lab tokens; later top-ups left 15_000_000 before the final pay)",
+          "2VP1LKULyRF3VgbysHGHrw7G4YymBoxKZkCh9taZDbA8nLFypzewWeRDS5UuJ9BHUGv1Nhz43vayPeSpobKmuCXA"
+        ],
+        [
+          "create_session for agent 5v4G9oek\u2026 / merchant Gg25WLuS\u2026 (session FNF37TaX\u2026)",
+          "47utkXeHyTxuBc4euSVngAYy7e5YLGBv1aGHjG3V4WL2ecXFKRRJoTxwoAU7JALs79rms2ouoR839HEwLyWsHPjk"
+        ],
+        [
+          "agent_pay 1_000_000 to the listed merchant",
+          "4yvW5qbW8oqyWxfYWnb9Dv73y9b9jM5ygi9qoqCBnQkrf7yhZdmKBZhjy14oxYkryuQzoaqpbTQNDAfXNcAwFVxy"
+        ],
+        [
+          "withdraw remaining 14_000_000; vault ATA ended at 0",
+          "zePTz5pCujNkzRdcHT9PaTKTCcyLkrTtoGUYyUxinTfuzZ2yqmXNYqTFPZgFdP8Vzcw5iWQeemLgTNcRzWGbpHi"
+        ]
+      ],
+      "functional_evidence": "init_vault aUy7KApm\u2026 wrote vault HBqti9tX1jgS572Goywr59wsYSESE2jnPkffgy7sLqnR. After deposits totaling 15_000_000, create_session 47utkXeH\u2026 bound agent 5v4G9oekTbebgXqRZzhngZm1GpDJTYVRzJtM2GWwVqwG to listed merchant Gg25WLuSmoYJk4HBHR5XJpuU317uyj5H2t8H3PUzc7z4. agent_pay of 2_000_000 was rejected (OverRequestCap). agent_pay 4yvW5qbW\u2026 paid that merchant exactly 1_000_000. withdraw zePTz5pC\u2026 returned 14_000_000 to the owner and left the vault ATA at 0.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and agent keys through tests/devnet/allowance-solana.mjs.",
+      "log": "tests/devnet/logs/allowance-solana-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "The 8004/ATOM unlisted-merchant reputation path and pending-approval vouchers were not exercised. The official program id was not reused. Extra deposits during client retries left 15_000_000 in the vault before the successful pay+withdraw."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

@@ -1,0 +1,57 @@
+{
+  "lab_id": "agenttrust",
+  "lab_version": "2c7154399c41c1f205d463faebf8e483a1f4a4d3",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/agenttrust-sol",
+    "commit": "2c7154399c41c1f205d463faebf8e483a1f4a4d3",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agenttrust-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agenttrust.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "4M75zREfJk8DijoRmuW9yYSPyHavjvN3a22xsfi9MSwNqRUnzQN7gjKc6zzAou9VwwYjENmTpU84ct4rosZ6Ykni"
+        ],
+        [
+          "issue_credential type campus-scout for the lab wallet as agent (credential 9QXpx6HL\u2026)",
+          "45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt"
+        ],
+        [
+          "Fetched credential: agent and issuer are the lab wallet, type=campus-scout, revoked=false",
+          "(no tx; read-only)"
+        ],
+        [
+          "get_credential on the same account (still valid)",
+          "3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae"
+        ],
+        [
+          "revoke_credential by the issuer; fetched revoked=true",
+          "5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw"
+        ]
+      ],
+      "functional_evidence": "issue_credential wrote credential 9QXpx6HLdBZf2q6rYarS3ZPApgPfM8eSLj5kXzAH1zG1 for type campus-scout; get_credential succeeded while valid; revoke_credential set revoked=true; AlreadyRevoked rejected get and a second revoke; a 33-byte type was rejected as a PDA seed.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same issue, get and revoke instructions were sent with the lab wallet through the IDL client in tests/devnet/agenttrust.mjs.",
+      "log": "tests/devnet/logs/agenttrust-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "The hosted IDL is hand-derived from source (anchor idl build failed in this toolchain) and was confirmed by the verifying transactions. UnauthorizedRevoke was not exercised (would need a second wallet)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

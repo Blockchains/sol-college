@@ -1,0 +1,69 @@
+{
+  "lab_id": "trustrail-pipelines",
+  "lab_version": "80a56ed03b5f12f22da0889efebdccdda8d26ce5",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/trustrail-pipelines",
+    "commit": "80a56ed03b5f12f22da0889efebdccdda8d26ce5",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/trustrail-pipelines-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/trustrail-pipelines.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy trustrail_pipelines as 5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+          "2DokmjeReEeo9qX8Frbq1C1fH1H66LLvi1T9bhd2kjnSC3FGThxDTuQDN8iRz7QfxeoH9sf8FVRmzbePU6aUkiir"
+        ],
+        [
+          "Deploy mock_swap as 6iz6J7eBmrukLmVkw8hqx3EQUSwYrFsHtTFtKoc4sabS",
+          "3Lc6LE8q8m9mCvu1WZj6NLR3YCpzk7jsNF8vhZjrGQdojx6smwvtnCkcueh7rJS3GqVun7RJyrgsiRSpm26AqJKW"
+        ],
+        [
+          "initialize_mock_pool 10_000_000 of output mint 7xP1NAVv\u2026",
+          "4ke8gYnRPUkcZnE1LNTJzfYqptYWEufs7P6gxsa48u7FSenCrGjAji9JsR25ZucohhNPYQnXboVtds6EgBH8WrYb"
+        ],
+        [
+          "create_commitment 1_000_000 input (BJMSdujx\u2026) min_output 1_000_000 (commitment Gu9K13nu\u2026)",
+          "5iTu1jSzsHAJ7BkYLwhGBs6Gz7JR3h1Se24YToZHgjpybh5kbu1Nz3xH6NstokVJbAFM9AWe3XWAABqtzb9v4eEU"
+        ],
+        [
+          "withdraw_for_swap into delegated staging 4uVMKC2m\u2026",
+          "MwyX2md6tSizRCZwSvpaCS8JZSJV1twvvHEGXTECGRj5tbKkxmweQtDpKKcJLpiTb41QH6NTY9F8UkTBuQb5PDY"
+        ],
+        [
+          "mock_swap_execute 1:1 into commitment output ATA (1_000_000)",
+          "5vzHuKg6rcuz5uj7HoZ5GwXKbriJhjUJGq2QfE2U8mGY6Z8N4ZjUEvG4QeetYF5beXMXSQmjDJcw9PDLoLdSncQL"
+        ],
+        [
+          "submit_proof set status Passed (verified=true) from the output ATA balance",
+          "2PD31SxGHrv9dMTa2LjtSmSoysABHWrv7TH3GbecmTeFrXAaKYzu99nTAGGGn7QqhGfMuXA9mnaB4GkcZyk59NCy"
+        ],
+        [
+          "release paid the payer +1_000_000 output and closed the commitment ATAs; status Released",
+          "2HQsUUms3w4JSwnkXxVDJypFuqsnrzJEe5bgzxtMy2c3hVkBaypKi67g8HUaoKYE8pKtzkWFw4fkiheirznVoBHn"
+        ]
+      ],
+      "functional_evidence": "create_commitment wrote commitment Gu9K13nugJNpoRGAmetoYGNjhK6B7pUsCTLE6yKVPznp and escrowed 1_000_000 of mint BJMSdujx\u2026. withdraw_for_swap moved the escrow into staging 4uVMKC2maMbRyHcAroqv8TcgkiiDCHP9FMaRrDBuECZ9. mock_swap_execute credited 1_000_000 of mint 7xP1NAVv\u2026 to the commitment output ATA. submit_proof 2PD31SxG\u2026 set status Passed and verified=true from that on-chain balance. release 2HQsUUms\u2026 left the commitment Released and paid payer m4AcRjHc\u2026 exactly +1_000_000 output (payer input \u22121_000_000). Recreating the same task_id was rejected.",
+      "ui_check": "The hosted page is the generic IDL console pointed at trustrail_pipelines (Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the lifecycle was sent with the lab and tester wallets through tests/devnet/trustrail-pipelines.mjs. The mock_swap venue is a separate program.",
+      "log": "tests/devnet/logs/trustrail-pipelines-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "refund, cancel and recover were not exercised. mock_swap is a disclosed 1:1 transfer stand-in, not a real AMM. Official program ids were not reused. Hosted IDLs are hand-derived subsets confirmed by the verifying transactions."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

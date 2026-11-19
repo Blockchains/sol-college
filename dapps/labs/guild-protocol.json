@@ -1,0 +1,77 @@
+{
+  "lab_id": "guild-protocol",
+  "lab_version": "c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/guild-protocol",
+    "commit": "c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/guild-protocol-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/guild-protocol.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "5ohSK7ZKUZbyjnimhws1RDam7RXXGmvQ3CmR4zJgHFvx8ER9w85vdkYAFSTGP8JeztPyGmnSQbLCW95N2S6mGof3"
+        ],
+        [
+          "initialize with min_bond=1_000_000 lamports, fee_bps=250, stake mint A9keuhfy\u2026 (config 2w1AbEvB\u2026)",
+          "7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq"
+        ],
+        [
+          "Fetched config: authority is the lab wallet, min_bond=1000000, fee_bps=250, agent_count=0",
+          "(no tx; read-only)"
+        ],
+        [
+          "register_agent handle campus-scout with a 1_000_000 lamport bond (agent 27FKpZrz\u2026, vault FYLK3n8u\u2026)",
+          "52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw"
+        ],
+        [
+          "Fetched agent: owner=lab wallet, handle=campus-scout, bond=1000000, active=true, trust=probation",
+          "(no tx; read-only)"
+        ],
+        [
+          "post_job bounty=2_000_000 lamports, required_stake=0, min_trust=probation (job 4XALzcMj\u2026, vault 9QtHZsVD\u2026)",
+          "2PW8f7mYoxQuikZhZ6PLFKEy4epxf8e5y3SiR8hGGZtrSwwSarB3gjgjpXnsXzpSc1uBkY7sH6TG3VoWaBNtgGLt"
+        ],
+        [
+          "claim_job by the lab campus-scout agent",
+          "5LdY5kFZWSbs5eATep2BDFkqD6h1xi6MqX9KyY5oEgjiuLFwTU2zzhLZWTMRNisA9zodnW6BMy8AyGPRRxut7HQr"
+        ],
+        [
+          "submit_work with a lab delivery URI",
+          "5jhZw943uVJPq67ktLauy46acfksES7CBmX7XDgw22FcjpHWbkcdfX75J3bgGcNkdfDwoiet5ko1E9NL5PrwYgYk"
+        ],
+        [
+          "Upgraded the program with an invoke_signed system-transfer payout fix",
+          "2tUpRAi7mi6h1j1QfMaeKfG1Vv5qtMPsCTdHUBB4QHaubV6zi2NNxoUjCzye9ZrY6LCyh4R3dTrY8bp5UC84W3G1"
+        ],
+        [
+          "review_job approved job 0: vault 9QtHZsVD\u2026 emptied, status=Accepted, jobs_completed=1, reputation=10, payout=1_950_000 fee=50_000",
+          "24ey28MbtrDiF9GDVwT8SVRw5azXgvcby5B7BzTNifcLdCNJZJxBJpTUdYUNvq22eWHWSUpg6NDdcQQTaZKH8aGi"
+        ]
+      ],
+      "functional_evidence": "initialize, register_agent, post_job, claim_job and submit_work had already landed; after upgrading with an invoke_signed vault-payout fix, review_job approved job 4XALzcMjWXderNEnEjek71ZdpAsRfgKAtPoB7JR4ufj5, emptied vault 9QtHZsVDMXu89MJsffipMq3TXaJz88rKnA9PNWSdpWPL, paid 1_950_000 to the worker and 50_000 as a protocol fee, and set status=Accepted / jobs_completed=1.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize through review_job were sent with the lab wallet through the IDL client in tests/devnet/guild-protocol.mjs.",
+      "log": "tests/devnet/logs/guild-protocol-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "cancel_job and top_up_bond were not re-exercised after the upgrade (cancel_job was patched the same way). The lab wallet was poster, worker, reviewer and treasury. A lab patch replaces direct lamport mutation of the system-owned vault with invoke_signed system transfers; the same fix is offered upstream as https://github.com/StackedLines/guild-protocol/pull/1"
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

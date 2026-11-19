@@ -1,0 +1,69 @@
+{
+  "lab_id": "trust-protocol",
+  "lab_version": "0e8b8dc0eaf91060be05bb405a392645f8ec9289",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/trust-protocol",
+    "commit": "0e8b8dc0eaf91060be05bb405a392645f8ec9289",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/trust-protocol-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/trust-protocol.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "MrgKugdm6QvUpNt8EKcMLMxz9oAzBiA4e4evgtnskKFJy871dLEhdj3u5Q8QMewq3rWrBLmKQcJFoKScGcwQ6Kn"
+        ],
+        [
+          "Created a 6-decimal SWORN mint (DwHZekzd\u2026) with the lab wallet as mint authority",
+          "65f9z8GgYLTGBXy5Lux2LhPuFgQgnFY7nC4B21Rh6L2UxFfxRfYZTm92kHshtvTZgv7iBXyepbWm1jrbAiYg43HL"
+        ],
+        [
+          "initialize with min_identity_bond=3_000_000 and max_identity_bond=5_000_000 (protocol-config A39izGrY\u2026, insurance-pool 2G6iBe6V\u2026)",
+          "22qZNkHLm4ku1xnFsqjojAByv4zntWb2f3Vag3koAvi1WXqb5W55EatQLoQtNcihKdNTd53WcPDFKVF7VJ7woAvn"
+        ],
+        [
+          "Fetched protocol_config: admin is the lab wallet, sworn_mint matches, bonds 3000000/5000000, governance_phase=0",
+          "(no tx; read-only)"
+        ],
+        [
+          "Minted 5 SWORN (6 decimals) to the lab wallet ATA 8j29fgaV\u2026",
+          "5mXbW3sguNGp85RPwemLHkgPqVqVA1aJhSQVvzgCofzsqrEBXxoaNunxDkgS48c8itUNsxK8Rv3M43Jcu6Bb2NUs"
+        ],
+        [
+          "setup_bond_vault created the v1 bond-vault token PDA",
+          "4Cat1QhyVQdpfcCZMugTiHz9KrxZwPVN831DDfvhJCXxMsb8J7MfZrVoL7XGubTnwVW9RRfsRd5ULJVaPZSaLKbY"
+        ],
+        [
+          "migrate_bond_vault created bond-vault-v2 (same SWORN mint) and closed the v1 vault",
+          "3qU8KyYivgLCWWqrpzkCfqLc4chqJBDCKXFdWQcbHTBWgcKmmS8DkAzty2tvkgMq2GLSVNw7i6QmwNa3iC2WBhEu"
+        ],
+        [
+          "register_agent with bond_amount=3_000_000 created identity 3dNYaVyn\u2026; identity_bond=3000000, matured=false",
+          "51V4vmiv51i9LgXStPFiQZAAA5PLrKWS3hWeZhP6FugJxd4aczotFtBUYaDKWxmqU2npkEwAuxh2FwVMsfvY7AFT"
+        ]
+      ],
+      "functional_evidence": "initialize landed and protocol_config was read back; setup_bond_vault and migrate_bond_vault created the v2 bond vault; register_agent locked a 3 SWORN identity bond and the AgentIdentity account was read back; a second register_agent was rejected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit initialize or later instructions). It was not driven in headless Chromium in this run; the same initialize instruction was sent with the lab wallet through the IDL client in tests/devnet/trust-protocol.mjs.",
+      "log": "tests/devnet/logs/trust-protocol-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "Contract, dispute and insurance instructions were not sent. The below-min bond path was attempted with a different signer but used the lab ATA, so that failure is not a clean InvalidBondAmount proof. Bonds are locked in the vault."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

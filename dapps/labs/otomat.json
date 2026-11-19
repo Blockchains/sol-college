@@ -1,0 +1,49 @@
+{
+  "lab_id": "otomat",
+  "lab_version": "da2c4c84fc27aa185cfe01baeb1c029010a49d96",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/otomat",
+    "commit": "da2c4c84fc27aa185cfe01baeb1c029010a49d96",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/otomat-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/otomat.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy otomat-rail as 343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA on devnet",
+          "97vMcQVJXkYQXy4HBPe3eEV4PneSVuC14n7E77G8esXKr6j5qjf3Jtm6VKhkDBGq5YJSqKQsxvk9kMX32d68HH1"
+        ],
+        [
+          "open_channel deposit 2_000_000 (channel 3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t, escrow ATA 9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw)",
+          "34PspCsJptuEEDiN4ZgmjUfe6NEWRQouuJDF9ou8kLsaW9xJqGWPW5yV8QV1qHXBBF9Z6MYfzsEk75iV6ubTvKfw"
+        ],
+        [
+          "close_channel paid payee 4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8 exactly 1_000_000, refunded 1_000_000, and closed the channel",
+          "4AQp5jvYtT3LsLHgArLVNCwp86kWULAwLVEBALZVwCUMG5y9KoMR2fzsk3EBn3XGPSZwgmwm7ieV7hUnnuGZyQPm"
+        ]
+      ],
+      "functional_evidence": "open_channel 34PspCsJ\u2026 locked 2_000_000 lab tokens in escrow ATA 9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw (channel 3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t). close_channel without Ed25519 was rejected (MissingEd25519Instruction). close_channel 4AQp5jvY\u2026 with a payer-signed otomat/v2/check paid payee 4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8 exactly 1_000_000, refunded 1_000_000 to the payer, and closed the channel and escrow ATA.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and payee keys through tests/devnet/otomat.mjs.",
+      "log": "tests/devnet/logs/otomat-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "dispute_channel, timeout_reclaim, commit_receipt, and facilitator bonds were not exercised. The official program id was not reused. The lab used the payer as the facilitator."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

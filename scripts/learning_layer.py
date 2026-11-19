@@ -105,11 +105,11 @@ def community_section_html(
   <div class="inner">
     <p class="eyebrow">Community</p>
     <h2>Practice with others — without inventing a social network</h2>
-    <p class="lead">Sol.College does not host a forum feed or private chat on this site. Community today means structured GitHub issues, published findings, and the improvement loop.</p>
+    <p class="lead">Sol.College does not host a forum feed or private chat on this site. Community today means structured GitHub issues, published findings, and the improvement loop. Admissions are not open yet.</p>
     <div class="start-routes community-routes" role="list">
       <a class="start-route" role="listitem" href="{E(waitlist)}">
-        <b>Join a learner cohort</b>
-        <span>Open a waitlist issue so we can invite you when the next cohort forms.</span>
+        <b>Register launch interest</b>
+        <span>Open a waitlist issue to be notified when admissions open. This is not enrolment.</span>
         <em>GitHub issue template</em>
       </a>
       <a class="start-route" role="listitem" href="{E(commit)}">

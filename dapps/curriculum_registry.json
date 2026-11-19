@@ -1,0 +1,1543 @@
+{
+  "schema": "sol.college.curriculum_registry/v1",
+  "generated_at": "2026-11-19T05:27:55Z",
+  "counting_rules": {
+    "published_only_for_learning_totals": true,
+    "guided_and_debug_counted_separately": true,
+    "practice_environments_separate_from_content": true,
+    "previews_excluded_from_learning_totals": true,
+    "foundations_release_candidates_listed_separately": true
+  },
+  "counts": {
+    "guided_lessons": 37,
+    "debug_challenges": 10,
+    "core_path_lessons": 16,
+    "previews": 0,
+    "foundations_release_candidates": 7,
+    "practice_environments_full": 37,
+    "live_apps": 47
+  },
+  "entries": [
+    {
+      "content_id": "lesson:poe-solana",
+      "title": "Proof of Estimate: an on-chain crowd forecast",
+      "slug": "poe-solana",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "Phantom on Devnet with practice SOL (about 0.1 SOL).",
+        "Complete [NameGen](/lessons/c4-comets-todor-edward-andrei/) or already understand per-wallet PDAs \u2014 Proof of Estimate is the next Stage 1 step on the [learning path](/lessons/path/). Some comfort reading Rust `u16`/`u64` arithmetic helps for the underflow exercise."
+      ],
+      "learning_objectives": [
+        "Follow a program-owned mint whose authority is a PDA, and a user account that is created on the first instruction.",
+        "See a stake move from a user's token account into an escrow, as a CPI to the Token Program.",
+        "Recompute a weighted running average, and fix an underflow when a range is reversed."
+      ],
+      "estimated_duration": "40 min",
+      "path_stage": 1,
+      "path_order": 3,
+      "associated_lab_version": {
+        "program_id": "6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5",
+        "fork_commit": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:picassol-hackathon",
+      "title": "Picassol: a 200\u00d7200 pixel canvas where every pixel is an account",
+      "slug": "picassol-hackathon",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "A Phantom (or Solflare) wallet set to Solana Devnet, and enough practice SOL from [faucet.solana.com](https://faucet.solana.com) for the estimated costs (about 0.05 SOL is typical for this lesson). Faucet availability and timing vary; faucet access is not graded.",
+        "If you are new to Solana, complete Foundations Lessons [001](/lessons/first-transaction/)\u2013[007](/lessons/protecting-state-transitions/) first (start at Lesson 001). If you already understand execution vs commitment, accounts, and safe recovery habits, you may start here as Stage 1 on the [learning path](/lessons/path/)."
+      ],
+      "learning_objectives": [
+        "Derive a Program Derived Address from seeds you choose \u2014 here, a pixel's x and y as single bytes.",
+        "Explain why each pixel is its own 14-byte account, and what those 14 bytes hold (discriminator, position, colour, bump).",
+        "Tell create (`init`) from update (re-derive the same PDA from stored fields), and find the `PixelChanged` event in the logs."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": 1,
+      "path_order": 1,
+      "associated_lab_version": {
+        "program_id": "GsFGX3pzdgzugAfjcxH9Lbbz2aPZgXyvBoXkNnmxXwuY",
+        "fork_commit": "40b6e480b3babeae8689452cfede52e946f6c617",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:trustlock",
+      "title": "TrustLock: a dead man's switch for SOL",
+      "slug": "trustlock",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "Two Phantom accounts (owner and beneficiary) and about 0.2 Devnet SOL in the owner's.",
+        "Complete [gree](/lessons/gree/) or equivalent PDA/CPI familiarity \u2014 TrustLock is the next Stage 1 step on the [learning path](/lessons/path/). Clock sysvar and escrow close are new here."
+      ],
+      "learning_objectives": [
+        "Use the Clock sysvar to enforce a deadline the frontend cannot override.",
+        "Follow SOL into an escrow PDA and back out, and see `close` return the rent to a chosen wallet.",
+        "Tell the two guards apart: the beneficiary cannot claim early, and the owner cannot check in after the deadline."
+      ],
+      "estimated_duration": "40 min",
+      "path_stage": 1,
+      "path_order": 5,
+      "associated_lab_version": {
+        "program_id": "6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP",
+        "fork_commit": "18155f4de32e6a15afef5de57d1d8715b81c7604",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:gree",
+      "title": "gree: mint a 1-of-1 NFT with Metaplex metadata in one instruction",
+      "slug": "gree",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "Phantom on Devnet with practice SOL (about 0.1 SOL \u2014 minting creates several accounts).",
+        "Complete [Proof of Estimate](/lessons/poe-solana/) or equivalent CPI familiarity \u2014 gree is the next Stage 1 step on the [learning path](/lessons/path/)."
+      ],
+      "learning_objectives": [
+        "Follow a single instruction that mints one token and, in the same transaction, makes a CPI to Metaplex to attach name, symbol and URI.",
+        "Derive the metadata PDA the same way Metaplex does, and confirm the mint's supply is 1 and its mint authority is empty.",
+        "See why a program signs a CPI as a PDA (`invoke_signed`) when it is the mint authority."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": 1,
+      "path_order": 4,
+      "associated_lab_version": {
+        "program_id": "CZzz3hZ7P6KcvHJ6yPpCg2hGstTtcrYw6KGLqvvrd9vK",
+        "fork_commit": "7ef8c89e9b317f2f7f664588b1c58aaac7b816dd",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:web3-splitter",
+      "title": "Web3 Splitter: split token payments by percentage (and learn PDA signing from two real bugs)",
+      "slug": "web3-splitter",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on devnet and a little SOL. You will also need to be comfortable with token accounts.",
+        "[gree](/lessons/gree/) (CPI to the Token Program, PDA signing) and [Friendstake](/lessons/friendstake/) (missing account checks)."
+      ],
+      "learning_objectives": [
+        "Follow an SPL-token vault that splits deposits by percentage, with a PDA as the token-account owner.",
+        "Reproduce, from the recorded transactions, why `claim` only works for the creator (a seeds / signer mismatch).",
+        "See a second, related bug in how the PDA is asked to sign, and write a local test that proves the fix."
+      ],
+      "estimated_duration": "50 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1",
+        "fork_commit": "ced1cca04389833d27b6bd47cdc07c956a744759",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:orboracle-solana",
+      "title": "OrbOracle: a stake-weighted, time-decayed price oracle",
+      "slug": "orboracle-solana",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "Phantom on Devnet with about 0.1 practice SOL, plus a 0-decimal weight token mint for Create/Deposit.",
+        "Complete [Novengrid staking](/lessons/colosseum/) \u2014 OrbOracle closes [stage 3](/lessons/path/#stage-3). This is an oracle feed other programs could read, not a sentiment market like sentient.send."
+      ],
+      "learning_objectives": [
+        "Run a stake-weighted price oracle: submit a price, see the aggregate, and watch old submissions fade with time.",
+        "Recompute the aggregate from the recorded submissions, and find a submitter's reward.",
+        "See a lock release and a quorum that may not be a real percentage."
+      ],
+      "estimated_duration": "70 min",
+      "path_stage": 3,
+      "path_order": 16,
+      "associated_lab_version": {
+        "program_id": "3xqEVjy3zVjVnyb4qBa5xoBAQ9x4JhHowcV6JPQWXXqx",
+        "fork_commit": "3581bf852fc1028990b179c24ba6f33adfb94a6f",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:sentient-send",
+      "title": "sentient.send: a winner-takes-all sentiment market where the side with the most SOL wins",
+      "slug": "sentient-send",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "Phantom on Devnet with about 0.1\u20131+ practice SOL (create needs \u22651 SOL stake).",
+        "Complete Stage 2 ending at [NAIM](/lessons/naim/) \u2014 sentient.send opens [stage 3](/lessons/path/#stage-3). [TrustLock](/lessons/trustlock/) (Clock, close) is the closest Stage 1 escrow parallel."
+      ],
+      "learning_objectives": [
+        "Open a winner-takes-all market with a deadline, several sides, and a pool that the winning side splits by stake.",
+        "Compute a payout from the recorded amounts before you claim it, and see where fees go.",
+        "Hit a 32-byte seed limit, and a tie, on purpose."
+      ],
+      "estimated_duration": "60 min",
+      "path_stage": 3,
+      "path_order": 14,
+      "associated_lab_version": {
+        "program_id": "22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5",
+        "fork_commit": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:ciphervault",
+      "title": "CipherVault: a SOL multisig vault (and the account checks it forgot)",
+      "slug": "ciphervault",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on Devnet with about 0.1\u20131.1 practice SOL for the creator. A second wallet is useful for the other-owner steps.",
+        "Complete Stage 1 ending at [Gifter escrow](/lessons/gifter-escrow/) \u2014 CipherVault opens [stage 2](/lessons/path/#stage-2). Elective lessons on missing `has_one` ([Friendstake](/lessons/friendstake/), [UniProof](/lessons/chinesepowered-solana-cypherpunk/)) help the audit section but are not required to walk propose \u2192 approve \u2192 execute."
+      ],
+      "learning_objectives": [
+        "Walk a multisig: propose, approve, execute when the threshold is reached.",
+        "Find the account checks that are missing at `execute` and at `approve`, each proven on devnet.",
+        "Fix the leftover-accounts path so a proposal can only move funds from its own vault, and only once."
+      ],
+      "estimated_duration": "55 min",
+      "path_stage": 2,
+      "path_order": 7,
+      "associated_lab_version": {
+        "program_id": "DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG",
+        "fork_commit": "ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:colosseum",
+      "title": "Novengrid SOL staking: a time-locked SOL vault that pays per-second rewards",
+      "slug": "colosseum",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "Phantom on Devnet with about 0.1 practice SOL.",
+        "Complete [sentient.send](/lessons/sentient-send/) \u2014 Novengrid staking is next on [stage 3](/lessons/path/#stage-3). [TrustLock](/lessons/trustlock/) (Clock) helps. Bring a calculator for the reward exercise."
+      ],
+      "learning_objectives": [
+        "Follow a time-locked SOL vault whose rewards grow every second, from the Clock.",
+        "Predict a reward from the recorded rate and elapsed time, and see what re-staking does to unclaimed rewards.",
+        "Spot an overflow at a realistic stake size, and the way principal and rewards share one balance."
+      ],
+      "estimated_duration": "60 min",
+      "path_stage": 3,
+      "path_order": 15,
+      "associated_lab_version": {
+        "program_id": "JxbbWRxjVcbAE98o13Yo2EFFEP1paTX8q8SvuPvSaDL",
+        "fork_commit": "783b1e1122ddcb939916fef2d108e3359b23f16a",
+        "verified_date": "2026-11-10",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:stakes-main",
+      "title": "stakes.wtf: stake a token for gov tokens, grow their value with bribes, unstake into linear vesting",
+      "slug": "stakes-main",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "Phantom on devnet, plus whatever test token the app mints for you.",
+        "[Colosseum](/lessons/colosseum/) (staking, time) and [gree](/lessons/gree/) (token CPIs). This is the densest token-economics lesson."
+      ],
+      "learning_objectives": [
+        "Stake a token, receive gov tokens, and watch an exchange rate move when a bribe is added to the pool.",
+        "Unstake into a linear vest, and compute how much is withdrawable at a given time.",
+        "Find why a UI bribe didn't land where the label said, and repair a Create Pool path that fails."
+      ],
+      "estimated_duration": "70 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD",
+        "fork_commit": "52cb0dacc45842c56994f3dc7ae53529b412474a",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:votara",
+      "title": "Votara: on-chain DAO proposals with one vote per wallet, quorum and an approval threshold",
+      "slug": "votara",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on devnet and about 0.1 devnet SOL.",
+        "Stage 1, especially [TrustLock](/lessons/trustlock/) (Clock) and [PulseFund](/lessons/pulsefund-sol/) (one PDA per wallet). This is the first lesson in [stage 2](/lessons/path/#stage-2)."
+      ],
+      "learning_objectives": [
+        "Read a DAO flow: register, create a proposal (counter-numbered PDA), vote once, finalize after the period.",
+        "See a `has_one`-style authority check at finalization, and a 'one vote per wallet' rule enforced by a PDA.",
+        "Spot a quorum that is compared to a raw count instead of a percentage, and a proposal id you can block."
+      ],
+      "estimated_duration": "45 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "CwcPGjsQLgCkLsRtmhdypJLCqynT2BnzMAxaBpgcRuLt",
+        "fork_commit": "c92963d2275ddce5e854c2e0db5be83c7fcf4ca5",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:barn",
+      "title": "Barn / OpenGrants: grant programs with milestone reviews and capped payouts",
+      "slug": "barn",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Two wallets (sponsor and developer) and about 0.05 SOL in the sponsor's.",
+        "Stage 2 up through [Votara](/lessons/votara/) (counters, roles). This is the most structured state machine so far."
+      ],
+      "learning_objectives": [
+        "Walk a tree of counter-numbered PDAs: profile \u2192 program/project \u2192 grant \u2192 milestone, each derived from its parent and a count.",
+        "See a payout cap enforced in one line: `paid_out + amount \u2264 approved_amount`.",
+        "Find, and fix, `reject_grant_milestone` calling `accept_milestone()` \u2014 proven on devnet, where the 'rejected' milestone is Accepted."
+      ],
+      "estimated_duration": "55 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "EmyKYV3hFaFw4znLhGSTG6Eo4QGadVb6TnkvWYYm8X77",
+        "fork_commit": "5b7e88375c461421feb2df4d2a8aaabb12dfa0fd",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:hackathon-prediction-market-solana",
+      "title": "CS2 Prediction Market: YES/NO tokens on constant-product curves, resolved by an admin",
+      "slug": "hackathon-prediction-market-solana",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "Phantom on devnet and about 0.1 SOL. You will create your own market (trading is whitelist-gated to the creator by default).",
+        "The rest of the path, especially [sentient.send](/lessons/sentient-send/) (markets) and [Friendstake](/lessons/friendstake/) (vault PDAs). This is the last lesson: curves, fees and a shared vault."
+      ],
+      "learning_objectives": [
+        "Trade YES and NO tokens on two constant-product curves, and recompute a recorded buy and sell from the reserves.",
+        "See a single global vault holding every market's SOL, and a 0.2% LP fee that is credited to reserves but never taken from the buyer (proven on devnet).",
+        "Name the two missing instructions \u2014 claim, and a withdraw that actually transfers \u2014 and the 1232-byte `create_market` limit."
+      ],
+      "estimated_duration": "80 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH",
+        "fork_commit": "33bc5ddffd7342720ff2aa1742fee7937c151641",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:pulsefund-sol",
+      "title": "PulseFund: one-PDA-per-wallet SOL crowdfunding with an admin-only withdraw",
+      "slug": "pulsefund-sol",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "Phantom on devnet and about 0.3 devnet SOL (the 9,000-byte campaign costs about 0.046 SOL of rent, and Contribute sends 0.2 SOL).",
+        "Lesson 1, [Picassol](/lessons/picassol-hackathon/), or the same idea: you know what a PDA is and how seeds make an address unique."
+      ],
+      "learning_objectives": [
+        "Create a PDA seeded only by a wallet, so each wallet can have exactly one campaign.",
+        "Move SOL into a program-owned account with a System Program transfer, and take it back out by editing lamports directly.",
+        "Use the rent-exempt minimum as a withdrawal floor, and spot a frontend that talks to the wrong account."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "DMZWuAaGAS8wKmdk7x6SczU5JCSrUWaYuZi7HKt6N6xe",
+        "fork_commit": "50e0873dbf4e3c0136b8cc195e0e6dbda418f5b1",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:chinesepowered-solana-cypherpunk",
+      "title": "UniProof: university credentials as PDAs, with registrar and dean sign-off",
+      "slug": "chinesepowered-solana-cypherpunk",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on devnet and about 0.05 SOL.",
+        "[Friendstake](/lessons/friendstake/) immediately before this: you have just seen a missing `has_one` on a payee. Here the same idea is about *who may set a flag*."
+      ],
+      "learning_objectives": [
+        "Compare two instruction structs side by side: `issue` and `revoke` locked with `has_one`, and `SignCredential` with a signer that is never compared to a role.",
+        "Use a counter-numbered PDA (`[\"credential\", university, n]`) and walk a university's credentials.",
+        "Explain a seed mismatch: a university stored a different authority than the key it was derived from, and became unusable."
+      ],
+      "estimated_duration": "50 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "3VR7pfgtaE1oeEeHC1ouLUXDAEnh9nhaP1D5Ex3gWcUD",
+        "fork_commit": "da92087162570fa502513579c33f596bdb1edc38",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:friendstake",
+      "title": "Friendstake: peer-to-peer bets with a named judge and a PDA-signed vault",
+      "slug": "friendstake",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on devnet and about 0.05 SOL. With one wallet, name yourself as opponent and judge, as the click test did.",
+        "[TrustLock](/lessons/trustlock/) (escrow, close) and [PulseFund](/lessons/pulsefund-sol/) (SOL in and out). This lesson is about *who the program pays*."
+      ],
+      "learning_objectives": [
+        "Follow a two-account design: a program-owned Bet PDA for state, and a system-owned vault PDA that holds only SOL and signs transfers with its seeds.",
+        "See `has_one` correctly lock `take` and `settle` to the named opponent and judge.",
+        "Find the three missing payee checks, each proven on devnet with a measured SOL amount."
+      ],
+      "estimated_duration": "50 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "s9S66SyufvxbkshHCAZZKhcaAFHrYL2s6RS85KfJsZi",
+        "fork_commit": "0364ee38a136df30647abf88a35c753358cff4ce",
+        "verified_date": "2026-11-10",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:devos-decentralized-voting",
+      "title": "DeVos: on-chain elections with an allow-list, named positions and a close-to-tally step",
+      "slug": "devos-decentralized-voting",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "Phantom on devnet and a little devnet SOL.",
+        "[Votara](/lessons/votara/) immediately before this: you have just seen on-chain voting with a VoteRecord PDA per (proposal, voter). Here one Election account holds the allow-list, the positions and the votes, and grows with realloc. This is still [stage 2](/lessons/path/#stage-2)."
+      ],
+      "learning_objectives": [
+        "Create a named election PDA, with space computed from maxima, that starts closed and holds positions, candidates, the allow-list and every vote in one account.",
+        "Walk the recorded path: add positions (each starts with Abstain), add candidates, open, vote once per position, close, and store winners with get_winner.",
+        "Spot that tally_votes only writes the program log, that toggle_election has no finished state, and that the hosted UI never opens the election or adds voters."
+      ],
+      "estimated_duration": "50 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "2gLQPUtWM7W7zbJnhRfxFHUgpdvCdQsSof7SUiLjQqY2",
+        "fork_commit": "1e890acf8b5c0483a2f30073c2cd1e3a4aa14a49",
+        "verified_date": "2026-11-13",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:gifter-escrow",
+      "title": "Gifter escrow: accounts, token swaps and refunds",
+      "slug": "gifter-escrow",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "Phantom on Devnet with a little practice SOL. On the 13 Nov 2026 hosted build the token dropdown filled after connect.",
+        "Complete [TrustLock](/lessons/trustlock/) immediately before this: you have just seen a SOL escrow with a Clock deadline. Here the vault is an SPL-token ATA, and there is no expiry. This is the last lesson in [stage 1](/lessons/path/#stage-1)."
+      ],
+      "learning_objectives": [
+        "Create an escrow PDA and deposit mint A into an associated-token vault the PDA owns, naming mint B and a price.",
+        "Refund: the vault signs a transfer_checked back to the maker and both accounts close; an outsider cannot refund.",
+        "Tell a completed take (33yMgZzA\u2026 on 45C1bSkF\u2026) from the earlier abort (ck53TqoU\u2026 on 6Z5cvVUc\u2026)."
+      ],
+      "estimated_duration": "45 min",
+      "path_stage": 1,
+      "path_order": 6,
+      "associated_lab_version": {
+        "program_id": "45C1bSkFCbjrqiQHqm8oS6J88jirW8rC46Qiu6TvoY6x",
+        "fork_commit": "fb2bbfd2e101c9e2600f6f6558c3335f691d5384",
+        "verified_date": "2026-11-13",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-19.prelaunch"
+    },
+    {
+      "content_id": "lesson:c4-comets-todor-edward-andrei",
+      "title": "NameGen: one display-name PDA per wallet",
+      "slug": "c4-comets-todor-edward-andrei",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "A Phantom or Solflare wallet on Solana Devnet with practice SOL.",
+        "Complete [Picassol](/lessons/picassol-hackathon/) or already understand PDAs from seeds \u2014 NameGen is the next Stage 1 step after Picassol on the [learning path](/lessons/path/)."
+      ],
+      "learning_objectives": [
+        "Create a per-wallet PDA seeded [\"user\", authority].",
+        "Write and clear a fixed-size 64-byte name field on that PDA.",
+        "Explain why another wallet cannot edit your PDA (ConstraintSeeds)."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": 1,
+      "path_order": 2,
+      "associated_lab_version": {
+        "program_id": "ERvcD84tLcdeYgb4RM7WhJLBFDmous4D6uk32GSEnjPG",
+        "fork_commit": "a435085b50be34ab3c7cc29e01570625bef499fa",
+        "verified_date": "2026-11-13",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:mandatekey",
+      "title": "MandateKey: on-chain spending limits for AI agent wallets",
+      "slug": "mandatekey",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL (create_mandate pays rent).",
+        "Complete [CipherVault](/lessons/ciphervault/) or equivalent Stage 2 start \u2014 MandateKey is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor accounts."
+      ],
+      "learning_objectives": [
+        "Create a mandate PDA seeded by owner, agent and id, and read it back from devnet.",
+        "Explain the pay check order and why a revoked mandate cannot spend.",
+        "Revoke a mandate as the owner."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": 2,
+      "path_order": 8,
+      "associated_lab_version": {
+        "program_id": "89goH4n3UbsGopMNHGSVoEFc5GKfmn4tSH5jjyvkY1ft",
+        "fork_commit": "0f685ad32babef2abee1a1c9dff078fcf5956915",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:trust-protocol",
+      "title": "Trust Protocol: on-chain identity bonds for autonomous AI agents",
+      "slug": "trust-protocol",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL (initialize pays rent for two PDAs).",
+        "Complete [MandateKey](/lessons/mandatekey/) or equivalent Stage 2 progress \u2014 Trust Protocol is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs, Anchor init constraints, and SPL mints."
+      ],
+      "learning_objectives": [
+        "Explain what initialize writes to the protocol-config and insurance-pool PDAs.",
+        "Derive those PDAs from the documented seeds and the lab program id.",
+        "State why a second initialize fails and what is still needed before register_agent."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": 2,
+      "path_order": 9,
+      "associated_lab_version": {
+        "program_id": "EaqMCxECSfFKPtEUPEYtB8prCxb9mgpeuB4YH2JtF71f",
+        "fork_commit": "0e8b8dc0eaf91060be05bb405a392645f8ec9289",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:zeroai",
+      "title": "ZeroAI: on-chain crypto prediction snapshots with Pyth",
+      "slug": "zeroai",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL (initvault and initgames pay rent).",
+        "Complete [Trust Protocol](/lessons/trust-protocol/) or equivalent Stage 2 progress \u2014 ZeroAI is next on the [learning path](/lessons/path/#stage-2). Comfort with Anchor accounts and Pyth price-feed accounts."
+      ],
+      "learning_objectives": [
+        "Create a vault of Pyth feed addresses and read it back from devnet.",
+        "Derive the games PDA and initialise it.",
+        "Explain why addgame can succeed with closeprice all zeros."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": 2,
+      "path_order": 10,
+      "associated_lab_version": {
+        "program_id": "Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9",
+        "fork_commit": "ff7066dd815369baff410daa351520fca0390477",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:oculus",
+      "title": "Oculus: rolling spending limits for AI agent wallets",
+      "slug": "oculus",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL (init_policy pays rent). A second agent keypair is useful for check_spend.",
+        "Complete [ZeroAI](/lessons/zeroai/) or equivalent Stage 2 progress \u2014 Oculus is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor account constraints."
+      ],
+      "learning_objectives": [
+        "Create a policy PDA seeded by an agent pubkey and read it back.",
+        "Explain the check_spend budget and pause checks.",
+        "Pause and close a policy as the owner."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": 2,
+      "path_order": 11,
+      "associated_lab_version": {
+        "program_id": "AwKpHm525hCfB1CRztq93dmypxtn1CZ1d5Ga7VDzt8Js",
+        "fork_commit": "d5b8939a57af79b80be9877afb294cec991c157b",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:agentx",
+      "title": "AgentX: on-chain lifecycle for autonomous AI agents",
+      "slug": "agentx",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL.",
+        "Complete [Oculus](/lessons/oculus/) or equivalent Stage 2 progress \u2014 AgentX is next on the [learning path](/lessons/path/#stage-2). Comfort with PDAs and Anchor constraints."
+      ],
+      "learning_objectives": [
+        "Initialise (or fetch) the registry PDA.",
+        "Register, activate and deactivate an agent.",
+        "Explain why execute_task requires Active status and the registry authority as oracle."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": 2,
+      "path_order": 12,
+      "associated_lab_version": {
+        "program_id": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+        "fork_commit": "2dfa2d92d8e535fc10513b9dc8722bb92bc1badf",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:naim",
+      "title": "NAIM: on-chain .agent names for AI agents",
+      "slug": "naim",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A wallet on Devnet with a little practice SOL.",
+        "Complete [AgentX](/lessons/agentx/) \u2014 NAIM closes [stage 2](/lessons/path/#stage-2). Comfort with PDAs and Anchor init constraints."
+      ],
+      "learning_objectives": [
+        "Explain what initialize writes to the config PDA.",
+        "Derive that PDA from the documented seeds.",
+        "State why register_name cannot run until init_token_config exists."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": 2,
+      "path_order": 13,
+      "associated_lab_version": {
+        "program_id": "3ASKx88kewLHDJyHibXKTTMEy2DxbZBYYj3WzPSYn3S3",
+        "fork_commit": "b8ab06436ad2cd39a186581805d55d74771f70af",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:guild-protocol",
+      "title": "Guild Protocol: on-chain agent labor market",
+      "slug": "guild-protocol",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "naim"
+      ],
+      "learning_objectives": [
+        "Initialise a guild config",
+        "Register a bonded agent",
+        "Read agent state and name the rejected errors"
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": "apply",
+      "path_order": 26,
+      "associated_lab_version": {
+        "program_id": "9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP",
+        "fork_commit": "c3d389cf4d56ce93c06fc45fbe9a5bbc73174e9c",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:qvac-marketplace",
+      "title": "QVAC Marketplace: register an inference provider",
+      "slug": "qvac-marketplace",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "guild-protocol"
+      ],
+      "learning_objectives": [
+        "Register a provider PDA",
+        "Update provider fields",
+        "Name the rejected errors"
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": "apply",
+      "path_order": 27,
+      "associated_lab_version": {
+        "program_id": "2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix",
+        "fork_commit": "fdadfd06ab95c544038133afb7bc7de7f3f5e871",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:agenttrust",
+      "title": "AgentTrust: issue and revoke an on-chain agent credential",
+      "slug": "agenttrust",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "qvac-marketplace"
+      ],
+      "learning_objectives": [
+        "Issue a credential PDA",
+        "Revoke it",
+        "Name AlreadyRevoked"
+      ],
+      "estimated_duration": "15 min",
+      "path_stage": "apply",
+      "path_order": 28,
+      "associated_lab_version": {
+        "program_id": "2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe",
+        "fork_commit": "2c7154399c41c1f205d463faebf8e483a1f4a4d3",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:agenc-protocol",
+      "title": "Agenc Protocol: initialise the coordination config",
+      "slug": "agenc-protocol",
+      "content_type": "debug_challenge",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "agenttrust"
+      ],
+      "learning_objectives": [
+        "Initialise protocol config",
+        "Name InvalidDisputeThreshold",
+        "Explain the ProgramData remaining account"
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": "apply",
+      "path_order": 29,
+      "associated_lab_version": {
+        "program_id": "2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i",
+        "fork_commit": "2e15cc8b9a12e221f5baedd269637cd977e5e9fc",
+        "verified_date": "2026-11-15",
+        "functional": "partial"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:forge-agent-bounty",
+      "title": "Forge Agent Bounty: initialise the bounty marketplace",
+      "slug": "forge-agent-bounty",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "agenc-protocol"
+      ],
+      "learning_objectives": [
+        "Initialise the marketplace",
+        "Read total_bounties"
+      ],
+      "estimated_duration": "15 min",
+      "path_stage": "apply",
+      "path_order": 30,
+      "associated_lab_version": {
+        "program_id": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
+        "fork_commit": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.1"
+    },
+    {
+      "content_id": "lesson:hydra",
+      "title": "Hydra: register a root agent in a hierarchical registry",
+      "slug": "hydra",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "forge-agent-bounty"
+      ],
+      "learning_objectives": [
+        "Initialise the registry",
+        "Register a root agent",
+        "Name NameTooLong"
+      ],
+      "estimated_duration": "15 min",
+      "path_stage": "apply",
+      "path_order": 31,
+      "associated_lab_version": {
+        "program_id": "EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8",
+        "fork_commit": "b7d2acc798c80caee44a1cbdba16dd86338d001b",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:agent-bazaar",
+      "title": "Agent Bazaar: register an on-chain agent identity",
+      "slug": "agent-bazaar",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "hydra"
+      ],
+      "learning_objectives": [
+        "Initialise the protocol",
+        "Register an agent",
+        "Name InvalidFee"
+      ],
+      "estimated_duration": "15 min",
+      "path_stage": "apply",
+      "path_order": 32,
+      "associated_lab_version": {
+        "program_id": "4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx",
+        "fork_commit": "b9b4cab7b196839e62a991252ec0395a1bae1140",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:agentvault",
+      "title": "AgentVault",
+      "slug": "agentvault",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "agent-bazaar"
+      ],
+      "learning_objectives": [
+        "Initialise global state",
+        "Register two agents and list a service",
+        "Escrow and accept a task",
+        "See why complete_task payout fails"
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": "apply",
+      "path_order": 33,
+      "associated_lab_version": {
+        "program_id": "Di62pbYoT7qJa5YE4vGEWtNKavDqaKvcoCwgg1ngYuvA",
+        "fork_commit": "5e52eed230b29feffc6fdf8cf5c791c88ecc8e0c",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:orrery",
+      "title": "Orrery",
+      "slug": "orrery",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "agentvault"
+      ],
+      "learning_objectives": [
+        "Initialise config as upgrade authority",
+        "Register a provider",
+        "Open a settle-token payment channel"
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": "apply",
+      "path_order": 34,
+      "associated_lab_version": {
+        "program_id": "93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu",
+        "fork_commit": "3ef0c787c1b85fae401fbd97fb80f387dadef3a1",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:reddi-escrow",
+      "title": "Reddi Escrow",
+      "slug": "reddi-escrow",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "orrery"
+      ],
+      "learning_objectives": [
+        "Register an agent",
+        "Lock SOL in a program-owned escrow",
+        "Release the escrow to a payee"
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": "apply",
+      "path_order": 35,
+      "associated_lab_version": {
+        "program_id": "6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R",
+        "fork_commit": "d761cd6d7398d03340da284d2e95f98b63bd3f1d",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:agentescrow",
+      "title": "AgentEscrow",
+      "slug": "agentescrow",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Phantom or Solflare wallet on Solana Devnet with practice SOL and the lesson mint if required.",
+        "Comfortable with [accounts and authority](/lessons/accounts-ownership/) or equivalent."
+      ],
+      "learning_objectives": [
+        "Create and fund an SPL-token escrow vault PDA for an agent job.",
+        "Explain the provider start \u2192 submit \u2192 payer confirm sequence.",
+        "Identify which accounts hold funds before and after confirmation."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "9bMFKrjeecipSuqNyGqsYbJukUyWZ1dHYxotg878bdv",
+        "fork_commit": "3a0dcac01088d140f80f8b6ee751e65cd083e9df",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:pact-escrow",
+      "title": "Pact Escrow",
+      "slug": "pact-escrow",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Beginner",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Basic familiarity with SPL token accounts."
+      ],
+      "learning_objectives": [
+        "Locate the pact escrow PDA and the tokens it controls.",
+        "Walk the create \u2192 fund \u2192 release (or cancel) flow on the hosted app.",
+        "Read a successful transaction and name the instruction that moved funds."
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+        "fork_commit": "71b455f09de4a59da245d36d696afb196dc6fae8",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:solagents-commerce",
+      "title": "SolAgents Agentic Commerce",
+      "slug": "solagents-commerce",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice SOL/tokens for the lesson mint.",
+        "Read [instructions and programs](/lessons/instructions-programs/) or equivalent."
+      ],
+      "learning_objectives": [
+        "Identify buyer, seller, and settlement accounts in the commerce program.",
+        "Execute one recorded purchase/settlement path on Devnet.",
+        "Explain what evidence proves the payment settled."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev",
+        "fork_commit": "8098f7b52f251dad792f2d3447c5192e5f45692b",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:lattice-escrow",
+      "title": "Lattice Escrow",
+      "slug": "lattice-escrow",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Understanding of PDA seeds from [Picassol](/lessons/picassol-hackathon/) or Foundations."
+      ],
+      "learning_objectives": [
+        "Derive or locate the escrow PDA used by Lattice.",
+        "Fund the escrow and observe locked token balances.",
+        "Explain which condition unlocks release vs reclaim."
+      ],
+      "estimated_duration": "20 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L",
+        "fork_commit": "ea1df2221718216516dc5702e7e7641944b6d51d",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:trustrail-pipelines",
+      "title": "TrustRail Pipelines",
+      "slug": "trustrail-pipelines",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Comfortable reading multi-instruction transactions."
+      ],
+      "learning_objectives": [
+        "Identify the pipeline accounts and their roles.",
+        "Submit one pipeline action on Devnet and find it on Explorer.",
+        "Explain how later steps depend on earlier account state."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "5fjCsDhwfVJMmKZi87fipEDNJygqXcha9LnzWKxFoDq",
+        "fork_commit": "80a56ed03b5f12f22da0889efebdccdda8d26ce5",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:veedor",
+      "title": "Veedor Settlement",
+      "slug": "veedor",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds and the lesson mint.",
+        "Understanding of [accounts and authority](/lessons/accounts-ownership/)."
+      ],
+      "learning_objectives": [
+        "Create a job escrow PDA and fund it with SPL tokens.",
+        "Submit evidence and identify the verifier\u2019s role in release.",
+        "Distinguish locked funds from released funds in account state."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4",
+        "fork_commit": "0e71b53135e60861446e2bdb2ac7bfbdbfcf707e",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:atlantid-programs",
+      "title": "Atlantid Vault + Escrow",
+      "slug": "atlantid-programs",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Advanced",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Basic program/instruction literacy from Foundations 003 or equivalent."
+      ],
+      "learning_objectives": [
+        "Identify the Atlantid program ID and relevant PDAs.",
+        "Complete one guided transaction on Devnet.",
+        "Match program logs to the instruction you intended."
+      ],
+      "estimated_duration": "35 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB",
+        "fork_commit": "5f8558b2f377fdccb2906cad33394e3593eed7e3",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:allowance-solana",
+      "title": "Allowance",
+      "slug": "allowance-solana",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Familiarity with signer vs owned accounts."
+      ],
+      "learning_objectives": [
+        "Explain what an allowance account authorises.",
+        "Perform one allowance set or spend on Devnet.",
+        "Show how a spend beyond the limit is rejected (or cite recorded rejection)."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "EMQ41VCuQb2WuBzQ1V4ffsG6cRxrYyGqxPNAdju5uwnN",
+        "fork_commit": "f04b282d8e2372b41de18498933ee1000b5ac084",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:escrowagent",
+      "title": "EscrowAgent",
+      "slug": "escrowagent",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "Accounts and authority basics."
+      ],
+      "learning_objectives": [
+        "Create or fund an EscrowAgent vault and name its authorities.",
+        "Complete one release or refund path on Devnet.",
+        "Explain who can move funds at each state."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "DZJpVeE9QaDnxJbZmy6VqCrmhdJx7vkonoyQtbjecFkp",
+        "fork_commit": "dff2f7007c8674373db52dd9dae7d81a5122b794",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:agent-court",
+      "title": "Agent Court",
+      "slug": "agent-court",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds and the lesson mint.",
+        "Understanding of escrow authorities and dispute outcomes."
+      ],
+      "learning_objectives": [
+        "Deposit SPL tokens into a two-agent escrow PDA.",
+        "Explain how a Release verdict unlocks a claim.",
+        "Locate the claim transaction and name who received funds."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ",
+        "fork_commit": "5612922c42d8ad92ec5cc5aaca39ce5e476d9521",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:covenant",
+      "title": "Covenant",
+      "slug": "covenant",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds.",
+        "PDA and authority basics."
+      ],
+      "learning_objectives": [
+        "Identify covenant accounts and the release condition.",
+        "Fund a covenant and observe locked balances.",
+        "Walk one release or cancel path with Explorer evidence."
+      ],
+      "estimated_duration": "25 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4",
+        "fork_commit": "ee7bceb4d9c3fd9f1883f1a34be628a546988284",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "lesson:otomat",
+      "title": "Otomat",
+      "slug": "otomat",
+      "content_type": "guided_lesson",
+      "publication_status": "published",
+      "level": "Intermediate",
+      "prerequisites": [
+        "A Devnet wallet with practice funds and the lesson mint.",
+        "Comfortable with multi-instruction transactions (Foundations 004 or equivalent)."
+      ],
+      "learning_objectives": [
+        "Open a channel PDA and lock tokens for payer\u2192payee.",
+        "Explain why the Ed25519 pre-instruction matters for settle.",
+        "Settle a signed check and verify balances after settlement."
+      ],
+      "estimated_duration": "30 min",
+      "path_stage": null,
+      "path_order": null,
+      "associated_lab_version": {
+        "program_id": "343pmZcqE9DNMu88phCt8zoEo1EPtpWyRgrXJKTjZQoA",
+        "fork_commit": "da2c4c84fc27aa185cfe01baeb1c029010a49d96",
+        "verified_date": "2026-11-15",
+        "functional": "full"
+      },
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-19",
+      "content_version": "2026-11-19.1"
+    },
+    {
+      "content_id": "foundation:first-transaction",
+      "title": "Authorise and verify a transaction",
+      "slug": "first-transaction",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "A practice wallet on Solana Devnet; no prior Solana required."
+      ],
+      "learning_objectives": [
+        "Separate submission, execution result, and commitment.",
+        "Reject a wallet request that does not match intention.",
+        "Verify a transfer on the intended network before claiming success."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 1,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:accounts-ownership",
+      "title": "Accounts, ownership, and authority",
+      "slug": "accounts-ownership",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 001 \u2014 Authorise and verify a transaction (or equivalent)."
+      ],
+      "learning_objectives": [
+        "Identify an account\u2019s owner program vs authorities in its data.",
+        "Predict who must sign an update.",
+        "Explain why the wrong signer fails."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 2,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:instructions-programs",
+      "title": "Instructions and programs",
+      "slug": "instructions-programs",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 002 \u2014 Accounts, ownership, and authority."
+      ],
+      "learning_objectives": [
+        "Name the program and accounts an instruction touches.",
+        "Predict state change before sending.",
+        "Verify observed accounts match the prediction."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 3,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:transaction-atomicity",
+      "title": "Multi-instruction transactions and atomicity",
+      "slug": "transaction-atomicity",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 003 \u2014 Instructions and programs."
+      ],
+      "learning_objectives": [
+        "Identify multiple instructions in one transaction.",
+        "Predict all-or-nothing outcomes.",
+        "Relate atomicity to fees when execution fails."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 4,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:transaction-failures",
+      "title": "Failure diagnosis and recovery",
+      "slug": "transaction-failures",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 004 \u2014 Multi-instruction transactions and atomicity."
+      ],
+      "learning_objectives": [
+        "Separate rejection, simulation, execution, and commitment failures.",
+        "Avoid blind resubmit after unresolved status.",
+        "Reconcile before a corrected attempt."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 5,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:application-state",
+      "title": "Reliable client state",
+      "slug": "application-state",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 005 \u2014 Failure diagnosis and recovery."
+      ],
+      "learning_objectives": [
+        "Label observed vs draft vs pending vs outcome.",
+        "Avoid treating a failed refresh as proof of non-execution.",
+        "Preserve drafts across detected conflicts."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 6,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    },
+    {
+      "content_id": "foundation:protecting-state-transitions",
+      "title": "Program-enforced expected revisions",
+      "slug": "protecting-state-transitions",
+      "content_type": "guided_lesson",
+      "publication_status": "release_candidate",
+      "level": "Beginner",
+      "prerequisites": [
+        "Lesson 006 \u2014 Reliable client state."
+      ],
+      "learning_objectives": [
+        "State what an expected revision check protects.",
+        "Distinguish client races from program-enforced checks.",
+        "Choose review-before-resubmit after conflicts."
+      ],
+      "estimated_duration": "45\u201375 min",
+      "path_stage": 0,
+      "path_order": 7,
+      "associated_lab_version": null,
+      "reviewer": "Sol.College curriculum",
+      "last_review_date": "2026-11-18",
+      "content_version": "2026-11-18.3",
+      "verification_status": "release_candidate"
+    }
+  ]
+}

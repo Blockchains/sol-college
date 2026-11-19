@@ -1,0 +1,89 @@
+{
+  "lab_id": "sentient-send",
+  "lab_version": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/sentient.send",
+    "commit": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "22cDf4bbQM34qF9fcX5v6wb6a8cR9XsZMRpGPUtPx2b5",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/sentient-send-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/sentient-send.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: filled the hosted Create Market form (question, Yes/No, end tomorrow, 1 SOL) with test wallet m4Ac\u2026; the app redirected to the new market page",
+          "2NZHjdhUksyU8aMd2b9DEWBfog8WyLfUXkHDd5RC6thP34gRbhEybtcYoRQ34x2S24nYVT2gPrU5G5Ap45xP3gzG"
+        ],
+        [
+          "UI: on that market, picked Yes and clicked Bet 0.1 SOL on Yes",
+          "5faQLyFPd6aexpvXoZiDxz7acJ6AYZRRSNJRgU9s7WtkKb96gdu4nZJvGvrBoMNg29HDRQFfDFxquRiZRWZy52xN"
+        ],
+        [
+          "Script: a Yes/No market ending in 5 minutes, for the claim (the form only allows end dates from tomorrow)",
+          "4oz2Ac7GRiLct2eVqyChtx2T16WqxfUb5HwzBNLwSZzKf9ChDsYsoiBxfcikXeiZZoDzr7jatePDvVurR2LxyfV9"
+        ],
+        [
+          "UI: on the short market, Bet 0.1 SOL on Yes",
+          "drPTN1TySu7rrsQSHcFZGcX4mR9A8cSRDvbU41rtUzkFn8Q9RvN5rMVuzfTXRojDnbPUjycXqPEcL4ooALqZBRN"
+        ],
+        [
+          "UI: after it ended, clicked Resolve Market",
+          "oRsNYzqbcrX5QWLcU3NZipKt1PxWyUzguGJfGe7FopQveZwpZVggMNmyfbQbNGeFwt17QR9K9hDrNvKDnQ6Svjy"
+        ],
+        [
+          "UI: clicked Claim 0.1797 SOL; the page then showed Winner: Yes and Winnings Claimed",
+          "f5DjJBV2d6y13xG42iuu69Ko1N9n1qDdCSJ39Xke4VC3gBunka94XAvgCSbtCBo6bNmUeoh2XrZrTG4vyXXMDTq"
+        ],
+        [
+          "Script: initialize_treasury (first run, which then stopped on a >32-byte question seed)",
+          "2QSywDYRxp8fL16zAMWG7KvTno7ya6oWSeWrP7DHvDSHUoB6EttQBmGepZje5rC5A2VfRzYocc8pK4KsLrnJ5W2f"
+        ],
+        [
+          "Script: create_market 1 SOL, Yes/No, ends in 75 s",
+          "prYZhNsAkap8FuWN5K3tQBr5mWE9YVsBSPSzbAeZMnwxbH7XwJzfqV9vzSMzEFRemJViYxxajefcnhAWKxwmCyi"
+        ],
+        [
+          "Script: B bets 0.2 SOL on Yes",
+          "pRvzxcvkZtQofKQe7PjXJbbbjP3NZmqxDGYtQikHSqYhMD7ut8AH4MXfGK8xYP5aqVMNf7PtW5rMq9UDMf6cBr6"
+        ],
+        [
+          "Script: C bets 0.05 SOL on No",
+          "2wAFkgahCQjcSiLBDd7VCgnuFFaVH53bbzshgdYQGyKfMi7L3PYChbmyUTsJ7SH1UJjQH1tuju9Qa5q1U1MDRL4n"
+        ],
+        [
+          "Script: B claims (Yes had the most SOL)",
+          "NESSYWQQpp1ZCfrm9SVJ8rRtyoAneyjGf4FgizgVU4fFD1XmE2Zm52g9iUGYLx4RGaYM8E2i7xFpJLeL9LWuFyK"
+        ],
+        [
+          "Script: creator claims its Yes share",
+          "3upXcFdVg5BKjXHkj5UCH3APxMjXCeS64TqWuLsP55tMijT7mMp9MNGTNWSjw9TtXSPdzxuBL5y1z1dCSrPJmkoT"
+        ],
+        [
+          "Script: claim_creator_fees (creator + protocol halves)",
+          "4MwjLyvm8rL2km6niLmn9TGhPaj8P54KMZMpkJZYXMxthHqm42q5kbseAc7ZT7JGGKhQVwVcydh8Qcuqyrhh2CGh"
+        ]
+      ],
+      "functional_evidence": "create, bet and claim (on a short market) landed on devnet. The hosted create form cannot pick a same-day end, so the short market was created by script; claim itself works.",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py sentient, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, bet, resolve and claim went through the app's own forms and buttons, and the market page read the result back from devnet.",
+      "log": "tests/devnet/logs/sentient-send-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "The question is a PDA seed, so questions over 32 bytes fail before any transaction is sent (the form allows 200 characters). The create form only accepts end dates from tomorrow, so the short market used for the claim was created by script. The fork's TypeScript does not type-check (MarketWithPrices drift), so the export is built with type errors ignored."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

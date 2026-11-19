@@ -6,7 +6,7 @@ ISSN, a DOI, or a search box the site does not have. /dapps/ and /legacy/ are
 left alone. Lesson copies under /explore/ stay noindex because their canonical
 is the /lessons/ page. /auth, /standard/ and the 404 stay out of the sitemap.
 
-Hydrated legacy pages (the solar-programme app) only get head tags. Inserting
+Retired SPA shells (if any remain) only get head tags. Inserting
 links into their body breaks client hydration.
 """
 from __future__ import annotations
@@ -30,7 +30,7 @@ LABELS = {
     'degen': 'The Degen', 'campus': 'Campus', 'live': 'Live apps', 'how-to-build': 'How to build',
     'explore': 'Source library', 'findings': 'Findings', 'faq': 'FAQ', 'glossary': 'Glossary',
     'topics': 'Topics', 'learn-solana': 'Learn Solana', 'learn-by-example': 'Concept walkthroughs',
-    'what-to-build': 'What to build', 'legal': 'Legal', 'new': 'New', 'edge-ai': 'Edge AI',
+    'what-to-build': 'What to build', 'legal': 'Legal', 'new': 'New', 'learn': 'Learn', 'for-teams': 'For teams',
     'map': 'All pages', 'path': 'Learning path', 'guide': 'How to use a lesson', 'guides': 'Guides',
     'papers': 'White papers', 'readings': 'Readings',
     'methods': 'Methods', 'policy': 'Policy', 'protocols': 'Protocols', 'sketches': 'Sketches',
@@ -42,7 +42,8 @@ LABELS = {
     'for-teams': 'For teams',
 }
 SECTIONS = [
-    ('/', 'Home'), ('/lessons/', 'Lessons'), ('/events/', 'Events'), ('/articles/', 'Articles'), ('/library/', 'Library'),
+    ('/', 'Home'), ('/learn/', 'Learn'), ('/lessons/', 'Lessons'), ('/lessons/path/', 'Learning path'),
+    ('/for-teams/', 'For teams'), ('/events/', 'Events'), ('/articles/', 'Articles'), ('/library/', 'Library'),
     ('/journal/', 'Journal'), ('/degen/', 'The Degen'), ('/campus/', 'Campus'), ('/live/', 'Live apps'),
     ('/how-to-build/', 'How to build'), ('/explore/', 'Source library'), ('/findings/', 'Findings'),
     ('/faq/', 'FAQ'), ('/map/', 'All pages'),
@@ -469,7 +470,7 @@ def section_of(path):
         'degen': 'The Degen', 'campus': 'Campus', 'live': 'Live apps', 'how-to-build': 'How to build',
         'explore': 'Source library', 'findings': 'Findings', 'faq': 'FAQ', 'glossary': 'Glossary',
         'topics': 'Topics', 'learn-solana': 'Learn Solana', 'learn-by-example': 'Concept walkthroughs',
-        'what-to-build': 'What to build', 'legal': 'Legal', 'new': 'New', 'edge-ai': 'Edge AI',
+        'what-to-build': 'What to build', 'legal': 'Legal', 'new': 'New', 'learn': 'Learn', 'for-teams': 'For teams',
     }.get(seg, 'Other')
 
 

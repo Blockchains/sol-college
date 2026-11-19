@@ -1,0 +1,53 @@
+{
+  "lab_id": "hydra",
+  "lab_version": "b7d2acc798c80caee44a1cbdba16dd86338d001b",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/hydra",
+    "commit": "b7d2acc798c80caee44a1cbdba16dd86338d001b",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "EKEHJMZiGUex64aogXJdt7pRL66Ff46yLm2amUG6PWh8",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/hydra-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/hydra.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "ytTtxFv5w1Vw1Emqhw1dUVH4emCh4C221p21S7Gf3396pu2bYL1yC5BDvXwDEMBzTGGFvCNC9uyZmmb9fd96pKK"
+        ],
+        [
+          "initialize registry 7x3F2GgY\u2026 with authority = lab wallet",
+          "5Z1ePkm2q2czVc5amDmiZ82pg3bYngeoy9UetMpWrffX4qSACw8jUVdHfzSnZyfVPJRZfmPQztChyw4xasJGXdHS"
+        ],
+        [
+          "Fetched registry: authority is the lab wallet, total_agents=0",
+          "(no tx; read-only)"
+        ],
+        [
+          "register_root_agent campus-scout / sol-college-lab (agent 8E5gYQxr\u2026, depth=0, active=true)",
+          "Afwjn15mmaMz7fHWv4urURKLacwoaB5rbaPxhbwtgVuRrfsbEhyQ36cdhcu3iRYJtCpzXRrfETWSigwSjRevssH"
+        ]
+      ],
+      "functional_evidence": "initialize landed and registry 7x3F2GgYEw8j3DipGPkRQAN5G5FV2PoG6VDqJkVtuUeS was read back; register_root_agent wrote agent 8E5gYQxrvuPhsYKFDTLAwKNbhx7tseLbfVUjChG52rhQ for campus-scout (depth=0, active=true); NameTooLong rejected a 33-byte name.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/hydra.mjs.",
+      "log": "tests/devnet/logs/hydra-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "spawn_child, record_earning, distribute_to_parent and deactivate_agent were not exercised. The hosted IDL is a hand-derived subset of initialize and register_root_agent, confirmed by the verifying transactions."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

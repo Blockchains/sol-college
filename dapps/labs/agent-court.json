@@ -1,0 +1,57 @@
+{
+  "lab_id": "agent-court",
+  "lab_version": "5612922c42d8ad92ec5cc5aaca39ce5e476d9521",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/agent-court",
+    "commit": "5612922c42d8ad92ec5cc5aaca39ce5e476d9521",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agent-court-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agent-court.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy agent-court-escrow as CCBhwgCACgLZU2ju4riKQWqvPRrYtwHM6v6MsEbahxuQ on devnet",
+          "JRopgSz8Jq5dyXALxcPfoXx79s73wnkqtvchYuBEKqQnFD6yanQJeYfjGuSv4g4YXM1EiWg9UpeQQ18DnyJVTfM"
+        ],
+        [
+          "deposit 1_000_000 (escrow 4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq, vault C4wGawpd\u2026)",
+          "4VXTKE1BMgrSGGit4jVqaiKzofT4Jwe5PV6iSQT7W5krBYQ3gXgv11yMerpMuzLcaT4WZr2kpoRYu36bdKVRt36e"
+        ],
+        [
+          "file_dispute by agent_a",
+          "5LiKYDjp6ewGGF4ZhFSxzeiX8SjMbZNMB4qD2dCsVTZraKj3cMwAcby2a2dnabzxbbNvEaksojjE5uVNuKUEGZqV"
+        ],
+        [
+          "render_verdict Release",
+          "3UMuS92XyzEvPLcsZkXxgGD8iyinFD8oF6eR3iYYwmTobf9rXRt5iB1buuutjUhzk4rRKp7q8AFZaYBTVZnpAmsF"
+        ],
+        [
+          "claim paid agent_b 2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8 exactly 1_000_000",
+          "62QNHz1Cz8TBmxihgbD77ePHv7gx4rrDRxx8a8UGQobC2N7dw4m6LjXdtLhcR9gfou4ERh9s4dicRzu48nCbBfnr"
+        ]
+      ],
+      "functional_evidence": "deposit 4VXTKE1B\u2026 locked 1_000_000 lab tokens in vault C4wGawpd84LEHn4Wz5HAJW7qPBLvpsQXXKKotgMnK8Ht (escrow 4JGCYPoeYHJo33qmaps4cS1amf52WkigbRs631qXqCUq). file_dispute 5LiKYDjp\u2026 and render_verdict 3UMuS92X\u2026 set verdict Release. claim 62QNHz1C\u2026 paid agent_b 2NArPtvuM156LsXhzyECAmpad3FLt7TvN5tMyrVFoAN8 exactly 1_000_000.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab wallet through tests/devnet/agent-court.mjs.",
+      "log": "tests/devnet/logs/agent-court-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "timeout_release and Split/Refund verdicts were not exercised. The official program id was not reused. render_verdict accepts any judge signer (as written upstream)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}
