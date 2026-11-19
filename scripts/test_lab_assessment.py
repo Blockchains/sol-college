@@ -323,6 +323,36 @@ class LabAssessment(unittest.TestCase):
             self.assertNotIn('Pixel account', html, slug)
             self.assertNotIn('update_pixel', html, slug)
 
+    def test_elective_batch4_learning_loops(self):
+        batch = {
+            'atlantid-programs': 'owner_ok',
+            'covenant': 'need_signer',
+            'otomat': 'err',
+            'solagents-commerce': 'job_pda',
+            'trustrail-pipelines': 'need_delegate',
+            'veedor': 'missing',
+        }
+        for slug, answer in batch.items():
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertIn('learning_loop', L, slug)
+            self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
+            ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
+            self.assertIn(answer, ids, slug)
+            self.assertTrue(L.get('assessment', {}).get('criteria'), slug)
+            html = ll.assessment_html(L, slug)
+            self.assertNotIn('Pixel account', html, slug)
+            self.assertNotIn('update_pixel', html, slug)
+
+    def test_all_track_elective_lessons_have_learning_loop(self):
+        for path in (ROOT / 'dapps' / 'lessons').glob('*.json'):
+            L = json.loads(path.read_text())
+            if L.get('track') != 'elective':
+                continue
+            self.assertIn('learning_loop', L, path.stem)
+            self.assertTrue(L.get('assessment', {}).get('criteria'), path.stem)
+            self.assertTrue(L.get('student_outcome'), path.stem)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
