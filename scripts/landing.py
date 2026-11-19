@@ -39,10 +39,10 @@ WAITLIST_HUNT = WAITLIST + '&role=Bug+bounty+hunter'
 PROJECT = 'https://github.com/Blockchains/sol-college/issues/new?template=project-partnership.yml'
 COMMIT = 'https://github.com/Blockchains/sol-college/issues/new?template=commit-suggestion.yml'
 
-TITLE = 'Sol.College — Learn, Test and Improve Real Solana dApps'
+TITLE = 'Sol.College — Learn Solana Through Application Practice'
 DESCRIPTION = (
-    'Learn on Solana apps and offer patches back. Practice environments are independent '
-    'forks we ran on devnet, not a claim that the original team is a partner.'
+    'Learn Solana by working through real application code. Guided investigations, '
+    'controlled practice environments and reviewable engineering work. Complements official Solana docs.'
 )
 
 # Core-flow failures documented in dapps/live.json limits / negative (2026-11-13).
@@ -782,9 +782,10 @@ def write_home(site='site'):
         'JSON_LD': json_ld(),  # raw JSON inside a script tag; no HTML escaping
         'LIVE_COUNT': str(len(functional)),
         'LESSON_COUNT': str(len(apps)),
+        'GUIDED_COUNT': '{{GUIDED_COUNT}}',  # filled after registry write below
         'LESSON_BREAKDOWN': (
-            f'{len(functional)} guided-ready environments and '
-            f'{len(apps) - len(functional)} debug or preview activities in the live inventory'
+            'Counts generated from the curriculum registry — guided lessons and debug challenges counted separately; '
+            'practice environments counted separately from content'
         ),
         'BUG_COUNT': str(len(bugs)),
         'FIX_CARD': fix_card_html(fix_prs) + _findings.proof_card(sec_findings),
@@ -823,6 +824,17 @@ def write_home(site='site'):
     }
     rel = _release.write_artifacts(site, ROOT)
     tokens['RELEASE_FOOTER'] = _release.footer_html(rel)
+    # Curriculum registry + lab manifests (single counting source)
+    import curriculum_registry as _creg
+    reg = _creg.write_registry(site, ROOT)
+    _creg.write_lab_manifests(ROOT)
+    tokens['GUIDED_COUNT'] = str(reg['counts'].get('guided_lessons', 0))
+    tokens['LESSON_BREAKDOWN'] = (
+        f"{reg['counts'].get('guided_lessons', 0)} published guided lessons · "
+        f"{reg['counts'].get('debug_challenges', 0)} debug challenges · "
+        f"{reg['counts'].get('practice_environments_full', 0)} practice environments with recorded full flows "
+        f"(registry-generated; previews excluded from learning totals)"
+    )
     page = tpl
     # Replace longer tokens first so WAITLIST is not replaced inside WAITLIST_DEV, etc.
     for k in sorted(tokens, key=lambda s: -len(s)):
@@ -832,6 +844,17 @@ def write_home(site='site'):
         raise SystemExit('unreplaced landing placeholders: ' + ', '.join(sorted(set(leftover))))
     page = _release.inject_into_html(page, rel)
     (site / 'index.html').write_text(page, encoding='utf-8')
+    # Solana /learn/, /for-teams/, legal stubs (replace retired solar SPA routes)
+    import prelaunch_pages as _pre
+    _pre.write_prelaunch_pages(str(site), counts=reg['counts'], project_url=PROJECT)
+    # Remove any leftover solar SPA directories from prior builds (never re-publish).
+    for dead in (
+      'edge-ai', 'calculator', 'sol-node', 'sol-os', 'network', 'apply',
+      'resources', 'auth', 'about', 'contact',
+    ):
+      p = site / dead
+      if p.exists():
+        shutil.rmtree(p)
     assets = site / 'assets'
     assets.mkdir(exist_ok=True)
     shutil.copy(HERE / 'landing.css', assets / 'landing.css')

@@ -1,0 +1,57 @@
+{
+  "lab_id": "veedor",
+  "lab_version": "0e71b53135e60861446e2bdb2ac7bfbdbfcf707e",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/veedor",
+    "commit": "0e71b53135e60861446e2bdb2ac7bfbdbfcf707e",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/veedor-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/veedor.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy settlement as 8tfDUS6aWbThoz2r3oGALDe6RNsucRYPBbH89h5YZBx4 on devnet",
+          "4TtRVj327LswCSk9yvgM7MAdFy62AoJAMoXMFusK61je9LfRQbQmC42MDjsdUwpZhVKSSeuqxGQCcyGgGmpLcgqY"
+        ],
+        [
+          "create_job veedor-lab-job-1 (job 3kxikPVixRNYbhTawFa88pf7GX4gKou1X6dEcXSfSjQ9, amount 1_000_000, mint BJMSdujx\u2026)",
+          "3gqyMx9GnDWBTKRFNVp7MZ21MNLXvLjcdHZ5h6haT4ibEFyKg5Lt9geh6DTLhLuakuLHXaemx43PqJLZLq5BCnBY"
+        ],
+        [
+          "fund moved 1_000_000 tokens into escrow ATA 3DFLvvVEs11cdFZcWRHCHQx1QAs5cy1bAY4PHpJFv2q7",
+          "5EtS5NtvoG8UuHAHSMHcqoYwf2TQR3fxBdumPhVDUnWr5dER8HmTufYuMC3FP2BH2qx8ay8HZC9v8pFRFvsBBmKG"
+        ],
+        [
+          "submit_evidence (provider 4KrfWyqf\u2026) moved the job to UnderReview",
+          "4xiB1hha4XPKTsJB7brUirPXe812MZYuGsZMPeHs7LQzDkTSN9wbdNKL3JyK5z5ECMiahXHbUkJf7XB6HvncapHH"
+        ],
+        [
+          "release with a lab verifier attestation paid the provider ATA +1_000_000; escrow ATA ended at 0; job state Released",
+          "zV2Zmb8JL4VDVkr2tgq9L2GyCK7mKmcW4fw377inv8AvEjvAZ2F2YR6KdzsxRZsS1AtofGvFospRJN4MsmsdoN8"
+        ]
+      ],
+      "functional_evidence": "create_job wrote job 3kxikPVixRNYbhTawFa88pf7GX4gKou1X6dEcXSfSjQ9 (Created). fund locked 1_000_000 lab tokens in escrow 3DFLvvVE\u2026. submit_evidence moved the job to UnderReview. A release without an Ed25519 precompile was rejected (MissingEd25519Instruction). release zV2Zmb8J\u2026, with a lab verifier signature over the 130-byte attestation message (Pass tag 1), paid provider 4KrfWyqfYcq3xv1oZicDArGZuvnbyC5hpovrCFGUpLF3 exactly 1_000_000 tokens and left the escrow ATA at 0 with job state Released.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; create_job, fund, submit_evidence and release were sent with the lab, provider and verifier keys through tests/devnet/veedor.mjs. A hosted release still needs a custom Ed25519 pre-instruction.",
+      "log": "tests/devnet/logs/veedor-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "dispute, resolve and crank_timeout were not exercised. The official program id was not reused. The hosted IDL is hand-derived because anchor idl build failed in this lab (openssl-sys needs make)."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

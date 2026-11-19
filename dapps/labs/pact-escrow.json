@@ -1,0 +1,49 @@
+{
+  "lab_id": "pact-escrow",
+  "lab_version": "71b455f09de4a59da245d36d696afb196dc6fae8",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/pact-escrow",
+    "commit": "71b455f09de4a59da245d36d696afb196dc6fae8",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/pact-escrow-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/pact-escrow.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy pact_escrow as BA6gPuCDWSBrtsPr5WBMBLtEr2cRAUAbC3Ljg4mR6DDp on devnet",
+          "GjHPN6cZDX8shTLviPmoWnsfCreP1orKjy8rkiiK5EpmjuANgs4jY4wND5QRxmqj6zGMaahS699RLzDp4Wx4CQ4"
+        ],
+        [
+          "create_escrow 1_000_000 lamports for seller GpUq5UH3\u2026, seed 20261115 (escrow 3xNd7gWF\u2026, program-owned, 2_061_720 lamports)",
+          "3L9d3bFxTHrUsTPgmnp7QY4JR97jHJGxftPa2qxkXSHkuG5Hs3gBMLhXkXQNhhuUyo4rXwny9s9vGpPohQrqrgeV"
+        ],
+        [
+          "release paid the seller +1_000_000 lamports; escrow left Released with 1_061_720 lamports of rent still in the PDA",
+          "3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ"
+        ]
+      ],
+      "functional_evidence": "create_escrow wrote program-owned escrow 3xNd7gWFcDitPjQPCvy5Y64quDWXBRV4jKHcXjUZ1sGs (amount 1_000_000, status Active, 2_061_720 lamports). release 3p4DERSe4hkpAcUbXPNemi7eNDN3X1p9Eisqg45RNVEdgRReb5cMhYXs8WxKix6jYe518pujLcbpGn24LhHvDehJ paid seller GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb exactly 1_000_000 lamports and left the escrow Released with 1_061_720 lamports of rent still in the PDA. amount=0 was rejected.",
+      "ui_check": "The hosted page is a custom pinocchio console (Phantom or Solflare on devnet) that encodes raw instruction bytes. It was not driven in headless Chromium in this run; create_escrow and release were sent with the tester wallets through tests/devnet/pact-escrow.mjs.",
+      "log": "tests/devnet/logs/pact-escrow-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "refund was not exercised. The escrow PDA is not closed after release (rent remains). instructions_v2.rs is not the deployed entrypoint. The official program id was not reused. The lab replaced nostd_panic_handler! so the crate builds on current platform-tools rustc."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

@@ -1,0 +1,115 @@
+{
+  "lab_id": "hackathon-prediction-market-solana",
+  "lab_version": "33bc5ddffd7342720ff2aa1742fee7937c151641",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/Hackathon-Prediction-Market-Solana",
+    "commit": "33bc5ddffd7342720ff2aa1742fee7937c151641",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "8REA8GCiJh1c5ZsosFyT1SFmHjFqoZoonyCVrw1CbPFH",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/hackathon-prediction-market-solana-2026-11-10.jsonl",
+    "test_status": "failed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/hackathon-prediction-market-solana.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: test wallet m4Ac\u2026 (config authority) on \u2795 Create Market: UIYES/UINO with sol.college metadata URLs, 5 team wallets with short Steam IDs, \ud83d\ude80 Create Market; tx 1 makes the YES/NO mints",
+          "3hoV7Ze6Eu9eH8BELtyXnsorVYX1uyBnJ4cN5Yo5Qf4KRyT4bnkAUcru21j5KZ71G721JSrAUQKjQRweN5wQau9P"
+        ],
+        [
+          "UI: same click, tx 2 create_market (market ARzCfbpQs8mRXiaFRbHT8q2nhrAfQwAmGfoLoNB6az3z)",
+          "64Psm5E5HQGpSF3PhBFvadD2N2Mc4x8ZmqManbjFDCjxBjqmvggbfpVS65KeU5ecZCgKA81ZvVxVSM67GaT7XXHU"
+        ],
+        [
+          "UI: \ud83d\udca7 Liquidity, 0.02, \u2795 Add Liquidity",
+          "4DLz5Vs6BKhi6wuM5kmheYCDvyx5A6fV263p2sAsENJ5REgjkhUWjcTXepF7mXLoWWiPugR39UpVc9xqY1yk6kEL"
+        ],
+        [
+          "UI: \ud83d\udcb1 Trade, \ud83d\udd3c Buy, \u2705 YES Token, 0.005 SOL, \u26a1 Buy YES Tokens",
+          "4WgxEHeqnwUtvNqUzs7ukK7v1gfrC31jSz48mSwkPmoLFNzrGiwBQZCY3HKrBjMA8qeNa9T2DaDkKA3hmj9XZibk"
+        ],
+        [
+          "UI: \ud83d\udcb1 Trade, Sell, 1 YES token",
+          "5orE6Ao4kdKDJ4MfTN356kVQriW53tsbq3mDLj8ChPmzCbKLaxaSqZU7vbNfKdzdscLjVw4NYMmeLdJo7e1YKp7F"
+        ],
+        [
+          "UI: \u2696\ufe0f Resolution, pick the market, Team Won (YES holders win), \u2696\ufe0f Resolve Market",
+          "2RbLcZK1wacf8P6Hu44A95sYk6ePAvvsWftWc3VJu3G2vaFGvHseQNHrsDisHsBeaHoz79gPTAjJFypHvvkmgxye"
+        ],
+        [
+          "Script: fund B (whitelisted trader) and C (not whitelisted)",
+          "gNB54ER2VqGpiRS4qrjHw3z1eF6YZRxiQCYeiBfRQYHFhi67Vz4Bgfi784Ed6Gso78mLfzFkGuUgFHQ9yWXDEiH"
+        ],
+        [
+          "Script: configure: fees 1% platform + 0.2% LP each way, 1M-token supply per side, 1000-token initial reserves, min liquidity 0.02 SOL (the repo default is 5 SOL)",
+          "2ESDhFRGBYdt8KERYJegi8j15KKB94227L7Si1xCEojzEh7W8by5Myvp1M9gch3uH4pH8rj3yEBnMCQTVtbf3nXt"
+        ],
+        [
+          "Script: create YES and NO mints (authority = global vault PDA)",
+          "2Z3idn6ozTBMYBgZRt7qoZizWjAMCmrvc79EZSRcEsgKWkH1Jzy5yHLjRxVpKtMi1SATknnAEHPQaXmkQjTqWBbg"
+        ],
+        [
+          "Script: create_market (5 team members, metadata for both mints, 1M of each minted to the vault)",
+          "5caSfwFxNXy9Zyrr12p5WALe2K8XzQPsHzuw6sNGe2NG91MkY8eSYh5Dohh33U8Fb9g6K7FkpXh69w8Wp7EheyyE"
+        ],
+        [
+          "Script: add_liquidity 0.04 SOL (first LP: 0.02 SOL backs each side)",
+          "2Usuqd4nEtwBu7ZzEYXsq9yiD71MsksF83SjaD1bWnps69UqUdBuaoAbx1c7aZwzJH3WzMCx79MUHzvjSXyoapZh"
+        ],
+        [
+          "Script: whitelist_add_member B",
+          "FuLtPmCzGbWe2qzvQQiNUG7b3oyCNQe1FWKbXn8Wex1b7xdvY7fq9E54dtTSNrdUTn9xDKrGAW8VwXuojwAYw4W"
+        ],
+        [
+          "Script: B buys YES with 0.01 SOL",
+          "S3UZG8s5363eDfw7CKpGr7TkKPU3bksQea2fDMk38YSrKzpr9JgDVUfZLvZJ15qkkxGCYyYLYKqQo9C9FsZUgM7"
+        ],
+        [
+          "Script: B buys NO with 0.005 SOL",
+          "2GQzCTE4bnoRnggdDBhrjfCAQrHPCvBz3jxu3QZqEZzewveADbwhZAReoNj8GqAq72zSCuNUFT9g7qBLTtfsf1ir"
+        ],
+        [
+          "Script: B sells half its YES",
+          "4usTWGHh4o2RMESQtYV7bCLpdPnx53pf1nzdVqDWgWXwJFbFAHK5vqdA4iXkw5AkBYpsPTP7NAQ97cxRq5EnbnoE"
+        ],
+        [
+          "Script: resolution by admin: match completed, YES (team A) wins",
+          "T5Qfq7iYpnWLPu56vUjzfwLS6uTH3yo1JhXd6ux7iBgAeemoXEVgsPeZZzkmNZN1HdC2Rn175nKmcPbGBnr4EaP"
+        ],
+        [
+          "Script: withdraw_liquidity 0.02 SOL by the LP",
+          "4sMHjyhzGZE1RdJiCWZBEiyE7y2ywQAwpzmXcjNSyC62aGMzv7xMJYc97X1a5G9EU4tNYf77fnRGGENUZu6Bo7Ys"
+        ]
+      ],
+      "functional_evidence": "withdraw_liquidity succeeds but transfers no SOL (the handler only runs checks). There is no claim/redeem instruction, so winners cannot cash out after resolution.",
+      "ui_check": "tests/devnet/wallet_click.py hpm (log: tests/devnet/logs/ui-clicks-2026-11-10.jsonl)",
+      "log": "tests/devnet/logs/hackathon-prediction-market-solana-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    [
+      "No claim or redeem instruction: resolution records the winner and stops trading, but winning YES/NO holders have no way to cash out, so the SOL stays in the program vault.",
+      "withdraw_liquidity succeeds but moves nothing (the handler only runs checks): the script's 0.02 SOL withdrawal changed the vault by 0, so LP SOL is locked.",
+      "Bug: on a buy, the 0.2% LP fee is added to the market's SOL reserve but never taken from the buyer. In script tx S3UZG8s5\u2026 (B buys YES with 0.01 SOL), the shared vault received 9,880,000 lamports while the YES reserve grew by 9,900,000. Reserves therefore drift above the SOL actually held, and because one global vault holds every market's SOL, a market's payouts can draw on other markets' SOL.",
+      "Swaps require the market creator's whitelist (the creator is its first member). The app has no screen to add members; the script adds trader B with whitelist_add_member.",
+      "The repo's default minimum liquidity is 5 SOL; our devnet config sets 0.02 SOL so the test fits a faucet budget.",
+      "create_market is close to the 1232-byte transaction limit: with our 73- and 74-character metadata URLs, 17-digit SteamID64s and a 23-character match code it was 1282 bytes and could not be sent, so the tests use short Steam IDs and match codes.",
+      "Outcomes are entered by hand: the config authority (or a Steam oracle key, unset here) resolves; others get InvalidMigrationAuthority.",
+      "The app logs 'Error loading user liquidity' in the console on the Liquidity tab; adding liquidity still works.",
+      "The first UI run stopped after Create Market because the market detail view stayed open over the tabs (a test-harness issue); the rest of the clicks were run on the same market in a second and third run."
+    ]
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

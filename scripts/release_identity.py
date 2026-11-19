@@ -19,6 +19,22 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-prelaunch-solana',
+    'title': 'Pre-launch — Solana-only consolidation',
+    'summary': (
+      'Sol.College presents a single Solana learning proposition: guided application practice. '
+      'Retired solar/energy SPA routes are no longer published. Curriculum registry and lab manifests '
+      'drive counts. Pre-launch CTAs only — no enrolment claims.'
+    ),
+    'changes': [
+      'Homepage hero and CTAs: Explore the learning path / Browse lessons / Register launch interest.',
+      '/learn/ and /for-teams/ replaced with Solana learning hub and team-pilot enquiry pages.',
+      'build.py no longer copies legacy solar SPA into site/; edge-ai archive removed from sitemap.',
+      'curriculum_registry.py + dapps/labs/*.json manifests; Gifter title consolidated.',
+      'Legal stubs for terms/privacy; maintainer findings labelled as maintainer-recorded.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e9',
     'title': 'Release E.9 — Honest community contribution section',
     'summary': (

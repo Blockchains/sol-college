@@ -1,0 +1,69 @@
+{
+  "lab_id": "forge-agent-bounty",
+  "lab_version": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/forge-agent-bounty",
+    "commit": "5f30d18fe721e591b9dfe1549a2e19ecd212a2b6",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "782W4V1wdFrioJhmU2zQmPpj9MrJ3hfkwifQsRE6oeUu",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/forge-agent-bounty-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/forge-agent-bounty.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "2iL32TTm4n6fPpuemmsyyT6prSpqpVWrEnoCdfobroi1AptDquhVMCTKJkiL857tWQfCvwqik9ioMj7ekjXnih7N"
+        ],
+        [
+          "initialize marketplace 4yWx7jjP\u2026 with authority = lab wallet, total_bounties=0",
+          "2i7KQiQtACQxwhDnTNcU6yCwdoMs3KV3tbqtQ9Jdb6FFksSjH9zc6kRQYwYMrGuy3vbR2xdptJfVY4pJ3q6KiLfK"
+        ],
+        [
+          "Fetched marketplace: authority is the lab wallet, total_bounties=0",
+          "(no tx; read-only)"
+        ],
+        [
+          "Created a lab SPL mint BJMSdujx\u2026 (6 decimals) and minted 1000 tokens to the lab ATA J3weMnAc\u2026",
+          "5J6dd4XCDkNwQBsipDPuGpyCsMqcLZyNVPwY4jpfGidYP1ci8jZis8jZkfXy68ZgDJG4m6eDvzFPhLP6QWBUek7h"
+        ],
+        [
+          "create_bounty campus-scout bounty, reward=100 tokens (bounty 4VEXSpTX\u2026, escrow DcPAPUE9\u2026)",
+          "3GC1AnoP8eZFHXnzKLBru6EMV5a7fEsBwuNUWNxq7fuzfPp79WjRKgC3HypikTG9SuiUg35urf8BXMdf3KpSaip6"
+        ],
+        [
+          "claim_bounty by the lab wallet (same wallet as creator)",
+          "LFwVVqF8cJxMJevXykQasG9GqX3JMVue4N4amJDi7rvGCfm2KnveHQNZmohgapsFrrKuoidm7CJfQHUF8yq8be3"
+        ],
+        [
+          "submit_completion with a lab delivery URL",
+          "ymex9VKdwiPZYAY6mSGgFUiQq9xU2Xpt4m3HqF7vTaXtyRjc4MYUmwVMDURNTAsTp92rj75XVxfm5M1kosLkhnE"
+        ],
+        [
+          "approve_completion: status=Completed, agent earned 95_000_000 (95%), reputation=1050",
+          "2Fi73CSd1Y9jtAEc8riAtBCKRrBmrM6XUrSVG8Z6kjoZxWxxTSwUgiSp7NePGDcqJT8QoHKo51cGj3Nhz4oU4McZ"
+        ]
+      ],
+      "functional_evidence": "initialize landed; create_bounty escrowed 100 tokens of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D; claim_bounty, submit_completion and approve_completion completed bounty 4VEXSpTXBHejeH3coEig2bto2Dpx2XQHK3mmX7JPDzzN with agent total_earned=95000000; InvalidReward rejected a zero reward.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the bounty lifecycle was sent with the lab wallet through the IDL client in tests/devnet/forge-agent-bounty.mjs.",
+      "log": "tests/devnet/logs/forge-agent-bounty-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "reject_completion was not exercised. approve_completion pays 95% of the reward to the agent and leaves the 5% platform fee in the escrow token account (there is no treasury transfer). The lab wallet was both creator and agent."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

@@ -1,0 +1,49 @@
+{
+  "lab_id": "lattice-escrow",
+  "lab_version": "ea1df2221718216516dc5702e7e7641944b6d51d",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/lattice-escrow",
+    "commit": "ea1df2221718216516dc5702e7e7641944b6d51d",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/lattice-escrow-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/lattice-escrow.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy escrow as BTDakBxRzwgT5fnXpzNsa6Cet4LBAi8AgEKPo6CEwo1L on devnet",
+          "4qam31hoADtA1CLKrBk3LVcmFWWWZ6LrNFydm3iAvfU6hWz1hSSJAHgfj2vv6B4bk6BL1sS6c3eoMmjmYbtT8hX2"
+        ],
+        [
+          "create_escrow campus-scout-1, 1_000_000 lamports, agent GpUq5UH3\u2026, lattice wallet BP1uwSaT\u2026 (escrow EdmCgtFn\u2026, program-owned, 2_696_720 lamports)",
+          "iACYvtQdVZYdf29BkaFs5NQT9GFH2ZLxGvzVLEGW5YjfjkQHkV5M3DHNUTsiJXfTYiBPQ425iinFgB5z3gTCt5v"
+        ],
+        [
+          "release_escrow paid the agent +985_075 and lattice wallet +14_925 (amount/67); escrow left Released with 1_696_720 lamports of rent still in the PDA",
+          "4ZWabJmKGMUWr18eLJTsLYaYope4jW5sgE9wjCFQhia46hVyDTYWb9aLepkziA9b8a5D6kA7AYxRsfC6cXJzPaD9"
+        ]
+      ],
+      "functional_evidence": "create_escrow wrote program-owned escrow EdmCgtFnJFF3ni43X3TGLwyY58VjAQEpjmt9XzNSnh65 (amount 1_000_000, fee 14_925, 2_696_720 lamports). A release signed by the payer was rejected (Unauthorized). release_escrow 4ZWabJmK\u2026 paid agent GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb exactly 985_075 lamports and lattice wallet BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv a 14_925 fee, leaving the escrow Released with 1_696_720 lamports of rent still in the PDA.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; create_escrow and release_escrow were sent with the lab and tester wallets through tests/devnet/lattice-escrow.mjs.",
+      "log": "tests/devnet/logs/lattice-escrow-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "refund_escrow was not exercised. The escrow PDA is not closed after release (rent remains). The official program id was not reused."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

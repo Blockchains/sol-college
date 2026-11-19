@@ -1,0 +1,81 @@
+{
+  "lab_id": "stakes-main",
+  "lab_version": "52cb0dacc45842c56994f3dc7ae53529b412474a",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/stakes_main",
+    "commit": "52cb0dacc45842c56994f3dc7ae53529b412474a",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "EeLuB1th9zFmokFiXgz78fLoD4rWfjLrAcFYBrQEjXoD",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/stakes-main-2026-11-10.jsonl",
+    "test_status": "failed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/stakes-main.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: test wallet m4Ac\u2026 opened the pool row (5AWQ\u2026cvUb), Stake tab, 100, Stake; the row then showed Your Stake 100",
+          "4VBjKccHD8TdBWaMyVkECPF7En8QNEfSXzCdubqP2M68QS8THZ4oyHXMNg5EUDMckPQ9np69DPYw2toRTfzhi8qj"
+        ],
+        [
+          "UI: Bribe tab, 20, Bribe (a token transfer into the pool vault)",
+          "4HGtoLf4nVNoFTBpphKn2umUhywPdWdJqrC77m9gXXTZkECuhNN6epL6Ay3QGaPFdxdzcXotEyHNgPHDHkJMNGm7"
+        ],
+        [
+          "UI: Claim tab, Unstake (opens a vesting position; the Vesting page then listed it at 5 per day)",
+          "3cMTZibx4fdP9QKwdRcjdsJ6Duq7FaAPozNMM8RrqzwX15QppSRQawusQMjS287zQTbDErMWpxgYEJtpoBqJBoLf"
+        ],
+        [
+          "UI: Vesting page, Claim; the position closed and the wallet's token balance read 480 (500 \u2212 100 \u2212 20 + 100)",
+          "Mq3xgVqq4GMKX9kp4DyKoQZ15KnUP26pJZheyM8jG9KuTvE6zN5NfdZBuc8BKnA4V55Ms5ZZ7dDbKsWZy4J2YaT"
+        ],
+        [
+          "Script: initialize_pool (2 SOL fee to the fee receiver, here the deployer itself)",
+          "2yVByakSLRnWTGtwmRTqgfXv4VRdP2ya9Gd62zAhVNeuaFG8n1WXG8Py86hzULTWKsrGcijqMDHVpyNNDgTg8bSJ"
+        ],
+        [
+          "Script: B stakes 100",
+          "5FKVBgcgyq8PW7ssf2B8gaVKev5kF32vY8kNwcHytWRKqpiGyPg8zzEPR8ZfzvwvJpdfY6RC1kJPzip2zPkybC8y"
+        ],
+        [
+          "Script: A bribes 50 (plain token transfer into the vault, as the app does)",
+          "2D7RhqHCRqtYfoSSkafc1reDRVuZUigJPxESAScUmb1hXqYu5WGSiFvhiQD8VedfDYq5HGSzFGBWt356Smr6JHCq"
+        ],
+        [
+          "Script: sync_bribes",
+          "kxPKyFmEUDBGM8quoc8ACySQpvVaBA2Eir48JFarx9a5BCcv6WUEhZU8xXwnroeziEZTZDGxoDqAVR5pbxjVK5q"
+        ],
+        [
+          "Script: B unstakes all gov tokens (vesting position)",
+          "5GZv9Zu7T6jbCGwe9sjY9XNTQ5zN1LYmySmsEuFYoc1RvH2dz9VfVZLo3dGX17WMVB7aShkMRgVQdGe97V4g4BkW"
+        ],
+        [
+          "Script: B claims after ~5 s (5 \"days\")",
+          "Qsu7QGHGzXvmgHvZqnA5f5uP2PPUKCpqK2HdmCRDbiDuNFbWMeCDJm5eswuS5s4h89hR8dNsA1ZKFu6Jq9CeHpk"
+        ],
+        [
+          "Script: B claims after 20+ \"days\"",
+          "ZsZbc9g81kUNzrGShVNn3ESJbhDUjBVjc4Jk9He11hXVmfnpbs4zxWCEyL2t2vvzvXUeHzymXzucAffTuxPbnjR"
+        ]
+      ],
+      "functional_evidence": "The hosted Create Pool path fails (0xbc3 AccountNotSystemOwned) because the app IDL is missing fee_receiver. Scripted initialize can work; the hosted core create flow does not.",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py stakes / stakes-unstake / stakes-create, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): stake, bribe, unstake and claim went through the app's own buttons; Create Pool fails in the app, so the pool was created by the script.",
+      "log": "tests/devnet/logs/stakes-main-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "This is the testing build (1 day = 1 second), so vesting and bribe shares that take days on mainnet finish in seconds here: the script's first claim after about 5 s paid 82.5 of 150, and the next one paid the rest. The app never calls sync_bribes, so bribes sent from the app sit in the vault until someone syncs (the script does). Create Pool in the app fails because its IDL is older than the program (no fee_receiver). Built with Solana 1.18.26 tools (platform-tools v1.41): the same source built with 2.3.13 tools failed at runtime with an access violation in initialize_pool, so the first deploy was upgraded."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

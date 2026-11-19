@@ -1,0 +1,53 @@
+{
+  "lab_id": "reddi-escrow",
+  "lab_version": "d761cd6d7398d03340da284d2e95f98b63bd3f1d",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/reddi-escrow-solana",
+    "commit": "d761cd6d7398d03340da284d2e95f98b63bd3f1d",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/reddi-escrow-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/reddi-escrow.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy programs/escrow as 6T8dguHEbjhahEzEtUn64a7hrf3sqpdgEYRHmh1DeV5R on devnet",
+          "5GhR5PDF8Nq8gDqei94fUW4CDBzRxAT8Qk65kjhxMYh4UKhs3csCQZAhyKHZLciPv5npeP2nv1rbQz4ND3PHDZVB"
+        ],
+        [
+          "register_agent campus-scout, type=Primary, rate=1_000_000 (agent 8qVcbPrW\u2026); 0.01 SOL burned to the incinerator",
+          "45k9qwLE47xiYZ3qUyohTqTnyFFr6aAcxwuu4VwZ3ZDVRjDPNMVgwWZUtg3FnPKWSs1t3LJjcDgwDhyv6qpJ6L88"
+        ],
+        [
+          "lock_escrow 1_000_000 lamports to tester payee m4AcRjHc\u2026 (escrow HNqz8V3p\u2026)",
+          "54JL3pBHuLwkpo63pWE8sCHC28URadEUrzyuEQqfy8CY87L6gDvFbwjk8sF7pB2cGvWE1B1ZpxGGCT6dTFj2v8ur"
+        ],
+        [
+          "release_escrow paid the payee +1_000_000 lamports and closed the escrow PDA",
+          "4Pst7sziMAWG8CEGZbJazHRnFDLAyWGDXNpPTKrDQrPrHcVczmoh3ebMGHPPJpts2n89uFHQom2n5tEpkqbKnug1"
+        ]
+      ],
+      "functional_evidence": "register_agent wrote agent 8qVcbPrWN9BkrLj8GH6ZeMjHHGHm5auctht1mTmCFHSC (campus-scout, Primary, active); lock_escrow escrowed 1_000_000 lamports; release_escrow paid payee m4AcRjHcQzpvejFnU9KBEgf9z7pwni84CrGpARCoJpr exactly 1_000_000 lamports and closed escrow HNqz8V3pAkycmkPSCJfebb9zT2hLZJZ6wLRBYZs2PD39; ModelTooLong and ZeroAmount were rejected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; register_agent, lock_escrow and release_escrow were sent with the lab and tester wallets through the IDL client in tests/devnet/reddi-escrow.mjs.",
+      "log": "tests/devnet/logs/reddi-escrow-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "cancel_escrow (7-day window), token escrow, update/deregister, and commit/reveal/expire rating were not exercised. Quasar / MagicBlock PER was not used. The hosted IDL is a hand-derived subset confirmed by the verifying transactions."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

@@ -1,0 +1,57 @@
+{
+  "lab_id": "poe-solana",
+  "lab_version": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/poe-solana",
+    "commit": "29a7c77667bc68d4bdf2b1cc7a98056af7f8437d",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "6E4atN4EvrvxNtpBQwPMg7AkzJ2TjZrbxBkou9BN99p5",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/poe-solana-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/poe-solana.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Clicked through the hosted app (test wallet 8WVm\u2026): filled Create Poll and pressed Submit, which sent register_user + create_poll in one tx",
+          "5XALdMCsFcAKcCab9XzGhmDdvJtbg96jCcFPYiYLQ3zu4Dmog31ivfK12mXg2aPgKqUxm51ZufMFNDb8gwkDqPSY"
+        ],
+        [
+          "Then moved the estimate slider on the new poll card and pressed Submit Estimate: make_estimate",
+          "38ogmj22JUrW8GBno7qCAMbw2CxAcET3yChmd9bDxV9Uye1cUBs5eVcR66pUfioLQ243WQU4PxdiLj1j47awyjBU"
+        ],
+        [
+          "register_user (mints 1000 POEKEN to the new user)",
+          "xHGi777sppvHTrihQZWV1oMFMbN5NBnVKG6Gk45XKuWEmNYmS2aBTCQtSub54XME1vDc71pmR2yf4rFw3Yra2yM"
+        ],
+        [
+          "create_poll (poll #0)",
+          "2ek5ipeqYBC8GymcKbHNuuLa6zgS7XBVff6kAriYNxPNnUcLt9YujZbR9WyjF6unLDmSZyzk5DdFzezER7dreGYE"
+        ],
+        [
+          "make_estimate 30..70 \u2192 crowd estimate 50%",
+          "2CwfnjHoR6djUzSXHJZxUWTbjYSu5tCmhnBo2tCBThrZABuMnN1JA7qNQVRV6BXmJXYK1wGcedxHcP2DGgDNnPXD"
+        ]
+      ],
+      "functional_evidence": "Create poll, register_user and make_estimate all landed on devnet (script and UI). Resolving polls was not exercised, but is not a recorded failing path.",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the new poll card then showed 'Yes 60%, 1 forecaster, 1 estimate' read back from devnet. Earlier read-only check: /poll/?id=0 shows the poll detail and estimate history.",
+      "log": "tests/devnet/logs/poe-solana-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "Resolving polls and collecting points need the poll's resolver; not exercised in this run."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

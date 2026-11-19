@@ -1,0 +1,65 @@
+{
+  "lab_id": "solagents-commerce",
+  "lab_version": "8098f7b52f251dad792f2d3447c5192e5f45692b",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/solagents-programs",
+    "commit": "8098f7b52f251dad792f2d3447c5192e5f45692b",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/solagents-commerce-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/solagents-commerce.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy agentic_commerce as GXskCGB6fK53vQaZWo6KjN7QkNVuPRHBfBkxzWFNCrev on devnet",
+          "3EZYE1MeQqzMioR7edh5xB3QCqKgZoCNrzLiCEcD31kc9aLGn5Aw9eZmQ99BXLJ7RK4j3kDHVj2m1WZCbtD8YDX8"
+        ],
+        [
+          "initialize fee_bps=50, mint BJMSdujx\u2026, treasury En7DGt8B\u2026 (config tU8ugVHK\u2026)",
+          "2qcZ22XuVAEWLaaJysJwiDvGkMAwCKCeNBpgsdzit9wKQYMmafxFD6bfCSWM6Amfj5pMG3DnT9WjNm9wf5dLeJmt"
+        ],
+        [
+          "create_job campus-scout job, provider GpUq5UH3\u2026, evaluator BP1uwSaT\u2026 (job C3VwDTjN\u2026, vault CheoMeAu\u2026)",
+          "35TFcNakwt8pHtRGN4nU2t9Wwf8hkKDtYrC2H6MjxCdsz1EpGSWKotn32eUoxidyFQtjEoFh9wA3FM1SSnY4g3Qc"
+        ],
+        [
+          "set_budget 1_000_000",
+          "3KbPJAZ2u2344GJSQFtiFQ47n2Zb5dgkJEKo9SZfMiba4jCqHU86gWtDCgPhCK6cxbJ6eaw3xqUz7jRwvYkP2sQT"
+        ],
+        [
+          "fund transferred 1_000_000 into the vault",
+          "Zg4PKG6F2gHHUphrHoHT7UKmHReLf6w8ddHK8Met5PxSpEdAt4NuTZYZuhw983JB5m91txt91cQwbkQ5DV3XrSq"
+        ],
+        [
+          "submit by the provider",
+          "bZAqsiatFJGTGcD8E5VqZ8q1pQNN6oFdXdf9sNY2Q1eZLCErVxct9YvpSCWBeRpNLUYqMNyea64q2aQcbgvSjsw"
+        ],
+        [
+          "complete by the evaluator paid provider +995_000 and treasury +5_000; vault emptied; status Completed",
+          "4qrg5aPTuPTF1h5ob8WVG2JbuAYYsZwiWqk4F9dSYtLnEj8MGUK6AFjFoydzAaqch1KrKFoQ6HbwornqXG1Y3YS5"
+        ]
+      ],
+      "functional_evidence": "initialize wrote config tU8ugVHKwybfn9YszrFq8stedhj6J8tMqoCAk2bHPPa (fee 50 bps). create_job wrote job C3VwDTjNqy1pyauj551XVWjVF2cGKfHdRhGh1HYh179S (campus-scout job). fund escrowed 1_000_000 of mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D into vault CheoMeAup2fx9CfsH7LRgMupzizMnjEwh2LiK73K6Utu. submit was signed by provider GpUq5UH385UqgZCKzP4XcrmubHhnp72WQsVN8NDvV8jb. complete 4qrg5aPT\u2026 left the job Completed, the vault at 0, the provider ATA at +995_000 and the treasury ATA at +5_000. Re-initialize was rejected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the lifecycle was sent with the lab and tester wallets through tests/devnet/solagents-commerce.mjs.",
+      "log": "tests/devnet/logs/solagents-commerce-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "reject, claim_refund, close_job, hooks, and set_provider-after-create were not exercised. bonding_curve was not deployed. The official agentic_commerce program id was not reused."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

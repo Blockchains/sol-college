@@ -1,0 +1,65 @@
+{
+  "lab_id": "agentx",
+  "lab_version": "2dfa2d92d8e535fc10513b9dc8722bb92bc1badf",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/AgentX-Solana-Deploy",
+    "commit": "2dfa2d92d8e535fc10513b9dc8722bb92bc1badf",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "7cnrBzeFJVWR54PXadfDzE9ZWy975TaCTfBTGVL5wi5K",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agentx-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agentx.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "czBdZUMnPUFKSQ4Z4BSYcQJAfYT9iTL458zQ6aGv1vRRRudfqe4Z4fdVGEzeKemqhYj2CPHNhzxWHXxGuvbB8SP"
+        ],
+        [
+          "Upgraded the program with the lab initialize_registry patch",
+          "65dyL7yDijzQjJnvdykcrAppPbWzw8wR4e9eGNeurkegtnpobVD2EBZhymDYdw9mEcNXF88qe69k4sWo9c98LReP"
+        ],
+        [
+          "initialize_registry created registry AeeXtNcd\u2026, authority=lab wallet, registration_paused=false",
+          "3XPkzaUoGaKYeKriePpe9qVAdXgWABtUAcvsjZ7KVW5YFMEiPkrMiMBW1igfHbTi5BAHqmdp2Wkixx6T4F6nws88"
+        ],
+        [
+          "register_agent id=sc-deai1 name=campus-scout model=grok-bot created agent 6FtQojvN\u2026 status=Inactive",
+          "4zenNhJ5GXq34w1r14gCN2iM1qPw6BcxaXDfRsvNqYrWvLkoLPY2i38rvij9XYsqWG9yW5ZRhUb7xkYkhHrHnm6G"
+        ],
+        [
+          "update_state to Active",
+          "4idYwJhhjJcQ8RMBxynvw5GyCyBT3PDaKEM9g4QE4prGGjKF62pvA4Z7tmQPsfTgukFVKtpJ54iCxQzy87d4fPdi"
+        ],
+        [
+          "execute_task nonce=1 success=true reward=42, task 7MR2FKL5\u2026; tasks_completed=1",
+          "M1vYKfRRx5y5B9f4rZWkGAQRiTUcMzTcMtxtJPAR8rWBDGad28Sf4yHF68P4WC3W8mUFHaYP7H7N7mMChpDbgxd"
+        ],
+        [
+          "deactivate_agent; status=Deactivated",
+          "YHeFy4nAV9tNAG8Kg6jGQ1ezwArfJuXhV6yQjmGDvAwSvN29g4Lybkw9BMCFy9t2LvPUB987cUHi3Ci6fstDagw"
+        ]
+      ],
+      "functional_evidence": "initialize_registry, register_agent, update_state (Active), execute_task (tasks_completed=1, verified=true) and deactivate_agent all landed and were read back; AgentNotActive and AgentDeactivated were rejected as expected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/agentx.mjs.",
+      "log": "tests/devnet/logs/agentx-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "claim_reward was not exercised: it needs an AGX token vault signed by the registry PDA. initialize_registry is a Sol.College lab patch, not present upstream."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

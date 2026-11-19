@@ -1,0 +1,61 @@
+{
+  "lab_id": "covenant",
+  "lab_version": "ee7bceb4d9c3fd9f1883f1a34be628a546988284",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/covenant-protocol",
+    "commit": "ee7bceb4d9c3fd9f1883f1a34be628a546988284",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/covenant-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/covenant.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy covenant as 6ftEd3uT4v4XEmy5oBNPtBo6HU1bZzdPJuDL9bZTFXA4 on devnet",
+          "2KSyE7kbBZi3hgNaat4BkySYRdqkAx9xfXDEGh6pDfGmWpyifM1nGYNiKXtBmjFCHRLv9nd6VxkUDRxTsYEYXSzS"
+        ],
+        [
+          "init_config (config 9S6yJCLGu6okuQis68DMGbr4cZFBzYMYwd4nmrVdPnvb, min challenge 1s, threshold 2)",
+          "4enbnEYjddMdj6Ht7h3mqWbFWAMKaN6ThqpTjFNMZNkFaMbvfrTyLDLpuQ6qU1nvK8JxPrDfrWANNm1B6LeViRhJ"
+        ],
+        [
+          "create_job 1_000_000 (job 9SncPbxrqLudFdN3AqsZZqFDyobML8EutnkpDYZWJUYY, escrow D5RJvHWVZ8J5GH3Wt7bbDkCMNwPPbbL2am9GcTMuNF3b)",
+          "28FY42WbRPCyCCgzGXhkJVQacC264cFyvS1KwyXRxhVMnT6d23zFexbiNaTCbUrBrN4pS4Ru1Z4LmaDiTosiDYsp"
+        ],
+        [
+          "accept_job by taker C8Kh4ewr9iJB7yT1tsEUkuKTUTb7E23U83wL8WVBgKmd",
+          "2WU9SALSgyoRSMY3HRUF94w7cCLNjv8KhWzAhMuMycsveaAJz3CMA2oC1pR7qXxmQh7s9m1t3ozVFBPNeZJNq9gf"
+        ],
+        [
+          "submit_work",
+          "4irBFJ1GY2uuLaVBTixLbmrY5ZhxHDDGr3ytRXEwu3oWZfTV7iwEZZesYWdBLUR9xPEDpuVJcAvbnxEmK7KZzDtU"
+        ],
+        [
+          "finalize_payment paid the taker +1_000_000 and closed the job",
+          "65DJztfHtc6bcR3BUrZvdPLJLzffArkQBRJfU4Z5WdVeKARJDpeTNnXGrRoxoxtGKYHY9yhW7cJZb7Yfsiz9Gtmq"
+        ]
+      ],
+      "functional_evidence": "init_config 4enbnEYj\u2026 wrote config 9S6yJCLGu6okuQis68DMGbr4cZFBzYMYwd4nmrVdPnvb (upgrade-authority gated). create_job 28FY42Wb\u2026 locked 1_000_000 lab tokens in escrow D5RJvHWVZ8J5GH3Wt7bbDkCMNwPPbbL2am9GcTMuNF3b (job 9SncPbxrqLudFdN3AqsZZqFDyobML8EutnkpDYZWJUYY). accept_job 2WU9SALS\u2026 and submit_work 4irBFJ1G\u2026 moved it to Delivered. After the 1-second challenge period, finalize_payment 65DJztfH\u2026 paid taker C8Kh4ewr9iJB7yT1tsEUkuKTUTb7E23U83wL8WVBgKmd exactly 1_000_000 and closed the job account.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with the lab and taker keys through tests/devnet/covenant.mjs.",
+      "log": "tests/devnet/logs/covenant-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "Disputes, cancel_job, and claim-listing sales were not exercised. The official program id was not reused. The hosted IDL is the upstream app IDL with the lab address substituted because idl-build failed."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

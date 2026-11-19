@@ -1,0 +1,77 @@
+{
+  "lab_id": "atlantid-programs",
+  "lab_version": "5f8558b2f377fdccb2906cad33394e3593eed7e3",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/atlantid-programs",
+    "commit": "5f8558b2f377fdccb2906cad33394e3593eed7e3",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/atlantid-programs-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/atlantid-programs.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy agent_vault as 8nbe1vQxio5GFUrv6x7ZCJyEfjFmpU4QTcqYhXcXMfGB on devnet",
+          "4jKvYPs3cZDprgfr9NEMLxmqXY49o7j467GLcf2LSgsMeD8ZYMmT6KNLroJ8LEh6tfKcEcvgBBZky72cAQNDSXSX"
+        ],
+        [
+          "Deploy agent_escrow as 8m9ef1YpXNAAM9nmAhBR4Y4MVbejdKuNnYj9DMPYscnW on devnet",
+          "4BXA23egUznQweCVmAu7MFH7RPMXj64sXrPPJ5kLHRTHGHh6BZqSLwoTd8qxNgRMaAyhkrppr53cHNRLCXp42SNE"
+        ],
+        [
+          "register_with_options on official 8004 (asset J1TstbZR9NYxNafzZ6tB1S9F1JqxCg5GAKCGH3QhGe2w, agent CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh, ATOM enabled)",
+          "549HzQs8vtVFJuRndjkUErMfAjP7j5NdeVAekghatxDJswBcpaoigjm3kmNp9To3JHc1sDBU58MM2ExdspZ8FCAN"
+        ],
+        [
+          "initialize_root_config (vault root GGjNc8D9mYD6fsd94txY6wPvqAhGWGsDh465WPbwyBfK, fee 0)",
+          "27vjRYruXKJ2atJ28dVQJYqzby3wWmAq2vk4yp2jVRRXZjwioCTwnam85ptEBYKuAeJMV5ps5P9yQCLA1awB8wti"
+        ],
+        [
+          "create_vault FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM (ATA DoUoyAY1iqrjTy74hCMqVP2o71Yo3fyKasyT2evNbJm3)",
+          "5T3E3YnWHiCb7BW7M31uzBf2rz4cbd3fyq5ox3VR6aSkdA72hFvmdPd7QhTA7rRkPdcMQndmDjttc2Ty6LNwSTCv"
+        ],
+        [
+          "update_policy daily_cap=4_000_000, per_tx_cap=2_000_000",
+          "67r8JwfJinGk5i6Amq1VVa9bs3ge23YzhxLwAJTFCfiUweKaNzUzCC3xL4d2oy5Pm3EjdfFjSnG8Hx6ibb5CJtVq"
+        ],
+        [
+          "spend 3_000_000 as owner (bypassed per_tx cap); recipient +3_000_000",
+          "2KNCjsrcELznQMsyN7e5LreWfrd4e7uKZvhi78R1SWWQ7eLG1ghWrJk95273Xy23iS6Td45wuPDBABQRtrCjFi9C"
+        ],
+        [
+          "withdraw remaining 2_000_000 to the owner ATA",
+          "52hk3PiVqjY5Ma3SPNXPp5jVpLqm87rV982B16WUU1yknr44CsAnND9o6WBguAXvJi1DrVPCHU6hHNztgiMAYp8r"
+        ],
+        [
+          "initialize_escrow_config (100 bps fee) and create_escrow atl-job-1 for 1_000_000 (escrow BKTYkugZMeu87vLMaPzKRzrQT1rta8ZfnTZPDhWADbs7)",
+          "5gBDpEvyFLUabYdAVvkL8bSwLtn5fMTwwCEKMnnFbe945P7t9kiCwLnGUr72p5PsUqPcMNhBhfDPJNVsHqU2CeUE"
+        ],
+        [
+          "mark_completed then accept_work: vault ATA +990_000 (1% fee), escrow ATA closed",
+          "5nE2e2xdANKbFcTpoy9wCeVmWdXv9dP82joVj7KSBuR6jdxZrm9GgRiUGX3FZ8gq51K1o6yzqoRWfErW8ithxTav"
+        ]
+      ],
+      "functional_evidence": "register_with_options 549HzQs8\u2026 created 8004 agent CGAqB2P4kM7uVh8sixNpzjsxJpyCv9MP5erVRUAUC3Hh with atom_enabled=true. initialize_root_config 27vjRYru\u2026 and create_vault 5T3E3YnW\u2026 opened vault FZLnWzHmWBivTmxa59xHiLum2xXhVnxuxDwNKFgChJUM. After funding 5_000_000, spend 2KNCjsrc\u2026 paid a recipient +3_000_000 (owner bypass of a 2_000_000 per-tx cap) and withdraw 52hk3PiV\u2026 returned 2_000_000. create_escrow 5gBDpEvy\u2026 locked 1_000_000; mark_completed 44R9A9vV\u2026 and accept_work 5nE2e2xd\u2026 paid the vault ATA exactly 990_000 (100 bps fee) and closed the escrow ATA.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the 8004 vault ceremony and escrow lifecycle were sent with the lab wallet through tests/devnet/atlantid-programs.mjs. Creating a new vault in the console still needs a prior official-8004 register_with_options.",
+      "log": "tests/devnet/logs/atlantid-programs-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "set_agent_wallet and cap-enforced spend as the 8004 agent wallet were not exercised. dispute_work and timeout cranks were not exercised. The official 8004 registry and official program ids were not reused for vault/escrow."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

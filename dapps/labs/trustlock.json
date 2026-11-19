@@ -1,0 +1,77 @@
+{
+  "lab_id": "trustlock",
+  "lab_version": "18155f4de32e6a15afef5de57d1d8715b81c7604",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/TrustLock",
+    "commit": "18155f4de32e6a15afef5de57d1d8715b81c7604",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "6km4NhrxLPcMTXVmZyKsBBsmmoqXHu1NT6P5uFL5FFjP",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/trustlock-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/trustlock.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: owner (test wallet 8WVm\u2026) filled beneficiary + 0.1 SOL and pressed '15s Escrow for testing': initialize",
+          "5WammBnEQd5JH5GQZfaWK4apG7atttMNxBjYy9m3XCdYB4sQxhHt7FHh8ydFxJ3hcZLzeodseuEhXA52bCoGe9tX"
+        ],
+        [
+          "UI: the same button's second tx, deposit 0.1 SOL",
+          "2hsu8xQntba6vJhGxQ6Ynhhw5M3kytRZyx1Csu73DnMzFY2Uq83M1haKbXNM3SBURXDKqsjmhKqeWT9YEoAwtxZM"
+        ],
+        [
+          "UI: owner pressed Cancel on that escrow: cancel, funds back",
+          "3VK1uo2C9LS6C9dttm4hYTrNn9QXf4YMfQ3MT8oZjYBNauaTHgv1G9xAz9ZmLTjAWQ9HSDSwAdxg6D48QBQttCky"
+        ],
+        [
+          "UI: second 15s escrow, initialize",
+          "79F9SVEmcSTeoqivmp7tnUzrtJFA54HivffetxSKSeqD4JkoD3Rzsi7vRRrBFazautZQKiqAzzECXkwFVXho4dC"
+        ],
+        [
+          "UI: second escrow deposit",
+          "4E1guQkpb7aYhNmWd2K1s2Ld3nnA91TUGHrT16UhQ5PVC2vNfBdRF3S7dnKZ7i1L6edHPz8fR35c2opciDD49MkD"
+        ],
+        [
+          "UI: beneficiary (test wallet AgrL\u2026) opened the app and pressed Claim after the deadline: claim",
+          "3EPnZs553WcpxPYH8vanWLrbysYPP3timpwnrxvd22UPbMkk4bwdchsaF6hVhKuWGYyYhSSTJRGJxVaoVocmo1Wd"
+        ],
+        [
+          "initialize (deadline +45 s, new beneficiary)",
+          "2wzRVyga84RiwsSSaf39aHY8de8DJG1hi4sKS7X7nvKcRbYfRjJdXzZduTEXzLUsQmAAKb3uKScw6XEqRCCTYUAZ"
+        ],
+        [
+          "deposit 0.02 SOL into the escrow PDA",
+          "4WiWRBHaXLsKmYkcUGP23EWg1ukpBwN3wqFRQdSSYnhYMjPmzfT19WN2e52ZsYoPUuQB4ppBaNLP1RVQ6CiSnaNf"
+        ],
+        [
+          "checkin (deadline extended)",
+          "3qXk24R4Jm2FykDJk36gPAEP5GoTcC5oxZxWgF2PnViQRdG83G6C269NKjTaVckhdHuTPhjuXM72ZYHp275ouAUa"
+        ],
+        [
+          "claim after the deadline \u2192 beneficiary received 0.02118872 SOL, escrow closed",
+          "5xVrtsfr9VW1UiYHePqMYNCxjdLtyzLxvF39zjLkzPgmbwmSJLy2inD7myaBCQ7BspGRsabCYJCBMFWobAMtx22c"
+        ]
+      ],
+      "functional_evidence": "initialize, deposit and beneficiary claim landed on devnet. A Check In through the UI was not captured in that run; the scripted path of the program worked.",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the wallet connected from the Connect button, the dashboard listed the owner's escrows, and create, cancel and the beneficiary's claim all went through the app's own buttons.",
+      "log": "tests/devnet/logs/trustlock-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "A successful Check In through the UI was not captured: the 15s/30s test escrows expire before the extension lands, and a date-picked escrow was not created. The beneficiary claims from their own wallet, because the app's IDL makes the beneficiary sign claim."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

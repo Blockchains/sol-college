@@ -1,0 +1,53 @@
+{
+  "lab_id": "agent-bazaar",
+  "lab_version": "b9b4cab7b196839e62a991252ec0395a1bae1140",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/Agent-Bazaar-solana",
+    "commit": "b9b4cab7b196839e62a991252ec0395a1bae1140",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "4JLHcJkEhBWxb8g9m5uZVjavS7vjhJ9yAVHUeShvM2Tx",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/agent-bazaar-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/agent-bazaar.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "3Aux4ZLRgogApJi6LsreYXuUbd6rAi1Yi7JDRDwFwJBjTy43dqMXXqJ1x2SXzPQv9tAFNBi8w9oF9fpy1BJhuQJx"
+        ],
+        [
+          "initialize with platform_fee_bps=250 (protocol 8qBZ1HYD\u2026)",
+          "2B1AKitBg3tzR146mYK6X3NKqMfdgiQEgT5eXL7Ai1SQb2r72u8EnMKuAZZSmcH1DQQK6SbvnGbpJpsbVdrx2kSZ"
+        ],
+        [
+          "Fetched protocol: authority is the lab wallet, fee=250, agent_count=0",
+          "(no tx; read-only)"
+        ],
+        [
+          "register_agent campus-scout (identity 8Phw1JZ7\u2026, reputation 53vhq7UK\u2026, agent_id=0)",
+          "xuwwUQoz5bebfjeQg5vpwfBvDVHsqSJeW1qbnK6rNHzkrbeFLGySukhnhpjkh9T8QL694FYFGk2fBhEzyaa4XrG"
+        ]
+      ],
+      "functional_evidence": "initialize landed and protocol 8qBZ1HYDXZumuCqUdqF3tgKUmFjtcts9LZL9rfJ1N7eE was read back with fee=250; register_agent wrote identity 8Phw1JZ7pLXmVH6CL11G7aEqJChQuHM3PjFK7xgpTyfS for campus-scout (agent_id=0, active=true); InvalidFee rejected fee_bps=10001.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize and register_agent were sent with the lab wallet through the IDL client in tests/devnet/agent-bazaar.mjs.",
+      "log": "tests/devnet/logs/agent-bazaar-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "update_agent, deactivate/reactivate/close, update_fee and submit_feedback were not exercised. The hosted IDL is a hand-derived subset of initialize and register_agent, confirmed by the verifying transactions."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

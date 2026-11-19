@@ -1,0 +1,53 @@
+{
+  "lab_id": "orrery",
+  "lab_version": "3ef0c787c1b85fae401fbd97fb80f387dadef3a1",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/orrery",
+    "commit": "3ef0c787c1b85fae401fbd97fb80f387dadef3a1",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/orrery-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/orrery.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deploy program 93Bs5W8qgA2mMKmhXJWJtfYv9jKPJxJq4zZDakm8jxPu to devnet",
+          "nyUpTSU7CUA5mQK7CwbhXCCrg6YVPqD2Z8WJ1St85CSj1A19qZ8R4XiGxFDT3hGixAK6ucPYjmoj7zX7rRJcfuU"
+        ],
+        [
+          "initialize with grace=600s, unbond=3600s, min_deposit=1_000_000, settle mint BJMSdujx\u2026 (config J5Bu3vKR\u2026)",
+          "7eyBizE6vP5DM12JSnc6Ha3aQSpDb61iCGPNjwKtrkTnZCfsMEgaWW8zWJP9b2Btqk6ThncDiHcRiJzKoYV778C"
+        ],
+        [
+          "register_provider https://sol.college/dapps/orrery/ (provider 7gmBzHSN\u2026)",
+          "F8ar4YK9sruhCshPCWfgs1hFjQoPLkVfPTiGkisG5nU1Uoj8rTGE2sNhBhum6W9fgwB54SH6PogTLGJYPajad3Y"
+        ],
+        [
+          "open_channel id=1, deposit=1_000_000 of the lab SPL mint (channel 3hvVKBsZ\u2026, vault ksWqtFH1\u2026)",
+          "5fhrHv7n1SjCZVNVUwJgYrTNQvwD887NRTfBigxYARh23DGnKEm2NEaVXATV27B4vamfvqyqVmcnAkBFfLGfkrqD"
+        ]
+      ],
+      "functional_evidence": "initialize landed (config J5Bu3vKRY6EmMPBu1wU2HXVjpdJ1kZkbuG8ZDiJudLSQ, min_deposit=1000000); register_provider wrote provider 7gmBzHSNFfNVy3tGaux3VCswmQBXjs472czinJukCdGE; open_channel deposited 1_000_000 tokens into vault ksWqtFH1tq9655NjKCM8MnFSfaee2VscwSFuchQGAUf (channels=1, redeemed=0); BadParams and BadEndpoint were rejected.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; initialize, register_provider and open_channel were sent with the lab wallet through the IDL client in tests/devnet/orrery.mjs.",
+      "log": "tests/devnet/logs/orrery-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "redeem (Ed25519 voucher), top_up, channel close, bond and attest were not exercised. The lab wallet is admin, provider and channel payer. The settle mint is the lab SPL mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D also used for Forge. The hosted IDL is a hand-derived subset confirmed by the verifying transactions."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

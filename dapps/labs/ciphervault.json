@@ -1,0 +1,69 @@
+{
+  "lab_id": "ciphervault",
+  "lab_version": "ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/CipherVault",
+    "commit": "ee28e174a17bed59a7117b1fbcbf8c9ff2882fe9",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "DYfkSaTdCBjEFk1fGWhBc7uR7mSVBz2dogsaupzxVzgG",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/ciphervault-2026-11-10.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/ciphervault.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: test wallet m4Ac\u2026 filled New Multisig (2 of 2: m4Ac\u2026 and GpUq\u2026, initial balance 1 SOL); the card then showed 2 of 2, PDA 8SpG83XG\u2026 and vault balance 1 SOL",
+          "3mCJ3ZgERPNW9btSdroSaGXUWAgaWrMggQc9vWZ8wF6uQ5sKzpGGJ89fBMXwKqLENY4LTe4CjS4AJ2fNWUvnUd3c"
+        ],
+        [
+          "UI: New Transaction, 0.02 SOL to E8xrtSuz\u2026 (the proposer's approval is recorded automatically)",
+          "Font6CkBhutUPagVGqdgYiT7KEsDF4ZXU3TzzujLCDUu6keMVtX9zAmpn7RdwvZ3qh5dzzYBGQxXZ9prN4YBkXC"
+        ],
+        [
+          "UI: second test wallet GpUq\u2026 opened Transactions and clicked Approve",
+          "3fces1nr6tvdoCVUAwQ4BQacbQ7Ac9MsgoHpQCLH7druVvUoi6wwripKi44m4Nj9mWD6ASkwYeEYz3wRBGkQrXEc"
+        ],
+        [
+          "UI: same wallet clicked Execute; the table showed 2/2 and Executed, and the recipient's devnet balance read 0.02 SOL",
+          "yeputouRFaw5kEbAgUpqXH41YHXKr6BmHbp5twWpaUcccTinJZrGBTJfunpbCzBSJzaMo2J7DuNqtf4LoCzbJJD"
+        ],
+        [
+          "Script: create_multisig 2-of-3 (A,B,C) with 0.2 SOL",
+          "3W9sP68oPcz6MFFyWT9L7ExVQkUndyUZeLAErDGcyiHBfsqWqmzkv33eQKTE1CBsEYZyHMaNffD8kcycc5UCWnAK"
+        ],
+        [
+          "Script: A proposes 0.05 SOL to recipient (A auto-approves)",
+          "BjDcG29KPcnFCdRcz5Dngj6B3ZGM1zyq5t3ibXVFgheR1ju3rSCKr8r6KHv5zkBFEqhTfpe2hqKsLZzWH1gEtbm"
+        ],
+        [
+          "Script: B approves (2 of 2)",
+          "2XEVzrzCZc4KytLeRa3HoD66h5UXtzH38bfqJSN6ugiwh23Ayt4XBAnnxPAnYS5Tx1My7ZqgXnJE5Ub6JgHAik4S"
+        ],
+        [
+          "Script: A executes",
+          "fDdnb6UYMrYJQsFPKxpRPW3X5NiAxjCjfQi1DtdBFBNPo9MyEU4wszL2VT5F773fXNWDF436pMsRBN6DNH8jNkK"
+        ]
+      ],
+      "functional_evidence": "create, propose, approve and execute landed on devnet. The Initial Balance field parseInt issue is a UI footgun, not a broken instruction.",
+      "ui_check": "Driven in headless Chromium with two injected Wallet Standard test wallets (tests/devnet/wallet_click.py cipher / cipher-approve, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): create, propose, approve and execute all went through the app's own dialogs and buttons.",
+      "log": "tests/devnet/logs/ciphervault-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "The Initial Balance field is read with parseInt, so 0.5 SOL becomes 0; use whole SOL. The transaction table shows the amount as 0 SOL even though 0.02 SOL moved. The proposal-time NotEnoughSol check compares against the amount before it is set, so it never fires; only execute checks the vault. The token (SPL) option in the dialog is not implemented in the program. Lists are read with getProgramAccounts on the public RPC and can be slow."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

@@ -6,8 +6,8 @@ SITE='https://sol.college'; OUT=os.environ.get('SITE_OUT','site'); E=html.escape
 INCR=os.environ.get('INCREMENTAL')=='1'  # render only candidate (unpublished) projects; merge_incremental.py patches the deployed site
 data=json.load(open('data/projects.json')); P=data['projects']
 shutil.rmtree(OUT,ignore_errors=True)
-if os.path.isdir('legacy'): shutil.copytree('legacy',OUT)
-else: os.makedirs(OUT)
+# Pre-launch: do not publish the retired solar/energy/local-AI SPA from legacy/.
+os.makedirs(OUT, exist_ok=True)
 SKIP=re.compile(r'(^|/)(node_modules|\.git|dist|build|target|vendor|\.next|coverage|fixtures?)(/|$)|\.min\.js$|\.d\.ts$')
 def files(name,exts):
   root='work/'+name
@@ -217,7 +217,7 @@ def page(path,title,desc,body,ld=None,crumbs=None,og=None,noindex=False,lastmod=
 <style>{CSS}</style>{''.join(f'<script type="application/ld+json">{json.dumps(x)}</script>' for x in lds)}</head><body>
 <a class=skip href="#main">Skip to content</a><header class=top><a class=brand href="/"><span class=logo aria-hidden=true></span>Sol.College</a><nav aria-label=Main>{nav}</nav></header>
 <main id=main>{bc}{body}</main><footer><p>Sol.College: learn Solana from real code in the <a href="https://github.com/Blockchains/solana-superstack">SuperStack</a>. Code excerpts are quoted under their original permissive licences, with attribution and permalinks. Facts link to <a href="https://solana.com/docs">Solana</a> and <a href="https://www.anchor-lang.com/docs">Anchor</a> docs.</p>
-<p><a href="/learn-solana/">Learn Solana</a> · <a href="/topics/">Topics</a> · <a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a> · <a href="/explore/">Explore</a> · <a href="/learn-by-example/">Lessons</a> · <a href="/what-to-build/">Ideas</a> · <a href="/how-to-build/">Guides</a> · <a href="/edge-ai/">Energy &amp; edge compute archive</a> · <a href="/legal/terms/">Terms</a> · <a href="/legal/privacy/">Privacy</a> · <a href="/feed.xml">Feed</a> · Catalogue generated {data['generated'][:10]} (inventory build date; not a per-app verification)</p></footer></body></html>'''
+<p><a href="/learn/">Learn</a> · <a href="/lessons/">Lessons</a> · <a href="/lessons/path/">Learning path</a> · <a href="/learn-solana/">Learn Solana</a> · <a href="/topics/">Topics</a> · <a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a> · <a href="/explore/">Explore</a> · <a href="/for-teams/">For teams</a> · <a href="/legal/terms/">Terms</a> · <a href="/legal/privacy/">Privacy</a> · <a href="/feed.xml">Feed</a> · Catalogue generated {data['generated'][:10]} (inventory build date; not a per-app verification)</p></footer></body></html>'''
   d=OUT+path; os.makedirs(d,exist_ok=True); open(d+'index.html','w').write(h)
   if not noindex: SM.append(path)
 SM=[]
@@ -358,7 +358,7 @@ f'''<section class=hero><p class=eyebrow>Learn by example</p><h1>Learn Solana fr
 <section><h2>Learn by topic</h2><p>{' '.join(f'<a class=chip href="/topics/{T["slug"]}/">{E(T["name"])}</a>' for T in HUBS)} · <a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a></p></section>
 <section><h2>Most-starred projects in the stack</h2><div class=grid>{''.join(card(p) for p in sorted(P,key=lambda p:-p['stars'])[:6])}</div></section>
 <section class=split><div><h2>What to build</h2><p>Idea pages built from the shape of the catalog: where strong projects are scarce, which stacks dominate each category, and a starter path through real modules.</p><a class=btn href="/what-to-build/">See the gaps</a></div><div><h2>How to build</h2><p>Practical guides to setup, the Anchor workflow, testing, deploying from devnet to mainnet, and a security checklist, each linked to the official docs.</p><a class=btn href="/how-to-build/">Read the guides</a></div></section>
-<section class=note><h2>Also on Sol.College</h2><p>Our original programme on solar-powered AI edge nodes is still here: <a href="/edge-ai/">overview</a>, the <a href="/calculator">energy-to-compute calculator</a>, <a href="/learn">operator courses</a>, <a href="/resources">resources</a>, the <a href="/for-teams">pilot for teams</a> and <a href="/contact">contact</a>.</p></section>''',
+<section class=note><h2>Practice boundaries</h2><p>Sol.College is a Solana learning platform. Practice environments are independent forks on Devnet with recorded evidence for stated flows. They are not security audits, production endorsements or Solana Foundation accreditation.</p></section>''',
 ld=[{"@type":"WebSite","@id":SITE+"/#website","name":"Sol.College","url":SITE+"/","inLanguage":"en","description":"Learn to build on Solana from real code.","publisher":{"@id":SITE+"/#org"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":SITE+"/explore/?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":["Organization","EducationalOrganization"],"@id":SITE+"/#org","name":"Sol.College","url":SITE+"/","logo":SITE+"/android-chrome-512x512.png","sameAs":["https://github.com/Blockchains/sol-college"]}])
 # ---------- lessons
 page('/learn-by-example/','Learn Solana by example: annotated lessons from real code',f'{len(LES)} Solana lessons (PDAs, CPIs, SPL tokens, Token-2022, escrow, NFTs, oracles, Solana Pay, Blinks, AI agents) built from real code excerpts with permalinks.',
@@ -435,48 +435,24 @@ open(OUT+'/dapp-queue.txt','w').write('# Cheapest first (client-only, then small
 open(OUT+'/CHANGELOG.md','w').write('# Sol.College published fork lessons\n\n| Published (UTC) | Change | Project | URL |\n|---|---|---|---|\n'+''.join(f"| {x['published']} | {'updated: '+x.get('status','')+' build guide' if x.get('type')=='updated' else 'new'} | {x['project']} | {x['url']} |\n" for x in cur))
 page('/new/','New on Sol.College: recently published Solana code lessons','The newest Solana project walkthroughs published on Sol.College, with timestamps. Also available as published.json and CHANGELOG.md.',
 '<h1>New on Sol.College</h1><p class=lead>Every fork walkthrough, newest first. Machine-readable: <a href="/published.json">published.json</a> · <a href="/CHANGELOG.md">CHANGELOG.md</a></p><table class=tbl><thead><tr><th>Published (UTC)</th><th>Project</th><th>Original</th></tr></thead><tbody>'+''.join(f'<tr><td>{x["published"][:16].replace("T"," ")}</td><td><a href="{x["path"]}">{E(x["project"])}</a>{" <span class=chip>updated: tested build guide</span>" if x.get("type")=="updated" else (" <span class=chip>Live on mainnet</span>" if x.get("type")=="live-mainnet" else "")}</td><td>{E(x["original"])}</td></tr>' for x in cur)+'</tbody></table>',crumbs=[('/','Home'),('/new/','New')])
-# ---------- legacy home preserved at /edge-ai/
-if os.path.exists('legacy/index.html'):
-  t=open('legacy/index.html').read()
-  t=re.sub(r'<script(?![^>]*ld\+json)[^>]*>.*?</script>','',t,flags=re.S); t=re.sub(r'<link rel="modulepreload"[^>]*>','',t)
-  t=t.replace('<link rel="canonical" href="https://sol.college/"/>','<link rel="canonical" href="https://sol.college/edge-ai/"/>')
-  os.makedirs(OUT+'/edge-ai',exist_ok=True); open(OUT+'/edge-ai/index.html','w').write(t)
-legacy=[os.path.dirname(os.path.relpath(f,'legacy')) for f in glob.glob('legacy/**/index.html',recursive=True)]
 # ---------- 404
 page('/404/','Page not found | Sol.College','This page does not exist. Try the learning path, the lessons or the project explorer.',
-'<h1>Page not found</h1><p class=lead>That address doesn\'t exist on Sol.College, or it moved.</p><ul><li><a href="/learn-solana/">Learn Solana: the learning path</a></li><li><a href="/learn-by-example/">All lessons</a></li><li><a href="/topics/">Topics</a></li><li><a href="/explore/">Explore projects</a> (searchable)</li><li><a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a></li></ul>',noindex=True)
+'<h1>Page not found</h1><p class=lead>That address doesn\'t exist on Sol.College, or it moved.</p><ul><li><a href="/learn/">Learning hub</a></li><li><a href="/lessons/path/">Learning path</a></li><li><a href="/lessons/">Browse lessons</a></li><li><a href="/explore/">Explore projects</a></li><li><a href="/glossary/">Glossary</a> · <a href="/faq/">FAQ</a></li></ul>',noindex=True)
 shutil.move(OUT+'/404/index.html',OUT+'/404.html'); shutil.rmtree(OUT+'/404',ignore_errors=True)
-# ---------- legacy pages: trailing-slash canonicals (GitHub Pages redirects /x to /x/) and the shared icon set
-ICONS='<link rel="icon" href="/favicon.ico" sizes="48x48"/><link rel="icon" href="/favicon.svg" type="image/svg+xml"/><link rel="apple-touch-icon" href="/apple-touch-icon.png"/><link rel="manifest" href="/site.webmanifest"/><meta name="theme-color" content="#0b0a14"/>'
-legacy=[os.path.dirname(os.path.relpath(f,'legacy')) for f in glob.glob('legacy/**/index.html',recursive=True)]
-for l in legacy+['edge-ai']:
-  fp=f'{OUT}/{l}/index.html'.replace('/./','/')
-  if not os.path.exists(fp): continue
-  t=open(fp,encoding='utf-8',errors='surrogateescape').read()
-  t=re.sub(r'((?:rel="canonical" href|property="og:url" content)="https://sol\.college/[^"]*?[^/"])"',r'\1/"',t)
-  LT={'about':'About the solar-powered AI programme | Sol.College','contact':'Contact the solar-powered AI programme | Sol.College','edge-ai':'Solar-powered AI edge nodes | Sol.College','learn':'Solar, storage and local AI courses | Sol.College'}
-  if l in LT: t=re.sub(r'<title>[^<]*</title>',f'<title>{LT[l]}</title>',t,1)
-  t=re.sub(r'(<meta name="description" content=")([^"]*)"',lambda m:m.group(1)+(m.group(2) if len(html.unescape(m.group(2)))<=158 else E(fit(html.unescape(m.group(2)),158)))+'"',t,1)
-  if l=='auth': t=t.replace('<head>','<head><meta name="robots" content="noindex"/>',1)
-  if '/site.webmanifest' not in t: t=t.replace('</head>',ICONS+'</head>',1)
-  open(fp,'w',encoding='utf-8',errors='surrogateescape').write(t)
-# ---------- seo files
+# ---------- seo files (Solana routes only; retired solar SPA routes are not indexed)
 today=datetime.date.today().isoformat(); gen=data['generated'][:10]
-import subprocess
-try: LEGACY_LM=subprocess.run(['git','log','-1','--format=%cs','--','legacy'],capture_output=True,text=True).stdout.strip() or today
-except Exception: LEGACY_LM=today
-urls=sorted(set(SM+['/edge-ai/']+['/'+l+'/' for l in legacy if l and l!='.' and l!='auth']))
+urls=sorted(set(SM))
 def lm(u):
   if u in LASTMOD: return max(LASTMOD[u],gen) if u.startswith('/explore/') else LASTMOD[u]
-  return today if u in SM else LEGACY_LM
+  return today if u in SM else today
 open(OUT+'/sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'<url><loc>{SITE}{u}</loc><lastmod>{lm(u)}</lastmod></url>\n' for u in urls)+'</urlset>\n')
 open(OUT+'/sitemap-index.xml','w').write(f'<?xml version="1.0" encoding="UTF-8"?>\n<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><sitemap><loc>{SITE}/sitemap.xml</loc><lastmod>{today}</lastmod></sitemap></sitemapindex>\n')
-open(OUT+'/robots.txt','w').write(f'User-agent: *\nAllow: /\nDisallow: /auth\n\nSitemap: {SITE}/sitemap.xml\n')
+open(OUT+'/robots.txt','w').write(f'User-agent: *\nAllow: /\nDisallow: /auth\nDisallow: /records/private\n\nSitemap: {SITE}/sitemap.xml\n')
 # Atom feed of newly published lessons and project walkthroughs
 xe=lambda x:html.escape(str(x),quote=True)
 ent=[x for x in cur if x.get('type')!='updated'][:50]
 open(OUT+'/feed.xml','w').write(f'<?xml version="1.0" encoding="utf-8"?>\n<feed xmlns="http://www.w3.org/2005/Atom"><title>New on Sol.College</title><subtitle>New Solana code walkthroughs built from real open-source projects</subtitle><link href="{SITE}/feed.xml" rel="self"/><link href="{SITE}/new/"/><id>{SITE}/feed.xml</id><updated>{(ent[0]["published"] if ent else now)}</updated><author><name>Sol.College</name></author><icon>{SITE}/favicon-32x32.png</icon>'+''.join(f'<entry><title>{xe(x["project"])}: Solana code walkthrough</title><link href="{xe(x["url"])}"/><id>{xe(x["url"])}</id><published>{x["published"]}</published><updated>{x["published"]}</updated><summary>Walkthrough of {xe(x["original"])}: architecture, annotated code, and how to build and run it.</summary></entry>' for x in ent)+'</feed>\n')
-open(OUT+'/llms.txt','w').write(f"# Sol.College\n\n> Learn to build on Solana from real code: an explorer of the Solana SuperStack, annotated lessons built from permissively licensed excerpts with permalinks, idea pages and practical guides.\n\n## Lessons\n"+''.join(f"- [{L['title']}]({SITE}/learn-by-example/{L['slug']}/): {L['intro'][:120]}\n" for L,_ in LES)+"\n## Start here\n- [Learn Solana: beginner-to-advanced path]({SITE}/learn-solana/)\n- [Topics]({SITE}/topics/)\n- [Glossary]({SITE}/glossary/)\n- [FAQ]({SITE}/faq/)\n\n## Guides\n"+''.join(f"- [{g['title']}]({SITE}/how-to-build/{g['slug']}/)\n" for g in GUIDES)+"\n## What to build\n"+''.join(f"- [{c}]({SITE}/what-to-build/{s}/)\n" for c,s,_,_ in ideas)+f"\n## Data\n- [Project catalog JSON]({SITE}/projects.json): {len(P)} projects\n- [Explorer]({SITE}/explore/)\n\n## Optional\n- [Solar AI edge nodes programme]({SITE}/edge-ai/)\n")
+open(OUT+'/llms.txt','w').write(f"# Sol.College\n\n> Learn Solana by working through real application code. Guided investigations, controlled practice environments and reviewable engineering work.\n\nSol.College complements official Solana documentation with application-focused practice. It is not operated, endorsed or accredited by the Solana Foundation.\n\n## Lessons\n"+''.join(f"- [{L['title']}]({SITE}/learn-by-example/{L['slug']}/): {L['intro'][:120]}\n" for L,_ in LES)+"\n## Start here\n- [Learning hub]({SITE}/learn/)\n- [Learning path]({SITE}/lessons/path/)\n- [Browse lessons]({SITE}/lessons/)\n- [Topics]({SITE}/topics/)\n- [Glossary]({SITE}/glossary/)\n- [FAQ]({SITE}/faq/)\n\n## Guides\n"+''.join(f"- [{g['title']}]({SITE}/how-to-build/{g['slug']}/)\n" for g in GUIDES)+"\n## What to build\n"+''.join(f"- [{c}]({SITE}/what-to-build/{s}/)\n" for c,s,_,_ in ideas)+f"\n## Data\n- [Project catalog JSON]({SITE}/projects.json): {len(P)} projects\n- [Curriculum registry]({SITE}/curriculum.json)\n- [Explorer]({SITE}/explore/)\n")
 for f in os.listdir('static'):
   (shutil.copytree if os.path.isdir('static/'+f) else shutil.copy)('static/'+f,OUT+'/'+f)
 open(OUT+'/CNAME','w').write(os.environ.get('SITE_CNAME','')) if os.environ.get('SITE_CNAME') else None

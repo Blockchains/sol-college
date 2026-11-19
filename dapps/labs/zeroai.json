@@ -1,0 +1,57 @@
+{
+  "lab_id": "zeroai",
+  "lab_version": "ff7066dd815369baff410daa351520fca0390477",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/zeroai-solana",
+    "commit": "ff7066dd815369baff410daa351520fca0390477",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "Db4FmHGiSHuAVgAmhWiwxjdgdw8ieowvp5KS2hLsXuE9",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/zeroai-2026-11-15.jsonl",
+    "test_status": "passed_recorded_test",
+    "verified_date": "2026-11-15",
+    "method": "tests/devnet/zeroai.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "Deployed the program to devnet (upgrade authority is the lab wallet)",
+          "T68DenqrQKht3N47j17mw3GhctV7CcqWdU4L6orDq93o8RqWjGmczDuihGayzSkZaQhauEZ6vMCxiSLQwCom3Tu"
+        ],
+        [
+          "initvault created vault FgNKkZHo\u2026 with the lab wallet as admin and six documented Pyth devnet feed addresses",
+          "4ULcmAEzZrwUHKghm18wnm1oPsH9Zd5ucbZcZeakQivBM99SkjgiQPXx5GmvYgRPE5DsmQ2T6KDXCmMfJs9nD4Du"
+        ],
+        [
+          "Fetched the vault: admin and btc/eth feeds matched",
+          "(no tx; read-only)"
+        ],
+        [
+          "initgames created games PDA 8F3BUi9Z\u2026 with count=0 and symbol [ZEROAI Instant Win Games]",
+          "3dSETLN8qM1zgUCYdwBwYSnka93EJmEqxdEG2Lx3kqgW4q3qphY5KECMCN13EVjqjYbp6BUAYKNJfeD9R8LPCZNK"
+        ],
+        [
+          "addgame wrote symbols BTC\u2026JUP and increment count to 1 (Pyth close prices were 0 because the feeds were older than 60 seconds)",
+          "5JhYuu9ahn7requMU3kDpBWQPLzhomsKA7aFRr5kYSgQHtHBSpGuWwfMpxw1infNwAqju1wUQoTM6dXewnrzaNVa"
+        ]
+      ],
+      "functional_evidence": "initvault, initgames and addgame all landed; the vault and games accounts were read back from devnet; a second initvault was rejected. close prices in addgame were zero because the Pyth feeds were stale.",
+      "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet, then submit initvault / initgames / addgame). It was not driven in headless Chromium in this run; the same instructions were sent with the lab wallet through the IDL client in tests/devnet/zeroai.mjs.",
+      "log": "tests/devnet/logs/zeroai-2026-11-15.jsonl"
+    }
+  },
+  "limitations": [
+    "addgame succeeded but recorded closeprice [0,0,0,0,0,0] because the classic Pyth devnet feeds were older than the program's 60-second freshness window (it writes 0 when get_price_no_older_than returns None). closegame was not sent."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}

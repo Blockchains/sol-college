@@ -1,347 +1,376 @@
 {
- "title": "Gifter escrow: swap token A for token B, with a refund",
- "summary": "A maker opens an escrow PDA, deposits mint A into a vault the PDA owns, and names the mint B and amount they want. On the hosted program recorded 13 Nov 2026, a taker can pay that amount of mint B and receive the vault's mint A, and the maker can refund instead. An earlier devnet program's take aborted. That program is not the one this page hosts.",
- "what": "Gifter is a two-mint escrow. `create_escrow` initializes a **GifterEscrow** PDA at `[\"gifter_escrow\", maker, escrow_id]` (the id is a `u64`, little-endian in the seeds, so one maker can have several escrows) and an associated token account for mint A whose authority is that PDA. The maker's mint A is deposited with `transfer_checked`. The maker can `refund`: the program signs as the PDA to send the vault's whole balance back, then closes the vault and the escrow (rent to the maker). `take_and_close` does the swap: the taker pays `maker_expected_price` of mint B, the PDA signs the vault's mint A to the taker, and both accounts close to the taker. On 13 Nov 2026 that completed on program `45C1bSkF…` ([33yMgZzA…](https://explorer.solana.com/tx/33yMgZzAaH3mMcHgSmQBRVb4FeRmu5gX6nkAMfJU2T8F8sAwqMDTVfgsVcg7MXPM28GoAo7RPC7E35NhkNSrLXZd?cluster=devnet)). An earlier program, `6Z5cvVUc…`, aborted take with an access violation ([ck53TqoU…](https://explorer.solana.com/tx/ck53TqoU8UfpBav2V3bE1oy4Wm2qvxeU6bgibkXqzCsbP4YbBxDGK98bJxoowGpKNwkkPotBtCxVfUQMEm2zZu7?cluster=devnet)). That record is the article [Why this escrow take failed](/articles/why-this-escrow-take-failed/).",
- "app_note": "The fork's own Next.js app (`gifter-escrow-frontend`) exported as static pages with this devnet program ID. Program transactions use the public devnet RPC (`clusterApiUrl('devnet')`). Token lists use Helius DAS via a build-time env URL in the hosted JS only (never in the source we cite, the recipe, or the logs). The committed `config` still has the author's program ID `9HP45DvS…`. The hosted build recorded on 13 Nov 2026 talks to `45C1bSkF…`. Script: [tests/devnet/gifter-escrow.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/gifter-escrow.mjs).",
- "try_steps": [
-  {
-   "do": "Open [the app](/dapps/gifter-escrow/) and connect a Phantom wallet on **devnet**.",
-   "see": "A Create Escrow heading. On the 13 Nov 2026 click-through the token dropdown listed 18 options after connect, including mint A and mint B. The escrow list is fetched once at connect and does not refresh until you reload."
-  },
-  {
-   "do": "If an open escrow card is shown and you are not the maker, press **Accept**.",
-   "see": "Accept calls `take_and_close`. This click-through did not press Accept, because no escrow opened by someone else was left on the page. The script's take of escrow #1 completed: T paid 5 of mint B, received 10 of mint A, and the vault and state closed (33yMgZzA…). The card still promises a GFT reward the program does not mint.",
-   "ran_note": "Accept was not clicked in the UI. The completed take is the script transaction 33yMgZzA… in Proof. The earlier program's failing take is ck53TqoU…."
-  },
-  {
-   "do": "As the maker, press **Cancel** on your own card if one is open.",
-   "see": "That calls `refund`: the vault's mint A returns to the maker and both accounts close. On 13 Nov 2026 the click-through did this for escrows #535 and #772. An outsider cannot refund: the PDA is seeded by the signer, and that attempt returned **AccountNotInitialized**.",
-   "ran_note": "The 13 Nov click-through refunded escrow #535 (3GUdvNGQ…) and escrow #772 (2GsfGiPt…). The script refunded escrow #2 (3qwx8QBC…) after a take for more mint B than the taker held was rejected. An outsider refund still fails with AccountNotInitialized."
-  }
- ],
- "diagram": "maker ─ create_escrow(id, deposit, expected_price)\n          ─▶ GifterEscrow PDA [\"gifter_escrow\", maker, escrow_id u64 LE]\n          ─▶ Vault ATA (mint A, authority = PDA)   ← deposit of mint A (transfer_checked, maker signs)\nmaker ─ refund ─▶ Vault ──all mint A──▶ maker   (PDA signs); vault closed; escrow closed to maker\ntaker ─ take_and_close ─▶ (intended) taker ──expected_price of mint B──▶ maker\n                          Vault ──all mint A──▶ taker   (PDA signs); vault closed; escrow closed to taker\n                          RECORDED on 45C1bSkF…: take of escrow #1 completed (33yMgZzA…)\n                          EARLIER program 6Z5cvVUc…: take aborted, access violation 0x10008 (ck53TqoU…)\n",
- "accounts": [
-  [
-   "GifterEscrow",
-   "PDA `[\"gifter_escrow\", maker, escrow_id.to_le_bytes()]`",
-   "`escrow_id`, `maker_expected_price`, `maker`, `mint_a`, `mint_b`, `deposit_amount`, `bump`. `INIT_SPACE` is 129 bytes (8-byte discriminator plus those fields)."
+  "title": "Gifter escrow: accounts, token swaps and refunds",
+  "summary": "A maker opens an escrow PDA, deposits mint A into a vault the PDA owns, and names the mint B and amount they want. On the hosted program recorded 13 Nov 2026, a taker can pay that amount of mint B and receive the vault's mint A, and the maker can refund instead. An earlier devnet program's take aborted. That program is not the one this page hosts.",
+  "what": "Gifter is a two-mint escrow. `create_escrow` initializes a **GifterEscrow** PDA at `[\"gifter_escrow\", maker, escrow_id]` (the id is a `u64`, little-endian in the seeds, so one maker can have several escrows) and an associated token account for mint A whose authority is that PDA. The maker's mint A is deposited with `transfer_checked`. The maker can `refund`: the program signs as the PDA to send the vault's whole balance back, then closes the vault and the escrow (rent to the maker). `take_and_close` does the swap: the taker pays `maker_expected_price` of mint B, the PDA signs the vault's mint A to the taker, and both accounts close to the taker. On 13 Nov 2026 that completed on program `45C1bSkF…` ([33yMgZzA…](https://explorer.solana.com/tx/33yMgZzAaH3mMcHgSmQBRVb4FeRmu5gX6nkAMfJU2T8F8sAwqMDTVfgsVcg7MXPM28GoAo7RPC7E35NhkNSrLXZd?cluster=devnet)). An earlier program, `6Z5cvVUc…`, aborted take with an access violation ([ck53TqoU…](https://explorer.solana.com/tx/ck53TqoU8UfpBav2V3bE1oy4Wm2qvxeU6bgibkXqzCsbP4YbBxDGK98bJxoowGpKNwkkPotBtCxVfUQMEm2zZu7?cluster=devnet)). That record is the article [Why this escrow take failed](/articles/why-this-escrow-take-failed/).",
+  "app_note": "The fork's own Next.js app (`gifter-escrow-frontend`) exported as static pages with this devnet program ID. Program transactions use the public devnet RPC (`clusterApiUrl('devnet')`). Token lists use Helius DAS via a build-time env URL in the hosted JS only (never in the source we cite, the recipe, or the logs). The committed `config` still has the author's program ID `9HP45DvS…`. The hosted build recorded on 13 Nov 2026 talks to `45C1bSkF…`. Script: [tests/devnet/gifter-escrow.mjs](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/gifter-escrow.mjs). Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use. This exercise applies only to the environment identified on this page.",
+  "try_steps": [
+    {
+      "do": "Open [the app](/dapps/gifter-escrow/) and connect a Phantom wallet on **devnet**.",
+      "see": "A Create Escrow heading. On the 13 Nov 2026 click-through the token dropdown listed 18 options after connect, including mint A and mint B. The escrow list is fetched once at connect and does not refresh until you reload."
+    },
+    {
+      "do": "If an open escrow card is shown and you are not the maker, press **Accept**.",
+      "see": "Accept calls `take_and_close`. This click-through did not press Accept, because no escrow opened by someone else was left on the page. The script's take of escrow #1 completed: T paid 5 of mint B, received 10 of mint A, and the vault and state closed (33yMgZzA…). The card still promises a GFT reward the program does not mint.",
+      "ran_note": "Accept was not clicked in the UI. The completed take is the script transaction 33yMgZzA… in Proof. The earlier program's failing take is ck53TqoU…."
+    },
+    {
+      "do": "As the maker, press **Cancel** on your own card if one is open.",
+      "see": "That calls `refund`: the vault's mint A returns to the maker and both accounts close. On 13 Nov 2026 the click-through did this for escrows #535 and #772. An outsider cannot refund: the PDA is seeded by the signer, and that attempt returned **AccountNotInitialized**.",
+      "ran_note": "The 13 Nov click-through refunded escrow #535 (3GUdvNGQ…) and escrow #772 (2GsfGiPt…). The script refunded escrow #2 (3qwx8QBC…) after a take for more mint B than the taker held was rejected. An outsider refund still fails with AccountNotInitialized."
+    }
   ],
-  [
-   "Escrow vault",
-   "ATA of mint A, authority = the GifterEscrow PDA",
-   "Holds the deposited mint A. It can only move tokens through a Token Program `transfer_checked` the program signs with the PDA's seeds."
-  ]
- ],
- "instructions": [
-  {
-   "name": "`create_escrow`: a numbered PDA and a vault ATA",
-   "refs": [
-    {
-     "path": "contract/programs/gifter-escrow/src/lib.rs",
-     "a": 17,
-     "b": 26
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/create.rs",
-     "a": 7,
-     "b": 46
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/create.rs",
-     "a": 50,
-     "b": 87
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/state/mod.rs",
-     "a": 4,
-     "b": 24
-    }
-   ],
-   "steps": [
-    "Seeds are `[\"gifter_escrow\", maker, escrow_id.to_le_bytes()]`, so the same maker and id can only exist once. Recreating escrow #1 failed with **Allocate: account … CzEL5a2v… already in use**.",
-    "The vault is `init`'d as the PDA's associated token account for mint A. `initialize_gifter_escrow` stores the two mints, the two amounts and the bump; `deposit_to_escrow_vault` then `transfer_checked`s `deposit_amount` of mint A from the maker, signed by the maker (an ordinary CPI, not PDA-signed).",
-    "Create does not check that a taker can pay. On the earlier program, escrow #2 asked for 10_000 of mint B and still created (4M4aWcN7…). The 13 Nov 2026 record did the same on `45C1bSkF…` (jJPixCQg…): the take was then rejected for insufficient funds, and the maker refunded.",
-    "The fork's `declare_id!` and `Anchor.toml` still say `9HP45DvS…`. The hosted program recorded on 13 Nov 2026 is `45C1bSkF…`. Local builds target the declared id unless you change it."
-   ]
-  },
-  {
-   "name": "`refund`: the vault signs, only the maker, accounts close",
-   "refs": [
-    {
-     "path": "contract/programs/gifter-escrow/src/lib.rs",
-     "a": 28,
-     "b": 32
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/refund.rs",
-     "a": 9,
-     "b": 39
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/refund.rs",
-     "a": 43,
-     "b": 76
-    }
-   ],
-   "steps": [
-    "`Refund` derives the escrow from `[\"gifter_escrow\", maker.key(), state.escrow_id.to_le_bytes()]` with `bump = state.bump` and `close = maker`. The signer *is* the seed, so an outsider's derivation misses: X refunding M's open escrow got **AccountNotInitialized**.",
-    "`withdraw_from_vault` builds signer seeds `[\"gifter_escrow\", maker, escrow_id, bump]` and `transfer_checked`s `escrow_vault.amount` (the whole balance, not a stored number) back to the maker, then `close_account`s the vault to the maker. The escrow account itself is closed by the `close = maker` constraint.",
-    "On the earlier program, M refunded escrow #1 (5tpaLaSh…) after the take had aborted, so the 10 of mint A was still in the vault. On 13 Nov 2026 the script refunded escrow #2 (3qwx8QBC…) after the oversized take was rejected, and the click-through refunded two escrows from the form."
-   ]
-  },
-  {
-   "name": "`take_and_close`: the swap, and the earlier abort",
-   "refs": [
-    {
-     "path": "contract/programs/gifter-escrow/src/lib.rs",
-     "a": 35,
-     "b": 42
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/take.rs",
-     "a": 8,
-     "b": 62
-    },
-    {
-     "path": "contract/programs/gifter-escrow/src/context/take.rs",
-     "a": 65,
-     "b": 84
-    }
-   ],
-   "steps": [
-    "The accounts are the two parties' ATAs for both mints (`init_if_needed` on the ones that might not exist, paid by the taker), the escrow (`close = taker`, same PDA seeds with the `maker` account and the stored id) and the vault. `send_to_maker` should `transfer_checked` `maker_expected_price` of mint B from the taker to the maker; `take_from_vault` should PDA-sign a transfer of the vault's mint A to the taker and close the vault to the taker.",
-    "**Earlier failure, program `6Z5cvVUc…`:** take of escrow #1 (ck53TqoU…) finalized as `ProgramFailedToComplete`. The log was `Instruction: TakeAndClose`, then an access violation reading 8 bytes at `0x10008`. The note written against that program attributed the abort to `println!(\"Hello\")` at the start of `send_to_maker`. The opened pull request records a second cause after that line was removed: `to_le_bytes().as_ref()` inside the seeds attribute was a dangling pointer. **This hosted commit** (`fb2bbfd`, program `45C1bSkF…`) has no `println!` in `send_to_maker`. The PDA check uses owned seed bytes in the handler, and that handler still calls `create_program_address`. The recorded take on this program completed (33yMgZzA…).",
-    "The current `Take` accounts constrain `maker` to the stored key. The excerpt still does not constrain `mint_a` or `mint_b` to the stored mint keys. A take that substitutes a different mint B was not run. That is exercise 2, and it is still open."
-   ]
-  }
- ],
- "innovation": {
-  "title": "an ATA vault the escrow PDA owns, and a swap that has to close cleanly",
-  "text": "The escrow's state and its tokens are two accounts, as in Friendstake, but here the vault is an **associated token account** whose authority is the GifterEscrow PDA, not a system-owned lamport account. Every movement of mint A out of the vault is a Token Program `transfer_checked` signed with `[\"gifter_escrow\", maker, escrow_id, bump]`. Refund shows that pattern, and so does the take recorded on 13 Nov 2026 (33yMgZzA…): mint B moves to the maker, mint A leaves the vault, and both accounts close. The earlier abort, on a program this page no longer hosts, is written up in [Why this escrow take failed](/articles/why-this-escrow-take-failed/).",
-  "refs": [
-   {
-    "path": "contract/programs/gifter-escrow/src/context/refund.rs",
-    "a": 53,
-    "b": 73,
-    "note": "the PDA signs the refund and closes the vault"
-   },
-   {
-    "path": "contract/programs/gifter-escrow/src/context/take.rs",
-    "a": 68,
-    "b": 81,
-    "note": "hosted commit: send_to_maker has no println!"
-   }
+  "diagram": "maker ─ create_escrow(id, deposit, expected_price)\n          ─▶ GifterEscrow PDA [\"gifter_escrow\", maker, escrow_id u64 LE]\n          ─▶ Vault ATA (mint A, authority = PDA)   ← deposit of mint A (transfer_checked, maker signs)\nmaker ─ refund ─▶ Vault ──all mint A──▶ maker   (PDA signs); vault closed; escrow closed to maker\ntaker ─ take_and_close ─▶ (intended) taker ──expected_price of mint B──▶ maker\n                          Vault ──all mint A──▶ taker   (PDA signs); vault closed; escrow closed to taker\n                          RECORDED on 45C1bSkF…: take of escrow #1 completed (33yMgZzA…)\n                          EARLIER program 6Z5cvVUc…: take aborted, access violation 0x10008 (ck53TqoU…)\n",
+  "accounts": [
+    [
+      "GifterEscrow",
+      "PDA `[\"gifter_escrow\", maker, escrow_id.to_le_bytes()]`",
+      "`escrow_id`, `maker_expected_price`, `maker`, `mint_a`, `mint_b`, `deposit_amount`, `bump`. `INIT_SPACE` is 129 bytes (8-byte discriminator plus those fields)."
+    ],
+    [
+      "Escrow vault",
+      "ATA of mint A, authority = the GifterEscrow PDA",
+      "Holds the deposited mint A. It can only move tokens through a Token Program `transfer_checked` the program signs with the PDA's seeds."
+    ]
   ],
-  "more": [
-   "Compare TrustLock, which escrows SOL in a program-owned account and uses Clock for a deadline. This program has no expiry: the deposit waits for a take or for the maker's refund.",
-   "On the earlier program, `println!(\"Hello\")` was the first statement of `send_to_maker`. On BPF that is not `msg!`. The access violation at `0x10008` was recorded on that program (ck53TqoU…). It is not the behavior of the hosted program `45C1bSkF…`."
-  ]
- },
- "frontend": [
-  {
-   "title": "The same seeds in TypeScript, amounts assumed 6 decimals",
-   "refs": [
+  "instructions": [
     {
-     "path": "gifter-escrow-frontend/contract/methods/create.ts",
-     "a": 30,
-     "b": 69
+      "name": "`create_escrow`: a numbered PDA and a vault ATA",
+      "refs": [
+        {
+          "path": "contract/programs/gifter-escrow/src/lib.rs",
+          "a": 17,
+          "b": 26
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/create.rs",
+          "a": 7,
+          "b": 46
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/create.rs",
+          "a": 50,
+          "b": 87
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/state/mod.rs",
+          "a": 4,
+          "b": 24
+        }
+      ],
+      "steps": [
+        "Seeds are `[\"gifter_escrow\", maker, escrow_id.to_le_bytes()]`, so the same maker and id can only exist once. Recreating escrow #1 failed with **Allocate: account … CzEL5a2v… already in use**.",
+        "The vault is `init`'d as the PDA's associated token account for mint A. `initialize_gifter_escrow` stores the two mints, the two amounts and the bump; `deposit_to_escrow_vault` then `transfer_checked`s `deposit_amount` of mint A from the maker, signed by the maker (an ordinary CPI, not PDA-signed).",
+        "Create does not check that a taker can pay. On the earlier program, escrow #2 asked for 10_000 of mint B and still created (4M4aWcN7…). The 13 Nov 2026 record did the same on `45C1bSkF…` (jJPixCQg…): the take was then rejected for insufficient funds, and the maker refunded.",
+        "The fork's `declare_id!` and `Anchor.toml` still say `9HP45DvS…`. The hosted program recorded on 13 Nov 2026 is `45C1bSkF…`. Local builds target the declared id unless you change it."
+      ]
     },
     {
-     "path": "gifter-escrow-frontend/app/page.tsx",
-     "a": 45,
-     "b": 61
-    }
-   ],
-   "steps": [
-    "`create_escrow` derives the PDA from `[\"gifter_escrow\", maker, BN(id).toArrayLike(Buffer, 'le', 8)]` and the vault as the ATA of mint A owned by that PDA, matching `create.rs`. Amounts are multiplied by `1e6`, so the app only makes sense for 6-decimal tokens (the script's mints were 6 decimals).",
-    "The escrow id is `Math.floor(Math.random() * 1000)` on submit, so two creates can collide (the program would then refuse the second with 'already in use'). The committed `PROGRAM_ID` is `9HP45DvS…`; the hosted build recorded on 13 Nov 2026 uses `45C1bSkF…`."
-   ]
-  },
-  {
-   "title": "Accept calls take, Cancel calls refund, GFT is only a label",
-   "refs": [
-    {
-     "path": "gifter-escrow-frontend/components/shared/EscrowCard.tsx",
-     "a": 66,
-     "b": 87
+      "name": "`refund`: the vault signs, only the maker, accounts close",
+      "refs": [
+        {
+          "path": "contract/programs/gifter-escrow/src/lib.rs",
+          "a": 28,
+          "b": 32
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/refund.rs",
+          "a": 9,
+          "b": 39
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/refund.rs",
+          "a": 43,
+          "b": 76
+        }
+      ],
+      "steps": [
+        "`Refund` derives the escrow from `[\"gifter_escrow\", maker.key(), state.escrow_id.to_le_bytes()]` with `bump = state.bump` and `close = maker`. The signer *is* the seed, so an outsider's derivation misses: X refunding M's open escrow got **AccountNotInitialized**.",
+        "`withdraw_from_vault` builds signer seeds `[\"gifter_escrow\", maker, escrow_id, bump]` and `transfer_checked`s `escrow_vault.amount` (the whole balance, not a stored number) back to the maker, then `close_account`s the vault to the maker. The escrow account itself is closed by the `close = maker` constraint.",
+        "On the earlier program, M refunded escrow #1 (5tpaLaSh…) after the take had aborted, so the 10 of mint A was still in the vault. On 13 Nov 2026 the script refunded escrow #2 (3qwx8QBC…) after the oversized take was rejected, and the click-through refunded two escrows from the form."
+      ]
     },
     {
-     "path": "gifter-escrow-frontend/components/shared/EscrowCard.tsx",
-     "a": 130,
-     "b": 147
+      "name": "`take_and_close`: the swap, and the earlier abort",
+      "refs": [
+        {
+          "path": "contract/programs/gifter-escrow/src/lib.rs",
+          "a": 35,
+          "b": 42
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/take.rs",
+          "a": 8,
+          "b": 62
+        },
+        {
+          "path": "contract/programs/gifter-escrow/src/context/take.rs",
+          "a": 65,
+          "b": 84
+        }
+      ],
+      "steps": [
+        "The accounts are the two parties' ATAs for both mints (`init_if_needed` on the ones that might not exist, paid by the taker), the escrow (`close = taker`, same PDA seeds with the `maker` account and the stored id) and the vault. `send_to_maker` should `transfer_checked` `maker_expected_price` of mint B from the taker to the maker; `take_from_vault` should PDA-sign a transfer of the vault's mint A to the taker and close the vault to the taker.",
+        "**Earlier failure, program `6Z5cvVUc…`:** take of escrow #1 (ck53TqoU…) finalized as `ProgramFailedToComplete`. The log was `Instruction: TakeAndClose`, then an access violation reading 8 bytes at `0x10008`. The note written against that program attributed the abort to `println!(\"Hello\")` at the start of `send_to_maker`. The opened pull request records a second cause after that line was removed: `to_le_bytes().as_ref()` inside the seeds attribute was a dangling pointer. **This hosted commit** (`fb2bbfd`, program `45C1bSkF…`) has no `println!` in `send_to_maker`. The PDA check uses owned seed bytes in the handler, and that handler still calls `create_program_address`. The recorded take on this program completed (33yMgZzA…).",
+        "The current `Take` accounts constrain `maker` to the stored key. The excerpt still does not constrain `mint_a` or `mint_b` to the stored mint keys. A take that substitutes a different mint B was not run. That is exercise 2, and it is still open."
+      ]
     }
-   ],
-   "steps": [
-    "`handleAccept` calls the client's `takeAndClose`. The 13 Nov 2026 click-through did not press Accept, because no escrow from another maker was left. `Cancel` is shown only when the connected wallet is the stored maker, and that click-through did refund.",
-    "The card says 'Accept to get GFT token reward!'. `REWARD_TOKEN_MINT` is used only for a navbar balance. The program has no mint instruction and never transfers GFT."
-   ]
-  },
-  {
-   "title": "The token dropdown: the old query key, and this hosted build",
-   "refs": [],
-   "steps": [
-    "An earlier build put `walletAddress?.toBase58` — the function, not the call — in the react-query key, so the dropdown stayed empty. The hosted build recorded on 13 Nov 2026 uses the base58 string. That click-through listed 18 options, including mint A and mint B, and then created an escrow from the form (2c6QNtYz…).",
-    "Program transactions use the public devnet RPC. Only the DAS / enhanced-method calls in the hosted JS use a build-time URL."
-   ]
-  }
- ],
- "exercises": [
-  {
-   "title": "Tell the failing take from the completed one",
-   "steps": [
-    "Open the earlier failure (ck53TqoU…) and the 13 Nov 2026 take (33yMgZzA…) on Explorer.",
-    "Read [why this take failed](/articles/why-this-escrow-take-failed/) and name which program each signature belongs to."
-   ],
-   "expect": "ck53TqoU… is `ProgramFailedToComplete` on `6Z5cvVUc…`, an access violation at `0x10008`. 33yMgZzA… completed on `45C1bSkF…`: 5 of mint B to the maker, 10 of mint A to the taker, vault and state closed. The hosted app is the second program.",
-   "hint": "The hosted commit `fb2bbfd` has no `println!` in `send_to_maker`. The dangling `to_le_bytes().as_ref()` was in the seeds attribute of the earlier program.",
-   "approach": "Use the two explorer links in the article. Do not look for `println!` in the hosted `take.rs`: it is not there. The article states which claims come from the pull request and which come from the devnet log."
-  },
-  {
-   "title": "Bind mint A, mint B and the maker to the stored escrow",
-   "steps": [
-    "On `Take`, add `has_one = maker` (or `constraint = maker.key() == gifter_escrow_state.maker`) and `constraint = mint_a.key() == gifter_escrow_state.mint_a` and the same for `mint_b`.",
-    "A take that passes a different mint B should fail that constraint instead of paying an unexpected token."
-   ],
-   "expect": "A take with the stored mints still completes, as 33yMgZzA… did. A take with a substituted mint B fails a constraint. We have not run that substituted case.",
-   "hint": "The hosted `Take` accounts constrain `maker` to the stored key. They do not, in the excerpt, constrain `mint_a` or `mint_b` to the stored mints.",
-   "approach": "Add `constraint = mint_a.key() == gifter_escrow_state.mint_a` and the same for mint B. The maker check is already in this commit. We have not run a substituted-mint take, so do not invent its error code."
-  },
-  {
-   "title": "Check the token dropdown against the 13 Nov record",
-   "steps": [
-    "Connect a devnet wallet that holds the lesson's mints and open Create.",
-    "Count the options. The recorded click-through listed 18, including mint A and mint B, then created an escrow from the form."
-   ],
-   "expect": "The dropdown is not empty on this hosted build. The recorded create from the form is 2c6QNtYz…. An earlier build stayed at 0 options because the query key stored `toBase58` without calling it.",
-   "hint": "The deployment record says this build uses the base58 string as the query key and as `ownerAddress`.",
-   "approach": "If the dropdown is empty, compare the hosted bundle with that record before changing the hook. The 13 Nov click-through already listed the tokens and submitted a create."
-  },
-  {
-   "title": "Add an expiry so a deposit cannot be locked forever",
-   "steps": [
-    "Store a `deadline: i64` on `GifterEscrow`, set at create (Clock).",
-    "After the deadline, allow `refund` (and, if you like, a permissionless refund to the maker) even if the maker has disappeared. Before the deadline, take can still run."
-   ],
-   "expect": "A past-deadline escrow can be unwound without take. An in-time refund should still work, as the 13 Nov script refund 3qwx8QBC… did. This program has no expiry field.",
-   "hint": "There is no deadline on `GifterEscrow`. Until someone takes or the maker refunds, the deposit stays in the vault.",
-   "approach": "Store a Clock deadline at create, and after it allow a refund to the maker. The 13 Nov refund 3qwx8QBC… is the in-time case already recorded. A past-deadline escrow was not run."
-  },
-  {
-   "title": "Stop promising a GFT reward the program does not mint",
-   "steps": [
-    "Either remove the 'Accept to get GFT token reward!' copy and the navbar balance, or add a program instruction that mints or transfers a reward on a successful take (with a real mint authority and a recorded test)."
-   ],
-   "expect": "The card's promise matches what a successful take actually does. Today `REWARD_TOKEN_MINT` is only a navbar read; the program has no such instruction.",
-   "hint": "The card says 'Accept to get GFT token reward!'. `REWARD_TOKEN_MINT` is only used for a navbar balance; the program has no mint instruction.",
-   "approach": "Remove the promise, or add a real reward instruction and a recorded test. The card should then match what a successful take actually does."
-  }
- ],
- "not_covered": "The 13 Nov 2026 click-through created and refunded from the form. It did not press Accept, because no escrow from another maker was left; the completed take is the script transaction 33yMgZzA…. The card still promises a GFT reward the program does not mint. The escrow list does not refresh until reload. Program 6Z5cvVUc… is still on devnet and its take aborted (ck53TqoU…); it is not the hosted app.",
- "path_order": 6,
- "path_stage": 1,
- "difficulty": "Beginner",
- "time": "45 min",
- "objectives": [
-  "Create an escrow PDA and deposit mint A into an associated-token vault the PDA owns, naming mint B and a price.",
-  "Refund: the vault signs a transfer_checked back to the maker and both accounts close; an outsider cannot refund.",
-  "Tell a completed take (33yMgZzA… on 45C1bSkF…) from the earlier abort (ck53TqoU… on 6Z5cvVUc…)."
- ],
- "prereqs": [
-  "Phantom on Devnet with a little practice SOL. On the 13 Nov 2026 hosted build the token dropdown filled after connect.",
-  "Complete [TrustLock](/lessons/trustlock/) immediately before this: you have just seen a SOL escrow with a Clock deadline. Here the vault is an SPL-token ATA, and there is no expiry. This is the last lesson in [stage 1](/lessons/path/#stage-1)."
- ],
- "concepts": [
-  "pda",
-  "seeds",
-  "bump",
-  "init",
-  "ata",
-  "mint",
-  "token-account",
-  "token-program",
-  "cpi",
-  "invoke-signed",
-  "close",
-  "escrow",
-  "rent",
-  "signer",
-  "payer",
-  "init-if-needed"
- ],
- "build": {
-  "dir": "contract",
-  "anchor": "0.30.1",
-  "test": "anchor test",
-  "note": "The Anchor workspace is `contract/` (`Cargo.toml` is Anchor 0.30.1). The fork's `declare_id!` is `9HP45DvS…`. The hosted program recorded on 13 Nov 2026 is `45C1bSkF…`. The build log below checked out an earlier commit, `a9c3a417…`, not the hosted commit `fb2bbfd`.",
-  "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout a9c3a417d2d78294f58975b1461859ffb20df05a` and `/home/box/.avm/bin/anchor-0.30.1 build` in `contract/` with `RUSTUP_TOOLCHAIN=1.89.0`. Cargo finished a release build in 1 m 13 s and wrote `target/deploy/gifter_escrow.so` (311,808 bytes, a valid ELF). Anchor then failed at 'Building IDL failed' with a `proc-macro-error` Span trait error — the same host-toolchain issue as DeVos, not a problem in this program. The default host rustc (1.99) is too new; use 1.89 (or another 1.8x). We did not run `anchor test`."
- },
- "functional": "full",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "student_outcome": "Create a two-mint escrow with a PDA-owned vault, refund as maker (PDA-signed transfer + close), and distinguish a completed take on the hosted program from the earlier aborting program.",
- "delivery": "Browser practice + evidence inspection",
- "track": "application-lab",
- "assessment": {
-  "purpose": "Determine whether the student can explain PDA-owned vault deposits, maker-only refund with invoke_signed, and honest program/evidence provenance for take vs abort.",
-  "criteria": [
-   {
-    "id": "c1",
-    "title": "Explains PDA-owned vault deposit",
-    "question": "Where does mint A sit after create_escrow, and who is the vault authority?",
-    "not_yet": "Thinks mint A stays in the maker ATA, or that the maker remains vault authority.",
-    "support": "Names the vault ATA after inspecting Proof / Explorer token accounts.",
-    "independent": "States mint A is in a vault ATA whose authority is the GifterEscrow PDA seeded [\"gifter_escrow\", maker, escrow_id].",
-    "misconception": "The maker wallet still owns the deposited tokens until take."
-   },
-   {
-    "id": "c2",
-    "title": "Explains maker-only refund with PDA signature",
-    "question": "Who can refund, how does mint A leave the vault, and what happens to the accounts?",
-    "not_yet": "Allows any wallet to refund, or cannot name invoke_signed / close.",
-    "support": "Correct after revisiting refund steps and outsider rejection in Proof.",
-    "independent": "States only the maker refunds; the PDA signs transfer_checked back to the maker; vault and escrow close.",
-    "misconception": "Any connected wallet can Cancel/refund someone else's escrow."
-   },
-   {
-    "id": "c3",
-    "title": "Labels evidence and program provenance",
-    "question": "Can the student separate the hosted program’s completed take from the earlier aborting program — and historical Proof from their own attempt?",
-    "not_yet": "Treats ck53TqoU… abort as the hosted take, or claims Proof signatures as personal mastery.",
-    "support": "Corrects program IDs after comparing 45C1bSkF… vs 6Z5cvVUc… notes.",
-    "independent": "States completed take 33yMgZzA… is on hosted 45C1bSkF…; abort ck53TqoU… is on an earlier program not hosted here; tags observation vs live.",
-    "misconception": "Any successful signature on the lesson page counts as my mastery on the live program."
-   },
-   {
-    "id": "c4",
-    "title": "Transfers to a take scenario",
-    "question": "Without re-reading the walkthrough: what must a taker provide for take_and_close, and what UI claim should they distrust until verified on-chain?",
-    "not_yet": "Cannot name paying expected mint B amount, or trusts the GFT reward card blindly.",
-    "support": "States mint B payment after revisiting take steps / not_covered.",
-    "independent": "States taker pays expected_price of mint B and receives vault mint A; notes the card may promise a GFT reward the program does not mint.",
-    "misconception": "I finished because I followed the buttons once."
-   }
-  ]
- },
- "learning_loop": {
-  "objective": "Deposit mint A into a PDA-owned vault — then explain why only the maker’s refund can pull it back with a PDA signature.",
-  "predict_question": "An open Gifter escrow holds mint A in its vault. A stranger wallet (not the maker) presses Cancel/refund. What should happen?",
-  "predict_options": [
-   {"id": "anyone", "label": "Refund succeeds — anyone can empty an open vault"},
-   {"id": "maker_only", "label": "Refund fails for the stranger — only the maker can refund"},
-   {"id": "auto_take", "label": "The program treats Cancel as take_and_close and swaps mint B automatically"}
   ],
-  "predict_answer": "maker_only",
-  "predict_why": "refund constrains the signer to the stored maker. The vault authority is the escrow PDA, so the program must invoke_signed to transfer mint A back; an outsider cannot satisfy the maker constraint. take_and_close is a different path that requires the taker to pay mint B.",
-  "act": "In observation mode, open the recorded create + refund under Proof, and compare the completed take (33yMgZzA… on 45C1bSkF…) with the earlier abort (ck53TqoU… on 6Z5cvVUc…). In practical mode on Devnet: connect, create an escrow if the form offers tokens, then Cancel/refund as maker. Do not treat Accept as required for Stage 1 completion when no foreign maker escrow is available — use the recorded take. Prefer the hosted app; reload if the escrow list looks stale.",
-  "inspect": [
-   {"id": "maker", "label": "Maker wallet (short)", "placeholder": "e.g. Acc1…"},
-   {"id": "escrow", "label": "Escrow PDA / id", "placeholder": "PDA… / id"},
-   {"id": "vault", "label": "Vault ATA holds mint A?", "placeholder": "Yes / amount"},
-   {"id": "ix", "label": "Instruction observed", "placeholder": "create_escrow / refund / take_and_close"},
-   {"id": "program", "label": "Program id (short)", "placeholder": "45C1… hosted / other"}
+  "innovation": {
+    "title": "an ATA vault the escrow PDA owns, and a swap that has to close cleanly",
+    "text": "The escrow's state and its tokens are two accounts, as in Friendstake, but here the vault is an **associated token account** whose authority is the GifterEscrow PDA, not a system-owned lamport account. Every movement of mint A out of the vault is a Token Program `transfer_checked` signed with `[\"gifter_escrow\", maker, escrow_id, bump]`. Refund shows that pattern, and so does the take recorded on 13 Nov 2026 (33yMgZzA…): mint B moves to the maker, mint A leaves the vault, and both accounts close. The earlier abort, on a program this page no longer hosts, is written up in [Why this escrow take failed](/articles/why-this-escrow-take-failed/).",
+    "refs": [
+      {
+        "path": "contract/programs/gifter-escrow/src/context/refund.rs",
+        "a": 53,
+        "b": 73,
+        "note": "the PDA signs the refund and closes the vault"
+      },
+      {
+        "path": "contract/programs/gifter-escrow/src/context/take.rs",
+        "a": 68,
+        "b": 81,
+        "note": "hosted commit: send_to_maker has no println!"
+      }
+    ],
+    "more": [
+      "Compare TrustLock, which escrows SOL in a program-owned account and uses Clock for a deadline. This program has no expiry: the deposit waits for a take or for the maker's refund.",
+      "On the earlier program, `println!(\"Hello\")` was the first statement of `send_to_maker`. On BPF that is not `msg!`. The access violation at `0x10008` was recorded on that program (ck53TqoU…). It is not the behavior of the hosted program `45C1bSkF…`."
+    ]
+  },
+  "frontend": [
+    {
+      "title": "The same seeds in TypeScript, amounts assumed 6 decimals",
+      "refs": [
+        {
+          "path": "gifter-escrow-frontend/contract/methods/create.ts",
+          "a": 30,
+          "b": 69
+        },
+        {
+          "path": "gifter-escrow-frontend/app/page.tsx",
+          "a": 45,
+          "b": 61
+        }
+      ],
+      "steps": [
+        "`create_escrow` derives the PDA from `[\"gifter_escrow\", maker, BN(id).toArrayLike(Buffer, 'le', 8)]` and the vault as the ATA of mint A owned by that PDA, matching `create.rs`. Amounts are multiplied by `1e6`, so the app only makes sense for 6-decimal tokens (the script's mints were 6 decimals).",
+        "The escrow id is `Math.floor(Math.random() * 1000)` on submit, so two creates can collide (the program would then refuse the second with 'already in use'). The committed `PROGRAM_ID` is `9HP45DvS…`; the hosted build recorded on 13 Nov 2026 uses `45C1bSkF…`."
+      ]
+    },
+    {
+      "title": "Accept calls take, Cancel calls refund, GFT is only a label",
+      "refs": [
+        {
+          "path": "gifter-escrow-frontend/components/shared/EscrowCard.tsx",
+          "a": 66,
+          "b": 87
+        },
+        {
+          "path": "gifter-escrow-frontend/components/shared/EscrowCard.tsx",
+          "a": 130,
+          "b": 147
+        }
+      ],
+      "steps": [
+        "`handleAccept` calls the client's `takeAndClose`. The 13 Nov 2026 click-through did not press Accept, because no escrow from another maker was left. `Cancel` is shown only when the connected wallet is the stored maker, and that click-through did refund.",
+        "The card says 'Accept to get GFT token reward!'. `REWARD_TOKEN_MINT` is used only for a navbar balance. The program has no mint instruction and never transfers GFT."
+      ]
+    },
+    {
+      "title": "The token dropdown: the old query key, and this hosted build",
+      "refs": [],
+      "steps": [
+        "An earlier build put `walletAddress?.toBase58` — the function, not the call — in the react-query key, so the dropdown stayed empty. The hosted build recorded on 13 Nov 2026 uses the base58 string. That click-through listed 18 options, including mint A and mint B, and then created an escrow from the form (2c6QNtYz…).",
+        "Program transactions use the public devnet RPC. Only the DAS / enhanced-method calls in the hosted JS use a build-time URL."
+      ]
+    }
   ],
-  "explain_question": "Why must the program sign as the escrow PDA to move mint A on refund — and why is that different from the maker simply transferring from their own ATA?",
-  "transfer": "Without re-reading the full walkthrough: what must a taker provide for take_and_close to succeed on the hosted program, and which UI promise should you verify on-chain before trusting it?"
- }
+  "exercises": [
+    {
+      "title": "Tell the failing take from the completed one",
+      "steps": [
+        "Open the earlier failure (ck53TqoU…) and the 13 Nov 2026 take (33yMgZzA…) on Explorer.",
+        "Read [why this take failed](/articles/why-this-escrow-take-failed/) and name which program each signature belongs to."
+      ],
+      "expect": "ck53TqoU… is `ProgramFailedToComplete` on `6Z5cvVUc…`, an access violation at `0x10008`. 33yMgZzA… completed on `45C1bSkF…`: 5 of mint B to the maker, 10 of mint A to the taker, vault and state closed. The hosted app is the second program.",
+      "hint": "The hosted commit `fb2bbfd` has no `println!` in `send_to_maker`. The dangling `to_le_bytes().as_ref()` was in the seeds attribute of the earlier program.",
+      "approach": "Use the two explorer links in the article. Do not look for `println!` in the hosted `take.rs`: it is not there. The article states which claims come from the pull request and which come from the devnet log."
+    },
+    {
+      "title": "Bind mint A, mint B and the maker to the stored escrow",
+      "steps": [
+        "On `Take`, add `has_one = maker` (or `constraint = maker.key() == gifter_escrow_state.maker`) and `constraint = mint_a.key() == gifter_escrow_state.mint_a` and the same for `mint_b`.",
+        "A take that passes a different mint B should fail that constraint instead of paying an unexpected token."
+      ],
+      "expect": "A take with the stored mints still completes, as 33yMgZzA… did. A take with a substituted mint B fails a constraint. We have not run that substituted case.",
+      "hint": "The hosted `Take` accounts constrain `maker` to the stored key. They do not, in the excerpt, constrain `mint_a` or `mint_b` to the stored mints.",
+      "approach": "Add `constraint = mint_a.key() == gifter_escrow_state.mint_a` and the same for mint B. The maker check is already in this commit. We have not run a substituted-mint take, so do not invent its error code."
+    },
+    {
+      "title": "Check the token dropdown against the 13 Nov record",
+      "steps": [
+        "Connect a devnet wallet that holds the lesson's mints and open Create.",
+        "Count the options. The recorded click-through listed 18, including mint A and mint B, then created an escrow from the form."
+      ],
+      "expect": "The dropdown is not empty on this hosted build. The recorded create from the form is 2c6QNtYz…. An earlier build stayed at 0 options because the query key stored `toBase58` without calling it.",
+      "hint": "The deployment record says this build uses the base58 string as the query key and as `ownerAddress`.",
+      "approach": "If the dropdown is empty, compare the hosted bundle with that record before changing the hook. The 13 Nov click-through already listed the tokens and submitted a create."
+    },
+    {
+      "title": "Add an expiry so a deposit cannot be locked forever",
+      "steps": [
+        "Store a `deadline: i64` on `GifterEscrow`, set at create (Clock).",
+        "After the deadline, allow `refund` (and, if you like, a permissionless refund to the maker) even if the maker has disappeared. Before the deadline, take can still run."
+      ],
+      "expect": "A past-deadline escrow can be unwound without take. An in-time refund should still work, as the 13 Nov script refund 3qwx8QBC… did. This program has no expiry field.",
+      "hint": "There is no deadline on `GifterEscrow`. Until someone takes or the maker refunds, the deposit stays in the vault.",
+      "approach": "Store a Clock deadline at create, and after it allow a refund to the maker. The 13 Nov refund 3qwx8QBC… is the in-time case already recorded. A past-deadline escrow was not run."
+    },
+    {
+      "title": "Stop promising a GFT reward the program does not mint",
+      "steps": [
+        "Either remove the 'Accept to get GFT token reward!' copy and the navbar balance, or add a program instruction that mints or transfers a reward on a successful take (with a real mint authority and a recorded test)."
+      ],
+      "expect": "The card's promise matches what a successful take actually does. Today `REWARD_TOKEN_MINT` is only a navbar read; the program has no such instruction.",
+      "hint": "The card says 'Accept to get GFT token reward!'. `REWARD_TOKEN_MINT` is only used for a navbar balance; the program has no mint instruction.",
+      "approach": "Remove the promise, or add a real reward instruction and a recorded test. The card should then match what a successful take actually does."
+    }
+  ],
+  "not_covered": "The 13 Nov 2026 click-through created and refunded from the form. It did not press Accept, because no escrow from another maker was left; the completed take is the script transaction 33yMgZzA…. The card still promises a GFT reward the program does not mint. The escrow list does not refresh until reload. Program 6Z5cvVUc… is still on devnet and its take aborted (ck53TqoU…); it is not the hosted app.",
+  "path_order": 6,
+  "path_stage": 1,
+  "difficulty": "Beginner",
+  "time": "45 min",
+  "objectives": [
+    "Create an escrow PDA and deposit mint A into an associated-token vault the PDA owns, naming mint B and a price.",
+    "Refund: the vault signs a transfer_checked back to the maker and both accounts close; an outsider cannot refund.",
+    "Tell a completed take (33yMgZzA… on 45C1bSkF…) from the earlier abort (ck53TqoU… on 6Z5cvVUc…)."
+  ],
+  "prereqs": [
+    "Phantom on Devnet with a little practice SOL. On the 13 Nov 2026 hosted build the token dropdown filled after connect.",
+    "Complete [TrustLock](/lessons/trustlock/) immediately before this: you have just seen a SOL escrow with a Clock deadline. Here the vault is an SPL-token ATA, and there is no expiry. This is the last lesson in [stage 1](/lessons/path/#stage-1)."
+  ],
+  "concepts": [
+    "pda",
+    "seeds",
+    "bump",
+    "init",
+    "ata",
+    "mint",
+    "token-account",
+    "token-program",
+    "cpi",
+    "invoke-signed",
+    "close",
+    "escrow",
+    "rent",
+    "signer",
+    "payer",
+    "init-if-needed"
+  ],
+  "build": {
+    "dir": "contract",
+    "anchor": "0.30.1",
+    "test": "anchor test",
+    "note": "The Anchor workspace is `contract/` (`Cargo.toml` is Anchor 0.30.1). The fork's `declare_id!` is `9HP45DvS…`. The hosted program recorded on 13 Nov 2026 is `45C1bSkF…`. The build log below checked out an earlier commit, `a9c3a417…`, not the hosted commit `fb2bbfd`.",
+    "ran": "On 13 Nov 2026 (Europe/London) we ran `git checkout a9c3a417d2d78294f58975b1461859ffb20df05a` and `/home/box/.avm/bin/anchor-0.30.1 build` in `contract/` with `RUSTUP_TOOLCHAIN=1.89.0`. Cargo finished a release build in 1 m 13 s and wrote `target/deploy/gifter_escrow.so` (311,808 bytes, a valid ELF). Anchor then failed at 'Building IDL failed' with a `proc-macro-error` Span trait error — the same host-toolchain issue as DeVos, not a problem in this program. The default host rustc (1.99) is too new; use 1.89 (or another 1.8x). We did not run `anchor test`."
+  },
+  "functional": "full",
+  "content_version": "2026-11-19.prelaunch",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "student_outcome": "Create a two-mint escrow with a PDA-owned vault, refund as maker (PDA-signed transfer + close), and distinguish a completed take on the hosted program from the earlier aborting program.",
+  "delivery": "Browser practice + evidence inspection",
+  "track": "application-lab",
+  "assessment": {
+    "purpose": "Determine whether the student can explain PDA-owned vault deposits, maker-only refund with invoke_signed, and honest program/evidence provenance for take vs abort.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Explains PDA-owned vault deposit",
+        "question": "Where does mint A sit after create_escrow, and who is the vault authority?",
+        "not_yet": "Thinks mint A stays in the maker ATA, or that the maker remains vault authority.",
+        "support": "Names the vault ATA after inspecting Proof / Explorer token accounts.",
+        "independent": "States mint A is in a vault ATA whose authority is the GifterEscrow PDA seeded [\"gifter_escrow\", maker, escrow_id].",
+        "misconception": "The maker wallet still owns the deposited tokens until take."
+      },
+      {
+        "id": "c2",
+        "title": "Explains maker-only refund with PDA signature",
+        "question": "Who can refund, how does mint A leave the vault, and what happens to the accounts?",
+        "not_yet": "Allows any wallet to refund, or cannot name invoke_signed / close.",
+        "support": "Correct after revisiting refund steps and outsider rejection in Proof.",
+        "independent": "States only the maker refunds; the PDA signs transfer_checked back to the maker; vault and escrow close.",
+        "misconception": "Any connected wallet can Cancel/refund someone else's escrow."
+      },
+      {
+        "id": "c3",
+        "title": "Labels evidence and program provenance",
+        "question": "Can the student separate the hosted program’s completed take from the earlier aborting program — and historical Proof from their own attempt?",
+        "not_yet": "Treats ck53TqoU… abort as the hosted take, or claims Proof signatures as personal mastery.",
+        "support": "Corrects program IDs after comparing 45C1bSkF… vs 6Z5cvVUc… notes.",
+        "independent": "States completed take 33yMgZzA… is on hosted 45C1bSkF…; abort ck53TqoU… is on an earlier program not hosted here; tags observation vs live.",
+        "misconception": "Any successful signature on the lesson page counts as my mastery on the live program."
+      },
+      {
+        "id": "c4",
+        "title": "Transfers to a take scenario",
+        "question": "Without re-reading the walkthrough: what must a taker provide for take_and_close, and what UI claim should they distrust until verified on-chain?",
+        "not_yet": "Cannot name paying expected mint B amount, or trusts the GFT reward card blindly.",
+        "support": "States mint B payment after revisiting take steps / not_covered.",
+        "independent": "States taker pays expected_price of mint B and receives vault mint A; notes the card may promise a GFT reward the program does not mint.",
+        "misconception": "I finished because I followed the buttons once."
+      }
+    ]
+  },
+  "learning_loop": {
+    "objective": "Deposit mint A into a PDA-owned vault — then explain why only the maker’s refund can pull it back with a PDA signature.",
+    "predict_question": "An open Gifter escrow holds mint A in its vault. A stranger wallet (not the maker) presses Cancel/refund. What should happen?",
+    "predict_options": [
+      {
+        "id": "anyone",
+        "label": "Refund succeeds — anyone can empty an open vault"
+      },
+      {
+        "id": "maker_only",
+        "label": "Refund fails for the stranger — only the maker can refund"
+      },
+      {
+        "id": "auto_take",
+        "label": "The program treats Cancel as take_and_close and swaps mint B automatically"
+      }
+    ],
+    "predict_answer": "maker_only",
+    "predict_why": "refund constrains the signer to the stored maker. The vault authority is the escrow PDA, so the program must invoke_signed to transfer mint A back; an outsider cannot satisfy the maker constraint. take_and_close is a different path that requires the taker to pay mint B.",
+    "act": "In observation mode, open the recorded create + refund under Proof, and compare the completed take (33yMgZzA… on 45C1bSkF…) with the earlier abort (ck53TqoU… on 6Z5cvVUc…). In practical mode on Devnet: connect, create an escrow if the form offers tokens, then Cancel/refund as maker. Do not treat Accept as required for Stage 1 completion when no foreign maker escrow is available — use the recorded take. Prefer the hosted app; reload if the escrow list looks stale.",
+    "inspect": [
+      {
+        "id": "maker",
+        "label": "Maker wallet (short)",
+        "placeholder": "e.g. Acc1…"
+      },
+      {
+        "id": "escrow",
+        "label": "Escrow PDA / id",
+        "placeholder": "PDA… / id"
+      },
+      {
+        "id": "vault",
+        "label": "Vault ATA holds mint A?",
+        "placeholder": "Yes / amount"
+      },
+      {
+        "id": "ix",
+        "label": "Instruction observed",
+        "placeholder": "create_escrow / refund / take_and_close"
+      },
+      {
+        "id": "program",
+        "label": "Program id (short)",
+        "placeholder": "45C1… hosted / other"
+      }
+    ],
+    "explain_question": "Why must the program sign as the escrow PDA to move mint A on refund — and why is that different from the maker simply transferring from their own ATA?",
+    "transfer": "Without re-reading the full walkthrough: what must a taker provide for take_and_close to succeed on the hosted program, and which UI promise should you verify on-chain before trusting it?"
+  }
 }

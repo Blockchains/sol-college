@@ -1,0 +1,69 @@
+{
+  "lab_id": "web3-splitter",
+  "lab_version": "ced1cca04389833d27b6bd47cdc07c956a744759",
+  "upstream": {
+    "repository": null,
+    "commit": null
+  },
+  "practice_fork": {
+    "repository": "https://github.com/Blockchains/Web3-Splitter",
+    "commit": "ced1cca04389833d27b6bd47cdc07c956a744759",
+    "patch_set": null
+  },
+  "deployment": {
+    "network": "devnet",
+    "program_id": "4c4CWSs9m2VbNW9Hn7WqAZv84JMKRWtq5fESGWT5yjm1",
+    "idl_hash": null,
+    "frontend_build_id": null
+  },
+  "verification": {
+    "latest_run_id": "tests/devnet/logs/web3-splitter-2026-11-10.jsonl",
+    "test_status": "failed_recorded_test",
+    "verified_date": "2026-11-10",
+    "method": "tests/devnet/web3-splitter.mjs",
+    "evidence": {
+      "steps": [
+        [
+          "UI: created splitter 'sc-ui-0808' (100% to the test wallet m4Ac\u2026) on the hosted Create page: initialize",
+          "43ReQXZsW8dbsYR1B8F1Z5D4ppNKnfJ7Pf5XCtr1t87C35tLPPgvugb7Qz9hHKc1t8DwZB7w3yuLP3gs7onHmWGJ"
+        ],
+        [
+          "UI: Actions page, 'Get it' loaded the vault, Deposite 25 tokens: vault token account 0 \u2192 25",
+          "5TuwUwzRLktKtnaH1zMiFyBZdVFzHoKQfD3kZdhE2BvskQaH9Df6PMi9bW1C7HUHuzj68ghGjCevVLdGdj1oS9Rh"
+        ],
+        [
+          "UI: Claim: 25 tokens back to the wallet (975 \u2192 1000), vault total 0",
+          "3vhih8Ho9bFrUPRHxD7ykHjRnzRe8xbBuSgzMvEy4q2wuLUCKG6BXa4jQjFxzpifhUeAnqwaLCnFGDa1AvQTLU3P"
+        ],
+        [
+          "Script: initialize 60% authority / 40% B",
+          "5p7JxYbAmBmp3SgfU3MqeSLhEorNbH5zPWCWpmc6mUHzWQ6fH81Mw3xyxbyvFmw8zBYUZ2pBQ117jrncHgWzfpTi"
+        ],
+        [
+          "Script: deposite 100 tokens, shares booked as [60, 40]",
+          "5dXgTMTh3iMJpFNZtpwEGFDgGYrYebSh4jQLYGcziRRPzGAP6VisnSeu4HdkdXgR5Fu5HT9YVZczX7r4rdkauYmV"
+        ],
+        [
+          "Script: update to 70/30 by the authority (booked shares stay [60, 40])",
+          "wbMGgoN383V4G8xXgUE2sqfwNv49ozY1pRbYzbchCdVcKAUy2RQBbCrQ6SyjNfM59FbZqqMoDXGMzWwyTv7XMj3"
+        ],
+        [
+          "Script: claim by the authority received all 100 tokens, not its 60 (bug: transfers vault_balance); B's 40 is still booked but the vault is empty",
+          "2QzW2MB6PLAqCSykqF7Zxb4dSBnxJyTRr2Jkj2ACmLpo6Ae74EoPLcoZZab3tAep2f3aqHrub2NN3ms2RDv3CK7e"
+        ],
+        [
+          "Script: delete by the authority closes the vault account",
+          "1KVJ5AEsw9mQR4oydVmyLJfPYY7JgsXtiDuZfDgNjCHWMNWDBXJ4wkM6WLF5ub6hjxxZrfLMmkkVwM693jpDjCK"
+        ]
+      ],
+      "functional_evidence": "A multi-recipient split cannot be paid out correctly: only the authority can claim, and it receives the whole balance (PDA signer seeds are built from the claimer).",
+      "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (tests/devnet/wallet_click.py splitter, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl): the wallet connected from Select Wallet, and create, deposit and claim all went through the app's own buttons; the Actions page showed the vault 'sc-ui-0808', the mint and '100 % Claim' read from devnet.",
+      "log": "tests/devnet/logs/web3-splitter-2026-11-10.jsonl"
+    }
+  },
+  "limitations": [
+    "Because of the claim bug, a multi-recipient split cannot be paid out correctly: only the authority can claim, and it receives the whole balance. The app's QR deposit link points at the author's Cloud Run endpoint, which is not used here. The balance column shows NaN in the app."
+  ],
+  "standard_limitation": "Practice-environment evidence records specified behaviour under stated conditions. It is not a security audit, a guarantee of current availability or an endorsement of production use.",
+  "practice_boundary": "This exercise applies only to the environment identified on this page. It does not authorise testing the original project or any production deployment."
+}
