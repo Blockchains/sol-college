@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e3',
+    'title': 'Release E.3 — Catalogue card touch marks from workspace activity',
+    'summary': (
+      'Lesson cards on /lessons/ show device-local touch marks when a learner has '
+      'opened the workspace loop or checked steps — still not mastery.'
+    ),
+    'changes': [
+      'Cards read sc-lesson-loop and sc-lesson-progress for “Touched on this device” / step counts.',
+      'is-touched styling is a light border cue only; copy stays honesty-first.',
+      'Aligns catalogue cards with path-progress personalisation without accounts.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e2',
     'title': 'Release E.2 — Progress on lessons index + clear local progress',
     'summary': (

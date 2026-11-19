@@ -259,14 +259,28 @@
       }
       bind(buttons);
       bind(formats);
+      var loopsIndex = load('sc-lesson-loop') || {};
       cards.forEach(function (card) {
-        var rec = progress[card.getAttribute('data-slug')];
-        if (rec && rec.done && rec.done.length) {
-          var p = document.createElement('p');
-          p.className = 'meta';
-          p.textContent = rec.done.length + (rec.done.length === 1 ? ' step checked on this device' : ' steps checked on this device');
-          card.insertBefore(p, card.firstChild);
+        var id = card.getAttribute('data-slug');
+        var rec = progress[id];
+        var loop = loopsIndex[id];
+        var steps = (rec && rec.done && rec.done.length) ? rec.done.length : 0;
+        var touched = !!(loop && (
+          (loop.visited && loop.visited.length) ||
+          loop.predict ||
+          loop.mode ||
+          (loop.marked && Object.keys(loop.marked).length)
+        ));
+        if (!steps && !touched) return;
+        var p = document.createElement('p');
+        p.className = 'card-touch meta';
+        if (steps) {
+          p.textContent = steps + (steps === 1 ? ' step checked on this device' : ' steps checked on this device');
+        } else {
+          p.textContent = 'Touched on this device';
         }
+        card.insertBefore(p, card.firstChild);
+        card.classList.add('is-touched');
       });
       apply();
     }
