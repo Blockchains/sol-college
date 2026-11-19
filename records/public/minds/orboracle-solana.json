@@ -2,11 +2,11 @@
   "schema": "sc-mind-ops/1",
   "project": "orboracle-solana",
   "mind": "SolCollege-OrbOracle-CTO",
-  "at": "2026-11-19T10:26:38.504Z",
+  "at": "2026-11-19T20:42:09.820Z",
   "status": "active",
   "paused": false,
   "isEnabled": true,
-  "cognitionBalance": -20.14716904,
+  "cognitionBalance": -20.15437404,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
