@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-c16',
+    'title': 'Release C.16 — Elective learning loops batch 1',
+    'summary': (
+      'First five apply-path electives join the shared learning layer: Guild Protocol, '
+      'QVAC Marketplace, AgentTrust, Agenc Protocol, and Forge Agent Bounty.'
+    ),
+    'changes': [
+      'Each elective gains track=elective, student_outcome, learning_loop, and lab-specific assessment criteria.',
+      'Workspace/preflight/assessment pages generate from the shared learning_layer.',
+      'Tests assert predict answers and no Picassol criterion leakage.',
+    ],
+  },
+  {
     'id': '2026-11-18-release-d3',
     'title': 'Release D.3 — Foundations → Stage 1 handoff + structural verification',
     'summary': (

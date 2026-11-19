@@ -258,6 +258,29 @@ class LabAssessment(unittest.TestCase):
             self.assertIn('assessment', L, slug)
             self.assertTrue(L['assessment'].get('criteria'), slug)
 
+    def test_elective_batch1_learning_loops(self):
+        batch = {
+            'guild-protocol': 'fee_high',
+            'qvac-marketplace': 'provider_pda',
+            'agenttrust': 'revoked_flag',
+            'agenc-protocol': 'config_only',
+            'forge-agent-bounty': 'init_only',
+        }
+        for slug, answer in batch.items():
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertIn('learning_loop', L, slug)
+            self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
+            ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
+            self.assertIn(answer, ids, slug)
+            self.assertTrue(L.get('assessment', {}).get('criteria'), slug)
+            self.assertTrue(L.get('student_outcome'), slug)
+            html = ll.assessment_html(L, slug)
+            self.assertNotIn('Pixel account', html, slug)
+            self.assertNotIn('update_pixel', html, slug)
+            # criterion titles should appear
+            self.assertIn(L['assessment']['criteria'][0]['title'].split()[0], html)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',

@@ -1,64 +1,161 @@
 {
- "title": "QVAC Marketplace: register an inference provider",
- "summary": "Register a QVAC provider, then create an escrowed SOL job against an Ed25519-signed quote, complete it, and confirm to pay the provider.",
- "what": "QVAC Marketplace is an Anchor 1.0 program for an on-chain AI inference market. Providers register a name, task-type bitmask and QVAC DHT peer id. Consumers later create escrowed jobs against an Ed25519-signed quote. Upstream also has off-chain provider tooling; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
- "app_note": "The page at /dapps/qvac-marketplace/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
- "try_steps": [
-  {
-   "do": "Open /dapps/qvac-marketplace/, switch to Devnet, and connect Phantom or Solflare.",
-   "see": "The page lists register_provider, update_provider, create_job and more, and shows program 2R3iKnrn…",
-   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  "title": "QVAC Marketplace: register an inference provider",
+  "summary": "Register a QVAC provider, then create an escrowed SOL job against an Ed25519-signed quote, complete it, and confirm to pay the provider.",
+  "what": "QVAC Marketplace is an Anchor 1.0 program for an on-chain AI inference market. Providers register a name, task-type bitmask and QVAC DHT peer id. Consumers later create escrowed jobs against an Ed25519-signed quote. Upstream also has off-chain provider tooling; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+  "app_note": "The page at /dapps/qvac-marketplace/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/qvac-marketplace/, switch to Devnet, and connect Phantom or Solflare.",
+      "see": "The page lists register_provider, update_provider, create_job and more, and shows program 2R3iKnrn\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "register_provider campus-scout is already taken by the lab wallet. Fetch provider GrRvaYzN\u2026 (seeds [\"provider\", authority]).",
+      "see": "After the lab update, name=campus-scout-v2 and task_types=3.",
+      "ran": "register_provider sig 5N7gh5NAsnRQU3xwmKhWxZwPPg16mmxrH9ixBBerLurtpSds7cg5yf2pidBDeJ86BqYpDrcCue5XB2g9dSY1JvQK; update_provider sig 4PSatmoiXgn3FhwF38Eq1DDfQPT5YdwbDuRfu9Vy7aGComvhCRGa8jVqBkuBrFbn4qxggA5jCXxs83VMxVaSJ2ss."
+    },
+    {
+      "do": "A register_provider with a 1-byte name, or a second register for the same authority, should fail.",
+      "see": "NameTooShort, or the provider PDA already in use.",
+      "ran": "Both negatives were rejected in tests/devnet/qvac-marketplace.mjs."
+    }
+  ],
+  "diagram": "authority --register_provider--> provider PDA [\"provider\", authority] ; authority --update_provider--> same PDA",
+  "accounts": [
+    "provider (seeds [\"provider\", authority])"
+  ],
+  "instructions": [
+    "register_provider",
+    "update_provider",
+    "rotate_peer_id",
+    "create_job",
+    "provider_complete",
+    "consumer_confirm",
+    "refund_job"
+  ],
+  "innovation": "On-chain provider registry plus quote-verified job escrow for a QVAC/Hyperswarm inference network.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab provider account.",
+    "Explain NameTooShort.",
+    "Sketch the Ed25519 quote that create_job expects."
+  ],
+  "not_covered": "refund_job and rotate_peer_id were not exercised. payment_mint is SOL-only in this MVP.",
+  "path_order": 27,
+  "path_stage": "apply",
+  "difficulty": "Intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Register a provider PDA",
+    "Update provider fields",
+    "Name the rejected errors"
+  ],
+  "prereqs": [
+    "guild-protocol"
+  ],
+  "concepts": [
+    "provider PDA",
+    "task-type bitmask",
+    "peer id",
+    "quote-verified escrow"
+  ],
+  "build": "Anchor 1.0.2 program, declared at 2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix on devnet.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Register or inspect an inference provider account and explain which registration fields the program stores.",
+  "content_version": "2026-11-18.1",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Predict what a provider registration writes \u2014 then inspect the provider account.",
+    "predict_question": "A provider registers with a name and task-type bitmap. Where do those fields live after a successful registration?",
+    "predict_options": [
+      {
+        "id": "ui_only",
+        "label": "Only in the browser localStorage"
+      },
+      {
+        "id": "provider_pda",
+        "label": "In the provider PDA/account owned by the marketplace program"
+      },
+      {
+        "id": "memo",
+        "label": "Only as a memo on the registration transaction"
+      }
+    ],
+    "predict_answer": "provider_pda",
+    "predict_why": "Marketplace registration creates/updates a provider account. Name and task-type bits are program state, not browser-only preferences.",
+    "act": "Open /dapps/qvac-marketplace/ on Devnet. Register a practice provider or fetch an existing provider account from the lab proofs. Record the provider address and stored fields.",
+    "inspect": [
+      {
+        "id": "provider",
+        "label": "Provider account",
+        "placeholder": "address\u2026"
+      },
+      {
+        "id": "name",
+        "label": "Stored name",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "tasks",
+        "label": "Task-type bitmap / flags",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Registration evidence",
+        "placeholder": "sig\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why is a successful wallet toast insufficient proof that the provider account holds the name you typed?",
+    "transfer": "List the provider fields you would re-read on-chain before advertising the provider as registered."
   },
-  {
-   "do": "register_provider campus-scout is already taken by the lab wallet. Fetch provider GrRvaYzN… (seeds [\"provider\", authority]).",
-   "see": "After the lab update, name=campus-scout-v2 and task_types=3.",
-   "ran": "register_provider sig 5N7gh5NAsnRQU3xwmKhWxZwPPg16mmxrH9ixBBerLurtpSds7cg5yf2pidBDeJ86BqYpDrcCue5XB2g9dSY1JvQK; update_provider sig 4PSatmoiXgn3FhwF38Eq1DDfQPT5YdwbDuRfu9Vy7aGComvhCRGa8jVqBkuBrFbn4qxggA5jCXxs83VMxVaSJ2ss."
-  },
-  {
-   "do": "A register_provider with a 1-byte name, or a second register for the same authority, should fail.",
-   "see": "NameTooShort, or the provider PDA already in use.",
-   "ran": "Both negatives were rejected in tests/devnet/qvac-marketplace.mjs."
+  "assessment": {
+    "purpose": "Independent criteria for QVAC Marketplace elective: provider registration evidence.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Locates provider account",
+        "question": "Can the student identify the provider PDA/account used by registration?",
+        "not_yet": "Cannot name where provider state lives.",
+        "support": "Finds it after a seeds/Explorer prompt.",
+        "independent": "Records provider address and owner program from evidence.",
+        "misconception": "Wallet address is the provider account."
+      },
+      {
+        "id": "c2",
+        "title": "Verifies stored registration fields",
+        "question": "Can the student match name / task-type fields on-chain to the registration intent?",
+        "not_yet": "Assumes UI success equals stored fields.",
+        "support": "Checks account data after a prompt.",
+        "independent": "Compares intended vs observed fields explicitly.",
+        "misconception": "Bitmap fields are decorative."
+      },
+      {
+        "id": "c3",
+        "title": "Honest evidence route",
+        "question": "Does the student separate observation of lab proofs from a live registration?",
+        "not_yet": "Confuses routes.",
+        "support": "Labels correctly after a prompt.",
+        "independent": "Marks observe vs live without coaching.",
+        "misconception": "Lab wallet proof is my wallet\u2019s completion."
+      },
+      {
+        "id": "c4",
+        "title": "Scopes claims to this lesson",
+        "question": "Does the student avoid claiming full inference market mastery from registration alone?",
+        "not_yet": "Claims end-to-end inference settlement.",
+        "support": "Narrows scope after a prompt.",
+        "independent": "States what registration does and does not prove.",
+        "misconception": "Registered provider means paid inference already worked."
+      }
+    ]
   }
- ],
- "diagram": "authority --register_provider--> provider PDA [\"provider\", authority] ; authority --update_provider--> same PDA",
- "accounts": [
-  "provider (seeds [\"provider\", authority])"
- ],
- "instructions": [
-  "register_provider",
-  "update_provider",
-  "rotate_peer_id",
-  "create_job",
-  "provider_complete",
-  "consumer_confirm",
-  "refund_job"
- ],
- "innovation": "On-chain provider registry plus quote-verified job escrow for a QVAC/Hyperswarm inference network.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch the lab provider account.",
-  "Explain NameTooShort.",
-  "Sketch the Ed25519 quote that create_job expects."
- ],
- "not_covered": "refund_job and rotate_peer_id were not exercised. payment_mint is SOL-only in this MVP.",
- "path_order": 27,
- "path_stage": "apply",
- "difficulty": "Intermediate",
- "time": "20 min",
- "objectives": [
-  "Register a provider PDA",
-  "Update provider fields",
-  "Name the rejected errors"
- ],
- "prereqs": [
-  "guild-protocol"
- ],
- "concepts": [
-  "provider PDA",
-  "task-type bitmask",
-  "peer id",
-  "quote-verified escrow"
- ],
- "build": "Anchor 1.0.2 program, declared at 2R3iKnrn6aUBcb3SaPyJndwY7FoRJmooHH8QwjqJAgix on devnet.",
- "functional": "full"
 }

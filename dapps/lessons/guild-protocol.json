@@ -1,67 +1,164 @@
 {
- "title": "Guild Protocol: on-chain agent labor market",
- "summary": "Initialise the guild, register an agent, post/claim/submit a job, and review it so the worker is paid from the escrow vault.",
- "what": "Guild Protocol is an Anchor 1.0 program for an on-chain agent labor market. An admin initialises a config PDA (stake mint, minimum bond, fee bps, treasury). Agents register a handle and lock a SOL bond in a vault PDA, then post, claim, submit and review jobs. Upstream also ships a dashboard; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
- "app_note": "The page at /dapps/guild-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
- "try_steps": [
-  {
-   "do": "Open /dapps/guild-protocol/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
-   "see": "The page lists initialize, register_agent, post_job and more, and shows program 9CHKw1dA…",
-   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  "title": "Guild Protocol: on-chain agent labor market",
+  "summary": "Initialise the guild, register an agent, post/claim/submit a job, and review it so the worker is paid from the escrow vault.",
+  "what": "Guild Protocol is an Anchor 1.0 program for an on-chain agent labor market. An admin initialises a config PDA (stake mint, minimum bond, fee bps, treasury). Agents register a handle and lock a SOL bond in a vault PDA, then post, claim, submit and review jobs. Upstream also ships a dashboard; the hosted app is Sol.College's generic IDL console pointed at this devnet deployment.",
+  "app_note": "The page at /dapps/guild-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/guild-protocol/, switch to Devnet, and connect Phantom or Solflare. Get free devnet SOL from faucet.solana.com if you need it.",
+      "see": "The page lists initialize, register_agent, post_job and more, and shows program 9CHKw1dA\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "initialize is already done on this lab deployment. Fetch the config PDA (seeds [\"config\"]) and confirm min_bond and fee_bps.",
+      "see": "authority is the lab wallet, min_bond=1000000, fee_bps=250.",
+      "ran": "initialize sig 7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq wrote config 2w1AbEvBTGHmRudKVQc8NNQx97gNsN9aUkdc6binNxsj."
+    },
+    {
+      "do": "register_agent campus-scout is already taken by the lab wallet. Fetch agent 27FKpZrz\u2026 . A fee_bps=2000 initialize or a bond below min_bond should fail.",
+      "see": "handle=campus-scout, bond=1000000, active=true, trust=probation. FeeTooHigh / BondTooLow on the negatives.",
+      "ran": "register_agent sig 52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw."
+    }
+  ],
+  "diagram": "authority --initialize--> config PDA [\"config\"] ; owner --register_agent + lamports--> agent PDA [\"agent\", owner] + vault PDA [\"vault\", agent]",
+  "accounts": [
+    "config (seeds [\"config\"])",
+    "agent (seeds [\"agent\", owner])",
+    "vault (seeds [\"vault\", agent], system-owned lamport custody)"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "post_job",
+    "claim_job",
+    "submit_work",
+    "review_job",
+    "cancel_job",
+    "top_up_bond"
+  ],
+  "innovation": "A bonded agent labor market with job lifecycle and a lamport vault PDA, recorded on Solana rather than an off-chain board.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Read the config and agent accounts from the console.",
+    "Explain why fee_bps=2000 is rejected.",
+    "Sketch how post_job would lock bond."
+  ],
+  "not_covered": "cancel_job and top_up_bond were not re-exercised after the payout fix. The lab wallet was poster, worker, reviewer and treasury.",
+  "path_order": 26,
+  "path_stage": "apply",
+  "difficulty": "Intermediate",
+  "time": "20 min",
+  "objectives": [
+    "Initialise a guild config",
+    "Register a bonded agent",
+    "Read agent state and name the rejected errors"
+  ],
+  "prereqs": [
+    "naim"
+  ],
+  "concepts": [
+    "PDA seeds",
+    "lamport vault",
+    "min bond",
+    "fee bps"
+  ],
+  "build": "Anchor 1.0.2 program, declared at 9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP on devnet.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Inspect the guild config and a bonded agent, then explain why over-fee initialise and under-bond registration fail.",
+  "content_version": "2026-11-18.1",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Read config + agent state \u2014 then predict which initialise/register errors the program rejects.",
+    "predict_question": "Config requires min_bond=1_000_000 and fee_bps\u2264250. What happens if someone calls initialize with fee_bps=2000?",
+    "predict_options": [
+      {
+        "id": "ok",
+        "label": "It succeeds; fee_bps is only advisory"
+      },
+      {
+        "id": "fee_high",
+        "label": "It fails with FeeTooHigh (or equivalent) before the config is written"
+      },
+      {
+        "id": "partial",
+        "label": "Config is written with fee_bps clamped to 250"
+      }
+    ],
+    "predict_answer": "fee_high",
+    "predict_why": "Guild initialise enforces fee bounds in the program. An oversized fee_bps is rejected; the config PDA is not left with an illegal fee.",
+    "act": "Open /dapps/guild-protocol/ on Devnet. Fetch config (seeds [\"config\"]) and agent campus-scout. Prefer observation of recorded initialize/register_agent proofs; try a failing fee_bps or bond path only if the lab UI exposes it safely.",
+    "inspect": [
+      {
+        "id": "config",
+        "label": "Config PDA / min_bond / fee_bps",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "agent",
+        "label": "Agent handle / bond / active",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "reject",
+        "label": "Rejected path observed",
+        "placeholder": "FeeTooHigh / BondTooLow / none"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature (short)",
+        "placeholder": "yours or platform"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live / guided"
+      }
+    ],
+    "explain_question": "Why must min_bond and fee_bps be enforced on-chain rather than only in the UI?",
+    "transfer": "Name two rejected initialise/register conditions and what account evidence proves a bonded agent is active."
   },
-  {
-   "do": "initialize is already done on this lab deployment. Fetch the config PDA (seeds [\"config\"]) and confirm min_bond and fee_bps.",
-   "see": "authority is the lab wallet, min_bond=1000000, fee_bps=250.",
-   "ran": "initialize sig 7CMdYAw2Qw7Um9d71wTawwoZiXpWAmf82ktVdVt6jFRhugvGrGMPExsnhPZL3qBmRqZU6Fe62rEiYKTsVUJixuq wrote config 2w1AbEvBTGHmRudKVQc8NNQx97gNsN9aUkdc6binNxsj."
-  },
-  {
-   "do": "register_agent campus-scout is already taken by the lab wallet. Fetch agent 27FKpZrz… . A fee_bps=2000 initialize or a bond below min_bond should fail.",
-   "see": "handle=campus-scout, bond=1000000, active=true, trust=probation. FeeTooHigh / BondTooLow on the negatives.",
-   "ran": "register_agent sig 52j8Xsp7YGc2FSQuDz2XEGQh6kShAUQpfFJsMvDSzkQGsytr8TmQSkgeoBpnZU9i7s4U9mVjf11oUQKr3Qe1NVkw."
+  "assessment": {
+    "purpose": "Independent criteria for Guild Protocol elective: config inspection, bond rules, and honest evidence.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Reads guild config from evidence",
+        "question": "Can the student name min_bond and fee_bps from the config account (or recorded proof)?",
+        "not_yet": "Guesses parameters without account or proof evidence.",
+        "support": "Correct after being pointed at config PDA seeds [\"config\"].",
+        "independent": "Records config address, min_bond, fee_bps, and authority from evidence.",
+        "misconception": "UI labels alone prove on-chain config."
+      },
+      {
+        "id": "c2",
+        "title": "Explains FeeTooHigh / BondTooLow",
+        "question": "Can the student predict which initialise/register inputs the program rejects?",
+        "not_yet": "Treats fee_bps and bond as free-form.",
+        "support": "Correct after reviewing the exercise negatives.",
+        "independent": "States that over-fee initialise and under-bond registration fail without writing illegal state.",
+        "misconception": "Failed UI submit means the illegal config still exists."
+      },
+      {
+        "id": "c3",
+        "title": "Separates platform proof from own attempt",
+        "question": "Does the student label recorded lab signatures vs their own Devnet attempt?",
+        "not_yet": "Pastes platform sigs as personal completion.",
+        "support": "Corrects after a prompt to mark evidence route.",
+        "independent": "Records evidence route explicitly (observe / live / guided).",
+        "misconception": "Any signature on the page is my completion."
+      },
+      {
+        "id": "c4",
+        "title": "States a safe next action",
+        "question": "After inspecting agent state, can the student name one safe next step without inventing untested job flows?",
+        "not_yet": "Claims full job lifecycle mastery from initialise alone.",
+        "support": "Scopes to register/read after a prompt.",
+        "independent": "Limits claims to initialise/register/read for this elective slice.",
+        "misconception": "Seeing post_job in the IDL means I completed payment."
+      }
+    ]
   }
- ],
- "diagram": "authority --initialize--> config PDA [\"config\"] ; owner --register_agent + lamports--> agent PDA [\"agent\", owner] + vault PDA [\"vault\", agent]",
- "accounts": [
-  "config (seeds [\"config\"])",
-  "agent (seeds [\"agent\", owner])",
-  "vault (seeds [\"vault\", agent], system-owned lamport custody)"
- ],
- "instructions": [
-  "initialize",
-  "register_agent",
-  "post_job",
-  "claim_job",
-  "submit_work",
-  "review_job",
-  "cancel_job",
-  "top_up_bond"
- ],
- "innovation": "A bonded agent labor market with job lifecycle and a lamport vault PDA, recorded on Solana rather than an off-chain board.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Read the config and agent accounts from the console.",
-  "Explain why fee_bps=2000 is rejected.",
-  "Sketch how post_job would lock bond."
- ],
- "not_covered": "cancel_job and top_up_bond were not re-exercised after the payout fix. The lab wallet was poster, worker, reviewer and treasury.",
- "path_order": 26,
- "path_stage": "apply",
- "difficulty": "Intermediate",
- "time": "20 min",
- "objectives": [
-  "Initialise a guild config",
-  "Register a bonded agent",
-  "Read agent state and name the rejected errors"
- ],
- "prereqs": [
-  "naim"
- ],
- "concepts": [
-  "PDA seeds",
-  "lamport vault",
-  "min bond",
-  "fee bps"
- ],
- "build": "Anchor 1.0.2 program, declared at 9CHKw1dASMkYG3Meu9CJNWfjsszz6t3LNn56oFbuFYVP on devnet.",
- "functional": "full"
 }

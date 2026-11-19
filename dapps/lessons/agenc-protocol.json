@@ -1,57 +1,154 @@
 {
- "title": "Agenc Protocol: initialise the coordination config",
- "summary": "Initialise the Agenc protocol config. register_agent and create_task are paused on this production build until stamp_release_surface.",
- "what": "Agenc Protocol is a large Anchor 0.32 agent-coordination program (tasks, bids, disputes, skills, listings). This lesson covers only initialize_protocol, which writes a singleton config PDA after proving the caller is the upgrade authority and a second multisig owner has co-signed. The hosted IDL is a minimal hand-derived subset confirmed by the live transaction.",
- "app_note": "The page at /dapps/agenc-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in. register_agent and create_task are listed but will fail with ProtocolPaused until stamp_release_surface.",
- "try_steps": [
-  {
-   "do": "Open /dapps/agenc-protocol/, switch to Devnet, and connect a wallet. initialize_protocol is already done on this lab deployment.",
-   "see": "Program 2wAW3Ack… . Fetch the config PDA (seeds [\"protocol\"]) at BhScAVMz….",
-   "ran": "initialize_protocol sig 61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v wrote config with authority and treasury = lab wallet."
+  "title": "Agenc Protocol: initialise the coordination config",
+  "summary": "Initialise the Agenc protocol config. register_agent and create_task are paused on this production build until stamp_release_surface.",
+  "what": "Agenc Protocol is a large Anchor 0.32 agent-coordination program (tasks, bids, disputes, skills, listings). This lesson covers only initialize_protocol, which writes a singleton config PDA after proving the caller is the upgrade authority and a second multisig owner has co-signed. The hosted IDL is a minimal hand-derived subset confirmed by the live transaction.",
+  "app_note": "The page at /dapps/agenc-protocol/ is the generic IDL-driven wallet console, with this devnet program id filled in. register_agent and create_task are listed but will fail with ProtocolPaused until stamp_release_surface.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agenc-protocol/, switch to Devnet, and connect a wallet. initialize_protocol is already done on this lab deployment.",
+      "see": "Program 2wAW3Ack\u2026 . Fetch the config PDA (seeds [\"protocol\"]) at BhScAVMz\u2026.",
+      "ran": "initialize_protocol sig 61Ce3EX7WFcPDf9qk5v2KmPKDBnsAHBoJkPxNvHgVrH2g1Dujy8Jnzsr5Mr376jJb6cYq6YG4hEN8wnvLBLvr81v wrote config with authority and treasury = lab wallet."
+    },
+    {
+      "do": "A fresh initialize with dispute_threshold=0 should fail; a second initialize of this deployment should also fail because the config PDA already exists.",
+      "see": "InvalidDisputeThreshold, or the account already in use.",
+      "ran": "dispute_threshold=0 was rejected in tests/devnet/agenc-protocol.mjs."
+    }
+  ],
+  "diagram": "upgrade authority + second signer + ProgramData --initialize_protocol--> protocol config PDA [\"protocol\"]",
+  "accounts": [
+    "protocol_config (seeds [\"protocol\"])",
+    "treasury (system-owned signer)",
+    "second_signer (distinct multisig owner)",
+    "ProgramData remaining account"
+  ],
+  "instructions": [
+    "initialize_protocol (hosted IDL)",
+    "register_agent and a large additional surface exist in the program but are not in this IDL"
+  ],
+  "innovation": "A broad agent coordination protocol whose bootstrap requires the upgrade authority plus a second signer and an explicit ProgramData check.",
+  "frontend": "Generic Sol.College IDL console (initialize_protocol works; register_agent/create_task are paused).",
+  "exercises": [
+    "Fetch the lab protocol config.",
+    "Explain why ProgramData must be passed.",
+    "Sketch register_agent against this config."
+  ],
+  "not_covered": "register_agent failed with ProtocolPaused (production builds start paused until stamp_release_surface). create_task was not sent.",
+  "path_order": 29,
+  "path_stage": "apply",
+  "difficulty": "Advanced",
+  "time": "25 min",
+  "objectives": [
+    "Initialise protocol config",
+    "Name InvalidDisputeThreshold",
+    "Explain the ProgramData remaining account"
+  ],
+  "prereqs": [
+    "agenttrust"
+  ],
+  "concepts": [
+    "upgrade authority",
+    "ProgramData",
+    "multisig bootstrap",
+    "protocol config PDA"
+  ],
+  "build": "Anchor 0.32.1 program (~2.4 MiB), declared at 2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i on devnet. IDL hand-derived subset, tx-confirmed.",
+  "functional": "partial",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Initialise or inspect the Agenc coordination config and state what this lesson covers versus the wider program surface.",
+  "content_version": "2026-11-18.1",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Initialise/inspect coordination config \u2014 then bound claims to this lesson\u2019s slice.",
+    "predict_question": "Agenc Protocol\u2019s IDL lists tasks, bids, disputes, skills, and listings. This lesson focuses on initialise/config. What is honest after a successful initialize?",
+    "predict_options": [
+      {
+        "id": "all_done",
+        "label": "You have demonstrated the full coordination lifecycle"
+      },
+      {
+        "id": "config_only",
+        "label": "You have demonstrated config initialisation/inspection \u2014 not full task/bid/dispute mastery"
+      },
+      {
+        "id": "nothing",
+        "label": "Initialize proves nothing because the IDL is large"
+      }
+    ],
+    "predict_answer": "config_only",
+    "predict_why": "A large program surface is not the lesson scope. Initialise/config evidence supports only that slice; tasks/bids/disputes need their own demonstrations.",
+    "act": "Open /dapps/agenc-protocol/ on Devnet. Initialise if available or fetch the existing coordination config from lab proofs. Record config fields and explicitly list what you are not claiming.",
+    "inspect": [
+      {
+        "id": "config",
+        "label": "Config account / fields",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "authority",
+        "label": "Authority observed",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "sig",
+        "label": "Initialize evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "out_of_scope",
+        "label": "Out-of-scope surfaces noted",
+        "placeholder": "tasks/bids/\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why is \u201cthe program can do disputes\u201d not the same as \u201cI demonstrated disputes\u201d?",
+    "transfer": "Write one sentence that correctly scopes this elective after initialize succeeds."
   },
-  {
-   "do": "A fresh initialize with dispute_threshold=0 should fail; a second initialize of this deployment should also fail because the config PDA already exists.",
-   "see": "InvalidDisputeThreshold, or the account already in use.",
-   "ran": "dispute_threshold=0 was rejected in tests/devnet/agenc-protocol.mjs."
+  "assessment": {
+    "purpose": "Independent criteria for Agenc Protocol elective: config slice honesty.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Inspects coordination config",
+        "question": "Can the student read config evidence after initialize?",
+        "not_yet": "No config fields recorded.",
+        "support": "Finds config after a prompt.",
+        "independent": "Records config address and key fields.",
+        "misconception": "IDL list equals completed features."
+      },
+      {
+        "id": "c2",
+        "title": "Scopes the lesson",
+        "question": "Does the student separate config init from tasks/bids/disputes?",
+        "not_yet": "Claims full protocol mastery.",
+        "support": "Scopes after a prompt.",
+        "independent": "States in/out of scope without coaching.",
+        "misconception": "Large IDL \u21d2 I practiced everything."
+      },
+      {
+        "id": "c3",
+        "title": "Authority / init constraints",
+        "question": "Can the student identify who may initialise or what fails on re-init?",
+        "not_yet": "Assumes anyone may re-initialise freely.",
+        "support": "Correct after reading errors/proofs.",
+        "independent": "States init constraints from evidence.",
+        "misconception": "Re-init always overwrites silently."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence route",
+        "question": "Is observation vs live attempt labelled?",
+        "not_yet": "Unlabelled.",
+        "support": "Labels after a prompt.",
+        "independent": "Labels correctly.",
+        "misconception": "Lab initialize is automatically my credential."
+      }
+    ]
   }
- ],
- "diagram": "upgrade authority + second signer + ProgramData --initialize_protocol--> protocol config PDA [\"protocol\"]",
- "accounts": [
-  "protocol_config (seeds [\"protocol\"])",
-  "treasury (system-owned signer)",
-  "second_signer (distinct multisig owner)",
-  "ProgramData remaining account"
- ],
- "instructions": [
-  "initialize_protocol (hosted IDL)",
-  "register_agent and a large additional surface exist in the program but are not in this IDL"
- ],
- "innovation": "A broad agent coordination protocol whose bootstrap requires the upgrade authority plus a second signer and an explicit ProgramData check.",
- "frontend": "Generic Sol.College IDL console (initialize_protocol works; register_agent/create_task are paused).",
- "exercises": [
-  "Fetch the lab protocol config.",
-  "Explain why ProgramData must be passed.",
-  "Sketch register_agent against this config."
- ],
- "not_covered": "register_agent failed with ProtocolPaused (production builds start paused until stamp_release_surface). create_task was not sent.",
- "path_order": 29,
- "path_stage": "apply",
- "difficulty": "Advanced",
- "time": "25 min",
- "objectives": [
-  "Initialise protocol config",
-  "Name InvalidDisputeThreshold",
-  "Explain the ProgramData remaining account"
- ],
- "prereqs": [
-  "agenttrust"
- ],
- "concepts": [
-  "upgrade authority",
-  "ProgramData",
-  "multisig bootstrap",
-  "protocol config PDA"
- ],
- "build": "Anchor 0.32.1 program (~2.4 MiB), declared at 2wAW3AckaeU12VVmoGKYLMFgSEmR7AFcpvoCyQaCtM8i on devnet. IDL hand-derived subset, tx-confirmed.",
- "functional": "partial"
 }
