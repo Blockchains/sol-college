@@ -1,54 +1,151 @@
 {
- "title": "AgentTrust: issue and revoke an on-chain agent credential",
- "summary": "Issue a credential PDA for an agent, fetch it while it is valid, then revoke it and see AlreadyRevoked.",
- "what": "AgentTrust is an Anchor 1.1 program for a simple on-chain credential registry aimed at AI agents. An issuer writes a credential PDA seeded by the agent pubkey and a type string, can log it with get_credential, and can revoke it. The hosted app is Sol.College's generic IDL console pointed at this devnet deployment; the IDL was hand-derived from source and confirmed by live transactions.",
- "app_note": "The page at /dapps/agenttrust/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
- "try_steps": [
-  {
-   "do": "Open /dapps/agenttrust/, switch to Devnet, and connect Phantom or Solflare.",
-   "see": "The page lists issue_credential, get_credential and revoke_credential, and shows program 2XxFdCMo…",
-   "ran": "The lab wallet BP1uwSaT… used the same IDL client."
+  "title": "AgentTrust: issue and revoke an on-chain agent credential",
+  "summary": "Issue a credential PDA for an agent, fetch it while it is valid, then revoke it and see AlreadyRevoked.",
+  "what": "AgentTrust is an Anchor 1.1 program for a simple on-chain credential registry aimed at AI agents. An issuer writes a credential PDA seeded by the agent pubkey and a type string, can log it with get_credential, and can revoke it. The hosted app is Sol.College's generic IDL console pointed at this devnet deployment; the IDL was hand-derived from source and confirmed by live transactions.",
+  "app_note": "The page at /dapps/agenttrust/ is the generic IDL-driven wallet console, with this devnet program id filled in.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agenttrust/, switch to Devnet, and connect Phantom or Solflare.",
+      "see": "The page lists issue_credential, get_credential and revoke_credential, and shows program 2XxFdCMo\u2026",
+      "ran": "The lab wallet BP1uwSaT\u2026 used the same IDL client."
+    },
+    {
+      "do": "issue_credential type campus-scout is already taken for the lab wallet as agent. Fetch credential 9QXpx6HL\u2026 (seeds [\"credential\", agent, type]).",
+      "see": "revoked=true after the lab revoke. get_credential or a second revoke should fail with AlreadyRevoked.",
+      "ran": "issue 45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt; get 3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae; revoke 5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw."
+    }
+  ],
+  "diagram": "issuer --issue_credential--> credential PDA [\"credential\", agent, type] ; issuer --revoke_credential--> same PDA (revoked=true)",
+  "accounts": [
+    "credential (seeds [\"credential\", agent, credential_type])"
+  ],
+  "instructions": [
+    "issue_credential",
+    "get_credential",
+    "revoke_credential"
+  ],
+  "innovation": "A minimal on-chain credential that an agent can present and an issuer can revoke.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab credential and confirm revoked=true.",
+    "Explain why a 33-byte type fails before the program error.",
+    "Sketch UnauthorizedRevoke."
+  ],
+  "not_covered": "UnauthorizedRevoke was not exercised (needs a second wallet).",
+  "path_order": 28,
+  "path_stage": "apply",
+  "difficulty": "Beginner",
+  "time": "15 min",
+  "objectives": [
+    "Issue a credential PDA",
+    "Revoke it",
+    "Name AlreadyRevoked"
+  ],
+  "prereqs": [
+    "qvac-marketplace"
+  ],
+  "concepts": [
+    "PDA seeds",
+    "credential",
+    "revoke"
+  ],
+  "build": "Anchor 1.1.2 program, declared at 2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe on devnet. IDL hand-derived and tx-confirmed.",
+  "functional": "full",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Issue or inspect an on-chain agent credential and explain what revoke changes in account state.",
+  "content_version": "2026-11-18.1",
+  "content_review": "2026-11-18",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Predict the effect of revoke on a credential account \u2014 then inspect before/after state.",
+    "predict_question": "An issuer revokes an existing agent credential. What should observers treat as true afterward?",
+    "predict_options": [
+      {
+        "id": "gone",
+        "label": "The credential account always disappears; absence is the only signal"
+      },
+      {
+        "id": "revoked_flag",
+        "label": "Credential state shows revoked (or equivalent); verifiers must not treat it as valid"
+      },
+      {
+        "id": "still_valid",
+        "label": "Revoke is UI-only; on-chain credential remains fully valid"
+      }
+    ],
+    "predict_answer": "revoked_flag",
+    "predict_why": "AgentTrust models credentials as on-chain records an issuer can revoke. Verifiers must read credential state \u2014 not assume \u201caccount still exists \u21d2 valid.\u201d",
+    "act": "Open /dapps/agenttrust/ on Devnet. Issue a practice credential or inspect a recorded issue+revoke pair. Compare credential fields before and after revoke.",
+    "inspect": [
+      {
+        "id": "cred",
+        "label": "Credential account",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "issuer",
+        "label": "Issuer",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "status",
+        "label": "Status before/after",
+        "placeholder": "valid \u2192 revoked"
+      },
+      {
+        "id": "sig",
+        "label": "Issue / revoke evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why must a verifier read revoke state instead of trusting that the credential account still exists?",
+    "transfer": "Write one verifier checklist item that would reject a revoked credential."
   },
-  {
-   "do": "issue_credential type campus-scout is already taken for the lab wallet as agent. Fetch credential 9QXpx6HL… (seeds [\"credential\", agent, type]).",
-   "see": "revoked=true after the lab revoke. get_credential or a second revoke should fail with AlreadyRevoked.",
-   "ran": "issue 45a6vvB2Vdz5gc3XmzYiLdJT4SL9hL8xyW96Xi2rtgZ6j5tA4ygeaLCUyvfvJtqQbNKLW6ggemVh2Wg8RqCssjUt; get 3fzJ9BY5WNadV6WSFvo9Ch6mSc6b7Zycd5eodpos8hQJ2TnnbtVq9FxuDrjVvbwXMD2By9cJuTZpLDyygvLHkkae; revoke 5DgvGzp5UjE5g3aqJqAdpqnRbtigwjHBpoEhJ8QZXTDFJs77p8QZX7cZTNywgxH1HWnbzpG2uYKkGyLiBvLasiw."
+  "assessment": {
+    "purpose": "Independent criteria for AgentTrust elective: issue/revoke semantics.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Identifies credential account",
+        "question": "Can the student point to the credential record used for verification?",
+        "not_yet": "Confuses issuer wallet with credential state.",
+        "support": "Finds account after a prompt.",
+        "independent": "Records credential address and relevant fields.",
+        "misconception": "Issuer signature alone is the credential."
+      },
+      {
+        "id": "c2",
+        "title": "Explains revoke effect",
+        "question": "Can the student state what changes when revoke succeeds?",
+        "not_yet": "Says revoke deletes everything or changes nothing.",
+        "support": "Correct after inspecting before/after.",
+        "independent": "Describes revoked status (or equivalent) and verifier impact.",
+        "misconception": "Account existence implies validity forever."
+      },
+      {
+        "id": "c3",
+        "title": "Issuer authority awareness",
+        "question": "Does the student know who may revoke?",
+        "not_yet": "Anyone can revoke any credential.",
+        "support": "Names issuer after a prompt.",
+        "independent": "States issuer (or designated authority) constraint from evidence.",
+        "misconception": "Subject can always self-revoke without program rules."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Are platform proofs labelled separately from the student\u2019s attempt?",
+        "not_yet": "Mixes routes.",
+        "support": "Fixes after a prompt.",
+        "independent": "Labels routes correctly.",
+        "misconception": "Any Explorer link completes the elective."
+      }
+    ]
   }
- ],
- "diagram": "issuer --issue_credential--> credential PDA [\"credential\", agent, type] ; issuer --revoke_credential--> same PDA (revoked=true)",
- "accounts": [
-  "credential (seeds [\"credential\", agent, credential_type])"
- ],
- "instructions": [
-  "issue_credential",
-  "get_credential",
-  "revoke_credential"
- ],
- "innovation": "A minimal on-chain credential that an agent can present and an issuer can revoke.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch the lab credential and confirm revoked=true.",
-  "Explain why a 33-byte type fails before the program error.",
-  "Sketch UnauthorizedRevoke."
- ],
- "not_covered": "UnauthorizedRevoke was not exercised (needs a second wallet).",
- "path_order": 28,
- "path_stage": "apply",
- "difficulty": "Beginner",
- "time": "15 min",
- "objectives": [
-  "Issue a credential PDA",
-  "Revoke it",
-  "Name AlreadyRevoked"
- ],
- "prereqs": [
-  "qvac-marketplace"
- ],
- "concepts": [
-  "PDA seeds",
-  "credential",
-  "revoke"
- ],
- "build": "Anchor 1.1.2 program, declared at 2XxFdCMo3fKPHKLgvbyatMoWBteCcELkv9SDC2VYqBAe on devnet. IDL hand-derived and tx-confirmed.",
- "functional": "full"
 }
