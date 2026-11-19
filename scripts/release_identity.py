@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e5',
+    'title': 'Release E.5 — Homepage resume from last lesson on this device',
+    'summary': (
+      'The homepage #start front door shows a Continue panel when this browser has a saved '
+      'last lesson, with honest “not mastery” copy and links to path progress.'
+    ),
+    'changes': [
+      'start_section_html() adds #start-resume (hidden until localStorage sc-lesson-last exists).',
+      'landing.js fills Continue CTA + link to /lessons/path/.',
+      'Does not invent accounts; clearing site data still clears resume.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e4',
     'title': 'Release E.4 — Touched-only catalogue filter + Picassol recolour harness',
     'summary': (
