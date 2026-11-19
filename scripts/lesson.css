@@ -97,6 +97,11 @@ button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
 .finder-row button[aria-pressed=true]{color:#06110c;background:var(--a);border-color:var(--a)}
 .resume{margin:12px 0 0;padding:10px 12px;border-radius:10px;background:#0f3a2c;color:#d7ffef}
 .resume a{color:#fff;font-weight:800}
+.path-progress{margin:18px 0;padding:16px 18px;border:1px solid var(--line);border-radius:16px;background:var(--panel)}
+.path-progress .eyebrow{margin:0 0 4px}
+.path-progress h2{margin:0 0 8px}
+.path-progress .note{margin:0 0 12px}
+.path-progress .cta-row{margin:12px 0 0}
 .card[hidden],.path-stage[hidden],dt[hidden],dd[hidden],#lesson-empty[hidden],#resume[hidden]{display:none}
 pre.diagram,pre.sh{position:relative}
 .copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}

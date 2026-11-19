@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e1',
+    'title': 'Release E.1 — Device-local path progress panel',
+    'summary': (
+      'The learning path page shows foundations and core-path progress from this browser’s '
+      'saved workspace activity, with an honest “not mastery” notice and continue CTA.'
+    ),
+    'changes': [
+      '/lessons/path/ gains #path-progress filled from sc-lesson-loop / sc-lesson-progress.',
+      'Counts are “touched on this device,” not assessment completion.',
+      'Continue/Start CTA points at the first untouched foundations or core lesson.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-c23',
     'title': 'Release C.23 — Debug laboratory workspace labelling',
     'summary': (

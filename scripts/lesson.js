@@ -141,6 +141,64 @@
       }
     }
 
+    var pathProgress = document.getElementById('path-progress');
+    var pathProgressData = document.getElementById('path-progress-data');
+    var pathProgressBody = document.getElementById('path-progress-body');
+    if (pathProgress && pathProgressData && pathProgressBody) {
+      try {
+        var catalog = JSON.parse(pathProgressData.textContent || '{}');
+        var loops = load('sc-lesson-loop') || {};
+        var sectionProgress = load(PROGRESS) || {};
+        function isTouched(id) {
+          var loop = loops[id];
+          var sec = sectionProgress[id];
+          var marked = 0;
+          if (loop && loop.marked && typeof loop.marked === 'object') {
+            Object.keys(loop.marked).forEach(function (k) { if (loop.marked[k]) marked++; });
+          }
+          var loopTouched = loop && (
+            (loop.visited && loop.visited.length) ||
+            marked ||
+            loop.predictLocked ||
+            loop.predict
+          );
+          var secTouched = sec && sec.done && sec.done.length;
+          return !!(loopTouched || secTouched);
+        }
+        function countTouched(items) {
+          var touched = 0;
+          (items || []).forEach(function (item) {
+            if (isTouched(item.id)) touched++;
+          });
+          return touched;
+        }
+        var fItems = catalog.foundations || [];
+        var cItems = catalog.core || [];
+        var fN = countTouched(fItems);
+        var cN = countTouched(cItems);
+        pathProgress.hidden = false;
+        var html = '';
+        html += '<p><b>Foundations:</b> ' + fN + ' of ' + fItems.length + ' lessons touched on this device</p>';
+        html += '<p><b>Core staged path:</b> ' + cN + ' of ' + cItems.length + ' lessons touched on this device</p>';
+        function firstUntouched(items) {
+          for (var i = 0; i < items.length; i++) {
+            if (!isTouched(items[i].id)) return items[i];
+          }
+          return null;
+        }
+        var nextItem = firstUntouched(fItems) || firstUntouched(cItems);
+        if (nextItem) {
+          var label = (fN + cN) ? 'Continue with ' : 'Start with ';
+          html += '<p class="cta-row"><a class="btn" href="' + esc(nextItem.href) + '">' + label + esc(nextItem.title) + '</a></p>';
+        } else if (fN + cN > 0) {
+          html += '<p class="note">Every listed foundations and core path lesson has local activity on this device. Rubrics still decide mastery.</p>';
+        }
+        pathProgressBody.innerHTML = html;
+      } catch (err) {
+        pathProgress.hidden = true;
+      }
+    }
+
     var q = document.getElementById('lesson-q');
     var cards = [].slice.call(document.querySelectorAll('[data-lesson]'));
     if (q && cards.length) {
