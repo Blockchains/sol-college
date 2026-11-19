@@ -1,58 +1,149 @@
 {
- "title": "AgentEscrow",
- "summary": "Create and fund an SPL-token escrow, let the provider start and submit work, then confirm so the provider is paid (minus a 0.5% protocol fee).",
- "what": "AgentEscrow is an Anchor 0.30.1 rail for AI-agent payments: the payer creates and funds a vault PDA, the provider starts and submits work, and confirm_completion releases 99.5% of the amount to the provider and 0.5% to a treasury token account. This lesson covers that happy path. Dispute/timeout/verifier instructions exist in the program but are not in this IDL.",
- "app_note": "The page at /dapps/agentescrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The hosted IDL is a hand-derived subset; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/agentescrow (unique declare_id plus a vault-PDA bump fix so signed SPL transfers work).",
- "try_steps": [
-  {
-   "do": "Open /dapps/agentescrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow → fund_escrow → start_work → submit_work → confirm_completion with 1_000_000 units of the lab mint.",
-   "see": "Program 9bMFKrje…. Escrow 3X8DZn9u… should be Released; vault 4PPYT1tJ… should be empty; provider ATA gained 995_000, treasury ATA gained 5_000.",
-   "ran": "create_escrow 36H5JNsW…; fund_escrow 2VvQvDcx…; start_work 2GwpuTVq…; submit_work 5V25q1Av…; confirm_completion 2xdASUju…."
+  "title": "AgentEscrow",
+  "summary": "Create and fund an SPL-token escrow, let the provider start and submit work, then confirm so the provider is paid (minus a 0.5% protocol fee).",
+  "what": "AgentEscrow is an Anchor 0.30.1 rail for AI-agent payments: the payer creates and funds a vault PDA, the provider starts and submits work, and confirm_completion releases 99.5% of the amount to the provider and 0.5% to a treasury token account. This lesson covers that happy path. Dispute/timeout/verifier instructions exist in the program but are not in this IDL.",
+  "app_note": "The page at /dapps/agentescrow/ is the generic IDL-driven wallet console, with this devnet program id filled in. The hosted IDL is a hand-derived subset; discriminators were confirmed by the verifying transactions. The lab tree is branch sol-college-devnet of Blockchains/agentescrow (unique declare_id plus a vault-PDA bump fix so signed SPL transfers work).",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentescrow/, switch to Devnet, and connect a wallet. The lab already ran create_escrow \u2192 fund_escrow \u2192 start_work \u2192 submit_work \u2192 confirm_completion with 1_000_000 units of the lab mint.",
+      "see": "Program 9bMFKrje\u2026. Escrow 3X8DZn9u\u2026 should be Released; vault 4PPYT1tJ\u2026 should be empty; provider ATA gained 995_000, treasury ATA gained 5_000.",
+      "ran": "create_escrow 36H5JNsW\u2026; fund_escrow 2VvQvDcx\u2026; start_work 2GwpuTVq\u2026; submit_work 5V25q1Av\u2026; confirm_completion 2xdASUju\u2026."
+    },
+    {
+      "do": "A second create_escrow for the same payer should fail (seeds [payer, \"escrow\"] allow only one escrow PDA per payer).",
+      "see": "The account already exists (Simulation failed / account in use).",
+      "ran": "Rejected in tests/devnet/agentescrow.mjs (negative_recreate)."
+    }
+  ],
+  "diagram": "payer --create_escrow--> escrow [payer, \"escrow\"] ; payer --fund_escrow--> vault [escrow, \"vault\"] (SPL) ; provider --start_work/submit_work--> PendingReview ; payer --confirm_completion--> provider 99.5% + treasury 0.5%",
+  "accounts": [
+    "escrow (seeds [payer, \"escrow\"])",
+    "vault (SPL token account PDA, seeds [escrow, \"vault\"], authority = vault)",
+    "payer / provider / treasury associated token accounts of the escrow mint"
+  ],
+  "instructions": [
+    "create_escrow",
+    "fund_escrow",
+    "start_work",
+    "submit_work",
+    "confirm_completion",
+    "trigger_timeout / open_dispute / cast_vote / resolve_dispute / register_verifier exist in the program but are not in this IDL"
+  ],
+  "innovation": "A self-authorized vault PDA for SPL escrow between two agents, with a fixed 0.5% protocol fee on release.",
+  "frontend": "Generic Sol.College IDL console.",
+  "exercises": [
+    "Fetch the lab escrow and confirm state is Released.",
+    "Explain why the signed transfer must use the vault PDA bump, not escrow.bump.",
+    "Sketch how a second escrow for the same payer would need a different seed (for example a nonce)."
+  ],
+  "not_covered": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
+  "difficulty": "Intermediate",
+  "time": "25 min",
+  "functional": "full",
+  "objectives": [
+    "Create and fund an SPL-token escrow vault PDA for an agent job.",
+    "Explain the provider start \u2192 submit \u2192 payer confirm sequence.",
+    "Identify which accounts hold funds before and after confirmation."
+  ],
+  "prereqs": [
+    "A Phantom or Solflare wallet on Solana Devnet with practice SOL and the lesson mint if required.",
+    "Comfortable with [accounts and authority](/lessons/accounts-ownership/) or equivalent."
+  ],
+  "student_outcome": "Fund an agent escrow and confirm a provider submission so payout can proceed \u2014 and explain vault PDA signing.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "learning_loop": {
+    "objective": "Inspect a Released AgentEscrow \u2014 then explain why the vault PDA bump signs the payout transfer.",
+    "predict_question": "On confirm, the program moves SPL tokens out of the vault. Which bump must the signed transfer use?",
+    "predict_options": [
+      {
+        "id": "escrow_bump",
+        "label": "escrow.bump for the escrow account itself"
+      },
+      {
+        "id": "vault_bump",
+        "label": "The vault PDA bump (seeds for the token vault), not escrow.bump"
+      },
+      {
+        "id": "payer_sig",
+        "label": "Only the payer\u2019s wallet signature; no PDA signing needed"
+      }
+    ],
+    "predict_answer": "vault_bump",
+    "predict_why": "Funds sit in a vault PDA. The program must invoke_signed with the vault\u2019s seeds/bump. Using escrow.bump for the token transfer is the wrong authority.",
+    "act": "Open /dapps/agentescrow/ on Devnet. Fetch the lab escrow (Released). Prefer recorded create\u2192fund\u2192start\u2192submit\u2192confirm proofs. Note that a second create_escrow for the same payer should fail.",
+    "inspect": [
+      {
+        "id": "escrow",
+        "label": "Escrow status",
+        "placeholder": "Released / \u2026"
+      },
+      {
+        "id": "vault",
+        "label": "Vault PDA / mint",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "bump",
+        "label": "Bump used for transfer",
+        "placeholder": "vault / escrow / unsure"
+      },
+      {
+        "id": "sig",
+        "label": "Confirm evidence",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why can seeds [payer, \"escrow\"] allow only one escrow per payer unless a nonce is added?",
+    "transfer": "Name the account that holds tokens before confirm and which PDA signs to move them."
   },
-  {
-   "do": "A second create_escrow for the same payer should fail (seeds [payer, \"escrow\"] allow only one escrow PDA per payer).",
-   "see": "The account already exists (Simulation failed / account in use).",
-   "ran": "Rejected in tests/devnet/agentescrow.mjs (negative_recreate)."
+  "assessment": {
+    "purpose": "Independent elective criteria; no Picassol leakage.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Locates escrow and vault",
+        "question": "Can the student identify escrow vs vault accounts?",
+        "not_yet": "Confuses them.",
+        "support": "Separates after prompt.",
+        "independent": "Records both from evidence.",
+        "misconception": "Escrow account is the token vault."
+      },
+      {
+        "id": "c2",
+        "title": "Explains vault PDA bump",
+        "question": "Can the student state which bump signs the payout transfer?",
+        "not_yet": "Guesses escrow.bump.",
+        "support": "Correct after exercise.",
+        "independent": "States vault PDA bump independently.",
+        "misconception": "Payer signature alone moves vault tokens."
+      },
+      {
+        "id": "c3",
+        "title": "Scopes disputes out",
+        "question": "Does the student avoid claiming dispute/vote flows from this lesson?",
+        "not_yet": "Claims full dispute suite.",
+        "support": "Scopes after prompt.",
+        "independent": "Notes not_covered disputes.",
+        "misconception": "Confirm proves dispute resolution."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Lab Released status is my live confirm."
+      }
+    ]
   }
- ],
- "diagram": "payer --create_escrow--> escrow [payer, \"escrow\"] ; payer --fund_escrow--> vault [escrow, \"vault\"] (SPL) ; provider --start_work/submit_work--> PendingReview ; payer --confirm_completion--> provider 99.5% + treasury 0.5%",
- "accounts": [
-  "escrow (seeds [payer, \"escrow\"])",
-  "vault (SPL token account PDA, seeds [escrow, \"vault\"], authority = vault)",
-  "payer / provider / treasury associated token accounts of the escrow mint"
- ],
- "instructions": [
-  "create_escrow",
-  "fund_escrow",
-  "start_work",
-  "submit_work",
-  "confirm_completion",
-  "trigger_timeout / open_dispute / cast_vote / resolve_dispute / register_verifier exist in the program but are not in this IDL"
- ],
- "innovation": "A self-authorized vault PDA for SPL escrow between two agents, with a fixed 0.5% protocol fee on release.",
- "frontend": "Generic Sol.College IDL console.",
- "exercises": [
-  "Fetch the lab escrow and confirm state is Released.",
-  "Explain why the signed transfer must use the vault PDA bump, not escrow.bump.",
-  "Sketch how a second escrow for the same payer would need a different seed (for example a nonce)."
- ],
- "not_covered": "trigger_timeout, open_dispute, cast_vote, resolve_dispute, and verifier registration were not exercised. The hosted IDL is a hand-derived subset confirmed by the verifying transactions.",
- "difficulty": "Intermediate",
- "time": "25 min",
- "functional": "full",
- "objectives": [
-  "Create and fund an SPL-token escrow vault PDA for an agent job.",
-  "Explain the provider start → submit → payer confirm sequence.",
-  "Identify which accounts hold funds before and after confirmation."
- ],
- "prereqs": [
-  "A Phantom or Solflare wallet on Solana Devnet with practice SOL and the lesson mint if required.",
-  "Comfortable with [accounts and authority](/lessons/accounts-ownership/) or equivalent."
- ],
- "student_outcome": "Fund an agent escrow and confirm a provider submission so payout can proceed.",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "track": "elective",
- "delivery": "Browser practice + evidence inspection"
 }

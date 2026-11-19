@@ -1,55 +1,146 @@
 {
- "title": "Allowance",
- "summary": "Open an owner vault, fund it, grant a session to an agent, and let that agent pay a listed merchant within per-request and daily caps.",
- "what": "Allowance is an Anchor 0.32.1 spending firewall for x402-style agent payments. init_vault creates a PDA (seeds [\"vault\", owner]) and its ATA. deposit/withdraw move tokens under the owner. create_session binds an agent key to caps and a merchant allow-list. agent_pay, signed by the session agent, pays a listed merchant from the vault ATA; unlisted merchants require 8004/ATOM reputation accounts.",
- "app_note": "The page at /dapps/allowance-solana/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/allowance-solana. The lab only changed declare_id to a unique lab program.",
- "try_steps": [
-  {
-   "do": "Open /dapps/allowance-solana/, switch to Devnet, and connect a wallet. The lab already ran init_vault, deposit, create_session, a rejected over-cap agent_pay, a 1_000_000 listed-merchant payment, and withdraw.",
-   "see": "Program EMQ41VCu…. Vault HBqti9tX… should have a 0-token ATA after withdraw; merchant Gg25WLuS… received 1_000_000.",
-   "ran": "init_vault aUy7KApm…; deposit 2VP1LKUL…; create_session 47utkXeH…; over-cap rejected OverRequestCap; agent_pay 4yvW5qbW…; withdraw zePTz5pC…"
+  "title": "Allowance",
+  "summary": "Open an owner vault, fund it, grant a session to an agent, and let that agent pay a listed merchant within per-request and daily caps.",
+  "what": "Allowance is an Anchor 0.32.1 spending firewall for x402-style agent payments. init_vault creates a PDA (seeds [\"vault\", owner]) and its ATA. deposit/withdraw move tokens under the owner. create_session binds an agent key to caps and a merchant allow-list. agent_pay, signed by the session agent, pays a listed merchant from the vault ATA; unlisted merchants require 8004/ATOM reputation accounts.",
+  "app_note": "The page at /dapps/allowance-solana/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/allowance-solana. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/allowance-solana/, switch to Devnet, and connect a wallet. The lab already ran init_vault, deposit, create_session, a rejected over-cap agent_pay, a 1_000_000 listed-merchant payment, and withdraw.",
+      "see": "Program EMQ41VCu\u2026. Vault HBqti9tX\u2026 should have a 0-token ATA after withdraw; merchant Gg25WLuS\u2026 received 1_000_000.",
+      "ran": "init_vault aUy7KApm\u2026; deposit 2VP1LKUL\u2026; create_session 47utkXeH\u2026; over-cap rejected OverRequestCap; agent_pay 4yvW5qbW\u2026; withdraw zePTz5pC\u2026"
+    }
+  ],
+  "diagram": "owner --init_vault/deposit--> vault PDA+ATA; owner --create_session--> session(agent, caps, merchants); agent --agent_pay--> merchant ATA; owner --withdraw--> owner ATA.",
+  "accounts": [
+    "vault PDA seeds [\"vault\", owner]",
+    "session PDA seeds [\"session\", vault, agent]",
+    "vault ATA (authority = vault)"
+  ],
+  "instructions": [
+    "init_vault",
+    "deposit",
+    "create_session",
+    "agent_pay",
+    "withdraw",
+    "freeze_all / pending approvals (not exercised)"
+  ],
+  "innovation": "Payments leave the vault only through agent_pay, which enforces per-request, daily, and per-merchant caps (or a one-time approved pending voucher) and optionally a 8004 reputation gate for unlisted merchants.",
+  "frontend": "Generic IDL console at /dapps/allowance-solana/. Optional agent_pay accounts (registry, ATOM, pending) should be passed as the program id when unused.",
+  "exercises": [
+    "Reproduce OverRequestCap with amount > per_request_cap.",
+    "Name the seeds of the vault and session PDAs."
+  ],
+  "not_covered": [
+    "Unlisted-merchant reputation path",
+    "request_approval / approve_pending vouchers"
+  ],
+  "difficulty": "Intermediate",
+  "time": "25 min",
+  "functional": "full",
+  "objectives": [
+    "Explain what an allowance account authorises.",
+    "Perform one allowance set or spend on Devnet.",
+    "Show how a spend beyond the limit is rejected (or cite recorded rejection)."
+  ],
+  "prereqs": [
+    "A Devnet wallet with practice funds.",
+    "Familiarity with signer vs owned accounts."
+  ],
+  "student_outcome": "Set or use an allowance and verify spending limits on-chain (OverRequestCap).",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "learning_loop": {
+    "objective": "Inspect vault + session \u2014 then predict OverRequestCap when amount exceeds per_request_cap.",
+    "predict_question": "A session agent requests a payment with amount greater than per_request_cap. What should happen?",
+    "predict_options": [
+      {
+        "id": "pay",
+        "label": "Payment succeeds; caps are advisory"
+      },
+      {
+        "id": "over",
+        "label": "Request fails with OverRequestCap (or equivalent)"
+      },
+      {
+        "id": "partial",
+        "label": "Payment succeeds for the capped amount automatically"
+      }
+    ],
+    "predict_answer": "over",
+    "predict_why": "Allowance sessions enforce per_request_cap on-chain. Over-cap requests fail rather than silently paying a reduced amount.",
+    "act": "Open /dapps/allowance-solana/ on Devnet. Prefer recorded init_vault \u2192 fund \u2192 grant session \u2192 pay proofs. Reproduce or explain OverRequestCap; name vault and session PDA seeds.",
+    "inspect": [
+      {
+        "id": "vault",
+        "label": "Vault PDA",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "session",
+        "label": "Session / per_request_cap",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "reject",
+        "label": "OverRequestCap",
+        "placeholder": "observed / explained"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / live"
+      }
+    ],
+    "explain_question": "Why should per_request_cap be enforced by the program rather than only by the agent client?",
+    "transfer": "Name vault and session seeds, and one path not covered (unlisted-merchant / approve_pending)."
+  },
+  "assessment": {
+    "purpose": "Independent elective criteria; no Picassol leakage.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Names vault and session PDAs",
+        "question": "Can the student identify vault/session accounts or seeds?",
+        "not_yet": "No.",
+        "support": "Names after prompt.",
+        "independent": "Names seeds/accounts from evidence.",
+        "misconception": "Owner wallet is the session account."
+      },
+      {
+        "id": "c2",
+        "title": "Explains OverRequestCap",
+        "question": "Can the student predict over-cap rejection?",
+        "not_yet": "Assumes partial pay.",
+        "support": "Correct after exercise.",
+        "independent": "States OverRequestCap independently.",
+        "misconception": "Caps are UI-only."
+      },
+      {
+        "id": "c3",
+        "title": "Scopes voucher paths out",
+        "question": "Notes approve_pending not covered?",
+        "not_yet": "Claims voucher suite.",
+        "support": "Scopes after prompt.",
+        "independent": "Notes not_covered.",
+        "misconception": "Session pay proves approval vouchers."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Lab session is my agent key."
+      }
+    ]
   }
- ],
- "diagram": "owner --init_vault/deposit--> vault PDA+ATA; owner --create_session--> session(agent, caps, merchants); agent --agent_pay--> merchant ATA; owner --withdraw--> owner ATA.",
- "accounts": [
-  "vault PDA seeds [\"vault\", owner]",
-  "session PDA seeds [\"session\", vault, agent]",
-  "vault ATA (authority = vault)"
- ],
- "instructions": [
-  "init_vault",
-  "deposit",
-  "create_session",
-  "agent_pay",
-  "withdraw",
-  "freeze_all / pending approvals (not exercised)"
- ],
- "innovation": "Payments leave the vault only through agent_pay, which enforces per-request, daily, and per-merchant caps (or a one-time approved pending voucher) and optionally a 8004 reputation gate for unlisted merchants.",
- "frontend": "Generic IDL console at /dapps/allowance-solana/. Optional agent_pay accounts (registry, ATOM, pending) should be passed as the program id when unused.",
- "exercises": [
-  "Reproduce OverRequestCap with amount > per_request_cap.",
-  "Name the seeds of the vault and session PDAs."
- ],
- "not_covered": [
-  "Unlisted-merchant reputation path",
-  "request_approval / approve_pending vouchers"
- ],
- "difficulty": "Intermediate",
- "time": "25 min",
- "functional": "full",
- "objectives": [
-  "Explain what an allowance account authorises.",
-  "Perform one allowance set or spend on Devnet.",
-  "Show how a spend beyond the limit is rejected (or cite recorded rejection)."
- ],
- "prereqs": [
-  "A Devnet wallet with practice funds.",
-  "Familiarity with signer vs owned accounts."
- ],
- "student_outcome": "Set or use an allowance and verify spending limits on-chain.",
- "content_version": "2026-11-18.1",
- "content_review": "2026-11-18",
- "content_owner": "Sol.College curriculum",
- "track": "elective",
- "delivery": "Browser practice + evidence inspection"
 }
