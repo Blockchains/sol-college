@@ -121,6 +121,8 @@ pre.diagram,pre.sh{position:relative}
 .lesson .status,.lesson .limit{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;max-width:68ch}
 .card.ready-preview{border-style:dashed}
 .card.ready-challenge{border-color:#6a4a28}
+.card.is-touched{border-color:color-mix(in srgb, var(--a) 45%, var(--line))}
+.card .card-touch{margin:0 0 8px;color:var(--a)}
 .eyebrow.status-guided{color:var(--a)}
 .eyebrow.status-challenge{color:#ffd7a8}
 .eyebrow.status-preview{color:#c9c6e8}

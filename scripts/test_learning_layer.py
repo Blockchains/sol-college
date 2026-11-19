@@ -73,6 +73,17 @@ class LearningLayerHtml(unittest.TestCase):
         # Used on both catalogue and path pages
         self.assertGreaterEqual(core.count('path_progress_html()'), 2)
 
+    def test_card_touch_marks_from_loop(self):
+        root = os.path.join(os.path.dirname(__file__), '..')
+        js = open(os.path.join(root, 'scripts/lesson.js'), encoding='utf-8').read()
+        css = open(os.path.join(root, 'scripts/lesson.css'), encoding='utf-8').read()
+        self.assertIn("load('sc-lesson-loop')", js)
+        self.assertIn('Touched on this device', js)
+        self.assertIn('is-touched', js)
+        self.assertIn('card-touch', js)
+        self.assertIn('.card.is-touched', css)
+        self.assertIn('.card .card-touch', css)
+
 
 if __name__ == '__main__':
     unittest.main()
