@@ -19,6 +19,19 @@ E = lambda s: html.escape(str(s), quote=True)
 # shipping learner-facing changes. Do not put secrets or infrastructure here.
 RELEASE_NOTES = [
   {
+    'id': '2026-11-19-release-e6',
+    'title': 'Release E.6 — Export local progress JSON',
+    'summary': (
+      'Learners can download browser-local progress as JSON from the path-progress panel, '
+      'with an explicit not-mastery note. Homepage Continue CTA stays short on mobile.'
+    ),
+    'changes': [
+      'Download local progress (JSON) exports sc-lesson-last / progress / loop.',
+      'Export payload labels itself as device-local, not assessment completion.',
+      'Homepage #start Continue button text shortened to “Continue”.',
+    ],
+  },
+  {
     'id': '2026-11-19-release-e5',
     'title': 'Release E.5 — Homepage resume from last lesson on this device',
     'summary': (
