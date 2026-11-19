@@ -104,6 +104,10 @@ button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
 .path-progress .cta-row{margin:12px 0 0}
 .path-progress-actions{margin:14px 0 0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .path-progress-import-label{cursor:pointer;display:inline-flex;align-items:center;margin:0}
+.stuck-traps{margin:12px 0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+.stuck-traps .eyebrow{margin:0 0 4px}
+.stuck-traps ul{margin:8px 0 0;padding-left:1.2em}
+.stuck-traps li{margin:6px 0}
 .card[hidden],.path-stage[hidden],dt[hidden],dd[hidden],#lesson-empty[hidden],#resume[hidden]{display:none}
 pre.diagram,pre.sh{position:relative}
 .copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}

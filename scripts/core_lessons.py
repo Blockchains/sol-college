@@ -320,7 +320,8 @@ def render(x,L,n):
       L['learning_loop'], x['app'], sigs,
       **ws_kwargs,
     ))
-    h.append(_ll.stuck_html())
+    _mis = (L.get('assessment') or {}).get('criteria') or []
+    h.append(_ll.stuck_html(_mis))
     h.append('<p class=note id=reference-layers>Reference layers below stay available. The workspace above is the focused student path.</p>')
   h.append(f'<h2 id=what><span class=num>1</span>What the app does</h2><p>{md(L["what"])}</p>')
   h.append(f'<p><a class=btn href="{E(x["app"])}">Open the live app (devnet)</a> <a class="btn ghost" href="{E(x["fork"])}/tree/{E(x["commit"])}">Source @ {E(x["commit"][:7])}</a></p>')
