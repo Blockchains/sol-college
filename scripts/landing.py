@@ -798,6 +798,9 @@ def write_home(site='site'):
         'FINDINGS': _findings.landing_cards(sec_findings) + findings_html(apps),
         'START_LESSON': START_LESSON,
         'START_SECTION': _learning_layer_start(),
+        'COMMUNITY_SECTION': __import__('learning_layer').community_section_html(
+            waitlist=WAITLIST, commit=COMMIT, project=PROJECT, findings='/findings/',
+        ),
         'WAITLIST': WAITLIST,
         'WAITLIST_DEV': WAITLIST_DEV,
         'WAITLIST_SEC': WAITLIST_SEC,

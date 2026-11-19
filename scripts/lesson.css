@@ -108,6 +108,15 @@ button.btn.ghost{background:none;color:#fff;border:1px solid var(--line)}
 .stuck-traps .eyebrow{margin:0 0 4px}
 .stuck-traps ul{margin:8px 0 0;padding-left:1.2em}
 .stuck-traps li{margin:6px 0}
+.community-band{margin:22px 0;padding:18px 0}
+.community-band .inner{max-width:100%}
+.community-band .start-routes,.community-routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0}
+.community-band .start-route{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--panel);text-decoration:none;color:inherit;min-height:0}
+.community-band .start-route:hover{border-color:var(--a)}
+.community-band .start-route b{color:#fff}
+.community-band .start-route span{color:var(--mut);font-size:.95rem}
+.community-band .start-route em{margin-top:auto;font-style:normal;font-weight:750;color:var(--a);font-size:.9rem}
+.community-band .honest{margin:12px 0 0;color:var(--mut);font-size:.95rem}
 .card[hidden],.path-stage[hidden],dt[hidden],dd[hidden],#lesson-empty[hidden],#resume[hidden]{display:none}
 pre.diagram,pre.sh{position:relative}
 .copy{position:absolute;top:8px;right:8px;font:700 12px/1 system-ui,sans-serif;background:#1c1838;color:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 8px;cursor:pointer}
