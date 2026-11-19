@@ -1,404 +1,501 @@
 {
- "title": "Barn / OpenGrants: grant programs with milestone reviews and capped payouts",
- "summary": "A sponsor runs a grant program and awards a grant to a developer's project; the developer adds milestones, submits them for review, and the sponsor accepts and pays each one, never beyond the grant.",
- "what": "Barn (OpenGrants) puts the grant workflow on chain. Every wallet creates one profile with a username. A profile approved as a **sponsor** can create grant programs and award one grant per project, in SOL or an SPL token, with an approved amount. A **developer** profile creates projects, adds milestones with an amount against their grant, and submits each for review. The sponsor sends it back, rejects it or accepts it, and **settles** an accepted milestone, paying it from the sponsor's own wallet. The program keeps a running `paid_out` and refuses any payment that would exceed the grant. All records are PDAs numbered by a counter on their parent, and everything human-readable lives in a JSON file at each account's `uri`.",
- "app_note": "The fork's own Next.js 14 app as a static export with this devnet program ID. Per-account pages are `/project/view/?a=<address>` (and likewise for programs and profiles) because pages for accounts created later can't be pre-rendered. Sample metadata files for the URI fields are served at `/dapps/barn/meta/` (sponsor.json, dev.json, program.json, project.json, grant.json, milestone.json). Script: [tests/devnet/patches/barn.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/barn.py). You need **two wallets**, one sponsor and one developer.",
- "try_steps": [
-  {
-   "do": "Open [the app](/dapps/barn/) with wallet 1 (sponsor). **My Profile** → **Create User Profile**: a new username and the URI `https://sol.college/dapps/barn/meta/sponsor.json`.",
-   "see": "A `create_user` transaction; your profile shows Developer (every profile starts as a dev).",
-   "ran": [
+  "title": "Barn / OpenGrants: grant programs with milestone reviews and capped payouts",
+  "summary": "A sponsor runs a grant program and awards a grant to a developer's project; the developer adds milestones, submits them for review, and the sponsor accepts and pays each one, never beyond the grant.",
+  "what": "Barn (OpenGrants) puts the grant workflow on chain. Every wallet creates one profile with a username. A profile approved as a **sponsor** can create grant programs and award one grant per project, in SOL or an SPL token, with an approved amount. A **developer** profile creates projects, adds milestones with an amount against their grant, and submits each for review. The sponsor sends it back, rejects it or accepts it, and **settles** an accepted milestone, paying it from the sponsor's own wallet. The program keeps a running `paid_out` and refuses any payment that would exceed the grant. All records are PDAs numbered by a counter on their parent, and everything human-readable lives in a JSON file at each account's `uri`.",
+  "app_note": "The fork's own Next.js 14 app as a static export with this devnet program ID. Per-account pages are `/project/view/?a=<address>` (and likewise for programs and profiles) because pages for accounts created later can't be pre-rendered. Sample metadata files for the URI fields are served at `/dapps/barn/meta/` (sponsor.json, dev.json, program.json, project.json, grant.json, milestone.json). Script: [tests/devnet/patches/barn.py](https://github.com/Blockchains/sol-college/blob/main/tests/devnet/patches/barn.py). You need **two wallets**, one sponsor and one developer.",
+  "try_steps": [
+    {
+      "do": "Open [the app](/dapps/barn/) with wallet 1 (sponsor). **My Profile** \u2192 **Create User Profile**: a new username and the URI `https://sol.college/dapps/barn/meta/sponsor.json`.",
+      "see": "A `create_user` transaction; your profile shows Developer (every profile starts as a dev).",
+      "ran": [
+        [
+          "Sponsor wallet m4Ac\u2026: Create User Profile",
+          "38pUDtLrctRASVq3AWAGSYNRh6tQFWuXXFMmkgcGr1asg6xx4ygySnX6gwXwQN4oyiHngqb9gPZj2UDhAryPWMxQ"
+        ]
+      ]
+    },
+    {
+      "do": "**Admin** \u2192 **Approve Sponsor**, paste your own wallet address.",
+      "see": "An `approve_sponsor` transaction; the profile now says Sponsor. Any wallet can do this for any profile with no projects yet.",
+      "ran": [
+        [
+          "Admin, Approve Sponsor with its own address",
+          "2ttqxSt2Dvz7iuF9eKZHUHM6wSJ12jJsB9LJBA5HdxAWyQkrCF1RKVf9SrEfiwNL1nxaTiV6cTJ7o3D5pvCBmK2b"
+        ]
+      ]
+    },
+    {
+      "do": "**My Profile** \u2192 **Add Grant Program** with `\u2026/meta/program.json`.",
+      "see": "An `add_grant_program` transaction. The count may read 0 until you reload.",
+      "ran": [
+        [
+          "Add Grant Program (3rZt\u2026eAPP)",
+          "3GY4YArUhenJ2zvP5a6aNmto5JDGZ1DvdHiiNKFZMcGZQWEwtg1FTv92WfxXetC5DY2S6HCtAzodZKocVS9mgefV"
+        ]
+      ]
+    },
+    {
+      "do": "Switch to wallet 2 (developer): **Create User Profile** (`\u2026/meta/dev.json`), then **Add New Project** (`\u2026/meta/project.json`). Copy the project's address.",
+      "see": "`create_user` and `add_project` transactions.",
+      "ran": [
+        [
+          "Developer wallet GpUq\u2026: Create User Profile",
+          "3pvMU4v6PES4xxkWtrzYrA6L1JU457izxS9T9FdQJQJ2e6We7uLW3e4p7AwkibzdGA5uCiwNRjysomrRat8x14sz"
+        ],
+        [
+          "Add New Project (HUAC\u202618kK1)",
+          "5vFocxjhBzSHDPkXevNZevrNDzCymYkY7nFnq8DTWUYAMK9kuJ29AnyZWvayLieenaNeBs2WLb2uLcg2DJrBGsAb"
+        ]
+      ]
+    },
+    {
+      "do": "Wallet 1: open your grant program page, **Award Grant**: amount `0.01`, the project address, `\u2026/meta/grant.json`.",
+      "see": "An `award_grant` transaction; the project now has a 0.01 SOL grant.",
+      "ran": [
+        [
+          "Award Grant, 0.01 SOL to that project",
+          "4SCi6F7dcUDSoWVnR1wi6rybFyiPXzRrdkLnxCcj2ELKEuS4PTs3ZToWFNKrPnMpf6oUmEHpxPJ6tKemAK2aZpe"
+        ]
+      ]
+    },
+    {
+      "do": "Wallet 2: on the project page **Add New Milestone** (`0.005`, `\u2026/meta/milestone.json`), then **Review**.",
+      "see": "`add_grant_milestone` and `review_grant_milestone` transactions; the milestone is In Review.",
+      "ran": [
+        [
+          "Add New Milestone, 0.005 SOL",
+          "2dPcyzQTa8mzFUnt69bUU2hK7wBHQn1PUzeinMaUGTBnwvxRqe95WpSNP3PY3dvbShyv7beuex4bQZephJtnbXj9"
+        ],
+        [
+          "Review",
+          "2j1BemJEbjZaAh3smTmQxSMbCEZFYcfzmFS5NTrihAMaA8nDc1TWE6oKKZU3nWUkjrNKvXvfovzqP5XhpDKJP6h6"
+        ]
+      ]
+    },
+    {
+      "do": "Wallet 1: on the project page press **Accept**, then **Settle Payment**.",
+      "see": "`accept_grant_milestone`, then `settle_grant_milestone` moving 0.005 SOL from wallet 1 to wallet 2; the grant reads 0.005 / 0.01 SOL and the milestone Paid.",
+      "ran": [
+        [
+          "Accept",
+          "Kswm44F4J1tQxr7wTuQmMA9ChFLMTqKvyn82dL3URUXv5HEnoCfmAPxGHWGvJ6v2sEJuayNJA6skkRVrwNSANum"
+        ],
+        [
+          "Settle Payment; the page then read 0.005 / 0.01 SOL and the milestone as paid",
+          "3PUJ7ZJmMGpRfzCE4wZgLzWP3zXo4WbANsFNHJA1b8Dw7h64SQNu4pEenvyTxtjT3PGewAFYqzbd3CWDS2e22A45"
+        ]
+      ]
+    }
+  ],
+  "diagram": "wallet \u2500 create_user(seed, uri) \u2500\u25b6 Authority PDA [wallet]  \u2500\u2500points to\u2500\u2500\u25b6 Profile PDA [\"profile\", seed]  (sponsor: false, count)\nanyone \u2500 approve_sponsor() \u2500\u25b6 profile.sponsor = true   (only while profile.count == 0)\nsponsor \u2500 add_grant_program(uri) \u2500\u25b6 GrantProgram PDA [\"grant-program\", profile, profile.count]\ndev \u2500\u2500\u2500\u2500\u2500 add_project(uri) \u2500\u2500\u2500\u2500\u2500\u2500\u25b6 Project PDA [\"project\", profile, profile.count]   grant: None\nsponsor \u2500 award_grant(uri, approved_amount) \u2500\u25b6 Grant PDA [\"grant\", grant_program, program.count]  payment_mint, approved_amount, paid_out = 0\ndev \u2500\u2500\u2500\u2500\u2500 add_grant_milestone(uri, amount) \u2500\u25b6 GrantMilestone PDA [\"grant-milestone\", grant, grant.count]  InProgress\ndev \u2500\u2500\u2500\u2500\u2500 review \u2500\u25b6 InReview      sponsor \u2500 revise \u2500\u25b6 InProgress | accept \u2500\u25b6 Accepted | reject \u2500\u25b6 (see the bug)\nsponsor \u2500 settle_grant_milestone() \u2500\u25b6 paid_out + amount \u2264 approved_amount ? pay sponsor \u2192 dev, Paid : ApprovedAmountExceeded",
+  "accounts": [
     [
-     "Sponsor wallet m4Ac…: Create User Profile",
-     "38pUDtLrctRASVq3AWAGSYNRh6tQFWuXXFMmkgcGr1asg6xx4ygySnX6gwXwQN4oyiHngqb9gPZj2UDhAryPWMxQ"
-    ]
-   ]
-  },
-  {
-   "do": "**Admin** → **Approve Sponsor**, paste your own wallet address.",
-   "see": "An `approve_sponsor` transaction; the profile now says Sponsor. Any wallet can do this for any profile with no projects yet.",
-   "ran": [
-    [
-     "Admin, Approve Sponsor with its own address",
-     "2ttqxSt2Dvz7iuF9eKZHUHM6wSJ12jJsB9LJBA5HdxAWyQkrCF1RKVf9SrEfiwNL1nxaTiV6cTJ7o3D5pvCBmK2b"
-    ]
-   ]
-  },
-  {
-   "do": "**My Profile** → **Add Grant Program** with `…/meta/program.json`.",
-   "see": "An `add_grant_program` transaction. The count may read 0 until you reload.",
-   "ran": [
-    [
-     "Add Grant Program (3rZt…eAPP)",
-     "3GY4YArUhenJ2zvP5a6aNmto5JDGZ1DvdHiiNKFZMcGZQWEwtg1FTv92WfxXetC5DY2S6HCtAzodZKocVS9mgefV"
-    ]
-   ]
-  },
-  {
-   "do": "Switch to wallet 2 (developer): **Create User Profile** (`…/meta/dev.json`), then **Add New Project** (`…/meta/project.json`). Copy the project's address.",
-   "see": "`create_user` and `add_project` transactions.",
-   "ran": [
-    [
-     "Developer wallet GpUq…: Create User Profile",
-     "3pvMU4v6PES4xxkWtrzYrA6L1JU457izxS9T9FdQJQJ2e6We7uLW3e4p7AwkibzdGA5uCiwNRjysomrRat8x14sz"
+      "Authority",
+      "PDA `[wallet]`",
+      "Which profile this wallet controls (one per wallet, ever)"
     ],
     [
-     "Add New Project (HUAC…18kK1)",
-     "5vFocxjhBzSHDPkXevNZevrNDzCymYkY7nFnq8DTWUYAMK9kuJ29AnyZWvayLieenaNeBs2WLb2uLcg2DJrBGsAb"
-    ]
-   ]
-  },
-  {
-   "do": "Wallet 1: open your grant program page, **Award Grant**: amount `0.01`, the project address, `…/meta/grant.json`.",
-   "see": "An `award_grant` transaction; the project now has a 0.01 SOL grant.",
-   "ran": [
-    [
-     "Award Grant, 0.01 SOL to that project",
-     "4SCi6F7dcUDSoWVnR1wi6rybFyiPXzRrdkLnxCcj2ELKEuS4PTs3ZToWFNKrPnMpf6oUmEHpxPJ6tKemAK2aZpe"
-    ]
-   ]
-  },
-  {
-   "do": "Wallet 2: on the project page **Add New Milestone** (`0.005`, `…/meta/milestone.json`), then **Review**.",
-   "see": "`add_grant_milestone` and `review_grant_milestone` transactions; the milestone is In Review.",
-   "ran": [
-    [
-     "Add New Milestone, 0.005 SOL",
-     "2dPcyzQTa8mzFUnt69bUU2hK7wBHQn1PUzeinMaUGTBnwvxRqe95WpSNP3PY3dvbShyv7beuex4bQZephJtnbXj9"
+      "Profile",
+      "PDA `[\"profile\", username]`",
+      "Sponsor flag, counter of programs or projects, metadata URI"
     ],
     [
-     "Review",
-     "2j1BemJEbjZaAh3smTmQxSMbCEZFYcfzmFS5NTrihAMaA8nDc1TWE6oKKZU3nWUkjrNKvXvfovzqP5XhpDKJP6h6"
-    ]
-   ]
-  },
-  {
-   "do": "Wallet 1: on the project page press **Accept**, then **Settle Payment**.",
-   "see": "`accept_grant_milestone`, then `settle_grant_milestone` moving 0.005 SOL from wallet 1 to wallet 2; the grant reads 0.005 / 0.01 SOL and the milestone Paid.",
-   "ran": [
-    [
-     "Accept",
-     "Kswm44F4J1tQxr7wTuQmMA9ChFLMTqKvyn82dL3URUXv5HEnoCfmAPxGHWGvJ6v2sEJuayNJA6skkRVrwNSANum"
+      "GrantProgram",
+      "PDA `[\"grant-program\", profile, n]`",
+      "Sponsor profile, grants awarded"
     ],
     [
-     "Settle Payment; the page then read 0.005 / 0.01 SOL and the milestone as paid",
-     "3PUJ7ZJmMGpRfzCE4wZgLzWP3zXo4WbANsFNHJA1b8Dw7h64SQNu4pEenvyTxtjT3PGewAFYqzbd3CWDS2e22A45"
+      "Project",
+      "PDA `[\"project\", profile, n]`",
+      "Developer profile, the one grant it may receive"
+    ],
+    [
+      "Grant",
+      "PDA `[\"grant\", grant_program, n]`",
+      "Project, payment mint, approved amount, paid out, milestone count"
+    ],
+    [
+      "GrantMilestone",
+      "PDA `[\"grant-milestone\", grant, n]`",
+      "Amount, state (InProgress, InReview, Rejected, Accepted, Paid)"
     ]
-   ]
+  ],
+  "instructions": [
+    {
+      "name": "`create_user` and `approve_sponsor`: identities and roles",
+      "refs": [
+        {
+          "path": "protocol/programs/barn/src/contexts/create_user.rs",
+          "a": 4,
+          "b": 49
+        },
+        {
+          "path": "protocol/programs/barn/src/contexts/approve_sponsor.rs",
+          "a": 4,
+          "b": 31
+        },
+        {
+          "path": "protocol/programs/barn/src/state/mod.rs",
+          "a": 12,
+          "b": 31,
+          "note": "Profile"
+        }
+      ],
+      "steps": [
+        "Two PDAs: one at the wallet's own address bytes (`seeds=[signer]`), so a wallet can only ever have one; one at `[\"profile\", username]`, so usernames are unique (a taken one fails with account already in use, in Proof).",
+        "`approve_sponsor` has an `admin: Signer` that nothing checks: any wallet can approve any profile, as long as that profile has no projects yet (`ProfileCannotBeSponsor`). Our script did it with an unrelated wallet; in the app, the sponsor approved itself."
+      ]
+    },
+    {
+      "name": "Programs and projects: role-gated, counter-numbered",
+      "refs": [
+        {
+          "path": "protocol/programs/barn/src/contexts/add_grant_program.rs",
+          "a": 4,
+          "b": 49
+        },
+        {
+          "path": "protocol/programs/barn/src/contexts/add_project.rs",
+          "a": 25,
+          "b": 32
+        }
+      ],
+      "steps": [
+        "`constraint=profile.sponsor` / `!profile.sponsor` gates who may call (`NotASponsor`, `NotADev`, in Proof).",
+        "The new account's address includes `profile.count` (little-endian u32), and `count` is incremented in the same instruction, so addresses are 0, 1, 2\u2026 per profile without collisions."
+      ]
+    },
+    {
+      "name": "`award_grant`: one grant per project",
+      "refs": [
+        {
+          "path": "protocol/programs/barn/src/contexts/award_grant.rs",
+          "a": 5,
+          "b": 76
+        },
+        {
+          "path": "protocol/programs/barn/src/state/mod.rs",
+          "a": 137,
+          "b": 158,
+          "note": "Project.receive_grant"
+        }
+      ],
+      "steps": [
+        "The grant program must be the signer's own (its seeds include `profile`).",
+        "`receive_grant` requires `project.grant` to be `None` (`GrantAlreadyAwarded`, in Proof).",
+        "The payment mint is stored; the app always uses the native mint (wrapped SOL), i.e. SOL."
+      ]
+    },
+    {
+      "name": "Milestones: a small state machine",
+      "refs": [
+        {
+          "path": "protocol/programs/barn/src/contexts/add_grant_milestone.rs",
+          "a": 4,
+          "b": 69
+        },
+        {
+          "path": "protocol/programs/barn/src/contexts/update_grant_milestone.rs",
+          "a": 51,
+          "b": 95
+        },
+        {
+          "path": "protocol/programs/barn/src/lib.rs",
+          "a": 47,
+          "b": 61,
+          "note": "entry points: look at reject (line 55-57)"
+        },
+        {
+          "path": "protocol/programs/barn/src/state/mod.rs",
+          "a": 160,
+          "b": 273,
+          "note": "states and transitions"
+        }
+      ],
+      "steps": [
+        "Only the grant's developer adds milestones; the amount is **not** checked against the grant here (our #1 of 0.01 SOL was accepted although only 0.005 remained).",
+        "review \u2192 InReview; revise \u2192 InProgress; accept \u2192 Accepted; reject \u2192 Rejected. Once Rejected, Accepted or Paid (`confirmed()`), nothing can change it (`MilestoneAlreadyConfirmed`, in Proof).",
+        "`check_signer` ties a sponsor to the grant's program and a developer to the project."
+      ]
+    },
+    {
+      "name": "`settle_grant_milestone`: pay, capped by the grant",
+      "refs": [
+        {
+          "path": "protocol/programs/barn/src/contexts/settle_grant_milestone.rs",
+          "a": 16,
+          "b": 133
+        },
+        {
+          "path": "protocol/programs/barn/src/state/mod.rs",
+          "a": 111,
+          "b": 134,
+          "note": "Grant.settle_milestone: the cap"
+        }
+      ],
+      "steps": [
+        "First `grant.settle_milestone(amount)`: `paid_out + amount` must stay \u2264 `approved_amount` (`ApprovedAmountExceeded`). Then the milestone must be Accepted (`MilestoneNotAccepted`) and becomes Paid.",
+        "SOL grants: a System Program transfer from the signer to `to`; tokens: `transfer_checked` from the signer's token account. The money comes from the sponsor's wallet at that moment; nothing is escrowed.",
+        "Our script: grant 0.02 SOL, #0 0.015 paid (dev +0.015 SOL); #0 again \u2192 `ApprovedAmountExceeded` (the cap check runs before the Paid check); #1 0.01 \u2192 0.025 > 0.02 \u2192 `ApprovedAmountExceeded`."
+      ]
+    }
+  ],
+  "innovation": {
+    "title": "counter-numbered PDAs as an on-chain database",
+    "text": "Barn has no list accounts. Each parent keeps a `count`, and each child lives at `[kind, parent, count]`, so profile \u2192 programs/projects \u2192 grants \u2192 milestones form a tree that any client can walk by deriving addresses 0\u2026count\u22121, and every relationship is checked by re-deriving seeds in the account constraints. The money rule is one line: `paid_out + amount \u2264 approved_amount`.",
+    "refs": [
+      {
+        "path": "protocol/programs/barn/src/contexts/award_grant.rs",
+        "a": 39,
+        "b": 46,
+        "note": "grant numbered by its program's count"
+      },
+      {
+        "path": "protocol/programs/barn/src/state/mod.rs",
+        "a": 120,
+        "b": 134,
+        "note": "the cap"
+      }
+    ],
+    "more": [
+      "Roles and wiring matter as much as the cap. Line 55\u201357 of `lib.rs` sends `reject_grant_milestone` to `accept_milestone()`. We read the milestone our script \"rejected\" (#2, Gy5XhNzw\u2026) on devnet: its state byte is 3, **Accepted**. A rejected milestone can therefore still be paid (Exercise 1). The settle accounts also never tie `grant` to the signer's own program or `to` to the developer (Exercise 3)."
+    ]
+  },
+  "frontend": [
+    {
+      "title": "One hook per instruction",
+      "refs": [
+        {
+          "path": "app/src/hooks/barn/rpc.tsx",
+          "a": 20,
+          "b": 69
+        },
+        {
+          "path": "protocol/ts/src/client/methods.ts",
+          "a": 21,
+          "b": 35
+        }
+      ],
+      "steps": [
+        "The app calls the fork's own TypeScript client (`protocol/ts`), which builds each instruction with `accountsPartial` and lets Anchor derive the PDAs."
+      ]
+    },
+    {
+      "title": "Approve Sponsor: any wallet as admin",
+      "refs": [
+        {
+          "path": "app/src/components/barn/rpc.tsx",
+          "a": 82,
+          "b": 101
+        }
+      ],
+      "steps": [
+        "`admin: wallet.publicKey`: whoever is connected."
+      ]
+    },
+    {
+      "title": "Award Grant: always SOL",
+      "refs": [
+        {
+          "path": "app/src/components/barn/rpc.tsx",
+          "a": 221,
+          "b": 241
+        }
+      ],
+      "steps": [
+        "`paymentMint = NATIVE_MINT // todo: any token`; the amount is SOL \u00d7 10\u2079."
+      ]
+    },
+    {
+      "title": "Settle Payment",
+      "refs": [
+        {
+          "path": "app/src/components/barn/rpc.tsx",
+          "a": 684,
+          "b": 715
+        }
+      ],
+      "steps": [
+        "The app sets `to` to the project owner's wallet, so it pays the right person; the program doesn't require that."
+      ]
+    }
+  ],
+  "exercises": [
+    {
+      "title": "Fix Reject",
+      "steps": [
+        "Look at `lib.rs` lines 55\u201357 and `update_grant_milestone.rs` line 67.",
+        "Change `reject_grant_milestone` to call `ctx.accounts.reject_milestone()`, rebuild, and reject a milestone in a local test."
+      ],
+      "expect": "Its state becomes Rejected (2). Before the fix, our devnet milestone Gy5XhNzw\u2026 reads 3 (Accepted) after \"reject\", and a sponsor could settle it.",
+      "hint": "Look at `lib.rs` around the `reject_grant_milestone` entry point, and at the handler it actually calls.",
+      "approach": "Change it to call `ctx.accounts.reject_milestone()` (the handler that sets state 2), rebuild, and reject a milestone on a local validator. Its state should become Rejected (2). Before the fix, our devnet milestone Gy5XhNzw\u2026 reads 3 (Accepted) after 'reject', and a sponsor could settle it."
+    },
+    {
+      "title": "Gate Approve Sponsor",
+      "steps": [
+        "Add a constant `ADMIN` and `address = ADMIN` on `admin` in `approve_sponsor.rs`."
+      ],
+      "expect": "Our script's approval by an unrelated wallet (4jemNXkW\u2026) would fail with a constraint error; only the admin can create sponsors.",
+      "hint": "`approve_sponsor` has an `admin: Signer` that nothing constrains \u2014 any wallet can approve any eligible profile.",
+      "approach": "Add a constant `ADMIN` and `address = ADMIN` on that signer (or a PDA config). The script's approval by an unrelated wallet should then fail; only the admin should be able to create sponsors."
+    },
+    {
+      "title": "Tie settle to the right grant and payee",
+      "steps": [
+        "In `SettleGrantMilestone`, load the grant program and project and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, `project.key() == grant.project`, and require `to` to be the project owner's wallet.",
+        "Locally: a second sponsor settles the first sponsor's accepted milestone with `to` = itself."
+      ],
+      "expect": "Rejected after the fix. Before it, the call succeeds: the second sponsor pays itself, the milestone is marked Paid and the developer can never be paid for it.",
+      "hint": "`settle` pays `to`, which is an account the client passes. The program should require it to be the project's owner, and the grant to belong to that program.",
+      "approach": "Load the grant program and the project, and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, and `to.key() == project.owner` (or whatever the field is called). A settle that names a different payee should fail; the recorded 0.005 SOL settle to the developer should still pass."
+    },
+    {
+      "title": "Check milestone amounts when they're added",
+      "steps": [
+        "In `add_milestone`, sum existing milestone amounts (or keep a `committed` total on the grant) and refuse when it would exceed `approved_amount`."
+      ],
+      "expect": "Our milestone #1 (0.01 SOL with 0.005 left) is refused at creation instead of failing only at settle.",
+      "hint": "A milestone can be added for more than the remaining grant. The cap is only checked at settle.",
+      "approach": "At `add_grant_milestone`, `require!(granted.paid_out + existing_milestones + new_amount <= approved_amount)`. Adding a milestone that would overflow the grant should then fail early, before anyone reviews it."
+    },
+    {
+      "title": "Clearer double-settle error",
+      "steps": [
+        "In `settle_milestone`, call `self.grant_milestone.settle()` before `self.grant.settle_milestone(..)`, and in `settle()` return `MilestoneAlreadyPaid` when the state is Paid."
+      ],
+      "expect": "Settling #0 twice now fails with `MilestoneAlreadyPaid` instead of `ApprovedAmountExceeded`.",
+      "hint": "A second settle of a paid milestone may fail for a generic reason (already closed, wrong state) rather than a named error.",
+      "approach": "Add `require!(milestone.state == Accepted)` (not Paid) and a `MilestoneAlreadyPaid` error. A second settle should return that error; the first remains the recorded 3PUJ7ZJm\u2026."
+    }
+  ],
+  "not_covered": "The whole sponsor \u2192 developer \u2192 milestone \u2192 payment flow was clicked through in the app with two wallets. Revise, reject, the cap and every rejection case were run by script. Note: \"reject\" actually accepts in this program (Exercise 1; checked on devnet: milestone Gy5XhNzw\u2026 is Accepted after reject). Not exercised: SPL-token grants (the app only awards SOL), edit_grant_milestone.",
+  "path_order": null,
+  "path_stage": null,
+  "difficulty": "Intermediate",
+  "time": "55 min",
+  "objectives": [
+    "Walk a tree of counter-numbered PDAs: profile \u2192 program/project \u2192 grant \u2192 milestone, each derived from its parent and a count.",
+    "See a payout cap enforced in one line: `paid_out + amount \u2264 approved_amount`.",
+    "Find, and fix, `reject_grant_milestone` calling `accept_milestone()` \u2014 proven on devnet, where the 'rejected' milestone is Accepted."
+  ],
+  "prereqs": [
+    "Two wallets (sponsor and developer) and about 0.05 SOL in the sponsor's.",
+    "Stage 2 up through [Votara](/lessons/votara/) (counters, roles). This is the most structured state machine so far."
+  ],
+  "concepts": [
+    "pda",
+    "seeds",
+    "init",
+    "has-one",
+    "constraint",
+    "authority",
+    "lamports",
+    "system-transfer",
+    "signer"
+  ],
+  "build": {
+    "dir": "protocol",
+    "anchor": "0.30.1",
+    "test": "anchor test",
+    "note": "The program is in `protocol/programs/barn`. The Next.js app is in `app/`."
+  },
+  "functional": "partial",
+  "track": "elective",
+  "delivery": "Browser practice + evidence inspection",
+  "student_outcome": "Trace Barn\u2019s milestone PDA tree and explain why reject_grant_milestone can leave a milestone Accepted.",
+  "content_version": "2026-11-19.1",
+  "content_review": "2026-11-19",
+  "content_owner": "Sol.College curriculum",
+  "learning_loop": {
+    "objective": "Inspect a \u201crejected\u201d milestone \u2014 then predict why it can still read Accepted.",
+    "predict_question": "On the recorded lab program, reject_grant_milestone is invoked but the handler calls accept_milestone(). What on-chain state should you expect?",
+    "predict_options": [
+      {
+        "id": "rejected",
+        "label": "Milestone state becomes Rejected (2)"
+      },
+      {
+        "id": "accepted",
+        "label": "Milestone can read Accepted (3) \u2014 reject called the wrong handler"
+      },
+      {
+        "id": "unchanged",
+        "label": "State is always unchanged; reject is a no-op log only"
+      }
+    ],
+    "predict_answer": "accepted",
+    "predict_why": "Barn\u2019s recorded bug: reject_grant_milestone calls accept_milestone(), so a \u201creject\u201d can leave the milestone Accepted and settleable. Students diagnose from evidence; claiming you fixed production without a rebuild is dishonest.",
+    "act": "Open /dapps/barn/ on Devnet. Walk profile\u2192program\u2192grant\u2192milestone PDAs. Prefer recorded proofs including milestone Gy5XhNzw\u2026. Explain the reject/accept handler mix-up and the unconstrained approve_sponsor admin risk from the exercises.",
+    "inspect": [
+      {
+        "id": "milestone",
+        "label": "Milestone PDA / state",
+        "placeholder": "Accepted 3 / \u2026"
+      },
+      {
+        "id": "bug",
+        "label": "reject calls which handler?",
+        "placeholder": "accept_milestone / \u2026"
+      },
+      {
+        "id": "cap",
+        "label": "payout cap check",
+        "placeholder": "paid_out+amount \u2264 approved"
+      },
+      {
+        "id": "sig",
+        "label": "Evidence signature",
+        "placeholder": "\u2026"
+      },
+      {
+        "id": "route",
+        "label": "Evidence route",
+        "placeholder": "observe / guided"
+      }
+    ],
+    "explain_question": "Why is calling accept_milestone from a reject entrypoint worse than a failed transaction?",
+    "transfer": "Name the one-line payout cap and one admin-gate fix for approve_sponsor."
+  },
+  "assessment": {
+    "purpose": "Independent catalogue criteria; diagnose recorded bugs without inventing fixes as completed.",
+    "criteria": [
+      {
+        "id": "c1",
+        "title": "Uses recorded evidence",
+        "question": "Can the student cite lab/proof accounts for the bug?",
+        "not_yet": "Invented state.",
+        "support": "Finds proof after prompt.",
+        "independent": "Cites proof independently.",
+        "misconception": "UI copy proves on-chain correctness."
+      },
+      {
+        "id": "c2",
+        "title": "States the distinctive failure",
+        "question": "Can the student name the predict_answer failure mode?",
+        "not_yet": "Wrong mode.",
+        "support": "Correct after exercise.",
+        "independent": "States failure mode clearly.",
+        "misconception": "Bug is only cosmetic."
+      },
+      {
+        "id": "c3",
+        "title": "Does not claim unproven fix",
+        "question": "Avoids saying production is patched without evidence?",
+        "not_yet": "Claims fixed live.",
+        "support": "Scopes after prompt.",
+        "independent": "Scopes to diagnosis / local fix plan.",
+        "misconception": "Reading the exercise means mainnet is fixed."
+      },
+      {
+        "id": "c4",
+        "title": "Evidence honesty",
+        "question": "Routes labelled observe/guided/live?",
+        "not_yet": "No.",
+        "support": "Yes after prompt.",
+        "independent": "Yes.",
+        "misconception": "Platform proof is my patch deployment."
+      }
+    ]
   }
- ],
- "diagram": "wallet ─ create_user(seed, uri) ─▶ Authority PDA [wallet]  ──points to──▶ Profile PDA [\"profile\", seed]  (sponsor: false, count)\nanyone ─ approve_sponsor() ─▶ profile.sponsor = true   (only while profile.count == 0)\nsponsor ─ add_grant_program(uri) ─▶ GrantProgram PDA [\"grant-program\", profile, profile.count]\ndev ───── add_project(uri) ──────▶ Project PDA [\"project\", profile, profile.count]   grant: None\nsponsor ─ award_grant(uri, approved_amount) ─▶ Grant PDA [\"grant\", grant_program, program.count]  payment_mint, approved_amount, paid_out = 0\ndev ───── add_grant_milestone(uri, amount) ─▶ GrantMilestone PDA [\"grant-milestone\", grant, grant.count]  InProgress\ndev ───── review ─▶ InReview      sponsor ─ revise ─▶ InProgress | accept ─▶ Accepted | reject ─▶ (see the bug)\nsponsor ─ settle_grant_milestone() ─▶ paid_out + amount ≤ approved_amount ? pay sponsor → dev, Paid : ApprovedAmountExceeded",
- "accounts": [
-  [
-   "Authority",
-   "PDA `[wallet]`",
-   "Which profile this wallet controls (one per wallet, ever)"
-  ],
-  [
-   "Profile",
-   "PDA `[\"profile\", username]`",
-   "Sponsor flag, counter of programs or projects, metadata URI"
-  ],
-  [
-   "GrantProgram",
-   "PDA `[\"grant-program\", profile, n]`",
-   "Sponsor profile, grants awarded"
-  ],
-  [
-   "Project",
-   "PDA `[\"project\", profile, n]`",
-   "Developer profile, the one grant it may receive"
-  ],
-  [
-   "Grant",
-   "PDA `[\"grant\", grant_program, n]`",
-   "Project, payment mint, approved amount, paid out, milestone count"
-  ],
-  [
-   "GrantMilestone",
-   "PDA `[\"grant-milestone\", grant, n]`",
-   "Amount, state (InProgress, InReview, Rejected, Accepted, Paid)"
-  ]
- ],
- "instructions": [
-  {
-   "name": "`create_user` and `approve_sponsor`: identities and roles",
-   "refs": [
-    {
-     "path": "protocol/programs/barn/src/contexts/create_user.rs",
-     "a": 4,
-     "b": 49
-    },
-    {
-     "path": "protocol/programs/barn/src/contexts/approve_sponsor.rs",
-     "a": 4,
-     "b": 31
-    },
-    {
-     "path": "protocol/programs/barn/src/state/mod.rs",
-     "a": 12,
-     "b": 31,
-     "note": "Profile"
-    }
-   ],
-   "steps": [
-    "Two PDAs: one at the wallet's own address bytes (`seeds=[signer]`), so a wallet can only ever have one; one at `[\"profile\", username]`, so usernames are unique (a taken one fails with account already in use, in Proof).",
-    "`approve_sponsor` has an `admin: Signer` that nothing checks: any wallet can approve any profile, as long as that profile has no projects yet (`ProfileCannotBeSponsor`). Our script did it with an unrelated wallet; in the app, the sponsor approved itself."
-   ]
-  },
-  {
-   "name": "Programs and projects: role-gated, counter-numbered",
-   "refs": [
-    {
-     "path": "protocol/programs/barn/src/contexts/add_grant_program.rs",
-     "a": 4,
-     "b": 49
-    },
-    {
-     "path": "protocol/programs/barn/src/contexts/add_project.rs",
-     "a": 25,
-     "b": 32
-    }
-   ],
-   "steps": [
-    "`constraint=profile.sponsor` / `!profile.sponsor` gates who may call (`NotASponsor`, `NotADev`, in Proof).",
-    "The new account's address includes `profile.count` (little-endian u32), and `count` is incremented in the same instruction, so addresses are 0, 1, 2… per profile without collisions."
-   ]
-  },
-  {
-   "name": "`award_grant`: one grant per project",
-   "refs": [
-    {
-     "path": "protocol/programs/barn/src/contexts/award_grant.rs",
-     "a": 5,
-     "b": 76
-    },
-    {
-     "path": "protocol/programs/barn/src/state/mod.rs",
-     "a": 137,
-     "b": 158,
-     "note": "Project.receive_grant"
-    }
-   ],
-   "steps": [
-    "The grant program must be the signer's own (its seeds include `profile`).",
-    "`receive_grant` requires `project.grant` to be `None` (`GrantAlreadyAwarded`, in Proof).",
-    "The payment mint is stored; the app always uses the native mint (wrapped SOL), i.e. SOL."
-   ]
-  },
-  {
-   "name": "Milestones: a small state machine",
-   "refs": [
-    {
-     "path": "protocol/programs/barn/src/contexts/add_grant_milestone.rs",
-     "a": 4,
-     "b": 69
-    },
-    {
-     "path": "protocol/programs/barn/src/contexts/update_grant_milestone.rs",
-     "a": 51,
-     "b": 95
-    },
-    {
-     "path": "protocol/programs/barn/src/lib.rs",
-     "a": 47,
-     "b": 61,
-     "note": "entry points: look at reject (line 55-57)"
-    },
-    {
-     "path": "protocol/programs/barn/src/state/mod.rs",
-     "a": 160,
-     "b": 273,
-     "note": "states and transitions"
-    }
-   ],
-   "steps": [
-    "Only the grant's developer adds milestones; the amount is **not** checked against the grant here (our #1 of 0.01 SOL was accepted although only 0.005 remained).",
-    "review → InReview; revise → InProgress; accept → Accepted; reject → Rejected. Once Rejected, Accepted or Paid (`confirmed()`), nothing can change it (`MilestoneAlreadyConfirmed`, in Proof).",
-    "`check_signer` ties a sponsor to the grant's program and a developer to the project."
-   ]
-  },
-  {
-   "name": "`settle_grant_milestone`: pay, capped by the grant",
-   "refs": [
-    {
-     "path": "protocol/programs/barn/src/contexts/settle_grant_milestone.rs",
-     "a": 16,
-     "b": 133
-    },
-    {
-     "path": "protocol/programs/barn/src/state/mod.rs",
-     "a": 111,
-     "b": 134,
-     "note": "Grant.settle_milestone: the cap"
-    }
-   ],
-   "steps": [
-    "First `grant.settle_milestone(amount)`: `paid_out + amount` must stay ≤ `approved_amount` (`ApprovedAmountExceeded`). Then the milestone must be Accepted (`MilestoneNotAccepted`) and becomes Paid.",
-    "SOL grants: a System Program transfer from the signer to `to`; tokens: `transfer_checked` from the signer's token account. The money comes from the sponsor's wallet at that moment; nothing is escrowed.",
-    "Our script: grant 0.02 SOL, #0 0.015 paid (dev +0.015 SOL); #0 again → `ApprovedAmountExceeded` (the cap check runs before the Paid check); #1 0.01 → 0.025 > 0.02 → `ApprovedAmountExceeded`."
-   ]
-  }
- ],
- "innovation": {
-  "title": "counter-numbered PDAs as an on-chain database",
-  "text": "Barn has no list accounts. Each parent keeps a `count`, and each child lives at `[kind, parent, count]`, so profile → programs/projects → grants → milestones form a tree that any client can walk by deriving addresses 0…count−1, and every relationship is checked by re-deriving seeds in the account constraints. The money rule is one line: `paid_out + amount ≤ approved_amount`.",
-  "refs": [
-   {
-    "path": "protocol/programs/barn/src/contexts/award_grant.rs",
-    "a": 39,
-    "b": 46,
-    "note": "grant numbered by its program's count"
-   },
-   {
-    "path": "protocol/programs/barn/src/state/mod.rs",
-    "a": 120,
-    "b": 134,
-    "note": "the cap"
-   }
-  ],
-  "more": [
-   "Roles and wiring matter as much as the cap. Line 55–57 of `lib.rs` sends `reject_grant_milestone` to `accept_milestone()`. We read the milestone our script \"rejected\" (#2, Gy5XhNzw…) on devnet: its state byte is 3, **Accepted**. A rejected milestone can therefore still be paid (Exercise 1). The settle accounts also never tie `grant` to the signer's own program or `to` to the developer (Exercise 3)."
-  ]
- },
- "frontend": [
-  {
-   "title": "One hook per instruction",
-   "refs": [
-    {
-     "path": "app/src/hooks/barn/rpc.tsx",
-     "a": 20,
-     "b": 69
-    },
-    {
-     "path": "protocol/ts/src/client/methods.ts",
-     "a": 21,
-     "b": 35
-    }
-   ],
-   "steps": [
-    "The app calls the fork's own TypeScript client (`protocol/ts`), which builds each instruction with `accountsPartial` and lets Anchor derive the PDAs."
-   ]
-  },
-  {
-   "title": "Approve Sponsor: any wallet as admin",
-   "refs": [
-    {
-     "path": "app/src/components/barn/rpc.tsx",
-     "a": 82,
-     "b": 101
-    }
-   ],
-   "steps": [
-    "`admin: wallet.publicKey`: whoever is connected."
-   ]
-  },
-  {
-   "title": "Award Grant: always SOL",
-   "refs": [
-    {
-     "path": "app/src/components/barn/rpc.tsx",
-     "a": 221,
-     "b": 241
-    }
-   ],
-   "steps": [
-    "`paymentMint = NATIVE_MINT // todo: any token`; the amount is SOL × 10⁹."
-   ]
-  },
-  {
-   "title": "Settle Payment",
-   "refs": [
-    {
-     "path": "app/src/components/barn/rpc.tsx",
-     "a": 684,
-     "b": 715
-    }
-   ],
-   "steps": [
-    "The app sets `to` to the project owner's wallet, so it pays the right person; the program doesn't require that."
-   ]
-  }
- ],
- "exercises": [
-  {
-   "title": "Fix Reject",
-   "steps": [
-    "Look at `lib.rs` lines 55–57 and `update_grant_milestone.rs` line 67.",
-    "Change `reject_grant_milestone` to call `ctx.accounts.reject_milestone()`, rebuild, and reject a milestone in a local test."
-   ],
-   "expect": "Its state becomes Rejected (2). Before the fix, our devnet milestone Gy5XhNzw… reads 3 (Accepted) after \"reject\", and a sponsor could settle it.",
-   "hint": "Look at `lib.rs` around the `reject_grant_milestone` entry point, and at the handler it actually calls.",
-   "approach": "Change it to call `ctx.accounts.reject_milestone()` (the handler that sets state 2), rebuild, and reject a milestone on a local validator. Its state should become Rejected (2). Before the fix, our devnet milestone Gy5XhNzw… reads 3 (Accepted) after 'reject', and a sponsor could settle it."
-  },
-  {
-   "title": "Gate Approve Sponsor",
-   "steps": [
-    "Add a constant `ADMIN` and `address = ADMIN` on `admin` in `approve_sponsor.rs`."
-   ],
-   "expect": "Our script's approval by an unrelated wallet (4jemNXkW…) would fail with a constraint error; only the admin can create sponsors.",
-   "hint": "`approve_sponsor` has an `admin: Signer` that nothing constrains — any wallet can approve any eligible profile.",
-   "approach": "Add a constant `ADMIN` and `address = ADMIN` on that signer (or a PDA config). The script's approval by an unrelated wallet should then fail; only the admin should be able to create sponsors."
-  },
-  {
-   "title": "Tie settle to the right grant and payee",
-   "steps": [
-    "In `SettleGrantMilestone`, load the grant program and project and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, `project.key() == grant.project`, and require `to` to be the project owner's wallet.",
-    "Locally: a second sponsor settles the first sponsor's accepted milestone with `to` = itself."
-   ],
-   "expect": "Rejected after the fix. Before it, the call succeeds: the second sponsor pays itself, the milestone is marked Paid and the developer can never be paid for it.",
-   "hint": "`settle` pays `to`, which is an account the client passes. The program should require it to be the project's owner, and the grant to belong to that program.",
-   "approach": "Load the grant program and the project, and add `grant.program == grant_program.key()`, `grant_program.profile == profile.key()`, and `to.key() == project.owner` (or whatever the field is called). A settle that names a different payee should fail; the recorded 0.005 SOL settle to the developer should still pass."
-  },
-  {
-   "title": "Check milestone amounts when they're added",
-   "steps": [
-    "In `add_milestone`, sum existing milestone amounts (or keep a `committed` total on the grant) and refuse when it would exceed `approved_amount`."
-   ],
-   "expect": "Our milestone #1 (0.01 SOL with 0.005 left) is refused at creation instead of failing only at settle.",
-   "hint": "A milestone can be added for more than the remaining grant. The cap is only checked at settle.",
-   "approach": "At `add_grant_milestone`, `require!(granted.paid_out + existing_milestones + new_amount <= approved_amount)`. Adding a milestone that would overflow the grant should then fail early, before anyone reviews it."
-  },
-  {
-   "title": "Clearer double-settle error",
-   "steps": [
-    "In `settle_milestone`, call `self.grant_milestone.settle()` before `self.grant.settle_milestone(..)`, and in `settle()` return `MilestoneAlreadyPaid` when the state is Paid."
-   ],
-   "expect": "Settling #0 twice now fails with `MilestoneAlreadyPaid` instead of `ApprovedAmountExceeded`.",
-   "hint": "A second settle of a paid milestone may fail for a generic reason (already closed, wrong state) rather than a named error.",
-   "approach": "Add `require!(milestone.state == Accepted)` (not Paid) and a `MilestoneAlreadyPaid` error. A second settle should return that error; the first remains the recorded 3PUJ7ZJm…."
-  }
- ],
- "not_covered": "The whole sponsor → developer → milestone → payment flow was clicked through in the app with two wallets. Revise, reject, the cap and every rejection case were run by script. Note: \"reject\" actually accepts in this program (Exercise 1; checked on devnet: milestone Gy5XhNzw… is Accepted after reject). Not exercised: SPL-token grants (the app only awards SOL), edit_grant_milestone.",
- "path_order": null,
- "path_stage": null,
- "difficulty": "Intermediate",
- "time": "55 min",
- "objectives": [
-  "Walk a tree of counter-numbered PDAs: profile → program/project → grant → milestone, each derived from its parent and a count.",
-  "See a payout cap enforced in one line: `paid_out + amount ≤ approved_amount`.",
-  "Find, and fix, `reject_grant_milestone` calling `accept_milestone()` — proven on devnet, where the 'rejected' milestone is Accepted."
- ],
- "prereqs": [
-  "Two wallets (sponsor and developer) and about 0.05 SOL in the sponsor's.",
-  "Stage 2 up through [Votara](/lessons/votara/) (counters, roles). This is the most structured state machine so far."
- ],
- "concepts": [
-  "pda",
-  "seeds",
-  "init",
-  "has-one",
-  "constraint",
-  "authority",
-  "lamports",
-  "system-transfer",
-  "signer"
- ],
- "build": {
-  "dir": "protocol",
-  "anchor": "0.30.1",
-  "test": "anchor test",
-  "note": "The program is in `protocol/programs/barn`. The Next.js app is in `app/`."
- },
- "functional": "partial"
 }

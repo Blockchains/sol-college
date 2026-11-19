@@ -353,6 +353,24 @@ class LabAssessment(unittest.TestCase):
             self.assertTrue(L.get('assessment', {}).get('criteria'), path.stem)
             self.assertTrue(L.get('student_outcome'), path.stem)
 
+    def test_elective_batch5_debug_catalogue_loops(self):
+        batch = {
+            'barn': 'accepted',
+            'chinesepowered-solana-cypherpunk': 'succeeds',
+            'friendstake': 'pays_x',
+            'hackathon-prediction-market-solana': 'stuck',
+            'web3-splitter': 'seeds',
+        }
+        for slug, answer in batch.items():
+            L = json.loads((ROOT / f'dapps/lessons/{slug}.json').read_text())
+            self.assertEqual(L.get('track'), 'elective', slug)
+            self.assertEqual(L['learning_loop'].get('predict_answer'), answer, slug)
+            ids = {o['id'] for o in L['learning_loop'].get('predict_options') or []}
+            self.assertIn(answer, ids, slug)
+            html = ll.assessment_html(L, slug)
+            self.assertNotIn('Pixel account', html, slug)
+            self.assertNotIn('update_pixel', html, slug)
+
     def test_assessment_fallback_is_not_picassol_specific(self):
         html = ll.assessment_html({
             'title': 'Example Lab',
