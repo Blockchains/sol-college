@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-solclaw",
+  "slug": "solclaw",
+  "displayName": "SolClaw Agent Payments (Sol.College demonstration)",
+  "description": "Name-based agent-to-agent token payments on Solana devnet (Anchor 0.32.1): registry names with PDA vaults, transfers by name, daily caps, allowances, invoices and crankable subscriptions. register_agent, deposit, transfer_by_name, set_daily_limit, approve, transfer_from, create_invoice, pay_invoice, create_subscription, execute_subscription and withdraw were verified with lab tokens.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of Sterdam/solclaw. The lab tree is branch sol-college-devnet of Blockchains/solclaw. The lab changed declare_id to a unique Sol.College devnet program and set USDC_MINT to the Sol.College devnet lab mint. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "Sterdam/solclaw",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/solclaw",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "solclaw-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-solclaw"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:37:20Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (name registry, payments, allowances, invoices, subscriptions)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/solclaw/",
+      "QA: devnet proof of agent-to-agent payments"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "batch-split",
+        "title": "Exercise batch_payment and split_payment on devnet",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/solclaw"
+  }
+}

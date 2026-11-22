@@ -4787,5 +4787,154 @@
     "limits": "Lab patch: TREASURY_AUTHORITY is the Sol.College devnet deployer instead of the upstream admin key, so the lab could initialise the treasury and run admin paths. Feedback and validations are open to any wallet (no sybil resistance). request_unstake/complete_unstake (7-day cooldown), sponsor_register, sponsor_verify, transfer_authority and register_and_stake were not exercised. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_treasury 5iZNQzu1\u2026; register_agent 4bmw1ocP\u2026; get_verified 2ugU8QPW\u2026; stake 100_000_000 lamports 4RyEGJLS\u2026; submit_feedback from a reviewer wC516ftv\u2026; validate_work 3UL1z4o9\u2026; submit_anchor receipts 1-10 5tAH2ytT\u2026; link_wallet 4VTGCZBy\u2026; slash_agent 1000 bps 3sZ1GSrS\u2026; emergency_unstake 58oDTNBF\u2026; withdraw_fees 3EvaxhfF\u2026. register_agent with an http:// URI was rejected (InvalidMetadataUri). stake before verification was rejected (NotVerified). stake of 50_000_000 was rejected (StakeTooLow). submit_feedback by the owner was rejected (CannotReviewSelf). submit_anchor with a gap in sequence was rejected (InvalidAnchorRange). slash_agent by a stranger was rejected (UnauthorizedAuthority). complete_unstake without request_unstake was rejected (UnstakeNotRequested)."
+  },
+  {
+    "slug": "agent-firewall",
+    "name": "Agent Firewall",
+    "lesson": "/explore/agent-firewall/",
+    "app": "/dapps/agent-firewall/",
+    "fork": "https://github.com/Blockchains/agent_firewall",
+    "commit": "ce1d3804b9ca41c004dc5566be5a01503e3ab076",
+    "program": "Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agent_firewall (unique declare_id; the official 7mVZWaqD\u2026 was not reused).",
+    "learn": "initialize creates a policy vault PDA [\"vault\", owner] that names one agent key, a per-call spend_limit and one allowed_target program. The owner deposits SOL. execute_hook is signed by the agent: it checks the agent, the target program and the limit, refuses the vault as recipient, moves lamports_out to the recipient and then CPIs inner_data into the allowed target program. The owner can update_policy at any time. delegate / commit / undelegate move the vault into a MagicBlock ephemeral rollup for low-latency checks.",
+    "source": [
+      [
+        "programs/agent_firewall/src/lib.rs",
+        "https://github.com/Blockchains/agent_firewall/blob/ce1d3804b9ca41c004dc5566be5a01503e3ab076/programs/agent_firewall/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agent-firewall.mjs",
+    "log": "tests/devnet/logs/agent-firewall-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agent_firewall as Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo on devnet",
+        "JkX8JT3DeGTCJkonEFG1wYasKAp1yDaZQ1baoxg1gSaisx3bDvVKXAixpfMQaH1EvuytyytGgY4fEmU2PKpRQkY"
+      ],
+      [
+        "initialize (spend_limit 5_000_000, allowed_target = lab mock_swap)",
+        "58eW8WvHFhUaBBNpzYAx3dVWJtTjctwt6vGawMrRWmUMaVeqBvxokdmMWUD4P9rppXpNQYHBo8Jsgb2TVTD2bRdg"
+      ],
+      [
+        "deposit 20_000_000 lamports",
+        "5xEvDpU7rpUhycUnt1F9P6annT22nzvViVPu6PLwjRiRQo7GFbaEvFK1ff8a7w7fjgeqDkRsf2zBqDhchBdUXZUB"
+      ],
+      [
+        "execute_hook 3_000_000 to recipient + CPI mock_swap.swap_log",
+        "DivojWay2zuJ6HYc5KAJTnTA94BvnAtivgUAtz9LavCesWu8DVmtkwxsyEBnzLPj5CHRgcs3vckMaQaeErNaU2g"
+      ],
+      [
+        "update_policy (spend_limit 1_000_000)",
+        "3aTm4yErYJ5WoGjdj94oh6x79uZa6FvpHyZrD2Zaxp3t9kMzbdK4paLxJu4UrPts7R6HcrpgKYqehZX7xzbc95Te"
+      ]
+    ],
+    "negative": [
+      "execute_hook of 6_000_000 was blocked (Blocked).",
+      "execute_hook targeting the System program was rejected (UnauthorizedTarget).",
+      "execute_hook signed by a stranger was rejected (UnauthorizedAgent).",
+      "execute_hook paying the vault itself was rejected (InvalidRecipient).",
+      "update_policy signed by a stranger was rejected (ConstraintHasOne).",
+      "execute_hook of 2_000_000 after the limit dropped to 1_000_000 was blocked (Blocked)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agent-firewall.mjs.",
+    "limits": "spend_limit is per call, not per day, so an agent can repeat calls; there is no owner withdraw instruction, so deposits leave only through agent hooks. The MagicBlock delegate/commit/undelegate path was not exercised (base layer only). The mock_swap program (lab id HNJzGkkb\u2026) only logs the memo. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize 58eW8WvH\u2026; deposit 20_000_000 lamports 5xEvDpU7\u2026; execute_hook 3_000_000 to recipient + CPI mock_swap.swap_log DivojWay\u2026; update_policy 3aTm4yEr\u2026. execute_hook of 6_000_000 was blocked (Blocked). execute_hook targeting the System program was rejected (UnauthorizedTarget). execute_hook signed by a stranger was rejected (UnauthorizedAgent). execute_hook paying the vault itself was rejected (InvalidRecipient). update_policy signed by a stranger was rejected (ConstraintHasOne). execute_hook of 2_000_000 after the limit dropped to 1_000_000 was blocked (Blocked).",
+    "programs": {
+      "agent_firewall": "Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo",
+      "mock_swap": "HNJzGkkbyneDBD6xD8XjLsdhoDmKnjkdBvfHUW6MWtHP"
+    }
+  },
+  {
+    "slug": "solclaw",
+    "name": "SolClaw Agent Payments",
+    "lesson": "/explore/solclaw/",
+    "app": "/dapps/solclaw/",
+    "fork": "https://github.com/Blockchains/solclaw",
+    "commit": "ea58a9e7816c0209077c6a2da656c0d5d2f76183",
+    "program": "FQWYC5m12qBVjzoLfJqUzC9HVzhuZcWwTbkac1rGiXgZ",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/solclaw (unique declare_id; the official J4qipHcP\u2026 was not reused).",
+    "learn": "register_agent claims a global name and creates a registry PDA [\"agent\", name] plus a token vault PDA [\"vault\", name] for the payment mint. Agents deposit into their vault and pay each other by name (transfer_by_name, batch_payment, split_payment), subject to an optional daily cap. approve creates an allowance PDA [\"allowance\", owner, spender] that the spender draws with transfer_from. Invoices ([\"invoice\", n]) are created by the requester and paid or rejected by the payer. Subscriptions ([\"subscription\", sender, receiver]) can be executed by any cranker once due.",
+    "source": [
+      [
+        "programs/solclaw/src/lib.rs",
+        "https://github.com/Blockchains/solclaw/blob/ea58a9e7816c0209077c6a2da656c0d5d2f76183/programs/solclaw/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/solclaw.mjs",
+    "log": "tests/devnet/logs/solclaw-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy solclaw as FQWYC5m12qBVjzoLfJqUzC9HVzhuZcWwTbkac1rGiXgZ on devnet",
+        "5nAs6od5qrtESTsJqHVTtfnWgb4jPRvfGkq3Redcyw4yLkCxSuG8HQbvUZyYMW2SMJET4MJsrX1yqxhTWfXs6RP1"
+      ],
+      [
+        "register_agent alice (lab deployer)",
+        "2yxrcC9LtxTAEpXQ6xB797AtFLqSUZZ5AoAD6AKdFR82rG95KGZKaJ6NTEG2oyfLhBRVXEz8aMFu8uWq9pdL1Lkm"
+      ],
+      [
+        "register_agent bob (second wallet)",
+        "5fynJ2wF1UVTdB736xcFV2BzBN1pv7RK3R4Qfa66uWNkARGVW6TvTf1YH78SyzjEkGdG1nGQUWf9RmdnsCgN2Vsh"
+      ],
+      [
+        "deposit 2_000_000 lab tokens into alice vault",
+        "4EoxeMAF4VKc5Qaq4VNZCtCv7bGaZtgmow3yft72GscNAJ3jWtZNhBK42exVKz6wGAwdMhr2j9xBFWv8sWyDyo97"
+      ],
+      [
+        "transfer_by_name alice -> bob 500_000",
+        "5hFLf5kiJFgfiqnhaWnZYTszpCSF7gVGtjYgXeQPFhY77Q6Lz2jHpHMVPC5rzMrtjsQU9G64QGAkGAUJvFvneS8w"
+      ],
+      [
+        "set_daily_limit 700_000",
+        "FH8e1Uy9iGt8Rix71uZceiq7DzRkjuuzfdeeZ4UJEvCe8uubJQvyLuuCQD1rzAkFXQ5A7Lok2dXYhPW7qyyBMU6"
+      ],
+      [
+        "transfer_by_name 400_000 within the cap",
+        "5evMvrce6w5XkxqkpT2cHVBandGDDFQWxJFniKqJh82wYXtTHo4Uffxt3kXijp6XXu8vHpk2t5h3XTtThhrcWtaE"
+      ],
+      [
+        "approve bob for 300_000",
+        "4HNFbKH5S1HCdu8Qg2RAcS8UELZngk8uo3GpzePu5ifoTskRDV1u2Svp3nYDdXzSiuDrfXZZzskSHKYgDtZQTZKy"
+      ],
+      [
+        "transfer_from 200_000 by bob",
+        "4WA2iCAYXdhX9BHJDcScNgnWctPrMZCwBbLDr55BTaoawsRt5GLMV1doWg3DXXrpDgx38YF5uYT9rZ4NQ24ocJxs"
+      ],
+      [
+        "create_invoice bob -> alice 100_000",
+        "3gPSxjhAyyXNTjevuupppxDssVT5aeukb4hgV4mhubzWZA6E1WEF928mu8b7WrDdnEi7QDDJDfrhw3cqgjY5VGDq"
+      ],
+      [
+        "pay_invoice by alice",
+        "2DVw36xF3HLejirMauGgD1KFi8KVbuhSodqurXScuS71p3SktEUNhGZSVka6biFja9A6r8T8JPonVMFSwVLR56iC"
+      ],
+      [
+        "create_subscription 50_000 every 60 s",
+        "395Qrg7E5vfVTRFNu1JxwGCReVWXFvqcZw9rE1Y3MAHfQY2vKiw7HbwrdG78Q7VpEhPbDJqkHWVaN3Tq4a2WNCJi"
+      ],
+      [
+        "execute_subscription by a third-party cranker after 60 s",
+        "4hWnBaEmmdhKKgenzC7ehqE5wNFRBX3xuneqV3ydmhPQj2d1t61qCYNie7kCo1VdBLUYXyNTSr4bT7bz5M8JqY8e"
+      ],
+      [
+        "withdraw bob vault to wallet (1_250_000)",
+        "xPsasm9RLm2s1ENfLhLB2LhVzpu5mwUYQaoKzTZ3eQxTVN92jsxZw4553wb22KXFQU3JX4YGkenJdmVFeex26nn"
+      ]
+    ],
+    "negative": [
+      "transfer_by_name signed by a stranger was rejected (Unauthorized).",
+      "A 400_000 transfer that would pass the 700_000 daily cap was rejected (SpendingCapExceeded).",
+      "approve to itself was rejected (CannotApproveSelf).",
+      "transfer_from above the remaining allowance was rejected (AllowanceExceeded).",
+      "create_invoice to itself was rejected (CannotInvoiceSelf).",
+      "pay_invoice twice was rejected (InvoiceNotPending).",
+      "execute_subscription before it was due was rejected (SubscriptionNotDue)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/solclaw.mjs.",
+    "limits": "Lab patch: USDC_MINT is the Sol.College devnet lab mint BJMSdujx\u2026 because the lab cannot mint devnet USDC. Names are first-come global. batch_payment, split_payment, reject_invoice, cancel_invoice, cancel_subscription, revoke_allowance and increase_allowance were not exercised. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_agent alice 2yxrcC9L\u2026; register_agent bob 5fynJ2wF\u2026; deposit 2_000_000 lab tokens into alice vault 4EoxeMAF\u2026; transfer_by_name alice -> bob 500_000 5hFLf5ki\u2026; set_daily_limit 700_000 FH8e1Uy9\u2026; transfer_by_name 400_000 within the cap 5evMvrce\u2026; approve bob for 300_000 4HNFbKH5\u2026; transfer_from 200_000 by bob 4WA2iCAY\u2026; create_invoice bob -> alice 100_000 3gPSxjhA\u2026; pay_invoice by alice 2DVw36xF\u2026; create_subscription 50_000 every 60 s 395Qrg7E\u2026; execute_subscription by a third-party cranker after 60 s 4hWnBaEm\u2026; withdraw bob vault to wallet xPsasm9R\u2026. transfer_by_name signed by a stranger was rejected (Unauthorized). A 400_000 transfer that would pass the 700_000 daily cap was rejected (SpendingCapExceeded). approve to itself was rejected (CannotApproveSelf). transfer_from above the remaining allowance was rejected (AllowanceExceeded). create_invoice to itself was rejected (CannotInvoiceSelf). pay_invoice twice was rejected (InvoiceNotPending). execute_subscription before it was due was rejected (SubscriptionNotDue)."
   }
 ]

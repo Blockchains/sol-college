@@ -1,0 +1,10 @@
+{
+ "name": "SolClaw Agent Payments",
+ "fork": "https://github.com/Blockchains/solclaw",
+ "commit": "ea58a9e7816c0209077c6a2da656c0d5d2f76183",
+ "lesson": "/explore/solclaw/",
+ "programs": {
+  "devnet": "FQWYC5m12qBVjzoLfJqUzC9HVzhuZcWwTbkac1rGiXgZ",
+  "mainnet": null
+ }
+}

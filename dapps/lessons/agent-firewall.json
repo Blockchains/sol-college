@@ -1,0 +1,36 @@
+{
+  "title": "Agent Firewall",
+  "summary": "Let an AI agent spend from a vault only through one allowed program and under a per-call limit, with the owner able to tighten the rules at any time.",
+  "what": "Agent Firewall is an Anchor 0.32.1 policy vault. The agent can only move lamports via execute_hook, which enforces the agent key, an allowed target program and a spend limit before CPI-ing into that program.",
+  "app_note": "The page at /dapps/agent-firewall/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agent_firewall. The lab only changed declare_id to unique lab programs.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agent-firewall/, switch to Devnet, connect a wallet and call initialize with your own agent key and allowed_target HNJzGkkbyneDBD6xD8XjLsdhoDmKnjkdBvfHUW6MWtHP.",
+      "see": "Your policy vault PDA [\"vault\", your wallet].",
+      "ran": "initialize, deposit, execute_hook with CPI, update_policy (see steps)."
+    }
+  ],
+  "diagram": "owner --initialize/deposit--> vault PDA(policy); agent --execute_hook--> checks(agent,target,limit) -> recipient +SOL -> CPI target; owner --update_policy--> new limit",
+  "accounts": [
+    "vault PDA [\"vault\", owner]"
+  ],
+  "instructions": [
+    "initialize",
+    "deposit",
+    "execute_hook",
+    "update_policy",
+    "delegate",
+    "commit",
+    "undelegate",
+    "touch_and_commit"
+  ],
+  "innovation": "The agent never signs arbitrary transactions with the funds: every spend is routed through a program that checks who, where and how much first.",
+  "frontend": "Generic IDL console at /dapps/agent-firewall/.",
+  "exercises": [
+    "Why reject the vault as recipient?",
+    "How would you add a daily cap and an owner withdraw?"
+  ],
+  "not_covered": [
+    "MagicBlock delegation path"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "name": "Agent Firewall",
+ "fork": "https://github.com/Blockchains/agent_firewall",
+ "commit": "ce1d3804b9ca41c004dc5566be5a01503e3ab076",
+ "lesson": "/explore/agent-firewall/",
+ "programs": {
+  "devnet": "Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo",
+  "mainnet": null
+ }
+}

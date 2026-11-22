@@ -1,0 +1,34 @@
+{
+  "address": "HNJzGkkbyneDBD6xD8XjLsdhoDmKnjkdBvfHUW6MWtHP",
+  "metadata": {
+    "name": "mock_swap",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Minimal CPI target program for Agent Firewall integration tests"
+  },
+  "instructions": [
+    {
+      "name": "swap_log",
+      "docs": [
+        "Logs memo length; use as `allowed_target` when exercising `execute_hook`."
+      ],
+      "discriminator": [
+        32,
+        138,
+        6,
+        140,
+        39,
+        103,
+        84,
+        231
+      ],
+      "accounts": [],
+      "args": [
+        {
+          "name": "memo",
+          "type": "bytes"
+        }
+      ]
+    }
+  ]
+}

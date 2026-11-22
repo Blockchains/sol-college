@@ -1,0 +1,707 @@
+{
+  "address": "Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo",
+  "metadata": {
+    "name": "agent_firewall",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Delegated vault policy enforcement on Magicblock Ephemeral Rollups"
+  },
+  "instructions": [
+    {
+      "name": "commit",
+      "docs": [
+        "Commit vault account data from the ER to the base ledger."
+      ],
+      "discriminator": [
+        223,
+        140,
+        142,
+        165,
+        229,
+        208,
+        156,
+        74
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "FirewallPolicy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "delegate",
+      "docs": [
+        "Base layer: delegate the vault PDA to an Ephemeral Rollup validator.",
+        "",
+        "`payer` must be the vault `owner` (read from account data). Matches Magicblock `anchor-counter`",
+        "`delegate`: pass **only** base seeds to `delegate_pda` \u2014 the SDK calls",
+        "`find_program_address(pda_seeds, program_id)` and appends the bump itself. Do **not** include",
+        "the bump as a third seed slice (that double-counts the bump and breaks CPI signer seeds).",
+        "",
+        "Optional `remaining_accounts[0]`: ER validator pubkey. Use `[]` on hosted devnet ER; for",
+        "local `ephemeral-validator` pass the local identity from Magicblock docs."
+      ],
+      "discriminator": [
+        90,
+        147,
+        75,
+        178,
+        85,
+        88,
+        4,
+        137
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "buffer_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                177,
+                141,
+                212,
+                252,
+                90,
+                193,
+                86,
+                77,
+                226,
+                65,
+                159,
+                155,
+                113,
+                66,
+                129,
+                32,
+                94,
+                78,
+                27,
+                43,
+                84,
+                23,
+                94,
+                156,
+                123,
+                150,
+                159,
+                225,
+                194,
+                190,
+                156,
+                116
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_pda",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "pda"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "pda",
+          "writable": true
+        },
+        {
+          "name": "owner_program",
+          "address": "Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Fund the vault with SOL (owner only)."
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "FirewallPolicy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "execute_hook",
+      "docs": [
+        "Agent-signed execution hook: `lamports_out` must be \u2264 `vault.spend_limit` (lamports leaving vault this tx).",
+        "Then optional CPI to `target_program` (must equal `allowed_target`) with `inner_data` + `remaining_accounts`."
+      ],
+      "discriminator": [
+        218,
+        34,
+        167,
+        226,
+        109,
+        32,
+        234,
+        169
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "FirewallPolicy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "target_program"
+        },
+        {
+          "name": "recipient",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports_out",
+          "type": "u64"
+        },
+        {
+          "name": "inner_data",
+          "type": "bytes"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Create vault + policy for `owner` (agent, spend cap, allowed target program)."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "spend_limit",
+          "type": "u64"
+        },
+        {
+          "name": "allowed_target",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "process_undelegation",
+      "discriminator": [
+        196,
+        28,
+        41,
+        206,
+        48,
+        37,
+        51,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "base_account",
+          "writable": true
+        },
+        {
+          "name": "buffer"
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "account_seeds",
+          "type": {
+            "vec": "bytes"
+          }
+        }
+      ]
+    },
+    {
+      "name": "touch_and_commit",
+      "docs": [
+        "Serialize vault account data (`exit`) then commit to the base ledger."
+      ],
+      "discriminator": [
+        90,
+        23,
+        39,
+        80,
+        214,
+        222,
+        137,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "FirewallPolicy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "undelegate",
+      "docs": [
+        "ER: commit latest vault state and undelegate."
+      ],
+      "discriminator": [
+        131,
+        148,
+        180,
+        198,
+        91,
+        104,
+        42,
+        238
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "FirewallPolicy"
+              }
+            ]
+          }
+        },
+        {
+          "name": "magic_program",
+          "address": "Magic11111111111111111111111111111111111111"
+        },
+        {
+          "name": "magic_context",
+          "writable": true,
+          "address": "MagicContext1111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_policy",
+      "docs": [
+        "Owner updates agent, spend cap, or allowed target program."
+      ],
+      "discriminator": [
+        212,
+        245,
+        246,
+        7,
+        163,
+        151,
+        18,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "agent",
+          "type": "pubkey"
+        },
+        {
+          "name": "spend_limit",
+          "type": "u64"
+        },
+        {
+          "name": "allowed_target",
+          "type": "pubkey"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "FirewallPolicy",
+      "discriminator": [
+        190,
+        91,
+        136,
+        178,
+        139,
+        60,
+        64,
+        71
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Blocked",
+      "msg": "Spend exceeds policy limit for this transaction"
+    },
+    {
+      "code": 6001,
+      "name": "UnauthorizedTarget",
+      "msg": "Target program does not match allowed_target"
+    },
+    {
+      "code": 6002,
+      "name": "UnauthorizedAgent",
+      "msg": "Signer is not the configured agent"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidRecipient",
+      "msg": "Recipient cannot be the vault"
+    },
+    {
+      "code": 6004,
+      "name": "DelegateNotOwner",
+      "msg": "Only the vault owner may delegate"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidVaultPda",
+      "msg": "PDA does not match seeds [vault, owner] or bump mismatch"
+    }
+  ],
+  "types": [
+    {
+      "name": "FirewallPolicy",
+      "docs": [
+        "Vault account: policy fields and lamport balance share one PDA."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "spend_limit",
+            "docs": [
+              "Max lamports transferred from the vault in a single `execute_hook`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "allowed_target",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

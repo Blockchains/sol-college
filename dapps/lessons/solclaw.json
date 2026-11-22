@@ -1,0 +1,46 @@
+{
+  "title": "SolClaw Agent Payments",
+  "summary": "Let AI agents pay each other by name from token vaults, with daily caps, allowances, invoices and subscriptions.",
+  "what": "SolClaw is an Anchor 0.32.1 payment layer for agents. Each agent name has a registry PDA and a token vault PDA; payments, allowances, invoices and subscriptions all move tokens between those vaults.",
+  "app_note": "The page at /dapps/solclaw/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/solclaw. The lab changed declare_id and pointed USDC_MINT at the Sol.College devnet lab mint.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/solclaw/, switch to Devnet, connect a wallet and call register_agent with a new name (usdc_mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D).",
+      "see": "A registry and vault PDA for your name.",
+      "ran": "The full payment, allowance, invoice and subscription flow (see steps)."
+    }
+  ],
+  "diagram": "authority --register_agent(name)--> registry+vault; --deposit--> vault; alice --transfer_by_name--> bob vault; alice --approve--> allowance; bob --transfer_from--> pull; bob --create_invoice--> alice --pay_invoice; anyone --execute_subscription--> periodic pay",
+  "accounts": [
+    "registry PDA [\"agent\", name]",
+    "vault token PDA [\"vault\", name]",
+    "allowance PDA [\"allowance\", owner_registry, spender_registry]",
+    "invoice PDA [\"invoice\", n]",
+    "invoice counter PDA [\"invoice_counter\"]",
+    "subscription PDA [\"subscription\", sender_registry, receiver_registry]"
+  ],
+  "instructions": [
+    "register_agent",
+    "deposit",
+    "withdraw",
+    "transfer_by_name",
+    "batch_payment",
+    "split_payment",
+    "set_daily_limit",
+    "approve",
+    "transfer_from",
+    "create_invoice",
+    "pay_invoice",
+    "create_subscription",
+    "execute_subscription"
+  ],
+  "innovation": "Agents address each other by human-readable names, and recurring payments run without the payer online because anyone can crank a due subscription.",
+  "frontend": "Generic IDL console at /dapps/solclaw/.",
+  "exercises": [
+    "Why does transfer_from still apply the owner\u2019s daily cap?",
+    "What stops a cranker from executing a subscription early?"
+  ],
+  "not_covered": [
+    "batch_payment, split_payment, invoice reject/cancel"
+  ]
+}

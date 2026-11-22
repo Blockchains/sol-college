@@ -1,0 +1,12 @@
+{"step":"setup","program":"Cx6bmTRUZxWepfkz1sTMwhvFBkSs72GJPGBqQ3Wx6Pgo","mock_swap":"HNJzGkkbyneDBD6xD8XjLsdhoDmKnjkdBvfHUW6MWtHP","vault":"7Muwj2YJStr8NMAYMSHmKmSTSktoEDHbYpHVD15PUXFf","agent":"GDccBxss4Y6ZDthtKTRCcRzXXDXNWzpx4yoqQEVJk6eA","recipient":"E1om5M9FRZxzHcYiEm5dcX2FCmpMCRv8Wde6NobyLTBm"}
+{"step":"initialize","ok":true,"sig":"58eW8WvHFhUaBBNpzYAx3dVWJtTjctwt6vGawMrRWmUMaVeqBvxokdmMWUD4P9rppXpNQYHBo8Jsgb2TVTD2bRdg","spend_limit":5000000,"allowed_target":"HNJzGkkbyneDBD6xD8XjLsdhoDmKnjkdBvfHUW6MWtHP"}
+{"step":"deposit","ok":true,"sig":"5xEvDpU7rpUhycUnt1F9P6annT22nzvViVPu6PLwjRiRQo7GFbaEvFK1ff8a7w7fjgeqDkRsf2zBqDhchBdUXZUB","lamports":20000000}
+{"step":"execute_hook","ok":true,"sig":"DivojWay2zuJ6HYc5KAJTnTA94BvnAtivgUAtz9LavCesWu8DVmtkwxsyEBnzLPj5CHRgcs3vckMaQaeErNaU2g","recipient_lamports":3000000,"cpi":"mock_swap.swap_log"}
+{"step":"hook_over_limit","rejected":true,"reason":"Blocked"}
+{"step":"hook_wrong_target","rejected":true,"reason":"UnauthorizedTarget"}
+{"step":"hook_wrong_agent","rejected":true,"reason":"UnauthorizedAgent"}
+{"step":"hook_recipient_is_vault","rejected":true,"reason":"InvalidRecipient"}
+{"step":"update_policy_by_stranger","rejected":true,"reason":"ConstraintHasOne"}
+{"step":"update_policy","ok":true,"sig":"3aTm4yErYJ5WoGjdj94oh6x79uZa6FvpHyZrD2Zaxp3t9kMzbdK4paLxJu4UrPts7R6HcrpgKYqehZX7xzbc95Te","spend_limit":1000000}
+{"step":"hook_over_new_limit","rejected":true,"reason":"Blocked"}
+{"step":"state","spend_limit":"1000000","vault_lamports":18224280}

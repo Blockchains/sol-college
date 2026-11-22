@@ -1,0 +1,2765 @@
+{
+  "address": "FQWYC5m12qBVjzoLfJqUzC9HVzhuZcWwTbkac1rGiXgZ",
+  "metadata": {
+    "name": "solclaw",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Agent-to-Agent USDC payments by name on Solana"
+  },
+  "instructions": [
+    {
+      "name": "approve",
+      "docs": [
+        "Approve another agent to pull USDC from your vault, up to `amount`.",
+        "If an allowance already exists, this REPLACES the amount (not adds to it)."
+      ],
+      "discriminator": [
+        69,
+        74,
+        217,
+        36,
+        115,
+        117,
+        97,
+        76
+      ],
+      "accounts": [
+        {
+          "name": "allowance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  108,
+                  108,
+                  111,
+                  119,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner_registry"
+              },
+              {
+                "kind": "account",
+                "path": "spender_registry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spender_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "spender_name",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "batch_payment",
+      "docs": [
+        "Batch pay multiple agents in one transaction.",
+        "v3: Added memo support per payment entry"
+      ],
+      "discriminator": [
+        117,
+        163,
+        173,
+        251,
+        106,
+        207,
+        191,
+        129
+      ],
+      "accounts": [
+        {
+          "name": "sender_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "payments",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "BatchPaymentEntry"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel_invoice",
+      "docs": [
+        "Cancel a pending invoice. Only the requester (creator) can cancel."
+      ],
+      "discriminator": [
+        88,
+        158,
+        54,
+        49,
+        53,
+        26,
+        92,
+        68
+      ],
+      "accounts": [
+        {
+          "name": "invoice",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  111,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "invoice.id",
+                "account": "Invoice"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_subscription",
+      "docs": [
+        "Cancel a subscription. Only the sender (authority) can cancel."
+      ],
+      "discriminator": [
+        60,
+        139,
+        189,
+        242,
+        191,
+        208,
+        143,
+        18
+      ],
+      "accounts": [
+        {
+          "name": "subscription",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_invoice",
+      "docs": [
+        "Create a payment request (invoice).",
+        "The requester asks the payer for a specific amount."
+      ],
+      "discriminator": [
+        154,
+        170,
+        31,
+        135,
+        134,
+        100,
+        156,
+        146
+      ],
+      "accounts": [
+        {
+          "name": "invoice",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  111,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "counter.count",
+                "account": "InvoiceCounter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  111,
+                  105,
+                  99,
+                  101,
+                  95,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "requester_registry"
+        },
+        {
+          "name": "payer_registry"
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "fee_payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "payer_name",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": "string"
+        },
+        {
+          "name": "expires_in_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "create_subscription",
+      "docs": [
+        "Create a new recurring payment subscription"
+      ],
+      "discriminator": [
+        65,
+        71,
+        10,
+        60,
+        249,
+        82,
+        197,
+        12
+      ],
+      "accounts": [
+        {
+          "name": "subscription",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  117,
+                  98,
+                  115,
+                  99,
+                  114,
+                  105,
+                  112,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry"
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "receiver_name",
+          "type": "string"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "interval_seconds",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Deposit USDC into the agent's vault"
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "agent_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_token_account",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "execute_subscription",
+      "docs": [
+        "Execute a due subscription payment. ANYONE can call this (permissionless crank).",
+        "v3: Added spending cap check and auto-generated memo"
+      ],
+      "discriminator": [
+        77,
+        121,
+        39,
+        37,
+        183,
+        213,
+        72,
+        134
+      ],
+      "accounts": [
+        {
+          "name": "subscription",
+          "writable": true
+        },
+        {
+          "name": "sender_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "cranker",
+          "docs": [
+            "Anyone can crank \u2014 no authority constraint"
+          ],
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "increase_allowance",
+      "docs": [
+        "Increase an existing allowance by a given amount."
+      ],
+      "discriminator": [
+        163,
+        192,
+        82,
+        194,
+        75,
+        246,
+        44,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "allowance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  108,
+                  108,
+                  111,
+                  119,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "allowance.owner",
+                "account": "Allowance"
+              },
+              {
+                "kind": "account",
+                "path": "allowance.spender",
+                "account": "Allowance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "additional_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "init_invoice_counter",
+      "docs": [
+        "Initialize the global invoice counter. Call once after program deploy."
+      ],
+      "discriminator": [
+        250,
+        154,
+        98,
+        212,
+        59,
+        93,
+        139,
+        27
+      ],
+      "accounts": [
+        {
+          "name": "counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  111,
+                  105,
+                  99,
+                  101,
+                  95,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "pay_invoice",
+      "docs": [
+        "Pay a pending invoice. Only the designated payer can call this.",
+        "Transfers USDC and marks the invoice as paid in one atomic TX."
+      ],
+      "discriminator": [
+        104,
+        6,
+        62,
+        239,
+        197,
+        206,
+        208,
+        220
+      ],
+      "accounts": [
+        {
+          "name": "invoice",
+          "writable": true
+        },
+        {
+          "name": "payer_registry",
+          "writable": true
+        },
+        {
+          "name": "requester_registry",
+          "writable": true
+        },
+        {
+          "name": "payer_vault",
+          "writable": true
+        },
+        {
+          "name": "requester_vault",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "The payer's wallet"
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_agent",
+      "docs": [
+        "Register a new agent with a human-readable name",
+        "Creates a PDA vault for USDC storage"
+      ],
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "reject_invoice",
+      "docs": [
+        "Reject a pending invoice. Only the designated payer can reject."
+      ],
+      "discriminator": [
+        10,
+        33,
+        176,
+        200,
+        217,
+        237,
+        166,
+        217
+      ],
+      "accounts": [
+        {
+          "name": "invoice",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  118,
+                  111,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "invoice.id",
+                "account": "Invoice"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "payer_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "revoke_allowance",
+      "docs": [
+        "Revoke an allowance. Only the owner can revoke."
+      ],
+      "discriminator": [
+        121,
+        114,
+        141,
+        153,
+        128,
+        164,
+        101,
+        113
+      ],
+      "accounts": [
+        {
+          "name": "allowance",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  108,
+                  108,
+                  111,
+                  119,
+                  97,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "allowance.owner",
+                "account": "Allowance"
+              },
+              {
+                "kind": "account",
+                "path": "allowance.spender",
+                "account": "Allowance"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "set_daily_limit",
+      "docs": [
+        "Set or remove a daily spending limit for an agent.",
+        "Only the agent's authority can call this.",
+        "Set to 0 to remove the limit."
+      ],
+      "discriminator": [
+        0,
+        229,
+        100,
+        68,
+        254,
+        3,
+        185,
+        75
+      ],
+      "accounts": [
+        {
+          "name": "registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "limit_usdc",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "split_payment",
+      "docs": [
+        "Split a total USDC amount across multiple agents proportionally.",
+        "v3: Added memo support"
+      ],
+      "discriminator": [
+        142,
+        211,
+        58,
+        150,
+        156,
+        255,
+        35,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "sender_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "total_amount",
+          "type": "u64"
+        },
+        {
+          "name": "recipients",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "SplitRecipient"
+              }
+            }
+          }
+        },
+        {
+          "name": "memo",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "transfer_by_name",
+      "docs": [
+        "Transfer USDC from sender vault to receiver vault by name",
+        "v3: Added optional memo parameter"
+      ],
+      "discriminator": [
+        219,
+        202,
+        178,
+        165,
+        243,
+        88,
+        66,
+        80
+      ],
+      "accounts": [
+        {
+          "name": "sender_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "sender_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "sender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receiver_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "receiver_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "transfer_from",
+      "docs": [
+        "Pull USDC from an owner's vault using an approved allowance.",
+        "The SPENDER calls this (not the owner)."
+      ],
+      "discriminator": [
+        230,
+        255,
+        130,
+        7,
+        220,
+        247,
+        122,
+        0
+      ],
+      "accounts": [
+        {
+          "name": "allowance",
+          "writable": true
+        },
+        {
+          "name": "owner_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spender_registry",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spender_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "spender_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "spender_authority",
+          "docs": [
+            "The spender's wallet \u2014 they initiate the pull"
+          ],
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "memo",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw",
+      "docs": [
+        "Withdraw USDC from vault to user's token account"
+      ],
+      "discriminator": [
+        183,
+        18,
+        70,
+        156,
+        148,
+        109,
+        161,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "agent_registry",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_registry.name",
+                "account": "AgentRegistry"
+              }
+            ]
+          }
+        },
+        {
+          "name": "destination",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentRegistry",
+      "discriminator": [
+        6,
+        34,
+        128,
+        124,
+        33,
+        136,
+        199,
+        171
+      ]
+    },
+    {
+      "name": "Allowance",
+      "discriminator": [
+        144,
+        8,
+        184,
+        213,
+        49,
+        248,
+        73,
+        131
+      ]
+    },
+    {
+      "name": "Invoice",
+      "discriminator": [
+        51,
+        194,
+        250,
+        114,
+        6,
+        104,
+        18,
+        164
+      ]
+    },
+    {
+      "name": "InvoiceCounter",
+      "discriminator": [
+        141,
+        34,
+        216,
+        15,
+        170,
+        248,
+        14,
+        41
+      ]
+    },
+    {
+      "name": "Subscription",
+      "discriminator": [
+        64,
+        7,
+        26,
+        135,
+        102,
+        132,
+        98,
+        33
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AllowanceApprovedEvent",
+      "discriminator": [
+        125,
+        173,
+        131,
+        252,
+        42,
+        18,
+        212,
+        222
+      ]
+    },
+    {
+      "name": "AllowanceModifiedEvent",
+      "discriminator": [
+        118,
+        14,
+        86,
+        167,
+        167,
+        40,
+        149,
+        29
+      ]
+    },
+    {
+      "name": "AllowanceRevokedEvent",
+      "discriminator": [
+        131,
+        192,
+        231,
+        129,
+        172,
+        219,
+        255,
+        90
+      ]
+    },
+    {
+      "name": "BatchPaymentEvent",
+      "discriminator": [
+        51,
+        142,
+        229,
+        195,
+        110,
+        11,
+        141,
+        73
+      ]
+    },
+    {
+      "name": "DailyLimitSetEvent",
+      "discriminator": [
+        24,
+        53,
+        121,
+        237,
+        201,
+        15,
+        7,
+        155
+      ]
+    },
+    {
+      "name": "InvoiceCancelledEvent",
+      "discriminator": [
+        211,
+        7,
+        115,
+        212,
+        94,
+        39,
+        85,
+        176
+      ]
+    },
+    {
+      "name": "InvoiceCreatedEvent",
+      "discriminator": [
+        204,
+        223,
+        217,
+        47,
+        159,
+        28,
+        33,
+        74
+      ]
+    },
+    {
+      "name": "InvoicePaidEvent",
+      "discriminator": [
+        201,
+        31,
+        158,
+        13,
+        50,
+        47,
+        66,
+        53
+      ]
+    },
+    {
+      "name": "InvoiceRejectedEvent",
+      "discriminator": [
+        231,
+        191,
+        240,
+        24,
+        18,
+        222,
+        163,
+        98
+      ]
+    },
+    {
+      "name": "SplitPaymentEvent",
+      "discriminator": [
+        54,
+        95,
+        140,
+        108,
+        118,
+        178,
+        133,
+        2
+      ]
+    },
+    {
+      "name": "SubscriptionExecutedEvent",
+      "discriminator": [
+        17,
+        50,
+        94,
+        148,
+        82,
+        107,
+        78,
+        138
+      ]
+    },
+    {
+      "name": "TransferEvent",
+      "discriminator": [
+        100,
+        10,
+        46,
+        113,
+        8,
+        28,
+        179,
+        125
+      ]
+    },
+    {
+      "name": "TransferFromEvent",
+      "discriminator": [
+        237,
+        192,
+        254,
+        178,
+        44,
+        214,
+        159,
+        188
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidNameLength",
+      "msg": "Name must be between 1 and 32 characters"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidAmount",
+      "msg": "Amount must be greater than 0"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMint",
+      "msg": "Invalid USDC mint address"
+    },
+    {
+      "code": 6003,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: you don't control this vault"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidBatchSize",
+      "msg": "Batch must contain 1-10 payments"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidRemainingAccounts",
+      "msg": "Wrong number of remaining accounts for batch/split"
+    },
+    {
+      "code": 6006,
+      "name": "NameMismatch",
+      "msg": "Recipient name does not match registry"
+    },
+    {
+      "code": 6007,
+      "name": "VaultMismatch",
+      "msg": "Vault does not match agent registry"
+    },
+    {
+      "code": 6008,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidSplitShares",
+      "msg": "Split shares must add up to 10000 basis points"
+    },
+    {
+      "code": 6010,
+      "name": "TooManySplitRecipients",
+      "msg": "Maximum 10 split recipients allowed"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidInterval",
+      "msg": "Subscription interval must be at least 60 seconds"
+    },
+    {
+      "code": 6012,
+      "name": "SubscriptionNotDue",
+      "msg": "Subscription is not yet due"
+    },
+    {
+      "code": 6013,
+      "name": "SubscriptionNotActive",
+      "msg": "Subscription is not active"
+    },
+    {
+      "code": 6014,
+      "name": "InvalidSubscription",
+      "msg": "Invalid subscription: sender/receiver mismatch"
+    },
+    {
+      "code": 6015,
+      "name": "MemoTooLong",
+      "msg": "Memo exceeds 128 bytes"
+    },
+    {
+      "code": 6016,
+      "name": "SpendingCapExceeded",
+      "msg": "Transfer would exceed daily spending limit"
+    },
+    {
+      "code": 6017,
+      "name": "CannotApproveSelf",
+      "msg": "Cannot approve yourself"
+    },
+    {
+      "code": 6018,
+      "name": "AllowanceNotActive",
+      "msg": "Allowance is not active"
+    },
+    {
+      "code": 6019,
+      "name": "AllowanceMismatch",
+      "msg": "Allowance does not match owner/spender"
+    },
+    {
+      "code": 6020,
+      "name": "AllowanceExceeded",
+      "msg": "Transfer amount exceeds remaining allowance"
+    },
+    {
+      "code": 6021,
+      "name": "CannotInvoiceSelf",
+      "msg": "Cannot invoice yourself"
+    },
+    {
+      "code": 6022,
+      "name": "InvoiceNotPending",
+      "msg": "Invoice is not in pending status"
+    },
+    {
+      "code": 6023,
+      "name": "InvoiceMismatch",
+      "msg": "Invoice does not match payer/requester"
+    },
+    {
+      "code": 6024,
+      "name": "InvoiceExpired",
+      "msg": "Invoice has expired"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidExpiry",
+      "msg": "Invalid expiry value"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentRegistry",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "total_sent",
+            "type": "u64"
+          },
+          {
+            "name": "total_received",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "vault_bump",
+            "type": "u8"
+          },
+          {
+            "name": "daily_limit",
+            "type": "u64"
+          },
+          {
+            "name": "daily_spent",
+            "type": "u64"
+          },
+          {
+            "name": "last_spend_day",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Allowance",
+      "docs": [
+        "v3: Allowance account for approve/transferFrom pattern"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "spender",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner_name",
+            "type": "string"
+          },
+          {
+            "name": "spender_name",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_pulled",
+            "type": "u64"
+          },
+          {
+            "name": "pull_count",
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AllowanceApprovedEvent",
+      "docs": [
+        "v3: Allowance approved event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "string"
+          },
+          {
+            "name": "spender",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AllowanceModifiedEvent",
+      "docs": [
+        "v3: Allowance modified event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "string"
+          },
+          {
+            "name": "spender",
+            "type": "string"
+          },
+          {
+            "name": "new_amount",
+            "type": "u64"
+          },
+          {
+            "name": "action",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AllowanceRevokedEvent",
+      "docs": [
+        "v3: Allowance revoked event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "string"
+          },
+          {
+            "name": "spender",
+            "type": "string"
+          },
+          {
+            "name": "total_pulled",
+            "type": "u64"
+          },
+          {
+            "name": "pull_count",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BatchPaymentEntry",
+      "docs": [
+        "A single payment entry within a batch",
+        "v3: Added optional memo"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "recipient_name",
+            "docs": [
+              "The name of the recipient agent"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount in USDC smallest units (6 decimals)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "docs": [
+              "Optional memo (max 128 bytes)"
+            ],
+            "type": {
+              "option": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "BatchPaymentEvent",
+      "docs": [
+        "v3: Batch payment event with memos"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "string"
+          },
+          {
+            "name": "recipients",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "amounts",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "memos",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "total",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DailyLimitSetEvent",
+      "docs": [
+        "v3: Daily limit set event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "string"
+          },
+          {
+            "name": "limit_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Invoice",
+      "docs": [
+        "v4: On-chain payment request.",
+        "Created by the requester, paid by the payer."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "docs": [
+              "Unique invoice ID (derived from global counter)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "docs": [
+              "The agent requesting payment (AgentRegistry PDA)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "payer",
+            "docs": [
+              "The agent who should pay (AgentRegistry PDA)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "requester_name",
+            "docs": [
+              "Requester's readable name (max 32)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "payer_name",
+            "docs": [
+              "Payer's readable name (max 32)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Amount requested in USDC smallest units"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "docs": [
+              "Description / reason for the invoice (max 128)"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current status: 0=Pending, 1=Paid, 2=Rejected, 3=Cancelled, 4=Expired"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Creation timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "docs": [
+              "Expiry timestamp. 0 = never expires."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "paid_at",
+            "docs": [
+              "Timestamp when paid (0 if not yet paid)"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "authority",
+            "docs": [
+              "The authority who created this (requester's wallet)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "Bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InvoiceCancelledEvent",
+      "docs": [
+        "v4: Invoice cancelled event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoice_id",
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "type": "string"
+          },
+          {
+            "name": "payer",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InvoiceCounter",
+      "docs": [
+        "v4: Global counter for generating unique invoice IDs.",
+        "Single PDA for the entire program, seeded by [\"invoice_counter\"]."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InvoiceCreatedEvent",
+      "docs": [
+        "v4: Invoice created event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoice_id",
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "type": "string"
+          },
+          {
+            "name": "payer",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InvoicePaidEvent",
+      "docs": [
+        "v4: Invoice paid event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoice_id",
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "type": "string"
+          },
+          {
+            "name": "payer",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InvoiceRejectedEvent",
+      "docs": [
+        "v4: Invoice rejected event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "invoice_id",
+            "type": "u64"
+          },
+          {
+            "name": "requester",
+            "type": "string"
+          },
+          {
+            "name": "payer",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SplitPaymentEvent",
+      "docs": [
+        "v3: Split payment event with memo"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "string"
+          },
+          {
+            "name": "recipients",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "amounts",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "total",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SplitRecipient",
+      "docs": [
+        "A split recipient with their share in basis points"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "docs": [
+              "Agent name"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "share_bps",
+            "docs": [
+              "Share in basis points (5000 = 50%)"
+            ],
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Subscription",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "pubkey"
+          },
+          {
+            "name": "receiver",
+            "type": "pubkey"
+          },
+          {
+            "name": "sender_name",
+            "type": "string"
+          },
+          {
+            "name": "receiver_name",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "interval_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "last_executed",
+            "type": "i64"
+          },
+          {
+            "name": "next_due",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_paid",
+            "type": "u64"
+          },
+          {
+            "name": "execution_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubscriptionExecutedEvent",
+      "docs": [
+        "v3: Subscription executed event with auto-memo"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "string"
+          },
+          {
+            "name": "receiver",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "execution_count",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferEvent",
+      "docs": [
+        "v3: Transfer event with memo"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "sender",
+            "type": "string"
+          },
+          {
+            "name": "receiver",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TransferFromEvent",
+      "docs": [
+        "v3: TransferFrom event"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "string"
+          },
+          {
+            "name": "spender",
+            "type": "string"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "memo",
+            "type": "string"
+          },
+          {
+            "name": "remaining_allowance",
+            "type": "u64"
+          },
+          {
+            "name": "pull_number",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}
