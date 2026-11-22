@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agent-fuel",
+  "slug": "agent-fuel",
+  "displayName": "Agent Fuel (Sol.College demonstration)",
+  "description": "Agent spending vault plus payment-backed reputation on Solana devnet (two Anchor 0.31.1 programs). credit_vault create_vault, deposit, update_policy and spend, and reputation initialize_agent, register_service, record_payment, give_feedback and compute_score were verified.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of frankolien/agent_fuel. The lab tree is branch sol-college-devnet of Blockchains/agent_fuel. The lab only changed both declare_ids to unique Sol.College devnet programs. The hosted IDLs are the upstream SDK IDLs with the lab addresses substituted; discriminators were confirmed by live transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "frankolien/agent_fuel",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agent_fuel",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agent-fuel-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agent-fuel"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T16:35:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (credit_vault limits and whitelist; reputation receipts, feedback and score)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agent-fuel/",
+      "QA: devnet proof of a policy-checked agent spend recorded as reputation"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Post-pay request/approve/claim flow and freeze"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "post-pay",
+        "title": "Exercise request_spend, approve_spend and claim with allow_post_pay",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/credit_vault"
+  }
+}

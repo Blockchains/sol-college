@@ -1,0 +1,14 @@
+{"step":"setup","credit_vault":"Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz","reputation":"8CzPMcoaxTi8aHBUBmERcCNQcdBGpL72tJccBfX2P4Mt","agent":"EJX6kxy6gdMxknPz168VDPxus1do6oZuzexcX3AojQuL","service":"GHfjHSjDUzvANJtbSvu8wFD2Dk6Eb91DhXLiD6qmEcVi","vault":"BeADSYiabeK8p9dztqTzkntamaM7xT5UZg5BP3dRYY2x","policy":"6cSQg7mtgHiPX1jWhX9Gus38fhvXLjdzi53owQYkeCjb"}
+{"step":"create_vault","sig":"4q1HXd45dZD5KdoWSSoRbYs74CEiJAYD9fTxaB2FgpiMLRrRrikFtCma7WaqKaBaDzPQfhEB8Gb2FCtHFcgw3qR9"}
+{"step":"deposit","sig":"4Wa3nzZYfoptzbYexUKeszkWUReTzWjAigoPVBCu45sa5euXoEAETCDZ886jVshWCunPcAFcufGFdDRe9UzB2zXE","vault_balance":"1000000"}
+{"step":"update_policy","sig":"36aFCMnZ2KdYFXwxuZgJoFKpKyfzijUh9GsbVcpPEwA6w4AZyvw7kZBMAakNeivp2MGeBwzVanM4MEmjvjR912V9","whitelist":["GHfjHSjDUzvANJtbSvu8wFD2Dk6Eb91DhXLiD6qmEcVi"]}
+{"step":"spend_over_per_tx_limit","rejected":true,"reason":"PerTxLimitExceeded"}
+{"step":"spend_to_non_whitelisted","rejected":true,"reason":"NotWhitelisted"}
+{"step":"spend","sig":"4fkRdp6rYTFUemDDH5qzB6wJZeZP2LoHB9d6W9ugTKSUEKJFjkhG4rhs1YBrSaAMmqFbGSnNoDsF6ogo6Shjbv9L","service_received":"400000","vault_balance":"600000"}
+{"step":"initialize_agent","sig":"2vZz9TKEYdw6RHYnFkTCQvVMtAraQbZ5oKFokGgpD6J5QJGi6kY92Fmqejos7Ns13ihU9CFGfhg2wj3HJ1gEg2YR","profile":"8v8zuVmPk2pxn572wVkUADHNQpqunnqfS2KiBFT7245T"}
+{"step":"register_service","sig":"s8xxouTgXWrnn8qC2WYwHTWtFzmtmgJkNPPP1b4b7aD5CYiNUZVcia3iK37Mq9TQK8iRJJ3SowVyTSeFidmTYEn","registry":"37s9B4fNHRxpaZ35cuaEL19DGzr5VE6FKsksErfzi34m"}
+{"step":"record_payment","sig":"2TxTG3CdTaxMuXxN7Gx4sF5QvwE2pT7UzL8uNsDJqjNscxAa7kvA5AgLLeYnWzNTaVGCtXY5WFeEzjzyaidvkK1w","receipt_hash_of_spend_sig":"d1f9b68982fb94130ec2bcfcb31dd87a44aa731ae5a99fb5fa21bb52b63b71f2"}
+{"step":"record_payment_receipt_replay","rejected":true,"reason":"custom program error 0x0 (receipt PDA already in use: system allocate on init)"}
+{"step":"give_feedback","sig":"3waxbonKvdGafgrgu8GSmm6XMMF5JRJG9jmiZYKHWLxn8h7M9s2dLS5eodue6PHWSgadWEr6fBj5QMsmgWeKaEEa","feedback":"9MpLwbEzrThY967Ch8QSHkKuCqeVwebs1Ac6vxSuiE2B"}
+{"step":"compute_score","sig":"2tByHSjSVLD33MGYun2HW5fodzcRUQe79h3W1zWzEbBf4o6sAoxPXkigc6KH92R8wYa922uucTPRWEnAp1QEpbrd"}
+{"step":"agent_profile_after","externalAgentId":"1","totalTransactions":"1","totalVolumeUsdc":"400000","consecutiveSuccess":"1","totalFeedbackCount":"1","activeNegativeFeedbackCount":"0","servicesUsed":"1","firstActiveSlot":"525127249","lastActiveSlot":"525127264","reputationScore":"360","bump":"255"}

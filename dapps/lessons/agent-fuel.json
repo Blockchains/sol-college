@@ -1,0 +1,43 @@
+{
+  "title": "Agent Fuel",
+  "summary": "Fund a capped token vault an AI agent can spend from, then turn each paid call into on-chain reputation.",
+  "what": "Agent Fuel has two Anchor 0.31.1 programs. credit_vault holds an owner's tokens for one agent and enforces per-transaction, hourly and lifetime caps plus a service whitelist. reputation lets services record paid usage with single-use receipts, leave feedback, and compute an agent score.",
+  "app_note": "The page at /dapps/agent-fuel/ is the generic IDL-driven console for credit_vault; the reputation IDL is at /dapps/agent-fuel/reputation-idl.json. The lab tree is branch sol-college-devnet of Blockchains/agent_fuel.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agent-fuel/, switch to Devnet, and connect a wallet. The lab already ran a spend and recorded it as reputation.",
+      "see": "Vault BeADSYia\u2026 holds 600_000; the agent profile score is 360.",
+      "ran": "create_vault 4q1HXd45\u2026; spend 4fkRdp6r\u2026; record_payment 2TxTG3Cd\u2026; give_feedback 3waxbonK\u2026"
+    }
+  ],
+  "diagram": "owner --create_vault/deposit/update_policy--> vault+policy; agent --spend--> service ATA; service --record_payment(receipt)--> agent_profile+link; service --give_feedback--> feedback; anyone --compute_score--> score.",
+  "accounts": [
+    "vault PDA seeds [\"vault\", owner, agent]",
+    "policy PDA seeds [\"policy\", vault]",
+    "agent_profile PDA seeds [\"agent\", agent]",
+    "service_registry PDA seeds [\"service\", service]",
+    "link PDA seeds [\"link\", agent_profile, service_registry]",
+    "receipt PDA seeds [\"receipt\", hash]",
+    "feedback PDA seeds [\"feedback\", hash]"
+  ],
+  "instructions": [
+    "create_vault",
+    "deposit",
+    "update_policy",
+    "spend",
+    "initialize_agent",
+    "register_service",
+    "record_payment",
+    "give_feedback",
+    "compute_score"
+  ],
+  "innovation": "Spending caps protect the owner, and single-use payment receipts stop a service from inflating an agent's reputation with repeated feedback.",
+  "frontend": "Generic IDL console at /dapps/agent-fuel/.",
+  "exercises": [
+    "Which PDA makes a receipt single-use?",
+    "Which limit resets every SLOTS_PER_HOUR?"
+  ],
+  "not_covered": [
+    "Post-pay flow, freeze, withdraw"
+  ]
+}

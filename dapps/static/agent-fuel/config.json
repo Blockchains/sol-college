@@ -1,0 +1,11 @@
+{
+ "name": "Agent Fuel",
+ "fork": "https://github.com/Blockchains/agent_fuel",
+ "commit": "25ddf721f0d9a614de118d42b1bd9ea5b8bb9dbb",
+ "lesson": "/explore/agent-fuel/",
+ "programs": {
+  "devnet": "Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz",
+  "mainnet": null,
+  "devnet_reputation": "8CzPMcoaxTi8aHBUBmERcCNQcdBGpL72tJccBfX2P4Mt"
+ }
+}

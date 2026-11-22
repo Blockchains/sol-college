@@ -4153,5 +4153,92 @@
     "limits": "refund (after expiry) and slash were not exercised. The approved path pays a 1:1 mock swap amount; no Jupiter CPI is made. Slashing only lowers the recorded stake; the lamports stay in protocol_vault. An earlier attempt in this run (agent 7j2QHyy1\u2026, escrow 8ii8hB7M\u2026) stopped after lock_escrow when the Pyth Hermes API returned 401; that 1_000_000 stays in the shared vault until refund after expiry. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize 28Vnb5wi\u2026 created protocol 3BqBukiLx3171oK1mSazxT3e5ritMNp2kh4g3RVVaB4V (min stake 2 SOL, 5 bps). register_agent 4BUpPPyu\u2026 staked 2 SOL for agent HzowNisNPsW2it4WF3qnNEUXvaHnSoMMcteUrm1hMpmh; configure_policy NjSrZapF\u2026 allow-listed the Jupiter program id. lock_escrow H5oyPmM6\u2026 locked 1_000_000 lab tokens for escrow D9L58YBhoDonrkfANQmKp4eLLDvMoJaEAgwzZqR8K2Q4. commit 5RM2QsJt\u2026 stored the sha256 of a borsh AgentClaim priced from the live Pyth devnet SOL/USD push-oracle account 6bWEn5B8\u2026 (7031576484e-8, 10s old). verify_and_execute 64X9jV2U\u2026 recorded decision=1 (hash, oracle and policy all passed, deviation 0 bps), set the escrow to Executed and paid the owner's destination token account exactly 1_000_000. A second escrow whose revealed claim did not match its commitment was refunded by verify_and_execute T9FbhWU3\u2026 (decision=0, failure_code=1, owner +500_000, agent recorded stake 2.0 \u2192 1.8 SOL, score 1000 \u2192 955). Rejected: register_agent with 1 SOL (InvalidStake) and commit with an all-zero hash (InvalidIntentId)."
+  },
+  {
+    "slug": "agent-fuel",
+    "name": "Agent Fuel",
+    "lesson": "/explore/agent-fuel/",
+    "app": "/dapps/agent-fuel/",
+    "fork": "https://github.com/Blockchains/agent_fuel",
+    "commit": "25ddf721f0d9a614de118d42b1bd9ea5b8bb9dbb",
+    "program": "Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at the credit_vault devnet program (the reputation IDL is hosted next to it as reputation-idl.json). The hosted IDLs are the upstream SDK IDLs with lab addresses substituted. The lab tree is branch sol-college-devnet of Blockchains/agent_fuel (unique declare_ids; official EsykPsaf\u2026 / 4GjB4xdm\u2026 not reused).",
+    "learn": "credit_vault: create_vault makes a vault PDA (seeds [\"vault\", owner, agent]), a policy PDA (seeds [\"policy\", vault]) and the vault's ATA. The agent calls spend; check_and_record_spend enforces frozen, whitelist, per-tx, hourly-window and lifetime limits before the vault PDA signs the token transfer. reputation: initialize_agent (seeds [\"agent\", agent]) and register_service (seeds [\"service\", service]); the service calls record_payment with a receipt hash that can be used once (seeds [\"receipt\", hash]), then give_feedback (-100..100) and anyone can compute_score.",
+    "source": [
+      [
+        "programs/credit_vault/src/lib.rs L33-L101",
+        "https://github.com/Blockchains/agent_fuel/blob/25ddf721f0d9a614de118d42b1bd9ea5b8bb9dbb/programs/credit_vault/src/lib.rs#L33-L101"
+      ],
+      [
+        "programs/credit_vault/src/policy.rs",
+        "https://github.com/Blockchains/agent_fuel/blob/25ddf721f0d9a614de118d42b1bd9ea5b8bb9dbb/programs/credit_vault/src/policy.rs"
+      ],
+      [
+        "programs/reputation/src/lib.rs L33-L106",
+        "https://github.com/Blockchains/agent_fuel/blob/25ddf721f0d9a614de118d42b1bd9ea5b8bb9dbb/programs/reputation/src/lib.rs#L33-L106"
+      ]
+    ],
+    "flow": "tests/devnet/agent-fuel.mjs",
+    "log": "tests/devnet/logs/agent-fuel-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy credit_vault as Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz on devnet",
+        "3t8SMCZ3EHY5Jrdh5UDfPGbKEtMEHjMVq6Fbtj29KaZgMgsXVqd7LGEb8Xu7iz7SAYWn3YzWpfGh2sKQugyh8Wad"
+      ],
+      [
+        "Deploy reputation as 8CzPMcoaxTi8aHBUBmERcCNQcdBGpL72tJccBfX2P4Mt on devnet",
+        "5HFcZTjTAEkGQ1h5AoSotwvaoFygQrijk75YfZsWJ3aptBbf4Qa5KoCVUL6RUFbp5beQU4oCQzpeuGmnZhj7sBPt"
+      ],
+      [
+        "create_vault (vault BeADSYiabeK8p9dztqTzkntamaM7xT5UZg5BP3dRYY2x, policy 6cSQg7mtgHiPX1jWhX9Gus38fhvXLjdzi53owQYkeCjb)",
+        "4q1HXd45dZD5KdoWSSoRbYs74CEiJAYD9fTxaB2FgpiMLRrRrikFtCma7WaqKaBaDzPQfhEB8Gb2FCtHFcgw3qR9"
+      ],
+      [
+        "deposit 1_000_000 lab tokens",
+        "4Wa3nzZYfoptzbYexUKeszkWUReTzWjAigoPVBCu45sa5euXoEAETCDZ886jVshWCunPcAFcufGFdDRe9UzB2zXE"
+      ],
+      [
+        "update_policy whitelist service GHfjHSjDUzvANJtbSvu8wFD2Dk6Eb91DhXLiD6qmEcVi",
+        "36aFCMnZ2KdYFXwxuZgJoFKpKyfzijUh9GsbVcpPEwA6w4AZyvw7kZBMAakNeivp2MGeBwzVanM4MEmjvjR912V9"
+      ],
+      [
+        "spend 400_000 by the agent: service +400_000",
+        "4fkRdp6rYTFUemDDH5qzB6wJZeZP2LoHB9d6W9ugTKSUEKJFjkhG4rhs1YBrSaAMmqFbGSnNoDsF6ogo6Shjbv9L"
+      ],
+      [
+        "initialize_agent (profile 8v8zuVmPk2pxn572wVkUADHNQpqunnqfS2KiBFT7245T)",
+        "2vZz9TKEYdw6RHYnFkTCQvVMtAraQbZ5oKFokGgpD6J5QJGi6kY92Fmqejos7Ns13ihU9CFGfhg2wj3HJ1gEg2YR"
+      ],
+      [
+        "register_service campus-swap (registry 37s9B4fNHRxpaZ35cuaEL19DGzr5VE6FKsksErfzi34m)",
+        "s8xxouTgXWrnn8qC2WYwHTWtFzmtmgJkNPPP1b4b7aD5CYiNUZVcia3iK37Mq9TQK8iRJJ3SowVyTSeFidmTYEn"
+      ],
+      [
+        "record_payment 400_000 with receipt sha256(spend signature)",
+        "2TxTG3CdTaxMuXxN7Gx4sF5QvwE2pT7UzL8uNsDJqjNscxAa7kvA5AgLLeYnWzNTaVGCtXY5WFeEzjzyaidvkK1w"
+      ],
+      [
+        "give_feedback +80",
+        "3waxbonKvdGafgrgu8GSmm6XMMF5JRJG9jmiZYKHWLxn8h7M9s2dLS5eodue6PHWSgadWEr6fBj5QMsmgWeKaEEa"
+      ],
+      [
+        "compute_score: reputation_score 360",
+        "2tByHSjSVLD33MGYun2HW5fodzcRUQe79h3W1zWzEbBf4o6sAoxPXkigc6KH92R8wYa922uucTPRWEnAp1QEpbrd"
+      ]
+    ],
+    "negative": [
+      "spend of 600_000 was rejected (PerTxLimitExceeded; cap 500_000).",
+      "spend to a non-whitelisted recipient was rejected (NotWhitelisted).",
+      "record_payment replaying the same receipt hash was rejected (receipt PDA already in use)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agent-fuel.mjs.",
+    "limits": "request_spend/approve_spend/claim (post-pay), cancel_spend, withdraw, freeze/unfreeze, append_response and revoke_feedback were not exercised. record_payment is attested by the service signer; the receipt hash is not checked against an on-chain transfer. The official program ids were not reused.",
+    "functional": "full",
+    "functional_evidence": "credit_vault: create_vault 4q1HXd45\u2026 created vault BeADSYiabeK8p9dztqTzkntamaM7xT5UZg5BP3dRYY2x for agent EJX6kxy6gdMxknPz168VDPxus1do6oZuzexcX3AojQuL (per-tx 500_000, hourly 2_000_000, lifetime 5_000_000); deposit 4Wa3nzZY\u2026 funded it with 1_000_000 lab tokens; update_policy 36aFCMnZ\u2026 whitelisted service GHfjHSjDUzvANJtbSvu8wFD2Dk6Eb91DhXLiD6qmEcVi. spend 4fkRdp6r\u2026, signed by the agent, paid the service exactly 400_000 (vault 600_000 left). Rejected: 600_000 (PerTxLimitExceeded) and a non-whitelisted recipient (NotWhitelisted). reputation: initialize_agent 2vZz9TKE\u2026, register_service s8xxouTg\u2026, record_payment 2TxTG3Cd\u2026 (receipt = sha256 of the spend signature), give_feedback 3waxbonK\u2026 (+80) and compute_score 2tByHSjS\u2026 left the profile at total_transactions=1, total_volume_usdc=400000, reputation_score=360. Replaying the same receipt was rejected (receipt PDA already in use).",
+    "programs": {
+      "credit_vault": "Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz",
+      "reputation": "8CzPMcoaxTi8aHBUBmERcCNQcdBGpL72tJccBfX2P4Mt"
+    }
   }
 ]
