@@ -1,0 +1,10 @@
+{
+ "name": "AgentPay Conduit Payment Channels",
+ "fork": "https://github.com/Blockchains/agentpay-conduit",
+ "commit": "e396bf2dca6e45327978806ff2009e53a8779c5a",
+ "lesson": "/explore/agentpay-conduit/",
+ "programs": {
+  "devnet": "12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH",
+  "mainnet": null
+ }
+}

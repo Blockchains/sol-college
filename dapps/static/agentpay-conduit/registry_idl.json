@@ -1,0 +1,397 @@
+{
+  "address": "44iVtsz24Z1DZ6m4XFYCCLADmzUZA5oZt2jkmJ5nnwyn",
+  "metadata": {
+    "name": "registry",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Conduit on-chain provider registry program"
+  },
+  "instructions": [
+    {
+      "name": "deregister_provider",
+      "docs": [
+        "Remove a provider and reclaim rent. Owner only."
+      ],
+      "discriminator": [
+        155,
+        165,
+        230,
+        205,
+        237,
+        143,
+        134,
+        112
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        },
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "provider.name",
+                "account": "ApiProvider"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "increment_call_count",
+      "docs": [
+        "Increment the lifetime call counter. Restricted to the gateway authority",
+        "recorded on the provider account, so usage metering can't be forged."
+      ],
+      "discriminator": [
+        125,
+        180,
+        108,
+        20,
+        163,
+        83,
+        207,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "gateway_authority",
+          "signer": true
+        },
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider.owner",
+                "account": "ApiProvider"
+              },
+              {
+                "kind": "account",
+                "path": "provider.name",
+                "account": "ApiProvider"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_provider",
+      "docs": [
+        "Register a new provider. Permissionless: anyone can list a service.",
+        "The signer pays rent and becomes the owner."
+      ],
+      "discriminator": [
+        254,
+        209,
+        54,
+        184,
+        46,
+        197,
+        109,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "endpoint_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "price_usdc",
+          "type": "u64"
+        },
+        {
+          "name": "category",
+          "type": "u8"
+        },
+        {
+          "name": "agent_type",
+          "type": "u8"
+        },
+        {
+          "name": "provider_wallet",
+          "type": "pubkey"
+        },
+        {
+          "name": "gateway_authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "update_provider",
+      "docs": [
+        "Update price and/or active flag. Owner only."
+      ],
+      "discriminator": [
+        52,
+        208,
+        141,
+        191,
+        164,
+        54,
+        108,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        },
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "provider.name",
+                "account": "ApiProvider"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_price",
+          "type": {
+            "option": "u64"
+          }
+        },
+        {
+          "name": "active",
+          "type": {
+            "option": "bool"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ApiProvider",
+      "discriminator": [
+        102,
+        209,
+        123,
+        213,
+        94,
+        188,
+        210,
+        61
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameEmpty",
+      "msg": "Provider name must not be empty"
+    },
+    {
+      "code": 6001,
+      "name": "NameTooLong",
+      "msg": "Provider name exceeds the maximum length"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidPrice",
+      "msg": "Price must be greater than zero"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidCategory",
+      "msg": "Category is out of range"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidAgentType",
+      "msg": "Agent type is out of range"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Signer is not authorized for this action"
+    },
+    {
+      "code": 6006,
+      "name": "MathOverflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "ApiProvider",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "endpoint_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "price_usdc",
+            "type": "u64"
+          },
+          {
+            "name": "category",
+            "type": "u8"
+          },
+          {
+            "name": "agent_type",
+            "type": "u8"
+          },
+          {
+            "name": "provider_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "gateway_authority",
+            "docs": [
+              "Authority allowed to call `increment_call_count`."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "total_calls",
+            "type": "u64"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

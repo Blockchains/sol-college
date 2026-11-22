@@ -5484,5 +5484,89 @@
     "limits": "Lab patch: the hardcoded admin and ORACLE_IDENTITY are the Sol.College devnet lab wallet, which posted the answer itself; no off-chain LLM service ran, so the answer text was written by the lab. The MagicBlock delegate / process_undelegation path and the defi-score-agent-example program were not deployed or exercised. callback_from_llm does not check that the program account matches the requested callback program. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize config 2fNAiztE\u2026; create_chat with a system prompt 53FuqwxZ\u2026; create_llm_inference asking \"What is a PDA?\" with callback_test as callback 5i6r3Mdx\u2026; callback_from_llm by the oracle identity; callback_test logs the answer 5jByrKCX\u2026; create_llm_inference again LbjaJ2LT\u2026. initialize by a non-admin wallet was rejected (ConstraintAddress). callback_from_llm by a wallet that is not the oracle identity was rejected (ConstraintAddress). Calling callback_test directly, without the config PDA signature, was rejected (InvalidAccountData). create_chat with an existing seed failed because the account already exists (System error 0x0)."
+  },
+  {
+    "slug": "agentpay-conduit",
+    "name": "AgentPay Conduit Payment Channels",
+    "lesson": "/explore/agentpay-conduit/",
+    "app": "/dapps/agentpay-conduit/",
+    "fork": "https://github.com/Blockchains/agentpay-conduit",
+    "commit": "e396bf2dca6e45327978806ff2009e53a8779c5a",
+    "program": "12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agentpay-conduit (unique declare_id; the official B42nssBX\u2026 was not reused).",
+    "learn": "Registry: register_provider creates [\"provider\", owner, name] with price, category, provider wallet and gateway authority; the gateway calls increment_call_count per API call; the owner can update_provider and deregister_provider. Escrow: open_channel locks tokens in a vault ATA owned by the channel PDA [\"channel\", agent, channel_id]. The agent signs channel_id || cumulative_amount off chain; settle (gateway only) verifies that ed25519 signature on chain, pays the provider, refunds the rest and closes the channel. claim_refund returns everything after the timeout.",
+    "source": [
+      [
+        "escrow/src/lib.rs",
+        "https://github.com/Blockchains/agentpay-conduit/blob/e396bf2dca6e45327978806ff2009e53a8779c5a/programs/conduit-contracts/programs/escrow/src/lib.rs"
+      ],
+      [
+        "registry/src/lib.rs",
+        "https://github.com/Blockchains/agentpay-conduit/blob/e396bf2dca6e45327978806ff2009e53a8779c5a/programs/conduit-contracts/programs/registry/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentpay-conduit.mjs",
+    "log": "tests/devnet/logs/agentpay-conduit-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy escrow as 12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH on devnet",
+        "3xpaMqVqtyZN2GmPF5UeZ8g8Kfvc7gA6HKAHc16X7eQgT1WRVFTrEJfouhfWc7MUi9YWLoLuxFVj9PHeJcAbNu2t"
+      ],
+      [
+        "register_provider (category Agent)",
+        "53VUdbxkZHLoZuUWWKU7xvSjvhtNPRnteQZjjDfFs9M4bLrRsYSsJDGkxJZ4u7Q3VBT27dSBroozaV7ZiQt3W2YS"
+      ],
+      [
+        "update_provider price",
+        "4FWrQDS7usDyafAWWFcpvPWg3Yt8Fwoa4Et8x2b2tR4ZxZvCNHAgu3Pe9vLBiqsi36g6qys5xrkVNU6Z8BXqmjxG"
+      ],
+      [
+        "increment_call_count by the gateway",
+        "31q5nQvTk85DZKpL7A9HVLfT35oHvJDHM4GMtrCcXortgcn5QxDv9JMWyGbxuk2Haw4VzrTsHXzcCE8Qziw7u7Pq"
+      ],
+      [
+        "open_channel with 1_000_000 lab tokens",
+        "5JHihXMckq8bnr7hPZnehTCzx4HrkuEHgfyYdJWaaeXkZN2EHJzeUdUnMsePvgRNMx4x8fyAfctd72e7eHWmWDwn"
+      ],
+      [
+        "settle a signed voucher for 400_000 (provider 400_000, agent refund 600_000)",
+        "43Cb8Mko3kRu4Vkr6BNSGKKFmmYgJefFW5XAyJkPdBU8ak469Q3xUQVYnjWGRmbXv69CESDThxcGHxuUcnyJo62L"
+      ],
+      [
+        "open_channel 2 with a 3 s timeout",
+        "5VgDgumBLwLnPLpdx5DvvBzFnVso1zkCxCokMfMK8PWX51d3WkpKqSq7A5HVrf8vYbrnhdioZ6XVrfdxmeR6AcKK"
+      ],
+      [
+        "claim_refund after the timeout",
+        "33QB9j1f4vyqpcKGewdwaRs7XDytPAUkcZX3sCuZtgPVHTS5ckY3xsKqCiQCjoKHsRggtPoyGWaz3B2hkxybddgh"
+      ],
+      [
+        "update_provider inactive",
+        "3ZkcCrrkPpzSU9NvYWmHRQVUpVfDChQ5nfWzPzWfXTrLm7ZjAFyXrhd3Ce1uCXy5cCKPGYTZJqRBNFCi7JML5mFN"
+      ],
+      [
+        "deregister_provider",
+        "5pKqJZtRECGVqwYvfxh23nfN8xYUBy7EdrfHr8cfyDyrGkRhYNMrNCVcGZh7eNdqgcvkXsuYDyH5ZzzYPA4uxzEa"
+      ]
+    ],
+    "negative": [
+      "register_provider with an empty name, a zero price or category 9 was rejected (NameEmpty, InvalidPrice, InvalidCategory).",
+      "increment_call_count by a non-gateway was rejected (Unauthorized).",
+      "open_channel with a zero deposit or a 0 s timeout was rejected (ZeroDeposit, InvalidTimeout).",
+      "A voucher signed by another key, or signed for a different amount, was rejected (InvalidSignature).",
+      "Settling more than the deposit was rejected (Overdraw).",
+      "settle by a non-gateway was rejected (Unauthorized).",
+      "claim_refund before the timeout was rejected (TimeoutNotReached).",
+      "deregister_provider by a stranger was rejected (ConstraintSeeds)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentpay-conduit.mjs.",
+    "limits": "Tokens are the Sol.College devnet lab mint BJMSdujx\u2026 in place of USDC; the program does not pin a mint. Settlement is one-shot: the channel closes at the first settle, so later vouchers cannot be redeemed. The registry and escrow are not linked on chain. Registry program 44iVtsz24Z1DZ6m4XFYCCLADmzUZA5oZt2jkmJ5nnwyn; the console drives the escrow program. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_provider 53VUdbxk\u2026; update_provider price 4FWrQDS7\u2026; increment_call_count by the gateway 31q5nQvT\u2026; open_channel with 1_000_000 lab tokens 5JHihXMc\u2026; settle a signed voucher for 400_000 43Cb8Mko\u2026; open_channel 2 with a 3 s timeout 5VgDgumB\u2026; claim_refund after the timeout 33QB9j1f\u2026; update_provider inactive 3ZkcCrrk\u2026; deregister_provider 5pKqJZtR\u2026. register_provider with an empty name, a zero price or category 9 was rejected (NameEmpty, InvalidPrice, InvalidCategory). increment_call_count by a non-gateway was rejected (Unauthorized). open_channel with a zero deposit or a 0 s timeout was rejected (ZeroDeposit, InvalidTimeout). A voucher signed by another key, or signed for a different amount, was rejected (InvalidSignature). Settling more than the deposit was rejected (Overdraw). settle by a non-gateway was rejected (Unauthorized). claim_refund before the timeout was rejected (TimeoutNotReached). deregister_provider by a stranger was rejected (ConstraintSeeds).",
+    "programs": {
+      "escrow": "12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH",
+      "registry": "44iVtsz24Z1DZ6m4XFYCCLADmzUZA5oZt2jkmJ5nnwyn"
+    }
   }
 ]

@@ -1,0 +1,37 @@
+{
+  "title": "AgentPay Conduit Payment Channels",
+  "summary": "Let an AI agent pay an API per call with signed off-chain vouchers and settle once on chain.",
+  "what": "AgentPay Conduit is two Anchor 1.0.2 programs: a registry of paid API providers metered by a gateway, and an escrow of token payment channels settled with ed25519 vouchers verified on chain.",
+  "app_note": "The page at /dapps/agentpay-conduit/ is the generic IDL-driven wallet console for the escrow program. The lab tree is branch sol-college-devnet of Blockchains/agentpay-conduit (fork of Raakshass/agentpay); only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentpay-conduit/, switch to Devnet, connect a wallet holding lab tokens and call open_channel.",
+      "see": "A channel PDA and a vault holding your deposit.",
+      "ran": "Voucher settlement and timeout refund (see steps)."
+    }
+  ],
+  "diagram": "owner --register_provider--> provider; gateway --increment_call_count--> provider; agent --open_channel(deposit)--> channel+vault; agent signs voucher(channel_id, cumulative) off chain; gateway --settle(voucher)--> provider paid + agent refund; agent --claim_refund (after timeout)--> refund",
+  "accounts": [
+    "provider PDA [\"provider\", owner, name]",
+    "channel PDA [\"channel\", agent, channel_id]",
+    "vault ATA (mint, channel)"
+  ],
+  "instructions": [
+    "register_provider",
+    "update_provider",
+    "increment_call_count",
+    "deregister_provider",
+    "open_channel",
+    "settle",
+    "claim_refund"
+  ],
+  "innovation": "Hundreds of API calls cost one on-chain settlement: the agent signs cumulative vouchers off chain and only the last one is verified on chain with ed25519.",
+  "frontend": "Generic IDL console at /dapps/agentpay-conduit/ (escrow program).",
+  "exercises": [
+    "Why does the voucher sign the cumulative amount rather than each payment?",
+    "What stops the gateway from settling an old, smaller voucher?"
+  ],
+  "not_covered": [
+    "Off-chain gateway service"
+  ]
+}

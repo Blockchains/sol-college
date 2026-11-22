@@ -1,0 +1,23 @@
+{"step": "setup", "registry": "44iVtsz24Z1DZ6m4XFYCCLADmzUZA5oZt2jkmJ5nnwyn", "escrow": "12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH", "gateway": "AYmEjr2dKnNsnkoyAjbuwVt6EV1bU71cHLAn9QRidwck", "agent": "7GcmcjUn3qs17H8yFxm5KqvPCxVPz69wvAxmfDakKdBK", "provider_wallet": "CMfWa7zbJYi5PSmuYcMnxVdKfKq54xps9tkqKEw6oYyN", "provider": "D1owfZNLpLG6PDL2ADVaL96RUWufk8VexMyeCktEvZu4"}
+{"step": "register_empty_name", "rejected": true, "reason": "NameEmpty"}
+{"step": "register_zero_price", "rejected": true, "reason": "InvalidPrice"}
+{"step": "register_bad_category", "rejected": true, "reason": "InvalidCategory"}
+{"step": "register_provider", "ok": true, "sig": "53VUdbxkZHLoZuUWWKU7xvSjvhtNPRnteQZjjDfFs9M4bLrRsYSsJDGkxJZ4u7Q3VBT27dSBroozaV7ZiQt3W2YS", "name": "lab-weather-823806", "price_usdc": 10000, "category": "Agent", "agent_type": "Agent"}
+{"step": "update_provider_price", "ok": true, "sig": "4FWrQDS7usDyafAWWFcpvPWg3Yt8Fwoa4Et8x2b2tR4ZxZvCNHAgu3Pe9vLBiqsi36g6qys5xrkVNU6Z8BXqmjxG", "price_usdc": 20000}
+{"step": "increment_by_non_gateway", "rejected": true, "reason": "Unauthorized"}
+{"step": "increment_call_count", "ok": true, "sig": "31q5nQvTk85DZKpL7A9HVLfT35oHvJDHM4GMtrCcXortgcn5QxDv9JMWyGbxuk2Haw4VzrTsHXzcCE8Qziw7u7Pq", "total_calls": "1"}
+{"step": "open_zero_deposit", "rejected": true, "reason": "ZeroDeposit"}
+{"step": "open_invalid_timeout", "rejected": true, "reason": "InvalidTimeout"}
+{"step": "open_channel", "ok": true, "sig": "5JHihXMckq8bnr7hPZnehTCzx4HrkuEHgfyYdJWaaeXkZN2EHJzeUdUnMsePvgRNMx4x8fyAfctd72e7eHWmWDwn", "channel": "3edFRn5ceRGudYRF3UQyWixxBFE2yBKcqCX68R7WnuwD", "deposit": 1000000, "vault_balance": "1000000"}
+{"step": "settle_forged_voucher", "rejected": true, "reason": "InvalidSignature"}
+{"step": "settle_voucher_amount_mismatch", "rejected": true, "reason": "InvalidSignature"}
+{"step": "settle_overdraw", "rejected": true, "reason": "Overdraw"}
+{"step": "settle_by_non_gateway", "rejected": true, "reason": "Unauthorized"}
+{"step": "settle_signed_voucher", "ok": true, "sig": "43Cb8Mko3kRu4Vkr6BNSGKKFmmYgJefFW5XAyJkPdBU8ak469Q3xUQVYnjWGRmbXv69CESDThxcGHxuUcnyJo62L", "cumulative_amount": 400000, "provider_received": "400000", "agent_refunded": "600000", "channel_closed": true}
+{"step": "open_channel_2_timeout_3s", "ok": true, "sig": "5VgDgumBLwLnPLpdx5DvvBzFnVso1zkCxCokMfMK8PWX51d3WkpKqSq7A5HVrf8vYbrnhdioZ6XVrfdxmeR6AcKK", "channel": "WxebWUWDQ7SPAq3jW7xBKAERutLuBKA3K21QWEese55"}
+{"step": "claim_refund_before_timeout", "rejected": true, "reason": "TimeoutNotReached"}
+{"step": "claim_refund_after_timeout", "ok": true, "sig": "33QB9j1f4vyqpcKGewdwaRs7XDytPAUkcZX3sCuZtgPVHTS5ckY3xsKqCiQCjoKHsRggtPoyGWaz3B2hkxybddgh", "refunded": "300000", "channel_closed": true}
+{"step": "update_provider_inactive", "ok": true, "sig": "3ZkcCrrkPpzSU9NvYWmHRQVUpVfDChQ5nfWzPzWfXTrLm7ZjAFyXrhd3Ce1uCXy5cCKPGYTZJqRBNFCi7JML5mFN"}
+{"step": "deregister_by_stranger", "rejected": true, "reason": "ConstraintSeeds"}
+{"step": "deregister_provider", "ok": true, "sig": "5pKqJZtRECGVqwYvfxh23nfN8xYUBy7EdrfHr8cfyDyrGkRhYNMrNCVcGZh7eNdqgcvkXsuYDyH5ZzzYPA4uxzEa", "closed": true, "note": "first read was stale RPC; transaction meta shows the provider account balance 0.00171704 -> 0 and the account no longer exists"}
+{"step": "cleanup_returned_lab_wallets"}
