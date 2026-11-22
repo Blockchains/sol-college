@@ -107,7 +107,7 @@
     const dw = iw * scale;
     const dh = ih * scale;
     const dx = (W - dw) / 2;
-    const dy = phone ? (H - dh) * 0.22 : (H - dh) / 2;
+    const dy = phone ? (H - dh) * 0.30 : (H - dh) / 2;
     return { dx: dx, dy: dy, dw: dw, dh: dh, t: t, live: live, phone: phone };
   }
 

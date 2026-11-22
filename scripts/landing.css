@@ -1658,46 +1658,48 @@ main > section.band { padding: clamp(72px, 9vw, 120px) 0; }
   }
   .film-hero {
     aspect-ratio: auto;
-    height: clamp(9.75rem, 34svh, 13.75rem);
-    max-height: 38svh;
+    height: clamp(15.5rem, 50svh, 18.75rem);
+    max-height: 50svh;
     background-image: url('/assets/hero-tall.jpg');
-    background-position: center 22%;
+    background-position: center 30%;
     background-size: cover;
   }
   .stage-veil { display: none; }
   .stage-copy {
     width: min(720px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 10px 0 18px;
+    padding: 6px 0 8px;
     text-align: center;
   }
   .stage-hero .audience {
     width: auto;
-    margin: 0 auto 8px;
+    margin: 0 auto 4px;
+    padding: 3px;
     background: rgba(255, 255, 255, 0.94);
     border: 0;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.16);
   }
   .stage-hero .audience button {
     flex: 0 1 auto;
-    min-height: 36px;
-    padding-inline: 14px;
-    font-size: 0.86rem;
+    min-height: 30px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
     color: #3c3558;
   }
   .stage-hero h1 {
-    font-size: clamp(1.4rem, 6.2vw, 1.75rem);
+    font-size: clamp(1.25rem, 5.5vw, 1.5rem);
     max-width: 16em;
-    margin: 0 auto 0.2em;
-    line-height: 1.12;
+    margin: 0 auto 0.08em;
+    line-height: 1.1;
     text-align: center;
   }
   .stage-hero .hero-promise,
   .stage-hero .lead { margin-inline: auto; text-align: center; }
   .stage-hero .hero-promise { font-size: 1.05rem; }
   .stage-hero .lead { font-size: 0.88rem; max-width: 34ch; }
-  .stage-hero .cta-row { flex-wrap: wrap; justify-content: center; gap: 6px; margin: 0.4rem 0 0; }
-  .stage-hero .cta-row .btn { flex: 1 1 auto; min-width: min(100%, 8.6rem); min-height: 44px; font-size: 0.88rem; padding-inline: 8px; }
+  .stage-hero .cta-row { flex-wrap: wrap; justify-content: center; gap: 4px; margin: 0.25rem 0 0; }
+  .stage-hero .cta-row .btn { flex: 1 1 calc(50% - 4px); min-width: calc(50% - 4px); min-height: 38px; font-size: 0.8rem; padding: 6px 8px; }
+  .stage-hero .cta-row .btn:first-child { flex: 1 1 100%; min-width: 100%; }
   .top .marquee { max-width: 100%; overflow: hidden; }
   .start-routes { grid-template-columns: 1fr; }
   .start-route { min-height: 0; }
@@ -1932,7 +1934,7 @@ section.band a:hover { color: #3a1d8f; }
   color: #160e2e;
 }
 @media (max-width: 760px) {
-  .stage-hero h1 { max-width: 16em; font-size: clamp(1.4rem, 6.2vw, 1.75rem); line-height: 1.12; }
+  .stage-hero h1 { max-width: 16em; font-size: clamp(1.25rem, 5.5vw, 1.5rem); line-height: 1.1; }
   .stage-hero .hero-promise { font-size: 1.05rem; }
   .stage-hero .lead { display: none; }
 }
