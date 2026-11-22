@@ -66,7 +66,13 @@ class CurriculumSchema(unittest.TestCase):
         js = (ROOT / 'scripts' / 'release-notice.js').read_text(encoding='utf-8')
         self.assertIn('/release.json', js)
         self.assertIn('sc-release-seen', js)
-        self.assertIn('Reload', js)
+        self.assertIn('serviceWorker', js)
+        self.assertIn('location.reload', js)
+        self.assertNotIn('sc-release-banner', js)
+        self.assertNotIn('A newer Sol.College build is available', js)
+        sw = (ROOT / 'scripts' / 'sw.js').read_text(encoding='utf-8')
+        self.assertIn('skipWaiting', sw)
+        self.assertIn('clients.claim', sw)
 
     def test_picassol_hosted_recolour_honesty(self):
         live = {x['slug']: x for x in json.loads((ROOT / 'dapps' / 'live.json').read_text())}

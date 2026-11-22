@@ -863,6 +863,15 @@ def write_home(site='site'):
     shutil.copy(HERE / 'landing-bg.js', assets / 'landing-bg.js')
     shutil.copy(HERE / 'landing-film.js', assets / 'landing-film.js')
     shutil.copy(HERE / 'release-notice.js', assets / 'release-notice.js')
+    sw_src = HERE / 'sw.js'
+    if sw_src.exists():
+        ver = '-'.join(str(rel.get(k) or '') for k in (
+            'app_release', 'curriculum_version', 'git_sha_short', 'built_at'
+        ))
+        (site / 'sw.js').write_text(
+            sw_src.read_text(encoding='utf-8').replace('__SC_RELEASE__', ver),
+            encoding='utf-8',
+        )
     shutil.copy(HERE / 'hero-wide.jpg', assets / 'hero-wide.jpg')
     shutil.copy(HERE / 'hero-tall.jpg', assets / 'hero-tall.jpg')
     for name in (

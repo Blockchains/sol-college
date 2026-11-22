@@ -98,14 +98,16 @@
     const phone = pack.tag === 'tall';
     const t = now / 1000;
     const live = reduce ? 0 : 1;
-    // Fit the still inside the stage so the illustration stays fully visible.
     const iw = img.naturalWidth;
     const ih = img.naturalHeight;
-    const scale = Math.min(W / iw, H / ih);
+    if (!iw || !ih) return { dx: 0, dy: 0, dw: W, dh: H, t: t, live: live, phone: phone };
+    // Phone: cover the short stage and pin to the kids (crop the empty floor).
+    // Desktop: contain so the wide still stays fully visible under the copy.
+    const scale = phone ? Math.max(W / iw, H / ih) : Math.min(W / iw, H / ih);
     const dw = iw * scale;
     const dh = ih * scale;
     const dx = (W - dw) / 2;
-    const dy = (H - dh) / 2;
+    const dy = phone ? (H - dh) * 0.22 : (H - dh) / 2;
     return { dx: dx, dy: dy, dw: dw, dh: dh, t: t, live: live, phone: phone };
   }
 
