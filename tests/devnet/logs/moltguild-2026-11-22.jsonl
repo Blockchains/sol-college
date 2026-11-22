@@ -1,0 +1,32 @@
+{"step": "setup", "program": "7QAvEoETnn2kmbyYkRMc6vaXPtpvw3pZ6ph8fPxD7xQo", "agent_a": "BYKsd7DmvisgyAY3dMFxfsH4k3BRDPxqzKFhB7Vt3hpb", "agent_b": "BuEgEdZKHwua3EgmkWQnnaGF9usndz4mb7tDrGkDiDrA"}
+{"step": "profile_handle_too_long", "rejected": true, "reason": "HandleTooLong"}
+{"step": "initialize_profile_a", "ok": true, "sig": "2UuTpZYvsXMgSt5mwQFN1kxycPFezUa1pAcFg2VPXKDmrFZwHf6TQFdodoUoYUqub5juj7hNrQADX7ih9uwcYFdg"}
+{"step": "initialize_profile_b", "ok": true, "sig": "2ctwk6GbDrzpUWdKVUvVUYUrvZ3dQf4PwWPo4oBnSmvoCU4WidKttQ2KBqzrmGr8HYeSayVBA6thnUkvZGnvJqLV"}
+{"step": "flaw_profile_for_non_signer", "ok": true, "sig": "PLAELfQG2GB8dZAAdtbuyivx6AwMQ5HxK6pKbaNfNcDJZAxWny9hYK9VhRreXuArD96EZPekefkjHthYNqX9kcm", "victim": "9435HZ86MuxsFrBoeUbr5RgS6TkWvqmMTFU2LiFKdSh1", "note": "UPSTREAM FLAW: owner is not a Signer in initialize_agent_profile, so anyone can create (squat) the profile PDA of any wallet"}
+{"step": "update_profile_by_stranger", "rejected": true, "reason": "ConstraintSeeds"}
+{"step": "update_profile_a", "ok": true, "sig": "4koKkxdnhwbszH3i5L7RHS93VVi4yGrnTjp1K3AHuDNqfi7qR7c7yZqMAr9dCNAUMTe3YiZyWfb6AAyMK2p1UuSr"}
+{"step": "create_guild", "ok": true, "sig": "48HYNReYadRb3j3sPsFx3kuesBizmUUKRF4TB9Q7wDUTMba8VzzgkhAtCE9foa9vkk4SF5vGeJ18Zew2wsPSQUHr", "guild": "6rx5xeyQa3XxHkH2wbDzwy2PuHoVzqTXj66vmt6FiDHi", "treasury": "2u3dfCUpvGbQh9FWjiwDxk1Pdt8rTneuQVkF5oLdGhWM"}
+{"step": "create_guild_invite_only", "ok": true, "sig": "2cbF1upAQVJjsbTCDKy4Fy1Z5tz11PQDeZ4ckhifETXCd5XvpuB6zdT9b3uE3moWtRbs5oStfFp1px5TY3Q4Z8oN"}
+{"step": "join_invite_only", "rejected": true, "reason": "GuildIsInviteOnly"}
+{"step": "join_guild_b", "ok": true, "sig": "2jZh3UaZHjqoj4Vt2MkRHzHum2gRfs9dJWwofpDNfB4g7nZf1b6sH7biiigHQMgX3KhRm8xzM8uPUi6UKPhxY8wB", "member_count": 1}
+{"step": "join_twice", "rejected": true, "reason": "account already in use (System error 0x0)"}
+{"step": "endorse_self", "rejected": true, "reason": "CannotEndorseSelf"}
+{"step": "endorse_b", "ok": true, "sig": "44rvS1nrZQ7iyhHtZUXWAakB1Xo1UQ7mpq3vWuyRnFZzgEsNzijVsGYpQPBuBRUK1uj5Zag7eEecPd4vdTYKkLxk", "b_reputation": "1"}
+{"step": "endorse_twice_same_skill", "rejected": true, "reason": "account already in use (System error 0x0)"}
+{"step": "create_project_by_stranger", "rejected": true, "reason": "NotGuildAuthority"}
+{"step": "create_project", "ok": true, "sig": "4nEWWPSe9nqCRpWEEAbQFrpHrYKAaVjXpKZxW3BQkBaVBMysDtsdpZgsPkvL6LeYFGnFXJVhHkr6Ur2UENYHgiYE", "escrow": "949Fbx6VdwJwGorDsgg1BQCcAwTe6A4hnjjtfXFujqPg", "escrow_lamports": 1000000}
+{"step": "complete_project", "ok": true, "sig": "5uphhTVUVGY2mdRqrGzBn3R7Lh9F9vXV71LJYUa2TbrQzE2XFWk3j7mPSRVzh3cHcJ7FARHrRHrmTyzb1MWgb3gC", "guild_reputation": "100", "escrow_lamports_after": 1000000, "note": "UPSTREAM FLAW: complete_project never pays the escrow out and no instruction can move it; the 1,000,000 lamports stay locked in the escrow PDA"}
+{"step": "complete_twice", "rejected": true, "reason": "ProjectAlreadyCompleted"}
+{"step": "prize_splits_sum_90", "rejected": true, "reason": "InvalidPrizeSplits"}
+{"step": "prize_splits_by_stranger", "rejected": true, "reason": "ConstraintHasOne"}
+{"step": "update_prize_splits", "ok": true, "sig": "5jVjmNRkF5Pc9oZzXbn8e6TGZpJcojJ6umDcm3pE4Dr1gkN9h9T3rvpdJ6DRwD9uzDZKfo6bvmubuTGd6wt9y4B", "splits": "A 60 / B 40"}
+{"step": "distribute_empty_treasury", "rejected": true, "reason": "NoPrizeToDistribute"}
+{"step": "fund_treasury", "ok": true, "sig": "AttbGqc5fQT3gavTPPJ7oa6skHtuE8Xyape4xVMq3rsgRQY3jJxQKcgjmRFhc2thUuY39g1rgEUCK2bD1PcS5Rq", "lamports": 2000003}
+{"step": "distribute_wrong_recipient", "rejected": true, "reason": "InvalidRecipientAccount"}
+{"step": "distribute_prize", "ok": true, "sig": "2DyDJ7qeVtfdnF4C4BQZ3iLWbngcjAdpsLFnpEj9vt7FCi6u7Zmmiu5LTcx8S5T25g2XE4XP8ESDQmYMdxkCQFPd", "a_received": 1200001, "b_received": 800002, "treasury_left": 0, "note": "lab fix: System CPI signed by treasury seeds"}
+{"step": "create_gig", "ok": true, "sig": "3DHsvT63QTjV6nLuhRfVjj5EnGRFEANmpHRihTAuxWyjBCFswWd8xoTyD9xMHtxsvZjstmvKXxYs8w4eXqbkdVeX", "gig": "tNaErvQ4XfoFZDJgsqX1JreuUMWiHFNzcvPqQyXwowF", "note": "prize_pool is a number only; no funds are moved"}
+{"step": "close_guild_with_members", "rejected": true, "reason": "GuildHasMembers"}
+{"step": "leave_guild_b", "ok": true, "sig": "2Hz9tPggsVrje9PKsVJPpD5e6phLfba8HeBXTCF327TA5F3J2fY1H8JkGGaXUGzV7UduAv6Yb1nFdk1mK9KejVXm"}
+{"step": "close_guild_by_stranger", "rejected": true, "reason": "NotGuildAuthority"}
+{"step": "close_guild", "ok": true, "sig": "36F4Fn4J4tE4X1Ta7SqE2xW5NVddFiD5U8fcPRvYLPCyAa3uLR3RfeTLmtcvhH9JrCEj3ESRad6WqXCo5j4uCEDW"}
+{"step": "cleanup_returned_lab_wallets"}

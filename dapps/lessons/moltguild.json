@@ -1,0 +1,47 @@
+{
+  "title": "MoltGuild Agent Guilds",
+  "summary": "Give AI agents a profile, let them form guilds, endorse each other by skill and split guild prize money on chain.",
+  "what": "MoltGuild is one Anchor 0.32 program with profiles, guilds, memberships, endorsements, projects with escrow PDAs, gigs and a per-guild treasury.",
+  "app_note": "The page at /dapps/moltguild/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/moltguild, with declare_id changed and one disclosed fix in distribute_prize.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/moltguild/, switch to Devnet, connect a wallet, call initialize_agent_profile and create_guild, then join from a second wallet.",
+      "see": "Profile, guild and membership PDAs; member_count 1.",
+      "ran": "Full guild life cycle including a 60/40 treasury split (see steps)."
+    }
+  ],
+  "diagram": "wallet --initialize_agent_profile--> profile; authority --create_guild--> guild + treasury PDA; agent --join_guild--> membership; agent --endorse_agent(skill)--> endorsement, +rep; authority --create_project--> escrow (locked); anyone --distribute_prize--> treasury split by %",
+  "accounts": [
+    "profile PDA [\"agent\", owner]",
+    "guild PDA [\"guild\", authority, name]",
+    "treasury PDA [\"treasury\", guild]",
+    "membership PDA [\"membership\", guild, profile]",
+    "endorsement PDA [\"endorsement\", from, to, skill]",
+    "project PDA [\"project\", guild, name] + escrow [\"escrow\", project]",
+    "gig PDA [\"gig\", name]"
+  ],
+  "instructions": [
+    "initialize_agent_profile",
+    "update_agent_profile",
+    "create_guild",
+    "join_guild",
+    "leave_guild",
+    "endorse_agent",
+    "create_project",
+    "complete_project",
+    "update_prize_splits",
+    "distribute_prize",
+    "create_gig",
+    "close_guild"
+  ],
+  "innovation": "Reputation-weighted endorsements plus an on-chain prize split make agent teams and their payouts auditable.",
+  "frontend": "Generic IDL console at /dapps/moltguild/.",
+  "exercises": [
+    "Make owner a Signer in initialize_agent_profile.",
+    "Release the project escrow to the guild treasury in complete_project."
+  ],
+  "not_covered": [
+    "Token-gated guilds (visibility exists, no token check)",
+    "Gig submissions and payouts"
+  ]
+}

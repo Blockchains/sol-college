@@ -5996,5 +5996,119 @@
     "limits": "Upstream Anchor test suite not run in this pass. Modify/Contribute gates not assessed; no upstream PRs. Program logic unchanged apart from declare_id and the program-config initializer key.",
     "functional": "full",
     "functional_evidence": "Create, config (add member, threshold 2), fund vault, propose, approve, execute and history completed on devnet, via script and in the hosted client."
+  },
+  {
+    "slug": "moltguild",
+    "name": "MoltGuild Agent Guilds",
+    "lesson": "/explore/moltguild/",
+    "app": "/dapps/moltguild/",
+    "fork": "https://github.com/Blockchains/moltguild",
+    "commit": "01bdf186255a8a6ca9c6cca16d0bb4c676b73307",
+    "program": "7QAvEoETnn2kmbyYkRMc6vaXPtpvw3pZ6ph8fPxD7xQo",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/moltguild (unique declare_id; the official 9qJDnBqm\u2026 was not reused).",
+    "learn": "initialize_agent_profile creates [\"agent\", owner]. create_guild creates [\"guild\", authority, name] with a treasury PDA. join_guild writes a membership PDA; endorse_agent adds 1-10 reputation by endorser rank, once per skill. create_project locks a reward in [\"escrow\", project]; complete_project adds 100 guild reputation. update_prize_splits sets percentages summing to 100 and anyone can call distribute_prize to pay the treasury out.",
+    "source": [
+      [
+        "instructions/distribute_prize.rs (lab fix)",
+        "https://github.com/Blockchains/moltguild/blob/01bdf186255a8a6ca9c6cca16d0bb4c676b73307/moltguild/programs/moltguild/src/instructions/distribute_prize.rs"
+      ],
+      [
+        "lib.rs",
+        "https://github.com/Blockchains/moltguild/blob/01bdf186255a8a6ca9c6cca16d0bb4c676b73307/moltguild/programs/moltguild/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/moltguild.mjs",
+    "log": "tests/devnet/logs/moltguild-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy moltguild as 7QAvEoETnn2kmbyYkRMc6vaXPtpvw3pZ6ph8fPxD7xQo on devnet",
+        "Rg95daDvXrFnJLuqoPoaWBNs1wE5R4P5LT8MLsM3Yd1WvcCZykLZ6QtPCG6GYeSz5YhfKYEFMmLKiKmQCTTRrwE"
+      ],
+      [
+        "initialize_agent_profile A",
+        "2UuTpZYvsXMgSt5mwQFN1kxycPFezUa1pAcFg2VPXKDmrFZwHf6TQFdodoUoYUqub5juj7hNrQADX7ih9uwcYFdg"
+      ],
+      [
+        "initialize_agent_profile B",
+        "2ctwk6GbDrzpUWdKVUvVUYUrvZ3dQf4PwWPo4oBnSmvoCU4WidKttQ2KBqzrmGr8HYeSayVBA6thnUkvZGnvJqLV"
+      ],
+      [
+        "profile for a non-signer (flaw)",
+        "PLAELfQG2GB8dZAAdtbuyivx6AwMQ5HxK6pKbaNfNcDJZAxWny9hYK9VhRreXuArD96EZPekefkjHthYNqX9kcm"
+      ],
+      [
+        "update_agent_profile",
+        "4koKkxdnhwbszH3i5L7RHS93VVi4yGrnTjp1K3AHuDNqfi7qR7c7yZqMAr9dCNAUMTe3YiZyWfb6AAyMK2p1UuSr"
+      ],
+      [
+        "create_guild (open)",
+        "48HYNReYadRb3j3sPsFx3kuesBizmUUKRF4TB9Q7wDUTMba8VzzgkhAtCE9foa9vkk4SF5vGeJ18Zew2wsPSQUHr"
+      ],
+      [
+        "create_guild (invite only)",
+        "2cbF1upAQVJjsbTCDKy4Fy1Z5tz11PQDeZ4ckhifETXCd5XvpuB6zdT9b3uE3moWtRbs5oStfFp1px5TY3Q4Z8oN"
+      ],
+      [
+        "join_guild",
+        "2jZh3UaZHjqoj4Vt2MkRHzHum2gRfs9dJWwofpDNfB4g7nZf1b6sH7biiigHQMgX3KhRm8xzM8uPUi6UKPhxY8wB"
+      ],
+      [
+        "endorse_agent",
+        "44rvS1nrZQ7iyhHtZUXWAakB1Xo1UQ7mpq3vWuyRnFZzgEsNzijVsGYpQPBuBRUK1uj5Zag7eEecPd4vdTYKkLxk"
+      ],
+      [
+        "create_project (0.001 SOL escrow)",
+        "4nEWWPSe9nqCRpWEEAbQFrpHrYKAaVjXpKZxW3BQkBaVBMysDtsdpZgsPkvL6LeYFGnFXJVhHkr6Ur2UENYHgiYE"
+      ],
+      [
+        "complete_project (+100 rep)",
+        "5uphhTVUVGY2mdRqrGzBn3R7Lh9F9vXV71LJYUa2TbrQzE2XFWk3j7mPSRVzh3cHcJ7FARHrRHrmTyzb1MWgb3gC"
+      ],
+      [
+        "update_prize_splits 60/40",
+        "5jVjmNRkF5Pc9oZzXbn8e6TGZpJcojJ6umDcm3pE4Dr1gkN9h9T3rvpdJ6DRwD9uzDZKfo6bvmubuTGd6wt9y4B"
+      ],
+      [
+        "fund treasury",
+        "AttbGqc5fQT3gavTPPJ7oa6skHtuE8Xyape4xVMq3rsgRQY3jJxQKcgjmRFhc2thUuY39g1rgEUCK2bD1PcS5Rq"
+      ],
+      [
+        "distribute_prize",
+        "2DyDJ7qeVtfdnF4C4BQZ3iLWbngcjAdpsLFnpEj9vt7FCi6u7Zmmiu5LTcx8S5T25g2XE4XP8ESDQmYMdxkCQFPd"
+      ],
+      [
+        "create_gig",
+        "3DHsvT63QTjV6nLuhRfVjj5EnGRFEANmpHRihTAuxWyjBCFswWd8xoTyD9xMHtxsvZjstmvKXxYs8w4eXqbkdVeX"
+      ],
+      [
+        "leave_guild",
+        "2Hz9tPggsVrje9PKsVJPpD5e6phLfba8HeBXTCF327TA5F3J2fY1H8JkGGaXUGzV7UduAv6Yb1nFdk1mK9KejVXm"
+      ],
+      [
+        "close_guild",
+        "36F4Fn4J4tE4X1Ta7SqE2xW5NVddFiD5U8fcPRvYLPCyAa3uLR3RfeTLmtcvhH9JrCEj3ESRad6WqXCo5j4uCEDW"
+      ]
+    ],
+    "negative": [
+      "A 33-character handle was rejected (HandleTooLong).",
+      "update_agent_profile by a stranger was rejected (ConstraintSeeds).",
+      "Joining an invite-only guild was rejected (GuildIsInviteOnly).",
+      "Joining twice failed (account already in use).",
+      "Self-endorsement was rejected (CannotEndorseSelf).",
+      "A second endorsement for the same skill failed (account already in use).",
+      "create_project by a stranger was rejected (NotGuildAuthority).",
+      "Completing twice was rejected (ProjectAlreadyCompleted).",
+      "Splits summing to 90 were rejected (InvalidPrizeSplits).",
+      "update_prize_splits by a stranger was rejected (ConstraintHasOne).",
+      "distribute_prize on an empty treasury was rejected (NoPrizeToDistribute).",
+      "A wrong recipient account was rejected (InvalidRecipientAccount).",
+      "close_guild with members was rejected (GuildHasMembers).",
+      "close_guild by a stranger was rejected (NotGuildAuthority)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/moltguild.mjs.",
+    "limits": "Lab fix: upstream distribute_prize debits the System-owned treasury PDA directly, which the runtime refuses; the lab pays through a System CPI signed with the treasury seeds. Unfixed upstream flaws: profiles can be created for any wallet without its signature; complete_project never releases the project escrow (1,000,000 lamports stay locked); gig prize_pool moves no funds; leave_guild adds reputation_earned, which nothing sets. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_agent_profile A 2UuTpZYv\u2026; initialize_agent_profile B 2ctwk6Gb\u2026; profile for a non-signer PLAELfQG\u2026; update_agent_profile 4koKkxdn\u2026; create_guild 48HYNReY\u2026; create_guild 2cbF1upA\u2026; join_guild 2jZh3UaZ\u2026; endorse_agent 44rvS1nr\u2026; create_project 4nEWWPSe\u2026; complete_project 5uphhTVU\u2026; update_prize_splits 60/40 5jVjmNRk\u2026; fund treasury AttbGqc5\u2026; distribute_prize 2DyDJ7qe\u2026; create_gig 3DHsvT63\u2026; leave_guild 2Hz9tPgg\u2026; close_guild 36F4Fn4J\u2026. A 33-character handle was rejected (HandleTooLong). update_agent_profile by a stranger was rejected (ConstraintSeeds). Joining an invite-only guild was rejected (GuildIsInviteOnly). Joining twice failed (account already in use). Self-endorsement was rejected (CannotEndorseSelf). A second endorsement for the same skill failed (account already in use). create_project by a stranger was rejected (NotGuildAuthority). Completing twice was rejected (ProjectAlreadyCompleted). Splits summing to 90 were rejected (InvalidPrizeSplits). update_prize_splits by a stranger was rejected (ConstraintHasOne). distribute_prize on an empty treasury was rejected (NoPrizeToDistribute). A wrong recipient account was rejected (InvalidRecipientAccount). close_guild with members was rejected (GuildHasMembers). close_guild by a stranger was rejected (NotGuildAuthority)."
   }
 ]

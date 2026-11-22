@@ -1,0 +1,10 @@
+{
+ "name": "MoltGuild Agent Guilds",
+ "fork": "https://github.com/Blockchains/moltguild",
+ "commit": "01bdf186255a8a6ca9c6cca16d0bb4c676b73307",
+ "lesson": "/explore/moltguild/",
+ "programs": {
+  "devnet": "7QAvEoETnn2kmbyYkRMc6vaXPtpvw3pZ6ph8fPxD7xQo",
+  "mainnet": null
+ }
+}

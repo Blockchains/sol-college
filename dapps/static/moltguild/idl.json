@@ -1,0 +1,1411 @@
+{
+  "address": "7QAvEoETnn2kmbyYkRMc6vaXPtpvw3pZ6ph8fPxD7xQo",
+  "metadata": {
+    "name": "moltguild",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "close_guild",
+      "discriminator": [
+        243,
+        101,
+        242,
+        36,
+        24,
+        136,
+        102,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "guild"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "complete_project",
+      "discriminator": [
+        188,
+        43,
+        115,
+        43,
+        43,
+        176,
+        30,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true,
+          "relations": [
+            "project"
+          ]
+        },
+        {
+          "name": "project",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "guild"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_gig",
+      "discriminator": [
+        175,
+        168,
+        234,
+        97,
+        64,
+        177,
+        7,
+        144
+      ],
+      "accounts": [
+        {
+          "name": "gig",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  105,
+                  103
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "organizer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "prize_pool",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "submission_url",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_guild",
+      "discriminator": [
+        163,
+        27,
+        97,
+        167,
+        132,
+        198,
+        53,
+        168
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  117,
+                  105,
+                  108,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "guild"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "visibility",
+          "type": {
+            "defined": {
+              "name": "GuildVisibility"
+            }
+          }
+        },
+        {
+          "name": "contact",
+          "type": {
+            "option": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_project",
+      "discriminator": [
+        148,
+        219,
+        181,
+        42,
+        221,
+        114,
+        145,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "guild"
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "guild"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "reward_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "distribute_prize",
+      "discriminator": [
+        153,
+        175,
+        67,
+        111,
+        205,
+        207,
+        106,
+        15
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "guild"
+              }
+            ]
+          }
+        },
+        {
+          "name": "caller",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "endorse_agent",
+      "discriminator": [
+        150,
+        194,
+        86,
+        132,
+        94,
+        161,
+        156,
+        198
+      ],
+      "accounts": [
+        {
+          "name": "from_agent",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "from_owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "to_agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "to_owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "endorsement",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  110,
+                  100,
+                  111,
+                  114,
+                  115,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "from_agent"
+              },
+              {
+                "kind": "account",
+                "path": "to_agent"
+              },
+              {
+                "kind": "arg",
+                "path": "skill"
+              }
+            ]
+          }
+        },
+        {
+          "name": "from_owner",
+          "signer": true
+        },
+        {
+          "name": "to_owner"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "skill",
+          "type": "string"
+        },
+        {
+          "name": "comment",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "initialize_agent_profile",
+      "discriminator": [
+        188,
+        162,
+        81,
+        245,
+        190,
+        13,
+        82,
+        184
+      ],
+      "accounts": [
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner"
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "handle",
+          "type": "string"
+        },
+        {
+          "name": "bio",
+          "type": "string"
+        },
+        {
+          "name": "skills",
+          "type": {
+            "vec": "string"
+          }
+        }
+      ]
+    },
+    {
+      "name": "join_guild",
+      "discriminator": [
+        242,
+        159,
+        183,
+        21,
+        140,
+        65,
+        110,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "membership",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  98,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "guild"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "signer": true
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "leave_guild",
+      "discriminator": [
+        32,
+        129,
+        72,
+        117,
+        154,
+        8,
+        115,
+        245
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "membership",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  109,
+                  98,
+                  101,
+                  114,
+                  115,
+                  104,
+                  105,
+                  112
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "guild"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_agent_profile",
+      "discriminator": [
+        115,
+        30,
+        177,
+        145,
+        243,
+        220,
+        156,
+        48
+      ],
+      "accounts": [
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "profile"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "bio",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "skills",
+          "type": {
+            "option": {
+              "vec": "string"
+            }
+          }
+        },
+        {
+          "name": "availability",
+          "type": {
+            "option": {
+              "defined": {
+                "name": "Availability"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_prize_splits",
+      "discriminator": [
+        42,
+        59,
+        109,
+        194,
+        29,
+        138,
+        120,
+        32
+      ],
+      "accounts": [
+        {
+          "name": "guild",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "guild"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "prize_splits",
+          "type": {
+            "vec": {
+              "defined": {
+                "name": "PrizeSplit"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentProfile",
+      "discriminator": [
+        60,
+        227,
+        42,
+        24,
+        0,
+        87,
+        86,
+        205
+      ]
+    },
+    {
+      "name": "Endorsement",
+      "discriminator": [
+        167,
+        137,
+        37,
+        17,
+        220,
+        102,
+        104,
+        52
+      ]
+    },
+    {
+      "name": "Gig",
+      "discriminator": [
+        148,
+        118,
+        103,
+        202,
+        75,
+        208,
+        88,
+        94
+      ]
+    },
+    {
+      "name": "Guild",
+      "discriminator": [
+        74,
+        176,
+        57,
+        164,
+        195,
+        188,
+        156,
+        237
+      ]
+    },
+    {
+      "name": "Membership",
+      "discriminator": [
+        231,
+        141,
+        180,
+        98,
+        109,
+        168,
+        175,
+        166
+      ]
+    },
+    {
+      "name": "Project",
+      "discriminator": [
+        205,
+        168,
+        189,
+        202,
+        181,
+        247,
+        142,
+        19
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "HandleTooLong",
+      "msg": "Handle too long (max 32 chars)"
+    },
+    {
+      "code": 6001,
+      "name": "BioTooLong",
+      "msg": "Bio too long (max 200 chars)"
+    },
+    {
+      "code": 6002,
+      "name": "TooManySkills",
+      "msg": "Too many skills (max 10)"
+    },
+    {
+      "code": 6003,
+      "name": "SkillTooLong",
+      "msg": "Skill name too long (max 20 chars)"
+    },
+    {
+      "code": 6004,
+      "name": "GuildNameTooLong",
+      "msg": "Guild name too long (max 32 chars)"
+    },
+    {
+      "code": 6005,
+      "name": "GuildDescriptionTooLong",
+      "msg": "Guild description too long (max 200 chars)"
+    },
+    {
+      "code": 6006,
+      "name": "GuildIsInviteOnly",
+      "msg": "Guild is invite-only"
+    },
+    {
+      "code": 6007,
+      "name": "GuildHasMembers",
+      "msg": "Guild has members, cannot close"
+    },
+    {
+      "code": 6008,
+      "name": "NotGuildAuthority",
+      "msg": "Not guild authority"
+    },
+    {
+      "code": 6009,
+      "name": "ProjectNameTooLong",
+      "msg": "Project name too long (max 64 chars)"
+    },
+    {
+      "code": 6010,
+      "name": "ProjectAlreadyCompleted",
+      "msg": "Project already completed"
+    },
+    {
+      "code": 6011,
+      "name": "EndorsementSkillTooLong",
+      "msg": "Endorsement skill too long (max 20 chars)"
+    },
+    {
+      "code": 6012,
+      "name": "EndorsementCommentTooLong",
+      "msg": "Endorsement comment too long (max 200 chars)"
+    },
+    {
+      "code": 6013,
+      "name": "CannotEndorseSelf",
+      "msg": "Cannot endorse yourself"
+    },
+    {
+      "code": 6014,
+      "name": "ContactTooLong",
+      "msg": "Contact info too long (max 100 chars)"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "handle",
+            "type": "string"
+          },
+          {
+            "name": "bio",
+            "type": "string"
+          },
+          {
+            "name": "skills",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
+            "name": "guild_count",
+            "type": "u32"
+          },
+          {
+            "name": "project_count",
+            "type": "u32"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u64"
+          },
+          {
+            "name": "availability",
+            "type": {
+              "defined": {
+                "name": "Availability"
+              }
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Availability",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Available"
+          },
+          {
+            "name": "Busy"
+          },
+          {
+            "name": "NotLooking"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Endorsement",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "from_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "to_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "skill",
+            "type": "string"
+          },
+          {
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "name": "reputation_weight",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Gig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "organizer",
+            "type": "pubkey"
+          },
+          {
+            "name": "prize_pool",
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "submission_url",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "GigStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GigStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Guild",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "member_count",
+            "type": "u32"
+          },
+          {
+            "name": "project_count",
+            "type": "u32"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u64"
+          },
+          {
+            "name": "visibility",
+            "type": {
+              "defined": {
+                "name": "GuildVisibility"
+              }
+            }
+          },
+          {
+            "name": "token_mint",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "gig",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "prize_splits",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "PrizeSplit"
+                }
+              }
+            }
+          },
+          {
+            "name": "contact",
+            "type": "string"
+          },
+          {
+            "name": "submission_link",
+            "type": {
+              "option": "string"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "GuildVisibility",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "InviteOnly"
+          },
+          {
+            "name": "TokenGated"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MemberRole",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Admin"
+          },
+          {
+            "name": "Member"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Membership",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "guild",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "role",
+            "type": {
+              "defined": {
+                "name": "MemberRole"
+              }
+            }
+          },
+          {
+            "name": "joined_at",
+            "type": "i64"
+          },
+          {
+            "name": "reputation_earned",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PrizeSplit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "percentage",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Project",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "guild",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "escrow",
+            "type": "pubkey"
+          },
+          {
+            "name": "reward_amount",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ProjectStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "completed_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Abandoned"
+          }
+        ]
+      }
+    }
+  ]
+}

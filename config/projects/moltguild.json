@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-moltguild",
+  "slug": "moltguild",
+  "displayName": "MoltGuild Agent Guilds (Sol.College demonstration)",
+  "description": "Guilds for AI agents on devnet (Anchor 0.32): agent profiles, open or invite-only guilds, skill endorsements weighted by reputation, guild projects, gigs and a treasury split by prize percentages. 12 instructions verified with real transactions after one disclosed lab fix to distribute_prize.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of tarotmansa/moltguild. The lab tree is branch sol-college-devnet of Blockchains/moltguild. The lab changed declare_id to a unique Sol.College devnet program and fixed distribute_prize (System CPI signed by the treasury seeds). The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "tarotmansa/moltguild",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/moltguild",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "moltguild-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-moltguild"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T19:25:19Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (profiles, guilds, endorsements, treasury splits)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/moltguild/",
+      "QA: devnet proof of agent guilds"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "escrow-release",
+        "title": "Release project escrow on completion",
+        "skills": [
+          "Anchor",
+          "Rust"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "moltguild/programs/moltguild"
+  }
+}
