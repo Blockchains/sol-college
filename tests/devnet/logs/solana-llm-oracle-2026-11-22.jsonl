@@ -1,0 +1,11 @@
+{"step":"setup","program":"KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw","config":"BTa2fB6XLqqYL7p87wZCxgvBkLT5H78Y9V6TaotVpjwR","user":"DeFg1vtQCjAM3CRNcRPBjYAFSLu1uLaPxWCWAms49WBo","oracle":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"initialize_by_non_admin","rejected":true,"reason":"ConstraintAddress"}
+{"step":"initialize","ok":true,"sig":"2fNAiztEZKyvpoE8MoPw4sM4zgCg1PCPKLKZyh8M9JvFDQN32DaBoJJWmzAMCiHg17Fbq6r2yosKHPYi5SLBL7io"}
+{"step":"create_chat","ok":true,"sig":"53FuqwxZs4eoo3rBgt6cd1BZwU99khqqLt94pyG3SA1ksZmapNpybyU57vUvSUKRgZqvWB4PfBPDkF7q9heY8ACU","chat_context":"A2vkE1rtZr3uKgUZKhgGXYvpvELnzYtMhfEeEBAbqCLh"}
+{"step":"create_llm_inference","ok":true,"sig":"5i6r3Mdxzoe19ne1YsNkAyHXPSBc5BQqsivLWZ4ep6LJacWfBdyzu6SdEWf983Y1h5zpeRaWhxUBSwPD1qhFB1MA","inference":"51Ayd1ePELqCLUMnzTPAWQece6Z8om5i2tnHRz5VPagU","text":"What is a PDA?","is_processed":false}
+{"step":"callback_by_non_oracle","rejected":true,"reason":"ConstraintAddress"}
+{"step":"callback_test_without_config_signature","rejected":true,"reason":"Program log: ProgramError occurred. Error Code: InvalidAccountData. Error Number: 17179869184. Error Message: An account's data contents was invalid."}
+{"step":"callback_from_llm","ok":true,"sig":"5jByrKCX12SJBxakKkD3Gk57eMmuYn9JRmiud2GwJmHKBYXoyPu5XXDfaQ88qhrFVyUUgNokP1KY1iDUzT8jpHVM","is_processed":true,"callback_log":"Program log: Callback response: \"A PDA is an address derived from seeds and a program id that has no private key, so only that program can sign for it.\""}
+{"step":"create_llm_inference_reuse_resize","ok":true,"sig":"LbjaJ2LTQh6sFZ6WJRf7vNQYoaPFFT9349H8nVcUj3CRiUovtpkGBrSna3k3ZfQBVGgRtMUXMMc1vsAuZ7vNJ2D","text":"And what is a CPI? Please answer in more detail than before.","is_processed":false,"data_len":181}
+{"step":"create_chat_same_seed","rejected":true,"reason":"Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0. \nLogs: \n[\n  \"Program KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw invoke [1]\",\n  \""}
+{"step":"cleanup_returned_lab_wallets"}

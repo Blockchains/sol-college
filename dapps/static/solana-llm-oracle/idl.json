@@ -1,0 +1,752 @@
+{
+  "address": "KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw",
+  "metadata": {
+    "name": "solana_llm_oracle",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "LLM oracle for inference in solana programs",
+    "repository": "https://github.com/GauravBurande/solana-llm-oracle"
+  },
+  "instructions": [
+    {
+      "name": "callback_from_llm",
+      "discriminator": [
+        64,
+        202,
+        209,
+        39,
+        156,
+        18,
+        216,
+        170
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "inference",
+          "writable": true
+        },
+        {
+          "name": "program"
+        }
+      ],
+      "args": [
+        {
+          "name": "response",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "callback_test",
+      "discriminator": [
+        196,
+        61,
+        185,
+        224,
+        30,
+        229,
+        25,
+        52
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "response",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "create_chat",
+      "discriminator": [
+        133,
+        186,
+        254,
+        72,
+        143,
+        178,
+        221,
+        28
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "chat_context",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  116,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  101,
+                  120,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "arg",
+                "path": "seed"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "name": "seed",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "create_llm_inference",
+      "discriminator": [
+        137,
+        172,
+        23,
+        129,
+        50,
+        162,
+        3,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "chat_context",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  116,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  101,
+                  120,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "chat_context.seed",
+                "account": "ChatContext"
+              }
+            ]
+          }
+        },
+        {
+          "name": "inference",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  102,
+                  101,
+                  114,
+                  101,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "chat_context"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "text",
+          "type": "string"
+        },
+        {
+          "name": "callback_program_id",
+          "type": "pubkey"
+        },
+        {
+          "name": "callback_discriminator",
+          "type": {
+            "array": [
+              "u8",
+              8
+            ]
+          }
+        },
+        {
+          "name": "account_metas",
+          "type": {
+            "option": {
+              "vec": {
+                "defined": {
+                  "name": "AccountMeta"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "delegate",
+      "discriminator": [
+        90,
+        147,
+        75,
+        178,
+        85,
+        88,
+        4,
+        137
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "chat_context",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  104,
+                  97,
+                  116,
+                  95,
+                  99,
+                  111,
+                  110,
+                  116,
+                  101,
+                  120,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "chat_context.seed",
+                "account": "ChatContext"
+              }
+            ]
+          }
+        },
+        {
+          "name": "buffer_inference",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  117,
+                  102,
+                  102,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "inference"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                4,
+                172,
+                157,
+                63,
+                153,
+                10,
+                100,
+                108,
+                9,
+                164,
+                83,
+                126,
+                95,
+                184,
+                105,
+                122,
+                70,
+                8,
+                18,
+                8,
+                46,
+                74,
+                103,
+                49,
+                249,
+                190,
+                96,
+                141,
+                232,
+                144,
+                227,
+                162
+              ]
+            }
+          }
+        },
+        {
+          "name": "delegation_record_inference",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "inference"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "delegation_metadata_inference",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  101,
+                  108,
+                  101,
+                  103,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110,
+                  45,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "inference"
+              }
+            ],
+            "program": {
+              "kind": "account",
+              "path": "delegation_program"
+            }
+          }
+        },
+        {
+          "name": "inference",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  105,
+                  110,
+                  102,
+                  101,
+                  114,
+                  101,
+                  110,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              },
+              {
+                "kind": "account",
+                "path": "chat_context"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        },
+        {
+          "name": "owner_program",
+          "address": "KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw"
+        },
+        {
+          "name": "delegation_program",
+          "address": "DELeGGvXpWV2fqJUhqcF5ZSYMS4JTLjteaAMARRSaeSh"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "process_undelegation",
+      "discriminator": [
+        196,
+        28,
+        41,
+        206,
+        48,
+        37,
+        51,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "base_account",
+          "writable": true
+        },
+        {
+          "name": "buffer"
+        },
+        {
+          "name": "payer",
+          "writable": true
+        },
+        {
+          "name": "system_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "account_seeds",
+          "type": {
+            "vec": "bytes"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ChatContext",
+      "discriminator": [
+        28,
+        122,
+        31,
+        214,
+        78,
+        136,
+        26,
+        215
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Inference",
+      "discriminator": [
+        212,
+        88,
+        92,
+        102,
+        232,
+        184,
+        55,
+        139
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidAdmin",
+      "msg": "You're not an admin ser!"
+    }
+  ],
+  "types": [
+    {
+      "name": "AccountMeta",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "pubkey",
+            "type": "pubkey"
+          },
+          {
+            "name": "is_signer",
+            "type": "bool"
+          },
+          {
+            "name": "is_writable",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ChatContext",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "text",
+            "type": "string"
+          },
+          {
+            "name": "seed",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Inference",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "chat_context",
+            "type": "pubkey"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "text",
+            "type": "string"
+          },
+          {
+            "name": "callback_program_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "callback_discriminator",
+            "type": {
+              "array": [
+                "u8",
+                8
+              ]
+            }
+          },
+          {
+            "name": "callback_account_metas",
+            "type": {
+              "vec": {
+                "defined": {
+                  "name": "AccountMeta"
+                }
+              }
+            }
+          },
+          {
+            "name": "is_processed",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "constants": [
+    {
+      "name": "ORACLE_IDENTITY",
+      "type": "pubkey",
+      "value": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+    }
+  ]
+}

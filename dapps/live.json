@@ -5424,5 +5424,65 @@
     "limits": "Design limits: each wallet logs its own actions and verified is always set to true, so a trace proves only that the wallet posted that hash at that time, not that the action happened; trust levels can be raised by self-logging. L2 and L3 need 7 and 30 days, so they were not shown. The repository has an npm postinstall script; npm was never run in the lab. Source unchanged apart from declare_id. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_agent 5ppJJP5A\u2026; log_activity swap_quote 5d228dHD\u2026; log_activity llm_inference 3USYDgKD\u2026; verify_trace on trace 1 4vrJMnBs\u2026. initialize_agent twice failed because the agent PDA already exists (System error 0x0). log_activity by another wallet against this agent was rejected (ConstraintSeeds). An action type longer than the 96 bytes reserved was rejected (AccountDidNotSerialize). verify_trace on the agent account was rejected (AccountDiscriminatorMismatch)."
+  },
+  {
+    "slug": "solana-llm-oracle",
+    "name": "Solana LLM Oracle",
+    "lesson": "/explore/solana-llm-oracle/",
+    "app": "/dapps/solana-llm-oracle/",
+    "fork": "https://github.com/Blockchains/solana-llm-oracle",
+    "commit": "e0f4d9d7747b3569c9439f6dd04d9b681b520906",
+    "program": "KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/solana-llm-oracle (unique declare_id; the official LLM4VF4u\u2026 was not reused).",
+    "learn": "initialize creates the config PDA [\"config\"] (admin-only). create_chat stores a system prompt in [\"chat_context\", user, seed]. create_llm_inference writes [\"inference\", user, chat_context] with the question, the callback program, an 8-byte callback discriminator and extra account metas; reusing it resizes the account. The off-chain oracle reads the request and calls callback_from_llm, which marks it processed and CPIs into the callback program with the config PDA as signer, so the callback can trust that the answer came from the oracle.",
+    "source": [
+      [
+        "programs/solana-llm-oracle/src/instructions/callback_from_llm.rs",
+        "https://github.com/Blockchains/solana-llm-oracle/blob/e0f4d9d7747b3569c9439f6dd04d9b681b520906/programs/solana-llm-oracle/src/instructions/callback_from_llm.rs"
+      ],
+      [
+        "programs/solana-llm-oracle/src/lib.rs",
+        "https://github.com/Blockchains/solana-llm-oracle/blob/e0f4d9d7747b3569c9439f6dd04d9b681b520906/programs/solana-llm-oracle/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/solana-llm-oracle.mjs",
+    "log": "tests/devnet/logs/solana-llm-oracle-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy solana-llm-oracle as KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw on devnet",
+        "5fdKHrt3B17rDUeaCGQDbrPZ6bzyxmB41kWecNg9V6RkM8jxwbCU9evLbG89wdJvGqzN2n5jfp6rJYDhPpTTHJCB"
+      ],
+      [
+        "initialize config (lab admin)",
+        "2fNAiztEZKyvpoE8MoPw4sM4zgCg1PCPKLKZyh8M9JvFDQN32DaBoJJWmzAMCiHg17Fbq6r2yosKHPYi5SLBL7io"
+      ],
+      [
+        "create_chat with a system prompt",
+        "53FuqwxZs4eoo3rBgt6cd1BZwU99khqqLt94pyG3SA1ksZmapNpybyU57vUvSUKRgZqvWB4PfBPDkF7q9heY8ACU"
+      ],
+      [
+        "create_llm_inference asking \"What is a PDA?\" with callback_test as callback",
+        "5i6r3Mdxzoe19ne1YsNkAyHXPSBc5BQqsivLWZ4ep6LJacWfBdyzu6SdEWf983Y1h5zpeRaWhxUBSwPD1qhFB1MA"
+      ],
+      [
+        "callback_from_llm by the oracle identity; callback_test logs the answer",
+        "5jByrKCX12SJBxakKkD3Gk57eMmuYn9JRmiud2GwJmHKBYXoyPu5XXDfaQ88qhrFVyUUgNokP1KY1iDUzT8jpHVM"
+      ],
+      [
+        "create_llm_inference again (account reused and resized)",
+        "LbjaJ2LTQh6sFZ6WJRf7vNQYoaPFFT9349H8nVcUj3CRiUovtpkGBrSna3k3ZfQBVGgRtMUXMMc1vsAuZ7vNJ2D"
+      ]
+    ],
+    "negative": [
+      "initialize by a non-admin wallet was rejected (ConstraintAddress).",
+      "callback_from_llm by a wallet that is not the oracle identity was rejected (ConstraintAddress).",
+      "Calling callback_test directly, without the config PDA signature, was rejected (InvalidAccountData).",
+      "create_chat with an existing seed failed because the account already exists (System error 0x0)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/solana-llm-oracle.mjs.",
+    "limits": "Lab patch: the hardcoded admin and ORACLE_IDENTITY are the Sol.College devnet lab wallet, which posted the answer itself; no off-chain LLM service ran, so the answer text was written by the lab. The MagicBlock delegate / process_undelegation path and the defi-score-agent-example program were not deployed or exercised. callback_from_llm does not check that the program account matches the requested callback program. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize config 2fNAiztE\u2026; create_chat with a system prompt 53FuqwxZ\u2026; create_llm_inference asking \"What is a PDA?\" with callback_test as callback 5i6r3Mdx\u2026; callback_from_llm by the oracle identity; callback_test logs the answer 5jByrKCX\u2026; create_llm_inference again LbjaJ2LT\u2026. initialize by a non-admin wallet was rejected (ConstraintAddress). callback_from_llm by a wallet that is not the oracle identity was rejected (ConstraintAddress). Calling callback_test directly, without the config PDA signature, was rejected (InvalidAccountData). create_chat with an existing seed failed because the account already exists (System error 0x0)."
   }
 ]

@@ -1,0 +1,10 @@
+{
+ "name": "Solana LLM Oracle",
+ "fork": "https://github.com/Blockchains/solana-llm-oracle",
+ "commit": "e0f4d9d7747b3569c9439f6dd04d9b681b520906",
+ "lesson": "/explore/solana-llm-oracle/",
+ "programs": {
+  "devnet": "KFHvKB9jJiHs1wv5v7Dbj5sUrs1SYVNCmCckUFBRHXw",
+  "mainnet": null
+ }
+}

@@ -1,0 +1,36 @@
+{
+  "title": "Solana LLM Oracle",
+  "summary": "Ask an LLM from a Solana program: post a request on chain and receive the answer as a CPI callback signed by the oracle.",
+  "what": "Solana LLM Oracle is an Anchor 0.31.1 program for on-chain AI requests. Requests and chat contexts are PDAs; an off-chain oracle answers by invoking the requester\u2019s callback with a PDA signature.",
+  "app_note": "The page at /dapps/solana-llm-oracle/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/solana-llm-oracle, with declare_id changed and the admin and oracle identity set to the lab wallet.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/solana-llm-oracle/, switch to Devnet, connect a wallet and call create_chat, then create_llm_inference with callback_program_id set to the program itself.",
+      "see": "A chat context and an inference request with is_processed = false.",
+      "ran": "The lab oracle answered with callback_from_llm (see steps)."
+    }
+  ],
+  "diagram": "user --create_chat(prompt)--> chat_context; user --create_llm_inference(question, callback)--> inference; oracle --callback_from_llm(answer)--> inference.is_processed + CPI callback(answer) signed by config PDA",
+  "accounts": [
+    "config PDA [\"config\"]",
+    "chat context PDA [\"chat_context\", user, seed]",
+    "inference PDA [\"inference\", user, chat_context]"
+  ],
+  "instructions": [
+    "initialize",
+    "create_chat",
+    "create_llm_inference",
+    "callback_from_llm",
+    "callback_test"
+  ],
+  "innovation": "The callback pattern lets any program consume AI output on chain and verify its origin through a PDA signature instead of trusting a transaction signer.",
+  "frontend": "Generic IDL console at /dapps/solana-llm-oracle/.",
+  "exercises": [
+    "Why does callback_test check that the config account is a signer?",
+    "What could go wrong because callback_from_llm does not check the program account against the request?"
+  ],
+  "not_covered": [
+    "MagicBlock delegation",
+    "defi-score-agent-example program"
+  ]
+}
