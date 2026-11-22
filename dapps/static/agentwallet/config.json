@@ -1,0 +1,10 @@
+{
+ "name": "AgentWallet Protocol",
+ "fork": "https://github.com/Blockchains/agentwallet-protocol",
+ "commit": "2437a5dfe72f1a876c1de110819696515cea33e3",
+ "lesson": "/explore/agentwallet/",
+ "programs": {
+  "devnet": "4ZAgSBcGgLyKkm7wGPT8wdBLDBz2BTeBqLF4WtC7jtY5",
+  "mainnet": null
+ }
+}

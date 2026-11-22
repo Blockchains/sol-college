@@ -1,0 +1,10 @@
+{"step":"setup","program":"4ZAgSBcGgLyKkm7wGPT8wdBLDBz2BTeBqLF4WtC7jtY5","platformConfig":"DhNkrLsjYmpv4fTHBTTyBcAH8rqrjsDyvaWe5bM3iVgx","wallet":"8YXxrTuKwCAmYgM5Cf5xrpoJef1LE1xXtr9XsDjcBgHu","agentId":"campus-agent-mws0wi1s","recipient":"5wf95aaFXuofAWFkzNWLdZcPe7txuQAqNFFz9ZxUUP5J"}
+{"step":"initialize_platform_config","sig":"3W7J5y9BJrXKYznz7omBZwHWsiDY73io5VXPSuLqcQurwd27MraxCxVvotguKVRCP7PbQ33Hf3WpTyRs4zyNxgDh","fee_bps":50,"fee_wallet":"En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU"}
+{"step":"create_agent_wallet","sig":"54vibuaSvHC854sGx6niCR4QGDzpqdGZjLvUJrRaGf8jCRneSkPnmdMZejnbmBAjSbA2ezA6qjWYv9HUFRkTAErz"}
+{"step":"transfer_with_limit_over_per_tx","rejected":true,"reason":"SpendingLimitExceeded"}
+{"step":"transfer_with_limit","sig":"4Jyih3sjnGpzXaYiBW7YnofZuUXjq7FdhDCgqK7ovUmpUtX5D9YvJoqjtocKL5QmGcZk1w4WixF9cH2fjwpfokod","recipient_lamports":4975000,"fee_to_treasury":25000}
+{"step":"create_escrow","sig":"TSJEueznbRrCb5k3WCcAP5VLtisXy34uTp6SUxmBpFpCGEybJ2uHs83tQWwFeNji3zE8u9HnpqMh2af9pZDgAd6","escrow":"4gNjRxxubDCa7jBAEHjL7iid7kzDb7w21oFuZqhzLkd5","payee":"G2FmenH4Bduw9Ls23h3ZvDHviZubRRXuMSD5DZiZJkZ3"}
+{"step":"release_escrow_by_stranger","rejected":true,"reason":"UnauthorizedArbiter"}
+{"step":"release_escrow","sig":"5sYH3dMdS8MYeMJMcqBqgHa3zs5N9WgMRgJ9YbsTuUihyzBJebg8VxhbGE7sBsfM5yVW2zfKYmfHup15M7vzgW45","payee_lamports":1000000,"escrow_closed":true}
+{"step":"create_escrow_2","sig":"4aBGDoAkZ5Ebkw1Jcxc7PxAP5McfsQ62uSftBbYzJXuG7fqMBgQVj11UAyzbuuHXS9L1qVf7GaunwSF4scy1tjVF","escrow":"5m4w5tAooKErctRC6K1umQmyfgdwV1SFa8tGM5wBT81X"}
+{"step":"refund_escrow","sig":"4dWFPAzg7JNDogVeZ1Gz2AhfQxH444mqPMB5JA8qN8cXF8coca3Auuv13aTVKr7enyXXeJc6NaXrtcUCC7noeieU","escrow_closed":true}

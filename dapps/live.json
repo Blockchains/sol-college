@@ -106,7 +106,7 @@
       "create_pixel at x=200 is rejected with InvalidXCoordinate",
       "create_pixel on an existing pixel is rejected (account already initialised)"
     ],
-    "ui_check": "Hosted UI create verified: headless Chromium + injected Wallet Standard wallet on the live sol.college page sent create_pixel from the app's own click handler (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl). Hosted UI recolour (update_pixel via click) is not yet recorded — update_pixel is verified by the program test script only (see Proof).",
+    "ui_check": "Hosted UI create verified: headless Chromium + injected Wallet Standard wallet on the live sol.college page sent create_pixel from the app's own click handler (tests/devnet/wallet_click.py, log tests/devnet/logs/ui-clicks-2026-11-10.jsonl). Hosted UI recolour (update_pixel via click) is not yet recorded \u2014 update_pixel is verified by the program test script only (see Proof).",
     "limits": "Hosted UI recolour not yet recorded. Points/leaderboard need the author's MongoDB backend and its /api/updateUserPoints route, which a static host can't serve (the app's POST gets 501; the pixel tx is unaffected).",
     "functional": "full",
     "functional_evidence": "create_pixel landed on devnet from the hosted app. Recolour is script-verified. The points/leaderboard API is a separate backend and does not block painting."
@@ -4004,5 +4004,75 @@
     "limits": "execute_swap_exact_in, withdraw_owner, withdraw_fees, emergency_pause and update_authorized_agent were not exercised. The service fee goes to the treasury hard-coded in the upstream source (DvcQMhZm\u2026), not a Sol.College wallet. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_vault Qrj16DWS\u2026 created vault 2rr4U5D68xdsBDjgenoTxeWeCBRsDP5AD6MhPebztw1g and policy 5YzNVgazT9LD8sbsWyP7wanprXX7zoo71mVoBcU8viBL. update_policy 4sXskJtq\u2026 allow-listed lab mint BJMSdujx\u2026 and merchant 22xTqz5emkaaFcShto9WdUU17r9Z5xiFuDqCXKN4JFXV. initialize_fee_vault 3BEQSgQe\u2026 and deposit_fees 4ZageJkb\u2026 funded fee vault 9Bk7rX4cEbKBNK39vjctV5ytrLYLjeS1nmBgp4KGpEg3 with 2_000_000 lamports. ensure_vault_token_account 3PW9U4sk\u2026 created the vault ATA, which was minted 1_000_000 lab tokens. execute_pay_exact 2wuDBpQP\u2026 paid the merchant exactly 985_000 and the hard-coded LobsterPay devnet treasury DvcQMhZm\u2026 the 1.5% fee of 15_000; the vault ATA ended at 0. A payment to a non-allow-listed destination was rejected (DestinationNotAllowed) and a 3_000_000 payment was rejected (AmountExceedsPerTxLimit, cap 2_000_000)."
+  },
+  {
+    "slug": "agentwallet",
+    "name": "AgentWallet Protocol",
+    "lesson": "/explore/agentwallet/",
+    "app": "/dapps/agentwallet/",
+    "fork": "https://github.com/Blockchains/agentwallet-protocol",
+    "commit": "2437a5dfe72f1a876c1de110819696515cea33e3",
+    "program": "4ZAgSBcGgLyKkm7wGPT8wdBLDBz2BTeBqLF4WtC7jtY5",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is hand-derived from the program source (anchor idl build failed on the host proc-macro toolchain); discriminators were confirmed by live transactions. The lab tree is branch sol-college-devnet of Blockchains/agentwallet-protocol (unique declare_id; the official CEQLGCWk\u2026 was not reused).",
+    "learn": "initialize_platform_config writes a singleton PDA (seeds [\"platform_config\"]) with a fee wallet and fee_bps. create_agent_wallet (seeds [\"agent_wallet\", org, agent_id]) stores per-transaction and daily limits. transfer_with_limit checks both limits, then moves SOL from the authority's own account: fee to the fee wallet, the rest to the recipient. create_escrow (seeds [\"escrow\", escrow_id]) holds SOL in the PDA; release_escrow (funder or arbiter) pays the recipient and closes it; refund_escrow (arbiter, or anyone after expiry) returns it to the funder.",
+    "source": [
+      [
+        "agentwallet/packages/programs/agentwallet/src/lib.rs L19-L62",
+        "https://github.com/Blockchains/agentwallet-protocol/blob/2437a5dfe72f1a876c1de110819696515cea33e3/agentwallet/packages/programs/agentwallet/src/lib.rs#L19-L62"
+      ],
+      [
+        "instructions/transfer_with_limit.rs",
+        "https://github.com/Blockchains/agentwallet-protocol/blob/2437a5dfe72f1a876c1de110819696515cea33e3/agentwallet/packages/programs/agentwallet/src/instructions/transfer_with_limit.rs"
+      ],
+      [
+        "instructions/escrow.rs",
+        "https://github.com/Blockchains/agentwallet-protocol/blob/2437a5dfe72f1a876c1de110819696515cea33e3/agentwallet/packages/programs/agentwallet/src/instructions/escrow.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentwallet.mjs",
+    "log": "tests/devnet/logs/agentwallet-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agentwallet as 4ZAgSBcGgLyKkm7wGPT8wdBLDBz2BTeBqLF4WtC7jtY5 on devnet",
+        "5N8QpVseWTvTXPabrbMwf8HSmRWgJBVbenNDksv87KnppzpjFUc16J8sSsSv2sPGGC8nbUSoGjknjSk4J49fjiTx"
+      ],
+      [
+        "initialize_platform_config (config DhNkrLsjYmpv4fTHBTTyBcAH8rqrjsDyvaWe5bM3iVgx, 50 bps to En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU)",
+        "3W7J5y9BJrXKYznz7omBZwHWsiDY73io5VXPSuLqcQurwd27MraxCxVvotguKVRCP7PbQ33Hf3WpTyRs4zyNxgDh"
+      ],
+      [
+        "create_agent_wallet campus-agent-mws0wi1s (wallet 8YXxrTuKwCAmYgM5Cf5xrpoJef1LE1xXtr9XsDjcBgHu)",
+        "54vibuaSvHC854sGx6niCR4QGDzpqdGZjLvUJrRaGf8jCRneSkPnmdMZejnbmBAjSbA2ezA6qjWYv9HUFRkTAErz"
+      ],
+      [
+        "transfer_with_limit 5_000_000: recipient +4_975_000, fee wallet +25_000",
+        "4Jyih3sjnGpzXaYiBW7YnofZuUXjq7FdhDCgqK7ovUmpUtX5D9YvJoqjtocKL5QmGcZk1w4WixF9cH2fjwpfokod"
+      ],
+      [
+        "create_escrow 1_000_000 lamports (escrow 4gNjRxxubDCa7jBAEHjL7iid7kzDb7w21oFuZqhzLkd5)",
+        "TSJEueznbRrCb5k3WCcAP5VLtisXy34uTp6SUxmBpFpCGEybJ2uHs83tQWwFeNji3zE8u9HnpqMh2af9pZDgAd6"
+      ],
+      [
+        "release_escrow by the funder: payee +1_000_000, escrow closed",
+        "5sYH3dMdS8MYeMJMcqBqgHa3zs5N9WgMRgJ9YbsTuUihyzBJebg8VxhbGE7sBsfM5yVW2zfKYmfHup15M7vzgW45"
+      ],
+      [
+        "create_escrow #2 (5m4w5tAooKErctRC6K1umQmyfgdwV1SFa8tGM5wBT81X)",
+        "4aBGDoAkZ5Ebkw1Jcxc7PxAP5McfsQ62uSftBbYzJXuG7fqMBgQVj11UAyzbuuHXS9L1qVf7GaunwSF4scy1tjVF"
+      ],
+      [
+        "refund_escrow by the arbiter, escrow closed",
+        "4dWFPAzg7JNDogVeZ1Gz2AhfQxH444mqPMB5JA8qN8cXF8coca3Auuv13aTVKr7enyXXeJc6NaXrtcUCC7noeieU"
+      ]
+    ],
+    "negative": [
+      "transfer_with_limit of 15_000_000 was rejected (SpendingLimitExceeded; per-tx cap 10_000_000).",
+      "release_escrow signed by a key that is neither funder nor arbiter was rejected (UnauthorizedArbiter)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentwallet.mjs.",
+    "limits": "update_limits was not exercised. Design note: transfer_with_limit moves SOL from the signing authority, not from the agent_wallet PDA, so limits only bind an honest client (open assignment). initialize_platform_config can be called once by any first caller. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_platform_config 3W7J5y9B\u2026 set a 50 bps fee to the Sol.College lab treasury En7DGt8B\u2026. create_agent_wallet 54vibuaS\u2026 created wallet 8YXxrTuKwCAmYgM5Cf5xrpoJef1LE1xXtr9XsDjcBgHu (per-tx 10_000_000, daily 20_000_000 lamports). transfer_with_limit 4Jyih3sj\u2026 sent 5_000_000 lamports: recipient 5wf95aaFXuofAWFkzNWLdZcPe7txuQAqNFFz9ZxUUP5J received exactly 4_975_000 and the treasury 25_000. create_escrow TSJEuezn\u2026 locked 1_000_000 lamports in escrow 4gNjRxxubDCa7jBAEHjL7iid7kzDb7w21oFuZqhzLkd5; release_escrow 5sYH3dMd\u2026 paid payee G2FmenH4Bduw9Ls23h3ZvDHviZubRRXuMSD5DZiZJkZ3 exactly 1_000_000 and closed the escrow. A second escrow was refunded by the arbiter (refund_escrow 4dWFPAzg\u2026, closed). Rejected: a 15_000_000 transfer (SpendingLimitExceeded) and release by a non-funder, non-arbiter signer (UnauthorizedArbiter)."
   }
 ]

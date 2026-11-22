@@ -1,0 +1,37 @@
+{
+  "title": "AgentWallet Protocol",
+  "summary": "Give an agent per-transaction and daily SOL limits with a platform fee, and settle SOL escrows by funder release or arbiter refund.",
+  "what": "AgentWallet is an Anchor 0.31.1 program. An organisation creates agent wallets with spending limits; transfer_with_limit enforces them and splits off a basis-point fee. Separately, create_escrow locks SOL in a PDA that the funder or arbiter can release to the recipient, or the arbiter can refund.",
+  "app_note": "The page at /dapps/agentwallet/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agentwallet-protocol.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentwallet/, switch to Devnet, and connect a wallet. The lab already ran the transfer and escrow flows.",
+      "see": "Wallet 8YXxrTuK\u2026; recipient 5wf95aaF\u2026 holds 4_975_000 lamports.",
+      "ran": "create_agent_wallet 54vibuaS\u2026; transfer_with_limit 4Jyih3sj\u2026; create_escrow TSJEuezn\u2026; release_escrow 5sYH3dMd\u2026"
+    }
+  ],
+  "diagram": "admin --initialize_platform_config--> config; org --create_agent_wallet--> agent_wallet; authority --transfer_with_limit--> recipient (+net), fee_wallet (+fee); funder --create_escrow--> escrow PDA --release_escrow--> recipient | --refund_escrow--> funder.",
+  "accounts": [
+    "platform_config PDA seeds [\"platform_config\"]",
+    "agent_wallet PDA seeds [\"agent_wallet\", org, agent_id]",
+    "escrow PDA seeds [\"escrow\", escrow_id]"
+  ],
+  "instructions": [
+    "initialize_platform_config",
+    "create_agent_wallet",
+    "transfer_with_limit",
+    "update_limits",
+    "create_escrow",
+    "release_escrow",
+    "refund_escrow"
+  ],
+  "innovation": "Per-agent spending caps and a daily window are tracked on-chain, so off-chain agent runners share one auditable limit record.",
+  "frontend": "Generic IDL console at /dapps/agentwallet/.",
+  "exercises": [
+    "Whose SOL does transfer_with_limit actually move?",
+    "Who may call refund_escrow before expiry?"
+  ],
+  "not_covered": [
+    "update_limits"
+  ]
+}

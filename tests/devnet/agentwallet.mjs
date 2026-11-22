@@ -1,0 +1,37 @@
+import fs from 'fs';
+import { Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
+import { payer, conn, log, program, fund, expectFail, BN } from './lib/labcommon.mjs';
+const idl = JSON.parse(fs.readFileSync(new URL('../../dapps/static/agentwallet/idl.json', import.meta.url),'utf8'));
+const prog = program(idl); const pid = new PublicKey(idl.address);
+const TREASURY = new PublicKey('En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU');
+const me = payer.publicKey; const S = SystemProgram.programId;
+const [cfg] = PublicKey.findProgramAddressSync([Buffer.from('platform_config')], pid);
+const agentId = 'campus-agent-' + Date.now().toString(36);
+const [wallet] = PublicKey.findProgramAddressSync([Buffer.from('agent_wallet'), me.toBuffer(), Buffer.from(agentId)], pid);
+const recipient = Keypair.generate().publicKey; const stranger = Keypair.generate();
+log({ step:'setup', program: pid.toBase58(), platformConfig: cfg.toBase58(), wallet: wallet.toBase58(), agentId, recipient: recipient.toBase58() });
+if (!(await conn.getAccountInfo(cfg))) log({ step:'initialize_platform_config', sig: await prog.methods.initializePlatformConfig(50).accounts({ authority: me, feeWallet: TREASURY, platformConfig: cfg, systemProgram: S }).rpc(), fee_bps: 50, fee_wallet: TREASURY.toBase58() });
+log({ step:'create_agent_wallet', sig: await prog.methods.createAgentWallet(agentId, new BN(10_000_000), new BN(20_000_000)).accounts({ authority: me, org: me, agentWallet: wallet, systemProgram: S }).rpc() });
+const tAcc = { authority: me, agentWallet: wallet, platformConfig: cfg, feeWallet: TREASURY, recipient, systemProgram: S };
+await expectFail('transfer_with_limit_over_per_tx', () => prog.methods.transferWithLimit(new BN(15_000_000)).accounts(tAcc).rpc());
+const t0 = await conn.getBalance(TREASURY);
+const s1 = await prog.methods.transferWithLimit(new BN(5_000_000)).accounts(tAcc).rpc();
+log({ step:'transfer_with_limit', sig: s1, recipient_lamports: await conn.getBalance(recipient), fee_to_treasury: (await conn.getBalance(TREASURY)) - t0 });
+// escrow happy path
+const eid = 'sc-' + Date.now().toString(36);
+const [esc] = PublicKey.findProgramAddressSync([Buffer.from('escrow'), Buffer.from(eid)], pid);
+const payee = Keypair.generate().publicKey;
+const exp = Math.floor(Date.now()/1000) + 3600;
+log({ step:'create_escrow', sig: await prog.methods.createEscrow(eid, new BN(1_000_000), new BN(exp)).accounts({ funder: me, recipient: payee, arbiter: me, escrowAccount: esc, systemProgram: S }).rpc(), escrow: esc.toBase58(), payee: payee.toBase58() });
+await fund(stranger.publicKey, 10_000_000);
+const sp = program(idl, stranger);
+await expectFail('release_escrow_by_stranger', () => sp.methods.releaseEscrow().accounts({ signer: stranger.publicKey, escrowAccount: esc, recipient: payee, funder: me, systemProgram: S }).rpc());
+const s2 = await prog.methods.releaseEscrow().accounts({ signer: me, escrowAccount: esc, recipient: payee, funder: me, systemProgram: S }).rpc();
+const ei = await conn.getAccountInfo(esc);
+log({ step:'release_escrow', sig: s2, payee_lamports: await conn.getBalance(payee), escrow_closed: !ei || ei.data.length === 0 });
+// refund path
+const eid2 = eid + 'r';
+const [esc2] = PublicKey.findProgramAddressSync([Buffer.from('escrow'), Buffer.from(eid2)], pid);
+log({ step:'create_escrow_2', sig: await prog.methods.createEscrow(eid2, new BN(1_000_000), new BN(exp)).accounts({ funder: me, recipient: payee, arbiter: me, escrowAccount: esc2, systemProgram: S }).rpc(), escrow: esc2.toBase58() });
+log({ step:'refund_escrow', sig: await prog.methods.refundEscrow().accounts({ signer: me, escrowAccount: esc2, funder: me, systemProgram: S }).rpc(), escrow_closed: !(await conn.getAccountInfo(esc2)) });
+process.exit(0);
