@@ -98,17 +98,14 @@
     const phone = pack.tag === 'tall';
     const t = now / 1000;
     const live = reduce ? 0 : 1;
-    const zoom = (phone ? 1.04 : 1.05) + Math.sin(t * 0.16) * 0.025 * live;
-    const ox = (Math.sin(t * 0.11) * (phone ? 10 : 16) + px * 22) * live;
-    const oy = (Math.cos(t * 0.09) * 10 + py * 12) * live;
+    // Fit the still inside the stage so the illustration stays fully visible.
     const iw = img.naturalWidth;
     const ih = img.naturalHeight;
-    const scale = Math.max(W / iw, H / ih) * zoom;
+    const scale = Math.min(W / iw, H / ih);
     const dw = iw * scale;
     const dh = ih * scale;
-    let dx = (W - dw) / 2 + ox;
-    if (!phone) dx = Math.max(dx, W - dw + 6);
-    const dy = (H - dh) / 2 + oy;
+    const dx = (W - dw) / 2;
+    const dy = (H - dh) / 2;
     return { dx: dx, dy: dy, dw: dw, dh: dh, t: t, live: live, phone: phone };
   }
 
