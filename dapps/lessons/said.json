@@ -1,0 +1,46 @@
+{
+  "title": "SAID Agent Identity",
+  "summary": "Give an AI agent an on-chain identity, pay to verify it, stake SOL behind it and collect feedback, validations and receipt anchors.",
+  "what": "SAID is an Anchor 0.32.1 identity standard for agents: an identity PDA per owner, a paid verified badge, slashable stake, peer feedback, third-party work validations and sequential merkle anchors of the agent\u2019s receipts.",
+  "app_note": "The page at /dapps/said/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/said. The lab changed declare_id and set TREASURY_AUTHORITY to the Sol.College devnet deployer.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/said/, switch to Devnet, connect a wallet and call register_agent with an https:// metadata URI.",
+      "see": "Your identity PDA [\"agent\", your wallet], unverified.",
+      "ran": "The full identity, stake, feedback, slash and unstake flow (see steps)."
+    }
+  ],
+  "diagram": "owner --register_agent--> identity; owner --get_verified--> treasury (+0.01 SOL); owner --stake--> stake PDA; reviewer --submit_feedback--> reputation; validator --validate_work--> record; admin --slash_agent--> stake -> treasury; owner --emergency_unstake--> 90% back",
+  "accounts": [
+    "treasury PDA [\"treasury\"]",
+    "identity PDA [\"agent\", owner]",
+    "stake PDA [\"stake\", identity]",
+    "reputation PDA [\"reputation\", identity]",
+    "validation PDA [\"validation\", identity, task_hash]",
+    "anchor PDA [\"anchor\", identity, index u64]",
+    "wallet link PDA [\"wallet\", wallet]"
+  ],
+  "instructions": [
+    "initialize_treasury",
+    "register_agent",
+    "get_verified",
+    "stake",
+    "submit_feedback",
+    "validate_work",
+    "submit_anchor",
+    "link_wallet",
+    "slash_agent",
+    "emergency_unstake",
+    "withdraw_fees"
+  ],
+  "innovation": "One account ties together an agent\u2019s identity, economic stake, peer reputation and an auditable receipt trail.",
+  "frontend": "Generic IDL console at /dapps/said/.",
+  "exercises": [
+    "Why must receipt anchors be strictly sequential?",
+    "What does the 10% emergency-unstake penalty protect against?"
+  ],
+  "not_covered": [
+    "Cooldown unstake path",
+    "Sponsor registration"
+  ]
+}

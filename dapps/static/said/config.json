@@ -1,0 +1,10 @@
+{
+ "name": "SAID Agent Identity",
+ "fork": "https://github.com/Blockchains/said",
+ "commit": "1676dfc666d7f941b867d95817e253d8b6fcb8a7",
+ "lesson": "/explore/said/",
+ "programs": {
+  "devnet": "5re2Wa2euhoBhqiKQMyqZp1JVnq8zAFuZYqrbZLcmEK8",
+  "mainnet": null
+ }
+}

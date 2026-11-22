@@ -1,0 +1,2478 @@
+{
+  "address": "5re2Wa2euhoBhqiKQMyqZp1JVnq8zAFuZYqrbZLcmEK8",
+  "metadata": {
+    "name": "said",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Solana Agent Identity Standard - Identity, Reputation, and Validation for AI Agents"
+  },
+  "instructions": [
+    {
+      "name": "add_stake",
+      "docs": [
+        "Add to existing stake (increases stake amount)"
+      ],
+      "discriminator": [
+        58,
+        135,
+        189,
+        105,
+        160,
+        120,
+        165,
+        224
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "additional_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "cancel_unstake",
+      "discriminator": [
+        64,
+        65,
+        53,
+        227,
+        125,
+        153,
+        3,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "complete_unstake",
+      "discriminator": [
+        79,
+        98,
+        40,
+        241,
+        100,
+        30,
+        25,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "emergency_unstake",
+      "discriminator": [
+        123,
+        69,
+        168,
+        195,
+        183,
+        213,
+        199,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "get_verified",
+      "discriminator": [
+        132,
+        231,
+        2,
+        30,
+        115,
+        74,
+        23,
+        26
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_treasury",
+      "discriminator": [
+        124,
+        186,
+        211,
+        195,
+        85,
+        165,
+        129,
+        166
+      ],
+      "accounts": [
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "link_wallet",
+      "discriminator": [
+        86,
+        92,
+        31,
+        146,
+        228,
+        51,
+        209,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_link",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "new_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "new_wallet",
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_agent",
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "metadata_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "register_and_stake",
+      "discriminator": [
+        52,
+        188,
+        57,
+        208,
+        210,
+        194,
+        120,
+        72
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "metadata_uri",
+          "type": "string"
+        },
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "request_unstake",
+      "discriminator": [
+        44,
+        154,
+        110,
+        253,
+        160,
+        202,
+        54,
+        34
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "slash_agent",
+      "discriminator": [
+        110,
+        18,
+        208,
+        127,
+        90,
+        162,
+        228,
+        167
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        }
+      ],
+      "args": [
+        {
+          "name": "severity_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "sponsor_register",
+      "discriminator": [
+        62,
+        163,
+        108,
+        151,
+        140,
+        136,
+        232,
+        101
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_wallet"
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "metadata_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "sponsor_verify",
+      "discriminator": [
+        232,
+        185,
+        132,
+        1,
+        69,
+        203,
+        151,
+        17
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "stake",
+      "docs": [
+        "Stake for an already-registered agent (creates AgentStake, upgrades to tier 2)"
+      ],
+      "discriminator": [
+        206,
+        176,
+        202,
+        18,
+        200,
+        209,
+        179,
+        108
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_stake",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  116,
+                  97,
+                  107,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "stake_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "submit_anchor",
+      "docs": [
+        "Submit a Merkle anchor for a contiguous receipt range [start_seq, end_seq]"
+      ],
+      "discriminator": [
+        105,
+        1,
+        91,
+        240,
+        154,
+        135,
+        174,
+        244
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "receipt_anchor",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  110,
+                  99,
+                  104,
+                  111,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              },
+              {
+                "kind": "arg",
+                "path": "anchor_index"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "anchor_index",
+          "type": "u64"
+        },
+        {
+          "name": "start_seq",
+          "type": "u64"
+        },
+        {
+          "name": "end_seq",
+          "type": "u64"
+        },
+        {
+          "name": "merkle_root",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_feedback",
+      "discriminator": [
+        222,
+        189,
+        16,
+        203,
+        186,
+        151,
+        236,
+        188
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "reviewer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "positive",
+          "type": "bool"
+        },
+        {
+          "name": "context",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "transfer_authority",
+      "discriminator": [
+        48,
+        169,
+        76,
+        72,
+        229,
+        180,
+        55,
+        161
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_link",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "new_authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "new_authority",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "unlink_wallet",
+      "discriminator": [
+        220,
+        121,
+        97,
+        13,
+        193,
+        137,
+        209,
+        159
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet_link",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  119,
+                  97,
+                  108,
+                  108,
+                  101,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet_link.wallet",
+                "account": "WalletLink"
+              }
+            ]
+          }
+        },
+        {
+          "name": "caller",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_agent",
+      "discriminator": [
+        85,
+        2,
+        178,
+        9,
+        119,
+        139,
+        102,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "new_metadata_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "validate_work",
+      "discriminator": [
+        235,
+        101,
+        241,
+        108,
+        67,
+        136,
+        145,
+        37
+      ],
+      "accounts": [
+        {
+          "name": "agent_identity",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity.owner",
+                "account": "AgentIdentity"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validation_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  108,
+                  105,
+                  100,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent_identity"
+              },
+              {
+                "kind": "arg",
+                "path": "task_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "validator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "task_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "passed",
+          "type": "bool"
+        },
+        {
+          "name": "evidence_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_fees",
+      "discriminator": [
+        198,
+        212,
+        171,
+        109,
+        144,
+        215,
+        174,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "treasury",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  101,
+                  97,
+                  115,
+                  117,
+                  114,
+                  121
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "address": "BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentIdentity",
+      "discriminator": [
+        11,
+        149,
+        31,
+        27,
+        186,
+        76,
+        241,
+        72
+      ]
+    },
+    {
+      "name": "AgentReputation",
+      "discriminator": [
+        245,
+        56,
+        239,
+        246,
+        36,
+        231,
+        227,
+        67
+      ]
+    },
+    {
+      "name": "AgentStake",
+      "discriminator": [
+        47,
+        68,
+        130,
+        227,
+        185,
+        4,
+        183,
+        36
+      ]
+    },
+    {
+      "name": "ReceiptAnchor",
+      "discriminator": [
+        21,
+        115,
+        187,
+        38,
+        82,
+        76,
+        88,
+        171
+      ]
+    },
+    {
+      "name": "Treasury",
+      "discriminator": [
+        238,
+        239,
+        123,
+        238,
+        89,
+        1,
+        168,
+        253
+      ]
+    },
+    {
+      "name": "ValidationRecord",
+      "discriminator": [
+        237,
+        185,
+        26,
+        62,
+        250,
+        28,
+        178,
+        215
+      ]
+    },
+    {
+      "name": "WalletLink",
+      "discriminator": [
+        87,
+        109,
+        25,
+        51,
+        3,
+        191,
+        163,
+        206
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentRegistered",
+      "discriminator": [
+        191,
+        78,
+        217,
+        54,
+        232,
+        100,
+        189,
+        85
+      ]
+    },
+    {
+      "name": "AgentSlashed",
+      "discriminator": [
+        120,
+        151,
+        39,
+        77,
+        227,
+        13,
+        229,
+        185
+      ]
+    },
+    {
+      "name": "AgentUpdated",
+      "discriminator": [
+        210,
+        179,
+        162,
+        250,
+        123,
+        250,
+        210,
+        166
+      ]
+    },
+    {
+      "name": "AgentVerified",
+      "discriminator": [
+        56,
+        159,
+        70,
+        162,
+        200,
+        46,
+        208,
+        1
+      ]
+    },
+    {
+      "name": "AnchorSubmitted",
+      "discriminator": [
+        181,
+        70,
+        105,
+        81,
+        12,
+        121,
+        185,
+        12
+      ]
+    },
+    {
+      "name": "AuthorityTransferred",
+      "discriminator": [
+        245,
+        109,
+        179,
+        54,
+        135,
+        92,
+        22,
+        64
+      ]
+    },
+    {
+      "name": "EmergencyUnstaked",
+      "discriminator": [
+        221,
+        183,
+        164,
+        249,
+        162,
+        183,
+        239,
+        223
+      ]
+    },
+    {
+      "name": "FeedbackSubmitted",
+      "discriminator": [
+        41,
+        21,
+        127,
+        219,
+        28,
+        103,
+        196,
+        49
+      ]
+    },
+    {
+      "name": "FeesWithdrawn",
+      "discriminator": [
+        234,
+        15,
+        0,
+        119,
+        148,
+        241,
+        40,
+        21
+      ]
+    },
+    {
+      "name": "StakeDeposited",
+      "discriminator": [
+        69,
+        152,
+        144,
+        109,
+        232,
+        34,
+        225,
+        19
+      ]
+    },
+    {
+      "name": "UnstakeCancelled",
+      "discriminator": [
+        102,
+        223,
+        189,
+        101,
+        201,
+        223,
+        180,
+        38
+      ]
+    },
+    {
+      "name": "UnstakeRequested",
+      "discriminator": [
+        21,
+        253,
+        177,
+        85,
+        129,
+        206,
+        42,
+        152
+      ]
+    },
+    {
+      "name": "Unstaked",
+      "discriminator": [
+        27,
+        179,
+        156,
+        215,
+        47,
+        71,
+        195,
+        7
+      ]
+    },
+    {
+      "name": "WalletLinked",
+      "discriminator": [
+        117,
+        31,
+        117,
+        13,
+        216,
+        212,
+        63,
+        33
+      ]
+    },
+    {
+      "name": "WalletUnlinked",
+      "discriminator": [
+        119,
+        49,
+        135,
+        170,
+        51,
+        197,
+        192,
+        174
+      ]
+    },
+    {
+      "name": "WorkValidated",
+      "discriminator": [
+        132,
+        64,
+        216,
+        184,
+        139,
+        42,
+        114,
+        187
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InsufficientTreasuryBalance",
+      "msg": "Insufficient treasury balance for withdrawal"
+    },
+    {
+      "code": 6001,
+      "name": "UnauthorizedAuthority",
+      "msg": "Unauthorized: only the hardcoded treasury authority can perform this action"
+    },
+    {
+      "code": 6002,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: signer is not the identity authority"
+    },
+    {
+      "code": 6003,
+      "name": "WalletNotLinked",
+      "msg": "Wallet is not linked to this identity"
+    },
+    {
+      "code": 6004,
+      "name": "CannotReviewSelf",
+      "msg": "Cannot submit feedback for your own agent identity"
+    },
+    {
+      "code": 6005,
+      "name": "ContextTooLong",
+      "msg": "Feedback context must be 500 characters or less"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidMetadataUri",
+      "msg": "Invalid URI: must be HTTPS/IPFS/Arweave, 10-200 chars"
+    },
+    {
+      "code": 6007,
+      "name": "StakeTooLow",
+      "msg": "Stake too low for stake-to-register v1"
+    },
+    {
+      "code": 6008,
+      "name": "NoActiveStake",
+      "msg": "No active stake for this agent"
+    },
+    {
+      "code": 6009,
+      "name": "AlreadyUnstaking",
+      "msg": "Unstake already requested"
+    },
+    {
+      "code": 6010,
+      "name": "UnstakeNotRequested",
+      "msg": "Unstake not requested"
+    },
+    {
+      "code": 6011,
+      "name": "CooldownNotComplete",
+      "msg": "Unstake cooldown not complete"
+    },
+    {
+      "code": 6012,
+      "name": "StakeSlashed",
+      "msg": "Stake already slashed"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidSeverity",
+      "msg": "Invalid severity basis points"
+    },
+    {
+      "code": 6014,
+      "name": "NothingToSlash",
+      "msg": "Nothing to slash"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAnchorRange",
+      "msg": "Invalid anchor range"
+    },
+    {
+      "code": 6016,
+      "name": "NotVerified",
+      "msg": "Agent must be verified before staking"
+    },
+    {
+      "code": 6017,
+      "name": "AlreadyStaked",
+      "msg": "Agent already has active stake"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentIdentity",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_verified",
+            "type": "bool"
+          },
+          {
+            "name": "verified_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "verification_tier",
+            "type": "u8"
+          },
+          {
+            "name": "stake_amount",
+            "type": "u64"
+          },
+          {
+            "name": "staked_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "slash_count",
+            "type": "u32"
+          },
+          {
+            "name": "last_slashed_at",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "last_receipt_seq",
+            "type": "u64"
+          },
+          {
+            "name": "last_anchor_index",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentReputation",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_interactions",
+            "type": "u64"
+          },
+          {
+            "name": "positive_feedback",
+            "type": "u64"
+          },
+          {
+            "name": "negative_feedback",
+            "type": "u64"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u16"
+          },
+          {
+            "name": "last_updated",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentSlashed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "severity_bps",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentStake",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "staked_at",
+            "type": "i64"
+          },
+          {
+            "name": "cooldown_until",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "is_slashed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_metadata_uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentVerified",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_paid",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AnchorSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          },
+          {
+            "name": "start_seq",
+            "type": "u64"
+          },
+          {
+            "name": "end_seq",
+            "type": "u64"
+          },
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "AuthorityTransferred",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_authority",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EmergencyUnstaked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "payout",
+            "type": "u64"
+          },
+          {
+            "name": "penalty",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeedbackSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "from",
+            "type": "pubkey"
+          },
+          {
+            "name": "positive",
+            "type": "bool"
+          },
+          {
+            "name": "context",
+            "type": "string"
+          },
+          {
+            "name": "new_score",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeesWithdrawn",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReceiptAnchor",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          },
+          {
+            "name": "start_seq",
+            "type": "u64"
+          },
+          {
+            "name": "end_seq",
+            "type": "u64"
+          },
+          {
+            "name": "root",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "StakeDeposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Treasury",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_collected",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnstakeCancelled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UnstakeRequested",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "available_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unstaked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ValidationRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "validator",
+            "type": "pubkey"
+          },
+          {
+            "name": "task_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "passed",
+            "type": "bool"
+          },
+          {
+            "name": "evidence_uri",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletLink",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletLinked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "linked_by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WalletUnlinked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "unlinked_by",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WorkValidated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent_id",
+            "type": "pubkey"
+          },
+          {
+            "name": "validator",
+            "type": "pubkey"
+          },
+          {
+            "name": "task_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "passed",
+            "type": "bool"
+          },
+          {
+            "name": "evidence_uri",
+            "type": "string"
+          }
+        ]
+      }
+    }
+  ]
+}
