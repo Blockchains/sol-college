@@ -1,0 +1,40 @@
+{"t":"2026-11-22T19:51:03.765Z","step":"campus worker up","node":"HPKYjW8iqrJEsvsbVEL4bmdwNzYq4ngtgCTUqYe7rhQQ","market":"D8aYxUVKdGJKdeqVHXoooHg9EM3yHoUQTTg1EEYS84uG","rpc":"https://api.devnet.solana.com","templates":["hello-sha256","hash-text","fails-on-purpose"]}
+{"t":"2026-11-22T19:51:04.774Z","step":"work: join queue / claim","sig":"5SR25T3dgsozrJ94hnQk6cxBy7NqbbatXjGNNr8v8hQ4N727FQexhRrDMtNhA15WstLZLn8y27dN2fAdjdpS5DbR"}
+{"t":"2026-11-22T19:51:07.823Z","step":"waiting in node queue"}
+{"t":"2026-11-22T19:51:32.607Z","step":"run job","job":"49riwDrogSFZfr2xtdCt6LsmXw7F6dmEqdBRyHVpKGMj","template":"hash-text"}
+{"t":"2026-11-22T19:51:35.180Z","step":"finish","job":"49riwDrogSFZfr2xtdCt6LsmXw7F6dmEqdBRyHVpKGMj","resultCid":"QmdnRrqZcFVgLKHkpJELZGD7JtK4b26ygNNssapgJXUtSG","sig":"3e7qCBoK8nQStXvPHPhR4Qp6fTMtrV57AyXxU3Rz3gqWXVHmsHj5HaUV8fzK57EodQmBggPpoThaYHzEtJTZW7xx","status":"success"}
+{"t":"2026-11-22T19:51:38.911Z","step":"work: join queue / claim","sig":"VbJfrBq6gzVp4LoeXco19FWNauWfCcURsRwNwuZ7SJ9pxB5E84soGCcCGJwupPDqzxzXiSou2rhCW3MTR2z1PbK"}
+{"t":"2026-11-22T19:51:41.961Z","step":"run job","job":"D47wNZ9m71J3QMdY1XVEJkagM7dCXu7dq6J2toETHi5h","template":"fails-on-purpose"}
+{"t":"2026-11-22T19:51:44.229Z","step":"finish","job":"D47wNZ9m71J3QMdY1XVEJkagM7dCXu7dq6J2toETHi5h","resultCid":"QmRsen7cLRFmsc7tNWr8DUqA19892ZPpxuhNyAJp4SmjgY","sig":"39yBwCdPodK91UYWcBzpZGoXWvoByCU8qzA728WZEK71UKdUWZs2zhiYyGxxZ7mPdWpx7wuRCRHVYM6gmNm7zEdB","status":"failed"}
+{"t":"2026-11-22T19:51:48.227Z","step":"work: join queue / claim","sig":"2LSSRU9DiNhLnJfYfRK2V8di7Rxha6wcdLqbfQHfTzxLEXyJixoqM5BK4jV3PyGg31vNREWqgzEGbVhq1kvgW76o"}
+{"t":"2026-11-22T20:01:09.609Z","step":"waiting in node queue"}
+{"t":"2026-11-22T20:01:12.973Z","step":"run job","job":"7eNkTUZHmEUiErvcVLzsFRhfJSBSSyHVuk1bNG6Duo5w","template":"hash-text"}
+{"t":"2026-11-22T20:01:15.516Z","step":"finish","job":"7eNkTUZHmEUiErvcVLzsFRhfJSBSSyHVuk1bNG6Duo5w","resultCid":"QmcaAbu5sXCg2LjjRyauKCBGh3nNRb8ztk7PkTXLZRCZ1f","sig":"8xP9YwxkdDFYswMEuo7zvjkaZThCXrnHqZVtuvhpxfcQxBgN3CRZxeHCon8WKpjkMetjXFusLNtaRHysHRdBbLT","status":"success"}
+{"t":"2026-11-22T20:01:19.601Z","step":"work: join queue / claim","sig":"2u3yvYRd8e8DNuWPMpY4LW2MZZwDcFgJuXDqt83d1WnCQPKhjJJhrWFhBNw9MmYT5pTrfQCforEKWCQP3Ywu8MFv"}
+{"t":"2026-11-22T20:01:22.651Z","step":"run job","job":"4ztD8EjpqM8iAxTSmFLDTjKbH7Waho4ZnNjbUKkKGNzo","template":"fails-on-purpose"}
+{"t":"2026-11-22T20:01:25.028Z","step":"finish","job":"4ztD8EjpqM8iAxTSmFLDTjKbH7Waho4ZnNjbUKkKGNzo","resultCid":"QmfS2vFtckfxNkhccvYEZoib1mKsmkLCuzLad3UDpnghkr","sig":"2iJ87pnU4HWasS2ii7VHhrNsXGX3G8mDC3HaxLEDv2SEGY1cL1P81b2D1qcQsrhBW7mXD8Mx3szQLcR7s2KnaT9V","status":"failed"}
+{"t":"2026-11-22T20:01:28.804Z","step":"work: join queue / claim","sig":"w3rNqndCfF3cK2cK9FYYWAixMoG1vAxCaxxqJqdtkjzgcR9KJozCPDgJwGCPKvde6TWBuV69AVArf7wqtNFuR8v"}
+{"t":"2026-11-22T20:04:21.147Z","step":"run job","job":"8PhDEwMfcH9Ducb7qTfCw1Y6n9CNxxVZbjc9QrZ4y3QJ","template":"hash-text"}
+{"t":"2026-11-22T20:04:25.090Z","step":"finish","job":"8PhDEwMfcH9Ducb7qTfCw1Y6n9CNxxVZbjc9QrZ4y3QJ","resultCid":"QmfRmTLMZbGdrJYC52jmRAbeiuFd1LTKBFMK8fNS3f7okb","sig":"KQMvHsdHo5wa2ebcYGEjcEYpnR8b8n5yok6YCb3fx9HgveVvLsozH5rxj263f8H7yhvr1GLp4EcdGgQNgK6v8Xp","status":"success"}
+{"t":"2026-11-22T20:04:28.847Z","step":"work: join queue / claim","sig":"U8qZA9KXRXZhbECJ7bCDXWZN1MNLZ3SRG7S5iN9EqLLwodp5U6ipJ46a8KjTZ8o9kfEDfat8Y4vgpiJj1j2k8Jj"}
+{"t":"2026-11-22T20:04:31.896Z","step":"run job","job":"61A4tSQiPHPLMBGfR9TtXZwC2VqvDr3xu3PH5YMAPntn","template":"fails-on-purpose"}
+{"t":"2026-11-22T20:04:34.310Z","step":"finish","job":"61A4tSQiPHPLMBGfR9TtXZwC2VqvDr3xu3PH5YMAPntn","resultCid":"QmXiUzeWHYmvvqJ6s8T7VGFE61EivEr5fCM8XStWP3Jipb","sig":"4JBhFWpTxF4qpb9PtPCuyjagLJZxisTy8zvYDJWYUfya5BobJ3rZqbtheh8q2rDh49Zcrj7BGJC6SZy1bv7LTkfX","status":"failed"}
+{"t":"2026-11-22T20:04:38.102Z","step":"work: join queue / claim","sig":"4L7EkHZEkThR5GBmsnvMj81riPY56TrUjpbfpepBSgWrLv36cddS1xVXK8iWR4EY41vLdER1tf8veTL3MVw1Cwc9"}
+{"t":"2026-11-22T20:04:57.005Z","step":"refused job","job":"58b5qTNdcsrjCAhjAq8CZCWjiu8DgRQ8kTv4C1rfhUUZ","cid":"QmPKDu2rZrkpSGaYpvJeGaRvRVG6P2xfQGvLPvGJD3Mkab"}
+{"t":"2026-11-22T20:04:57.952Z","step":"finish","job":"58b5qTNdcsrjCAhjAq8CZCWjiu8DgRQ8kTv4C1rfhUUZ","resultCid":"Qmb51vwjkMkfQfC2s1f8Li6R5tcadbaXHSRGGyrG5dqFvi","sig":"pRasQwMv2soWxZAmBif551JpBC3mMcPpE4XJ641jmXsYDxc93JGuLfLKdprqrsoRPeUhswGLzMQUCgbEv59bWyv","status":"refused"}
+{"t":"2026-11-22T20:05:01.815Z","step":"work: join queue / claim","sig":"4wh2twRWyk7ok4Pe2ai5mUymHuGcRxxLcKc16vRnCaFmuii9FfGrM2wmtgNCotrQd9N8hxuZh3qzdZTjtXvABSUY"}
+{"t":"2026-11-22T20:09:52.764Z","step":"work: join queue / claim","sig":"4FVCwFpyGKTnyWUYF5bVwjcraW2i5RJCd5VAYb9yJQdyKHLitoqLmLU1PK6xDjFpMv37ZXiJgM6yPfbtvftTfSzo"}
+{"t":"2026-11-22T20:09:56.104Z","step":"run job","job":"Fcb4S5E6gK2rjQWTHXXzGD8XrtkrKd2TY4jM2ydqNfVo","template":"hash-text"}
+{"t":"2026-11-22T20:09:58.745Z","step":"finish","job":"Fcb4S5E6gK2rjQWTHXXzGD8XrtkrKd2TY4jM2ydqNfVo","resultCid":"Qmco9pn2iW2TPMoCApgX2KzkH8QLBv8LetzCFZVCh9KP6m","sig":"43BxKtgLMnyZxoH3yHqFqT5oVSeUp3kswcGxLqcMgXaTfSGpncZDJzvsaYWjnccsxC5NDpSTaRm2X6tFRcsUXhEJ","status":"success"}
+{"t":"2026-11-22T20:10:04.837Z","step":"run job","job":"9yduRAcJ3PoT3pEFRx8xpftXKHgD8DCZcYghr58apRUE","template":"fails-on-purpose"}
+{"t":"2026-11-22T20:10:06.979Z","step":"finish","job":"9yduRAcJ3PoT3pEFRx8xpftXKHgD8DCZcYghr58apRUE","resultCid":"QmNRFUEkGdtJCWacBxE9cCagNjA5CMcdKAy5M38RR6nyEM","sig":"4st9U1TZu99TExoEKhp4cH4P2ab48TJAFhbSLWR8kVHFkioVNnqUinDDaAj7ZMaXtstcNZfU4c1KxqiNYS8uBi6n","status":"failed"}
+{"t":"2026-11-22T20:10:10.849Z","step":"work: join queue / claim","sig":"3zkinPq63pNCGiGb61SqpkvLs2FCYAdo96pPytsjwVrVer2pEempqqb8xs3WFmT4iEVebm7gWMeRFMuRb2tQny7z"}
+{"source":"ui_test live","t": "2026-11-22T20:09:46.216591Z", "step": "markets page (no wallet)", "ok": true, "footer_has_source": true}
+{"source":"ui_test live","t": "2026-11-22T20:09:49.560705Z", "step": "wallet connected", "wallet": "8cRSDBpv6LMsTh5eX5ybs45ve6DaSJFrBSgixsytnM41", "badge": "8cRS\u2026nM41 \u00b7 0.041 SOL"}
+{"source":"ui_test live","t": "2026-11-22T20:09:51.788080Z", "step": "UI posted hash-text job", "job": "Fcb4S5E6gK2rjQWTHXXzGD8XrtkrKd2TY4jM2ydqNfVo", "definition_cid": "QmZDtku5jffew49PXffzkZsBUeTCSznpbcz81yQyBPDefE", "signatures_requested": 1}
+{"source":"ui_test live","t": "2026-11-22T20:10:01.169945Z", "step": "UI shows result for hash-text", "job": "Fcb4S5E6gK2rjQWTHXXzGD8XrtkrKd2TY4jM2ydqNfVo", "state": "Completed", "status": "success", "memo_verified": true, "values": ["digest=9184c7f9a146a9e4a31f73430089a92ba785a1010fc744937fb0efdba492353f", "chars=29"], "diagnosis": null, "result_cid": "Qmco9pn2iW2TPMoCApgX2KzkH8QLBv8LetzCFZVCh9KP6m", "seconds": 9.4}
+{"source":"ui_test live","t": "2026-11-22T20:10:03.494634Z", "step": "UI posted fails-on-purpose job", "job": "9yduRAcJ3PoT3pEFRx8xpftXKHgD8DCZcYghr58apRUE", "definition_cid": "Qmf2CL76aj5h4hp7xCpaTtxSkrSuTNazafUCzHk4CUUeJm", "signatures_requested": 1}
+{"source":"ui_test live","t": "2026-11-22T20:10:10.322791Z", "step": "UI shows result for fails-on-purpose", "job": "9yduRAcJ3PoT3pEFRx8xpftXKHgD8DCZcYghr58apRUE", "state": "Completed", "status": "failed", "memo_verified": true, "values": [], "diagnosis": "Execution failure: the container exited with code 3. Read stderr below for the cause.", "result_cid": "QmNRFUEkGdtJCWacBxE9cCagNjA5CMcdKAy5M38RR6nyEM", "seconds": 6.8}
+{"source":"ui_test live","t": "2026-11-22T20:10:16.425324Z", "step": "your jobs table", "rows": 6}
+{"source":"ui_test live","t": "2026-11-22T20:10:16.484795Z", "step": "network hosts contacted", "hosts": ["api.devnet.solana.com", "sol.college"]}
+{"source":"ui_test live","t": "2026-11-22T20:10:16.484842Z", "step": "DONE", "jobs": {"hash-text": "Fcb4S5E6gK2rjQWTHXXzGD8XrtkrKd2TY4jM2ydqNfVo", "fails-on-purpose": "9yduRAcJ3PoT3pEFRx8xpftXKHgD8DCZcYghr58apRUE"}}

@@ -6113,13 +6113,13 @@
   },
   {
     "slug": "nosana",
-    "name": "Nosana GPU Job Market (portfolio track, campus worker)",
+    "name": "Nosana GPU Job Market (portfolio track, browser app + campus worker)",
     "lesson": "/dapps/nosana/",
-    "app": "/dapps/nosana/",
+    "app": "/dapps/nosana/app/",
     "fork": "https://github.com/Blockchains/nosana-programs",
     "commit": "2983a6dd151e04c23ed81a8b484ec13b35ebc86e",
     "program": "4nFPjT5MgCtYheCHGACin9S8N56Cg1RTBAhFQv43Ybxb",
-    "app_kind": "No browser app. The track page shows gate status and devnet evidence for Nosana's jobs/staking/rewards programs deployed as independent lab programs with a practice NOS token, operated by a campus worker (@nosana/kit 2.24.5 + the official nosana-node executor in podman + a CID-checked lab content store). The official node daemon needs Nosana's private host-manager and the dashboard needs api.nosana.com, so neither is hosted.",
+    "app_kind": "Browser app: a modified version of the Nosana dashboard (GPL-3.0; source at github.com/Blockchains/nosana-dashboard, branch sol-college-devnet, commit 8452a40) on Nosana's jobs/staking/rewards programs deployed as independent lab programs on devnet with a practice NOS token. Connect a devnet wallet, post an allow-listed container job to the price-0 browser market, and the campus worker (@nosana/kit + Nosana's executor, nosana-node run, in podman) claims it and posts the result on-chain; the page verifies the result memo against the on-chain result CID. Stubbed: Nosana's dashboard API, accounts, payments, Pinata IPFS and node log streaming. The official node daemon needs Nosana's private host-manager, so it is not run.",
     "learn": "Nosana jobs: a client lists a job (job definition by IPFS CID, deposit = price x timeout in the market vault); a staked node claims it with work (creating a run account), runs the container, and finish posts the result CID and pays the node for the time used while refunding the rest. quit returns a claimed job (state STOPPED) and the poster can recover the deposit.",
     "source": [
       [
@@ -6254,6 +6254,18 @@
       [
         "finish: re-listed job",
         "2XpBMEGc9Q4A1P6LU559JoQkagwNDeTt3ux5qAjbCUbAfA4DHzFHUnGH8rB1S6tgqE7Hy4seUFGpcHRcZhAcgfbH"
+      ],
+      [
+        "live site: browser posts \"Hash my text\" (token account + list + memo)",
+        "5tMeDwQD2aXfRjDZvkg1ML9GNqt6WhvBkaXYTf8b1i6Mc3KGFdAytDrkDZKZUn49BtPQaCFxoQ6F45vmp3Z3zVTp"
+      ],
+      [
+        "campus worker finish + verified result memo",
+        "43BxKtgLMnyZxoH3yHqFqT5oVSeUp3kswcGxLqcMgXaTfSGpncZDJzvsaYWjnccsxC5NDpSTaRm2X6tFRcsUXhEJ"
+      ],
+      [
+        "live site: failing job finished with exit 3, diagnosed in the page",
+        "4st9U1TZu99TExoEKhp4cH4P2ab48TJAFhbSLWR8kVHFkioVNnqUinDDaAj7ZMaXtstcNZfU4c1KxqiNYS8uBi6n"
       ]
     ],
     "negative": [
@@ -6261,12 +6273,18 @@
       "finish by a wallet that is not the assigned node is rejected (Unauthorized)",
       "finish a completed job again is rejected (kit guard: the run account was closed by finish) (No job run account found)",
       "finish replayed on-chain against the closed run account is rejected (AccountNotInitialized)",
-      "recover by a wallet that did not post the job is rejected (Unauthorized)"
+      "recover by a wallet that did not post the job is rejected (Unauthorized)",
+      "Browser market: a non-allow-listed job definition is finished as refused and never executed (pRasQwMv\u2026)."
     ],
     "ui_check": "No browser UI: operated from scripts on devnet (kit for the chain, nosana-node run for execution).",
     "limits": "Official nosana-node start is blocked by Nosana's private host-manager; dashboard needs api.nosana.com; kit and node have no LICENSE file. Upstream Anchor test suite not run. No upstream PRs.",
     "functional": "full",
-    "functional_evidence": "Job listed, claimed, run in a container, result CID posted and read back as COMPLETED; a failing job diagnosed from chain plus result file; a quit job recovered and re-run. All on devnet via scripts; there is no browser app."
+    "functional_evidence": "Job listed, claimed, run in a container, result CID posted and read back as COMPLETED; a failing job diagnosed from chain plus result file; a quit job recovered and re-run. All on devnet via scripts; there is no browser app.",
+    "app_source": "https://github.com/Blockchains/nosana-dashboard/tree/sol-college-devnet",
+    "app_commit": "8452a40a798ca1b715596f064fa890b706879e7f",
+    "app_license": "GPL-3.0",
+    "browser_flow": "tests/devnet/nosana/ui/ui_test.py",
+    "browser_log": "tests/devnet/logs/nosana-browser-2026-11-22.jsonl"
   },
   {
     "slug": "sibyl-oracle",
