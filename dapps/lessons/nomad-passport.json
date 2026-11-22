@@ -1,0 +1,31 @@
+{
+  "title": "Nomad Agent Passport",
+  "summary": "Publish an AI agent passport on-chain: who controls it and which permission scopes it holds.",
+  "what": "Nomad is an Anchor 0.31.1 program that gives each agent key a passport PDA listing a label and permission scopes. Only the passport authority can change or close it.",
+  "app_note": "The page at /dapps/nomad-passport/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/nomad. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/nomad-passport/, switch to Devnet, connect a wallet and call initialize_passport for any agent key.",
+      "see": "A passport PDA for that agent with your scopes.",
+      "ran": "initialize_passport, update_permissions, close_passport (see steps)."
+    }
+  ],
+  "diagram": "authority --initialize_passport--> passport PDA(agent); authority --update_permissions--> scopes; authority --close_passport--> rent back",
+  "accounts": [
+    "passport PDA seeds [\"passport\", agent]"
+  ],
+  "instructions": [
+    "initialize_passport",
+    "update_permissions",
+    "close_passport"
+  ],
+  "innovation": "A portable, public permission record for an agent that any service can read without trusting the agent itself.",
+  "frontend": "Generic IDL console at /dapps/nomad-passport/.",
+  "exercises": [
+    "Why is the passport keyed by the agent and not by the authority?",
+    "How would a service check a scope like pay:usdc<=5 before acting?"
+  ],
+  "not_covered": [
+    "Browser extension and off-chain checks"
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-vouch",
+  "slug": "vouch",
+  "displayName": "VOUCH Agent Reputation (Sol.College demonstration)",
+  "description": "On-chain reputation registry for AI agents on Solana devnet (Anchor 0.31.1). register_agent, update_score, vouch_for and check_reputation were verified, and self-vouching, out-of-range scores, double vouches and score updates by a non-authority were rejected.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of trustnoagent/vouch-program. The lab tree is branch sol-college-devnet of Blockchains/vouch-program. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "trustnoagent/vouch-program",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/vouch-program",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "vouch-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-vouch"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:23:59Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (register_agent, update_score, vouch_for, check_reputation)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/vouch/",
+      "QA: devnet proof of the vouch flow and its guards"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "sybil-vouch",
+        "title": "Design a stake or reputation weight for vouches",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/vouch-program"
+  }
+}

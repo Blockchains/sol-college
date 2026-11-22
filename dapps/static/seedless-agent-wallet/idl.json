@@ -1,0 +1,389 @@
+{
+  "address": "9L5ZGirrCDC3JczP1RJdoubEGx6qWvWae1GdHCkndLRx",
+  "metadata": {
+    "name": "agent_vault",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Agentic wallet vault with on-chain policy enforcement"
+  },
+  "instructions": [
+    {
+      "name": "agent_withdraw",
+      "docs": [
+        "Agent withdraws SOL from vault, subject to policy enforcement."
+      ],
+      "discriminator": [
+        13,
+        149,
+        99,
+        245,
+        171,
+        171,
+        185,
+        53
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "agent",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "destination",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_vault",
+      "docs": [
+        "Create a new vault PDA for an agent with initial policy config."
+      ],
+      "discriminator": [
+        29,
+        237,
+        247,
+        208,
+        193,
+        82,
+        54,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent"
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "max_per_tx",
+          "type": "u64"
+        },
+        {
+          "name": "max_daily",
+          "type": "u64"
+        },
+        {
+          "name": "cooldown_seconds",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "deposit",
+      "docs": [
+        "Deposit SOL into the vault. Anyone can deposit."
+      ],
+      "discriminator": [
+        242,
+        35,
+        198,
+        137,
+        82,
+        225,
+        242,
+        182
+      ],
+      "accounts": [
+        {
+          "name": "depositor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "drain_vault",
+      "docs": [
+        "Authority drains all SOL from vault back to a destination."
+      ],
+      "discriminator": [
+        87,
+        219,
+        34,
+        249,
+        5,
+        135,
+        65,
+        116
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "destination",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "emergency_stop",
+      "docs": [
+        "Emergency stop - authority disables the vault immediately."
+      ],
+      "discriminator": [
+        179,
+        143,
+        200,
+        137,
+        108,
+        245,
+        248,
+        35
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "update_policy",
+      "docs": [
+        "Authority updates the policy configuration."
+      ],
+      "discriminator": [
+        212,
+        245,
+        246,
+        7,
+        163,
+        151,
+        18,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "vault",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "max_per_tx",
+          "type": "u64"
+        },
+        {
+          "name": "max_daily",
+          "type": "u64"
+        },
+        {
+          "name": "cooldown_seconds",
+          "type": "u32"
+        },
+        {
+          "name": "is_active",
+          "type": "bool"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentVault",
+      "discriminator": [
+        232,
+        220,
+        237,
+        164,
+        157,
+        9,
+        215,
+        194
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "VaultInactive",
+      "msg": "Vault is inactive (emergency stop engaged)"
+    },
+    {
+      "code": 6001,
+      "name": "ExceedsPerTxLimit",
+      "msg": "Amount exceeds per-transaction limit"
+    },
+    {
+      "code": 6002,
+      "name": "ExceedsDailyLimit",
+      "msg": "Amount exceeds daily spending limit"
+    },
+    {
+      "code": 6003,
+      "name": "CooldownActive",
+      "msg": "Cooldown period has not elapsed"
+    },
+    {
+      "code": 6004,
+      "name": "InsufficientFunds",
+      "msg": "Insufficient vault funds"
+    },
+    {
+      "code": 6005,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": {
+              "defined": {
+                "name": "PolicyConfig"
+              }
+            }
+          },
+          {
+            "name": "total_spent",
+            "type": "u64"
+          },
+          {
+            "name": "tx_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_per_tx",
+            "type": "u64"
+          },
+          {
+            "name": "max_daily",
+            "type": "u64"
+          },
+          {
+            "name": "daily_spent",
+            "type": "u64"
+          },
+          {
+            "name": "last_reset",
+            "type": "i64"
+          },
+          {
+            "name": "cooldown_seconds",
+            "type": "u32"
+          },
+          {
+            "name": "last_tx_time",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          }
+        ]
+      }
+    }
+  ]
+}

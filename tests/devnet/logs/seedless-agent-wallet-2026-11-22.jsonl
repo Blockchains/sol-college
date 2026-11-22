@@ -1,0 +1,13 @@
+{"step":"setup","program":"9L5ZGirrCDC3JczP1RJdoubEGx6qWvWae1GdHCkndLRx","vault":"3ASzRfNfdYviYeovGHCBW6wKRUzcpvQSc4hX5wWW5yJo","agent":"2rmjCcTHy5xWjigUWDcBMF5SkD1GkENDmtrb6RQB6NKY","destination":"3YKjvbjLBHbeF2rioaGL4rceL8U8CHeut8thVGG3Cvbz"}
+{"step":"create_vault","ok":true,"sig":"2z2aybA9dzeFhcJccLrFVD1HtEFuGrHqJY1DDHMrpDGngZVkZmcuDYK4ur4ZKb3DgQv7K5njxMCfvbXUV1zqUwRb","max_per_tx":10000000,"max_daily":25000000,"cooldown":3}
+{"step":"deposit","ok":true,"sig":"3QTWcHcxCjnE4Uu9mzBJAuSoJnd4fD1M8csG3tvpn13e7Dsw4V2FbQ7Tw9K4zRs9q4Scc36aYEhqrJ4cJdGqGeow","lamports":50000000}
+{"step":"agent_withdraw","ok":true,"sig":"4ha2X5cMK9wVdSHEThjPd9973Kj5kniuii5Xw8ckh8JGSLWuiV5uDjdtDNdys8Rw9k3h8qje5RXKZ4S2Rz8VDVDX","destination_lamports":10000000}
+{"step":"withdraw_during_cooldown","rejected":true,"reason":"CooldownActive"}
+{"step":"withdraw_over_per_tx","rejected":true,"reason":"ExceedsPerTxLimit"}
+{"step":"agent_withdraw_2","ok":true,"sig":"TmTKgCFdSgFaJhVypfhGz1f5jTJ5mZNdkQu5ECXBYL8mUKMNrW6zmA5AsdMcF2JcDGZ9As157BdqUNWqdboSNY7","destination_lamports":20000000}
+{"step":"withdraw_over_daily","rejected":true,"reason":"ExceedsDailyLimit"}
+{"step":"withdraw_by_stranger","rejected":true,"reason":"ConstraintHasOne"}
+{"step":"emergency_stop","ok":true,"sig":"3VZkzYB1S1WR6kbsMDZX9seW2bUHQD5ipFykwFXTGn8TSpS5sYizYyRFXqnrpYodUfCgJrZgkB5Sau76ohJDr1TQ"}
+{"step":"withdraw_after_stop","rejected":true,"reason":"VaultInactive"}
+{"step":"drain_vault","ok":true,"sig":"51Gdhu7PYwk3koPjCLBMML81FrywWnHBnkbxVNFDYcurmVAa5H2NPJp5MC1GenoKgCnit5ZbYsjqR2pPYW1t5KJP","returned_lamports":29995000}
+{"step":"state","total_spent":"20000000","tx_count":"2","is_active":false}

@@ -1,0 +1,33 @@
+{
+  "title": "VOUCH Agent Reputation",
+  "summary": "Register an AI agent, let its operator publish scores, and let other wallets vouch for it once each.",
+  "what": "VOUCH is an Anchor 0.31.1 registry where each AI agent wallet gets a reputation account. The registering authority writes reputation, on-chain, vouch and anomaly scores; other wallets leave one 1-5 vouch each; check_reputation logs a lookup event.",
+  "app_note": "The page at /dapps/vouch/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/vouch-program. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/vouch/, switch to Devnet, connect a wallet and call vouch_for on the lab agent from your own wallet.",
+      "see": "total_vouches on agent 4epEDZoA\u2026 goes up by one; a second vouch from the same wallet fails.",
+      "ran": "register_agent, update_score, vouch_for, check_reputation (see steps)."
+    }
+  ],
+  "diagram": "authority --register_agent--> agent PDA; authority --update_score--> scores; voucher --vouch_for--> vouch PDA (+1 total_vouches); anyone --check_reputation--> event",
+  "accounts": [
+    "agent PDA seeds [\"agent\", wallet]",
+    "vouch PDA seeds [\"vouch\", voucher, agent]"
+  ],
+  "instructions": [
+    "register_agent",
+    "update_score",
+    "vouch_for",
+    "check_reputation"
+  ],
+  "innovation": "A cheap, readable trust record for agents: an off-chain scorer publishes scores on-chain, and peer vouches are capped at one per wallet by PDA seeds.",
+  "frontend": "Generic IDL console at /dapps/vouch/.",
+  "exercises": [
+    "What stops a wallet from vouching twice, and what does not stop sybil vouching?",
+    "Who can change reputation_score, and how would you make it trustless?"
+  ],
+  "not_covered": [
+    "Off-chain scoring service from the upstream repo"
+  ]
+}

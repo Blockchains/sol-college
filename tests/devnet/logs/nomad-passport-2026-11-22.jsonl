@@ -1,0 +1,9 @@
+{"step":"setup","program":"AgA9gwXupjKR9XjZWyHGXYrQiWtqCyzHLspTKj2FFtR3","passport":"3rgbuCder67oGU8REaoW4eLYLw3HU7QXhXiHD4ptzJSs","agent":"6GN3n7WJzBBT9Q4VqSB3B4Rk37BzoHbTsEvHA5VxdqMg"}
+{"step":"initialize_passport","ok":true,"sig":"4v1WUjqSJGCzimVMvNF3A71Hii99ttaq8pqUwoB1unJxvMxphZU3umebenRecGusMaV9GSwmK4rA6gZaqD4Hmtzn"}
+{"step":"update_permissions","ok":true,"sig":"PBTKMJUJcdjXqGj5aur54tfCJCdhBw3c4wHyuuDt6zy1aNRZM3ZtTfYmLkt3Q6YqTt8BNwAneWjyiEL1ME2LLKY"}
+{"step":"state","label":"lab research agent v2","permissions":["read:web","pay:usdc<=5","post:x"],"authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"update_by_stranger","rejected":true,"reason":"Unauthorized"}
+{"step":"empty_scope","rejected":true,"reason":"EmptyScope"}
+{"step":"label_too_long","rejected":true,"reason":"LabelTooLong"}
+{"step":"close_by_stranger","rejected":true,"reason":"Unauthorized"}
+{"step":"close_passport","ok":true,"sig":"2rXxW8wxSs4jNTcEywjDNxdfNN9bmHxmRVi9SXtcukDMNPHvDzWDgunphQPFd2x8WMmKWFvoWmc1BzGQ8Y26ewf","closed":true}

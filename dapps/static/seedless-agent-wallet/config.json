@@ -1,0 +1,10 @@
+{
+ "name": "Seedless Agent Wallet",
+ "fork": "https://github.com/Blockchains/seedless-agent-wallet",
+ "commit": "3737dd4774e00471e4a40160095337293b881bc2",
+ "lesson": "/explore/seedless-agent-wallet/",
+ "programs": {
+  "devnet": "9L5ZGirrCDC3JczP1RJdoubEGx6qWvWae1GdHCkndLRx",
+  "mainnet": null
+ }
+}

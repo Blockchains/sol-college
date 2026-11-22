@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-seedless-agent-wallet",
+  "slug": "seedless-agent-wallet",
+  "displayName": "Seedless Agent Wallet (Sol.College demonstration)",
+  "description": "Policy-capped SOL vault for an autonomous AI agent on Solana devnet (Anchor 0.31.1). create_vault, deposit, agent_withdraw, emergency_stop and drain_vault were verified, and the per-transaction cap, daily cap, cooldown, wrong-agent and stopped-vault guards all rejected.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of francis-codex/seedless-agent-wallet. The lab tree is branch sol-college-devnet of Blockchains/seedless-agent-wallet. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "francis-codex/seedless-agent-wallet",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/seedless-agent-wallet",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "seedless-agent-wallet-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-seedless-agent-wallet"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:26:12Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (vault policy, agent_withdraw guards, kill switch)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/seedless-agent-wallet/",
+      "QA: devnet proof of capped agent spending"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "dest-allowlist",
+        "title": "Add a destination allow-list to agent_withdraw",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/agent-vault"
+  }
+}

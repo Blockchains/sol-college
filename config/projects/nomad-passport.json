@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-nomad-passport",
+  "slug": "nomad-passport",
+  "displayName": "Nomad Agent Passport (Sol.College demonstration)",
+  "description": "On-chain passports that list what an AI agent is allowed to do, on Solana devnet (Anchor 0.31.1). initialize_passport, update_permissions and close_passport were verified, and stranger updates, stranger closes, empty scopes and over-long labels were rejected.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of michaelmazilu/nomad. The lab tree is branch sol-college-devnet of Blockchains/nomad. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "michaelmazilu/nomad",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/nomad",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "nomad-passport-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-nomad-passport"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:26:12Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (passport lifecycle and validation)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/nomad-passport/",
+      "QA: devnet proof of passport updates and authority checks"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "scope-check",
+        "title": "Write a client that enforces a passport scope before acting",
+        "skills": [
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/agent-passport"
+  }
+}

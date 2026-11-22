@@ -1,0 +1,10 @@
+{"step":"setup","program":"k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x","agent":"4epEDZoAyFVJ72jxXk18gM5x9sk5mmQ76Jp1WmuRFTre","agentWallet":"ESxLj5ceLsGPTK5c7KoUidqVa5k3vN9T8Fh4hZ8XQP75","voucher":"7pChHWW5VJ2qc5rX5HekBdT5D4i5YFqggAzoBMB1UVFn"}
+{"step":"register_agent","ok":true,"sig":"dNoAeSsgvYKmQxYWrHXzF7KYEAJHn7kAmV3SPYB3CCQxH6HYnvVDJN2PQS795dmxPWMaUaSeLzAbxd83YzkEzDn"}
+{"step":"update_score","ok":true,"sig":"535eWtytAX4wM9gMkWyFpgQ7F8Xhw4tW7tMqJK9yV1jhEr5ddzeByMiCzPTQ2X6MjQSCkV2Zw8kCe71BT7AFtfy4"}
+{"step":"vouch_for","ok":true,"sig":"8J7f1Mb2YgpYqn5hNogL6M33VScX7mngVMgfYncm1uf1v8izBGq38m6gAfgxD3fQRFcBusPCKtfbHppLi6ZbiA6","vouch":"2DLGk57ffzs6M8q2jdvGgpWzH4SM3LFfhbMnkzfGb8re"}
+{"step":"check_reputation","ok":true,"sig":"4P748nuf39JY4E9AHeZvi5NtvvUDpRn5nrfMpwPkLexJDx88EN8G3w6wnYwHYsBUauijFWVBt7HakWWYpXMMqHRS"}
+{"step":"state","reputation_score":82,"onchain_score":70,"total_vouches":1,"name":"lab-agent"}
+{"step":"update_score_by_stranger","rejected":true,"reason":"Unauthorized"}
+{"step":"vouch_self","rejected":true,"reason":"CannotVouchSelf"}
+{"step":"vouch_score_6","rejected":true,"reason":"InvalidScore"}
+{"step":"double_vouch","rejected":true,"reason":"Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0. \nLogs: \n[\n  \"Program k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x invoke [1]\",\n  \""}

@@ -1,0 +1,556 @@
+{
+  "address": "k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x",
+  "metadata": {
+    "name": "vouch_program",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "check_reputation",
+      "discriminator": [
+        166,
+        229,
+        62,
+        129,
+        26,
+        219,
+        158,
+        226
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent.wallet",
+                "account": "AgentAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "checker",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_agent",
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet"
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "capabilities",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_score",
+      "discriminator": [
+        188,
+        226,
+        238,
+        41,
+        14,
+        241,
+        105,
+        215
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent.wallet",
+                "account": "AgentAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "scorer",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "reputation_score",
+          "type": "u8"
+        },
+        {
+          "name": "onchain_score",
+          "type": "u8"
+        },
+        {
+          "name": "vouch_score",
+          "type": "u8"
+        },
+        {
+          "name": "anomaly_flags",
+          "type": "u8"
+        },
+        {
+          "name": "anomaly_penalty",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "vouch_for",
+      "discriminator": [
+        201,
+        132,
+        63,
+        107,
+        60,
+        18,
+        2,
+        233
+      ],
+      "accounts": [
+        {
+          "name": "vouch",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  111,
+                  117,
+                  99,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "voucher"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "voucher",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "score",
+          "type": "u8"
+        },
+        {
+          "name": "comment",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentAccount",
+      "discriminator": [
+        241,
+        119,
+        69,
+        140,
+        233,
+        9,
+        112,
+        50
+      ]
+    },
+    {
+      "name": "VouchAccount",
+      "discriminator": [
+        165,
+        230,
+        131,
+        136,
+        184,
+        203,
+        66,
+        136
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentRegistered",
+      "discriminator": [
+        191,
+        78,
+        217,
+        54,
+        232,
+        100,
+        189,
+        85
+      ]
+    },
+    {
+      "name": "ReputationChecked",
+      "discriminator": [
+        60,
+        252,
+        100,
+        159,
+        119,
+        89,
+        206,
+        185
+      ]
+    },
+    {
+      "name": "ScoreUpdated",
+      "discriminator": [
+        175,
+        144,
+        206,
+        62,
+        108,
+        213,
+        230,
+        183
+      ]
+    },
+    {
+      "name": "VouchSubmitted",
+      "discriminator": [
+        148,
+        248,
+        107,
+        56,
+        73,
+        101,
+        148,
+        64
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Name too long (max 32 chars)"
+    },
+    {
+      "code": 6001,
+      "name": "DescriptionTooLong",
+      "msg": "Description too long (max 256 chars)"
+    },
+    {
+      "code": 6002,
+      "name": "CommentTooLong",
+      "msg": "Comment too long (max 128 chars)"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidScore",
+      "msg": "Score must be 1-5"
+    },
+    {
+      "code": 6004,
+      "name": "CannotVouchSelf",
+      "msg": "Cannot vouch for yourself"
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "capabilities",
+            "type": "string"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u8"
+          },
+          {
+            "name": "onchain_score",
+            "type": "u8"
+          },
+          {
+            "name": "vouch_score",
+            "type": "u8"
+          },
+          {
+            "name": "total_vouches",
+            "type": "u32"
+          },
+          {
+            "name": "anomaly_flags",
+            "type": "u8"
+          },
+          {
+            "name": "anomaly_penalty",
+            "type": "u8"
+          },
+          {
+            "name": "registered_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_scored",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReputationChecked",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u8"
+          },
+          {
+            "name": "anomaly_flags",
+            "type": "u8"
+          },
+          {
+            "name": "checker",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ScoreUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u8"
+          },
+          {
+            "name": "onchain_score",
+            "type": "u8"
+          },
+          {
+            "name": "anomaly_flags",
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VouchAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voucher",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "u8"
+          },
+          {
+            "name": "comment",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VouchSubmitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voucher",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent_wallet",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

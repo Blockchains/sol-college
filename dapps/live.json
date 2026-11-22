@@ -4391,5 +4391,174 @@
     "limits": "Built with upstream's devnet-only test-windows feature (60 s challenge/attest/hold windows). Challenges, regrader attestation, arbiter_resolve, refunds, proposals, freezes and stop levels were not exercised. The lab wallet was sponsor, resolver and arbiter. A build without --arch v2 failed the vault deposit (transfer_checked decimals mismatch) on platform-tools v1.52; the v2 build matches upstream's release and works. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "Config GZcpf2tG2PNS3xuMV31dqfkJ3A29eUHhKjeYYdDJXoRY was initialised by the upgrade authority (initialize_config 62yG1FHG\u2026) with the lab mint, the lab wallet as sponsor and arbiter, and test-windows floors; set_allowed FPkMRLu7\u2026 registered regrader 77NcynLWf15V99r1JYyviaLy4nACzQnxHSSTujmhMXDZ. open_escrow 9ZuQkv4M\u2026 moved exactly 1_000_000 lab tokens into vault H4GwBwo34uvXZaFA7mWExpVCvbUQ5FFYxa5pZ5cHFE9z of escrow CC8eHLKxVKrsrZ2NT2tNxCeFGc5Z4Z64etnK6dKnXxVb. commit_entries 4rSYntyj\u2026 committed an entries root. After entries_deadline, post_result 3Ju7ERuD\u2026 posted a keccak payout root (winner1 700_000, winner2 300_000) and the resolver bond. After the 60 s challenge window, settle 4GaZNRHq\u2026 made the escrow Claimable. claim 3F2TfmTj\u2026 paid DEfcua9cY6bQB4f82g3S37zQjbA6XCoEFWpLc27fCsN5 exactly 700_000 and claim 2SUvGfi9\u2026 paid AtQNTsL1ZR9LsXi9TReZit77UHrcqGSTgMRfkfQmpyKj exactly 300_000, leaving the vault at 0. Rejected: open_escrow with a 10 s challenge window (InvalidWindow), post_result with total above the vault (TotalMismatch), settle before the challenge deadline (DeadlineNotReached), claim with a wrong amount (InvalidMerkleProof) and a second claim (AlreadyClaimed)."
+  },
+  {
+    "slug": "vouch",
+    "name": "VOUCH Agent Reputation",
+    "lesson": "/explore/vouch/",
+    "app": "/dapps/vouch/",
+    "fork": "https://github.com/Blockchains/vouch-program",
+    "commit": "e921de70fef9e4b898280c640b1d50d50902058f",
+    "program": "k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/vouch-program (unique declare_id; the official AzwYw5sd\u2026 was not reused).",
+    "learn": "register_agent creates an agent PDA (seeds [\"agent\", wallet]) holding a name, description, capabilities and four scores; the signer becomes its authority. Only that authority can call update_score to write the reputation, on-chain, vouch and anomaly scores. Any other wallet can vouch_for the agent once (vouch PDA seeds [\"vouch\", voucher, agent]) with a 1-5 score and a comment, which bumps total_vouches. check_reputation only emits a ReputationChecked event so a caller can log that it looked before trusting the agent.",
+    "source": [
+      [
+        "programs/vouch-program/src/lib.rs (all four instructions)",
+        "https://github.com/Blockchains/vouch-program/blob/e921de70fef9e4b898280c640b1d50d50902058f/programs/vouch-program/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/vouch.mjs",
+    "log": "tests/devnet/logs/vouch-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy vouch-program as k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x on devnet",
+        "3UuRwjbzpx76KQcUfqsWZhq36d59iWGi7zN8JXqNKrQdXqYAh2Uzwenpc3S3M5cEJxQpQ4GbphVc8Qj8KGf1zwgm"
+      ],
+      [
+        "register_agent (agent PDA, authority = lab deployer)",
+        "dNoAeSsgvYKmQxYWrHXzF7KYEAJHn7kAmV3SPYB3CCQxH6HYnvVDJN2PQS795dmxPWMaUaSeLzAbxd83YzkEzDn"
+      ],
+      [
+        "update_score (reputation 82, on-chain 70)",
+        "535eWtytAX4wM9gMkWyFpgQ7F8Xhw4tW7tMqJK9yV1jhEr5ddzeByMiCzPTQ2X6MjQSCkV2Zw8kCe71BT7AFtfy4"
+      ],
+      [
+        "vouch_for from a second wallet (score 5)",
+        "8J7f1Mb2YgpYqn5hNogL6M33VScX7mngVMgfYncm1uf1v8izBGq38m6gAfgxD3fQRFcBusPCKtfbHppLi6ZbiA6"
+      ],
+      [
+        "check_reputation from a third wallet",
+        "4P748nuf39JY4E9AHeZvi5NtvvUDpRn5nrfMpwPkLexJDx88EN8G3w6wnYwHYsBUauijFWVBt7HakWWYpXMMqHRS"
+      ]
+    ],
+    "negative": [
+      "update_score signed by a stranger was rejected (Unauthorized).",
+      "vouch_for signed by the agent wallet itself was rejected (CannotVouchSelf).",
+      "vouch_for with score 6 was rejected (InvalidScore).",
+      "A second vouch_for from the same voucher was rejected (vouch PDA already in use)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/vouch.mjs.",
+    "limits": "Scores are written by the registering authority, not computed on-chain, so the reputation is only as honest as that scorer. Vouches are one per wallet, so fresh wallets can still stack vouches (no sybil resistance). The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_agent dNoAeSsg\u2026; update_score 535eWtyt\u2026; vouch_for from a second wallet 8J7f1Mb2\u2026; check_reputation from a third wallet 4P748nuf\u2026. update_score signed by a stranger was rejected (Unauthorized). vouch_for signed by the agent wallet itself was rejected (CannotVouchSelf). vouch_for with score 6 was rejected (InvalidScore). A second vouch_for from the same voucher was rejected (vouch PDA already in use)."
+  },
+  {
+    "slug": "seedless-agent-wallet",
+    "name": "Seedless Agent Wallet",
+    "lesson": "/explore/seedless-agent-wallet/",
+    "app": "/dapps/seedless-agent-wallet/",
+    "fork": "https://github.com/Blockchains/seedless-agent-wallet",
+    "commit": "3737dd4774e00471e4a40160095337293b881bc2",
+    "program": "9L5ZGirrCDC3JczP1RJdoubEGx6qWvWae1GdHCkndLRx",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/seedless-agent-wallet (unique declare_id; the official 697JZH39\u2026 was not reused).",
+    "learn": "create_vault makes a vault PDA (seeds [\"vault\", authority, agent]) that stores a policy: max_per_tx, max_daily, cooldown_seconds and an is_active switch. Anyone can deposit lamports. Only the named agent key can call agent_withdraw, which checks the switch, the per-tx cap, the cooldown since the last spend and the rolling 24h total, keeps the vault rent-exempt, then moves lamports to any destination. The human authority can update_policy, emergency_stop or drain_vault (send everything above rent back and deactivate).",
+    "source": [
+      [
+        "programs/agent-vault/src/lib.rs (create_vault, agent_withdraw, emergency_stop, drain_vault)",
+        "https://github.com/Blockchains/seedless-agent-wallet/blob/3737dd4774e00471e4a40160095337293b881bc2/programs/agent-vault/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/seedless-agent-wallet.mjs",
+    "log": "tests/devnet/logs/seedless-agent-wallet-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agent-vault as 9L5ZGirrCDC3JczP1RJdoubEGx6qWvWae1GdHCkndLRx on devnet",
+        "2Thp3atoQqVCKUQCL15N3Cupaj1Pa9EYfdLv9mcBTX21EJky5pkinuMgF11bVmpGFmdMYEdoQBb1qUy5RH3SXwz6"
+      ],
+      [
+        "create_vault (max_per_tx 10_000_000, max_daily 25_000_000, cooldown 3 s)",
+        "2z2aybA9dzeFhcJccLrFVD1HtEFuGrHqJY1DDHMrpDGngZVkZmcuDYK4ur4ZKb3DgQv7K5njxMCfvbXUV1zqUwRb"
+      ],
+      [
+        "deposit 50_000_000 lamports",
+        "3QTWcHcxCjnE4Uu9mzBJAuSoJnd4fD1M8csG3tvpn13e7Dsw4V2FbQ7Tw9K4zRs9q4Scc36aYEhqrJ4cJdGqGeow"
+      ],
+      [
+        "agent_withdraw 10_000_000 to destination",
+        "4ha2X5cMK9wVdSHEThjPd9973Kj5kniuii5Xw8ckh8JGSLWuiV5uDjdtDNdys8Rw9k3h8qje5RXKZ4S2Rz8VDVDX"
+      ],
+      [
+        "agent_withdraw 10_000_000 after the cooldown (destination 20_000_000)",
+        "TmTKgCFdSgFaJhVypfhGz1f5jTJ5mZNdkQu5ECXBYL8mUKMNrW6zmA5AsdMcF2JcDGZ9As157BdqUNWqdboSNY7"
+      ],
+      [
+        "emergency_stop by the authority",
+        "3VZkzYB1S1WR6kbsMDZX9seW2bUHQD5ipFykwFXTGn8TSpS5sYizYyRFXqnrpYodUfCgJrZgkB5Sau76ohJDr1TQ"
+      ],
+      [
+        "drain_vault back to the authority (29_995_000 lamports)",
+        "51Gdhu7PYwk3koPjCLBMML81FrywWnHBnkbxVNFDYcurmVAa5H2NPJp5MC1GenoKgCnit5ZbYsjqR2pPYW1t5KJP"
+      ]
+    ],
+    "negative": [
+      "agent_withdraw inside the 3 s cooldown was rejected (CooldownActive).",
+      "agent_withdraw of 20_000_000 was rejected (ExceedsPerTxLimit).",
+      "A third 10_000_000 withdraw was rejected (ExceedsDailyLimit; 25_000_000 per day).",
+      "agent_withdraw signed by a stranger was rejected (ConstraintHasOne).",
+      "agent_withdraw after emergency_stop was rejected (VaultInactive)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/seedless-agent-wallet.mjs.",
+    "limits": "update_policy was not exercised. The agent may pay any destination; there is no destination allow-list. The off-chain agent runtime and dashboard from the upstream repo were not run. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "create_vault 2z2aybA9\u2026; deposit 50_000_000 lamports 3QTWcHcx\u2026; agent_withdraw 10_000_000 to destination 4ha2X5cM\u2026; agent_withdraw 10_000_000 after the cooldown TmTKgCFd\u2026; emergency_stop by the authority 3VZkzYB1\u2026; drain_vault back to the authority 51Gdhu7P\u2026. agent_withdraw inside the 3 s cooldown was rejected (CooldownActive). agent_withdraw of 20_000_000 was rejected (ExceedsPerTxLimit). A third 10_000_000 withdraw was rejected (ExceedsDailyLimit; 25_000_000 per day). agent_withdraw signed by a stranger was rejected (ConstraintHasOne). agent_withdraw after emergency_stop was rejected (VaultInactive)."
+  },
+  {
+    "slug": "nomad-passport",
+    "name": "Nomad Agent Passport",
+    "lesson": "/explore/nomad-passport/",
+    "app": "/dapps/nomad-passport/",
+    "fork": "https://github.com/Blockchains/nomad",
+    "commit": "035f0a55d4fbc2e58c3248d8a5744c21254aef9f",
+    "program": "AgA9gwXupjKR9XjZWyHGXYrQiWtqCyzHLspTKj2FFtR3",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/nomad (unique declare_id; the official HffPjZ3S\u2026 was not reused).",
+    "learn": "initialize_passport creates a passport PDA (seeds [\"passport\", agent]) holding the authority, the agent key, a label of up to 64 bytes and up to 32 permission scopes of up to 64 bytes each. A separate payer can fund it. Only the authority can update_permissions (replace the scope list, optionally the label) or close_passport, which returns the rent to the authority. Services read the passport to decide what the agent may do.",
+    "source": [
+      [
+        "programs/agent-passport/src/lib.rs",
+        "https://github.com/Blockchains/nomad/blob/035f0a55d4fbc2e58c3248d8a5744c21254aef9f/programs/agent-passport/src/lib.rs"
+      ],
+      [
+        "programs/agent-passport/src/contexts.rs",
+        "https://github.com/Blockchains/nomad/blob/035f0a55d4fbc2e58c3248d8a5744c21254aef9f/programs/agent-passport/src/contexts.rs"
+      ],
+      [
+        "programs/agent-passport/src/state.rs",
+        "https://github.com/Blockchains/nomad/blob/035f0a55d4fbc2e58c3248d8a5744c21254aef9f/programs/agent-passport/src/state.rs"
+      ]
+    ],
+    "flow": "tests/devnet/nomad-passport.mjs",
+    "log": "tests/devnet/logs/nomad-passport-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agent-passport as AgA9gwXupjKR9XjZWyHGXYrQiWtqCyzHLspTKj2FFtR3 on devnet",
+        "kP8zzGGvdHKtJbkmwNWUxHcsf9rjoZJntu6uzrWHuHZxypHVjQjDyCjbujyzPR7syqPQ4ZywWaNFM76enhs7dve"
+      ],
+      [
+        "initialize_passport (scopes read:web, pay:usdc<=5)",
+        "4v1WUjqSJGCzimVMvNF3A71Hii99ttaq8pqUwoB1unJxvMxphZU3umebenRecGusMaV9GSwmK4rA6gZaqD4Hmtzn"
+      ],
+      [
+        "update_permissions (adds post:x, new label)",
+        "PBTKMJUJcdjXqGj5aur54tfCJCdhBw3c4wHyuuDt6zy1aNRZM3ZtTfYmLkt3Q6YqTt8BNwAneWjyiEL1ME2LLKY"
+      ],
+      [
+        "close_passport (rent back to authority)",
+        "2rXxW8wxSs4jNTcEywjDNxdfNN9bmHxmRVi9SXtcukDMNPHvDzWDgunphQPFd2x8WMmKWFvoWmc1BzGQ8Y26ewf"
+      ]
+    ],
+    "negative": [
+      "update_permissions signed by a stranger was rejected (Unauthorized).",
+      "update_permissions with an empty scope was rejected (EmptyScope).",
+      "A 65-byte label was rejected (LabelTooLong).",
+      "close_passport signed by a stranger was rejected (Unauthorized)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/nomad-passport.mjs.",
+    "limits": "Scopes are free-form strings; the program stores them but does not enforce them. Enforcement is up to the services that read the passport (the upstream browser extension was not run). The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_passport 4v1WUjqS\u2026; update_permissions PBTKMJUJ\u2026; close_passport 2rXxW8wx\u2026. update_permissions signed by a stranger was rejected (Unauthorized). update_permissions with an empty scope was rejected (EmptyScope). A 65-byte label was rejected (LabelTooLong). close_passport signed by a stranger was rejected (Unauthorized)."
   }
 ]

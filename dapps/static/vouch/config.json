@@ -1,0 +1,10 @@
+{
+ "name": "VOUCH Agent Reputation",
+ "fork": "https://github.com/Blockchains/vouch-program",
+ "commit": "e921de70fef9e4b898280c640b1d50d50902058f",
+ "lesson": "/explore/vouch/",
+ "programs": {
+  "devnet": "k2MpXasbGoR6KLex2CHQMhATbExaNeZTZpaH58BJJ4x",
+  "mainnet": null
+ }
+}

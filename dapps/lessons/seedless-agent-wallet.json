@@ -1,0 +1,35 @@
+{
+  "title": "Seedless Agent Wallet",
+  "summary": "Give an AI agent its own SOL vault with per-transaction, daily and cooldown limits, plus a human kill switch.",
+  "what": "An Anchor 0.31.1 program where a human creates a vault for one agent key. The agent can spend only within the on-chain policy; the human can stop or drain the vault at any time.",
+  "app_note": "The page at /dapps/seedless-agent-wallet/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/seedless-agent-wallet. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/seedless-agent-wallet/, switch to Devnet, connect a wallet and call create_vault with your own wallet as authority and a second key as agent.",
+      "see": "A vault PDA owned by the lab program with your policy.",
+      "ran": "create_vault, deposit, two agent_withdraw calls, emergency_stop, drain_vault (see steps)."
+    }
+  ],
+  "diagram": "authority --create_vault--> vault PDA (policy); anyone --deposit--> vault; agent --agent_withdraw--> destination (caps, cooldown); authority --emergency_stop / drain_vault--> vault off, funds back",
+  "accounts": [
+    "vault PDA seeds [\"vault\", authority, agent]"
+  ],
+  "instructions": [
+    "create_vault",
+    "deposit",
+    "agent_withdraw",
+    "update_policy",
+    "emergency_stop",
+    "drain_vault"
+  ],
+  "innovation": "The agent never holds the funds: its key can only move lamports out of a PDA under limits the human set, and the human can stop it in one transaction.",
+  "frontend": "Generic IDL console at /dapps/seedless-agent-wallet/.",
+  "exercises": [
+    "Why does agent_withdraw subtract the rent-exempt minimum before checking funds?",
+    "How would you add a destination allow-list?"
+  ],
+  "not_covered": [
+    "update_policy",
+    "Off-chain agent runtime"
+  ]
+}

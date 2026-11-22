@@ -1,0 +1,10 @@
+{
+ "name": "Nomad Agent Passport",
+ "fork": "https://github.com/Blockchains/nomad",
+ "commit": "035f0a55d4fbc2e58c3248d8a5744c21254aef9f",
+ "lesson": "/explore/nomad-passport/",
+ "programs": {
+  "devnet": "AgA9gwXupjKR9XjZWyHGXYrQiWtqCyzHLspTKj2FFtR3",
+  "mainnet": null
+ }
+}
