@@ -1,0 +1,10 @@
+{
+ "name": "BountyGraph Agent Task Bounties",
+ "fork": "https://github.com/Blockchains/bountygraph",
+ "commit": "00674e72989e39059311882cbf6795fe17ed7a6b",
+ "lesson": "/explore/bountygraph/",
+ "programs": {
+  "devnet": "A2dh81ir5UP9jc4N42uf8bf7yEszCsc6LdtPd8C6S9tb",
+  "mainnet": null
+ }
+}

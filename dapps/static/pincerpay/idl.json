@@ -1,0 +1,864 @@
+{
+  "address": "7RE9LMwA5wkU4A3WHKj8yuWu9BqBcGpcT5hz4a4xCa1Z",
+  "metadata": {
+    "name": "pincerpay_facilitator",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "PincerPay on-chain facilitator for USDC settlement"
+  },
+  "instructions": [
+    {
+      "name": "deregister_merchant",
+      "docs": [
+        "Deregister (deactivate) a merchant account."
+      ],
+      "discriminator": [
+        239,
+        6,
+        65,
+        126,
+        93,
+        56,
+        191,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_account",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize program config. Can only be called once."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "fee_bps",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "record_x402_settlement",
+      "docs": [
+        "Record an off-chain x402 settlement on-chain for audit.",
+        "Authority-only \u2014 no token transfer (already happened via x402)."
+      ],
+      "discriminator": [
+        142,
+        173,
+        138,
+        70,
+        181,
+        134,
+        227,
+        88
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_account",
+          "writable": true
+        },
+        {
+          "name": "settlement_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  116,
+                  116,
+                  108,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config.nonce",
+                "account": "ProgramConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "Agent wallet address (not a signer \u2014 this is a recording of a past settlement)"
+          ]
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Facilitator authority \u2014 must sign to authorize the recording"
+          ],
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "x402_tx_hash",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "register_merchant",
+      "docs": [
+        "Register a merchant with an on-chain account."
+      ],
+      "discriminator": [
+        238,
+        245,
+        77,
+        132,
+        161,
+        88,
+        216,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  109,
+                  101,
+                  114,
+                  99,
+                  104,
+                  97,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "merchant_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_owner",
+          "docs": [
+            "Merchant's wallet address (receives ownership of the account)"
+          ]
+        },
+        {
+          "name": "merchant_usdc_ata",
+          "docs": [
+            "Merchant's USDC associated token account"
+          ]
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "merchant_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "name",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "settle_payment",
+      "docs": [
+        "Settle a payment: CPI TransferChecked from agent \u2192 merchant.",
+        "Both agent and facilitator authority must sign."
+      ],
+      "discriminator": [
+        129,
+        7,
+        163,
+        250,
+        122,
+        226,
+        158,
+        249
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "merchant_account",
+          "writable": true
+        },
+        {
+          "name": "settlement_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  116,
+                  116,
+                  108,
+                  101,
+                  109,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "config.nonce",
+                "account": "ProgramConfig"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent_usdc_account",
+          "docs": [
+            "Agent's USDC token account (source)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "merchant_usdc_account",
+          "docs": [
+            "Merchant's USDC token account (destination)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "fee_vault_authority",
+          "docs": [
+            "Fee vault authority PDA \u2014 owns the fee vault token account"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault_usdc_account",
+          "docs": [
+            "Fee vault's USDC token account (receives fee portion)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "usdc_mint",
+          "docs": [
+            "USDC mint"
+          ]
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "Agent wallet \u2014 must sign to authorize the transfer"
+          ],
+          "signer": true
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Facilitator authority \u2014 must sign to authorize the settlement"
+          ],
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "decimals",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_fees",
+      "docs": [
+        "Withdraw accumulated fees from the fee vault.",
+        "Authority-only \u2014 PDA-signed transfer from fee vault to destination."
+      ],
+      "discriminator": [
+        198,
+        212,
+        171,
+        109,
+        144,
+        215,
+        174,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault_authority",
+          "docs": [
+            "Fee vault authority PDA \u2014 signs the CPI transfer out of the fee vault"
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault_usdc_account",
+          "docs": [
+            "Fee vault's USDC token account (source)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "destination_usdc_account",
+          "docs": [
+            "Destination USDC token account (receives withdrawn fees)"
+          ],
+          "writable": true
+        },
+        {
+          "name": "usdc_mint"
+        },
+        {
+          "name": "authority",
+          "docs": [
+            "Facilitator authority \u2014 must sign to authorize the withdrawal"
+          ],
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "MerchantAccount",
+      "discriminator": [
+        182,
+        10,
+        106,
+        140,
+        73,
+        79,
+        234,
+        186
+      ]
+    },
+    {
+      "name": "ProgramConfig",
+      "discriminator": [
+        196,
+        210,
+        90,
+        231,
+        144,
+        149,
+        140,
+        63
+      ]
+    },
+    {
+      "name": "SettlementRecord",
+      "discriminator": [
+        172,
+        159,
+        67,
+        74,
+        96,
+        85,
+        37,
+        205
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidFeeBps",
+      "msg": "Fee basis points must be <= 10000"
+    },
+    {
+      "code": 6001,
+      "name": "MerchantNotActive",
+      "msg": "Merchant account is not active"
+    },
+    {
+      "code": 6002,
+      "name": "MerchantAlreadyActive",
+      "msg": "Merchant account is already active"
+    },
+    {
+      "code": 6003,
+      "name": "ZeroAmount",
+      "msg": "Settlement amount must be greater than zero"
+    },
+    {
+      "code": 6004,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidX402TxHash",
+      "msg": "Invalid x402 transaction hash"
+    },
+    {
+      "code": 6006,
+      "name": "InsufficientFeeVaultBalance",
+      "msg": "Insufficient fee vault balance"
+    }
+  ],
+  "types": [
+    {
+      "name": "MerchantAccount",
+      "docs": [
+        "On-chain merchant account. PDA seeds: [\"merchant\", merchant_id]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "merchant_id",
+            "docs": [
+              "UUID bytes identifying the merchant in the off-chain DB"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "owner",
+            "docs": [
+              "Merchant's wallet (owner authority)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "usdc_ata",
+            "docs": [
+              "Merchant's USDC associated token account for receiving payments"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "docs": [
+              "UTF-8 encoded merchant name (zero-padded)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "active",
+            "docs": [
+              "Whether this merchant account is active"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "total_settled",
+            "docs": [
+              "Running total of USDC settled (base units)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "settlement_count",
+            "docs": [
+              "Number of settlements processed"
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramConfig",
+      "docs": [
+        "Global program configuration. PDA seeds: [\"config\"]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Authority that can register merchants and record x402 settlements"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_bps",
+            "docs": [
+              "Fee basis points (0-10000) charged on direct settlements"
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "nonce",
+            "docs": [
+              "Monotonically increasing settlement counter (used as PDA seed for SettlementRecord)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SettlementRecord",
+      "docs": [
+        "On-chain settlement record. PDA seeds: [\"settlement\", nonce.to_le_bytes()]"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "nonce",
+            "docs": [
+              "Unique nonce from ProgramConfig counter"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "agent",
+            "docs": [
+              "Agent wallet that initiated the payment"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant",
+            "docs": [
+              "Merchant wallet that received the payment"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "merchant_account",
+            "docs": [
+              "MerchantAccount PDA"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "USDC amount in base units (6 decimals) \u2014 total amount paid by the agent"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "fee_amount",
+            "docs": [
+              "Fee portion deducted from amount and sent to the fee vault (0 for x402 recordings)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "slot",
+            "docs": [
+              "Slot at which this record was created"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "tx_type",
+            "docs": [
+              "0 = direct on-chain settlement, 1 = x402 off-chain settlement recorded"
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "x402_tx_hash",
+            "docs": [
+              "Off-chain x402 tx hash (zero-filled for direct settlements)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Unix timestamp"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

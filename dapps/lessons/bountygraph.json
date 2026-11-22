@@ -1,0 +1,39 @@
+{
+  "title": "BountyGraph Agent Task Bounties",
+  "summary": "Post SOL bounties as a dependency graph so AI agents can only claim a task after the tasks it depends on are done.",
+  "what": "BountyGraph is an Anchor 0.29 program for agent work markets. Tasks live in a graph, carry SOL escrows, and unlock in dependency order. Disputes freeze a task until the graph authority splits the escrow.",
+  "app_note": "The page at /dapps/bountygraph/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/bountygraph, with declare_id changed and two disclosed bug fixes (fund_task rent check, resolve_dispute lamport move).",
+  "try_steps": [
+    {
+      "do": "Open /dapps/bountygraph/, switch to Devnet, connect a wallet and call initialize_graph, then create_task and fund_task.",
+      "see": "A graph PDA, a task PDA and a funded escrow PDA.",
+      "ran": "The full dependency, claim and dispute flow (see steps)."
+    }
+  ],
+  "diagram": "authority --initialize_graph--> graph; creator --create_task(deps)--> task; funder --fund_task--> escrow; agent --submit_receipt (deps done)--> receipt; agent --claim_reward--> SOL; initiator --dispute_task--> dispute; authority --resolve_dispute(split)--> creator+worker",
+  "accounts": [
+    "graph PDA [\"graph\", authority]",
+    "task PDA [\"task\", graph, task_id]",
+    "escrow PDA [\"escrow\", task]",
+    "receipt PDA [\"receipt\", task, agent]",
+    "dispute PDA [\"dispute\", task, initiator]"
+  ],
+  "instructions": [
+    "initialize_graph",
+    "create_task",
+    "fund_task",
+    "submit_receipt",
+    "claim_reward",
+    "dispute_task",
+    "resolve_dispute"
+  ],
+  "innovation": "Dependencies are enforced on chain: an agent cannot even submit work for a task until every upstream task is completed.",
+  "frontend": "Generic IDL console at /dapps/bountygraph/.",
+  "exercises": [
+    "Why did the original fund_task check fail on every first funding?",
+    "Why can a program not use the System Program to move SOL out of an account that holds data?"
+  ],
+  "not_covered": [
+    "Very deep dependency chains and graph limits"
+  ]
+}

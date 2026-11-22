@@ -1,0 +1,37 @@
+{
+  "title": "PincerPay x402 Facilitator",
+  "summary": "Settle AI agent payments to merchants through an on-chain facilitator that takes a protocol fee and keeps a settlement record.",
+  "what": "PincerPay is an x402 payment facilitator for agents. Its Anchor 0.30.1 program registers merchants, settles agent token payments with a fee, and records settlements that happened off chain by transaction hash.",
+  "app_note": "The page at /dapps/pincerpay/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/pincerpay; only declare_id changed, and the lab binary is built with --arch v2.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/pincerpay/, switch to Devnet and read the config and merchant accounts.",
+      "see": "The fee_bps, settlement nonce and merchant totals.",
+      "ran": "The full merchant, settlement and fee flow (see steps)."
+    }
+  ],
+  "diagram": "authority --initialize(fee)--> config; authority --register_merchant--> merchant; agent+authority --settle_payment--> merchant ATA (+fee vault) + settlement record; authority --record_x402_settlement--> record; authority --withdraw_fees--> destination",
+  "accounts": [
+    "config PDA [\"config\"]",
+    "merchant PDA [\"merchant\", merchant_id]",
+    "settlement record PDA [\"settlement\", nonce]",
+    "fee vault authority PDA [\"fee_vault\"]"
+  ],
+  "instructions": [
+    "initialize",
+    "register_merchant",
+    "settle_payment",
+    "record_x402_settlement",
+    "withdraw_fees",
+    "deregister_merchant"
+  ],
+  "innovation": "The same settlement ledger covers payments settled on chain and x402 payments settled elsewhere, so a merchant has one auditable record.",
+  "frontend": "Generic IDL console at /dapps/pincerpay/.",
+  "exercises": [
+    "Why does settle_payment need both the agent and the facilitator to sign?",
+    "How would you check that a recorded x402 hash is real?"
+  ],
+  "not_covered": [
+    "Off-chain x402 HTTP flow"
+  ]
+}

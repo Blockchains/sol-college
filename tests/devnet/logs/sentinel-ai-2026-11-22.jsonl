@@ -1,0 +1,14 @@
+{"step":"setup","program":"6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk","profile":"HYjC9TXmaSwabXaf7kDRt6u3KPf9Wb6Cve4RprrHLCGD","policy":"63cTEViiFgmVFfdhNA9jmP4WaPvSiyktiTZTCGw9ieE","agent":"6S8HM3ZG815GcD2zAp2zb6oJA3EzvRauErrZFepjjtgN","receiver":"4ifoGsZJbwzXuEbE2ziVd8bfau48EVshw2zrALJky2wM"}
+{"step":"initialize_agent_profile","ok":true,"sig":"4FHnJaichXvvrHT8KX7B7b4RTNH1zcCcXFYD8cE8aKStAY6e9nHnPtocGGRoLQ5JgManTjvsKA4WmEZgYAsa9ZAo","reputation":50}
+{"step":"set_policy","ok":true,"sig":"cjww1BUNgu6wKDYa4V56hs9n6R35FakLX2neMRS9NBHXR4o6smgd7unmnBsCcE6j1SCGD15ftNaarmj9HY1f8HM","max_amount":5000000,"min_reputation":40,"high_value_threshold":3000000,"high_value_min_reputation":70}
+{"step":"submit_transaction","ok":true,"sig":"V9hMejJm4JXpsGoL5PotB57LRKvAk2KBhamTzPkpnW1d9tfMTPWrvapkZ8wvUuoKwJrcEkXsFWZbwAVGGNCKgfJ","receiver_lamports":1000000,"reputation":"60"}
+{"step":"submit_over_max","rejected":true,"reason":"AmountExceedsMax"}
+{"step":"submit_wrong_receiver","rejected":true,"reason":"ReceiverNotAllowed"}
+{"step":"submit_high_value_low_reputation","rejected":true,"reason":"HighValueReputationInsufficient"}
+{"step":"state_after_rejections","consecutive_failures":0,"total_transactions":"1","frozen":false,"note":"rejections revert, so failure counters do not persist"}
+{"step":"freeze_by_stranger","rejected":true,"reason":"ConstraintHasOne"}
+{"step":"freeze_agent","ok":true,"sig":"jdtJ7kb2PLDJFfJ2isySgRGCmkYtW2r14YD8DwoaxiYUbyz7ZcMEZJA2yGoFEaXyECwr2mDNNBT7vg2SUJLEFTR"}
+{"step":"submit_while_frozen","rejected":true,"reason":"AgentFrozen"}
+{"step":"unfreeze_agent","ok":true,"sig":"5icoYjibdJVfS3AvjeS7gCoHEdzSyp7LoKveZKnFwzhwDoGUv97a16wnWsSP9vSv1bet9JjexcNyzo246kaqv8Dp"}
+{"step":"submit_transaction_2","ok":true,"sig":"a9sFBPwFKwhmaBsXE7PNnGvcWES5U13boVbN647genKRwuky73z8Ra4X8Ghkru71hpoyuvbABuvhKQQwhcbJMRY","receiver_lamports":3000000,"reputation":"70","successful":"2"}
+{"step":"cleanup_returned_lab_wallets"}

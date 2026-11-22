@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-bountygraph",
+  "slug": "bountygraph",
+  "displayName": "BountyGraph Agent Task Bounties (Sol.College demonstration)",
+  "description": "Dependency-aware SOL bounties for AI agents on Solana devnet (Anchor 0.29): a task graph where each task has an escrow PDA, agents submit receipts once dependencies are complete, claim rewards, and disputes are split by the graph authority. initialize_graph, create_task, fund_task, submit_receipt, claim_reward, dispute_task and resolve_dispute were verified with real devnet transactions after two disclosed lab fixes.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of Neogenuity/bountygraph. The lab tree is branch sol-college-devnet of Blockchains/bountygraph. The lab changed declare_id to a unique Sol.College devnet program and fixed two upstream bugs (fund_task rent check, resolve_dispute lamport move). The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "Neogenuity/bountygraph",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/bountygraph",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "bountygraph-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-bountygraph"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:43:25Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (task graph, escrow, receipts, disputes)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/bountygraph/",
+      "QA: devnet proof of dependency-ordered bounties"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "upstream-fixes",
+        "title": "Write regression tests for the fund_task and resolve_dispute fixes",
+        "skills": [
+          "Anchor",
+          "Rust"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.29",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/bountygraph"
+  }
+}

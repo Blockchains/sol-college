@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-sentinel-ai",
+  "slug": "sentinel-ai",
+  "displayName": "SentinelAI Agent Guardrails (Sol.College demonstration)",
+  "description": "On-chain spending guardrails for an AI agent wallet on Solana devnet (Anchor 0.30.1): an owner sets a policy (maximum amount, single allowed receiver, minimum reputation, high-value tier) and the agent can only send SOL through submit_transaction when the policy passes; the owner can freeze and unfreeze the agent. All five instructions were verified with real devnet transactions.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of MayankSen09/SentinelAI. The lab tree is branch sol-college-devnet of Blockchains/SentinelAI. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "MayankSen09/SentinelAI",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/SentinelAI",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "sentinel-ai-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-sentinel-ai"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:43:19Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (policy gate, reputation, freeze)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/sentinel-ai/",
+      "QA: devnet proof of agent spending guardrails"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "circuit-breaker",
+        "title": "Redesign the circuit breaker so rejected attempts are recorded",
+        "skills": [
+          "Anchor",
+          "Rust"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.30.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/sentinel_ai"
+  }
+}

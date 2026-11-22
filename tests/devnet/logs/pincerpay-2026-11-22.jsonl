@@ -1,0 +1,13 @@
+{"step":"setup","program":"7RE9LMwA5wkU4A3WHKj8yuWu9BqBcGpcT5hz4a4xCa1Z","config":"FLdvAYpsVdYzBrCFYy2xDquRHskVSNpop1dMiXDaU9Rf","fee_vault":"n8cSt7oHk9rHw4HVAgCqgMxjRwKZfqunCXJG4XNPTtq","agent":"FtaZjvBsLq4rkLDECAQ9Kq6Kn1rp81ShokYiMHT31TbX","merchant":"GxL6euoGw62sqvPwVjMTa8coy5Rbwmww7qazgLFj69ut","decimals":6}
+{"step": "initialize", "ok": true, "sig": "34b7vhP4R5Q88aPU33NbeSPuSUzdcAegVi2UpApzHumzNDmntbGgj6T6ALz8GDYdupi21T2myDTXiXCXCBoGquaH", "fee_bps": 100, "note": "config created on the first (pre-v2) run at 18:39 UTC; later runs reuse it"}
+{"step":"register_merchant","ok":true,"sig":"3TT8jVJQceQkffqUm2ibn3hUTdYj49ahw5i3W82gmLbVBWEAp8Rk2gsdJTvZ2Ju82gw5owprQofmMiZ5g6hha4Yp","merchant_account":"EDbLKGqy2ykrrZ9CqCR5qgnBxup62NaUL8YKmyQU33yd"}
+{"step":"settle_zero","rejected":true,"reason":"ZeroAmount"}
+{"step":"settle_by_non_authority","rejected":true,"reason":"ConstraintHasOne"}
+{"step":"settle_payment","ok":true,"sig":"2s8e3EvEE713G5Jyr8DicRZHjUfWATufr8dbRQyQJpK7q32CCH8pv758gx8UKc62NDafBLQLigQx3G8Gz5vgVcaj","settlement":"4ckQq4FJi9MVqsCV5DNSs5jLGvHC9qZHaPJxgd8faNZQ","merchant_tokens":"990000","fee_vault_tokens":"10000"}
+{"step":"record_x402_zero_hash","rejected":true,"reason":"InvalidX402TxHash"}
+{"step":"record_x402_settlement","ok":true,"sig":"5iwD3ELqY5pqY2rrghQpFBfdqSQnmgfdAgkKwoLNWZjBXxSDWKDmTRsjyyBWXdVBVq5JqTg7nyM8GPo2qLMMiuSa"}
+{"step":"withdraw_fees_over_balance","rejected":true,"reason":"InsufficientFeeVaultBalance"}
+{"step":"withdraw_fees","ok":true,"sig":"3gPV2e1K2ZiddaVZXf4YZktiDzYJt3t568wPWFAxGcxbiwoxJnjzqhCcDw5qcXPcwtqfHr2JaixARSNW1mQQS5bA","amount":10000}
+{"step":"deregister_merchant","ok":true,"sig":"2EBRtWSSa2V7TwuEsiWuqk1UyM6tjXSxRrpxKC2e347fVXPY82hx2LqRm9rx2ZYnBTagAZowiVfCFueCD1k5sAbb"}
+{"step":"settle_after_deregister","rejected":true,"reason":"MerchantNotActive"}
+{"step":"state","total_settled":"1250000","settlement_count":"2","active":false}

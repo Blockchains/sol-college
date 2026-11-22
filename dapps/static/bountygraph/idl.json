@@ -1,0 +1,1036 @@
+{
+  "address": "A2dh81ir5UP9jc4N42uf8bf7yEszCsc6LdtPd8C6S9tb",
+  "metadata": {
+    "name": "bountygraph",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "BountyGraph on-chain program"
+  },
+  "instructions": [
+    {
+      "name": "claim_reward",
+      "discriminator": [
+        149,
+        95,
+        181,
+        242,
+        94,
+        90,
+        158,
+        162
+      ],
+      "accounts": [
+        {
+          "name": "task",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_task",
+      "discriminator": [
+        194,
+        80,
+        6,
+        180,
+        232,
+        127,
+        48,
+        171
+      ],
+      "accounts": [
+        {
+          "name": "graph",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  97,
+                  112,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "graph"
+          ]
+        },
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "task",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "graph"
+              },
+              {
+                "kind": "arg",
+                "path": "params.task_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "CreateTaskParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "dispute_task",
+      "discriminator": [
+        140,
+        98,
+        191,
+        168,
+        154,
+        118,
+        50,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "task",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  100,
+                  105,
+                  115,
+                  112,
+                  117,
+                  116,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
+                "path": "initiator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "initiator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DisputeTaskParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "fund_task",
+      "discriminator": [
+        188,
+        87,
+        71,
+        120,
+        11,
+        238,
+        84,
+        232
+      ],
+      "accounts": [
+        {
+          "name": "task",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              }
+            ]
+          }
+        },
+        {
+          "name": "funder",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_graph",
+      "discriminator": [
+        57,
+        93,
+        28,
+        18,
+        192,
+        36,
+        28,
+        7
+      ],
+      "accounts": [
+        {
+          "name": "graph",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  97,
+                  112,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeGraphParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "resolve_dispute",
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "graph",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  103,
+                  114,
+                  97,
+                  112,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "graph"
+          ]
+        },
+        {
+          "name": "task",
+          "writable": true
+        },
+        {
+          "name": "dispute",
+          "writable": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "writable": true
+        },
+        {
+          "name": "worker",
+          "writable": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ResolveDisputeParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_receipt",
+      "discriminator": [
+        172,
+        84,
+        119,
+        35,
+        195,
+        154,
+        214,
+        176
+      ],
+      "accounts": [
+        {
+          "name": "task",
+          "writable": true
+        },
+        {
+          "name": "receipt",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  99,
+                  101,
+                  105,
+                  112,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task"
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "SubmitReceiptParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Dispute",
+      "discriminator": [
+        36,
+        49,
+        241,
+        67,
+        40,
+        36,
+        241,
+        74
+      ]
+    },
+    {
+      "name": "Escrow",
+      "discriminator": [
+        31,
+        213,
+        123,
+        187,
+        186,
+        22,
+        218,
+        155
+      ]
+    },
+    {
+      "name": "Graph",
+      "discriminator": [
+        124,
+        240,
+        0,
+        98,
+        228,
+        201,
+        68,
+        64
+      ]
+    },
+    {
+      "name": "Receipt",
+      "discriminator": [
+        39,
+        154,
+        73,
+        106,
+        80,
+        102,
+        145,
+        153
+      ]
+    },
+    {
+      "name": "Task",
+      "discriminator": [
+        79,
+        34,
+        229,
+        55,
+        88,
+        90,
+        55,
+        84
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidConfig",
+      "msg": "Invalid graph configuration (max_dependencies_per_task must be > 0)"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidReward",
+      "msg": "Invalid reward amount (must be > 0 and within declared bounds)"
+    },
+    {
+      "code": 6002,
+      "name": "TooManyDependencies",
+      "msg": "Too many dependencies (exceeds graph.max_dependencies_per_task)"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidDependency",
+      "msg": "Invalid dependency list (must be strictly increasing, no self refs, and match provided accounts)"
+    },
+    {
+      "code": 6004,
+      "name": "CircularDependency",
+      "msg": "Circular dependency detected (immediate back-edge / 2-cycle)"
+    },
+    {
+      "code": 6005,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6006,
+      "name": "TaskNotOpen",
+      "msg": "Task is not open (expected status = Open)"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidUri",
+      "msg": "Invalid receipt URI (non-empty and <= Receipt::MAX_URI_LEN)"
+    },
+    {
+      "code": 6008,
+      "name": "MissingDependencyAccounts",
+      "msg": "Missing dependency accounts (pass all prerequisite Task accounts in dependency order)"
+    },
+    {
+      "code": 6009,
+      "name": "DependencyNotCompleted",
+      "msg": "A dependency task is not completed"
+    },
+    {
+      "code": 6010,
+      "name": "TaskNotCompleted",
+      "msg": "Task is not completed"
+    },
+    {
+      "code": 6011,
+      "name": "NotTaskCompleter",
+      "msg": "Signer is not the task completer"
+    },
+    {
+      "code": 6012,
+      "name": "EscrowEmpty",
+      "msg": "Escrow has no lamports"
+    },
+    {
+      "code": 6013,
+      "name": "EscrowAlreadyFunded",
+      "msg": "Escrow already funded"
+    },
+    {
+      "code": 6014,
+      "name": "TaskInDispute",
+      "msg": "Task is in dispute"
+    },
+    {
+      "code": 6015,
+      "name": "UnauthorizedDisputer",
+      "msg": "Signer is not authorized to dispute"
+    },
+    {
+      "code": 6016,
+      "name": "DisputeAlreadyRaised",
+      "msg": "Dispute already raised"
+    },
+    {
+      "code": 6017,
+      "name": "NoDisputeRaised",
+      "msg": "No dispute raised"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidResolution",
+      "msg": "Invalid dispute resolution"
+    },
+    {
+      "code": 6019,
+      "name": "InvalidGraph",
+      "msg": "Invalid graph account"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidCreator",
+      "msg": "Invalid creator account"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidWorker",
+      "msg": "Invalid worker account"
+    },
+    {
+      "code": 6022,
+      "name": "UnauthorizedDispute",
+      "msg": "Only creator or participating worker can raise dispute"
+    },
+    {
+      "code": 6023,
+      "name": "UnauthorizedResolution",
+      "msg": "Only arbiter can resolve dispute"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidTaskStatus",
+      "msg": "Task status does not allow disputes"
+    },
+    {
+      "code": 6025,
+      "name": "InvalidSplit",
+      "msg": "Invalid split percentage"
+    }
+  ],
+  "types": [
+    {
+      "name": "CreateTaskParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task_id",
+            "type": "u64"
+          },
+          {
+            "name": "reward_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "dependencies",
+            "type": {
+              "vec": "u64"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Dispute",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "worker",
+            "type": "pubkey"
+          },
+          {
+            "name": "raised_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "reason",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "DisputeStatus"
+              }
+            }
+          },
+          {
+            "name": "raised_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "resolved_at_slot",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "arbiter",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "creator_pct",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "worker_pct",
+            "type": {
+              "option": "u8"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "None"
+          },
+          {
+            "name": "Raised"
+          },
+          {
+            "name": "Resolved"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DisputeTaskParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "reason",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escrow",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Graph",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "max_dependencies_per_task",
+            "type": "u16"
+          },
+          {
+            "name": "task_count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeGraphParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_dependencies_per_task",
+            "type": "u16"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Receipt",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "task",
+            "type": "pubkey"
+          },
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "work_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "submitted_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ResolveDisputeParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator_pct",
+            "type": "u8"
+          },
+          {
+            "name": "worker_pct",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SubmitReceiptParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "work_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Task",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "graph",
+            "type": "pubkey"
+          },
+          {
+            "name": "task_id",
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "reward_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "TaskStatus"
+              }
+            }
+          },
+          {
+            "name": "dispute_status",
+            "type": {
+              "defined": {
+                "name": "DisputeStatus"
+              }
+            }
+          },
+          {
+            "name": "dependencies",
+            "type": {
+              "vec": "u64"
+            }
+          },
+          {
+            "name": "created_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "completed_by",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "disputed_by",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "dispute_raised_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "resolved_by",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "dispute_resolved_at_slot",
+            "type": "u64"
+          },
+          {
+            "name": "worker_award_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TaskStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Completed"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+ "name": "SentinelAI Agent Guardrails",
+ "fork": "https://github.com/Blockchains/SentinelAI",
+ "commit": "be5d3c76fb28c64aeda2af60d79760753668cb23",
+ "lesson": "/explore/sentinel-ai/",
+ "programs": {
+  "devnet": "6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk",
+  "mainnet": null
+ }
+}

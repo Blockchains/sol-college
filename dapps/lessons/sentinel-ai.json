@@ -1,0 +1,34 @@
+{
+  "title": "SentinelAI Agent Guardrails",
+  "summary": "Give an AI agent a wallet that can only pay what its owner\u2019s on-chain policy allows, with a manual kill switch.",
+  "what": "SentinelAI is an Anchor 0.30.1 guardrail program. The owner writes a spending policy on chain; the agent signs payments, and the program blocks any payment that breaks the policy or happens while the agent is frozen.",
+  "app_note": "The page at /dapps/sentinel-ai/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/SentinelAI; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/sentinel-ai/, switch to Devnet, connect a wallet and call initialize_agent_profile for an agent key, then set_policy.",
+      "see": "A profile PDA with reputation 50 and your policy PDA.",
+      "ran": "Allowed and blocked payments, freeze and unfreeze (see steps)."
+    }
+  ],
+  "diagram": "owner --initialize_agent_profile--> profile; owner --set_policy--> policy; agent --submit_transaction--> policy checks --> SOL to receiver (+rep); owner --freeze/unfreeze--> profile.frozen",
+  "accounts": [
+    "profile PDA [\"agent_profile\", agent]",
+    "policy PDA [\"agent_policy\", owner]"
+  ],
+  "instructions": [
+    "initialize_agent_profile",
+    "set_policy",
+    "submit_transaction",
+    "freeze_agent",
+    "unfreeze_agent"
+  ],
+  "innovation": "Spending limits for an autonomous agent are enforced by the chain, so a compromised agent key still cannot pay outside the policy.",
+  "frontend": "Generic IDL console at /dapps/sentinel-ai/.",
+  "exercises": [
+    "Why does the circuit breaker never trip, and how would you redesign it so failures are recorded?",
+    "How would you support several allowed receivers?"
+  ],
+  "not_covered": [
+    "Reputation decay over idle days"
+  ]
+}

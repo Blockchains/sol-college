@@ -1,0 +1,10 @@
+{
+ "name": "PincerPay x402 Facilitator",
+ "fork": "https://github.com/Blockchains/pincerpay",
+ "commit": "3bc40ec554228e1c2be1a9aa5c55298c1a354e20",
+ "lesson": "/explore/pincerpay/",
+ "programs": {
+  "devnet": "7RE9LMwA5wkU4A3WHKj8yuWu9BqBcGpcT5hz4a4xCa1Z",
+  "mainnet": null
+ }
+}
