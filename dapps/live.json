@@ -5372,5 +5372,57 @@
     "limits": "SPL-token jobs (token_mint with remaining accounts), auto_release and resolve_dispute_by_timeout (7-day wait) and stake slashing were not exercised; only SOL jobs were run. In the arbiter dispute the agent received 1_900_000 lamports and the arbiter 100_000 (its balance rose 95_000 net of its own 5_000-lamport transaction fee). Source unchanged apart from declare_id. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "register_agent A 3siKTzHt\u2026; register_agent B TU2axHyX\u2026; update_agent description RxCbAUsZ\u2026; invoke_agent job 1 with 3_000_000 55ZeGvzE\u2026; delegate_task 1_000_000 from job 1 to agent B ZVmijEDg\u2026; update_job on the child by B 2ByUeAUn\u2026; release_payment child by A 4P87zhVo\u2026; update_job on job 1 by A kBgDNYbU\u2026; release_payment job 1 4JwgZX4y\u2026; rate_agent 5 52e7VMqj\u2026; close_job CmX1NR8Z\u2026; invoke_agent job 2 with an arbiter at 500 bps 536bSWWq\u2026; raise_dispute by the client 3SGj1qDP\u2026; resolve_dispute_by_arbiter for the agent 2EnW7M4B\u2026; reject_job by the agent refunds job 3 2uwR3U6r\u2026; cancel_job by the client refunds job 4 5SYCQwQL\u2026; stake_agent 0.1 SOL 3ozVj4DP\u2026; unstake_agent 0.1 SOL 33umsxRC\u2026. register_agent with an empty name was rejected (EmptyName). invoke_agent below the agent price was rejected (InsufficientPayment). invoke_agent with the wrong nonce was rejected (InvalidNonce). An agent invoking itself was rejected (SelfInvocation). An arbiter fee of 3000 bps was rejected (ArbiterFeeTooHigh). delegate_task by a wallet that is not the job agent was rejected (Unauthorized). Completing a parent job with an open child was rejected (UnresolvedChildren). update_job with an empty URI was rejected (EmptyResultUri). release_payment by a stranger was rejected (Unauthorized). A rating of 6 was rejected (InvalidRating). raise_dispute by a stranger was rejected (Unauthorized). resolve_dispute_by_arbiter by a non-arbiter was rejected (InvalidArbiter). cancel_job by a stranger was rejected (Unauthorized). Staking below 0.1 SOL was rejected (InsufficientStake). Unstaking more than staked was rejected (InsufficientStake)."
+  },
+  {
+    "slug": "verifiagent",
+    "name": "VerifiAgent Activity Traces",
+    "lesson": "/explore/verifiagent/",
+    "app": "/dapps/verifiagent/",
+    "fork": "https://github.com/Blockchains/verifiagent",
+    "commit": "e5fb95b6f4e1d6e735718a6744c3416fc3b43eaa",
+    "program": "SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/verifiagent (unique declare_id; the official G6cYQD4s\u2026 was not reused).",
+    "learn": "initialize_agent creates an agent PDA [\"agent\", wallet] at trust level L0. Each log_activity writes a trace PDA [\"trace\", wallet, index] holding a 32-byte action hash and an action type, increments the counter and recomputes the trust level (L1 after one action, L2 after 7 days and 20 actions, L3 after 30 days and 100 actions). verify_trace reads a trace and logs its contents.",
+    "source": [
+      [
+        "programs/verifiagent/src/lib.rs",
+        "https://github.com/Blockchains/verifiagent/blob/e5fb95b6f4e1d6e735718a6744c3416fc3b43eaa/programs/verifiagent/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/verifiagent.mjs",
+    "log": "tests/devnet/logs/verifiagent-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy verifiagent as SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ on devnet",
+        "5uRtYMSfRK4gCRybrpR9poN5RFpWzRZDhPpL5t3N35ZLG7WJH3UnRNQnMUZs4Y8VaEy93zFfmnmiCjHJp3XC5wns"
+      ],
+      [
+        "initialize_agent (trust L0)",
+        "5ppJJP5AgSTjAQiY3HJNJwSMKp9uBPHcRxXaibMgNxMQndnkp12iTafaan8grwexvigRgTovG7Fj4ByS3TwQZnEC"
+      ],
+      [
+        "log_activity swap_quote (trust L1)",
+        "5d228dHDaaP8UQWtQbda8J62fFi6VDyoHLe5eea5vKQ5t8h9K9YWXicpRj8f41nDxeYbWLbRKQsJFs2czxsRbq9b"
+      ],
+      [
+        "log_activity llm_inference",
+        "3USYDgKDFZGrSpPePcnguZxdaFcY8wgygyAQEVX1bq42Qccr3wUW26epJfRj4hmZm2q6BMs9PjFRKd2egHhKWxPd"
+      ],
+      [
+        "verify_trace on trace 1",
+        "4vrJMnBsa3cdvYL3XHbRSfhAgeB2EpYXxTSHGy5KdWLUoiQQRwLuRL1LoMVMBxbub7483Mec9K8CwiSyWxj8iTPA"
+      ]
+    ],
+    "negative": [
+      "initialize_agent twice failed because the agent PDA already exists (System error 0x0).",
+      "log_activity by another wallet against this agent was rejected (ConstraintSeeds).",
+      "An action type longer than the 96 bytes reserved was rejected (AccountDidNotSerialize).",
+      "verify_trace on the agent account was rejected (AccountDiscriminatorMismatch)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/verifiagent.mjs.",
+    "limits": "Design limits: each wallet logs its own actions and verified is always set to true, so a trace proves only that the wallet posted that hash at that time, not that the action happened; trust levels can be raised by self-logging. L2 and L3 need 7 and 30 days, so they were not shown. The repository has an npm postinstall script; npm was never run in the lab. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_agent 5ppJJP5A\u2026; log_activity swap_quote 5d228dHD\u2026; log_activity llm_inference 3USYDgKD\u2026; verify_trace on trace 1 4vrJMnBs\u2026. initialize_agent twice failed because the agent PDA already exists (System error 0x0). log_activity by another wallet against this agent was rejected (ConstraintSeeds). An action type longer than the 96 bytes reserved was rejected (AccountDidNotSerialize). verify_trace on the agent account was rejected (AccountDiscriminatorMismatch)."
   }
 ]

@@ -1,0 +1,10 @@
+{"step":"setup","program":"SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ","agent_wallet":"Eem5rquyb3s1UNQyzmSmAjkpn3xNRsvmbg4nszKVELYh","agent":"HTqQ3x62HGL6ZPWz7rF2MdsFAyeigeQ1j4yX5JGK6q3t"}
+{"step":"initialize_agent","ok":true,"sig":"5ppJJP5AgSTjAQiY3HJNJwSMKp9uBPHcRxXaibMgNxMQndnkp12iTafaan8grwexvigRgTovG7Fj4ByS3TwQZnEC","trust_level":"l0Registered"}
+{"step":"initialize_agent_twice","rejected":true,"reason":"Simulation failed. \nMessage: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x0. \nLogs: \n[\n  \"Program SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ invoke [1]\",\n  \""}
+{"step":"log_activity_0","ok":true,"sig":"5d228dHDaaP8UQWtQbda8J62fFi6VDyoHLe5eea5vKQ5t8h9K9YWXicpRj8f41nDxeYbWLbRKQsJFs2czxsRbq9b","action_type":"swap_quote","trace":"6jLckiUHGiWRnzScStM2VAViYF2FpYb5ZfeaZKLy8cmt","total_activities":"1","trust_level":"l1Confirmed"}
+{"step":"log_activity_1","ok":true,"sig":"3USYDgKDFZGrSpPePcnguZxdaFcY8wgygyAQEVX1bq42Qccr3wUW26epJfRj4hmZm2q6BMs9PjFRKd2egHhKWxPd","action_type":"llm_inference","trace":"6oVGQARVjbYgsV6x9JoqiqC71QHUWBUqG9WLgnBTHoYT","total_activities":"2","trust_level":"l1Confirmed"}
+{"step":"log_activity_other_agent","rejected":true,"reason":"ConstraintSeeds"}
+{"step":"log_activity_type_too_long","rejected":true,"reason":"AccountDidNotSerialize"}
+{"step":"verify_trace","ok":true,"sig":"4vrJMnBsa3cdvYL3XHbRSfhAgeB2EpYXxTSHGy5KdWLUoiQQRwLuRL1LoMVMBxbub7483Mec9K8CwiSyWxj8iTPA","index":"1","action_type":"llm_inference","verified":true}
+{"step":"verify_trace_on_agent_account","rejected":true,"reason":"AccountDiscriminatorMismatch"}
+{"step":"cleanup_returned_lab_wallets"}

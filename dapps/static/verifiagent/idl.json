@@ -1,0 +1,293 @@
+{
+  "address": "SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ",
+  "metadata": {
+    "name": "verifiagent",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Identity + Execution Trace Protocol for AI Agents"
+  },
+  "instructions": [
+    {
+      "name": "initialize_agent",
+      "docs": [
+        "Initialize a new agent identity on-chain"
+      ],
+      "discriminator": [
+        212,
+        81,
+        156,
+        211,
+        212,
+        110,
+        21,
+        28
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "log_activity",
+      "docs": [
+        "Log an activity trace on-chain"
+      ],
+      "discriminator": [
+        158,
+        66,
+        173,
+        69,
+        248,
+        86,
+        13,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              }
+            ]
+          }
+        },
+        {
+          "name": "trace",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  114,
+                  97,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "wallet"
+              },
+              {
+                "kind": "account",
+                "path": "agent.total_activities",
+                "account": "Agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "wallet",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "action_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "action_type",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "verify_trace",
+      "docs": [
+        "Verify a trace (read-only query)"
+      ],
+      "discriminator": [
+        75,
+        10,
+        209,
+        253,
+        44,
+        164,
+        138,
+        215
+      ],
+      "accounts": [
+        {
+          "name": "trace"
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ActivityTrace",
+      "discriminator": [
+        229,
+        21,
+        25,
+        141,
+        164,
+        232,
+        240,
+        8
+      ]
+    },
+    {
+      "name": "Agent",
+      "discriminator": [
+        47,
+        166,
+        112,
+        147,
+        155,
+        197,
+        86,
+        7
+      ]
+    }
+  ],
+  "types": [
+    {
+      "name": "ActivityTrace",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "action_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "action_type",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "verified",
+            "type": "bool"
+          },
+          {
+            "name": "index",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Agent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "wallet_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "trust_level",
+            "type": {
+              "defined": {
+                "name": "TrustLevel"
+              }
+            }
+          },
+          {
+            "name": "total_activities",
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "last_activity",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TrustLevel",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "L0Registered"
+          },
+          {
+            "name": "L1Confirmed"
+          },
+          {
+            "name": "L2Active"
+          },
+          {
+            "name": "L3Trusted"
+          }
+        ]
+      }
+    }
+  ]
+}

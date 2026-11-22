@@ -1,0 +1,10 @@
+{
+ "name": "VerifiAgent Activity Traces",
+ "fork": "https://github.com/Blockchains/verifiagent",
+ "commit": "e5fb95b6f4e1d6e735718a6744c3416fc3b43eaa",
+ "lesson": "/explore/verifiagent/",
+ "programs": {
+  "devnet": "SZcUAsZ6Rc3f5BAfsbR2CskudsGL5Y6kzQTsgQCaSuZ",
+  "mainnet": null
+ }
+}

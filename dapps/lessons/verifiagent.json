@@ -1,0 +1,32 @@
+{
+  "title": "VerifiAgent Activity Traces",
+  "summary": "Log every AI agent action as a hashed, timestamped trace on chain and derive a simple trust level from the history.",
+  "what": "VerifiAgent is a small Anchor 0.29 program: one agent account per wallet plus one trace account per logged action, numbered in order.",
+  "app_note": "The page at /dapps/verifiagent/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/verifiagent; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/verifiagent/, switch to Devnet, connect a wallet, call initialize_agent and then log_activity with a 32-byte hash.",
+      "see": "An agent PDA and a trace PDA with index 0; trust level L1.",
+      "ran": "Registration, two traces and verification (see steps)."
+    }
+  ],
+  "diagram": "wallet --initialize_agent--> agent (L0); wallet --log_activity(hash,type)--> trace[n] + agent.total++ (trust level); anyone --verify_trace--> logs trace",
+  "accounts": [
+    "agent PDA [\"agent\", wallet]",
+    "trace PDA [\"trace\", wallet, index u64 LE]"
+  ],
+  "instructions": [
+    "initialize_agent",
+    "log_activity",
+    "verify_trace"
+  ],
+  "innovation": "A numbered, append-only trace per agent gives an auditable timeline of what an agent claims it did.",
+  "frontend": "Generic IDL console at /dapps/verifiagent/.",
+  "exercises": [
+    "What would a third party need to check to trust a trace hash?",
+    "How could trust levels resist self-logging spam?"
+  ],
+  "not_covered": [
+    "L2 and L3 trust levels (need days of activity)"
+  ]
+}
