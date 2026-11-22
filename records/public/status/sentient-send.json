@@ -1,14 +1,22 @@
 {
   "schema": "sc-cto-status/1",
   "project": "sentient-send",
-  "updatedAt": "2026-11-22T02:17:09.023Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/44975315516",
+  "updatedAt": "2026-11-22T09:56:48.582Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45009904161",
   "report": {
     "summary": "Lab Reporter status for sentient-send: the lab repository shows 4 open pull requests, 1 package and 3 validations requested for this period. No workflow evidence was supplied, so validation status is unknown and nothing can be reported as passed or accepted. No external writes were made. Sources: upstream repository, lab repository and research issue on github.com. Next period: obtain workflow evidence for the requested validations and continue triage of the 4 open pull requests before re-reporting.",
     "at": "2026-11-22T02:17:09.023Z",
     "taskId": "report-sentient-send-2026112120"
   },
   "activity": [
+    {
+      "at": "2026-11-22T09:56:48.582Z",
+      "text": "Wrote a patch (1 file, +17/-8); applying it to a lab branch"
+    },
+    {
+      "at": "2026-11-22T09:56:48.582Z",
+      "text": "Writing the Lab Reporter status"
+    },
     {
       "at": "2026-11-22T02:17:09.023Z",
       "text": "Opened research question: Creation-split rounding: does total_pool reconcile with the sum of side totals?",
@@ -49,15 +57,6 @@
     {
       "at": "2026-11-16T18:37:32.886Z",
       "text": "Triaged Blockchains/sentient.send/pull/3"
-    },
-    {
-      "at": "2026-11-16T18:37:32.886Z",
-      "text": "Built adoption package sentient-send-71955c95628e-v1 (awaiting the project reviewer)",
-      "url": "https://github.com/Blockchains/sol-college/blob/main/records/public/adoption/sentient-send/sentient-send-71955c95628e-v1.json"
-    },
-    {
-      "at": "2026-11-16T18:37:32.886Z",
-      "text": "Writing the Lab Reporter status"
     }
   ],
   "pendingTasks": 1,
