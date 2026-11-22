@@ -5829,5 +5829,172 @@
     "limits": "Upstream design flaw: dispute_task refunds the requester in full even after the provider submitted, with no arbitration, so a requester can take the work and its money back. A valid Groth16 proof was not generated in the lab (only rejection of a junk proof is shown); verify_reputation was not run. Task accounts are never closed. Source unchanged apart from declare_id. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "register_service ApJixQ9k\u2026; create_task 41usqX6w\u2026; submit_result JAaxZ4zv\u2026; accept_result 3zZXHucK\u2026; create_task 2 5DeuukPk\u2026; submit_result 2 32kj7wP2\u2026; dispute_task 3eCiHACp\u2026; create_task 3 9uQA3evQ\u2026; expire_task by a stranger crank 35miG9tu\u2026; deactivate_service uGbnYMhf\u2026. create_task with a past deadline was rejected (DeadlineInPast). submit_result by a stranger was rejected (UnauthorizedProvider). submit_result_zk with a junk Groth16 proof was rejected (ZkProofVerificationFailed). accept_result before submission was rejected (InvalidTaskStatus). Submitting twice was rejected (InvalidTaskStatus). accept_result paying a different wallet was rejected (ConstraintRaw). expire_task before the deadline was rejected (DeadlineNotReached). deactivate_service by a stranger was rejected (ConstraintSeeds). create_task on a deactivated service was rejected (ServiceNotActive)."
+  },
+  {
+    "slug": "squads-v4",
+    "name": "Squads V4 Multisig Treasury (portfolio track)",
+    "lesson": "/dapps/squads-v4/",
+    "app": "/dapps/squads-v4/app/",
+    "fork": "https://github.com/Blockchains/v4",
+    "commit": "a7985a4541ac72e7416ce9421cc221dbd0e0d5eb",
+    "program": "TZNQuhC8PSqQY7Szj9RJsMQirVooYSahh396QNqTMGU",
+    "app_kind": "The upstream Squads public client (Blockchains/public-v4-client @ sol-college-devnet 9e17bfd) built with devnet defaults and the lab program id; independent lab deployment with freshly generated authorities (the official SQDS4ep6\u2026 program and the Squads team initializer are not reused). Track gate status: /dapps/squads-v4/.",
+    "learn": "Squads V4 multisig: a multisig PDA [\"multisig\", createKey] holds members, permissions and the threshold; funds live in vault PDAs [\"multisig\", multisig, \"vault\", index], never in the multisig account. Config transactions change members/threshold; vault transactions wrap any instruction set signed by the vault; proposals collect approvals, rejections or cancellations until the threshold is met, then any member with Execute permission executes.",
+    "source": [
+      [
+        "programs/squads_multisig_program/src/lib.rs",
+        "https://github.com/Blockchains/v4/blob/a7985a4541ac72e7416ce9421cc221dbd0e0d5eb/programs/squads_multisig_program/src/lib.rs"
+      ],
+      [
+        "programs/squads_multisig_program/src/instructions/proposal_vote.rs",
+        "https://github.com/Blockchains/v4/blob/a7985a4541ac72e7416ce9421cc221dbd0e0d5eb/programs/squads_multisig_program/src/instructions/proposal_vote.rs"
+      ],
+      [
+        "client src/components/SendSolButton.tsx",
+        "https://github.com/Blockchains/public-v4-client/blob/9e17bfd4fda50205cf600f78c3f9db7b8c369cc6/src/components/SendSolButton.tsx"
+      ]
+    ],
+    "flow": "tests/devnet/squads-v4.mjs",
+    "log": "tests/devnet/logs/squads-v4-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy lab program TZNQuhC8\u2026 (fresh upgrade authority)",
+        "4uT561vqqMZcZR5ywNrRpLXXdRTBmWHBFJj9qpoxT9inF3GtkvqTf3TbowAjSQmn92SuYmxzdj9uces7Pw87TpTv"
+      ],
+      [
+        "program_config_init by the lab initializer",
+        "2r6bQqMwwcXSYMymcFzVtmyAkfDDmHXnc9iStdcP61bS7SUyyufzfZfZbw6tx5qkVpQoMSRizrko9DoTSbTkKugf"
+      ],
+      [
+        "multisig_create_v2: members A,B (all permissions), threshold 1",
+        "5wxnyqudZdC4k4Lwxay1y24jekZ6Jy9wVPxo22KjYADjGKyydZ8Y8psXjWGwtMbLWcPqqXsuR4GHEFWuH2JesB89"
+      ],
+      [
+        "config_transaction_create #1: AddMember C + ChangeThreshold 2",
+        "fQC3wF2aPHYxyTHuJuTXFeqozLFfzERbKbT2GX2bApD8RBxw8pJcZFogCy2SB2DvBwCRDTxwzJL7WiDHE3vPVNV"
+      ],
+      [
+        "proposal_create #1 by A",
+        "Wh7e5R2fzcffKc2inoaUk76w3byYL8gC4g2g1MowS95f73nBV85C17Yv4T4ipomf7K9ff1Bb7SHT3EoMLiMq5ZK"
+      ],
+      [
+        "proposal_approve #1 by A",
+        "TNFUPzHuccYQ8spQqmH3SpHwrD9MDHa37thQMeHbPhaB2RzHCRxvhZnm84tJoHczriWaHqzHRhGhwAE1bGgwRT3"
+      ],
+      [
+        "config_transaction_execute #1 by A",
+        "3dLL3gfdb9u7pWB5W7nKtUpUCnY2RfXUBemgYPwqZCWuQyXfeQNqjGQX7ByZ3WmJ3KtzpC39FShXHvNpSsGmyVPz"
+      ],
+      [
+        "fund vault PDA index 0 (not the multisig account)",
+        "3o8ibyXymzp8ndJZYWEmcp1Koy1skYP56LEU1LDWqa3cdpU6AsqqJuCJhxw2tQwqCrZJhNGrtYctZRa8wws65apJ"
+      ],
+      [
+        "vault_transaction_create #2: vault -> recipient 0.01 SOL",
+        "2ogFJBZQFq7aMZzJbsuPM9ERi2KB7AvqUvLwjcEqgzVCJQRD8AVRBky1hufVjQ94PwJaLZTr6mn4YgopxJyk17kA"
+      ],
+      [
+        "proposal_create #2 by A",
+        "5TZTZ9uz39DQkcYnirDboAMfcdUiriYCW5KGrNtLuDwSZb244X5NiiLe2CFLZdHahcZR5FWZ7LqL8xrekk7DyeZQ"
+      ],
+      [
+        "proposal_approve #2 by A (1 of 2)",
+        "9wMq3Lxb8VkoHc9bnFJrBUKTZskdx8vkvcQCDYnrJ5rV6XmQeHq8akFf3xJnAT1ViWKkVXHihxGNRbTF4gFzHgA"
+      ],
+      [
+        "proposal_approve #2 by B (2 of 2)",
+        "5hAUevAUREpRVbL49rhRiQQkE864F3Et2zAjJz7nmuz7LUoCyPZiTxdZBw2HPxWDve6qw1AbbhLtCzUx6Sy5dRPJ"
+      ],
+      [
+        "vault_transaction_execute #2 by C",
+        "JHJAESgoN7ETWNpnrsf8bLFewrndWUnHvtx8up9vydCLWXAYHANRQkyPvQbBY58uByJAUpLcZ2hUB6W5jy15gQz"
+      ],
+      [
+        "vault_transaction_create #3: second transfer",
+        "5Zc4dAvpsbzhzwd6yDMkivkx95hwJdECLXdFbFhonGojr1PdBhrjrLX55hU8E82Nx8CrtcPds8ijRiabrv9wWuzd"
+      ],
+      [
+        "proposal_create #3 by B",
+        "7CCETpGmW1RQ67jQahy3QAuP1qFtBNvTfmUT2NbsFaU9MUPAmmKFyTAnynREE1BcM6yFnLSytAszkfqyj7BsddY"
+      ],
+      [
+        "proposal_reject #3 by A",
+        "46CMMwdngfg5E1D1fMtv7q4LJwbonU8q5V3ApdwzmER8nd9AD9nWeEy1bHaWVSeMmbSZUkPEZV5JFTrdL5qzyqGQ"
+      ],
+      [
+        "proposal_reject #3 by C (rejection cutoff reached)",
+        "QYj6qeJAMFNWh5Scjt2EbYwVGF9aKPMFJvM13FncRDZHuvchrTotpGvqRA3APwd1msB7YUcy5DZxv37Ea2EByLP"
+      ],
+      [
+        "vault_transaction_create #4: third transfer",
+        "5ACDBhaZggVpTtwRDKAVsMipFJLb5jgs3W5rNpuYkmU3qd2iXjwYFaesYic72u1oTf7zTHgLAwoyAQL16wVE19t3"
+      ],
+      [
+        "proposal_create #4 by C",
+        "BTqx3ikrABKjRGqgprUSRcnuwPzhHQk9aPuDZNBxFiGkKbxdJYQwxid4iBKoXoNgGLekejW4N2PU5C4sg1Y3xnR"
+      ],
+      [
+        "proposal_approve #4 by A",
+        "4K5ZvinUz9ExF8HamKxySD7U48nKfzHEqK2FCtevTAKnbxyUEmccbAYb4hLWAG1Lyf8tySbMJTw8vZEyhbu6kEUH"
+      ],
+      [
+        "proposal_approve #4 by C (approved)",
+        "3ojzx4urn8LqigauzGTcZCC8bWHquSuGjby6rv7rJFcCkgjEJPgdYZfCJgv9omZ9dTcRcic3FVqaFYDebWrYrHBH"
+      ],
+      [
+        "proposal_cancel #4 by A",
+        "61c6U5JCNoYtKPAUykmEUh7Wmx1XkW8kJ2G5uA7PuaU4VfbzaCBKEcJoCrsVMsQFXfW5A4aXrd3mAyxdSXhNqcnU"
+      ],
+      [
+        "proposal_cancel #4 by B (cancelled)",
+        "uW6hpVoLdPwr1xzSy4jBSzMzMks8JrSnUR97GjoJsKcDZ7bqC8Wt4Mm7BsvUS313RG89rZsdaEdGomEjsdJdTHP"
+      ],
+      [
+        "UI (browser, member A): Send SOL proposal 0.005 SOL",
+        "3p8bdndZfkqFkNpCUcu4FUV7xHUre2kPWJRpw4RRemrgArnR3J364KTjagkqvVpMnWtvKinLfpWYB2cUqsVHy3P2"
+      ],
+      [
+        "UI: approve by member A",
+        "5T4omQSw9vu67U6sErJn2i3JF3SVxnSRtezYvasQLFWCwvq1xy4EGr9rUgNE9cWQWNF4VtLhzZjraGRXPboUqj8W"
+      ],
+      [
+        "UI: approve by member B",
+        "2tjTdPiSBFb65ja3jWyfn5k28VmuXzFfSoBNDnpEivnXBfM3zB6gakwL72THQ3j6PALELXHp9onUdERL8STEwXCR"
+      ],
+      [
+        "UI: execute by member B (recipient received exactly 0.005 SOL)",
+        "54pCRtv2SDVpuygDC9jKfT6rqjK2iC8bZTFSQA92JSUYdXBLCCS1MJGc2Tx6zvt6sMSHCAz7YrFrX45BoqiwgPbg"
+      ],
+      [
+        "UI regression: propose 0.067 SOL (failed before the float fix)",
+        "4eyLsMTM9C5u9VRxCU1Z5QFt7d9y2eWSwhABXQ1mL16R554YVC7QAywTtc7kdJCeirs9cTBbFVo1BCmJibZLoCzy"
+      ],
+      [
+        "Recovery: vault topped up after an under-funded execute failed",
+        "5XdPMKB9LyDo6jb7tiBjsBty1qETVdjVEG5fqnYM9aXKzJXNW3NkmNE1vfSEuw4hkmSEs241mLCwX5sBbFHBhzjR"
+      ],
+      [
+        "Recovery: UI execute by member B succeeds (0.067 SOL delivered)",
+        "5WGs8DiMj3vBwad8q5t9niNvzfsybKiGYwamwAYrpWGG8nVPMtv3J8nchfywp6LxagiW567TXffx36ogMeauRSf"
+      ]
+    ],
+    "negative": [
+      "program_config_init by a key other than the lab initializer: rejected (Unauthorized).",
+      "vault_transaction_create by a non-member: rejected (NotAMember).",
+      "proposal_approve by a non-member: rejected (NotAMember).",
+      "vault_transaction_execute with 1 of 2 approvals: rejected (InvalidProposalStatus).",
+      "proposal_approve twice by the same member: rejected (AlreadyApproved).",
+      "vault_transaction_execute by a non-member after approval: rejected (NotAMember).",
+      "vault_transaction_execute a second time: rejected (InvalidProposalStatus).",
+      "Execute after the proposal was rejected by 2 members: rejected (InvalidProposalStatus).",
+      "Execute after an approved proposal was cancelled by 2 members: rejected (InvalidProposalStatus); vault unchanged.",
+      "UI: an outsider wallet sees Send SOL disabled.",
+      "UI: executing a 0.067 SOL transfer from a 0.015 SOL vault failed on-chain (5bYiCWhx\u2026, insufficient lamports); nothing moved until the vault was topped up."
+    ],
+    "ui_check": "Driven in headless Chromium with an injected Wallet Standard test wallet (signing on the box): outsider sees Send SOL disabled; member A proposed and approved; member B approved and executed; recipient balance checked on-chain.",
+    "limits": "Upstream Anchor test suite not run in this pass. Modify/Contribute gates not assessed; no upstream PRs. Program logic unchanged apart from declare_id and the program-config initializer key.",
+    "functional": "full",
+    "functional_evidence": "Create, config (add member, threshold 2), fund vault, propose, approve, execute and history completed on devnet, via script and in the hosted client."
   }
 ]
