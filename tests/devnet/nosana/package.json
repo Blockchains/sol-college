@@ -1,0 +1,14 @@
+{
+  "name": "nosana-lab",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@nosana/kit": "2.24.5",
+    "@solana/kit": "8.3.0",
+    "@solana/spl-token": "0.4.14",
+    "@solana/web3.js": "1.98.4"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

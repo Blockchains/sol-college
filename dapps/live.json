@@ -6110,5 +6110,162 @@
     "limits": "Lab fix: upstream distribute_prize debits the System-owned treasury PDA directly, which the runtime refuses; the lab pays through a System CPI signed with the treasury seeds. Unfixed upstream flaws: profiles can be created for any wallet without its signature; complete_project never releases the project escrow (1,000,000 lamports stay locked); gig prize_pool moves no funds; leave_guild adds reputation_earned, which nothing sets. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_agent_profile A 2UuTpZYv\u2026; initialize_agent_profile B 2ctwk6Gb\u2026; profile for a non-signer PLAELfQG\u2026; update_agent_profile 4koKkxdn\u2026; create_guild 48HYNReY\u2026; create_guild 2cbF1upA\u2026; join_guild 2jZh3UaZ\u2026; endorse_agent 44rvS1nr\u2026; create_project 4nEWWPSe\u2026; complete_project 5uphhTVU\u2026; update_prize_splits 60/40 5jVjmNRk\u2026; fund treasury AttbGqc5\u2026; distribute_prize 2DyDJ7qe\u2026; create_gig 3DHsvT63\u2026; leave_guild 2Hz9tPgg\u2026; close_guild 36F4Fn4J\u2026. A 33-character handle was rejected (HandleTooLong). update_agent_profile by a stranger was rejected (ConstraintSeeds). Joining an invite-only guild was rejected (GuildIsInviteOnly). Joining twice failed (account already in use). Self-endorsement was rejected (CannotEndorseSelf). A second endorsement for the same skill failed (account already in use). create_project by a stranger was rejected (NotGuildAuthority). Completing twice was rejected (ProjectAlreadyCompleted). Splits summing to 90 were rejected (InvalidPrizeSplits). update_prize_splits by a stranger was rejected (ConstraintHasOne). distribute_prize on an empty treasury was rejected (NoPrizeToDistribute). A wrong recipient account was rejected (InvalidRecipientAccount). close_guild with members was rejected (GuildHasMembers). close_guild by a stranger was rejected (NotGuildAuthority)."
+  },
+  {
+    "slug": "nosana",
+    "name": "Nosana GPU Job Market (portfolio track, campus worker)",
+    "lesson": "/dapps/nosana/",
+    "app": "/dapps/nosana/",
+    "fork": "https://github.com/Blockchains/nosana-programs",
+    "commit": "2983a6dd151e04c23ed81a8b484ec13b35ebc86e",
+    "program": "4nFPjT5MgCtYheCHGACin9S8N56Cg1RTBAhFQv43Ybxb",
+    "app_kind": "No browser app. The track page shows gate status and devnet evidence for Nosana's jobs/staking/rewards programs deployed as independent lab programs with a practice NOS token, operated by a campus worker (@nosana/kit 2.24.5 + the official nosana-node executor in podman + a CID-checked lab content store). The official node daemon needs Nosana's private host-manager and the dashboard needs api.nosana.com, so neither is hosted.",
+    "learn": "Nosana jobs: a client lists a job (job definition by IPFS CID, deposit = price x timeout in the market vault); a staked node claims it with work (creating a run account), runs the container, and finish posts the result CID and pays the node for the time used while refunding the rest. quit returns a claimed job (state STOPPED) and the poster can recover the deposit.",
+    "source": [
+      [
+        "programs/nosana-jobs/src/instructions/finish.rs",
+        "https://github.com/Blockchains/nosana-programs/blob/2983a6dd151e04c23ed81a8b484ec13b35ebc86e/programs/nosana-jobs/src/instructions/finish.rs"
+      ],
+      [
+        "programs/nosana-jobs/src/instructions/recover.rs",
+        "https://github.com/Blockchains/nosana-programs/blob/2983a6dd151e04c23ed81a8b484ec13b35ebc86e/programs/nosana-jobs/src/instructions/recover.rs"
+      ],
+      [
+        "sol-college/lab/lifecycle.mjs",
+        "https://github.com/Blockchains/nosana-programs/blob/2983a6dd151e04c23ed81a8b484ec13b35ebc86e/sol-college/lab/lifecycle.mjs"
+      ]
+    ],
+    "flow": "tests/devnet/nosana/lifecycle.mjs",
+    "log": "tests/devnet/logs/nosana-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy lab nosana-staking qqA8dv9j\u2026 (fresh upgrade authority)",
+        "55tdRghtk6KPLYeTfRb2crtZQnB8GH7isx7RKibUeU9vvTxZ8gcLMZZYBtpjJ3Y6aAPbbfFYiZ8XYbvk11wEUhW7"
+      ],
+      [
+        "Deploy lab nosana-rewards EWdwdb7J\u2026",
+        "4RGXbKi7ozKirG62y7qApBUj1AFTmbThVYiZKqnrgvf1fBTtscWJt8HdSFRatj3fz2JT98KcT1jB8jPEzzkun6VQ"
+      ],
+      [
+        "Deploy lab nosana-jobs 4nFPjT5M\u2026",
+        "W1vDmGaQdcQ8tgo5JjaB21ZKfXU92g5G2BfVHZFUyvuUmxh87bRekFn9PuEm7cjoZ1LHK2Nz1RHhRLDPrc6Nsrj"
+      ],
+      [
+        "fund lab authority 0.1 SOL",
+        "5saMMmfVtDYHmRQvzLr1FsQRZdQ7EnAiyrobVY1CBCfUkbS2iXFKwwruQ38DzPakQLcUVkckF5git6mHMtW1K1Fd"
+      ],
+      [
+        "fund practice node 0.05 SOL",
+        "4Qd52FK6wvcAHG8UH2kufKWs9hPFdXGoxhEH85GbuqNa2kFVnsmRKzRfAgz2wuGDmTSYWMzHXyGYUSJ8gdWYZtw9"
+      ],
+      [
+        "fund practice client 0.05 SOL",
+        "4oMRrTXmbdT2wDCfouwkN4ZJbiXDHCZiUeMZ2KATjjq8veqvsyHWHGtynMnw1MTB5LSMytvo8i29EFTY7XrzHDd2"
+      ],
+      [
+        "fund outsider 0.02 SOL",
+        "5VjZHrX9hC1qJcdGEspHPDUanFftnMqL5ugc7Tek5rGyFyxpMrsE74vG8qxpiiWapKocW1JRzcbty5JXcHhKbHyp"
+      ],
+      [
+        "mint 1000 practice NOS to practice node",
+        "4Z1Y7KEpRKiKkBMALmjxceufu9WiVFZdd9hi2jMnSvApxnf3AENVF1hF2VgfZL2NALzdUTB8cGrAYCPvTQQX4u22"
+      ],
+      [
+        "mint 10000 practice NOS to practice client",
+        "44MsKosBLdKmwWLPMoofaFSJSN1GJPfbM2macBa3H1wec9CTaTxfnK8Qk4C1tggz9v8iMG9pMRpiKpNpP6GXqLiC"
+      ],
+      [
+        "mint 10 practice NOS to outsider",
+        "5m6ShAA1YXSbnJjxXEjBR3u2nJ3fLpzKHyhQ43M1RXmb1CyZcKhLKEFwTo3DWmbvfUHwxiaoSYdcW326v2y4N1X3"
+      ],
+      [
+        "staking init (settings -> lab authority, lab token account)",
+        "2rpbeqDCrJ7yoCYk3du6ZpBgwqdXpDzjGaF4z1Tmsn6WDxg9DXU16M7v8eZNVMJKUVWkZqWRGHVtjAsEHd24hpiG"
+      ],
+      [
+        "rewards init (reflection + vault for practice NOS)",
+        "5vyip8d2EvdAd7LvKC2zoRviawA3EcjX2v9HvE1tqLJxC5wxEBPDR9qwyKNDPLgqvzPJTozU4X6HqED59JyFughu"
+      ],
+      [
+        "practice node stakes 100 practice NOS for 14 days",
+        "4LK7mpcBE232Aq4J7qL5SvHCLVzHKCBg572Us297wHX85tgCG1fC5V4Y8JfcCkckdDgiCLF3oHek3pQmMgbuBshR"
+      ],
+      [
+        "jobs open market (practice NOS, price 1 base unit/s, timeout 600 s)",
+        "5QnLKVWMH4vPRNzHj3iCU4gFT12XPyMru2d2ikSBn6zNdPrAQ3qkunWn7V5d5UcuA9tn2v3JV1pnaWtBAt6jpBhx"
+      ],
+      [
+        "stop: node leaves the node queue",
+        "38PckXd7n3D85WfFoNdgNZnnUah6MQ4ETHupYkZcRZMjueBHfYqraWn54fZDmknzJue1eEeAK9C1CNR83CdhoC3N"
+      ],
+      [
+        "recover deposit of leftover stopped job 6kKgpHhqKhBfMc2FANiXTxXx5pn5yjbvZWohdULa6j9m",
+        "5f6VBKwiMWQgZD6Ezqd45G12adr6UbJNN1f9Y2c3r3RpwZQNbTf7HuTnpWMBohrvJ5ta28sAuVe1dGY9SzsjXFpR"
+      ],
+      [
+        "list job \"deterministic sha256\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)",
+        "2ihciBHFi1kstukz5RYvWQZgNCGBhswNyS9t4wNwjBiYDiESFJdbkGSQEz66VGiaXCgSrgze6uhcPdkMJzdCFb65"
+      ],
+      [
+        "work: practice node claims the deterministic job",
+        "3CwcMWoUTpujgZUVca9EC5AFR6on8QFY25L7DQM7iJ1khqtmHrdNrMH9PGQmbDoKLkE7PADQshXitz5wCEo1HwBq"
+      ],
+      [
+        "finish: node posts the result CID Qmckr7FUFoocJiPUcdULYVVAQo7XBRFkLqTofLwwnXgLvV",
+        "zQvF8VTugaWVyd21Yb5WFvDohDY62q4y7NWVeqcePz9Bo9EFDwMRzDRWheNEYN6eGvG5gbUEQDaD3R26YoC2uyk"
+      ],
+      [
+        "list job \"fails on purpose\" (definition QmW5wgPcwtnKSQM9vaQiewaK1wfGMyxKd1j68wVExAWR7A)",
+        "5FRDu8ip3Kwt4XfbMfiDX1RnW8pt8rqMrhACvuaS9bmCcFEc2XQo88oGv5gcCt7Ek8whgbWfBto2C1EY2TeLZYLN"
+      ],
+      [
+        "work: practice node claims the failing job",
+        "31hmavCey2Q9RWf3n7cS3yngGEtfXkG413idSES95RsRnpkSTWMuH8rDxRL4vGJX8RQNAJksuictBNK238189n6c"
+      ],
+      [
+        "finish: node posts the failed result CID QmQDZFmZ8fvNrsJBUPKumKoEoemazMDgzQcCqyYjUyY8Em",
+        "5jtMHHxZf3Yase5reoAx59fw5wkazYbsEA4LXQ5pyJ1E6yNKisev1vsLL2jA5Qi3hywBuntadVqLtUhiyKSPFk2R"
+      ],
+      [
+        "list job \"deterministic sha256 (recovery)\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)",
+        "4d3miAefJgkggBg7VHcZ21eJ8FKe6WGe3sNEANx9NePCAhmg3As2Zwsruf8qZ6HpoCdueXK6EVz2Y1MDMKFynXJq"
+      ],
+      [
+        "work: practice node claims the recovery job",
+        "YwuvsPBX1xYJeSUPQDCjU3BpLshQfLd4adoRW5vz3rzh4mYbnmZ6K9JRRYxqo4wEhkopUnvBg36bE2B8XfQbbDE"
+      ],
+      [
+        "quit: node gives the job back before running it",
+        "66xNn1ygbsJfSL21Q9BDF4BAWN8NiAyd31vUvYvhPkePmLTLevePj6SatVFj45nne9Me2jjAShPTD5BQfoBUvoX5"
+      ],
+      [
+        "recover: client takes back the stopped job deposit",
+        "5TYVzcfbsrF7ZravpPFZWe8hSc4uxfSjQMniaWNoFXJaTuFBmHRNWPCqK65NKC9TwUWB2vpu9e5mjdzuQXwNBMGj"
+      ],
+      [
+        "list job \"deterministic sha256 (re-listed)\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)",
+        "2XARLY9iebx4FTDX8fh9hFbgKvsYC9GEiTnp39RU2jqFzAfJ3JNH88ihG8477ctWB256SWAqUiyEsWmmzo9YZt9V"
+      ],
+      [
+        "work: practice node claims the re-listed job",
+        "5tdtkLoVYa4AZYz1KrDzUZPoGNq7bn9CHzWmtszjbKB3md487Jdr9RJ5x8sHk6jkcQr6Y1GSbKXzCVA7NKmi4eZ5"
+      ],
+      [
+        "finish: re-listed job",
+        "2XpBMEGc9Q4A1P6LU559JoQkagwNDeTt3ux5qAjbCUbAfA4DHzFHUnGH8rB1S6tgqE7Hy4seUFGpcHRcZhAcgfbH"
+      ]
+    ],
+    "negative": [
+      "work by a wallet with no stake account is rejected (AccountNotInitialized)",
+      "finish by a wallet that is not the assigned node is rejected (Unauthorized)",
+      "finish a completed job again is rejected (kit guard: the run account was closed by finish) (No job run account found)",
+      "finish replayed on-chain against the closed run account is rejected (AccountNotInitialized)",
+      "recover by a wallet that did not post the job is rejected (Unauthorized)"
+    ],
+    "ui_check": "No browser UI: operated from scripts on devnet (kit for the chain, nosana-node run for execution).",
+    "limits": "Official nosana-node start is blocked by Nosana's private host-manager; dashboard needs api.nosana.com; kit and node have no LICENSE file. Upstream Anchor test suite not run. No upstream PRs.",
+    "functional": "full",
+    "functional_evidence": "Job listed, claimed, run in a container, result CID posted and read back as COMPLETED; a failing job diagnosed from chain plus result file; a quit job recovered and re-run. All on devnet via scripts; there is no browser app."
   }
 ]

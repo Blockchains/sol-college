@@ -1,0 +1,1 @@
+{"version":"0.1","type":"container","meta":{"trigger":"cli","lab":"sol-college-nosana-wave1"},"ops":[{"type":"container/run","id":"fails-on-purpose","args":{"image":"docker.io/library/busybox:1.36","entrypoint":["sh","-c"],"cmd":["echo 'about to fail'; echo 'lab error: missing input file /data/in.csv' >&2; exit 3"]}}]}

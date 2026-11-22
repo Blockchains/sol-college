@@ -1,0 +1,45 @@
+{"t":"2026-11-22T19:21:38.119Z","step":"fund lab authority 0.1 SOL","ok":true,"sig":"5saMMmfVtDYHmRQvzLr1FsQRZdQ7EnAiyrobVY1CBCfUkbS2iXFKwwruQ38DzPakQLcUVkckF5git6mHMtW1K1Fd"}
+{"t":"2026-11-22T19:21:39.011Z","step":"fund practice node 0.05 SOL","ok":true,"sig":"4Qd52FK6wvcAHG8UH2kufKWs9hPFdXGoxhEH85GbuqNa2kFVnsmRKzRfAgz2wuGDmTSYWMzHXyGYUSJ8gdWYZtw9"}
+{"t":"2026-11-22T19:21:39.992Z","step":"fund practice client 0.05 SOL","ok":true,"sig":"4oMRrTXmbdT2wDCfouwkN4ZJbiXDHCZiUeMZ2KATjjq8veqvsyHWHGtynMnw1MTB5LSMytvo8i29EFTY7XrzHDd2"}
+{"t":"2026-11-22T19:21:40.595Z","step":"fund outsider 0.02 SOL","ok":true,"sig":"5VjZHrX9hC1qJcdGEspHPDUanFftnMqL5ugc7Tek5rGyFyxpMrsE74vG8qxpiiWapKocW1JRzcbty5JXcHhKbHyp"}
+{"t":"2026-11-22T19:21:41.366Z","step":"create practice NOS mint (6 decimals)","ok":true,"mint":"GKkroxnqiJvxyVUXKu9BAEttwGkZH5zSn8zvZ5b5fPt7"}
+{"t":"2026-11-22T19:21:44.173Z","step":"mint 1000 practice NOS to practice node","ok":true,"sig":"4Z1Y7KEpRKiKkBMALmjxceufu9WiVFZdd9hi2jMnSvApxnf3AENVF1hF2VgfZL2NALzdUTB8cGrAYCPvTQQX4u22"}
+{"t":"2026-11-22T19:21:46.017Z","step":"mint 10000 practice NOS to practice client","ok":true,"sig":"44MsKosBLdKmwWLPMoofaFSJSN1GJPfbM2macBa3H1wec9CTaTxfnK8Qk4C1tggz9v8iMG9pMRpiKpNpP6GXqLiC"}
+{"t":"2026-11-22T19:21:47.558Z","step":"mint 10 practice NOS to outsider","ok":true,"sig":"5m6ShAA1YXSbnJjxXEjBR3u2nJ3fLpzKHyhQ43M1RXmb1CyZcKhLKEFwTo3DWmbvfUHwxiaoSYdcW326v2y4N1X3"}
+{"t":"2026-11-22T19:21:48.533Z","step":"staking init (settings -> lab authority, lab token account)","ok":true,"sig":"2rpbeqDCrJ7yoCYk3du6ZpBgwqdXpDzjGaF4z1Tmsn6WDxg9DXU16M7v8eZNVMJKUVWkZqWRGHVtjAsEHd24hpiG"}
+{"t":"2026-11-22T19:21:49.508Z","step":"rewards init (reflection + vault for practice NOS)","ok":true,"sig":"5vyip8d2EvdAd7LvKC2zoRviawA3EcjX2v9HvE1tqLJxC5wxEBPDR9qwyKNDPLgqvzPJTozU4X6HqED59JyFughu"}
+{"t":"2026-11-22T19:21:49.527Z","step":"kit stake() params probe failed","err":"Error: Failed to create stake instruction: The number NaN cannot be converted to a BigInt because it is not an integer"}
+{"t":"2026-11-22T19:22:14.706Z","step":"practice node stakes 100 practice NOS for 14 days","ok":true,"sig":"4LK7mpcBE232Aq4J7qL5SvHCLVzHKCBg572Us297wHX85tgCG1fC5V4Y8JfcCkckdDgiCLF3oHek3pQmMgbuBshR"}
+{"t":"2026-11-22T19:22:14.741Z","step":"node stake","amount":"100000000","xnos":"111506849","duration":"1209600"}
+{"t":"2026-11-22T19:22:15.598Z","step":"jobs open market (practice NOS, price 1 base unit/s, timeout 600 s)","ok":true,"sig":"5QnLKVWMH4vPRNzHj3iCU4gFT12XPyMru2d2ikSBn6zNdPrAQ3qkunWn7V5d5UcuA9tn2v3JV1pnaWtBAt6jpBhx"}
+{"t":"2026-11-22T19:22:15.611Z","step":"market","market":"FxnjqvKLY7GXBrcUQwYdJ4SHNH9xq3F6BcAFMcZfx1Vh","jobPrice":"1","jobTimeout":"600","queueType":255,"authority":"sZWwGfLUsuZSYW2vkF4RFBgQRQeq1HqXzzWPDPPFWQD"}
+{"t":"2026-11-22T19:24:42.863Z","step":"stop: node leaves the node queue","ok":true,"sig":"38PckXd7n3D85WfFoNdgNZnnUah6MQ4ETHupYkZcRZMjueBHfYqraWn54fZDmknzJue1eEeAK9C1CNR83CdhoC3N"}
+{"t":"2026-11-22T19:24:43.827Z","step":"recover deposit of leftover stopped job 6kKgpHhqKhBfMc2FANiXTxXx5pn5yjbvZWohdULa6j9m","ok":true,"sig":"5f6VBKwiMWQgZD6Ezqd45G12adr6UbJNN1f9Y2c3r3RpwZQNbTf7HuTnpWMBohrvJ5ta28sAuVe1dGY9SzsjXFpR"}
+{"t":"2026-11-22T19:24:44.756Z","step":"list job \"deterministic sha256\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)","ok":true,"sig":"2ihciBHFi1kstukz5RYvWQZgNCGBhswNyS9t4wNwjBiYDiESFJdbkGSQEz66VGiaXCgSrgze6uhcPdkMJzdCFb65"}
+{"t":"2026-11-22T19:24:44.783Z","step":"work by a wallet with no stake account is rejected","rejected":true,"error":"AccountNotInitialized"}
+{"t":"2026-11-22T19:24:45.725Z","step":"work: practice node claims the deterministic job","ok":true,"sig":"3CwcMWoUTpujgZUVca9EC5AFR6on8QFY25L7DQM7iJ1khqtmHrdNrMH9PGQmbDoKLkE7PADQshXitz5wCEo1HwBq"}
+{"t":"2026-11-22T19:24:47.292Z","step":"executor ran deterministic job","status":"success","resultCid":"Qmckr7FUFoocJiPUcdULYVVAQo7XBRFkLqTofLwwnXgLvV","diagnosis":{"kind":"success","detail":"1 op(s) succeeded"}}
+{"t":"2026-11-22T19:24:47.390Z","step":"finish by a wallet that is not the assigned node is rejected","rejected":true,"error":"Unauthorized"}
+{"t":"2026-11-22T19:24:48.261Z","step":"finish: node posts the result CID Qmckr7FUFoocJiPUcdULYVVAQo7XBRFkLqTofLwwnXgLvV","ok":true,"sig":"zQvF8VTugaWVyd21Yb5WFvDohDY62q4y7NWVeqcePz9Bo9EFDwMRzDRWheNEYN6eGvG5gbUEQDaD3R26YoC2uyk"}
+{"t":"2026-11-22T19:24:48.273Z","step":"client reads job A","state":2,"ipfsResult":"Qmckr7FUFoocJiPUcdULYVVAQo7XBRFkLqTofLwwnXgLvV","price":"1","timeStart":"1795375484","timeEnd":"1795375487"}
+{"t":"2026-11-22T19:24:48.328Z","step":"finish a completed job again is rejected (kit guard: the run account was closed by finish)","rejected":true,"error":"No job run account found"}
+{"t":"2026-11-22T19:24:48.382Z","step":"finish replayed on-chain against the closed run account is rejected","rejected":true,"error":"AccountNotInitialized"}
+{"t":"2026-11-22T19:24:48.404Z","step":"practice NOS balances after job A","node_delta":"3","client_delta":"-3"}
+{"t":"2026-11-22T19:24:49.225Z","step":"list job \"fails on purpose\" (definition QmW5wgPcwtnKSQM9vaQiewaK1wfGMyxKd1j68wVExAWR7A)","ok":true,"sig":"5FRDu8ip3Kwt4XfbMfiDX1RnW8pt8rqMrhACvuaS9bmCcFEc2XQo88oGv5gcCt7Ek8whgbWfBto2C1EY2TeLZYLN"}
+{"t":"2026-11-22T19:24:49.995Z","step":"work: practice node claims the failing job","ok":true,"sig":"31hmavCey2Q9RWf3n7cS3yngGEtfXkG413idSES95RsRnpkSTWMuH8rDxRL4vGJX8RQNAJksuictBNK238189n6c"}
+{"t":"2026-11-22T19:24:51.685Z","step":"executor ran failing job","status":"failed","resultCid":"QmQDZFmZ8fvNrsJBUPKumKoEoemazMDgzQcCqyYjUyY8Em","diagnosis":[{"kind":"execution failure","op":"fails-on-purpose","exitCode":3,"oomKilled":false,"stderr":["lab error: missing input file /data/in.csv"]}]}
+{"t":"2026-11-22T19:24:52.712Z","step":"finish: node posts the failed result CID QmQDZFmZ8fvNrsJBUPKumKoEoemazMDgzQcCqyYjUyY8Em","ok":true,"sig":"5jtMHHxZf3Yase5reoAx59fw5wkazYbsEA4LXQ5pyJ1E6yNKisev1vsLL2jA5Qi3hywBuntadVqLtUhiyKSPFk2R"}
+{"t":"2026-11-22T19:24:52.736Z","step":"client diagnoses job B from its on-chain result CID","state":2,"ipfsResult":"QmQDZFmZ8fvNrsJBUPKumKoEoemazMDgzQcCqyYjUyY8Em","diagnosis":[{"kind":"execution failure","op":"fails-on-purpose","exitCode":3,"oomKilled":false,"stderr":["lab error: missing input file /data/in.csv"]}]}
+{"t":"2026-11-22T19:24:53.311Z","step":"list job \"deterministic sha256 (recovery)\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)","ok":true,"sig":"4d3miAefJgkggBg7VHcZ21eJ8FKe6WGe3sNEANx9NePCAhmg3As2Zwsruf8qZ6HpoCdueXK6EVz2Y1MDMKFynXJq"}
+{"t":"2026-11-22T19:24:54.238Z","step":"work: practice node claims the recovery job","ok":true,"sig":"YwuvsPBX1xYJeSUPQDCjU3BpLshQfLd4adoRW5vz3rzh4mYbnmZ6K9JRRYxqo4wEhkopUnvBg36bE2B8XfQbbDE"}
+{"t":"2026-11-22T19:24:55.213Z","step":"quit: node gives the job back before running it","ok":true,"sig":"66xNn1ygbsJfSL21Q9BDF4BAWN8NiAyd31vUvYvhPkePmLTLevePj6SatVFj45nne9Me2jjAShPTD5BQfoBUvoX5"}
+{"t":"2026-11-22T19:24:55.224Z","step":"job after quit","state":3}
+{"t":"2026-11-22T19:24:55.309Z","step":"recover by a wallet that did not post the job is rejected","rejected":true,"error":"Unauthorized"}
+{"t":"2026-11-22T19:24:56.306Z","step":"recover: client takes back the stopped job deposit","ok":true,"sig":"5TYVzcfbsrF7ZravpPFZWe8hSc4uxfSjQMniaWNoFXJaTuFBmHRNWPCqK65NKC9TwUWB2vpu9e5mjdzuQXwNBMGj"}
+{"t":"2026-11-22T19:24:56.328Z","step":"deposit refunded to client","delta":"600"}
+{"t":"2026-11-22T19:24:57.095Z","step":"list job \"deterministic sha256 (re-listed)\" (definition QmSjSUqmtMWZVXfJww3gw9ypVmbQHpXGRhs9KrT1FyDLvr)","ok":true,"sig":"2XARLY9iebx4FTDX8fh9hFbgKvsYC9GEiTnp39RU2jqFzAfJ3JNH88ihG8477ctWB256SWAqUiyEsWmmzo9YZt9V"}
+{"t":"2026-11-22T19:24:57.660Z","step":"work: practice node claims the re-listed job","ok":true,"sig":"5tdtkLoVYa4AZYz1KrDzUZPoGNq7bn9CHzWmtszjbKB3md487Jdr9RJ5x8sHk6jkcQr6Y1GSbKXzCVA7NKmi4eZ5"}
+{"t":"2026-11-22T19:24:59.151Z","step":"executor ran re-listed job","status":"success","resultCid":"QmdtekwVPukEvJdHraNH2fWGoHZj4eGXiw4whXYGGyWgp7","diagnosis":{"kind":"success","detail":"1 op(s) succeeded"}}
+{"t":"2026-11-22T19:24:59.990Z","step":"finish: re-listed job","ok":true,"sig":"2XpBMEGc9Q4A1P6LU559JoQkagwNDeTt3ux5qAjbCUbAfA4DHzFHUnGH8rB1S6tgqE7Hy4seUFGpcHRcZhAcgfbH"}
+{"t":"2026-11-22T19:25:00.059Z","step":"market after run","queueType":255,"queueLength":0}
+{"t":"2026-11-22T19:25:00.059Z","step":"DONE"}

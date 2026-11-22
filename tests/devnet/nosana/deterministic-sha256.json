@@ -1,0 +1,20 @@
+{
+  "version": "0.1",
+  "type": "container",
+  "meta": { "trigger": "cli", "lab": "sol-college-nosana-wave1" },
+  "ops": [
+    {
+      "type": "container/run",
+      "id": "sha256-fixture",
+      "args": {
+        "image": "docker.io/library/busybox:1.36",
+        "entrypoint": ["sh", "-c"],
+        "cmd": ["echo 'sol.college nosana lab: deterministic job'; printf 'sol.college-lab-fixture-v1' | sha256sum | cut -d' ' -f1 | sed 's/^/digest=/'; seq 1 5 | awk '{s+=$1} END {print \"sum=\" s}'"]
+      },
+      "results": {
+        "digest": "digest=[0-9a-f]{64}",
+        "sum": "sum=[0-9]+"
+      }
+    }
+  ]
+}
