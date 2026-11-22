@@ -5142,5 +5142,235 @@
     "limits": "Upstream design flaw, shown on devnet: every rejection returns an error, so the transaction reverts and the reputation penalty, failure counter and automatic circuit breaker never persist (consecutive_failures stayed 0 after three rejections). Manual freeze works. One policy per owner applies to all of that owner\u2019s agents, and only one receiver is allowed. Source unchanged apart from declare_id. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_agent_profile 4FHnJaic\u2026; set_policy max 5_000_000, receiver R, high-value 3_000_000 needs reputation 70 cjww1BUN\u2026; submit_transaction 1_000_000 to R V9hMejJm\u2026; freeze_agent by the owner jdtJ7kb2\u2026; unfreeze_agent by the owner 5icoYjib\u2026; submit_transaction 2_000_000 a9sFBPwF\u2026. 6_000_000 above the policy maximum was rejected (AmountExceedsMax). A transfer to a receiver other than R was rejected (ReceiverNotAllowed). 4_000_000 above the high-value tier with reputation 60 < 70 was rejected (HighValueReputationInsufficient). freeze_agent by a stranger was rejected (ConstraintHasOne). submit_transaction while frozen was rejected (AgentFrozen)."
+  },
+  {
+    "slug": "chai-sol",
+    "name": "ChAI Agent Registry and Task Escrow",
+    "lesson": "/explore/chai-sol/",
+    "app": "/dapps/chai-sol/",
+    "fork": "https://github.com/Blockchains/chai-sol",
+    "commit": "d64ce026c5e92187a150daafa8bcb4be46354459",
+    "program": "CQqgtsACsFesmbknHo4GHXLFzPDGX6mcHsGxXsrcuBzQ",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/chai-sol (unique declare_id; the official DKEbMD61\u2026 was not reused).",
+    "learn": "Registry: initialize sets the admin config PDA [\"config\"]; register_agent creates [\"agent\", wallet] with name, model and GitHub URL; the admin calls verify_agent with a 0-100 reputation score; register_agent_free lets the admin sponsor an agent and close_agent removes one. Escrow: initialize_task funds a task PDA [\"task\", poster, task_id] with the bounty; the poster can assign_agent; the worker calls submit_result (result PDA [\"result\", task]); the oracle set in [\"oracle_config\"] calls verify_result to pay or reopen; the poster can complete_task directly or cancel_task for a refund; reclaim_timeout pays the worker if the oracle is silent for 48 h.",
+    "source": [
+      [
+        "programs/escrow/src/lib.rs",
+        "https://github.com/Blockchains/chai-sol/blob/d64ce026c5e92187a150daafa8bcb4be46354459/programs/escrow/src/lib.rs"
+      ],
+      [
+        "programs/registry/src/lib.rs",
+        "https://github.com/Blockchains/chai-sol/blob/d64ce026c5e92187a150daafa8bcb4be46354459/programs/registry/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/chai-sol.mjs",
+    "log": "tests/devnet/logs/chai-sol-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy escrow as CQqgtsACsFesmbknHo4GHXLFzPDGX6mcHsGxXsrcuBzQ on devnet",
+        "4An4qFzGn3zftYEbXE5D2xcUGB3fZsqszwT3Y8pRZZMhN5t6o4aEpgM8ghjnzPTAVYFKnc1A6xa41x3qXWbMfZpk"
+      ],
+      [
+        "registry initialize (lab admin)",
+        "2NAqcwWguHbi83vXoEgDWGPEp8tTDGv8WuPBSVxhbXracMweAf15dD7eRzDuLbc7HKC6Y3M72DMHDdNRtjJJAUr7"
+      ],
+      [
+        "register_agent by the agent wallet",
+        "2RL7seMeyRyWbwJi4y9bLTn9GwE6VvpS72rrAJT6XHj3KGGz6atCyix8o4S79UaoF95jrYjnyJncPJEHhFKdbhPR"
+      ],
+      [
+        "update_agent metadata URL",
+        "2xUrFTzsMMtZoSykUNapAcfyTjrN6YUmrMcaq2kvrP6qSvdFBiZZPUcMquX1zDGydyYP8BQ4NHoXes1o8gbSb1tU"
+      ],
+      [
+        "verify_agent reputation 88 by the admin",
+        "5Uf3UhrE93KTR6DKfU4WWbsz6U2xqF4413eYdVU73RyKAA6Rrqg2iJXnY4UUC5B4ovFFJdxgE5iMMkvjUbxDzjch"
+      ],
+      [
+        "register_agent_free (admin-sponsored)",
+        "5GNkREFK9GWV5bYbgusmHuE8kdStDjPGsnRc7hCM8QcYGeRhMBpbsHJ8D7hqsfpUD1QYFCxxtsYdruFwDohUphuQ"
+      ],
+      [
+        "close_agent",
+        "52wJyJGKRWWLqUVk2E9yVwizXgNVqFKygHRccaN3oa6EdPazmdd3AU8jkfsDigmoxm4QzSS2hVzf4VLRLiwubyqw"
+      ],
+      [
+        "initialize_oracle (lab oracle)",
+        "CbBm78y7Y3NQd2Q7h8UXE9uRCBe9Dd1KKupk5v8Nnaqfwvu6fBKuwJDLi3VFTC7wq1MvGSQAojGjje6GL5b5puh"
+      ],
+      [
+        "initialize_task 1 with 3_000_000 lamports",
+        "2t5BUNkZhDtQwQ4DQ969XhPhB7RB1LXnnoMKsA9gB7rNcmFN8FRXRUG2wDh7v9B1n64os7zFgTAogr1Fn748osaC"
+      ],
+      [
+        "assign_agent",
+        "2HZGoBzwWNhZGmQ7FQyEqfFfPD8pSonuKKxeiUvcBjxwRRZT7yiqx4X5Zo4esxcYi3jctgcrMNvofsajPyJj3fEs"
+      ],
+      [
+        "submit_result",
+        "znHzSonbREuFawxJyaXzys7npGcSEpfkD4LxruJeZjxLyfvRYCHj1njH5scmLMWgZWntGX3BpSTt1JqGeEiyVNh"
+      ],
+      [
+        "verify_result passed -> agent paid 3_000_000",
+        "2DfYgbfUSHzuPgEr8DJwX2opwUULShMVFCT7rsJgcsEi4HxShttp3BkP1xioVVsxsFcLNKVJZguoLjRoKLnK1RRr"
+      ],
+      [
+        "task 2: submit then verify_result failed -> reopened",
+        "4zhn8Lrddi3putTMpYh3p8H1XM6nMS5GEcEghP5m9MQY3NUyqtQyxnxJt7XCtPks7NxbmRaChji9kJQaXcDhVSwb"
+      ],
+      [
+        "cancel_task refunds and closes the escrow",
+        "61m4V4TQ6NVAer5G1DKefVWia1bWzKFEMDLD1VMbK4w9kHgWtQVc5htZ4PcaiVXuSgT36uaTWdRiShS4CRuzTATz"
+      ],
+      [
+        "task 3: complete_task pays the assigned agent 1_000_000",
+        "5sz4ha8AdbCPk3yGxSGCf4gKPHTh1fzSwrYEWCzvA1soKZFN6sp1XpWB3GQcLPch5U4XhCJoTp8k1UGjnPn4QqBN"
+      ]
+    ],
+    "negative": [
+      "A 51-character name was rejected (NameTooLong).",
+      "verify_agent by a non-admin was rejected (Unauthorized).",
+      "A reputation score of 101 was rejected (InvalidScore).",
+      "assign_agent by a non-poster was rejected (Unauthorized).",
+      "submit_result by an unassigned wallet was rejected (WrongAgent).",
+      "reclaim_timeout before 48 h was rejected (TimeoutNotReached).",
+      "verify_result by a non-oracle was rejected (Unauthorized).",
+      "verify_result twice was rejected (AlreadySettled).",
+      "cancel_task by a stranger was rejected (Unauthorized).",
+      "complete_task to a different agent was rejected (WrongAgent).",
+      "complete_task twice was rejected (InvalidStatus)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/chai-sol.mjs.",
+    "limits": "Upstream design limits seen in the source: initialize and initialize_oracle are first-caller-wins (the lab called both); the result PDA is [\"result\", task], so after a failed verification the reopened task cannot take a new submission; cancel_task is allowed while a result is pending, so a poster can withdraw after work is submitted. reclaim_timeout success needs a 48 h wait and was not shown. The registry program is GAcuMm4XqrtJt1kystu9KW4469AxLiAn9FZVWHqEeTUM; the console drives the escrow program. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "registry initialize 2NAqcwWg\u2026; register_agent by the agent wallet 2RL7seMe\u2026; update_agent metadata URL 2xUrFTzs\u2026; verify_agent reputation 88 by the admin 5Uf3UhrE\u2026; register_agent_free 5GNkREFK\u2026; close_agent 52wJyJGK\u2026; initialize_oracle CbBm78y7\u2026; initialize_task 1 with 3_000_000 lamports 2t5BUNkZ\u2026; assign_agent 2HZGoBzw\u2026; submit_result znHzSonb\u2026; verify_result passed -> agent paid 3_000_000 2DfYgbfU\u2026; task 2: submit then verify_result failed -> reopened 4zhn8Lrd\u2026; cancel_task refunds and closes the escrow 61m4V4TQ\u2026; task 3: complete_task pays the assigned agent 1_000_000 5sz4ha8A\u2026. A 51-character name was rejected (NameTooLong). verify_agent by a non-admin was rejected (Unauthorized). A reputation score of 101 was rejected (InvalidScore). assign_agent by a non-poster was rejected (Unauthorized). submit_result by an unassigned wallet was rejected (WrongAgent). reclaim_timeout before 48 h was rejected (TimeoutNotReached). verify_result by a non-oracle was rejected (Unauthorized). verify_result twice was rejected (AlreadySettled). cancel_task by a stranger was rejected (Unauthorized). complete_task to a different agent was rejected (WrongAgent). complete_task twice was rejected (InvalidStatus).",
+    "programs": {
+      "escrow": "CQqgtsACsFesmbknHo4GHXLFzPDGX6mcHsGxXsrcuBzQ",
+      "registry": "GAcuMm4XqrtJt1kystu9KW4469AxLiAn9FZVWHqEeTUM"
+    }
+  },
+  {
+    "slug": "agent-protocol",
+    "name": "Agent Protocol Job Market",
+    "lesson": "/explore/agent-protocol/",
+    "app": "/dapps/agent-protocol/",
+    "fork": "https://github.com/Blockchains/agent-protocol",
+    "commit": "cc4ad2c32cccd8d00295e0dfa1f80c67df760728",
+    "program": "Ha3z9t7S1rH6TVsKZtuaPGY79LhzZANehhfgsGpm49GA",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agent-protocol (unique declare_id; the official GEtqx8oS\u2026 was not reused).",
+    "learn": "register_agent creates a profile PDA [\"agent\", owner] with capabilities and a price. invoke_agent escrows payment in a job PDA [\"job\", client, agent_profile, nonce], where nonce must equal the profile job counter, with an optional arbiter and fee. The agent can delegate_task part of the escrow into a child job for another agent; the parent cannot be completed while children are open. update_job marks a job completed with a result URI; release_payment pays the agent; rate_agent writes a rating PDA [\"rating\", job]. Either party can raise_dispute; the arbiter calls resolve_dispute_by_arbiter. reject_job (agent) and cancel_job (client) refund pending jobs. stake_agent / unstake_agent move SOL in a stake vault PDA [\"stake\", agent_profile] (minimum 0.1 SOL).",
+    "source": [
+      [
+        "agent-protocol/programs/agent-protocol/src/lib.rs",
+        "https://github.com/Blockchains/agent-protocol/blob/cc4ad2c32cccd8d00295e0dfa1f80c67df760728/agent-protocol/programs/agent-protocol/src/lib.rs"
+      ],
+      [
+        "instructions/delegate_task.rs",
+        "https://github.com/Blockchains/agent-protocol/blob/cc4ad2c32cccd8d00295e0dfa1f80c67df760728/agent-protocol/programs/agent-protocol/src/instructions/delegate_task.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agent-protocol.mjs",
+    "log": "tests/devnet/logs/agent-protocol-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agent-protocol as Ha3z9t7S1rH6TVsKZtuaPGY79LhzZANehhfgsGpm49GA on devnet",
+        "3RbEnx6FkT87c7Ga2apyP668oMQcGZ2aB1sjLyTRTbEpUSjS7RByjGTV6yfGjfkYjpZ3WSag5f6KEGjJenodNvM9"
+      ],
+      [
+        "register_agent A (price 1_000_000)",
+        "3siKTzHtP7tjhPZdJLxTsstfWmULjqotH1hBo3wKRRV4ZApxbmACnYhYYSRwhZmC8UqszjCxgi8MwgBMETB6RzS7"
+      ],
+      [
+        "register_agent B",
+        "TU2axHyXGkSYaTsYNNmhdJirHoB3o6ynPAfs3RFRY7eqYAquoZXbpDqodTvXZyULnQv3RNfHktpvLfRNkowRvx1"
+      ],
+      [
+        "update_agent description",
+        "RxCbAUsZycZNFm4LDumXjt4kt28w4Ri5pRnE58Q5XzQ34St6jdWz4mcd6idxfyRY3cMZuD8A8C9gMx5eiAdG9gQ"
+      ],
+      [
+        "invoke_agent job 1 with 3_000_000",
+        "55ZeGvzErg7zx1ppgFY3Vr6WFRGMKBrGCLNbYrjgL9FfJiTQi2QsUgNYEy3iSayLpfTkB9AqGmSEcCz56SbtEzbN"
+      ],
+      [
+        "delegate_task 1_000_000 from job 1 to agent B",
+        "ZVmijEDgu3SLDoV6rc4aRjdU2zTtuePJrxh6Ko3DFro1X1pvgQt2yH7XhX4mSASCJezj8ncGm8KGLWN8QDUqeg8"
+      ],
+      [
+        "update_job on the child by B",
+        "2ByUeAUnnoSEXU5x1mKrW3yBhZ4h61bXF74EhcWNW6jFVLUDvNJjuyb91pDGs9ox5iFBJJBnX3P3SSjcyW88stm5"
+      ],
+      [
+        "release_payment child by A (B paid 1_000_000)",
+        "4P87zhVo5Xn87dQtU2sVfCNoaBQCcNEgfxePVXFLNAvpMDp4xFimprsh4aA7Wt19r4UUyT9MPtk32VhSaHTNZ24m"
+      ],
+      [
+        "update_job on job 1 by A",
+        "kBgDNYbUfsuYBjuRbnZFnpKFa6U732MWC22zJ2qX4msZ3HU3TYnasY25XA9LyPpKJSJTiqXTLi6fZbzX9GsijFK"
+      ],
+      [
+        "release_payment job 1 (A paid 2_000_000)",
+        "4JwgZX4y66aTziDZNyi3UwJmwV4nkKgNki7aQ5iRcoe2PwoeTTtKBGunzfSiif932tGid75mfcikvF85gxqGdCpC"
+      ],
+      [
+        "rate_agent 5",
+        "52e7VMqjtuwMz1sBWoKrqBCk8nFVSQhJ4r5eHUTQQrfTts914tXmxYR9N4CC3nScHtxqxu48uFdXv1mVwxozXd1v"
+      ],
+      [
+        "close_job",
+        "CmX1NR8ZP7Zea5KreqxWK6th4fL6EmDrPWUEV1Vk3eo82WonG9qs4MWQL7EdZx7pxfnfKpVse9zQ4E7uUqE4Fgr"
+      ],
+      [
+        "invoke_agent job 2 with an arbiter at 500 bps",
+        "536bSWWqazrpvCNGQ5aE8XAL8HAbrzFWQN9cna8bxMeLVtuQFio5KDBs4PDKY24hWByfzNNjesWrTnCvhVCyDQj8"
+      ],
+      [
+        "raise_dispute by the client",
+        "3SGj1qDPCydahw4dH3vWi5dr7PXPNGfw8FSA3N5KX8arfNWaFiwnju9XVfvzzJgBoR1GbWXeBqACeBV2Yh8xeNgm"
+      ],
+      [
+        "resolve_dispute_by_arbiter for the agent (1_900_000 to the agent, 100_000 fee to the arbiter)",
+        "2EnW7M4BzqsQPn3vjHSuykq2uWFX6Vy1ZFk1fMPyZW377haFSSsnseXazfQXqU4YCtX8uGzP9zWJnumHyjLHP9U2"
+      ],
+      [
+        "reject_job by the agent refunds job 3",
+        "2uwR3U6r22m6mtQoCQB2nga1HpSw1WRnn59vaxgWr6GgQjwgE78PEoS7nrbQbDqqYgRVowxVBEo2edNMcjdaeEJ6"
+      ],
+      [
+        "cancel_job by the client refunds job 4",
+        "5SYCQwQLf76DcMnFQVRgYpCug3axJieb3CrRD8eouCYT6eG1A4KC1i8YHFjELv6YgxPDC4TsG9hxjh3mSr7HvTGr"
+      ],
+      [
+        "stake_agent 0.1 SOL",
+        "3ozVj4DPXbBAwVNhn7vztKS7gDKuNefB2xVCq3sLBAFRQmPzJdzAttjRYJfXxvC8QCLBWRAvn4bfA5zCcWktZwCb"
+      ],
+      [
+        "unstake_agent 0.1 SOL",
+        "33umsxRCWjR8epSoUPRSJRB1resAPQPfpHC5Vy8aMa3sac637DbMiXTFEBriRKWZPuTq9Q8WDUoEBBX8PyrN8S8"
+      ]
+    ],
+    "negative": [
+      "register_agent with an empty name was rejected (EmptyName).",
+      "invoke_agent below the agent price was rejected (InsufficientPayment).",
+      "invoke_agent with the wrong nonce was rejected (InvalidNonce).",
+      "An agent invoking itself was rejected (SelfInvocation).",
+      "An arbiter fee of 3000 bps was rejected (ArbiterFeeTooHigh).",
+      "delegate_task by a wallet that is not the job agent was rejected (Unauthorized).",
+      "Completing a parent job with an open child was rejected (UnresolvedChildren).",
+      "update_job with an empty URI was rejected (EmptyResultUri).",
+      "release_payment by a stranger was rejected (Unauthorized).",
+      "A rating of 6 was rejected (InvalidRating).",
+      "raise_dispute by a stranger was rejected (Unauthorized).",
+      "resolve_dispute_by_arbiter by a non-arbiter was rejected (InvalidArbiter).",
+      "cancel_job by a stranger was rejected (Unauthorized).",
+      "Staking below 0.1 SOL was rejected (InsufficientStake).",
+      "Unstaking more than staked was rejected (InsufficientStake)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agent-protocol.mjs.",
+    "limits": "SPL-token jobs (token_mint with remaining accounts), auto_release and resolve_dispute_by_timeout (7-day wait) and stake slashing were not exercised; only SOL jobs were run. In the arbiter dispute the agent received 1_900_000 lamports and the arbiter 100_000 (its balance rose 95_000 net of its own 5_000-lamport transaction fee). Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_agent A 3siKTzHt\u2026; register_agent B TU2axHyX\u2026; update_agent description RxCbAUsZ\u2026; invoke_agent job 1 with 3_000_000 55ZeGvzE\u2026; delegate_task 1_000_000 from job 1 to agent B ZVmijEDg\u2026; update_job on the child by B 2ByUeAUn\u2026; release_payment child by A 4P87zhVo\u2026; update_job on job 1 by A kBgDNYbU\u2026; release_payment job 1 4JwgZX4y\u2026; rate_agent 5 52e7VMqj\u2026; close_job CmX1NR8Z\u2026; invoke_agent job 2 with an arbiter at 500 bps 536bSWWq\u2026; raise_dispute by the client 3SGj1qDP\u2026; resolve_dispute_by_arbiter for the agent 2EnW7M4B\u2026; reject_job by the agent refunds job 3 2uwR3U6r\u2026; cancel_job by the client refunds job 4 5SYCQwQL\u2026; stake_agent 0.1 SOL 3ozVj4DP\u2026; unstake_agent 0.1 SOL 33umsxRC\u2026. register_agent with an empty name was rejected (EmptyName). invoke_agent below the agent price was rejected (InsufficientPayment). invoke_agent with the wrong nonce was rejected (InvalidNonce). An agent invoking itself was rejected (SelfInvocation). An arbiter fee of 3000 bps was rejected (ArbiterFeeTooHigh). delegate_task by a wallet that is not the job agent was rejected (Unauthorized). Completing a parent job with an open child was rejected (UnresolvedChildren). update_job with an empty URI was rejected (EmptyResultUri). release_payment by a stranger was rejected (Unauthorized). A rating of 6 was rejected (InvalidRating). raise_dispute by a stranger was rejected (Unauthorized). resolve_dispute_by_arbiter by a non-arbiter was rejected (InvalidArbiter). cancel_job by a stranger was rejected (Unauthorized). Staking below 0.1 SOL was rejected (InsufficientStake). Unstaking more than staked was rejected (InsufficientStake)."
   }
 ]

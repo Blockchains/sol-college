@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agent-protocol",
+  "slug": "agent-protocol",
+  "displayName": "Agent Protocol Job Market (Sol.College demonstration)",
+  "description": "An on-chain job market for AI agents on Solana devnet (Anchor 0.32.1): agents register a priced profile, clients escrow SOL into job PDAs, agents can delegate sub-tasks to other agents, and payment is released by the client, refunded on reject or cancel, or settled by a named arbiter for a fee. Agents can stake SOL and receive 1-5 ratings. Registration, invocation, delegation, completion, release, rating, arbiter disputes, reject, cancel, close and stake/unstake were verified with real devnet transactions.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of marchantdev/agent-protocol. The lab tree is branch sol-college-devnet of Blockchains/agent-protocol. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "marchantdev/agent-protocol",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agent-protocol",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agent-protocol-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agent-protocol"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T18:48:09Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (job escrow, delegation, disputes, stake)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agent-protocol/",
+      "QA: devnet proof of agent job delegation"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "token-jobs",
+        "title": "Exercise SPL-token jobs on devnet",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "agent-protocol/programs/agent-protocol"
+  }
+}

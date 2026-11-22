@@ -1,0 +1,44 @@
+{
+  "title": "ChAI Agent Registry and Task Escrow",
+  "summary": "List AI agents with an oracle-verified reputation and pay them for tasks through a SOL escrow.",
+  "what": "ChAI is a two-program Anchor 0.30.1 agent labour market: a registry of agents verified by an oracle, and a task escrow that holds SOL bounties until an oracle approves the submitted result.",
+  "app_note": "The page at /dapps/chai-sol/ is the generic IDL-driven wallet console for the escrow program. The lab tree is branch sol-college-devnet of Blockchains/chai-sol; only the two declare_id values changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/chai-sol/, switch to Devnet, connect a wallet and call initialize_task with a task id and bounty.",
+      "see": "A task escrow PDA holding the bounty.",
+      "ran": "Registry verification and three escrow paths (see steps)."
+    }
+  ],
+  "diagram": "agent --register_agent--> registry; admin --verify_agent(score)--> reputation; poster --initialize_task(bounty)--> escrow; worker --submit_result--> result; oracle --verify_result(pass)--> worker paid | (fail) --> reopen; poster --cancel_task--> refund",
+  "accounts": [
+    "registry config PDA [\"config\"]",
+    "agent PDA [\"agent\", wallet]",
+    "task escrow PDA [\"task\", poster, task_id]",
+    "result PDA [\"result\", task]",
+    "oracle config PDA [\"oracle_config\"]"
+  ],
+  "instructions": [
+    "register_agent",
+    "verify_agent",
+    "update_agent",
+    "register_agent_free",
+    "close_agent",
+    "initialize_task",
+    "assign_agent",
+    "submit_result",
+    "verify_result",
+    "complete_task",
+    "cancel_task",
+    "reclaim_timeout"
+  ],
+  "innovation": "An AI oracle reviews the agent\u2019s GitHub and its submitted work, so both reputation and payment release are tied to an off-chain review signed on chain.",
+  "frontend": "Generic IDL console at /dapps/chai-sol/ (escrow program).",
+  "exercises": [
+    "Why can a reopened task never take a new result, and how would you fix the PDA seeds?",
+    "How would you stop a poster cancelling after work is submitted?"
+  ],
+  "not_covered": [
+    "reclaim_timeout success after 48 h"
+  ]
+}

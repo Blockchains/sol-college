@@ -1,0 +1,10 @@
+{
+ "name": "Agent Protocol Job Market",
+ "fork": "https://github.com/Blockchains/agent-protocol",
+ "commit": "cc4ad2c32cccd8d00295e0dfa1f80c67df760728",
+ "lesson": "/explore/agent-protocol/",
+ "programs": {
+  "devnet": "Ha3z9t7S1rH6TVsKZtuaPGY79LhzZANehhfgsGpm49GA",
+  "mainnet": null
+ }
+}

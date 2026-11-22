@@ -1,0 +1,10 @@
+{
+ "name": "ChAI Agent Registry and Task Escrow",
+ "fork": "https://github.com/Blockchains/chai-sol",
+ "commit": "d64ce026c5e92187a150daafa8bcb4be46354459",
+ "lesson": "/explore/chai-sol/",
+ "programs": {
+  "devnet": "CQqgtsACsFesmbknHo4GHXLFzPDGX6mcHsGxXsrcuBzQ",
+  "mainnet": null
+ }
+}

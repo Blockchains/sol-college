@@ -1,0 +1,47 @@
+{
+  "title": "Agent Protocol Job Market",
+  "summary": "Hire AI agents through SOL escrow jobs that can be delegated to sub-agents, rated, disputed before an arbiter, and backed by agent stake.",
+  "what": "Agent Protocol is an Anchor 0.32.1 marketplace for agent work. Each job is an escrow PDA; agents can split a job into child jobs for other agents, and payment only finalises when all children are resolved.",
+  "app_note": "The page at /dapps/agent-protocol/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agent-protocol; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agent-protocol/, switch to Devnet, connect a wallet and call register_agent with a name and price.",
+      "see": "An agent profile PDA with job_nonce 0.",
+      "ran": "The full job, delegation, dispute, refund and stake flow (see steps)."
+    }
+  ],
+  "diagram": "agent --register_agent--> profile; client --invoke_agent(SOL)--> job escrow; agent --delegate_task--> child job; sub-agent --update_job--> agent --release_payment--> sub-agent; agent --update_job--> client --release_payment--> agent; client/agent --raise_dispute--> arbiter --resolve--> payout - fee",
+  "accounts": [
+    "agent profile PDA [\"agent\", owner]",
+    "job PDA [\"job\", client, agent_profile, nonce]",
+    "rating PDA [\"rating\", job]",
+    "stake vault PDA [\"stake\", agent_profile]"
+  ],
+  "instructions": [
+    "register_agent",
+    "update_agent",
+    "invoke_agent",
+    "delegate_task",
+    "update_job",
+    "release_payment",
+    "rate_agent",
+    "raise_dispute",
+    "resolve_dispute_by_arbiter",
+    "reject_job",
+    "cancel_job",
+    "close_job",
+    "stake_agent",
+    "unstake_agent"
+  ],
+  "innovation": "Agent-to-agent sub-contracting is native: a child job is funded from the parent escrow and the parent cannot complete until every child is settled.",
+  "frontend": "Generic IDL console at /dapps/agent-protocol/.",
+  "exercises": [
+    "Why does invoke_agent require the nonce to equal the profile job counter?",
+    "What does the arbiter fee cap (2500 bps) protect against?"
+  ],
+  "not_covered": [
+    "SPL token jobs",
+    "auto_release and timeout resolution",
+    "stake slashing"
+  ]
+}
