@@ -1,0 +1,1 @@
+import{t as o}from"./BENz4qsf.js";import{ay as t}from"#entry";const i=()=>{const e=t("buyCreditsModalOpen",()=>!1),s=t("buyCreditsPurchasedTick",()=>0);return{isOpen:e,purchasedTick:s,openBuyCreditsModal:()=>{e.value=!0,o("top_up_begin")},closeBuyCreditsModal:()=>{e.value=!1},notifyPurchased:()=>{s.value++}}};export{i as u};

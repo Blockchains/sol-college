@@ -1,0 +1,1 @@
+const t="post_verify_redirect",r=e=>e.startsWith("/")&&!e.startsWith("//");function o(e){typeof localStorage>"u"||(e&&r(e)?localStorage.setItem(t,e):localStorage.removeItem(t))}function a(){if(typeof localStorage>"u")return null;const e=localStorage.getItem(t);return localStorage.removeItem(t),e&&r(e)?e:null}export{o as r,a as t};

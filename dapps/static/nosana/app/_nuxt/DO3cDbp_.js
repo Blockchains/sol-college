@@ -1,0 +1,1 @@
+import{m as o}from"#entry";import{a as e}from"./DQ98sK-R.js";const n=o(),u=(s,t,a)=>e(s,async()=>{try{return await t()}catch(r){throw console.error(r),a?.disableToastOnError===!1&&n.error(r.toString()),r}},{server:!1,...a});export{u};

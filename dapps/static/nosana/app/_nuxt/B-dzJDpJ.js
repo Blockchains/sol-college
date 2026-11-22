@@ -1,0 +1,1 @@
+import{c as t,o as r,a as o}from"#entry";const n={width:"24",height:"24",viewBox:"0 0 24 24",fill:"none",stroke:"currentColor","stroke-width":"1.5",xmlns:"http://www.w3.org/2000/svg"};function c(l,e){return r(),t("svg",n,[...e[0]||(e[0]=[o("circle",{cx:"8",cy:"8",r:"4.5"},null,-1),o("path",{d:"m11.2 11.2 9.3 9.3M16 16l3-3m-6 0 3-3"},null,-1)])])}const i={render:c};export{i as K};
