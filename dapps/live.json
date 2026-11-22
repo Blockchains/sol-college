@@ -4560,5 +4560,149 @@
     "limits": "Scopes are free-form strings; the program stores them but does not enforce them. Enforcement is up to the services that read the passport (the upstream browser extension was not run). The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize_passport 4v1WUjqS\u2026; update_permissions PBTKMJUJ\u2026; close_passport 2rXxW8wx\u2026. update_permissions signed by a stranger was rejected (Unauthorized). update_permissions with an empty scope was rejected (EmptyScope). A 65-byte label was rejected (LabelTooLong). close_passport signed by a stranger was rejected (Unauthorized)."
+  },
+  {
+    "slug": "equxi",
+    "name": "Equxi Agent Bonds",
+    "lesson": "/explore/equxi/",
+    "app": "/dapps/equxi/",
+    "fork": "https://github.com/Blockchains/equxi",
+    "commit": "9a71b69f7c21b4f19a8c2e135f53acffa3f99a5d",
+    "program": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/equxi (unique declare_id; the official D7akK6aU\u2026 was not reused).",
+    "learn": "initialize (upgrade authority only) creates the config PDA [\"config\"] naming the admin and the slash vault PDA [\"vault\"]. An operator registers an agent PDA [\"agent\", operator, name] with trust score 50, then locks at least 0.1 SOL in a bond PDA [\"bond\", agent] for a lock period. The owner can add constraint PDAs [\"constraint\", agent, index] (spend limit, program allow-list, timelock, velocity). The admin can update_trust_score, execute_slash (move lamports from the bond into the vault and write a slash record [\"slash\", agent, n]) and compensate_victim from that record once, which also lowers the trust score by 10. withdraw_bond only works after expiry plus a 7-day unbonding period.",
+    "source": [
+      [
+        "programs/equxi/src/instructions/execute_slash.rs",
+        "https://github.com/Blockchains/equxi/blob/9a71b69f7c21b4f19a8c2e135f53acffa3f99a5d/programs/equxi/src/instructions/execute_slash.rs"
+      ],
+      [
+        "programs/equxi/src/instructions/compensate_victim.rs",
+        "https://github.com/Blockchains/equxi/blob/9a71b69f7c21b4f19a8c2e135f53acffa3f99a5d/programs/equxi/src/instructions/compensate_victim.rs"
+      ],
+      [
+        "programs/equxi/src/instructions/create_bond.rs",
+        "https://github.com/Blockchains/equxi/blob/9a71b69f7c21b4f19a8c2e135f53acffa3f99a5d/programs/equxi/src/instructions/create_bond.rs"
+      ]
+    ],
+    "flow": "tests/devnet/equxi.mjs",
+    "log": "tests/devnet/logs/equxi-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy equxi as dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG on devnet",
+        "3vBWjjHbWCon4AggT46PwJhzsPUe1KJ5H3quNECsiE6UfixF7yP1sBN5VdPDNWqMn5mFCWNRJiQWhz8fB2DWWV9j"
+      ],
+      [
+        "initialize (config + vault, signer is the program upgrade authority)",
+        "5A4MDfd7n8cHTC5mwbRgeAdt8jn6V4TTvU9y2LyLvor3qYZE2dJr3S4biroygRyrTyRYcTBzaw4LxmtRafb4FzBU"
+      ],
+      [
+        "register_agent (Trader)",
+        "65zdpKfM33NaMYA5xZ2kK4cj4CHP6FbohXNJGxARmBc9Z4SwAumNsFYcfJFnuskwVZsoa4c5cgToTQorQcVBaauN"
+      ],
+      [
+        "create_bond 100_000_000 lamports, 1 h lock",
+        "5jFAJtRuqtZ7qpdtPkHUaxet2nxmaKDaRQZEwvHNvS5SDbPLAKxW8RSEDsBpkbWWeuhaJRFeeLqwP1Yhsue1PcRN"
+      ],
+      [
+        "add_constraint SpendLimit (5_000_000 per tx, 20_000_000 per day)",
+        "4uwRzNydzaaNDYPMZT6FFgiZzNkFghweFN7gUZLWhLniFNJeJiWJ4KdRqwSwwKm1zRqEFQz98k6Px9HxeoLaRJkz"
+      ],
+      [
+        "update_trust_score 80",
+        "5P3zjK3qgymJXuKqUb1hxqb9yqVP96PhZkxwfa2zTb7Yz5vP6FrvNa7gyT53wF1bRxBtTSdcbCaAwpaYsVBW3TP5"
+      ],
+      [
+        "execute_slash 30_000_000 into the vault",
+        "46PnkkmZJmhU1qqXwM4VqXJXudBkSy6Pmk9MsvNj6DGJP2UwUFB5rQghN41hUVJtM9JaWSSxgCe3g9rMWzro8BZ1"
+      ],
+      [
+        "compensate_victim 20_000_000 (trust score 80 -> 70)",
+        "2DAYfGa2jH8LVjpgJRvtYcxh7VH3Q79RAUME2fupFMcUV3FbtepQFd3jechV6rWCH1VVjgYCMR16BVnZVr41LAan"
+      ]
+    ],
+    "negative": [
+      "initialize by a wallet that is not the upgrade authority was rejected (InvalidAdminAuthority).",
+      "create_bond of 50_000_000 was rejected (BondTooSmall).",
+      "update_trust_score and execute_slash by a stranger were rejected (SlashingAuthorityRequired).",
+      "compensate_victim above the slashed amount was rejected (ExceedsSlashAmount).",
+      "A second compensate_victim on the same record was rejected (AlreadyCompensated).",
+      "withdraw_bond before expiry was rejected (BondNotExpired)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/equxi.mjs.",
+    "limits": "Constraints are stored but not enforced by this program; another program or service has to read them. Slashing is decided by one admin key, not by on-chain evidence. top_up_bond, withdraw_bond (success path) and migrate_agent were not exercised; the lab bond (70_000_000 lamports) stays locked until expiry plus 7 days. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize 5A4MDfd7\u2026; register_agent 65zdpKfM\u2026; create_bond 100_000_000 lamports, 1 h lock 5jFAJtRu\u2026; add_constraint SpendLimit 4uwRzNyd\u2026; update_trust_score 80 5P3zjK3q\u2026; execute_slash 30_000_000 into the vault 46PnkkmZ\u2026; compensate_victim 20_000_000 2DAYfGa2\u2026. initialize by a wallet that is not the upgrade authority was rejected (InvalidAdminAuthority). create_bond of 50_000_000 was rejected (BondTooSmall). update_trust_score and execute_slash by a stranger were rejected (SlashingAuthorityRequired). compensate_victim above the slashed amount was rejected (ExceedsSlashAmount). A second compensate_victim on the same record was rejected (AlreadyCompensated). withdraw_bond before expiry was rejected (BondNotExpired)."
+  },
+  {
+    "slug": "agent-reputation",
+    "name": "Agent Reputation Jobs",
+    "lesson": "/explore/agent-reputation/",
+    "app": "/dapps/agent-reputation/",
+    "fork": "https://github.com/Blockchains/agent-reputation",
+    "commit": "4a53df13989fdcd6845972e4c9a30e8e21477894",
+    "program": "GTaTHb2PzMaBa54ubePQicvBLhJaYZwn5ZRUDnKQSMLD",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agent-reputation (unique declare_id; the official BpAHB6zN\u2026 was not reused).",
+    "learn": "A client calls create_job, which escrows the payment (min 0.001 SOL) inside a job PDA (seeds [\"job\", counter]) with a deadline under 30 days and an optional whitelisted worker. The worker (who must have a profile PDA [\"profile\", worker]) accepts; the client then calls complete_job with a 1-5 rating and on-time flag, which pays the escrow to the worker, writes a rating PDA [\"rating\", job] and updates the worker profile. Open jobs can be cancelled or refunded after the deadline; accepted jobs can be disputed by either party and split 50/50 after seven days.",
+    "source": [
+      [
+        "programs/agent-reputation/src/lib.rs",
+        "https://github.com/Blockchains/agent-reputation/blob/4a53df13989fdcd6845972e4c9a30e8e21477894/programs/agent-reputation/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agent-reputation.mjs",
+    "log": "tests/devnet/logs/agent-reputation-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agent-reputation as GTaTHb2PzMaBa54ubePQicvBLhJaYZwn5ZRUDnKQSMLD on devnet",
+        "aXUieg1BV3E1y6A94npNAKbPLAdS6ZpFVzLy3ZhCJFN8SiQP39DuXQjhKBRVu2eHRtGa591UW7R5YJFz9rGfA8m"
+      ],
+      [
+        "initialize_counter",
+        "3eBuKo68xh6AZ4jphco6NpRQuAVFmCXWhn9URyDLyc7gEWSuCFtX4upQyGxrfyLB6gKaqizbxxgUGk4X7ktYs2Ga"
+      ],
+      [
+        "initialize_profile for the worker agent",
+        "38Uo47DEVVrq2omfNTCGghzQf55piqdk1RsYZt7uokSEWmQM8kP4tzdwupfv77S54a3a4qUg2QbKj2jYhnax7kHU"
+      ],
+      [
+        "create_job (5_000_000 lamports, whitelisted worker)",
+        "vB2Ma53u4qtLogJ773P5vUoqVPe6xvYj7Cfx87mkBUa3fVKZNeyBEJvVRzTdHSes2nAJTeKGgxx1hc7UcQE34kc"
+      ],
+      [
+        "accept_job by the worker",
+        "4wdzY6SE1c8s7pRcUWfr1tJA8dybhkWQQmv3J7Mm4EHfwwJzU7bgRBRMyaRhNbPkSqbfCCZ9DZ8hcGiJiSaZ3MGb"
+      ],
+      [
+        "complete_job rating 5, on time (worker +5_000_000)",
+        "2jvk3mm4EPsCSAfBAHUBAFHG5Tc7dKjUSkM86wbotFMphbWURsDwimqsS811dYM8Hq3D6sMdDNqeaBp2yqwf2Qj6"
+      ],
+      [
+        "get_reputation",
+        "2qCjBoyARHzw23ZiEWcdchmThqWCcJiTyn252mZgFKFxHWoDt2ooGG2zaN2eXrw7w7Q2NcHYLrgKRm9d8pVudKbg"
+      ],
+      [
+        "create_job (open) then cancel_job (refund)",
+        "5PiEqfdg5w6yDMQP2XSSVgi1nuFxAzHte9Y9E7TwU9EbTM1kXBNmik8zHBDigWjqWCiLAPJJ3nroMMSJpDuVGa6q"
+      ],
+      [
+        "create_job, accept_job, dispute_job",
+        "63KHPdEQnuNwtTbqucRwANNnLSw5cAM6w7AGZULBf2DacgLCJCM11DkCXSLh9ZGpToTaf7MB7iBZvy1WivTaYXDs"
+      ]
+    ],
+    "negative": [
+      "create_job with 500_000 lamports was rejected (PaymentTooSmall).",
+      "accept_job by a non-whitelisted wallet was rejected (WorkerNotWhitelisted).",
+      "cancel_job on an accepted job was rejected (CannotCancel).",
+      "complete_job with rating 6 was rejected (InvalidRating).",
+      "complete_job signed by a stranger was rejected (NotJobClient).",
+      "resolve_dispute before seven days was rejected (ResolutionPeriodNotEnded)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agent-reputation.mjs.",
+    "limits": "Ratings come only from the paying client, so a client can self-deal with its own worker. resolve_dispute can be called by any wallet once seven days pass and always splits 50/50. refund_expired was not exercised (needs a passed deadline). The lab returned the worker payment to the deployer after the run. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_counter 3eBuKo68\u2026; initialize_profile for the worker agent 38Uo47DE\u2026; create_job vB2Ma53u\u2026; accept_job by the worker 4wdzY6SE\u2026; complete_job rating 5, on time 2jvk3mm4\u2026; get_reputation 2qCjBoyA\u2026; create_job 5PiEqfdg\u2026; create_job, accept_job, dispute_job 63KHPdEQ\u2026. create_job with 500_000 lamports was rejected (PaymentTooSmall). accept_job by a non-whitelisted wallet was rejected (WorkerNotWhitelisted). cancel_job on an accepted job was rejected (CannotCancel). complete_job with rating 6 was rejected (InvalidRating). complete_job signed by a stranger was rejected (NotJobClient). resolve_dispute before seven days was rejected (ResolutionPeriodNotEnded)."
   }
 ]

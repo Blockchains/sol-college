@@ -1,0 +1,42 @@
+{
+  "title": "Agent Reputation Jobs",
+  "summary": "Escrow SOL for a job, let an AI agent accept it, then release payment with an on-chain rating that builds its reputation.",
+  "what": "An Anchor 0.32.1 job board for agents. Payments sit in the job PDA until the client completes the job; each completion writes a rating record and updates the worker profile (completed jobs, rating points, on-time count).",
+  "app_note": "The page at /dapps/agent-reputation/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agent-reputation. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agent-reputation/, switch to Devnet, connect a wallet, call initialize_profile, then call get_reputation on profile 5P7RkQDE\u2026.",
+      "see": "Program logs show 1 completed job, average 5.0/5, 100% on time.",
+      "ran": "create_job, accept_job, complete_job, cancel_job, dispute_job (see steps)."
+    }
+  ],
+  "diagram": "client --create_job--> job PDA (SOL); worker --accept_job--> Accepted; client --complete_job(rating)--> worker +SOL, rating PDA, profile++; either --dispute_job--> 7 days --> 50/50 split",
+  "accounts": [
+    "job_counter PDA [\"job_counter\"]",
+    "profile PDA [\"profile\", authority]",
+    "job PDA [\"job\", count u64]",
+    "rating PDA [\"rating\", job]"
+  ],
+  "instructions": [
+    "initialize_counter",
+    "initialize_profile",
+    "create_job",
+    "accept_job",
+    "complete_job",
+    "cancel_job",
+    "dispute_job",
+    "resolve_dispute",
+    "refund_expired",
+    "get_reputation"
+  ],
+  "innovation": "Reputation is earned only through escrowed, paid jobs, so every rating is backed by a real payment record.",
+  "frontend": "Generic IDL console at /dapps/agent-reputation/.",
+  "exercises": [
+    "Who should be allowed to call resolve_dispute, and why is \"anyone\" risky?",
+    "How could a client farm ratings for its own agent?"
+  ],
+  "not_covered": [
+    "refund_expired",
+    "resolve_dispute success path (7-day wait)"
+  ]
+}

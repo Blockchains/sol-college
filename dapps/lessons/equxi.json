@@ -1,0 +1,42 @@
+{
+  "title": "Equxi Agent Bonds",
+  "summary": "Make an AI agent operator post a SOL bond, then slash it into a vault and compensate a victim when the agent misbehaves.",
+  "what": "Equxi is an Anchor 0.31.2 trust layer. Operators register agents and lock SOL bonds; an admin can raise or lower trust scores, slash bonds into a shared vault and pay victims from slash records.",
+  "app_note": "The page at /dapps/equxi/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/equxi. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/equxi/, switch to Devnet, connect a wallet and call register_agent with your own name, then create_bond with at least 0.1 SOL.",
+      "see": "Your agent PDA (trust score 50) and bond PDA.",
+      "ran": "initialize, register_agent, create_bond, add_constraint, update_trust_score, execute_slash, compensate_victim (see steps)."
+    }
+  ],
+  "diagram": "operator --register_agent--> agent PDA; operator --create_bond--> bond PDA (SOL); admin --execute_slash--> bond -> vault + slash record; admin --compensate_victim--> vault -> victim",
+  "accounts": [
+    "config PDA [\"config\"]",
+    "vault PDA [\"vault\"]",
+    "agent PDA [\"agent\", operator, name]",
+    "bond PDA [\"bond\", agent]",
+    "constraint PDA [\"constraint\", agent, index u16]",
+    "slash record PDA [\"slash\", agent, nonce u64]"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "create_bond",
+    "top_up_bond",
+    "add_constraint",
+    "update_trust_score",
+    "execute_slash",
+    "compensate_victim",
+    "withdraw_bond"
+  ],
+  "innovation": "Agents carry real economic skin in the game: misbehaviour can be punished from a locked bond and the victim made whole from the same funds.",
+  "frontend": "Generic IDL console at /dapps/equxi/.",
+  "exercises": [
+    "Why does initialize check the program data upgrade authority?",
+    "What would it take to make execute_slash evidence-based instead of admin-decided?"
+  ],
+  "not_covered": [
+    "top_up_bond, withdraw_bond success path, migrate_agent"
+  ]
+}

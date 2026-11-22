@@ -1,0 +1,10 @@
+{
+ "name": "Equxi Agent Bonds",
+ "fork": "https://github.com/Blockchains/equxi",
+ "commit": "9a71b69f7c21b4f19a8c2e135f53acffa3f99a5d",
+ "lesson": "/explore/equxi/",
+ "programs": {
+  "devnet": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG",
+  "mainnet": null
+ }
+}

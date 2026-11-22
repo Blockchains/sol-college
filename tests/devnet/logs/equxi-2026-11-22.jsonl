@@ -1,0 +1,16 @@
+{"step":"setup","program":"dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG","config":"HC2pUk5yhMS23xexkH4wAVJgqDsVVsj6EVZ1G38Pt8xn","vault":"9QrLwzhb52xjhe37knqZ739bpCwdk2EqiKpaoXSnViMZ"}
+{"step":"initialize_by_non_upgrade_authority","rejected":true,"reason":"InvalidAdminAuthority"}
+{"step":"initialize","ok":true,"sig":"5A4MDfd7n8cHTC5mwbRgeAdt8jn6V4TTvU9y2LyLvor3qYZE2dJr3S4biroygRyrTyRYcTBzaw4LxmtRafb4FzBU"}
+{"step":"register_agent","ok":true,"sig":"65zdpKfM33NaMYA5xZ2kK4cj4CHP6FbohXNJGxARmBc9Z4SwAumNsFYcfJFnuskwVZsoa4c5cgToTQorQcVBaauN","agent":"28pR3eYPe6U8kX7VYwzvMNR31np7RXfYmLNJrYP2EWWs","name":"lab-trader-mws65jxo"}
+{"step":"create_bond_too_small","rejected":true,"reason":"BondTooSmall"}
+{"step":"create_bond","ok":true,"sig":"5jFAJtRuqtZ7qpdtPkHUaxet2nxmaKDaRQZEwvHNvS5SDbPLAKxW8RSEDsBpkbWWeuhaJRFeeLqwP1Yhsue1PcRN","bond":"BMnsrNfeXtLFTCZbHwNm6aigQ7zxgw2yH6XYHFZPGsvH","lamports":100000000}
+{"step":"add_constraint","ok":true,"sig":"4uwRzNydzaaNDYPMZT6FFgiZzNkFghweFN7gUZLWhLniFNJeJiWJ4KdRqwSwwKm1zRqEFQz98k6Px9HxeoLaRJkz","constraint":"7vSAHVJGTdV18twhf2B27DFjVCD12ipvCzHj5sHYHTdc"}
+{"step":"update_trust_score","ok":true,"sig":"5P3zjK3qgymJXuKqUb1hxqb9yqVP96PhZkxwfa2zTb7Yz5vP6FrvNa7gyT53wF1bRxBtTSdcbCaAwpaYsVBW3TP5"}
+{"step":"update_trust_score_by_stranger","rejected":true,"reason":"SlashingAuthorityRequired"}
+{"step":"execute_slash_by_stranger","rejected":true,"reason":"SlashingAuthorityRequired"}
+{"step":"execute_slash","ok":true,"sig":"46PnkkmZJmhU1qqXwM4VqXJXudBkSy6Pmk9MsvNj6DGJP2UwUFB5rQghN41hUVJtM9JaWSSxgCe3g9rMWzro8BZ1","slash_record":"BQ29ZHBnDdBRkghQnNztzsvJnqEn7r4ds9jUzmnoQh1y","amount":30000000}
+{"step":"compensate_more_than_slash","rejected":true,"reason":"ExceedsSlashAmount"}
+{"step":"compensate_victim","ok":true,"sig":"2DAYfGa2jH8LVjpgJRvtYcxh7VH3Q79RAUME2fupFMcUV3FbtepQFd3jechV6rWCH1VVjgYCMR16BVnZVr41LAan","victim":"G1cPTeTqAp5RcL4JMs5d3P8AhHJYe13tgmS18kcgwVtR","victim_lamports":20000000}
+{"step":"compensate_twice","rejected":true,"reason":"AlreadyCompensated"}
+{"step":"withdraw_bond_before_expiry","rejected":true,"reason":"BondNotExpired"}
+{"step":"state","trust_score":70,"status":"active","bond_amount":"70000000","constraints":1}

@@ -1,0 +1,10 @@
+{
+ "name": "Agent Reputation Jobs",
+ "fork": "https://github.com/Blockchains/agent-reputation",
+ "commit": "4a53df13989fdcd6845972e4c9a30e8e21477894",
+ "lesson": "/explore/agent-reputation/",
+ "programs": {
+  "devnet": "GTaTHb2PzMaBa54ubePQicvBLhJaYZwn5ZRUDnKQSMLD",
+  "mainnet": null
+ }
+}

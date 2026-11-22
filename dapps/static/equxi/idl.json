@@ -1,0 +1,1427 @@
+{
+  "address": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG",
+  "metadata": {
+    "name": "equxi",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Solana-native trust layer for AI agents"
+  },
+  "instructions": [
+    {
+      "name": "add_constraint",
+      "docs": [
+        "Add a behavioral constraint"
+      ],
+      "discriminator": [
+        82,
+        172,
+        46,
+        153,
+        183,
+        222,
+        112,
+        252
+      ],
+      "accounts": [
+        {
+          "name": "constraint",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  115,
+                  116,
+                  114,
+                  97,
+                  105,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              },
+              {
+                "kind": "account",
+                "path": "agent.constraint_count",
+                "account": "Agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "agent"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "constraint_type",
+          "type": {
+            "defined": {
+              "name": "ConstraintType"
+            }
+          }
+        },
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ConstraintParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "compensate_victim",
+      "docs": [
+        "Compensate a victim from slashed funds"
+      ],
+      "discriminator": [
+        14,
+        129,
+        23,
+        168,
+        61,
+        50,
+        218,
+        69
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "slash_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  108,
+                  97,
+                  115,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              },
+              {
+                "kind": "account",
+                "path": "slash_record.nonce",
+                "account": "SlashRecord"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "victim",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "create_bond",
+      "docs": [
+        "Create a bond (lock SOL collateral)"
+      ],
+      "discriminator": [
+        96,
+        81,
+        70,
+        166,
+        111,
+        33,
+        61,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "bond",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "agent"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        },
+        {
+          "name": "lock_duration",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "create_vault",
+      "docs": [
+        "One-time migration for deployments initialized before the vault",
+        "existed: create the escrow vault on a v0.1 config after the v0.2",
+        "program is deployed. Upgrade authority + config admin only."
+      ],
+      "discriminator": [
+        29,
+        237,
+        247,
+        208,
+        193,
+        82,
+        54,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "program",
+          "address": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "execute_slash",
+      "docs": [
+        "Execute slashing (admin only)"
+      ],
+      "discriminator": [
+        15,
+        240,
+        38,
+        73,
+        175,
+        55,
+        88,
+        55
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "relations": [
+            "bond"
+          ]
+        },
+        {
+          "name": "bond",
+          "writable": true
+        },
+        {
+          "name": "slash_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  108,
+                  97,
+                  115,
+                  104
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              },
+              {
+                "kind": "account",
+                "path": "config.total_slashed",
+                "account": "Config"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "reason",
+          "type": "string"
+        },
+        {
+          "name": "slash_amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initialize the program and its escrow vault.",
+        "",
+        "Must be signed by the program's upgrade authority, which becomes the",
+        "slash/compensation admin. This removes the arbitrary `admin` argument so",
+        "the config can never be initialized with a stranger as admin."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "program",
+          "address": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "migrate_agent",
+      "docs": [
+        "One-time migration for agents registered before v0.2: grow the account",
+        "from 116 to 118 bytes so it carries `constraint_count`. Signed by the",
+        "agent's owner, or the program admin if the owner key is unreachable."
+      ],
+      "discriminator": [
+        102,
+        150,
+        249,
+        223,
+        92,
+        169,
+        131,
+        39
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "The agent account, handled as raw bytes: a 116-byte v0.1 account cannot",
+            "be deserialized into the v0.2 `Agent`, which is the whole reason this",
+            "instruction exists.",
+            "",
+            "account must be owned by this program, exactly 116 bytes long, and carry",
+            "the `Agent` discriminator."
+          ],
+          "writable": true
+        },
+        {
+          "name": "signer",
+          "docs": [
+            "The agent's owner, the program admin, or the program's upgrade",
+            "authority.",
+            "",
+            "The owner is the normal path. The fallbacks exist because a migration",
+            "that can only be run by a key that has been lost is not a migration, it",
+            "is a permanent stranding of the agent's history \u2014 and on the live devnet",
+            "deployment the owner and admin are the operator's Phantom while the",
+            "upgrade authority is a separate key, so restricting this to the owner",
+            "alone would leave the one existing agent unreadable forever.",
+            "",
+            "Neither fallback can rewrite anything: the migration inserts a",
+            "zero-valued counter and shifts untouched trailing bytes, so owner, name,",
+            "score, status and bond address keep their exact values."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "program",
+          "address": "dkQ8tFAxoGbV28hCddGDU1juoKgzmCaqrsueUN3KnMG"
+        },
+        {
+          "name": "program_data"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "existing_constraints",
+          "type": "u16"
+        }
+      ]
+    },
+    {
+      "name": "register_agent",
+      "docs": [
+        "Register a new AI agent"
+      ],
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "operator"
+              },
+              {
+                "kind": "arg",
+                "path": "name"
+              }
+            ]
+          }
+        },
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "agent_type",
+          "type": {
+            "defined": {
+              "name": "AgentType"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "top_up_bond",
+      "docs": [
+        "Record additional collateral into an existing bond (operator only)"
+      ],
+      "discriminator": [
+        110,
+        37,
+        8,
+        119,
+        210,
+        231,
+        202,
+        197
+      ],
+      "accounts": [
+        {
+          "name": "bond",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "The agent the bond belongs to. Read-only: it is the seed that derives the",
+            "bond PDA, and the stored back-reference must agree, so a top-up can never",
+            "be recorded against a bond the agent has stopped pointing at."
+          ]
+        },
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "bond"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "update_trust_score",
+      "docs": [
+        "Update trust score (admin only)"
+      ],
+      "discriminator": [
+        100,
+        231,
+        130,
+        250,
+        180,
+        196,
+        20,
+        248
+      ],
+      "accounts": [
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "authority",
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "score",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "withdraw_bond",
+      "docs": [
+        "Withdraw bond after lock period expires"
+      ],
+      "discriminator": [
+        222,
+        199,
+        141,
+        31,
+        188,
+        93,
+        155,
+        40
+      ],
+      "accounts": [
+        {
+          "name": "bond",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  98,
+                  111,
+                  110,
+                  100
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "writable": true
+        },
+        {
+          "name": "operator",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "bond"
+          ]
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Agent",
+      "discriminator": [
+        47,
+        166,
+        112,
+        147,
+        155,
+        197,
+        86,
+        7
+      ]
+    },
+    {
+      "name": "Bond",
+      "discriminator": [
+        224,
+        128,
+        48,
+        251,
+        182,
+        246,
+        111,
+        196
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "Constraint",
+      "discriminator": [
+        39,
+        48,
+        250,
+        220,
+        53,
+        120,
+        62,
+        128
+      ]
+    },
+    {
+      "name": "SlashRecord",
+      "discriminator": [
+        107,
+        134,
+        175,
+        65,
+        150,
+        130,
+        94,
+        68
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Agent name too long (max 32 characters)"
+    },
+    {
+      "code": 6001,
+      "name": "BondTooSmall",
+      "msg": "Bond amount must be at least 0.1 SOL (100_000_000 lamports)"
+    },
+    {
+      "code": 6002,
+      "name": "BondInactive",
+      "msg": "Bond is not active or has expired"
+    },
+    {
+      "code": 6003,
+      "name": "BondNotExpired",
+      "msg": "Bond has not expired yet"
+    },
+    {
+      "code": 6004,
+      "name": "BondInUnbondingPeriod",
+      "msg": "Bond is inside its unbonding period: collateral stays slashable after expiry"
+    },
+    {
+      "code": 6005,
+      "name": "InsufficientBond",
+      "msg": "Insufficient bond balance for slashing"
+    },
+    {
+      "code": 6006,
+      "name": "Unauthorized",
+      "msg": "Unauthorized: only the operator can perform this action"
+    },
+    {
+      "code": 6007,
+      "name": "AgentNotActive",
+      "msg": "Agent is not active"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidTrustScore",
+      "msg": "Invalid trust score (must be 0-100)"
+    },
+    {
+      "code": 6009,
+      "name": "SlashingAuthorityRequired",
+      "msg": "Slashing authority required"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidAmount",
+      "msg": "Amount must be greater than zero"
+    },
+    {
+      "code": 6011,
+      "name": "ExceedsSlashAmount",
+      "msg": "Compensation exceeds the amount seized in that slash"
+    },
+    {
+      "code": 6012,
+      "name": "VaultInsufficient",
+      "msg": "Escrow vault does not hold enough slashed funds"
+    },
+    {
+      "code": 6013,
+      "name": "AlreadyCompensated",
+      "msg": "Slash record has already been compensated"
+    },
+    {
+      "code": 6014,
+      "name": "TooManyConstraints",
+      "msg": "Agent has reached the maximum number of constraints"
+    },
+    {
+      "code": 6015,
+      "name": "InvalidAdminAuthority",
+      "msg": "Initialize must be signed by the program upgrade authority"
+    },
+    {
+      "code": 6016,
+      "name": "ProgramDataMismatch",
+      "msg": "ProgramData account does not belong to this program"
+    },
+    {
+      "code": 6017,
+      "name": "InvalidAgentLayout",
+      "msg": "Agent account is not a v0.1-layout agent (expected 116 bytes, owned by this program)"
+    },
+    {
+      "code": 6018,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow"
+    }
+  ],
+  "types": [
+    {
+      "name": "Agent",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "agent_type",
+            "type": {
+              "defined": {
+                "name": "AgentType"
+              }
+            }
+          },
+          {
+            "name": "trust_score",
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "AgentStatus"
+              }
+            }
+          },
+          {
+            "name": "bond_address",
+            "type": "pubkey"
+          },
+          {
+            "name": "constraint_count",
+            "docs": [
+              "Number of constraints created for this agent. Used as a PDA seed so an",
+              "agent can hold many constraints instead of exactly one."
+            ],
+            "type": "u16"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "Slashed"
+          },
+          {
+            "name": "Deactivated"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Trader"
+          },
+          {
+            "name": "Oracle"
+          },
+          {
+            "name": "DeFi"
+          },
+          {
+            "name": "Payment"
+          },
+          {
+            "name": "NFT"
+          },
+          {
+            "name": "Governance"
+          },
+          {
+            "name": "Bridge"
+          },
+          {
+            "name": "Custom"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bond",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "operator",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "lock_duration",
+            "type": "i64"
+          },
+          {
+            "name": "locked_at",
+            "type": "i64"
+          },
+          {
+            "name": "expires_at",
+            "type": "i64"
+          },
+          {
+            "name": "is_active",
+            "type": "bool"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "docs": [
+        "Global config with admin authority"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_agents",
+            "type": "u64"
+          },
+          {
+            "name": "total_bonds",
+            "type": "u64"
+          },
+          {
+            "name": "total_slashed",
+            "type": "u64"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Constraint",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "constraint_type",
+            "type": {
+              "defined": {
+                "name": "ConstraintType"
+              }
+            }
+          },
+          {
+            "name": "params",
+            "type": {
+              "defined": {
+                "name": "ConstraintParams"
+              }
+            }
+          },
+          {
+            "name": "is_enforced",
+            "type": "bool"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConstraintParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "max_amount",
+            "type": "u64"
+          },
+          {
+            "name": "max_per_period",
+            "type": "u64"
+          },
+          {
+            "name": "period_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "timelock_seconds",
+            "type": "i64"
+          },
+          {
+            "name": "allowed_programs",
+            "type": {
+              "array": [
+                "pubkey",
+                8
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ConstraintType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "SpendLimit"
+          },
+          {
+            "name": "ProgramAllowlist"
+          },
+          {
+            "name": "Timelock"
+          },
+          {
+            "name": "Velocity"
+          },
+          {
+            "name": "Custom"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SlashRecord",
+      "docs": [
+        "Slash record uses nonce to avoid PDA collision"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "reason",
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "nonce",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "victim",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "compensated",
+            "type": "bool"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "docs": [
+        "Program-owned escrow that holds slashed collateral until it is paid out.",
+        "",
+        "Slashed lamports move `bond -> vault` and compensation moves `vault -> victim`.",
+        "The admin never takes custody of slashed funds.",
+        "",
+        "Invariant: `vault.lamports() == rent_exempt_min + vault.available()`"
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "total_slashed",
+            "docs": [
+              "Cumulative lamports moved into the vault by `execute_slash`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "total_compensated",
+            "docs": [
+              "Cumulative lamports paid out of the vault by `compensate_victim`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bumped",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

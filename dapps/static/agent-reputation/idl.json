@@ -1,0 +1,839 @@
+{
+  "address": "GTaTHb2PzMaBa54ubePQicvBLhJaYZwn5ZRUDnKQSMLD",
+  "metadata": {
+    "name": "agent_reputation",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "accept_job",
+      "docs": [
+        "Accept a job as a worker"
+      ],
+      "discriminator": [
+        43,
+        201,
+        124,
+        1,
+        19,
+        189,
+        96,
+        10
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "worker",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "cancel_job",
+      "docs": [
+        "Cancel a job (only if still open, refund to client)"
+      ],
+      "discriminator": [
+        126,
+        241,
+        155,
+        241,
+        50,
+        236,
+        83,
+        118
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "complete_job",
+      "docs": [
+        "Complete a job and release payment + submit rating"
+      ],
+      "discriminator": [
+        221,
+        216,
+        225,
+        72,
+        101,
+        250,
+        3,
+        11
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "rating",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  97,
+                  116,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.worker",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "worker",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "rating",
+          "type": "u8"
+        },
+        {
+          "name": "on_time",
+          "type": "bool"
+        },
+        {
+          "name": "comment_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "create_job",
+      "docs": [
+        "Create a new job with SOL escrow"
+      ],
+      "discriminator": [
+        178,
+        130,
+        217,
+        110,
+        100,
+        27,
+        82,
+        119
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job_counter.count",
+                "account": "JobCounter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "job_counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98,
+                  95,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "description_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "payment",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "assigned_worker",
+          "type": {
+            "option": "pubkey"
+          }
+        }
+      ]
+    },
+    {
+      "name": "dispute_job",
+      "docs": [
+        "Dispute a job (either party can call)"
+      ],
+      "discriminator": [
+        101,
+        104,
+        253,
+        231,
+        1,
+        139,
+        108,
+        100
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "disputer",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "get_reputation",
+      "docs": [
+        "Get reputation (view function - returns profile data with proper precision)"
+      ],
+      "discriminator": [
+        46,
+        251,
+        16,
+        79,
+        119,
+        77,
+        230,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "profile"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_counter",
+      "docs": [
+        "Initialize the job counter (one-time setup)"
+      ],
+      "discriminator": [
+        67,
+        89,
+        100,
+        87,
+        231,
+        172,
+        35,
+        124
+      ],
+      "accounts": [
+        {
+          "name": "job_counter",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  106,
+                  111,
+                  98,
+                  95,
+                  99,
+                  111,
+                  117,
+                  110,
+                  116,
+                  101,
+                  114
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_profile",
+      "docs": [
+        "Initialize a new agent profile"
+      ],
+      "discriminator": [
+        32,
+        145,
+        77,
+        213,
+        58,
+        39,
+        251,
+        234
+      ],
+      "accounts": [
+        {
+          "name": "profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "refund_expired",
+      "docs": [
+        "Auto-refund expired jobs (deadline passed, no worker accepted)"
+      ],
+      "discriminator": [
+        118,
+        153,
+        164,
+        244,
+        40,
+        128,
+        242,
+        250
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "caller",
+          "signer": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "resolve_dispute",
+      "docs": [
+        "Resolve dispute after timeout (7 days) - splits payment 50/50"
+      ],
+      "discriminator": [
+        231,
+        6,
+        202,
+        6,
+        96,
+        103,
+        12,
+        230
+      ],
+      "accounts": [
+        {
+          "name": "job",
+          "writable": true
+        },
+        {
+          "name": "worker_profile",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  102,
+                  105,
+                  108,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "job.worker",
+                "account": "Job"
+              }
+            ]
+          }
+        },
+        {
+          "name": "client",
+          "writable": true
+        },
+        {
+          "name": "worker",
+          "writable": true
+        },
+        {
+          "name": "resolver",
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentProfile",
+      "discriminator": [
+        60,
+        227,
+        42,
+        24,
+        0,
+        87,
+        86,
+        205
+      ]
+    },
+    {
+      "name": "Job",
+      "discriminator": [
+        75,
+        124,
+        80,
+        203,
+        161,
+        180,
+        202,
+        80
+      ]
+    },
+    {
+      "name": "JobCounter",
+      "discriminator": [
+        146,
+        77,
+        173,
+        100,
+        24,
+        53,
+        195,
+        39
+      ]
+    },
+    {
+      "name": "Rating",
+      "discriminator": [
+        203,
+        130,
+        231,
+        178,
+        120,
+        130,
+        70,
+        17
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "JobNotOpen",
+      "msg": "Job is not open for acceptance"
+    },
+    {
+      "code": 6001,
+      "name": "JobNotAccepted",
+      "msg": "Job has not been accepted yet"
+    },
+    {
+      "code": 6002,
+      "name": "NotJobClient",
+      "msg": "Only the job client can complete the job"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidRating",
+      "msg": "Rating must be between 1 and 5"
+    },
+    {
+      "code": 6004,
+      "name": "PaymentTooSmall",
+      "msg": "Payment must be at least 0.001 SOL"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidDeadline",
+      "msg": "Deadline must be in the future"
+    },
+    {
+      "code": 6006,
+      "name": "DeadlineTooFar",
+      "msg": "Deadline cannot be more than 30 days away"
+    },
+    {
+      "code": 6007,
+      "name": "JobExpired",
+      "msg": "Job has expired"
+    },
+    {
+      "code": 6008,
+      "name": "WorkerNotWhitelisted",
+      "msg": "Worker not whitelisted for this job"
+    },
+    {
+      "code": 6009,
+      "name": "CannotCancel",
+      "msg": "Job cannot be cancelled in current state"
+    },
+    {
+      "code": 6010,
+      "name": "CannotDispute",
+      "msg": "Job cannot be disputed in current state"
+    },
+    {
+      "code": 6011,
+      "name": "NotPartyToJob",
+      "msg": "Not a party to this job"
+    },
+    {
+      "code": 6012,
+      "name": "NotDisputed",
+      "msg": "Job is not in disputed state"
+    },
+    {
+      "code": 6013,
+      "name": "ResolutionPeriodNotEnded",
+      "msg": "Resolution period has not ended (7 days)"
+    },
+    {
+      "code": 6014,
+      "name": "JobNotExpired",
+      "msg": "Job has not expired yet"
+    },
+    {
+      "code": 6015,
+      "name": "CannotRefund",
+      "msg": "Cannot refund job in current state"
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentProfile",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_jobs",
+            "type": "u32"
+          },
+          {
+            "name": "completed_jobs",
+            "type": "u32"
+          },
+          {
+            "name": "total_rating_points",
+            "type": "u32"
+          },
+          {
+            "name": "on_time_count",
+            "type": "u32"
+          },
+          {
+            "name": "disputed_count",
+            "type": "u32"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Job",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "worker",
+            "type": "pubkey"
+          },
+          {
+            "name": "assigned_worker",
+            "type": {
+              "option": "pubkey"
+            }
+          },
+          {
+            "name": "description_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "payment",
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "JobStatus"
+              }
+            }
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "dispute_timestamp",
+            "type": {
+              "option": "i64"
+            }
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobCounter",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "count",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JobStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Accepted"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Resolved"
+          },
+          {
+            "name": "Cancelled"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rating",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "job_id",
+            "type": "u64"
+          },
+          {
+            "name": "client",
+            "type": "pubkey"
+          },
+          {
+            "name": "worker",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "u8"
+          },
+          {
+            "name": "on_time",
+            "type": "bool"
+          },
+          {
+            "name": "comment_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}
