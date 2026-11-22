@@ -1,0 +1,19 @@
+{"step": "attempt1_setup", "program": "A5ffsYfm2V2DTfCNpyaP1Lvtd5hS8wYaa7tQkJAXFXf3", "protocol": "3BqBukiLx3171oK1mSazxT3e5ritMNp2kh4g3RVVaB4V", "agent": "7j2QHyy1QbmEquAsik5Vx4vnjR4m69TXEeYf3Lbz2yHn", "escrow": "8ii8hB7MzwBHtG7rGZmswNknRc46z8em3j9Czzcp9YKw", "vault": "Df8HnwCa9WCNhHcftKUiDGoA8sSf9eJZT4P45mon46xe", "attempt": 1}
+{"step": "initialize", "sig": "28Vnb5wiKxMw7eitLSEC1BrUHL9EH4XbxXYE3FHqaoqK6pf1faYa8JAGuBmgvHU4CcHS8RCQdZiLG2r4H4dbhJY1", "attempt": 1}
+{"step": "attempt1_register_agent_below_min_stake", "rejected": true, "reason": "InvalidStake", "attempt": 1}
+{"step": "attempt1_register_agent", "sig": "UP8H1yxSnMkNjW7coofTGPvpPicKTHuXxKtUJUimw8D9xFH1eYhFM85T4VcY8NPv7nwUV5Wq8UMtV6M7MfGHoZR", "stake": 2000000000, "attempt": 1}
+{"step": "attempt1_configure_policy", "sig": "4MSjDieVSePvpc7EAc5zT3vU6p8kPhWwUKwc2purTy63dWVMmQ5LojAR4NcLExF97JXnD1VZNQ5o6UvDX7SKQaaC", "attempt": 1}
+{"step": "attempt1_lock_escrow", "sig": "4Phv3YofQXEStJnjjP8PV4yALox7HaDawEtyiHQX3Ekks9EPDute2P6eqs5NhYBetikzFiifnNUXhG2FVwoJ2PsV", "amount": 1000000, "vault_balance": "1000000", "attempt": 1}
+{"step": "attempt1_aborted", "reason": "Pyth Hermes HTTP API returned 401 unauthorized; switched to the on-chain push-oracle account"}
+{"step": "setup", "program": "A5ffsYfm2V2DTfCNpyaP1Lvtd5hS8wYaa7tQkJAXFXf3", "protocol": "3BqBukiLx3171oK1mSazxT3e5ritMNp2kh4g3RVVaB4V", "agent": "HzowNisNPsW2it4WF3qnNEUXvaHnSoMMcteUrm1hMpmh", "escrow": "D9L58YBhoDonrkfANQmKp4eLLDvMoJaEAgwzZqR8K2Q4", "vault": "Df8HnwCa9WCNhHcftKUiDGoA8sSf9eJZT4P45mon46xe"}
+{"step": "register_agent_below_min_stake", "rejected": true, "reason": "InvalidStake"}
+{"step": "register_agent", "sig": "4BUpPPyuCxuhyLfif6JcyVpwKsXiVGvW3Nzupy4u2RWBiXorKRzNJKnZiUzGash5e76PF4W2oPtXoDKbr7gJqtuV", "stake": 2000000000}
+{"step": "configure_policy", "sig": "NjSrZapF6wSC66c7iYSmi7jfAySkAguu4mxdKCuUaDDd62Mog86Yq9AuCv3A6bF3SnkTjcGhjdEjs2HGeyYGzky"}
+{"step": "lock_escrow", "sig": "H5oyPmM6qddypkooBjwCmkazEf5GdfyWnH2YA7ifYptVmYo4GAmxqf63uQcXBSM37CHAkmCa5yP9K5f4CE8BY2E", "amount": 1000000, "vault_balance": "2000000"}
+{"step": "pyth_price", "account": "6bWEn5B8eJCRAek5acd3R7d4Sx3e7JWvt84srqqfYgt", "price": "7031576484", "expo": -8, "publish_time": 1795363745, "age_s": 10}
+{"step": "commit_zero_hash", "rejected": true, "reason": "InvalidIntentId"}
+{"step": "commit", "sig": "5RM2QsJtxAnZYeceFL8VhkmdTRhzKGQXZeF7KbfdKfs7mwyFfcTSRzJuRWnCZuPFnRm841Ah2dbJXPtgPZn1X7iV", "claimed_price_6dp": "70315764"}
+{"step": "verify_and_execute", "sig": "64X9jV2UZ5xbhkU334VE9seBjMzau51cDMjz5B1wyG1BECtoMz2kfTEqGH1vvCmr4JxnwL3WBGA4vVChTY13oFJj", "decision": 1, "hash_matched": true, "oracle_matched": true, "policy_passed": true, "oracle_price": "70315764", "deviation_bps": 0, "escrow_status": "executed", "dest_received": "1000000", "vault_balance": "1000000"}
+{"step": "lock_escrow_2", "sig": "2kCn5frGEweCpAeQ1KgNkJk8EHuBEx7fKhYYDGpXBjtVJX9fa4j1whXUX3g6NUNJMSgfFPHuq6aYYUfKg7DMC92p"}
+{"step": "commit_2", "sig": "5q4vm2y9PCc6XhB2dyH63SfTenF4fcxW4oD9v9zoMQGxBJiCtUj7ibHcGKBzPT2utDqvBxtaAuHBztdxorBRPSAF"}
+{"step": "verify_and_execute_mismatched_claim", "sig": "T9FbhWU3PWtMdwgkMLQx6aSYd9U4UQDPULksk9sXUPZ7KS92s2v7Y88FC8y2VW39eRFQj5dLJWTjhLDan9PjmEw", "decision": 0, "hash_matched": false, "failure_code": 1, "escrow_status": "refunded", "owner_refunded": "500000", "agent_stake_after": "1800000000", "agent_score": 955}

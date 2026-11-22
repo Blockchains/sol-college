@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-aegis",
+  "slug": "aegis",
+  "displayName": "Aegis Verifier (Sol.College demonstration)",
+  "description": "Commit-reveal verification of AI-agent trade claims against a Pyth oracle on Solana devnet (Anchor 0.31.1). initialize, register_agent, configure_policy, lock_escrow, commit and verify_and_execute were verified on both the approved path (escrow executed, 1_000_000 paid out) and the mismatch path (refund plus stake slash).",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of yigitturaan/Aegis. The lab tree is branch sol-college-devnet of Blockchains/aegis-verifier (Blockchains/aegis is an unrelated fork of a different project). The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "yigitturaan/Aegis",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/aegis-verifier",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "aegis-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-aegis"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T16:25:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (agent stake, policy, escrow, commit-reveal, Pyth price verification)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/aegis/",
+      "QA: devnet proof of approved and rejected verify_and_execute"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Real Jupiter swap CPI (the program uses a 1:1 mock swap amount)"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "refund-expiry",
+        "title": "Exercise refund after escrow expiry and the admin slash instruction",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/aegis"
+  }
+}

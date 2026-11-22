@@ -1,0 +1,42 @@
+{
+  "title": "Aegis Verifier",
+  "summary": "Make an AI agent commit to a trade claim, then check it against a live Pyth price and your policy before any escrowed funds move.",
+  "what": "Aegis is an Anchor 0.31.1 verification layer for agent trades. Agents stake SOL to register. Owners lock tokens in escrow and set a policy. The agent first commits a hash of its claim, then reveals it in verify_and_execute; the program checks the hash, the Pyth oracle price and the policy, then executes or refunds and slashes.",
+  "app_note": "The page at /dapps/aegis/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/aegis-verifier.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/aegis/, switch to Devnet, and connect a wallet. The lab already ran an approved and a rejected verification.",
+      "see": "Escrow D9L58YBh\u2026 is Executed; the second escrow is Refunded.",
+      "ran": "lock_escrow H5oyPmM6\u2026; commit 5RM2QsJt\u2026; verify_and_execute 64X9jV2U\u2026; mismatch T9FbhWU3\u2026"
+    }
+  ],
+  "diagram": "agent --register_agent(stake)--> reputation; owner --configure_policy--> policy; owner --lock_escrow--> vault; agent --commit(hash)--> escrow Committed; agent --verify_and_execute(claim, Pyth)--> Executed (pay owner dest) | Refunded (refund owner, slash).",
+  "accounts": [
+    "protocol PDA seeds [\"protocol\"]",
+    "protocol_vault PDA seeds [\"protocol_vault\"]",
+    "reputation PDA seeds [\"reputation\", agent]",
+    "policy PDA seeds [\"policy\", owner, agent]",
+    "escrow PDA seeds [\"escrow\", intent_id, owner]",
+    "vault token PDA seeds [\"vault\", mint]",
+    "verification PDA seeds [\"verification\", intent_id, agent]"
+  ],
+  "instructions": [
+    "initialize",
+    "register_agent",
+    "configure_policy",
+    "lock_escrow",
+    "commit",
+    "verify_and_execute",
+    "refund",
+    "slash"
+  ],
+  "innovation": "Commit-reveal stops an agent from picking its claim after seeing the price, and the oracle check plus on-chain policy decide execution without trusting the agent.",
+  "frontend": "Generic IDL console at /dapps/aegis/.",
+  "exercises": [
+    "Why must the claim hash be committed before verify_and_execute?",
+    "What happens to the escrow if the claimed price is more than 1% from Pyth?"
+  ],
+  "not_covered": [
+    "refund after expiry and slash"
+  ]
+}

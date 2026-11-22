@@ -1,0 +1,10 @@
+{
+ "name": "Aegis Verifier",
+ "fork": "https://github.com/Blockchains/aegis-verifier",
+ "commit": "91e9ecb67ac1b1dfcdc25af3b1124b72916c159a",
+ "lesson": "/explore/aegis/",
+ "programs": {
+  "devnet": "A5ffsYfm2V2DTfCNpyaP1Lvtd5hS8wYaa7tQkJAXFXf3",
+  "mainnet": null
+ }
+}
