@@ -3,7 +3,7 @@
   "projectId": "sc-demo-pincerpay",
   "slug": "pincerpay",
   "displayName": "PincerPay x402 Facilitator (Sol.College demonstration)",
-  "description": "On-chain facilitator for x402-style agent payments on Solana devnet (Anchor 0.30.1): a facilitator authority registers merchants, settles agent token payments with a protocol fee taken into a fee vault, records off-chain x402 settlements, withdraws fees and deregisters merchants. initialize, register_merchant, settle_payment, record_x402_settlement, withdraw_fees and deregister_merchant were verified with lab tokens.",
+  "description": "On-chain x402 payment facilitator for agents on devnet (Anchor 0.30.1): merchant registry, fee-taking token settlement with on-chain records, x402 hash records, fee withdrawal and deregistration. All six instructions verified with lab tokens.",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration of ds1/pincerpay. The lab tree is branch sol-college-devnet of Blockchains/pincerpay. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",

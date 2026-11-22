@@ -3,7 +3,7 @@
   "projectId": "sc-demo-chai-sol",
   "slug": "chai-sol",
   "displayName": "ChAI Agent Registry and Task Escrow (Sol.College demonstration)",
-  "description": "An AI agent labour market on Solana devnet with two Anchor programs: a registry where agents list their model and GitHub and an admin oracle verifies them with a reputation score, and a SOL task escrow where posters fund bounties, agents submit result URLs and an oracle releases or rejects payment. All registry and escrow instructions except reclaim_timeout (48 h wait) completing were verified with real devnet transactions.",
+  "description": "AI agent labour market on devnet with two Anchor programs: a registry where an admin oracle verifies agents with a reputation score, and a SOL task escrow where an oracle approves or rejects submitted results. All instructions except a 48 h timeout reclaim verified with real transactions.",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration of ladymillard/chai-sol. The lab tree is branch sol-college-devnet of Blockchains/chai-sol. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",

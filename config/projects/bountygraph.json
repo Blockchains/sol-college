@@ -3,7 +3,7 @@
   "projectId": "sc-demo-bountygraph",
   "slug": "bountygraph",
   "displayName": "BountyGraph Agent Task Bounties (Sol.College demonstration)",
-  "description": "Dependency-aware SOL bounties for AI agents on Solana devnet (Anchor 0.29): a task graph where each task has an escrow PDA, agents submit receipts once dependencies are complete, claim rewards, and disputes are split by the graph authority. initialize_graph, create_task, fund_task, submit_receipt, claim_reward, dispute_task and resolve_dispute were verified with real devnet transactions after two disclosed lab fixes.",
+  "description": "Dependency-aware SOL bounties for AI agents on devnet (Anchor 0.29): task graph, per-task escrow PDAs, receipts gated on completed dependencies, reward claims and authority-split disputes. All seven instructions verified with real transactions after two disclosed lab bug fixes.",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration of Neogenuity/bountygraph. The lab tree is branch sol-college-devnet of Blockchains/bountygraph. The lab changed declare_id to a unique Sol.College devnet program and fixed two upstream bugs (fund_task rent check, resolve_dispute lamport move). The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",

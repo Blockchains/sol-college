@@ -3,7 +3,7 @@
   "projectId": "sc-demo-agent-protocol",
   "slug": "agent-protocol",
   "displayName": "Agent Protocol Job Market (Sol.College demonstration)",
-  "description": "An on-chain job market for AI agents on Solana devnet (Anchor 0.32.1): agents register a priced profile, clients escrow SOL into job PDAs, agents can delegate sub-tasks to other agents, and payment is released by the client, refunded on reject or cancel, or settled by a named arbiter for a fee. Agents can stake SOL and receive 1-5 ratings. Registration, invocation, delegation, completion, release, rating, arbiter disputes, reject, cancel, close and stake/unstake were verified with real devnet transactions.",
+  "description": "On-chain job market for AI agents on devnet (Anchor 0.32.1): priced agent profiles, SOL job escrows, sub-agent delegation, release, ratings, arbiter disputes, refunds and stake. Fourteen instructions verified with real devnet transactions.",
   "sector": "DeAI",
   "ownership": "sol-college-demonstration",
   "demonstrationNotice": "Sol.College-owned demonstration of marchantdev/agent-protocol. The lab tree is branch sol-college-devnet of Blockchains/agent-protocol. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",

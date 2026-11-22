@@ -4938,6 +4938,71 @@
     "functional_evidence": "register_agent alice 2yxrcC9L\u2026; register_agent bob 5fynJ2wF\u2026; deposit 2_000_000 lab tokens into alice vault 4EoxeMAF\u2026; transfer_by_name alice -> bob 500_000 5hFLf5ki\u2026; set_daily_limit 700_000 FH8e1Uy9\u2026; transfer_by_name 400_000 within the cap 5evMvrce\u2026; approve bob for 300_000 4HNFbKH5\u2026; transfer_from 200_000 by bob 4WA2iCAY\u2026; create_invoice bob -> alice 100_000 3gPSxjhA\u2026; pay_invoice by alice 2DVw36xF\u2026; create_subscription 50_000 every 60 s 395Qrg7E\u2026; execute_subscription by a third-party cranker after 60 s 4hWnBaEm\u2026; withdraw bob vault to wallet xPsasm9R\u2026. transfer_by_name signed by a stranger was rejected (Unauthorized). A 400_000 transfer that would pass the 700_000 daily cap was rejected (SpendingCapExceeded). approve to itself was rejected (CannotApproveSelf). transfer_from above the remaining allowance was rejected (AllowanceExceeded). create_invoice to itself was rejected (CannotInvoiceSelf). pay_invoice twice was rejected (InvoiceNotPending). execute_subscription before it was due was rejected (SubscriptionNotDue)."
   },
   {
+    "slug": "sentinel-ai",
+    "name": "SentinelAI Agent Guardrails",
+    "lesson": "/explore/sentinel-ai/",
+    "app": "/dapps/sentinel-ai/",
+    "fork": "https://github.com/Blockchains/SentinelAI",
+    "commit": "be5d3c76fb28c64aeda2af60d79760753668cb23",
+    "program": "6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/SentinelAI (unique declare_id; the official CSjzuzfE\u2026 was not reused).",
+    "learn": "initialize_agent_profile creates a profile PDA [\"agent_profile\", agent] owned by the payer with a starting reputation of 50. set_policy writes the owner policy PDA [\"agent_policy\", owner]. The agent signs submit_transaction, which checks frozen state, minimum reputation, the maximum amount, the allowed receiver and the high-value tier, then transfers SOL to the receiver and raises reputation by 10. freeze_agent and unfreeze_agent are owner-only.",
+    "source": [
+      [
+        "programs/sentinel_ai/src/instructions/submit_transaction.rs",
+        "https://github.com/Blockchains/SentinelAI/blob/be5d3c76fb28c64aeda2af60d79760753668cb23/programs/sentinel_ai/src/instructions/submit_transaction.rs"
+      ],
+      [
+        "programs/sentinel_ai/src/lib.rs",
+        "https://github.com/Blockchains/SentinelAI/blob/be5d3c76fb28c64aeda2af60d79760753668cb23/programs/sentinel_ai/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/sentinel-ai.mjs",
+    "log": "tests/devnet/logs/sentinel-ai-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy sentinel_ai as 6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk on devnet",
+        "3te7AU7E4hYzwCXSX3tejEXi7qWxn8XU2Dx9gxPEYuqjZ6MRPDgkBKHMEMEocgRuSHVQC6vXgcC2tqRsKboWobcG"
+      ],
+      [
+        "initialize_agent_profile (reputation 50)",
+        "4FHnJaichXvvrHT8KX7B7b4RTNH1zcCcXFYD8cE8aKStAY6e9nHnPtocGGRoLQ5JgManTjvsKA4WmEZgYAsa9ZAo"
+      ],
+      [
+        "set_policy max 5_000_000, receiver R, high-value 3_000_000 needs reputation 70",
+        "cjww1BUNgu6wKDYa4V56hs9n6R35FakLX2neMRS9NBHXR4o6smgd7unmnBsCcE6j1SCGD15ftNaarmj9HY1f8HM"
+      ],
+      [
+        "submit_transaction 1_000_000 to R (reputation 50 -> 60)",
+        "V9hMejJm4JXpsGoL5PotB57LRKvAk2KBhamTzPkpnW1d9tfMTPWrvapkZ8wvUuoKwJrcEkXsFWZbwAVGGNCKgfJ"
+      ],
+      [
+        "freeze_agent by the owner",
+        "jdtJ7kb2PLDJFfJ2isySgRGCmkYtW2r14YD8DwoaxiYUbyz7ZcMEZJA2yGoFEaXyECwr2mDNNBT7vg2SUJLEFTR"
+      ],
+      [
+        "unfreeze_agent by the owner",
+        "5icoYjibdJVfS3AvjeS7gCoHEdzSyp7LoKveZKnFwzhwDoGUv97a16wnWsSP9vSv1bet9JjexcNyzo246kaqv8Dp"
+      ],
+      [
+        "submit_transaction 2_000_000 (reputation 60 -> 70)",
+        "a9sFBPwFKwhmaBsXE7PNnGvcWES5U13boVbN647genKRwuky73z8Ra4X8Ghkru71hpoyuvbABuvhKQQwhcbJMRY"
+      ]
+    ],
+    "negative": [
+      "6_000_000 above the policy maximum was rejected (AmountExceedsMax).",
+      "A transfer to a receiver other than R was rejected (ReceiverNotAllowed).",
+      "4_000_000 above the high-value tier with reputation 60 < 70 was rejected (HighValueReputationInsufficient).",
+      "freeze_agent by a stranger was rejected (ConstraintHasOne).",
+      "submit_transaction while frozen was rejected (AgentFrozen)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/sentinel-ai.mjs.",
+    "limits": "Upstream design flaw, shown on devnet: every rejection returns an error, so the transaction reverts and the reputation penalty, failure counter and automatic circuit breaker never persist (consecutive_failures stayed 0 after three rejections). Manual freeze works. One policy per owner applies to all of that owner\u2019s agents, and only one receiver is allowed. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_agent_profile 4FHnJaic\u2026; set_policy max 5_000_000, receiver R, high-value 3_000_000 needs reputation 70 cjww1BUN\u2026; submit_transaction 1_000_000 to R V9hMejJm\u2026; freeze_agent by the owner jdtJ7kb2\u2026; unfreeze_agent by the owner 5icoYjib\u2026; submit_transaction 2_000_000 a9sFBPwF\u2026. 6_000_000 above the policy maximum was rejected (AmountExceedsMax). A transfer to a receiver other than R was rejected (ReceiverNotAllowed). 4_000_000 above the high-value tier with reputation 60 < 70 was rejected (HighValueReputationInsufficient). freeze_agent by a stranger was rejected (ConstraintHasOne). submit_transaction while frozen was rejected (AgentFrozen)."
+  },
+  {
     "slug": "bountygraph",
     "name": "BountyGraph Agent Task Bounties",
     "lesson": "/explore/bountygraph/",
@@ -5077,71 +5142,6 @@
     "limits": "Payments use the Sol.College devnet lab mint BJMSdujx\u2026 in place of USDC (the program does not pin a mint). The default cargo-build-sbf output returned a spurious Overflow from settle_payment on devnet; the lab program is built with --arch v2, where the same source works. The config was created on the first run and reused by the recorded run. Only the facilitator authority can settle, so the console cannot settle for arbitrary wallets. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize config with fee_bps 100 34b7vhP4\u2026; register_merchant 3TT8jVJQ\u2026; settle_payment from the agent to the merchant with the 1% fee 2s8e3EvE\u2026; record_x402_settlement with a non-zero hash 5iwD3ELq\u2026; withdraw_fees 10_000 3gPV2e1K\u2026; deregister_merchant 2EBRtWSS\u2026. settle_payment of 0 was rejected (ZeroAmount). settle_payment signed by a non-authority was rejected (ConstraintHasOne). record_x402_settlement with an all-zero hash was rejected (InvalidX402TxHash). withdraw_fees above the vault balance was rejected (InsufficientFeeVaultBalance). settle_payment after deregistration was rejected (MerchantNotActive)."
-  },
-  {
-    "slug": "sentinel-ai",
-    "name": "SentinelAI Agent Guardrails",
-    "lesson": "/explore/sentinel-ai/",
-    "app": "/dapps/sentinel-ai/",
-    "fork": "https://github.com/Blockchains/SentinelAI",
-    "commit": "be5d3c76fb28c64aeda2af60d79760753668cb23",
-    "program": "6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk",
-    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/SentinelAI (unique declare_id; the official CSjzuzfE\u2026 was not reused).",
-    "learn": "initialize_agent_profile creates a profile PDA [\"agent_profile\", agent] owned by the payer with a starting reputation of 50. set_policy writes the owner policy PDA [\"agent_policy\", owner]. The agent signs submit_transaction, which checks frozen state, minimum reputation, the maximum amount, the allowed receiver and the high-value tier, then transfers SOL to the receiver and raises reputation by 10. freeze_agent and unfreeze_agent are owner-only.",
-    "source": [
-      [
-        "programs/sentinel_ai/src/instructions/submit_transaction.rs",
-        "https://github.com/Blockchains/SentinelAI/blob/be5d3c76fb28c64aeda2af60d79760753668cb23/programs/sentinel_ai/src/instructions/submit_transaction.rs"
-      ],
-      [
-        "programs/sentinel_ai/src/lib.rs",
-        "https://github.com/Blockchains/SentinelAI/blob/be5d3c76fb28c64aeda2af60d79760753668cb23/programs/sentinel_ai/src/lib.rs"
-      ]
-    ],
-    "flow": "tests/devnet/sentinel-ai.mjs",
-    "log": "tests/devnet/logs/sentinel-ai-2026-11-22.jsonl",
-    "verified": "2026-11-22",
-    "steps": [
-      [
-        "Deploy sentinel_ai as 6UA8e51sVRv1LxBwU4XMQrA4G6SRWxsQo48cgMnr1ygk on devnet",
-        "3te7AU7E4hYzwCXSX3tejEXi7qWxn8XU2Dx9gxPEYuqjZ6MRPDgkBKHMEMEocgRuSHVQC6vXgcC2tqRsKboWobcG"
-      ],
-      [
-        "initialize_agent_profile (reputation 50)",
-        "4FHnJaichXvvrHT8KX7B7b4RTNH1zcCcXFYD8cE8aKStAY6e9nHnPtocGGRoLQ5JgManTjvsKA4WmEZgYAsa9ZAo"
-      ],
-      [
-        "set_policy max 5_000_000, receiver R, high-value 3_000_000 needs reputation 70",
-        "cjww1BUNgu6wKDYa4V56hs9n6R35FakLX2neMRS9NBHXR4o6smgd7unmnBsCcE6j1SCGD15ftNaarmj9HY1f8HM"
-      ],
-      [
-        "submit_transaction 1_000_000 to R (reputation 50 -> 60)",
-        "V9hMejJm4JXpsGoL5PotB57LRKvAk2KBhamTzPkpnW1d9tfMTPWrvapkZ8wvUuoKwJrcEkXsFWZbwAVGGNCKgfJ"
-      ],
-      [
-        "freeze_agent by the owner",
-        "jdtJ7kb2PLDJFfJ2isySgRGCmkYtW2r14YD8DwoaxiYUbyz7ZcMEZJA2yGoFEaXyECwr2mDNNBT7vg2SUJLEFTR"
-      ],
-      [
-        "unfreeze_agent by the owner",
-        "5icoYjibdJVfS3AvjeS7gCoHEdzSyp7LoKveZKnFwzhwDoGUv97a16wnWsSP9vSv1bet9JjexcNyzo246kaqv8Dp"
-      ],
-      [
-        "submit_transaction 2_000_000 (reputation 60 -> 70)",
-        "a9sFBPwFKwhmaBsXE7PNnGvcWES5U13boVbN647genKRwuky73z8Ra4X8Ghkru71hpoyuvbABuvhKQQwhcbJMRY"
-      ]
-    ],
-    "negative": [
-      "6_000_000 above the policy maximum was rejected (AmountExceedsMax).",
-      "A transfer to a receiver other than R was rejected (ReceiverNotAllowed).",
-      "4_000_000 above the high-value tier with reputation 60 < 70 was rejected (HighValueReputationInsufficient).",
-      "freeze_agent by a stranger was rejected (ConstraintHasOne).",
-      "submit_transaction while frozen was rejected (AgentFrozen)."
-    ],
-    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/sentinel-ai.mjs.",
-    "limits": "Upstream design flaw, shown on devnet: every rejection returns an error, so the transaction reverts and the reputation penalty, failure counter and automatic circuit breaker never persist (consecutive_failures stayed 0 after three rejections). Manual freeze works. One policy per owner applies to all of that owner\u2019s agents, and only one receiver is allowed. Source unchanged apart from declare_id. The official program id was not reused.",
-    "functional": "full",
-    "functional_evidence": "initialize_agent_profile 4FHnJaic\u2026; set_policy max 5_000_000, receiver R, high-value 3_000_000 needs reputation 70 cjww1BUN\u2026; submit_transaction 1_000_000 to R V9hMejJm\u2026; freeze_agent by the owner jdtJ7kb2\u2026; unfreeze_agent by the owner 5icoYjib\u2026; submit_transaction 2_000_000 a9sFBPwF\u2026. 6_000_000 above the policy maximum was rejected (AmountExceedsMax). A transfer to a receiver other than R was rejected (ReceiverNotAllowed). 4_000_000 above the high-value tier with reputation 60 < 70 was rejected (HighValueReputationInsufficient). freeze_agent by a stranger was rejected (ConstraintHasOne). submit_transaction while frozen was rejected (AgentFrozen)."
   },
   {
     "slug": "chai-sol",
