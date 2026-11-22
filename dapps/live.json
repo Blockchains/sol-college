@@ -6267,5 +6267,73 @@
     "limits": "Official nosana-node start is blocked by Nosana's private host-manager; dashboard needs api.nosana.com; kit and node have no LICENSE file. Upstream Anchor test suite not run. No upstream PRs.",
     "functional": "full",
     "functional_evidence": "Job listed, claimed, run in a container, result CID posted and read back as COMPLETED; a failing job diagnosed from chain plus result file; a quit job recovered and re-run. All on devnet via scripts; there is no browser app."
+  },
+  {
+    "slug": "sibyl-oracle",
+    "name": "Sibyl Prediction Oracle",
+    "lesson": "/explore/sibyl-oracle/",
+    "app": "/dapps/sibyl-oracle/",
+    "fork": "https://github.com/Blockchains/sibyl-oracle-solana",
+    "commit": "36cff340b387c3583fd5b231a4534f4a450eed47",
+    "program": "8CUnNyHh9q4rjEkoupDoezfYk2GsFvnzn84j7nrHEXeE",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/sibyl-oracle-solana (unique declare_id; the official gVaLAXxs\u2026 was not reused).",
+    "learn": "initialize creates the oracle PDA [\"oracle\"] owned by the authority. create_prediction writes [\"prediction\", id u64 LE] with the statement, a 0-100 confidence and a deadline in hours, and bumps prediction_count. resolve_prediction is allowed only after the deadline, once, and marks the call correct or wrong, updating correct_predictions. transfer_authority hands the oracle to a new key.",
+    "source": [
+      [
+        "programs/sibyl-oracle/src/lib.rs",
+        "https://github.com/Blockchains/sibyl-oracle-solana/blob/36cff340b387c3583fd5b231a4534f4a450eed47/programs/sibyl-oracle/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/sibyl-oracle.mjs",
+    "log": "tests/devnet/logs/sibyl-oracle-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy sibyl-oracle as 8CUnNyHh9q4rjEkoupDoezfYk2GsFvnzn84j7nrHEXeE on devnet",
+        "22f6hFb43UmMSc39j479eChh61AQc7Hs5A1zSZyMakci3ox3dVfmEkWuTwnyxtHeBXrxLbQqRY6rJZJkvPSzm7AW"
+      ],
+      [
+        "initialize oracle",
+        "2pbg1mCNB7Vdaj7rk9owDttXoejzMYwHzBosFL8oGb8CTn7YLsBNZVcM6vURg51oUQnWsUknrmXgVZ4fVoj5aJx2"
+      ],
+      [
+        "create_prediction 1 (72%)",
+        "4VgtE64aATrxxALsFHEAmQDzs9r4XKLT7EdrSnpJv9qtnHi9UetzxT3ZJYsceUmhzyhgVFHe5zdEFVe8K6MyhdBx"
+      ],
+      [
+        "create_prediction 2 (35%)",
+        "Gx1jeT8y8TYxPpYRXTFdf6Kkf4Ge7MtMr5JNsmC7GBBmuV5j1JH7zDJ82fZwJtL8CWYXsZecmSB3jVejXKYU6sU"
+      ],
+      [
+        "resolve_prediction 1 correct (after 1 h)",
+        "3yPvEUGJMCdGYi8mKK1pRyrBhyM2rQnsWv4mWWhAe2asP4Ubjjh52YqVBMvAhZ8FMGhWuLjjtRY5J3X8BaWYAeTs"
+      ],
+      [
+        "resolve_prediction 2 wrong",
+        "25uzhP7p6m4NoMoc64ttTiyQuKoWTazGY6sLeYLuKuBQjRUQfLm7TAwksKVtUm9Nefkbek7ubsLodUVahtPLSTDH"
+      ],
+      [
+        "transfer_authority",
+        "64w1pBrsybDvKEKtLuZY6Vg5CpXLUm7wKzjS9bG8QmVqrPB327fL94uzb1q9gxMtUwVJiWJBKV6ngdjXrStutmuw"
+      ],
+      [
+        "transfer_authority back",
+        "66v1n2gEidh1oxqUuapSLqX57c8eUvK2vtXvX2YgxMziAPmBr5UznjdFShQEKsDz5ycXDLQBU2JudDVeTAnSZLBo"
+      ]
+    ],
+    "negative": [
+      "Confidence 101 was rejected (InvalidConfidence).",
+      "A 0-hour deadline was rejected (InvalidDeadline).",
+      "create_prediction by a stranger was rejected (ConstraintHasOne).",
+      "Resolving before the deadline was rejected (DeadlineNotReached).",
+      "transfer_authority by a stranger was rejected (ConstraintHasOne).",
+      "resolve_prediction by a stranger was rejected (ConstraintHasOne).",
+      "Resolving with a mismatched id was rejected (ConstraintSeeds).",
+      "Resolving twice was rejected (AlreadyResolved)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/sibyl-oracle.mjs.",
+    "limits": "Design limits: the authority both makes and grades its own predictions, so the accuracy score is self-reported; outcomes in the lab were set by hand, not from data. The off-chain AI agent in the repository was not run. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize oracle 2pbg1mCN\u2026; create_prediction 1 4VgtE64a\u2026; create_prediction 2 Gx1jeT8y\u2026; resolve_prediction 1 correct 3yPvEUGJ\u2026; resolve_prediction 2 wrong 25uzhP7p\u2026; transfer_authority 64w1pBrs\u2026; transfer_authority back 66v1n2gE\u2026. Confidence 101 was rejected (InvalidConfidence). A 0-hour deadline was rejected (InvalidDeadline). create_prediction by a stranger was rejected (ConstraintHasOne). Resolving before the deadline was rejected (DeadlineNotReached). transfer_authority by a stranger was rejected (ConstraintHasOne). resolve_prediction by a stranger was rejected (ConstraintHasOne). Resolving with a mismatched id was rejected (ConstraintSeeds). Resolving twice was rejected (AlreadyResolved)."
   }
 ]

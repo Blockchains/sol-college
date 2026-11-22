@@ -1,0 +1,10 @@
+{
+ "name": "Sibyl Prediction Oracle",
+ "fork": "https://github.com/Blockchains/sibyl-oracle-solana",
+ "commit": "36cff340b387c3583fd5b231a4534f4a450eed47",
+ "lesson": "/explore/sibyl-oracle/",
+ "programs": {
+  "devnet": "8CUnNyHh9q4rjEkoupDoezfYk2GsFvnzn84j7nrHEXeE",
+  "mainnet": null
+ }
+}

@@ -1,0 +1,33 @@
+{
+  "title": "Sibyl Prediction Oracle",
+  "summary": "Post AI predictions on chain before they resolve, then grade them after the deadline to build a public accuracy record.",
+  "what": "Sibyl is a single Anchor 0.30 program: one oracle account plus one numbered account per prediction.",
+  "app_note": "The page at /dapps/sibyl-oracle/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/sibyl-oracle-solana; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/sibyl-oracle/, switch to Devnet and read the oracle PDA and predictions 1 and 2.",
+      "see": "prediction_count, correct_predictions and each prediction with confidence, deadline and was_correct.",
+      "ran": "Two predictions created and resolved an hour later (see steps)."
+    }
+  ],
+  "diagram": "authority --initialize--> oracle; authority --create_prediction(text, confidence, hours)--> prediction[n]; (deadline passes) authority --resolve_prediction(n, correct)--> oracle.correct++",
+  "accounts": [
+    "oracle PDA [\"oracle\"]",
+    "prediction PDA [\"prediction\", id u64 LE]"
+  ],
+  "instructions": [
+    "initialize",
+    "create_prediction",
+    "resolve_prediction",
+    "transfer_authority"
+  ],
+  "innovation": "Timestamped, immutable predictions stop an AI oracle from rewriting its history after the fact.",
+  "frontend": "Generic IDL console at /dapps/sibyl-oracle/.",
+  "exercises": [
+    "Let a separate resolver or a price feed grade predictions.",
+    "Weight accuracy by confidence (a Brier score)."
+  ],
+  "not_covered": [
+    "The off-chain prediction agent"
+  ]
+}
