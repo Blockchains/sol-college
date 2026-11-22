@@ -1,0 +1,1318 @@
+{
+  "address": "66Uudcgfqtj68zmttyNfpBrU94Z3JcBpognKDUHofi2t",
+  "metadata": {
+    "name": "escrow",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "AgentFund: contribution escrow, milestone release, refunds"
+  },
+  "instructions": [
+    {
+      "name": "contribute",
+      "docs": [
+        "contribute(amount): transfer contributor -> escrow (SPL ATA or",
+        "native lamports). Requires the campaign to be Active and not past",
+        "its deadline. Accumulates into the contributor's",
+        "`ContributionAccount` with checked math."
+      ],
+      "discriminator": [
+        82,
+        33,
+        68,
+        131,
+        32,
+        0,
+        205,
+        95
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "contributor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contributor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "contributor_ata",
+          "docs": [
+            "SPL-only: contributor's ATA for `escrow.token_mint`. `None` for",
+            "native SOL contributions."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "escrow_ata",
+          "docs": [
+            "SPL-only: escrow's ATA. `None` for native SOL contributions."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "contribute_for",
+      "docs": [
+        "contribute_for(amount): like `contribute`, but the funds come from",
+        "`payer` while the contribution credit (vote weight, refund rights,",
+        "reputation) goes to `beneficiary`. This is the x402 settlement path:",
+        "a facilitator or platform treasury settles an agent's payment and",
+        "the agent \u2014 not the facilitator \u2014 becomes the on-chain contributor.",
+        "Refunds of this credit are claimable only by `beneficiary`."
+      ],
+      "discriminator": [
+        176,
+        243,
+        142,
+        195,
+        157,
+        108,
+        99,
+        171
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "beneficiary"
+              }
+            ]
+          }
+        },
+        {
+          "name": "payer",
+          "docs": [
+            "Funds source \u2014 pays the contribution and any account rent."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "beneficiary",
+          "docs": [
+            "(contribution PDA seed, vote weight, refund recipient). Never read",
+            "or written by this instruction."
+          ]
+        },
+        {
+          "name": "payer_ata",
+          "docs": [
+            "SPL-only: payer's ATA for `escrow.token_mint`. `None` for native SOL."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "escrow_ata",
+          "docs": [
+            "SPL-only: escrow's ATA. `None` for native SOL contributions."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "initialize_escrow",
+      "docs": [
+        "Bootstraps the `EscrowAccount` PDA for a project (and, for SPL",
+        "campaigns, its associated token account). Not one of the four",
+        "instructions named in the spec's contribution/vote/release/refund",
+        "flow, but required plumbing to create the account those",
+        "instructions operate on. Snapshots `goal_amount` / `deadline` /",
+        "`milestone_count` / `creator` immutably at this point."
+      ],
+      "discriminator": [
+        243,
+        160,
+        77,
+        153,
+        11,
+        92,
+        48,
+        209
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "creator",
+          "docs": [
+            "The project creator \u2014 must sign, and is the ONLY address milestone",
+            "releases will ever pay. Bound into `escrow.creator` at init."
+          ],
+          "signer": true
+        },
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "registry_project",
+          "docs": [
+            "The agent_registry ProjectAccount this escrow funds. Owner +",
+            "discriminator are enforced by `Account`; the handler additionally",
+            "requires its key to equal `project` and all terms to match it."
+          ]
+        },
+        {
+          "name": "mint",
+          "docs": [
+            "SPL-only: the project's mint. `None` for native SOL campaigns."
+          ],
+          "optional": true
+        },
+        {
+          "name": "escrow_ata",
+          "docs": [
+            "SPL-only: escrow's associated token account, created here with",
+            "the escrow PDA as authority. `None` for native SOL campaigns."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        },
+        {
+          "name": "goal_amount",
+          "type": "u64"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "milestone_count",
+          "type": "u8"
+        },
+        {
+          "name": "token_mint",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "refund",
+      "docs": [
+        "refund(): only once the deadline has passed, the goal was not",
+        "met, and nothing has been released yet. Returns the caller's full",
+        "`ContributionAccount.amount` from escrow, then zeroes and closes",
+        "the account back to the contributor (recovering rent)."
+      ],
+      "discriminator": [
+        2,
+        96,
+        183,
+        251,
+        63,
+        208,
+        46,
+        46
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contribution",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "contributor"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contributor",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "escrow_ata",
+          "docs": [
+            "SPL-only: escrow's ATA (source). `None` for native SOL."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "contributor_ata",
+          "docs": [
+            "SPL-only: contributor's ATA (destination). `None` for native SOL."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "release_milestone",
+      "docs": [
+        "release_milestone(milestone_index): milestones release strictly in",
+        "order. Tallies approving weight from the `VoteAccount`s supplied",
+        "as `remaining_accounts` and requires it to exceed 50% of",
+        "`total_deposited`. Release amount is `total_deposited /",
+        "milestone_count`, except the final milestone which sweeps the",
+        "remainder. Anyone may crank this once the threshold holds; funds",
+        "only ever go to the creator recorded at `initialize_escrow` time."
+      ],
+      "discriminator": [
+        56,
+        2,
+        199,
+        164,
+        184,
+        108,
+        167,
+        222
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "creator",
+          "docs": [
+            "Recorded project creator; funds are only ever released here.",
+            "Anyone may sign/pay for this instruction (it's a permissionless",
+            "crank once the vote threshold holds) \u2014 `creator` need not sign."
+          ],
+          "writable": true
+        },
+        {
+          "name": "escrow_ata",
+          "docs": [
+            "SPL-only: escrow's ATA (source). `None` for native SOL."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "creator_ata",
+          "docs": [
+            "SPL-only: creator's ATA (destination). `None` for native SOL."
+          ],
+          "writable": true,
+          "optional": true
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        },
+        {
+          "name": "milestone_index",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "vote_milestone",
+      "docs": [
+        "vote_milestone(milestone_index, support): only wallets holding a",
+        "`ContributionAccount` for this project may vote (enforced by the",
+        "`contribution` PDA having to already exist). One `VoteAccount` per",
+        "(voter, milestone) \u2014 `init` fails on a repeat vote. Records the",
+        "voter's contributed amount as weight at vote time."
+      ],
+      "discriminator": [
+        43,
+        27,
+        71,
+        239,
+        231,
+        20,
+        102,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "escrow",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  115,
+                  99,
+                  114,
+                  111,
+                  119
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              }
+            ]
+          }
+        },
+        {
+          "name": "contribution",
+          "docs": [
+            "Must already exist \u2014 its absence (uninitialized PDA) is exactly",
+            "what rejects non-contributors from voting."
+          ],
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  116,
+                  114,
+                  105,
+                  98,
+                  117,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "project"
+              },
+              {
+                "kind": "account",
+                "path": "voter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vote_account",
+          "writable": true
+        },
+        {
+          "name": "voter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "project",
+          "type": "pubkey"
+        },
+        {
+          "name": "milestone_index",
+          "type": "u8"
+        },
+        {
+          "name": "support",
+          "type": "bool"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ContributionAccount",
+      "discriminator": [
+        242,
+        17,
+        100,
+        122,
+        219,
+        233,
+        64,
+        194
+      ]
+    },
+    {
+      "name": "EscrowAccount",
+      "discriminator": [
+        36,
+        69,
+        48,
+        18,
+        128,
+        225,
+        125,
+        135
+      ]
+    },
+    {
+      "name": "ProjectAccount",
+      "discriminator": [
+        179,
+        110,
+        82,
+        178,
+        208,
+        35,
+        171,
+        116
+      ]
+    },
+    {
+      "name": "VoteAccount",
+      "discriminator": [
+        203,
+        238,
+        154,
+        106,
+        200,
+        131,
+        0,
+        41
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ContributionMade",
+      "discriminator": [
+        81,
+        218,
+        72,
+        109,
+        93,
+        96,
+        131,
+        199
+      ]
+    },
+    {
+      "name": "MilestoneReleased",
+      "discriminator": [
+        49,
+        225,
+        91,
+        223,
+        34,
+        165,
+        109,
+        181
+      ]
+    },
+    {
+      "name": "Refunded",
+      "discriminator": [
+        35,
+        103,
+        149,
+        246,
+        196,
+        123,
+        221,
+        99
+      ]
+    },
+    {
+      "name": "VoteCast",
+      "discriminator": [
+        39,
+        53,
+        195,
+        104,
+        188,
+        17,
+        225,
+        213
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "InvalidGoalAmount",
+      "msg": "Goal amount must be greater than zero"
+    },
+    {
+      "code": 6001,
+      "name": "InvalidDeadline",
+      "msg": "Deadline must be strictly in the future"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidMilestoneCount",
+      "msg": "Milestone count must be greater than zero"
+    },
+    {
+      "code": 6003,
+      "name": "InvalidAmount",
+      "msg": "Contribution amount must be greater than zero"
+    },
+    {
+      "code": 6004,
+      "name": "ProjectMismatch",
+      "msg": "Supplied project does not match this escrow account"
+    },
+    {
+      "code": 6005,
+      "name": "CampaignNotActive",
+      "msg": "Campaign is not active"
+    },
+    {
+      "code": 6006,
+      "name": "DeadlinePassed",
+      "msg": "Campaign deadline has already passed"
+    },
+    {
+      "code": 6007,
+      "name": "DeadlineNotPassed",
+      "msg": "Campaign deadline has not passed yet"
+    },
+    {
+      "code": 6008,
+      "name": "GoalMet",
+      "msg": "Campaign goal was met; refunds are not available"
+    },
+    {
+      "code": 6009,
+      "name": "GoalNotMet",
+      "msg": "Campaign goal has not been reached; milestones cannot be released"
+    },
+    {
+      "code": 6010,
+      "name": "AlreadyReleased",
+      "msg": "Funds have already been released for this campaign"
+    },
+    {
+      "code": 6011,
+      "name": "NothingToRefund",
+      "msg": "Nothing to refund for this contributor"
+    },
+    {
+      "code": 6012,
+      "name": "NotAContributor",
+      "msg": "Caller does not have a contribution to this project"
+    },
+    {
+      "code": 6013,
+      "name": "InvalidMilestoneIndex",
+      "msg": "Milestone index is out of range"
+    },
+    {
+      "code": 6014,
+      "name": "MilestoneAlreadyReleased",
+      "msg": "This milestone has already been released"
+    },
+    {
+      "code": 6015,
+      "name": "MilestoneOutOfOrder",
+      "msg": "Milestones must be released strictly in order"
+    },
+    {
+      "code": 6016,
+      "name": "AllMilestonesReleased",
+      "msg": "All milestones have already been released"
+    },
+    {
+      "code": 6017,
+      "name": "InsufficientApproval",
+      "msg": "Approving vote weight does not exceed 50% of total deposits"
+    },
+    {
+      "code": 6018,
+      "name": "InvalidVoteAccount",
+      "msg": "Supplied account is not a valid VoteAccount owned by this program"
+    },
+    {
+      "code": 6019,
+      "name": "VoteProjectMismatch",
+      "msg": "Vote account project does not match the requested project"
+    },
+    {
+      "code": 6020,
+      "name": "VoteMilestoneMismatch",
+      "msg": "Vote account milestone does not match the requested milestone"
+    },
+    {
+      "code": 6021,
+      "name": "DuplicateVoteAccount",
+      "msg": "Duplicate vote account supplied in remaining_accounts"
+    },
+    {
+      "code": 6022,
+      "name": "InvalidCreator",
+      "msg": "Recorded project creator does not match supplied creator account"
+    },
+    {
+      "code": 6023,
+      "name": "InvalidMint",
+      "msg": "Token account mint does not match escrow's token mint"
+    },
+    {
+      "code": 6024,
+      "name": "InvalidTokenAccount",
+      "msg": "Token account owner/authority mismatch"
+    },
+    {
+      "code": 6025,
+      "name": "MissingTokenAccounts",
+      "msg": "SPL escrow requires mint/token accounts to be supplied"
+    },
+    {
+      "code": 6026,
+      "name": "MathOverflow",
+      "msg": "Checked math overflow or underflow"
+    },
+    {
+      "code": 6027,
+      "name": "RegistryProjectMismatch",
+      "msg": "Supplied registry project account is not the requested project"
+    },
+    {
+      "code": 6028,
+      "name": "TermsMismatch",
+      "msg": "Escrow terms do not match the registered project's terms"
+    }
+  ],
+  "types": [
+    {
+      "name": "CampaignStatus",
+      "docs": [
+        "Escrow-local campaign status. Deliberately smaller than",
+        "`agent_registry`'s `ProjectStatus` (Active/Funded/Failed/Complete) \u2014",
+        "this program only needs to know whether it should still accept",
+        "contributions (`Active`) or has fully paid out (`Completed`); the",
+        "richer status lives on `ProjectAccount` in the registry program."
+      ],
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Completed"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContributionAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "contributor",
+            "type": "pubkey"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "docs": [
+              "Cumulative amount contributed across all `contribute` calls."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "docs": [
+              "Timestamp of the most recent contribution."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ContributionMade",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "contributor",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "total_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "EscrowAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "docs": [
+              "Opaque project identifier (matches the `project` argument used as",
+              "a PDA seed on every instruction, and the corresponding",
+              "`ProjectAccount` pubkey on the registry side)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "docs": [
+              "Snapshot of the project creator at `initialize_escrow` time.",
+              "Immutable thereafter \u2014 `release_milestone` only ever pays this",
+              "address."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "SPL mint, or the native-SOL sentinel (`NATIVE_SOL_MINT`)."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "goal_amount",
+            "docs": [
+              "Snapshot of the funding goal at `initialize_escrow` time."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Snapshot of the campaign deadline (unix seconds) at",
+              "`initialize_escrow` time."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "milestone_count",
+            "docs": [
+              "Snapshot of the milestone count at `initialize_escrow` time."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "CampaignStatus"
+              }
+            }
+          },
+          {
+            "name": "total_deposited",
+            "type": "u64"
+          },
+          {
+            "name": "released_amount",
+            "type": "u64"
+          },
+          {
+            "name": "milestone_index",
+            "docs": [
+              "Index of the next milestone eligible for release."
+            ],
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MilestoneReleased",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "milestone_index",
+            "type": "u8"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "total_released",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "ipfs_hash",
+            "docs": [
+              "IPFS hash containing title, description, image."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "goal_amount",
+            "docs": [
+              "In lamports (native SOL) or USDC micro-units, per `token_mint`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "SOL sentinel mint or the cluster's USDC mint."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "raised_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Unix seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ProjectStatus"
+              }
+            }
+          },
+          {
+            "name": "milestone_count",
+            "type": "u8"
+          },
+          {
+            "name": "project_index",
+            "docs": [
+              "This creator's project sequence number \u2014 also the PDA seed,",
+              "snapshotted from AgentAccount.projects_created at creation time."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Unix seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Funded"
+          },
+          {
+            "name": "Failed"
+          },
+          {
+            "name": "Complete"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Refunded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "contributor",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "milestone_index",
+            "type": "u8"
+          },
+          {
+            "name": "support",
+            "type": "bool"
+          },
+          {
+            "name": "weight",
+            "docs": [
+              "Voter's `ContributionAccount.amount` snapshotted at vote time."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VoteCast",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "voter",
+            "type": "pubkey"
+          },
+          {
+            "name": "milestone_index",
+            "type": "u8"
+          },
+          {
+            "name": "support",
+            "type": "bool"
+          },
+          {
+            "name": "weight",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

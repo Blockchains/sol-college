@@ -1,0 +1,420 @@
+{
+  "address": "7HqsLMUcESpKro5Rqu6Tv4P2KieZue3oMndnC5tb8GE7",
+  "metadata": {
+    "name": "reputation",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "AgentFund: soulbound compressed-NFT reputation tokens"
+  },
+  "instructions": [
+    {
+      "name": "init_reputation",
+      "docs": [
+        "Permissionlessly initializes an agent's ReputationAccount PDA",
+        "(seeds = [\"reputation\", agent_wallet]) with the starting score.",
+        "Anyone may call this on behalf of any agent wallet — it only",
+        "creates a zeroed-out score account, so there is nothing to gate."
+      ],
+      "discriminator": [
+        236,
+        239,
+        233,
+        112,
+        220,
+        149,
+        26,
+        175
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "needs to supply its address to derive the PDA seed — it does not",
+            "need to sign, since init_reputation is intentionally",
+            "permissionless (anyone may bootstrap any agent's score account)."
+          ]
+        },
+        {
+          "name": "reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initializes the platform-wide Config PDA, storing the authority",
+        "pubkey (the platform indexer wallet) that alone may call",
+        "`update_reputation`. Callable once — the `init` constraint on",
+        "`config` rejects a second invocation."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "update_reputation",
+      "docs": [
+        "Applies a reputation delta to an agent's score. Restricted to the",
+        "platform authority stored in the Config PDA. `reason` selects one",
+        "of the spec's point-table entries; `delta` must equal that",
+        "entry's value (enforced on-chain, not merely trusted off-chain),",
+        "so a compromised or buggy indexer cannot apply an arbitrary",
+        "delta even though it already must hold the authority key.",
+        "Score saturates at 0 and never underflows."
+      ],
+      "discriminator": [
+        194,
+        220,
+        43,
+        201,
+        54,
+        209,
+        49,
+        178
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "config"
+          ]
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "agent",
+          "docs": [
+            "to derive the ReputationAccount PDA seed."
+          ]
+        },
+        {
+          "name": "reputation",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  114,
+                  101,
+                  112,
+                  117,
+                  116,
+                  97,
+                  116,
+                  105,
+                  111,
+                  110
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "agent"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "delta",
+          "type": "i64"
+        },
+        {
+          "name": "reason",
+          "type": "u8"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "ReputationAccount",
+      "discriminator": [
+        19,
+        185,
+        177,
+        157,
+        34,
+        87,
+        67,
+        233
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "ReputationInitialized",
+      "discriminator": [
+        167,
+        122,
+        115,
+        118,
+        198,
+        80,
+        35,
+        69
+      ]
+    },
+    {
+      "name": "ReputationUpdated",
+      "discriminator": [
+        26,
+        36,
+        187,
+        150,
+        235,
+        90,
+        106,
+        89
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Only the platform authority may perform this action."
+    },
+    {
+      "code": 6001,
+      "name": "InvalidReason",
+      "msg": "Unrecognized reputation reason code."
+    },
+    {
+      "code": 6002,
+      "name": "DeltaReasonMismatch",
+      "msg": "The supplied delta does not match the point-table value for this reason code."
+    },
+    {
+      "code": 6003,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow occurred while updating account state."
+    }
+  ],
+  "types": [
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Platform authority pubkey (the platform indexer wallet) — the",
+              "only signer permitted to call `update_reputation`."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReputationAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "docs": [
+              "Agent's wallet — also the PDA seed + identity."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "docs": [
+              "Saturates at 0 on the downside; starts at INITIAL_SCORE."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "events_count",
+            "docs": [
+              "Number of `update_reputation` calls applied to this account."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "last_updated",
+            "docs": [
+              "Unix seconds of the last score change (or initialization)."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReputationInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "score",
+            "type": "u64"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ReputationUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_score",
+            "type": "u64"
+          },
+          {
+            "name": "new_score",
+            "type": "u64"
+          },
+          {
+            "name": "delta",
+            "type": "i64"
+          },
+          {
+            "name": "reason",
+            "type": "u8"
+          },
+          {
+            "name": "events_count",
+            "type": "u32"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

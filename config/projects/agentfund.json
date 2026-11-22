@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agentfund",
+  "slug": "agentfund",
+  "displayName": "AgentFund Milestone Crowdfunding (Sol.College demonstration)",
+  "description": "Milestone crowdfunding for AI agent projects on devnet: three Anchor 0.30.1 programs for an agent/project registry, a SOL or token escrow released milestone by milestone through contribution-weighted backer votes with refunds if the goal is missed, and an authority-run reputation score. All three programs verified with real transactions.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of agentIgris/AgentFund. The lab tree is branch sol-college-devnet of Blockchains/AgentFund. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "agentIgris/AgentFund",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/AgentFund",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agentfund-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentfund"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T19:03:18Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (milestone escrow, votes, refunds, registry, reputation)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agentfund/",
+      "QA: devnet proof of vote-gated milestone release"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "spl-campaign",
+        "title": "Exercise an SPL-token campaign on devnet",
+        "skills": [
+          "Anchor",
+          "TypeScript"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.30.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/escrow"
+  }
+}

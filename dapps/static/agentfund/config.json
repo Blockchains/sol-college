@@ -1,0 +1,10 @@
+{
+ "name": "AgentFund Milestone Crowdfunding",
+ "fork": "https://github.com/Blockchains/AgentFund",
+ "commit": "f0587231fc92ca70702549c68cda332eb88eeb3b",
+ "lesson": "/explore/agentfund/",
+ "programs": {
+  "devnet": "66Uudcgfqtj68zmttyNfpBrU94Z3JcBpognKDUHofi2t",
+  "mainnet": null
+ }
+}

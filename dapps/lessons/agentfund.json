@@ -1,0 +1,44 @@
+{
+  "title": "AgentFund Milestone Crowdfunding",
+  "summary": "Crowdfund an AI agent project and release the money milestone by milestone only when backers vote yes.",
+  "what": "AgentFund is three Anchor 0.30.1 programs: a registry of agents and projects, a milestone escrow governed by backer votes, and a reputation score kept by the platform.",
+  "app_note": "The page at /dapps/agentfund/ is the generic IDL-driven wallet console for the escrow program. The lab tree is branch sol-college-devnet of Blockchains/AgentFund; only the three declare_id values changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentfund/, switch to Devnet and read an escrow account, or contribute SOL to a project you created through the registry.",
+      "see": "Escrow totals, milestone index and status.",
+      "ran": "Two campaigns: full milestone release and a missed-deadline refund (see steps)."
+    }
+  ],
+  "diagram": "creator --register_agent/create_project--> registry; creator --initialize_escrow (terms checked)--> escrow; backers --contribute--> escrow; backers --vote_milestone--> votes; anyone --release_milestone(votes > 50%)--> creator; after deadline (goal missed) backer --refund",
+  "accounts": [
+    "agent PDA [\"agent\", owner] (registry)",
+    "project PDA [\"project\", creator, index u32 LE] (registry)",
+    "escrow PDA [\"escrow\", project]",
+    "contribution PDA [\"contribution\", project, backer]",
+    "vote PDA [\"vote\", project, backer, milestone]",
+    "reputation PDA [\"reputation\", agent] (reputation)"
+  ],
+  "instructions": [
+    "register_agent",
+    "create_project",
+    "initialize_escrow",
+    "contribute",
+    "contribute_for",
+    "vote_milestone",
+    "release_milestone",
+    "refund",
+    "update_project_status",
+    "init_reputation",
+    "update_reputation"
+  ],
+  "innovation": "Escrow terms are bound to the registry project on chain, and each milestone needs a contribution-weighted majority, so a creator cannot change the deal or take the money early.",
+  "frontend": "Generic IDL console at /dapps/agentfund/ (escrow program).",
+  "exercises": [
+    "Why does release_milestone take vote accounts as remaining accounts?",
+    "What happens to backers who never vote?"
+  ],
+  "not_covered": [
+    "SPL token campaigns"
+  ]
+}

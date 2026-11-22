@@ -1,0 +1,802 @@
+{
+  "address": "HA1RrJi7HXEmwPzvHTVJav4wqwJKVZgBX2vqgzXnvS3U",
+  "metadata": {
+    "name": "agent_registry",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "AgentFund: on-chain agent identity + project registration"
+  },
+  "instructions": [
+    {
+      "name": "create_project",
+      "docs": [
+        "Creates a new ProjectAccount PDA",
+        "(seeds = [\"project\", creator, project_index_le_bytes]) owned by",
+        "the calling agent, and increments the agent's `projects_created`",
+        "counter."
+      ],
+      "discriminator": [
+        148,
+        219,
+        181,
+        42,
+        221,
+        114,
+        145,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              }
+            ]
+          }
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "creator"
+              },
+              {
+                "kind": "account",
+                "path": "agent.projects_created",
+                "account": "AgentAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "ipfs_hash",
+          "type": "string"
+        },
+        {
+          "name": "goal_amount",
+          "type": "u64"
+        },
+        {
+          "name": "token_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        },
+        {
+          "name": "milestone_count",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "initialize",
+      "docs": [
+        "Initializes the platform-wide Config PDA, storing the platform",
+        "authority pubkey that (alongside a project's own creator) is",
+        "permitted to call `update_project_status`. Callable once — the",
+        "`init` constraint on `config` rejects a second invocation."
+      ],
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "authority",
+          "type": "pubkey"
+        }
+      ]
+    },
+    {
+      "name": "register_agent",
+      "docs": [
+        "Registers the calling wallet as an agent, creating its",
+        "AgentAccount PDA (seeds = [\"agent\", owner])."
+      ],
+      "discriminator": [
+        135,
+        157,
+        66,
+        195,
+        2,
+        113,
+        175,
+        30
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "agent",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  97,
+                  103,
+                  101,
+                  110,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "metadata_uri",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_project_metadata",
+      "docs": [
+        "Replaces a project's metadata hash/URI. Restricted to the",
+        "project's own creator or the platform authority stored in the",
+        "Config PDA — the same authorization model as",
+        "`update_project_status`. The account's `ipfs_hash` field is",
+        "sized for `MAX_IPFS_HASH_LEN` at creation, so no realloc is",
+        "required."
+      ],
+      "discriminator": [
+        72,
+        164,
+        85,
+        54,
+        239,
+        148,
+        18,
+        215
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project.creator",
+                "account": "ProjectAccount"
+              },
+              {
+                "kind": "account",
+                "path": "project.project_index",
+                "account": "ProjectAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "new_ipfs_hash",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "update_project_status",
+      "docs": [
+        "Updates a project's status. Restricted to the project's own",
+        "creator or the platform authority stored in the Config PDA."
+      ],
+      "discriminator": [
+        50,
+        46,
+        252,
+        160,
+        79,
+        221,
+        5,
+        68
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "project",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  106,
+                  101,
+                  99,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "project.creator",
+                "account": "ProjectAccount"
+              },
+              {
+                "kind": "account",
+                "path": "project.project_index",
+                "account": "ProjectAccount"
+              }
+            ]
+          }
+        },
+        {
+          "name": "config",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "status",
+          "type": {
+            "defined": {
+              "name": "ProjectStatus"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "AgentAccount",
+      "discriminator": [
+        241,
+        119,
+        69,
+        140,
+        233,
+        9,
+        112,
+        50
+      ]
+    },
+    {
+      "name": "Config",
+      "discriminator": [
+        155,
+        12,
+        170,
+        224,
+        30,
+        250,
+        204,
+        130
+      ]
+    },
+    {
+      "name": "ProjectAccount",
+      "discriminator": [
+        179,
+        110,
+        82,
+        178,
+        208,
+        35,
+        171,
+        116
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AgentRegistered",
+      "discriminator": [
+        191,
+        78,
+        217,
+        54,
+        232,
+        100,
+        189,
+        85
+      ]
+    },
+    {
+      "name": "ProjectCreated",
+      "discriminator": [
+        192,
+        10,
+        163,
+        29,
+        185,
+        31,
+        67,
+        168
+      ]
+    },
+    {
+      "name": "ProjectMetadataUpdated",
+      "discriminator": [
+        116,
+        68,
+        187,
+        63,
+        126,
+        197,
+        102,
+        134
+      ]
+    },
+    {
+      "name": "ProjectStatusChanged",
+      "discriminator": [
+        61,
+        114,
+        220,
+        188,
+        124,
+        178,
+        129,
+        228
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "MetadataUriTooLong",
+      "msg": "Agent metadata URI exceeds the maximum length of 200 characters."
+    },
+    {
+      "code": 6001,
+      "name": "IpfsHashTooLong",
+      "msg": "Project IPFS hash exceeds the maximum allowed length."
+    },
+    {
+      "code": 6002,
+      "name": "InvalidDeadline",
+      "msg": "Project deadline must be strictly in the future."
+    },
+    {
+      "code": 6003,
+      "name": "InvalidGoalAmount",
+      "msg": "Project goal amount must be greater than zero."
+    },
+    {
+      "code": 6004,
+      "name": "InvalidMilestoneCount",
+      "msg": "Milestone count must be between 1 and 10 inclusive."
+    },
+    {
+      "code": 6005,
+      "name": "Unauthorized",
+      "msg": "Only the project creator or the platform authority may perform this action."
+    },
+    {
+      "code": 6006,
+      "name": "Overflow",
+      "msg": "Arithmetic overflow occurred while updating account state."
+    }
+  ],
+  "types": [
+    {
+      "name": "AgentAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "docs": [
+              "Agent's wallet — also the PDA seed + identity."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata_uri",
+            "docs": [
+              "IPFS link to agent metadata."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "reputation_score",
+            "type": "u64"
+          },
+          {
+            "name": "projects_created",
+            "type": "u32"
+          },
+          {
+            "name": "total_contributed",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AgentRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "metadata_uri",
+            "type": "string"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Config",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "docs": [
+              "Platform authority pubkey — may update any project's status",
+              "alongside that project's own creator."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectAccount",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "ipfs_hash",
+            "docs": [
+              "IPFS hash containing title, description, image."
+            ],
+            "type": "string"
+          },
+          {
+            "name": "goal_amount",
+            "docs": [
+              "In lamports (native SOL) or USDC micro-units, per `token_mint`."
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "docs": [
+              "SOL sentinel mint or the cluster's USDC mint."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "raised_amount",
+            "type": "u64"
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Unix seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": {
+                "name": "ProjectStatus"
+              }
+            }
+          },
+          {
+            "name": "milestone_count",
+            "type": "u8"
+          },
+          {
+            "name": "project_index",
+            "docs": [
+              "This creator's project sequence number — also the PDA seed,",
+              "snapshotted from AgentAccount.projects_created at creation time."
+            ],
+            "type": "u32"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Unix seconds."
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectCreated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "project_index",
+            "type": "u32"
+          },
+          {
+            "name": "ipfs_hash",
+            "type": "string"
+          },
+          {
+            "name": "goal_amount",
+            "type": "u64"
+          },
+          {
+            "name": "token_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "deadline",
+            "type": "i64"
+          },
+          {
+            "name": "milestone_count",
+            "type": "u8"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectMetadataUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_ipfs_hash",
+            "type": "string"
+          },
+          {
+            "name": "new_ipfs_hash",
+            "type": "string"
+          },
+          {
+            "name": "changed_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Active"
+          },
+          {
+            "name": "Funded"
+          },
+          {
+            "name": "Failed"
+          },
+          {
+            "name": "Complete"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProjectStatusChanged",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "project",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_status",
+            "type": {
+              "defined": {
+                "name": "ProjectStatus"
+              }
+            }
+          },
+          {
+            "name": "new_status",
+            "type": {
+              "defined": {
+                "name": "ProjectStatus"
+              }
+            }
+          },
+          {
+            "name": "changed_by",
+            "type": "pubkey"
+          },
+          {
+            "name": "timestamp",
+            "type": "i64"
+          }
+        ]
+      }
+    }
+  ]
+}

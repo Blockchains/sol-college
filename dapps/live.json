@@ -5568,5 +5568,109 @@
       "escrow": "12pVEX65Q9JsGFNNu6sJufwmWyqHqLprL7zjDbw8mXNH",
       "registry": "44iVtsz24Z1DZ6m4XFYCCLADmzUZA5oZt2jkmJ5nnwyn"
     }
+  },
+  {
+    "slug": "agentfund",
+    "name": "AgentFund Milestone Crowdfunding",
+    "lesson": "/explore/agentfund/",
+    "app": "/dapps/agentfund/",
+    "fork": "https://github.com/Blockchains/AgentFund",
+    "commit": "f0587231fc92ca70702549c68cda332eb88eeb3b",
+    "program": "66Uudcgfqtj68zmttyNfpBrU94Z3JcBpognKDUHofi2t",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/AgentFund (unique declare_id; the official HiuwNu1K\u2026 was not reused).",
+    "learn": "agent_registry: register_agent creates [\"agent\", owner]; create_project writes [\"project\", creator, index u32 LE] with goal, mint, deadline and milestone count. escrow: initialize_escrow creates [\"escrow\", project] only if every term matches the registry project; backers contribute (or a sponsor uses contribute_for) into [\"contribution\", project, backer]; backers vote per milestone ([\"vote\", project, backer, index]) weighted by their contribution; release_milestone pays the creator when yes-weight is over half of the deposits; refund returns contributions after a missed deadline. reputation: the platform authority applies fixed point deltas per reason.",
+    "source": [
+      [
+        "programs/escrow/src/lib.rs",
+        "https://github.com/Blockchains/AgentFund/blob/f0587231fc92ca70702549c68cda332eb88eeb3b/programs/escrow/src/lib.rs"
+      ],
+      [
+        "programs/agent_registry/src/lib.rs",
+        "https://github.com/Blockchains/AgentFund/blob/f0587231fc92ca70702549c68cda332eb88eeb3b/programs/agent_registry/src/lib.rs"
+      ],
+      [
+        "programs/reputation/src/lib.rs",
+        "https://github.com/Blockchains/AgentFund/blob/f0587231fc92ca70702549c68cda332eb88eeb3b/programs/reputation/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentfund.mjs",
+    "log": "tests/devnet/logs/agentfund-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy escrow as 66Uudcgfqtj68zmttyNfpBrU94Z3JcBpognKDUHofi2t on devnet",
+        "qrXB1Q8XA457MkhzPmzBwbcCPQcdbeusZP3Dkrr9ohBe11zhxUXdQRVYBsXumMinGKaCCGWuxLvdcggowQzxMUN"
+      ],
+      [
+        "registry and reputation initialize (lab authority)",
+        "3Ahu5ReAw6nLzebnxyGPu57urChf886SHMA586aLvJnYTWcJJrnQ5zetEthezuzSrj88DPrZA7yddWnd2LoiyZFK"
+      ],
+      [
+        "register_agent (creator)",
+        "4y3jszTTuwsgh6z3oEXRmahepgke4yrrM7oeZtCpJ1hrcyJAAs1AKrjaCoq7gKsuajpxMcecTCnghZoHo6jBKbB7"
+      ],
+      [
+        "create_project 1: goal 4_000_000 lamports, 2 milestones",
+        "4AFcGyX5wW3BjCb9zdWxeCLkFUFQZN1Zh6afPZnqusozK4x4Pm1DWaUefLdwtBwWceJsVBgEuTdcUw2mdZaX5pi7"
+      ],
+      [
+        "initialize_escrow 1 bound to the registry terms",
+        "5NqbKEQ7eDACorji16oPQjVnHhJ8rAFKSFSCCtqjMkMbcATpLnkKKpmXepSJcK5eRnzGSSuPa93M9TmWrfhmN5wn"
+      ],
+      [
+        "backer X contributes 3_000_000",
+        "Gd4aWWhDgCgz5Q2193bMNoE3SLvnux59qijmLJKr7ZQ4WCm57RePrDPgsasUFUG73nDmABr6WHJkTATd5uGQoaM"
+      ],
+      [
+        "lab sponsors 1_000_000 for backer Y (contribute_for)",
+        "3j45c6T3YPi7iD3us8LAS6saxcmoRjhQELk87iQDEEtpUn41zuSYxfT56MG4JgfjqSn2t2JPBsBsytxMpWJA51GH"
+      ],
+      [
+        "Y and X vote yes on milestone 0",
+        "4Px4VwtqtMEDcR4ZDm6LFoiTd1fxzELw9d2BWS1osQ1p6SU6dZnM6XR1Yux5PiGK5cYiqiwFBQvyPiKF74SZgwkt"
+      ],
+      [
+        "release_milestone 0 pays the creator 2_000_000",
+        "53xThYt8G5WdQJHC11eJq2p5JZetFEiWMLTRE2BKSHSkwALobWJVyivTyKewc6F1RS7DMCHm6AMyMmAnd8hBtHR2"
+      ],
+      [
+        "release_milestone 1 pays the remaining 2_000_000; campaign completed",
+        "4MpPPekrvYJDWNcViopXJdnD6EXyiLfidgBu7qcfboAD9YazrgB7vnUA9Kb7ZRmkxzTnGsQS8R37QPhxtYTvW9RS"
+      ],
+      [
+        "update_project_status complete and update_project_metadata",
+        "3L6Mwq83rX8DpnMK9db3z8BrWQSbURW7McHajXNodnXkhtyazBFY15FX5vQUwRy8wrwGyFEEviwMB3fzqNxaWX86"
+      ],
+      [
+        "init_reputation and three update_reputation events (score 100 -> 180)",
+        "3BzZ6m8rrMgaaAUGoPtaeqJ7mysdeS7nzA39XdeuZAKQaNCa16yho7HRgpRKKgAS34xB96SzPujnncrjAYfDCcRy"
+      ],
+      [
+        "project 2: deadline missed, backer refunded",
+        "35jw3SATAQPWgb2LXZMXGN67TU6spSStLGGMzQfXRsB5dZAQD1yUspFkzo2qpQQj5D57kYCf39JdomXfEWkmT3rw"
+      ]
+    ],
+    "negative": [
+      "create_project with 0 milestones was rejected (InvalidMilestoneCount).",
+      "initialize_escrow with a goal different from the registry project was rejected (TermsMismatch).",
+      "A zero contribution was rejected (InvalidAmount).",
+      "release_milestone before the goal was met was rejected (GoalNotMet).",
+      "A vote from a wallet with no contribution was rejected (AccountNotInitialized).",
+      "release with only 1_000_000 of 4_000_000 approving was rejected (InsufficientApproval).",
+      "Passing the same vote account twice was rejected (DuplicateVoteAccount).",
+      "Releasing milestone 1 before 0 was rejected (MilestoneOutOfOrder).",
+      "update_project_status by a stranger was rejected (Unauthorized).",
+      "update_reputation with a delta that does not match the reason was rejected (DeltaReasonMismatch), and by a stranger (Unauthorized).",
+      "refund before the deadline was rejected (DeadlineNotPassed); contributing after it (DeadlinePassed); refunding twice (AccountNotInitialized)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentfund.mjs.",
+    "limits": "Only native SOL campaigns were run; the SPL-token path was not exercised. release_milestone can be sent by anyone once enough votes exist (payment always goes to the creator). Reputation is set by the platform authority and is not updated automatically by the escrow. Registry HA1RrJi7HXEmwPzvHTVJav4wqwJKVZgBX2vqgzXnvS3U and reputation 7HqsLMUcESpKro5Rqu6Tv4P2KieZue3oMndnC5tb8GE7; the console drives the escrow program. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "registry and reputation initialize 3Ahu5ReA\u2026; register_agent 4y3jszTT\u2026; create_project 1: goal 4_000_000 lamports, 2 milestones 4AFcGyX5\u2026; initialize_escrow 1 bound to the registry terms 5NqbKEQ7\u2026; backer X contributes 3_000_000 Gd4aWWhD\u2026; lab sponsors 1_000_000 for backer Y 3j45c6T3\u2026; Y and X vote yes on milestone 0 4Px4Vwtq\u2026; release_milestone 0 pays the creator 2_000_000 53xThYt8\u2026; release_milestone 1 pays the remaining 2_000_000; campaign completed 4MpPPekr\u2026; update_project_status complete and update_project_metadata 3L6Mwq83\u2026; init_reputation and three update_reputation events 3BzZ6m8r\u2026; project 2: deadline missed, backer refunded 35jw3SAT\u2026. create_project with 0 milestones was rejected (InvalidMilestoneCount). initialize_escrow with a goal different from the registry project was rejected (TermsMismatch). A zero contribution was rejected (InvalidAmount). release_milestone before the goal was met was rejected (GoalNotMet). A vote from a wallet with no contribution was rejected (AccountNotInitialized). release with only 1_000_000 of 4_000_000 approving was rejected (InsufficientApproval). Passing the same vote account twice was rejected (DuplicateVoteAccount). Releasing milestone 1 before 0 was rejected (MilestoneOutOfOrder). update_project_status by a stranger was rejected (Unauthorized). update_reputation with a delta that does not match the reason was rejected (DeltaReasonMismatch), and by a stranger (Unauthorized). refund before the deadline was rejected (DeadlineNotPassed); contributing after it (DeadlinePassed); refunding twice (AccountNotInitialized).",
+    "programs": {
+      "escrow": "66Uudcgfqtj68zmttyNfpBrU94Z3JcBpognKDUHofi2t",
+      "agent_registry": "HA1RrJi7HXEmwPzvHTVJav4wqwJKVZgBX2vqgzXnvS3U",
+      "reputation": "7HqsLMUcESpKro5Rqu6Tv4P2KieZue3oMndnC5tb8GE7"
+    }
   }
 ]
