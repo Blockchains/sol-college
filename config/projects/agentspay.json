@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agentspay",
+  "slug": "agentspay",
+  "displayName": "AgentsPay (Sol.College demonstration)",
+  "description": "Attestation-gated, metered payments for AI agents on Solana devnet (Anchor 1.2.2). initialize, approve_measurement, register_provider, submit_attestation, approve_attestation, open_session, settle (two Ed25519-verified messages) and close_session were verified with exact token payouts.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of maitreya-ai/AgentsPay-Sol. The lab tree is branch sol-college-devnet of Blockchains/AgentsPay-Sol. The lab changed declare_id to a unique Sol.College devnet program and added scripts/sol-college-lab-flow.ts (the devnet flow, using the upstream SDK and a simulated TEE). The hosted IDL is the upstream SDK IDL with the lab address substituted; discriminators were confirmed by live transactions. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "maitreya-ai/AgentsPay-Sol",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/AgentsPay-Sol",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agentspay-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentspay"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T16:50:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (attestation lifecycle, session escrow, Ed25519 voucher/receipt settlement)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agentspay/",
+      "QA: devnet proof of a metered session settled from signed messages"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "Real TDX quotes (simulated TEE only)",
+      "Agent vaults and credit offerings"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "vault-session",
+        "title": "Exercise create_vault and open_session_from_vault with a period limit",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "1.2.2",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.97.1",
+    "programDir": "programs/agentspay"
+  }
+}

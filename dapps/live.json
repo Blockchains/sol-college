@@ -4240,5 +4240,79 @@
       "credit_vault": "Bzsrx6dLG9t1W3RndQkB7e2DFpKSj86QbDANtRUZ2NAz",
       "reputation": "8CzPMcoaxTi8aHBUBmERcCNQcdBGpL72tJccBfX2P4Mt"
     }
+  },
+  {
+    "slug": "agentspay",
+    "name": "AgentsPay",
+    "lesson": "/explore/agentspay/",
+    "app": "/dapps/agentspay/",
+    "fork": "https://github.com/Blockchains/AgentsPay-Sol",
+    "commit": "ba8d07a9d22f813659d86e9f23acba2261b6aba3",
+    "program": "8BXi7XdZ6gRqGbGBCUEZN3TMV629uuHTUcEYtdqW6th",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the upstream SDK IDL with the lab program address substituted. The lab tree is branch sol-college-devnet of Blockchains/AgentsPay-Sol (unique declare_id; the official EZsX7kN4\u2026 was not reused).",
+    "learn": "initialize (upgrade authority only) writes config with verifiers, a fee and a treasury. Governance approves TEE measurements; an operator registers a provider and submits an attestation binding an enclave key; verifiers approve it. A payer opens a session that escrows a deposit at a price per unit. settle reads two Ed25519 precompile instructions from the instructions sysvar: a payer voucher (cumulative amount) and an enclave usage receipt (cumulative units), and pays min(voucher, units x price, deposit) minus the protocol fee. close_session refunds the rest.",
+    "source": [
+      [
+        "programs/agentspay/src/lib.rs L45-L118",
+        "https://github.com/Blockchains/AgentsPay-Sol/blob/ba8d07a9d22f813659d86e9f23acba2261b6aba3/programs/agentspay/src/lib.rs#L45-L118"
+      ],
+      [
+        "programs/agentspay/src/instructions/session.rs",
+        "https://github.com/Blockchains/AgentsPay-Sol/blob/ba8d07a9d22f813659d86e9f23acba2261b6aba3/programs/agentspay/src/instructions/session.rs"
+      ],
+      [
+        "programs/agentspay/src/ed25519.rs",
+        "https://github.com/Blockchains/AgentsPay-Sol/blob/ba8d07a9d22f813659d86e9f23acba2261b6aba3/programs/agentspay/src/ed25519.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentspay.ts",
+    "log": "tests/devnet/logs/agentspay-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agentspay as 8BXi7XdZ6gRqGbGBCUEZN3TMV629uuHTUcEYtdqW6th on devnet",
+        "4XiafN93JBC1oT7T7aawvQKsXFZY9Z26NVKtNL8KTVeCafNgzcvx6FncFXDABkV86AB8pQ3Qxzh9Q4SKjTkqnwgr"
+      ],
+      [
+        "initialize (config EDGdEv18NiU541p4UopMtrgqLvgENYv6uNXw1mi895Jk, verifier 8MZt6djZdfbfYPajRC2zoChBk6qHTz8JF5Ar6Sq925ya, 100 bps, treasury En7DGt8B4LtuH2cwBMRofhdhgAJv18uGaDZDqCthS3QU)",
+        "2QjaDTi5EaSN2MthJWMYDrp9Q3Z5msMEUUTLx6HgjRCdxWFqkeqJmPkKoLYpR6Rkfu3grLjwLifn8rgQJ7hCTjV2"
+      ],
+      [
+        "approve_measurement (simulated gateway 0.1.0 echo:echo-1)",
+        "4D8t5nrENHZ5uSWDSyJHMCy588QmFyHMEULkczxy5oJ2xK2c3XhAiA7kR58bsKZHKkosyqq4KTDLzMRFSetNytYh"
+      ],
+      [
+        "register_provider by operator 8nMpF4Sxsrjj4SWywuL3HRockjNBwtVhZhGxHkLCMjgw",
+        "5jfjyck6dQzmpArDGdTVMddJKXc1wsdLQbMzewyWtxa1fqApEciX9ztKXkv9gUYMbxo5zYftnWAfdLx2TYVp4Qvh"
+      ],
+      [
+        "submit_attestation for enclave 5aeWXfkSmuAJRuQBnucEct19DZwAWXNqp3ce3WeU9jjZ",
+        "4CDSKRvFYqTRAPYqv7cgwSxXdENor4Ma1wwnJc6p8yruXgDDFt6SFrakXGQqmXL1d2AoQVM9C84q3HWXZ9W9tUf9"
+      ],
+      [
+        "approve_attestation by the verifier",
+        "2EbZph5v7Hszav2NoLxHPSQtT7P2J1Z84h67vnXRNfkpvBpr5PyJy6ee95ye9bfNrjZPhR74JjgidXU423NyAjEk"
+      ],
+      [
+        "open_session deposit 1_000_000 at 1_000/unit (session Gor1BbrLuagw3yzKLtv4RRY7QBSmqgQZ39VSVwHPEsQF)",
+        "4EyasBQKyJTCUQC7GWtSew9xDH65EyMqkZS32PBXFbKxtShaUacBVhB8tynonQkpfaA6uSSR7jYz2s6SXVnj5b9P"
+      ],
+      [
+        "settle voucher 600_000 + receipt 500 units: provider +495_000, treasury +5_000",
+        "4TAYD1CwMB2ZQgFnJLqSy97bobea9cYWHKqzmoWXzVKBdCURLhLS9EctbSpbAkEsZfWkef6NyJpbmsxBB1iu6kQX"
+      ],
+      [
+        "close_session: payer refunded 500_000, status Closed",
+        "3HzXHZZhutzM2SZdRNXDZh6iHCazi1wDmDkxLgTfKzPHm9TFvetAv4GNcUVsvStmgX1KWJGH7U4j1249XnPFNFNb"
+      ]
+    ],
+    "negative": [
+      "approve_attestation by a non-verifier was rejected (NotVerifier).",
+      "settle with a usage receipt signed by a key other than the attested enclave was rejected (SignerMismatch)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentspay.ts.",
+    "limits": "The TEE is simulated (allow_simulated_tee is a devnet-only config flag); no real TDX quote was verified. Vaults, credit offerings, top_up_session, request_close and finalize_session were not exercised. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize 2QjaDTi5\u2026 (upgrade-authority gated) wrote config EDGdEv18NiU541p4UopMtrgqLvgENYv6uNXw1mi895Jk with one verifier, 1% fee to the Sol.College lab treasury and simulated TEEs allowed. approve_measurement 4D8t5nrE\u2026 approved the reference gateway build. Operator 8nMpF4Sxsrjj4SWywuL3HRockjNBwtVhZhGxHkLCMjgw ran register_provider 5jfjyck6\u2026 and submit_attestation 4CDSKRvF\u2026 for enclave key 5aeWXfkSmuAJRuQBnucEct19DZwAWXNqp3ce3WeU9jjZ; verifier approve_attestation 2EbZph5v\u2026 activated it. open_session 4EyasBQK\u2026 escrowed 1_000_000 lab tokens in session Gor1BbrLuagw3yzKLtv4RRY7QBSmqgQZ39VSVwHPEsQF at 1_000 per unit. settle 4TAYD1Cw\u2026 verified an Ed25519 voucher (payer, cumulative 600_000) and an Ed25519 usage receipt (enclave, 500 units) and paid the provider exactly 495_000 and the treasury 5_000 (min(voucher, metered, deposit) = 500_000). settleAndClose 3HzXHZZh\u2026 refunded the payer exactly 500_000 and set the session to Closed. Rejected: approve_attestation by a non-verifier (NotVerifier) and settle with a receipt signed by a non-attested key (SignerMismatch)."
   }
 ]

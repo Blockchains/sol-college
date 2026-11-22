@@ -1,0 +1,12 @@
+{"step":"setup","program":"8BXi7XdZ6gRqGbGBCUEZN3TMV629uuHTUcEYtdqW6th","config":"EDGdEv18NiU541p4UopMtrgqLvgENYv6uNXw1mi895Jk","verifier":"8MZt6djZdfbfYPajRC2zoChBk6qHTz8JF5Ar6Sq925ya","operator":"8nMpF4Sxsrjj4SWywuL3HRockjNBwtVhZhGxHkLCMjgw","payer":"8wCmKFTu9TWrRoQ2K7FEzcptsZtwFSnEu2K6Mbpgne5z","enclave":"5aeWXfkSmuAJRuQBnucEct19DZwAWXNqp3ce3WeU9jjZ"}
+{"step":"initialize","sig":"2QjaDTi5EaSN2MthJWMYDrp9Q3Z5msMEUUTLx6HgjRCdxWFqkeqJmPkKoLYpR6Rkfu3grLjwLifn8rgQJ7hCTjV2"}
+{"step":"approve_measurement","sig":"4D8t5nrENHZ5uSWDSyJHMCy588QmFyHMEULkczxy5oJ2xK2c3XhAiA7kR58bsKZHKkosyqq4KTDLzMRFSetNytYh"}
+{"step":"register_provider","sig":"5jfjyck6dQzmpArDGdTVMddJKXc1wsdLQbMzewyWtxa1fqApEciX9ztKXkv9gUYMbxo5zYftnWAfdLx2TYVp4Qvh"}
+{"step":"submit_attestation","sig":"4CDSKRvFYqTRAPYqv7cgwSxXdENor4Ma1wwnJc6p8yruXgDDFt6SFrakXGQqmXL1d2AoQVM9C84q3HWXZ9W9tUf9"}
+{"step":"approve_attestation_by_non_verifier","rejected":true,"reason":"NotVerifier"}
+{"step":"approve_attestation","sig":"2EbZph5v7Hszav2NoLxHPSQtT7P2J1Z84h67vnXRNfkpvBpr5PyJy6ee95ye9bfNrjZPhR74JjgidXU423NyAjEk"}
+{"step":"open_session","sig":"4EyasBQKyJTCUQC7GWtSew9xDH65EyMqkZS32PBXFbKxtShaUacBVhB8tynonQkpfaA6uSSR7jYz2s6SXVnj5b9P"}
+{"step":"session","session":"Gor1BbrLuagw3yzKLtv4RRY7QBSmqgQZ39VSVwHPEsQF","escrow_balance":"1000000"}
+{"step":"settle_with_forged_receipt","rejected":true,"reason":"Program log: AnchorError thrown in programs/agentspay/src/ed25519.rs:92. Error Code: SignerMismatch. Error Number: 6027. Error Message: Signed message was signed by an unexpected key."}
+{"step":"settle","sig":"4TAYD1CwMB2ZQgFnJLqSy97bobea9cYWHKqzmoWXzVKBdCURLhLS9EctbSpbAkEsZfWkef6NyJpbmsxBB1iu6kQX","metered":"500 units x 1000 = 500000","payout_received":"495000","treasury_fee":"5000"}
+{"step":"close_session","sig":"3HzXHZZhutzM2SZdRNXDZh6iHCazi1wDmDkxLgTfKzPHm9TFvetAv4GNcUVsvStmgX1KWJGH7U4j1249XnPFNFNb","payer_refund":"500000","session_status":2,"session_status_name":"Closed (account kept for finalize_session rating)","settled":"500000"}

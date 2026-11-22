@@ -1,0 +1,40 @@
+{
+  "title": "AgentsPay",
+  "summary": "Pay an attested AI provider per unit of work: escrow a deposit, then settle from a payer voucher and an enclave-signed usage receipt.",
+  "what": "AgentsPay is an Anchor 1.2.2 program for metered agent payments. Providers prove their gateway build with a TEE attestation that verifiers approve. Payers open sessions with an escrowed deposit. Anyone can crank settle with two Ed25519-signed messages; the program pays the provider the lesser of what the payer authorised and what the enclave metered.",
+  "app_note": "The page at /dapps/agentspay/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/AgentsPay-Sol.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentspay/, switch to Devnet, and connect a wallet. The lab already ran a full session.",
+      "see": "Session Gor1BbrL\u2026 is Closed with settled 500_000.",
+      "ran": "approve_attestation 2EbZph5v\u2026; open_session 4EyasBQK\u2026; settle 4TAYD1Cw\u2026; close 3HzXHZZh\u2026"
+    }
+  ],
+  "diagram": "admin --initialize/approve_measurement--> config; operator --register_provider/submit_attestation--> provider+attestation; verifier --approve_attestation--> Active; payer --open_session--> escrow; cranker --[Ed25519 voucher, Ed25519 receipt, settle]--> provider payout + treasury fee; close_session --> payer refund.",
+  "accounts": [
+    "config PDA",
+    "measurement PDA",
+    "provider PDA (per operator)",
+    "attestation PDA (provider, enclave key)",
+    "session PDA (payer, provider, salt) with escrow ATA"
+  ],
+  "instructions": [
+    "initialize",
+    "approve_measurement",
+    "register_provider",
+    "submit_attestation",
+    "approve_attestation",
+    "open_session",
+    "settle",
+    "close_session"
+  ],
+  "innovation": "Payment needs both sides' signatures: the payer caps spend with vouchers and the attested enclave attests usage, so neither can overcharge alone.",
+  "frontend": "Generic IDL console at /dapps/agentspay/.",
+  "exercises": [
+    "What does settle pay if the voucher is 600_000 but only 500 units at 1_000 were metered?",
+    "Why does settle read the instructions sysvar?"
+  ],
+  "not_covered": [
+    "Vaults, credit offerings, real TDX quotes"
+  ]
+}

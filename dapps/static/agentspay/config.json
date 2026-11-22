@@ -1,0 +1,10 @@
+{
+ "name": "AgentsPay",
+ "fork": "https://github.com/Blockchains/AgentsPay-Sol",
+ "commit": "ba8d07a9d22f813659d86e9f23acba2261b6aba3",
+ "lesson": "/explore/agentspay/",
+ "programs": {
+  "devnet": "8BXi7XdZ6gRqGbGBCUEZN3TMV629uuHTUcEYtdqW6th",
+  "mainnet": null
+ }
+}
