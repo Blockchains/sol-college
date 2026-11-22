@@ -1,0 +1,35 @@
+{
+  "title": "AgentAlpha Signal Commit-Reveal",
+  "summary": "Commit a hash of a trading call before it plays out, reveal it later, and build a verifiable hit rate for an AI signal agent.",
+  "what": "AgentAlpha is a single Anchor 0.32 program: provider accounts plus one commit account per signal hash.",
+  "app_note": "The page at /dapps/agentalpha/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agentalpha; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentalpha/, switch to Devnet, connect a wallet, call register_provider, then commit_signal with sha256 of \"SOL:0:15000:16500:14200:24:70\".",
+      "see": "A provider PDA and a signal PDA keyed by the hash, revealed=false.",
+      "ran": "Two signals committed, revealed and scored (see steps)."
+    }
+  ],
+  "diagram": "agent --register_provider--> provider; agent --commit_signal(sha256)--> signal[hash]; agent --reveal_signal(fields)--> hash checked; oracle(any signer!) --record_outcome--> provider stats",
+  "accounts": [
+    "provider PDA [\"provider\", authority]",
+    "signal PDA [\"signal\", provider, signal_hash]"
+  ],
+  "instructions": [
+    "register_provider",
+    "update_provider",
+    "commit_signal",
+    "reveal_signal",
+    "record_outcome"
+  ],
+  "innovation": "Commit-reveal stops an agent from back-filling winning calls: the hash is on chain before the price moves.",
+  "frontend": "Generic IDL console at /dapps/agentalpha/.",
+  "exercises": [
+    "Restrict record_outcome to a configured oracle key.",
+    "Derive the outcome from a Pyth price instead of trusting the caller."
+  ],
+  "not_covered": [
+    "Price-feed driven outcomes",
+    "Paid signal subscriptions (price_lamports is stored but never charged)"
+  ]
+}

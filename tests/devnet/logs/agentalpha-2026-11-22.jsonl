@@ -1,0 +1,18 @@
+{"step":"setup","program":"5LQg57Lt8WaSZi8jtu771B9MVfKQ8muqcXXucTLM7WY7","provider":"HFEtvjGj8CLFUHSD9X5zbNjZ4PJMHGqrDkwB5NdFhjXo","authority":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv"}
+{"step":"register_name_too_long","rejected":true,"reason":"NameTooLong"}
+{"step":"register_provider","ok":true,"sig":"5cQSCZpXk7GVRmEQNrLcpqUoNDebsS3psN1uRqri7nTZzphVVf2yQFnch9dA5XL9fpLh6Sc7gmeQrbz2d1jbPpjW"}
+{"step":"update_provider","ok":true,"sig":"5eJRs2fkBi2x7d8oPCM1qRjzJQ8rzwJjqa4jxU1orfQvtDBqjgJ9Yf7asjt1csWEQuuvyYHgdZTTdUkVgYjpAQm2","price_lamports":"5000"}
+{"step":"update_by_stranger","rejected":true,"reason":"ConstraintSeeds"}
+{"step":"commit_signal_SOL","ok":true,"sig":"4wGBZ4pviwWMUSXqTJhoXfzp5kRWRarBDNqUPT13sJxq5TUA1HyQYeQYMbTsKdCJNFhmtLNHcpJ9gMJdju6EBz7c","preimage":"SOL:0:15000:16500:14200:24:70","hash":"3490a716018141b8975744a02976444019fc548791601f988f24734dfb321b85","signal_commit":"kfPxMJTgaNg5tMWH3sUYq42aSQBWHtYs9M56BYAndML"}
+{"step":"commit_signal_JUP","ok":true,"sig":"3LRFVZZMFZ2nhxmcqXiMmX1VbLfvzEqbjHc43wFJr8iCy6Zo7g6t8JJiJ8jYqhDMVDLvrv7c8u1zVSc8weo8dW9P","preimage":"JUP:1:90:75:98:12:55","hash":"21a86e43cf82cddfa58b12808f3b118d5ce9ed92616599675f6b80d9c1d02261","signal_commit":"DigQEgxNe9xyzjGPdyExyxPXc53ya2ZpGzBqNg3FQ2AW"}
+{"step":"record_before_reveal","rejected":true,"reason":"NotRevealed"}
+{"step":"reveal_hash_mismatch","rejected":true,"reason":"HashMismatch"}
+{"step":"reveal_by_stranger","rejected":true,"reason":"AccountNotInitialized"}
+{"step":"reveal_signal_SOL","ok":true,"sig":"xpYHrK6RmGnZaCcKTzLsMML1og3SwhQDx1xCoVtbar3WCEDBCwzkMvFavZLfaZ8YcfUcKAHtw4UTfXUjNrgZuiZ"}
+{"step":"reveal_signal_JUP","ok":true,"sig":"TuzQNFcHCrfdBHaSuvFEtTzMQ8BvfRYDyEJxAJF2w2v8sgDKrbj9ujhBcNCMzdV9iYWn4iwNRMLyYpvDF8Lc3Yo"}
+{"step":"reveal_twice","rejected":true,"reason":"AlreadyRevealed"}
+{"step":"record_invalid_outcome","rejected":true,"reason":"InvalidOutcome"}
+{"step":"record_outcome_tp_hit","ok":true,"sig":"3vDDEGTmJNE257Vh2nbkGJkwVwPrk9nenC9t5XSVWNiQFwSSr5gRmpUvMNqeXgd4ANfvRsXmWmhU79LpebfSVngv","total_signals":"1","correct_signals":"1","total_return_bps":"1013"}
+{"step":"record_twice","rejected":true,"reason":"OutcomeAlreadyRecorded"}
+{"step":"flaw_stranger_records_outcome","ok":true,"sig":"LY6PDF5CRPBtaxvB2pk1DqJgJt7a1PPifEVuaSp4kAARnig4H2iuW4fwqxN1xgo6vGe7dm5zqF92PMU6VXt9EeT","note":"UPSTREAM FLAW: record_outcome accepts any signer as oracle; a stranger wrote SL_HIT -888 bps into the provider reputation","total_signals":"2","correct_signals":"1","total_return_bps":"125"}
+{"step":"cleanup_returned_lab_wallets"}

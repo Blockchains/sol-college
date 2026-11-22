@@ -1,0 +1,10 @@
+{
+ "name": "AgentPay Task Escrow (ZK-ready)",
+ "fork": "https://github.com/Blockchains/agentpay-dg",
+ "commit": "ea4ec3f093c5327c0dcff32eb3573df46c2b26b6",
+ "lesson": "/explore/agentpay-zk/",
+ "programs": {
+  "devnet": "74f7jS17uG1Lyh6Bov17kNnMCx48wKa4TKe9a52a2r7L",
+  "mainnet": null
+ }
+}

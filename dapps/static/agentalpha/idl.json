@@ -1,0 +1,802 @@
+{
+  "address": "5LQg57Lt8WaSZi8jtu771B9MVfKQ8muqcXXucTLM7WY7",
+  "metadata": {
+    "name": "agentalpha",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "AgentAlpha - Signal Marketplace for AI Agents"
+  },
+  "instructions": [
+    {
+      "name": "commit_signal",
+      "docs": [
+        "Commit a signal hash (before revealing details)"
+      ],
+      "discriminator": [
+        137,
+        14,
+        98,
+        40,
+        102,
+        88,
+        98,
+        135
+      ],
+      "accounts": [
+        {
+          "name": "signal_commit",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  105,
+                  103,
+                  110,
+                  97,
+                  108
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider"
+              },
+              {
+                "kind": "arg",
+                "path": "signal_hash"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "signal_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "record_outcome",
+      "docs": [
+        "Record signal outcome (called by oracle)",
+        "Determines if TP hit, SL hit, or expired"
+      ],
+      "discriminator": [
+        130,
+        121,
+        6,
+        102,
+        151,
+        160,
+        252,
+        6
+      ],
+      "accounts": [
+        {
+          "name": "signal_commit",
+          "writable": true
+        },
+        {
+          "name": "provider",
+          "writable": true
+        },
+        {
+          "name": "oracle",
+          "docs": [
+            "Oracle authority - trusted to report outcomes"
+          ],
+          "signer": true
+        }
+      ],
+      "args": [
+        {
+          "name": "outcome",
+          "type": "u8"
+        },
+        {
+          "name": "final_price_cents",
+          "type": "u64"
+        },
+        {
+          "name": "return_bps",
+          "type": "i32"
+        }
+      ]
+    },
+    {
+      "name": "register_provider",
+      "docs": [
+        "Register a new signal provider"
+      ],
+      "discriminator": [
+        254,
+        209,
+        54,
+        184,
+        46,
+        197,
+        109,
+        78
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "endpoint",
+          "type": "string"
+        },
+        {
+          "name": "categories",
+          "type": "bytes"
+        },
+        {
+          "name": "price_lamports",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "reveal_signal",
+      "docs": [
+        "Reveal a signal with full TP/SL data",
+        "Hash format: \"{token}:{direction}:{entry}:{tp}:{sl}:{timeframe}:{confidence}\"",
+        "Where prices are in cents (e.g., $100.50 = 10050)"
+      ],
+      "discriminator": [
+        224,
+        171,
+        21,
+        85,
+        195,
+        253,
+        227,
+        240
+      ],
+      "accounts": [
+        {
+          "name": "signal_commit",
+          "writable": true
+        },
+        {
+          "name": "provider",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "token",
+          "type": "string"
+        },
+        {
+          "name": "direction",
+          "type": "u8"
+        },
+        {
+          "name": "entry_cents",
+          "type": "u64"
+        },
+        {
+          "name": "tp_cents",
+          "type": "u64"
+        },
+        {
+          "name": "sl_cents",
+          "type": "u64"
+        },
+        {
+          "name": "timeframe_hours",
+          "type": "u8"
+        },
+        {
+          "name": "confidence",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "update_provider",
+      "docs": [
+        "Update provider info"
+      ],
+      "discriminator": [
+        52,
+        208,
+        141,
+        191,
+        164,
+        54,
+        108,
+        150
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  118,
+                  105,
+                  100,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "authority"
+              }
+            ]
+          }
+        },
+        {
+          "name": "authority",
+          "signer": true,
+          "relations": [
+            "provider"
+          ]
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "endpoint",
+          "type": {
+            "option": "string"
+          }
+        },
+        {
+          "name": "price_lamports",
+          "type": {
+            "option": "u64"
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Provider",
+      "discriminator": [
+        164,
+        180,
+        71,
+        17,
+        75,
+        216,
+        80,
+        195
+      ]
+    },
+    {
+      "name": "SignalCommit",
+      "discriminator": [
+        244,
+        78,
+        83,
+        68,
+        249,
+        101,
+        209,
+        198
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "OutcomeRecorded",
+      "discriminator": [
+        4,
+        69,
+        202,
+        1,
+        151,
+        45,
+        204,
+        96
+      ]
+    },
+    {
+      "name": "ProviderRegistered",
+      "discriminator": [
+        38,
+        209,
+        137,
+        78,
+        185,
+        19,
+        147,
+        14
+      ]
+    },
+    {
+      "name": "SignalCommitted",
+      "discriminator": [
+        161,
+        123,
+        152,
+        15,
+        6,
+        15,
+        175,
+        153
+      ]
+    },
+    {
+      "name": "SignalRevealed",
+      "discriminator": [
+        63,
+        108,
+        228,
+        79,
+        255,
+        239,
+        253,
+        121
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "NameTooLong",
+      "msg": "Provider name too long (max 64 chars)"
+    },
+    {
+      "code": 6001,
+      "name": "EndpointTooLong",
+      "msg": "Endpoint URL too long (max 256 chars)"
+    },
+    {
+      "code": 6002,
+      "name": "TooManyCategories",
+      "msg": "Too many categories (max 8)"
+    },
+    {
+      "code": 6003,
+      "name": "TokenTooLong",
+      "msg": "Token symbol too long (max 16 chars)"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidDirection",
+      "msg": "Invalid direction (must be 0=BUY or 1=SELL)"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidTimeframe",
+      "msg": "Invalid timeframe (must be 1-72 hours)"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidConfidence",
+      "msg": "Invalid confidence (must be 0-100)"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidOutcome",
+      "msg": "Invalid outcome (must be 1=TP_HIT, 2=SL_HIT, or 3=EXPIRED)"
+    },
+    {
+      "code": 6008,
+      "name": "AlreadyRevealed",
+      "msg": "Signal already revealed"
+    },
+    {
+      "code": 6009,
+      "name": "NotRevealed",
+      "msg": "Signal not revealed yet"
+    },
+    {
+      "code": 6010,
+      "name": "HashMismatch",
+      "msg": "Hash mismatch - revealed data doesn't match commit"
+    },
+    {
+      "code": 6011,
+      "name": "OutcomeAlreadyRecorded",
+      "msg": "Outcome already recorded for this signal"
+    }
+  ],
+  "types": [
+    {
+      "name": "OutcomeRecorded",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "signal_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "outcome",
+            "type": "u8"
+          },
+          {
+            "name": "was_correct",
+            "type": "bool"
+          },
+          {
+            "name": "return_bps",
+            "type": "i32"
+          },
+          {
+            "name": "total_signals",
+            "type": "u64"
+          },
+          {
+            "name": "correct_signals",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Provider",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "endpoint",
+            "type": "string"
+          },
+          {
+            "name": "categories",
+            "type": "bytes"
+          },
+          {
+            "name": "price_lamports",
+            "type": "u64"
+          },
+          {
+            "name": "total_signals",
+            "type": "u64"
+          },
+          {
+            "name": "correct_signals",
+            "type": "u64"
+          },
+          {
+            "name": "total_return_bps",
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "updated_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProviderRegistered",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "endpoint",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SignalCommit",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "signal_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "committed_at",
+            "type": "i64"
+          },
+          {
+            "name": "revealed",
+            "type": "bool"
+          },
+          {
+            "name": "outcome_recorded",
+            "type": "bool"
+          },
+          {
+            "name": "token",
+            "type": "string"
+          },
+          {
+            "name": "direction",
+            "type": "u8"
+          },
+          {
+            "name": "entry_cents",
+            "type": "u64"
+          },
+          {
+            "name": "tp_cents",
+            "type": "u64"
+          },
+          {
+            "name": "sl_cents",
+            "type": "u64"
+          },
+          {
+            "name": "timeframe_hours",
+            "type": "u8"
+          },
+          {
+            "name": "confidence",
+            "type": "u8"
+          },
+          {
+            "name": "revealed_at",
+            "type": "i64"
+          },
+          {
+            "name": "outcome",
+            "type": "u8"
+          },
+          {
+            "name": "final_price_cents",
+            "type": "u64"
+          },
+          {
+            "name": "was_correct",
+            "type": "bool"
+          },
+          {
+            "name": "return_bps",
+            "type": "i32"
+          },
+          {
+            "name": "evaluated_at",
+            "type": "i64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SignalCommitted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "signal_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "committed_at",
+            "type": "i64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SignalRevealed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "type": "pubkey"
+          },
+          {
+            "name": "signal_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "token",
+            "type": "string"
+          },
+          {
+            "name": "direction",
+            "type": "u8"
+          },
+          {
+            "name": "entry_cents",
+            "type": "u64"
+          },
+          {
+            "name": "tp_cents",
+            "type": "u64"
+          },
+          {
+            "name": "sl_cents",
+            "type": "u64"
+          },
+          {
+            "name": "timeframe_hours",
+            "type": "u8"
+          },
+          {
+            "name": "confidence",
+            "type": "u8"
+          }
+        ]
+      }
+    }
+  ]
+}

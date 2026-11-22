@@ -5672,5 +5672,162 @@
       "agent_registry": "HA1RrJi7HXEmwPzvHTVJav4wqwJKVZgBX2vqgzXnvS3U",
       "reputation": "7HqsLMUcESpKro5Rqu6Tv4P2KieZue3oMndnC5tb8GE7"
     }
+  },
+  {
+    "slug": "agentalpha",
+    "name": "AgentAlpha Signal Commit-Reveal",
+    "lesson": "/explore/agentalpha/",
+    "app": "/dapps/agentalpha/",
+    "fork": "https://github.com/Blockchains/agentalpha",
+    "commit": "457d30eea0ae26743d4c4327219a97ef5fb65c8d",
+    "program": "5LQg57Lt8WaSZi8jtu771B9MVfKQ8muqcXXucTLM7WY7",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agentalpha (unique declare_id; the official 6sDwzatE\u2026 was not reused).",
+    "learn": "register_provider creates a provider PDA [\"provider\", authority]. commit_signal stores sha256(\"token:dir:entry:tp:sl:timeframe:confidence\") in a signal PDA [\"signal\", provider, hash] before the trade, so the call is timestamped without being disclosed. reveal_signal recomputes the hash on chain and rejects any mismatch. record_outcome marks TP hit, SL hit or expiry and updates total, correct and return-bps counters.",
+    "source": [
+      [
+        "programs/agentalpha/src/lib.rs",
+        "https://github.com/Blockchains/agentalpha/blob/457d30eea0ae26743d4c4327219a97ef5fb65c8d/programs/agentalpha/src/lib.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentalpha.mjs",
+    "log": "tests/devnet/logs/agentalpha-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agentalpha as 5LQg57Lt8WaSZi8jtu771B9MVfKQ8muqcXXucTLM7WY7 on devnet",
+        "5fqc8HacSmKJjrZLE82TkUk1t4hjMJZVw57EZdcFFzDUHS1sY8AdDkHWU5Ax1ci8a6kJVtBKBXhyLVGMGVsz49Ty"
+      ],
+      [
+        "register_provider",
+        "5cQSCZpXk7GVRmEQNrLcpqUoNDebsS3psN1uRqri7nTZzphVVf2yQFnch9dA5XL9fpLh6Sc7gmeQrbz2d1jbPpjW"
+      ],
+      [
+        "update_provider price",
+        "5eJRs2fkBi2x7d8oPCM1qRjzJQ8rzwJjqa4jxU1orfQvtDBqjgJ9Yf7asjt1csWEQuuvyYHgdZTTdUkVgYjpAQm2"
+      ],
+      [
+        "commit_signal SOL",
+        "4wGBZ4pviwWMUSXqTJhoXfzp5kRWRarBDNqUPT13sJxq5TUA1HyQYeQYMbTsKdCJNFhmtLNHcpJ9gMJdju6EBz7c"
+      ],
+      [
+        "commit_signal JUP",
+        "3LRFVZZMFZ2nhxmcqXiMmX1VbLfvzEqbjHc43wFJr8iCy6Zo7g6t8JJiJ8jYqhDMVDLvrv7c8u1zVSc8weo8dW9P"
+      ],
+      [
+        "reveal_signal SOL (hash matched)",
+        "xpYHrK6RmGnZaCcKTzLsMML1og3SwhQDx1xCoVtbar3WCEDBCwzkMvFavZLfaZ8YcfUcKAHtw4UTfXUjNrgZuiZ"
+      ],
+      [
+        "reveal_signal JUP",
+        "TuzQNFcHCrfdBHaSuvFEtTzMQ8BvfRYDyEJxAJF2w2v8sgDKrbj9ujhBcNCMzdV9iYWn4iwNRMLyYpvDF8Lc3Yo"
+      ],
+      [
+        "record_outcome TP hit +1013 bps",
+        "3vDDEGTmJNE257Vh2nbkGJkwVwPrk9nenC9t5XSVWNiQFwSSr5gRmpUvMNqeXgd4ANfvRsXmWmhU79LpebfSVngv"
+      ],
+      [
+        "stranger records outcome (flaw)",
+        "LY6PDF5CRPBtaxvB2pk1DqJgJt7a1PPifEVuaSp4kAARnig4H2iuW4fwqxN1xgo6vGe7dm5zqF92PMU6VXt9EeT"
+      ]
+    ],
+    "negative": [
+      "A 65-character provider name was rejected (NameTooLong).",
+      "update_provider by another wallet was rejected (ConstraintSeeds).",
+      "record_outcome before reveal was rejected (NotRevealed).",
+      "A reveal with a changed take-profit was rejected (HashMismatch).",
+      "A reveal by a wallet with no provider account was rejected (AccountNotInitialized).",
+      "Revealing twice was rejected (AlreadyRevealed).",
+      "Outcome code 4 was rejected (InvalidOutcome).",
+      "Recording an outcome twice was rejected (OutcomeAlreadyRecorded)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentalpha.mjs.",
+    "limits": "Upstream flaw: record_outcome takes any Signer as the oracle, so anyone can write outcomes and returns into any provider reputation; the lab shows a stranger recording SL hit -888 bps. Outcomes in the lab were set by hand, not from a price feed. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_provider 5cQSCZpX\u2026; update_provider price 5eJRs2fk\u2026; commit_signal SOL 4wGBZ4pv\u2026; commit_signal JUP 3LRFVZZM\u2026; reveal_signal SOL xpYHrK6R\u2026; reveal_signal JUP TuzQNFcH\u2026; record_outcome TP hit +1013 bps 3vDDEGTm\u2026; stranger records outcome LY6PDF5C\u2026. A 65-character provider name was rejected (NameTooLong). update_provider by another wallet was rejected (ConstraintSeeds). record_outcome before reveal was rejected (NotRevealed). A reveal with a changed take-profit was rejected (HashMismatch). A reveal by a wallet with no provider account was rejected (AccountNotInitialized). Revealing twice was rejected (AlreadyRevealed). Outcome code 4 was rejected (InvalidOutcome). Recording an outcome twice was rejected (OutcomeAlreadyRecorded)."
+  },
+  {
+    "slug": "agentpay-zk",
+    "name": "AgentPay Task Escrow (ZK-ready)",
+    "lesson": "/explore/agentpay-zk/",
+    "app": "/dapps/agentpay-zk/",
+    "fork": "https://github.com/Blockchains/agentpay-dg",
+    "commit": "ea4ec3f093c5327c0dcff32eb3573df46c2b26b6",
+    "program": "74f7jS17uG1Lyh6Bov17kNnMCx48wKa4TKe9a52a2r7L",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/agentpay-dg (unique declare_id; the official 2rfRD9jh\u2026 was not reused).",
+    "learn": "register_service creates a listing PDA [\"service\", provider, service_id] with a lamport price. create_task moves that price into a task PDA [\"task\", requester, task_id]. The provider calls submit_result (or submit_result_zk with a Groth16 proof over a Poseidon hash). accept_result pays the provider; dispute_task refunds the requester; after the deadline anyone can call expire_task to refund an unanswered task.",
+    "source": [
+      [
+        "programs/agentpay/src/lib.rs",
+        "https://github.com/Blockchains/agentpay-dg/blob/ea4ec3f093c5327c0dcff32eb3573df46c2b26b6/programs/agentpay/src/lib.rs"
+      ],
+      [
+        "programs/agentpay/src/zk.rs",
+        "https://github.com/Blockchains/agentpay-dg/blob/ea4ec3f093c5327c0dcff32eb3573df46c2b26b6/programs/agentpay/src/zk.rs"
+      ]
+    ],
+    "flow": "tests/devnet/agentpay-zk.mjs",
+    "log": "tests/devnet/logs/agentpay-zk-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy agentpay as 74f7jS17uG1Lyh6Bov17kNnMCx48wKa4TKe9a52a2r7L on devnet",
+        "ipgVY1HaC7aEtgJwgsaS6uv4qqv7MXzKosxcEePxMJqyLSuPHcepiVpDg5gzkMZKCkD8kAaJgUoCV1hfT1LBUuo"
+      ],
+      [
+        "register_service (0.01 SOL)",
+        "ApJixQ9kXBHaM9RbgpnfmnNjb89DbTAPwWTLC7cEqQ743BUScz8HYm9kUws2b9or9vjCwUJHkr6X7TX33UVmbFS"
+      ],
+      [
+        "create_task (escrow locked)",
+        "41usqX6wHvxq2Ar97np6e5qMLEqNSTsic7jiEhM85jA8MWVVNHr43j7spyBP2UTWhSRZMBb13ZoPE8fGsC2qZyWw"
+      ],
+      [
+        "submit_result",
+        "JAaxZ4zv3UGmBeAQ2JsxWUC3UCJYgMP8KHz5G6DY5hcD5gWkfsi6Ma4GcVn9dA6V7fYthGg8DVAdWNimr3WS1Hu"
+      ],
+      [
+        "accept_result (provider paid 0.01 SOL)",
+        "3zZXHucKgJePEWWALfmnF4ZrujZeZwyKUc2mhmCifZgh96N7xSMWQuGYQStkE4thtPYZum7eaXhCFfqygM2Aasd1"
+      ],
+      [
+        "create_task 2",
+        "5DeuukPk6tUuCa6w5Tvs1U6BPAEfHmLnViwYYeuzK4neM57angnhMhk1AFXDMt8fw9Vj77n84YNLhqswsZj4xiKn"
+      ],
+      [
+        "submit_result 2",
+        "32kj7wP2U99FjkNCZ5mNsh4mLVRQbTEB8bxWq1PkQPJJ5y7o4yBRa3Vxrpd13xRdyvV6oTWkfKdXZJvapEEfyx2S"
+      ],
+      [
+        "dispute_task (full refund)",
+        "3eCiHACpVwFHZBJWTVuZTvTg49YT1CTjLXEQurU3sUzejmKG8KwPntCpbgQpwM6xA2j95dV3dZG6WwgBh2Pw4o8d"
+      ],
+      [
+        "create_task 3 (12 s deadline)",
+        "9uQA3evQt9CHRFTrU5JUis3o2BVeuCmgdq8vnuhC2UmLkYRa5HKP8B2vkHnrtuWPk8k4Zx3YL3cv9RxSMpXyHQN"
+      ],
+      [
+        "expire_task by a stranger crank",
+        "35miG9tuVNX92bLCAJ6SL8Z8acpk9KZZ2uq8bh6CrXjhvQ4KvDuxVCSGc7PJnBh4YHqXbRQdxL1i7w3A39eEifdt"
+      ],
+      [
+        "deactivate_service",
+        "uGbnYMhfZLLDedH3uU4q94YHfFx42V8XWnuMNAKRTDUyAupLVifxS7ufvCmKfwPsChXUkg2mSeT7NQAFbgzm4i9"
+      ]
+    ],
+    "negative": [
+      "create_task with a past deadline was rejected (DeadlineInPast).",
+      "submit_result by a stranger was rejected (UnauthorizedProvider).",
+      "submit_result_zk with a junk Groth16 proof was rejected (ZkProofVerificationFailed).",
+      "accept_result before submission was rejected (InvalidTaskStatus).",
+      "Submitting twice was rejected (InvalidTaskStatus).",
+      "accept_result paying a different wallet was rejected (ConstraintRaw).",
+      "expire_task before the deadline was rejected (DeadlineNotReached).",
+      "deactivate_service by a stranger was rejected (ConstraintSeeds).",
+      "create_task on a deactivated service was rejected (ServiceNotActive)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/agentpay-zk.mjs.",
+    "limits": "Upstream design flaw: dispute_task refunds the requester in full even after the provider submitted, with no arbitration, so a requester can take the work and its money back. A valid Groth16 proof was not generated in the lab (only rejection of a junk proof is shown); verify_reputation was not run. Task accounts are never closed. Source unchanged apart from declare_id. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "register_service ApJixQ9k\u2026; create_task 41usqX6w\u2026; submit_result JAaxZ4zv\u2026; accept_result 3zZXHucK\u2026; create_task 2 5DeuukPk\u2026; submit_result 2 32kj7wP2\u2026; dispute_task 3eCiHACp\u2026; create_task 3 9uQA3evQ\u2026; expire_task by a stranger crank 35miG9tu\u2026; deactivate_service uGbnYMhf\u2026. create_task with a past deadline was rejected (DeadlineInPast). submit_result by a stranger was rejected (UnauthorizedProvider). submit_result_zk with a junk Groth16 proof was rejected (ZkProofVerificationFailed). accept_result before submission was rejected (InvalidTaskStatus). Submitting twice was rejected (InvalidTaskStatus). accept_result paying a different wallet was rejected (ConstraintRaw). expire_task before the deadline was rejected (DeadlineNotReached). deactivate_service by a stranger was rejected (ConstraintSeeds). create_task on a deactivated service was rejected (ServiceNotActive)."
   }
 ]

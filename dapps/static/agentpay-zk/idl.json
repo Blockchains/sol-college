@@ -1,0 +1,1017 @@
+{
+  "address": "74f7jS17uG1Lyh6Bov17kNnMCx48wKa4TKe9a52a2r7L",
+  "metadata": {
+    "name": "agentpay",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "accept_result",
+      "docs": [
+        "Requester accepts the submitted result.",
+        "Escrow funds are released to the provider."
+      ],
+      "discriminator": [
+        136,
+        134,
+        91,
+        171,
+        167,
+        202,
+        234,
+        181
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "signer": true,
+          "relations": [
+            "task_request"
+          ]
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "requester"
+              },
+              {
+                "kind": "account",
+                "path": "task_request.task_id",
+                "account": "TaskRequest"
+              }
+            ]
+          }
+        },
+        {
+          "name": "provider",
+          "writable": true
+        },
+        {
+          "name": "service_listing",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  118,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task_request.provider",
+                "account": "TaskRequest"
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.service_id",
+                "account": "ServiceListing"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "create_task",
+      "docs": [
+        "Create a task request and lock payment in escrow.",
+        "The requester (buyer) specifies the provider, description, payment, and deadline."
+      ],
+      "discriminator": [
+        194,
+        80,
+        6,
+        180,
+        232,
+        127,
+        48,
+        171
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "service_listing",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  118,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.provider",
+                "account": "ServiceListing"
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.service_id",
+                "account": "ServiceListing"
+              }
+            ]
+          }
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "requester"
+              },
+              {
+                "kind": "arg",
+                "path": "task_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "task_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "array": [
+              "u8",
+              256
+            ]
+          }
+        },
+        {
+          "name": "deadline",
+          "type": "i64"
+        }
+      ]
+    },
+    {
+      "name": "deactivate_service",
+      "docs": [
+        "Deactivate a service listing. Only the provider can do this."
+      ],
+      "discriminator": [
+        251,
+        86,
+        29,
+        182,
+        216,
+        170,
+        85,
+        155
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true,
+          "relations": [
+            "service_listing"
+          ]
+        },
+        {
+          "name": "service_listing",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  118,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider"
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.service_id",
+                "account": "ServiceListing"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "dispute_task",
+      "docs": [
+        "Requester disputes the task. Funds are returned to the requester.",
+        "Simple dispute model: requester gets an immediate refund."
+      ],
+      "discriminator": [
+        140,
+        98,
+        191,
+        168,
+        154,
+        118,
+        50,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "task_request"
+          ]
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "requester"
+              },
+              {
+                "kind": "account",
+                "path": "task_request.task_id",
+                "account": "TaskRequest"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "expire_task",
+      "docs": [
+        "Expire a task that has passed its deadline without a result submission.",
+        "Anyone can call this (permissionless crank). Funds return to the requester."
+      ],
+      "discriminator": [
+        116,
+        94,
+        206,
+        205,
+        170,
+        51,
+        156,
+        98
+      ],
+      "accounts": [
+        {
+          "name": "requester",
+          "writable": true
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task_request.requester",
+                "account": "TaskRequest"
+              },
+              {
+                "kind": "account",
+                "path": "task_request.task_id",
+                "account": "TaskRequest"
+              }
+            ]
+          }
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "register_service",
+      "docs": [
+        "Register a new service listing on-chain.",
+        "The provider advertises what they offer and at what price."
+      ],
+      "discriminator": [
+        11,
+        133,
+        158,
+        232,
+        193,
+        19,
+        229,
+        73
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "service_listing",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  118,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "provider"
+              },
+              {
+                "kind": "arg",
+                "path": "service_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "service_id",
+          "type": {
+            "array": [
+              "u8",
+              16
+            ]
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "array": [
+              "u8",
+              128
+            ]
+          }
+        },
+        {
+          "name": "price_lamports",
+          "type": "u64"
+        },
+        {
+          "name": "min_reputation",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "submit_result",
+      "docs": [
+        "Provider submits a result hash for a task.",
+        "The actual result data is exchanged off-chain; the hash provides verifiability."
+      ],
+      "discriminator": [
+        240,
+        42,
+        89,
+        180,
+        10,
+        239,
+        9,
+        214
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true,
+          "relations": [
+            "task_request"
+          ]
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task_request.requester",
+                "account": "TaskRequest"
+              },
+              {
+                "kind": "account",
+                "path": "task_request.task_id",
+                "account": "TaskRequest"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "result_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "submit_result_zk",
+      "docs": [
+        "Submit a result with ZK proof verification.",
+        "The provider proves knowledge of the result pre-image via a Groth16 proof.",
+        "proof_a: 64 bytes (G1, negated, big-endian)",
+        "proof_b: 128 bytes (G2, big-endian)",
+        "proof_c: 64 bytes (G1, big-endian)",
+        "result_hash: 32 bytes (the Poseidon hash, used as public input)"
+      ],
+      "discriminator": [
+        98,
+        173,
+        167,
+        164,
+        217,
+        231,
+        142,
+        199
+      ],
+      "accounts": [
+        {
+          "name": "provider",
+          "signer": true,
+          "relations": [
+            "task_request"
+          ]
+        },
+        {
+          "name": "task_request",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  116,
+                  97,
+                  115,
+                  107
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "task_request.requester",
+                "account": "TaskRequest"
+              },
+              {
+                "kind": "account",
+                "path": "task_request.task_id",
+                "account": "TaskRequest"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "proof_a",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "proof_b",
+          "type": {
+            "array": [
+              "u8",
+              128
+            ]
+          }
+        },
+        {
+          "name": "proof_c",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "result_hash",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "verify_reputation",
+      "docs": [
+        "Verify a provider's reputation meets the service minimum requirement.",
+        "Uses a ZK proof to prove reputation >= threshold without revealing exact score.",
+        "This is called by the requester before creating a task, to verify the provider qualifies."
+      ],
+      "discriminator": [
+        182,
+        23,
+        57,
+        13,
+        214,
+        61,
+        83,
+        208
+      ],
+      "accounts": [
+        {
+          "name": "signer",
+          "signer": true
+        },
+        {
+          "name": "service_listing",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  115,
+                  101,
+                  114,
+                  118,
+                  105,
+                  99,
+                  101
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.provider",
+                "account": "ServiceListing"
+              },
+              {
+                "kind": "account",
+                "path": "service_listing.service_id",
+                "account": "ServiceListing"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "proof_a",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "proof_b",
+          "type": {
+            "array": [
+              "u8",
+              128
+            ]
+          }
+        },
+        {
+          "name": "proof_c",
+          "type": {
+            "array": [
+              "u8",
+              64
+            ]
+          }
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        },
+        {
+          "name": "provider_commitment",
+          "type": {
+            "array": [
+              "u8",
+              32
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "ServiceListing",
+      "discriminator": [
+        117,
+        173,
+        54,
+        52,
+        146,
+        147,
+        124,
+        211
+      ]
+    },
+    {
+      "name": "TaskRequest",
+      "discriminator": [
+        82,
+        205,
+        229,
+        255,
+        36,
+        209,
+        160,
+        79
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "ServiceNotActive",
+      "msg": "Service is not active"
+    },
+    {
+      "code": 6001,
+      "name": "InsufficientPayment",
+      "msg": "Payment amount is below the service price"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidTaskStatus",
+      "msg": "Task is not in the expected status"
+    },
+    {
+      "code": 6003,
+      "name": "UnauthorizedRequester",
+      "msg": "Only the task requester can perform this action"
+    },
+    {
+      "code": 6004,
+      "name": "UnauthorizedProvider",
+      "msg": "Only the task provider can perform this action"
+    },
+    {
+      "code": 6005,
+      "name": "UnauthorizedServiceOwner",
+      "msg": "Only the service provider can perform this action"
+    },
+    {
+      "code": 6006,
+      "name": "DeadlineNotReached",
+      "msg": "Task deadline has not passed yet"
+    },
+    {
+      "code": 6007,
+      "name": "DeadlinePassed",
+      "msg": "Task deadline has passed"
+    },
+    {
+      "code": 6008,
+      "name": "DescriptionTooLong",
+      "msg": "Description is too long"
+    },
+    {
+      "code": 6009,
+      "name": "DeadlineInPast",
+      "msg": "Deadline must be in the future"
+    },
+    {
+      "code": 6010,
+      "name": "ZkProofVerificationFailed",
+      "msg": "ZK proof verification failed"
+    },
+    {
+      "code": 6011,
+      "name": "ReputationTooLow",
+      "msg": "Provider reputation is too low for this service"
+    }
+  ],
+  "types": [
+    {
+      "name": "ServiceListing",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "provider",
+            "docs": [
+              "The agent's wallet that provides this service"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "service_id",
+            "docs": [
+              "Unique service identifier (client-generated)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "docs": [
+              "Human-readable description of the service"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                128
+              ]
+            }
+          },
+          {
+            "name": "price_lamports",
+            "docs": [
+              "Cost per task in lamports"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "is_active",
+            "docs": [
+              "Whether this service is currently accepting work"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "tasks_completed",
+            "docs": [
+              "Number of tasks successfully completed (reputation)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Timestamp of creation"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "min_reputation",
+            "docs": [
+              "Minimum reputation score required (0 = no minimum)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TaskRequest",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "requester",
+            "docs": [
+              "The agent requesting work (buyer)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "provider",
+            "docs": [
+              "The agent doing the work (seller)"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "service_listing",
+            "docs": [
+              "Reference to the service listing"
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "task_id",
+            "docs": [
+              "Unique task identifier (client-generated)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                16
+              ]
+            }
+          },
+          {
+            "name": "description",
+            "docs": [
+              "Description of what needs to be done"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                256
+              ]
+            }
+          },
+          {
+            "name": "amount_lamports",
+            "docs": [
+              "Payment amount locked in escrow (lamports)"
+            ],
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "docs": [
+              "Current status of the task"
+            ],
+            "type": {
+              "defined": {
+                "name": "TaskStatus"
+              }
+            }
+          },
+          {
+            "name": "result_hash",
+            "docs": [
+              "SHA256 hash of the delivered result (set by provider)"
+            ],
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          },
+          {
+            "name": "deadline",
+            "docs": [
+              "Unix timestamp deadline for task completion"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "created_at",
+            "docs": [
+              "Timestamp of creation"
+            ],
+            "type": "i64"
+          },
+          {
+            "name": "zk_verified",
+            "docs": [
+              "Whether the result was ZK-verified (Groth16 proof verified on-chain)"
+            ],
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "docs": [
+              "PDA bump seed"
+            ],
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TaskStatus",
+      "repr": {
+        "kind": "rust"
+      },
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Open"
+          },
+          {
+            "name": "Submitted"
+          },
+          {
+            "name": "Completed"
+          },
+          {
+            "name": "Disputed"
+          },
+          {
+            "name": "Expired"
+          }
+        ]
+      }
+    }
+  ]
+}

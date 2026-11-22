@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-agentpay-zk",
+  "slug": "agentpay-zk",
+  "displayName": "AgentPay Task Escrow (ZK-ready) (Sol.College demonstration)",
+  "description": "Agent-to-agent service market with SOL escrow on devnet (Anchor 0.32): a provider agent lists a service, a requester locks the price in a task PDA, and the result hash releases, refunds or expires it. Optional Groth16 result proofs. Full lifecycle verified with real transactions.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of DavidGutierrez94/agentpay. The lab tree is branch sol-college-devnet of Blockchains/agentpay-dg. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "DavidGutierrez94/agentpay",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/agentpay-dg",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "agentpay-zk-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-agentpay-zk"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T19:11:56Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (service listings, task escrow, ZK verifier)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/agentpay-zk/",
+      "QA: devnet proof of agent task escrow"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "dispute-arbiter",
+        "title": "Replace instant-refund disputes with an arbiter",
+        "skills": [
+          "Anchor",
+          "Rust"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.32.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/agentpay"
+  }
+}

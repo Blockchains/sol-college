@@ -1,0 +1,10 @@
+{
+ "name": "AgentAlpha Signal Commit-Reveal",
+ "fork": "https://github.com/Blockchains/agentalpha",
+ "commit": "457d30eea0ae26743d4c4327219a97ef5fb65c8d",
+ "lesson": "/explore/agentalpha/",
+ "programs": {
+  "devnet": "5LQg57Lt8WaSZi8jtu771B9MVfKQ8muqcXXucTLM7WY7",
+  "mainnet": null
+ }
+}

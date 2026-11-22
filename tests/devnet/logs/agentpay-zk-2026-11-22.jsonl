@@ -1,0 +1,22 @@
+{"step":"setup","program":"74f7jS17uG1Lyh6Bov17kNnMCx48wKa4TKe9a52a2r7L","provider":"3EePRrV1jx9YPfqyt8kQ5mr6NXmXftNoP5fLkrtUK8yd","requester":"BP1uwSaTHXvgN8sPQJgaor6iBoT3KYjnZNnkvJr71zDv","service_listing":"72WZhjm2ZLqc6CeeMxrKzaW15RAr3Uiek8nFwj3exo9S"}
+{"step":"register_service","ok":true,"sig":"ApJixQ9kXBHaM9RbgpnfmnNjb89DbTAPwWTLC7cEqQ743BUScz8HYm9kUws2b9or9vjCwUJHkr6X7TX33UVmbFS","price_lamports":10000000}
+{"step":"create_task_accept","ok":true,"sig":"41usqX6wHvxq2Ar97np6e5qMLEqNSTsic7jiEhM85jA8MWVVNHr43j7spyBP2UTWhSRZMBb13ZoPE8fGsC2qZyWw","task":"BJ4acBbgV1oijkK7bUCHaKB15AyPUZbR6TyeSMRXcuRA","escrow_lamports":12860040}
+{"step":"submit_by_stranger","rejected":true,"reason":"UnauthorizedProvider"}
+{"step":"submit_result_zk_bogus_proof","rejected":true,"reason":"ZkProofVerificationFailed"}
+{"step":"accept_before_submit","rejected":true,"reason":"InvalidTaskStatus"}
+{"step":"submit_result","ok":true,"sig":"JAaxZ4zv3UGmBeAQ2JsxWUC3UCJYgMP8KHz5G6DY5hcD5gWkfsi6Ma4GcVn9dA6V7fYthGg8DVAdWNimr3WS1Hu"}
+{"step":"submit_twice","rejected":true,"reason":"InvalidTaskStatus"}
+{"step":"accept_wrong_provider_account","rejected":true,"reason":"ConstraintRaw"}
+{"step":"accept_result","ok":true,"sig":"3zZXHucKgJePEWWALfmnF4ZrujZeZwyKUc2mhmCifZgh96N7xSMWQuGYQStkE4thtPYZum7eaXhCFfqygM2Aasd1","provider_received":10000000,"tasks_completed":"1"}
+{"step":"create_task_dispute","ok":true,"sig":"5DeuukPk6tUuCa6w5Tvs1U6BPAEfHmLnViwYYeuzK4neM57angnhMhk1AFXDMt8fw9Vj77n84YNLhqswsZj4xiKn","task":"1Qv3rtnodht53EWnfRSZTugFmAKKUTmoWgaSkvoh4KF","escrow_lamports":12860040}
+{"step":"submit_result_2","ok":true,"sig":"32kj7wP2U99FjkNCZ5mNsh4mLVRQbTEB8bxWq1PkQPJJ5y7o4yBRa3Vxrpd13xRdyvV6oTWkfKdXZJvapEEfyx2S"}
+{"step":"dispute_task","ok":true,"sig":"3eCiHACpVwFHZBJWTVuZTvTg49YT1CTjLXEQurU3sUzejmKG8KwPntCpbgQpwM6xA2j95dV3dZG6WwgBh2Pw4o8d","note":"UPSTREAM DESIGN FLAW: dispute after a submitted result refunds the requester in full with no arbitration","escrow_left":2860040}
+{"step":"create_task_expire","ok":true,"sig":"9uQA3evQt9CHRFTrU5JUis3o2BVeuCmgdq8vnuhC2UmLkYRa5HKP8B2vkHnrtuWPk8k4Zx3YL3cv9RxSMpXyHQN","task":"5VnTTtWuPJur3hGUVGgmhZexC1qawt34wSKiXJB1o4FN","escrow_lamports":12860040}
+{"step":"expire_before_deadline","rejected":true,"reason":"DeadlineNotReached"}
+{"step":"expire_task_by_crank","ok":true,"sig":"35miG9tuVNX92bLCAJ6SL8Z8acpk9KZZ2uq8bh6CrXjhvQ4KvDuxVCSGc7PJnBh4YHqXbRQdxL1i7w3A39eEifdt","escrow_left":2860040}
+{"step":"deactivate_by_stranger","rejected":true,"reason":"ConstraintSeeds"}
+{"step":"deactivate_service","ok":true,"sig":"uGbnYMhfZLLDedH3uU4q94YHfFx42V8XWnuMNAKRTDUyAupLVifxS7ufvCmKfwPsChXUkg2mSeT7NQAFbgzm4i9"}
+{"step":"cleanup_returned_lab_wallets"}
+{"step":"create_task_inactive_service","rejected":true,"reason":"ServiceNotActive"}
+{"step":"register_service_2","ok":true,"sig":"41puBcdV2FWnAWWixmf3rsEvW2QfkXgifpd6soUz6BKKNr5uPtSqtyKr3P69zqVS8Vbz9n3MyQao1LFq4V2VD3EC","service_listing":"3uTHk6dmTN6nncD3pAWhgjKsDRM1ciHyER8TMG1m2mVQ"}
+{"step":"create_task_deadline_in_past","rejected":true,"reason":"DeadlineInPast"}

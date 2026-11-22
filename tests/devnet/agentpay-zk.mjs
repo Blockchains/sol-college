@@ -1,0 +1,56 @@
+import fs from 'fs';
+import crypto from 'crypto';
+import { Keypair, PublicKey, SystemProgram } from '@solana/web3.js';
+import { payer, conn, log, program, fund, expectFail, sendIx, BN } from './lib/labcommon.mjs';
+const idl = JSON.parse(fs.readFileSync(new URL('../../dapps/static/agentpay-zk/idl.json', import.meta.url), 'utf8'));
+const pid = new PublicKey(idl.address);
+const prog = program(idl);
+const pda = (...s) => PublicKey.findProgramAddressSync(s.map(x => typeof x === 'string' ? Buffer.from(x) : x), pid)[0];
+const fixed = (s, n) => { const b = Buffer.alloc(n); Buffer.from(s).copy(b); return [...b]; };
+const rnd16 = () => [...crypto.randomBytes(16)];
+const sha = (s) => [...crypto.createHash('sha256').update(s).digest()];
+const provider = Keypair.generate(), stranger = Keypair.generate();
+await fund(provider.publicKey, 15_000_000); await fund(stranger.publicKey, 5_000_000);
+const PRICE = 10_000_000;
+const now = async () => Math.floor(Date.now() / 1000);
+try {
+  const pp = program(idl, provider), ps = program(idl, stranger);
+  const sid = rnd16(); const listing = pda('service', provider.publicKey.toBuffer(), Buffer.from(sid));
+  log({ step: 'setup', program: pid.toBase58(), provider: provider.publicKey.toBase58(), requester: payer.publicKey.toBase58(), service_listing: listing.toBase58() });
+  let sig = await pp.methods.registerService(sid, fixed('LLM summarisation agent (sol.college lab)', 128), new BN(PRICE), new BN(0)).accountsPartial({ provider: provider.publicKey, serviceListing: listing }).signers([provider]).rpc();
+  log({ step: 'register_service', ok: true, sig, price_lamports: PRICE });
+  const mk = async (label, dl) => { const tid = rnd16(); const t = pda('task', payer.publicKey.toBuffer(), Buffer.from(tid));
+    const s = await prog.methods.createTask(tid, fixed(label, 256), new BN(dl)).accountsPartial({ requester: payer.publicKey, serviceListing: listing, taskRequest: t }).rpc();
+    log({ step: `create_task_${label.split(' ')[0]}`, ok: true, sig: s, task: t.toBase58(), escrow_lamports: (await conn.getBalance(t)) }); return t; };
+  await expectFail('create_task_deadline_in_past', async () => { const tid = rnd16(); return prog.methods.createTask(tid, fixed('x', 256), new BN((await now()) - 10)).accountsPartial({ requester: payer.publicKey, serviceListing: listing, taskRequest: pda('task', payer.publicKey.toBuffer(), Buffer.from(tid)) }).rpc(); });
+  const t1 = await mk('accept summarise doc', (await now()) + 900);
+  await expectFail('submit_by_stranger', () => ps.methods.submitResult(sha('fake')).accountsPartial({ provider: stranger.publicKey, taskRequest: t1 }).signers([stranger]).rpc());
+  await expectFail('submit_result_zk_bogus_proof', () => pp.methods.submitResultZk(Array(64).fill(1), Array(128).fill(1), Array(64).fill(1), sha('r')).accountsPartial({ provider: provider.publicKey, taskRequest: t1 }).signers([provider]).rpc());
+  await expectFail('accept_before_submit', () => prog.methods.acceptResult().accountsPartial({ requester: payer.publicKey, taskRequest: t1, provider: provider.publicKey, serviceListing: listing }).rpc());
+  sig = await pp.methods.submitResult(sha('summary v1')).accountsPartial({ provider: provider.publicKey, taskRequest: t1 }).signers([provider]).rpc();
+  log({ step: 'submit_result', ok: true, sig });
+  await expectFail('submit_twice', () => pp.methods.submitResult(sha('summary v2')).accountsPartial({ provider: provider.publicKey, taskRequest: t1 }).signers([provider]).rpc());
+  await expectFail('accept_wrong_provider_account', () => prog.methods.acceptResult().accountsPartial({ requester: payer.publicKey, taskRequest: t1, provider: stranger.publicKey, serviceListing: listing }).rpc());
+  const b0 = await conn.getBalance(provider.publicKey);
+  sig = await prog.methods.acceptResult().accountsPartial({ requester: payer.publicKey, taskRequest: t1, provider: provider.publicKey, serviceListing: listing }).rpc();
+  log({ step: 'accept_result', ok: true, sig, provider_received: (await conn.getBalance(provider.publicKey)) - b0, tasks_completed: (await prog.account.serviceListing.fetch(listing)).tasksCompleted.toString() });
+  const t2 = await mk('dispute translate text', (await now()) + 900);
+  sig = await pp.methods.submitResult(sha('translation')).accountsPartial({ provider: provider.publicKey, taskRequest: t2 }).signers([provider]).rpc();
+  log({ step: 'submit_result_2', ok: true, sig });
+  const r0 = await conn.getBalance(payer.publicKey);
+  sig = await prog.methods.disputeTask().accountsPartial({ requester: payer.publicKey, taskRequest: t2 }).rpc();
+  log({ step: 'dispute_task', ok: true, sig, note: 'UPSTREAM DESIGN FLAW: dispute after a submitted result refunds the requester in full with no arbitration', escrow_left: (await conn.getBalance(t2)) });
+  const t3 = await mk('expire classify images', (await now()) + 12);
+  await expectFail('expire_before_deadline', () => ps.methods.expireTask().accountsPartial({ requester: payer.publicKey, taskRequest: t3 }).rpc());
+  await new Promise(r => setTimeout(r, 20000));
+  sig = await ps.methods.expireTask().accountsPartial({ requester: payer.publicKey, taskRequest: t3 }).signers([stranger]).rpc();
+  log({ step: 'expire_task_by_crank', ok: true, sig, escrow_left: (await conn.getBalance(t3)) });
+  await expectFail('deactivate_by_stranger', () => ps.methods.deactivateService().accountsPartial({ provider: stranger.publicKey, serviceListing: listing }).signers([stranger]).rpc());
+  sig = await pp.methods.deactivateService().accountsPartial({ provider: provider.publicKey, serviceListing: listing }).signers([provider]).rpc();
+  log({ step: 'deactivate_service', ok: true, sig });
+  await expectFail('create_task_inactive_service', async () => { const tid = rnd16(); return prog.methods.createTask(tid, fixed('x', 256), new BN((await now()) + 900)).accountsPartial({ requester: payer.publicKey, serviceListing: listing, taskRequest: pda('task', payer.publicKey.toBuffer(), Buffer.from(tid)) }).rpc(); });
+} finally {
+  for (const k of [provider, stranger]) { const l = await conn.getBalance(k.publicKey); if (l > 0) await sendIx([SystemProgram.transfer({ fromPubkey: k.publicKey, toPubkey: payer.publicKey, lamports: l })], [payer, k]); }
+  log({ step: 'cleanup_returned_lab_wallets' });
+}
+process.exit(0);

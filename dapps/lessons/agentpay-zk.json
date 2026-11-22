@@ -1,0 +1,40 @@
+{
+  "title": "AgentPay Task Escrow (ZK-ready)",
+  "summary": "Let one AI agent hire another: list a priced service, lock payment in a task PDA, and release, refund or expire it on chain.",
+  "what": "AgentPay is one Anchor 0.32 program with service listings, task escrows and a groth16-solana verifier for optional result and reputation proofs.",
+  "app_note": "The page at /dapps/agentpay-zk/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/agentpay-dg; only declare_id changed.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/agentpay-zk/, switch to Devnet, connect a wallet, call register_service with a 16-byte id and a price, then create_task from a second wallet.",
+      "see": "The task PDA balance grows by the price; accept_result moves it to the provider.",
+      "ran": "Accept, dispute and expire paths (see steps)."
+    }
+  ],
+  "diagram": "provider --register_service--> listing; requester --create_task(price)--> task PDA (escrow); provider --submit_result(hash)--> Submitted; requester --accept--> provider paid | --dispute--> refunded; anyone --expire (after deadline)--> refunded",
+  "accounts": [
+    "service listing PDA [\"service\", provider, service_id]",
+    "task PDA [\"task\", requester, task_id] (holds escrow lamports)"
+  ],
+  "instructions": [
+    "register_service",
+    "deactivate_service",
+    "create_task",
+    "submit_result",
+    "submit_result_zk",
+    "accept_result",
+    "dispute_task",
+    "expire_task",
+    "verify_reputation"
+  ],
+  "innovation": "Payment lives in the task account itself, and a Groth16 verifier lets a provider prove a result hash without revealing the result.",
+  "frontend": "Generic IDL console at /dapps/agentpay-zk/.",
+  "exercises": [
+    "Add a dispute window and an arbiter instead of an instant refund.",
+    "Generate a real proof with the repo circuits and call submit_result_zk."
+  ],
+  "not_covered": [
+    "A valid Groth16 proof (needs the circuit zkey)",
+    "verify_reputation",
+    "min_reputation enforcement (stored, never checked)"
+  ]
+}
