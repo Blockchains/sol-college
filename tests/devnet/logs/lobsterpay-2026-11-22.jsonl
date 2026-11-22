@@ -1,0 +1,10 @@
+{"step":"setup","program":"2Rc85XXSoahDHscAVhvxVczBX5Csy3p7Tf7MnqPs81Ju","vault":"2rr4U5D68xdsBDjgenoTxeWeCBRsDP5AD6MhPebztw1g","policy":"5YzNVgazT9LD8sbsWyP7wanprXX7zoo71mVoBcU8viBL","feeVault":"9Bk7rX4cEbKBNK39vjctV5ytrLYLjeS1nmBgp4KGpEg3","merchant":"22xTqz5emkaaFcShto9WdUU17r9Z5xiFuDqCXKN4JFXV"}
+{"step":"initialize_vault","sig":"Qrj16DWSMc5QBwqXyLMWD7gRbJ8PmPLop8j7HUWFm9N7e26Mcsn4praLcu5eEDkEsjGRexb9vjucDmX54s1fqL6"}
+{"step":"update_policy","sig":"4sXskJtqpQsP3XZVUJJCJ5phvvjeDZudzHxJCaWgn4osxH647XoVtiYVYSqoZNhPmsHNPnJ975mHs2RUMqQA9gVC","allowedMints":["BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D"],"allowedDestinations":["22xTqz5emkaaFcShto9WdUU17r9Z5xiFuDqCXKN4JFXV"]}
+{"step":"initialize_fee_vault","sig":"3BEQSgQecx9iaw2wPT73t1Ebei8qvYerhMCqT4tkNRETsmcTSEQzC4n88LcPmHpDnG4VT7uEr3eHPixbCEUC3u5k"}
+{"step":"deposit_fees","sig":"4ZageJkbe8bpnNMBgXFDT2ERqx36etBtKZCn3N4KJf8E5ToMfXqdMfT1Juve6vEpiKdQLPsZU8P2VjTzvCqLnpko","lamports":2000000}
+{"step":"ensure_vault_token_account","sig":"3PW9U4skAXnwSVJrJhzpF22rAvWonix1EY8GEtyJd5m5TmJK2ANR9KTpaWzaUpUmabpWrbKxXuw9WrtRNFdLxMTH","vaultAta":"BwYvYg66BwBgYYEhg5Y19otXWBpuRneWth4wPNSyWrdo"}
+{"step":"mint_to_vault","sig":"2xDn8mYFKPmY4NV5eot4R1TVE5tBBBJogoBWtDg4Dt5vSG3gkUWJ9mbgVZrwFrYxdeqsrD4D1YkaYHAUe9HG7Tx"}
+{"step":"execute_pay_exact_non_allowlisted_destination","rejected":true,"reason":"DestinationNotAllowed"}
+{"step":"execute_pay_exact_over_per_tx_limit","rejected":true,"reason":"AmountExceedsPerTxLimit"}
+{"step":"execute_pay_exact","sig":"2wuDBpQPuLPkTdBV5qRUDDSaAQZAU1oZ3UVXuzbqKrj95xX4yQifCn9eU3z65PC9KpjtwCsnxub3ngsg3obVA9Xv","merchant_received":"985000","treasury_fee":"15000","vault_left":"0"}

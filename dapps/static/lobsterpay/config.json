@@ -1,0 +1,10 @@
+{
+ "name": "LobsterPay",
+ "fork": "https://github.com/Blockchains/lobsterpay",
+ "commit": "c22a346841fda192b6d3423569f5c3aac39497f1",
+ "lesson": "/explore/lobsterpay/",
+ "programs": {
+  "devnet": "2Rc85XXSoahDHscAVhvxVczBX5Csy3p7Tf7MnqPs81Ju",
+  "mainnet": null
+ }
+}

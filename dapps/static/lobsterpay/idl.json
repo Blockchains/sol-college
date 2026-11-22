@@ -1,0 +1,1854 @@
+{
+  "address": "2Rc85XXSoahDHscAVhvxVczBX5Csy3p7Tf7MnqPs81Ju",
+  "metadata": {
+    "name": "lobsterpay",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Permissioned payment layer for AI agents on Solana"
+  },
+  "instructions": [
+    {
+      "name": "deposit_fees",
+      "discriminator": [
+        13,
+        215,
+        175,
+        72,
+        53,
+        21,
+        89,
+        5
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "fee_vault"
+          ]
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "DepositFeesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "emergency_pause",
+      "discriminator": [
+        21,
+        143,
+        27,
+        142,
+        200,
+        181,
+        210,
+        255
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault",
+            "policy"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "ensure_vault_token_account",
+      "discriminator": [
+        168,
+        77,
+        151,
+        115,
+        244,
+        83,
+        37,
+        49
+      ],
+      "accounts": [
+        {
+          "name": "payer",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "execute_pay_exact",
+      "discriminator": [
+        199,
+        113,
+        233,
+        162,
+        70,
+        70,
+        83,
+        156
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "docs": [
+            "The authority - either the vault owner OR policy.authorized_agent.",
+            "Also typically the tx fee payer; gets reimbursed from fee_vault",
+            "for actual network costs at the end of this instruction so the",
+            "vault economically pays its own gas."
+          ],
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "Vault"
+              }
+            ]
+          },
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        },
+        {
+          "name": "fee_vault",
+          "docs": [
+            "Fee vault - holds SOL used to reimburse the tx fee payer for",
+            "network costs after each agent action. Must remain rent-exempt",
+            "after reimbursement."
+          ],
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "Vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "destination_token_account",
+          "writable": true
+        },
+        {
+          "name": "treasury_token_account",
+          "docs": [
+            "LobsterPay treasury token account - must be owned by the hardcoded",
+            "treasury pubkey and match the payment mint."
+          ],
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ExecutePayExactParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "execute_swap_exact_in",
+      "discriminator": [
+        149,
+        167,
+        19,
+        19,
+        170,
+        110,
+        139,
+        121
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault.owner",
+                "account": "Vault"
+              }
+            ]
+          },
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "ExecuteSwapExactInParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "initialize_fee_vault",
+      "discriminator": [
+        185,
+        140,
+        228,
+        234,
+        79,
+        203,
+        252,
+        50
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize_vault",
+      "discriminator": [
+        48,
+        191,
+        163,
+        44,
+        71,
+        129,
+        63,
+        164
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "policy",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  111,
+                  108,
+                  105,
+                  99,
+                  121
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "vault"
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "InitializeVaultParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_authorized_agent",
+      "discriminator": [
+        99,
+        196,
+        103,
+        74,
+        106,
+        51,
+        2,
+        81
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault",
+            "policy"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdateAuthorizedAgentParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "update_policy",
+      "discriminator": [
+        212,
+        245,
+        246,
+        7,
+        163,
+        151,
+        18,
+        57
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault",
+            "policy"
+          ]
+        },
+        {
+          "name": "vault",
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy",
+          "writable": true
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "UpdatePolicyParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_fees",
+      "discriminator": [
+        198,
+        212,
+        171,
+        109,
+        144,
+        215,
+        174,
+        89
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true,
+          "relations": [
+            "fee_vault"
+          ]
+        },
+        {
+          "name": "fee_vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  102,
+                  101,
+                  101,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "WithdrawFeesParams"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "withdraw_owner",
+      "discriminator": [
+        229,
+        130,
+        29,
+        107,
+        229,
+        152,
+        167,
+        190
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "signer": true,
+          "relations": [
+            "vault"
+          ]
+        },
+        {
+          "name": "vault",
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          },
+          "relations": [
+            "policy"
+          ]
+        },
+        {
+          "name": "policy"
+        },
+        {
+          "name": "mint"
+        },
+        {
+          "name": "vault_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "vault"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "destination_token_account",
+          "writable": true
+        },
+        {
+          "name": "token_program"
+        }
+      ],
+      "args": [
+        {
+          "name": "params",
+          "type": {
+            "defined": {
+              "name": "WithdrawOwnerParams"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "FeeVault",
+      "discriminator": [
+        192,
+        178,
+        69,
+        232,
+        58,
+        149,
+        157,
+        132
+      ]
+    },
+    {
+      "name": "Policy",
+      "discriminator": [
+        222,
+        135,
+        7,
+        163,
+        235,
+        177,
+        33,
+        68
+      ]
+    },
+    {
+      "name": "Vault",
+      "discriminator": [
+        211,
+        8,
+        232,
+        43,
+        2,
+        152,
+        117,
+        119
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "AuthorizedAgentUpdated",
+      "discriminator": [
+        3,
+        64,
+        54,
+        62,
+        24,
+        15,
+        144,
+        121
+      ]
+    },
+    {
+      "name": "FeeReimbursed",
+      "discriminator": [
+        119,
+        18,
+        164,
+        199,
+        172,
+        235,
+        146,
+        44
+      ]
+    },
+    {
+      "name": "FeeVaultInitialized",
+      "discriminator": [
+        135,
+        217,
+        48,
+        80,
+        145,
+        35,
+        200,
+        130
+      ]
+    },
+    {
+      "name": "FeesDeposited",
+      "discriminator": [
+        130,
+        131,
+        74,
+        238,
+        201,
+        54,
+        205,
+        192
+      ]
+    },
+    {
+      "name": "FeesWithdrawn",
+      "discriminator": [
+        234,
+        15,
+        0,
+        119,
+        148,
+        241,
+        40,
+        21
+      ]
+    },
+    {
+      "name": "OwnerWithdrawal",
+      "discriminator": [
+        244,
+        105,
+        209,
+        100,
+        241,
+        115,
+        54,
+        208
+      ]
+    },
+    {
+      "name": "PauseToggled",
+      "discriminator": [
+        105,
+        215,
+        89,
+        53,
+        198,
+        232,
+        136,
+        161
+      ]
+    },
+    {
+      "name": "PaymentExecuted",
+      "discriminator": [
+        153,
+        165,
+        141,
+        18,
+        246,
+        20,
+        204,
+        227
+      ]
+    },
+    {
+      "name": "PolicyUpdated",
+      "discriminator": [
+        225,
+        112,
+        112,
+        67,
+        95,
+        236,
+        245,
+        161
+      ]
+    },
+    {
+      "name": "ServiceFeeCollected",
+      "discriminator": [
+        76,
+        171,
+        211,
+        213,
+        225,
+        105,
+        176,
+        22
+      ]
+    },
+    {
+      "name": "SwapExecuted",
+      "discriminator": [
+        150,
+        166,
+        26,
+        225,
+        28,
+        89,
+        38,
+        79
+      ]
+    },
+    {
+      "name": "VaultInitialized",
+      "discriminator": [
+        180,
+        43,
+        207,
+        2,
+        18,
+        71,
+        3,
+        75
+      ]
+    },
+    {
+      "name": "VaultTokenAccountEnsured",
+      "discriminator": [
+        246,
+        1,
+        224,
+        48,
+        55,
+        205,
+        22,
+        213
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "Unauthorized",
+      "msg": "Unauthorized"
+    },
+    {
+      "code": 6001,
+      "name": "VaultPaused",
+      "msg": "Vault is paused"
+    },
+    {
+      "code": 6002,
+      "name": "ActionNotAllowed",
+      "msg": "Action not allowed by policy"
+    },
+    {
+      "code": 6003,
+      "name": "MintNotAllowed",
+      "msg": "Mint not in allowlist"
+    },
+    {
+      "code": 6004,
+      "name": "DestinationNotAllowed",
+      "msg": "Destination not in allowlist"
+    },
+    {
+      "code": 6005,
+      "name": "ProgramNotAllowed",
+      "msg": "Program not in allowlist"
+    },
+    {
+      "code": 6006,
+      "name": "AmountExceedsPerTxLimit",
+      "msg": "Amount exceeds per-transaction limit"
+    },
+    {
+      "code": 6007,
+      "name": "AmountExceedsDailyLimit",
+      "msg": "Amount exceeds daily limit"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidAmount",
+      "msg": "Invalid amount"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidRoute",
+      "msg": "Invalid route"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidSlippage",
+      "msg": "Invalid slippage"
+    },
+    {
+      "code": 6011,
+      "name": "InvalidTokenProgram",
+      "msg": "Invalid token program"
+    },
+    {
+      "code": 6012,
+      "name": "ArithmeticOverflow",
+      "msg": "Arithmetic overflow"
+    },
+    {
+      "code": 6013,
+      "name": "StaleWindowState",
+      "msg": "Stale window state"
+    },
+    {
+      "code": 6014,
+      "name": "UnsupportedFeature",
+      "msg": "Unsupported feature"
+    },
+    {
+      "code": 6015,
+      "name": "MintAllowlistFull",
+      "msg": "Mint allowlist is full"
+    },
+    {
+      "code": 6016,
+      "name": "DestinationAllowlistFull",
+      "msg": "Destination allowlist is full"
+    },
+    {
+      "code": 6017,
+      "name": "ExternalProgramAllowlistFull",
+      "msg": "External program allowlist is full"
+    },
+    {
+      "code": 6018,
+      "name": "DuplicateAllowlistEntry",
+      "msg": "Duplicate entry in allowlist"
+    },
+    {
+      "code": 6019,
+      "name": "InsufficientFeeBalance",
+      "msg": "Fee vault has insufficient SOL balance - owner must deposit more"
+    },
+    {
+      "code": 6020,
+      "name": "InvalidTreasury",
+      "msg": "Invalid treasury account - does not match program constant"
+    },
+    {
+      "code": 6021,
+      "name": "InvalidFeeTreasuryMint",
+      "msg": "Fee treasury token account mint mismatch"
+    },
+    {
+      "code": 6022,
+      "name": "DuplicateAccountAliasing",
+      "msg": "Destination account must differ from source account"
+    }
+  ],
+  "types": [
+    {
+      "name": "AuthorizedAgentUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "old_agent",
+            "type": "pubkey"
+          },
+          {
+            "name": "new_agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositFeesParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExecutePayExactParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "request_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ExecuteSwapExactInParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "min_amount_out",
+            "type": "u64"
+          },
+          {
+            "name": "slippage_bps",
+            "type": "u16"
+          },
+          {
+            "name": "request_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeReimbursed",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "to",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeVault",
+      "docs": [
+        "FeeVault - a program-controlled PDA holding native SOL to fund",
+        "network fees for agent actions. Funded by the owner via deposit_fees."
+      ],
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeeVaultInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeesDeposited",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "new_balance",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "FeesWithdrawn",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "fee_vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "new_balance",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "InitializeVaultParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "allowed_actions",
+            "type": "u64"
+          },
+          {
+            "name": "max_per_tx_amount_atomic",
+            "type": "u64"
+          },
+          {
+            "name": "daily_limit_amount_atomic",
+            "type": "u64"
+          },
+          {
+            "name": "max_slippage_bps",
+            "type": "u16"
+          },
+          {
+            "name": "authorized_agent",
+            "docs": [
+              "Pubkey authorized to sign agent actions on behalf of the owner.",
+              "Frontend passes the LobsterPay service relayer pubkey here so",
+              "agent payments work immediately without a separate",
+              "update_authorized_agent step. If None, defaults to the owner",
+              "(effectively disables agent delegation until manually enabled)."
+            ],
+            "type": {
+              "option": "pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "OwnerWithdrawal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "destination",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PauseToggled",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PaymentExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "destination",
+            "type": "pubkey"
+          },
+          {
+            "name": "gross_amount",
+            "type": "u64"
+          },
+          {
+            "name": "net_amount",
+            "type": "u64"
+          },
+          {
+            "name": "service_fee",
+            "type": "u64"
+          },
+          {
+            "name": "request_hash",
+            "type": {
+              "array": [
+                "u8",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Policy",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "authorized_agent",
+            "docs": [
+              "Additional signer allowed to call execute_pay_exact / execute_swap_exact_in",
+              "on behalf of the owner. Typically the LobsterPay backend fee payer.",
+              "Default (at init) is the owner itself, which disables agent delegation."
+            ],
+            "type": "pubkey"
+          },
+          {
+            "name": "paused",
+            "type": "bool"
+          },
+          {
+            "name": "allowed_actions",
+            "type": "u64"
+          },
+          {
+            "name": "max_per_tx_amount_atomic",
+            "type": "u64"
+          },
+          {
+            "name": "daily_limit_amount_atomic",
+            "type": "u64"
+          },
+          {
+            "name": "daily_spent_amount_atomic",
+            "type": "u64"
+          },
+          {
+            "name": "daily_window_start_ts",
+            "type": "i64"
+          },
+          {
+            "name": "max_slippage_bps",
+            "type": "u16"
+          },
+          {
+            "name": "allowed_mints",
+            "type": {
+              "array": [
+                "pubkey",
+                8
+              ]
+            }
+          },
+          {
+            "name": "allowed_mint_count",
+            "type": "u8"
+          },
+          {
+            "name": "allowed_destinations",
+            "type": {
+              "array": [
+                "pubkey",
+                8
+              ]
+            }
+          },
+          {
+            "name": "allowed_destination_count",
+            "type": "u8"
+          },
+          {
+            "name": "allowed_external_programs",
+            "type": {
+              "array": [
+                "pubkey",
+                4
+              ]
+            }
+          },
+          {
+            "name": "allowed_external_program_count",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "PolicyUpdated",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ServiceFeeCollected",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount",
+            "type": "u64"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SwapExecuted",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "input_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "output_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "amount_in",
+            "type": "u64"
+          },
+          {
+            "name": "min_amount_out",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdateAuthorizedAgentParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "new_agent",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UpdatePolicyParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "paused",
+            "type": {
+              "option": "bool"
+            }
+          },
+          {
+            "name": "allowed_actions",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_per_tx_amount_atomic",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "daily_limit_amount_atomic",
+            "type": {
+              "option": "u64"
+            }
+          },
+          {
+            "name": "max_slippage_bps",
+            "type": {
+              "option": "u16"
+            }
+          },
+          {
+            "name": "allowed_mints",
+            "type": {
+              "option": {
+                "vec": "pubkey"
+              }
+            }
+          },
+          {
+            "name": "allowed_destinations",
+            "type": {
+              "option": {
+                "vec": "pubkey"
+              }
+            }
+          },
+          {
+            "name": "allowed_external_programs",
+            "type": {
+              "option": {
+                "vec": "pubkey"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "policy",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "created_at",
+            "type": "i64"
+          },
+          {
+            "name": "version",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultInitialized",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "owner",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "VaultTokenAccountEnsured",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "vault",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "token_account",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawFeesParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "WithdrawOwnerParams",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "amount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ]
+}

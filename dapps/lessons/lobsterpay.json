@@ -1,0 +1,37 @@
+{
+  "title": "LobsterPay",
+  "summary": "Give an AI agent a policy-capped token vault: allow-list a merchant, fund fees, and let the agent pay exactly once within its limits.",
+  "what": "LobsterPay is an Anchor 0.31.1 vault for agent payments. The owner creates a vault and a policy with per-transaction and daily caps plus allow-lists for mints and destinations. An authorized agent calls execute_pay_exact; the program checks every rule, pays the destination from the vault ATA, takes a 1.5% service fee, and refunds the agent's network fee from a separate SOL fee vault.",
+  "app_note": "The page at /dapps/lobsterpay/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/lobsterpay. The lab only changed declare_id to a unique lab program.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/lobsterpay/, switch to Devnet, and connect a wallet. The lab already ran the full pay flow.",
+      "see": "Vault 2rr4U5D6\u2026; merchant 22xTqz5e\u2026 holds 985_000 lab tokens.",
+      "ran": "initialize_vault Qrj16DWS\u2026; update_policy 4sXskJtq\u2026; deposit_fees 4ZageJkb\u2026; execute_pay_exact 2wuDBpQP\u2026"
+    }
+  ],
+  "diagram": "owner --initialize_vault--> vault+policy; owner --update_policy--> allow-lists; owner --deposit_fees--> fee_vault; agent --execute_pay_exact--> merchant ATA (+net), treasury ATA (+1.5%), fee refund to agent.",
+  "accounts": [
+    "vault PDA seeds [\"vault\", owner]",
+    "policy PDA seeds [\"policy\", vault]",
+    "fee_vault PDA seeds [\"fee_vault\", owner]",
+    "vault ATA (authority = vault PDA)"
+  ],
+  "instructions": [
+    "initialize_vault",
+    "update_policy",
+    "initialize_fee_vault",
+    "deposit_fees",
+    "ensure_vault_token_account",
+    "execute_pay_exact"
+  ],
+  "innovation": "Spending rules live on-chain next to the funds, so a compromised agent key can only pay allow-listed destinations within the caps.",
+  "frontend": "Generic IDL console at /dapps/lobsterpay/.",
+  "exercises": [
+    "Which check fires first if the agent pays a stranger more than the cap?",
+    "How is the 1.5% fee computed and rounded?"
+  ],
+  "not_covered": [
+    "execute_swap_exact_in and withdrawals"
+  ]
+}

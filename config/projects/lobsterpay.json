@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "projectId": "sc-demo-lobsterpay",
+  "slug": "lobsterpay",
+  "displayName": "LobsterPay (Sol.College demonstration)",
+  "description": "Policy-guarded agent payment vault on Solana devnet (Anchor 0.31.1). initialize_vault, update_policy, initialize_fee_vault, deposit_fees, ensure_vault_token_account and execute_pay_exact were verified: an allow-listed merchant received 985_000 of 1_000_000 lab tokens and the LobsterPay treasury received the 1.5% service fee.",
+  "sector": "DeAI",
+  "ownership": "sol-college-demonstration",
+  "demonstrationNotice": "Sol.College-owned demonstration of sepivip/lobsterpay. The lab tree is branch sol-college-devnet of Blockchains/lobsterpay. The lab only changed declare_id to a unique Sol.College devnet program. The upstream author has not joined Sol.College; acceptance here is by Sol.College, not by the upstream project.",
+  "upstream": {
+    "repo": "sepivip/lobsterpay",
+    "branch": "main"
+  },
+  "lab": {
+    "repo": "Blockchains/lobsterpay",
+    "branch": "sol-college-devnet"
+  },
+  "mind": {
+    "mappingRef": "lobsterpay-cto",
+    "mappingStatus": "none",
+    "configVersion": 1,
+    "conversationPrefix": "sc-lobsterpay"
+  },
+  "research": {
+    "authorised": true,
+    "authorisedBy": "Blockchains",
+    "authorisedAt": "2026-11-22T16:05:00Z",
+    "authorisationRef": "https://github.com/Blockchains/sol-college",
+    "scope": [
+      "Anchor program correctness (initialize_vault, update_policy, fee vault, execute_pay_exact)",
+      "Frontend reliability of the hosted devnet console at sol.college/dapps/lobsterpay/",
+      "QA: devnet proof of an allow-listed agent payment with a service fee"
+    ],
+    "exclusions": [
+      "Mainnet deployment or mainnet keys",
+      "Changes to the upstream repository other than ordinary pull requests",
+      "Security disclosure in public (security findings go to private channels)",
+      "Automated faucet claims",
+      "execute_swap_exact_in (needs a live swap adapter)"
+    ]
+  },
+  "reviewers": [
+    {
+      "github": "Blockchains",
+      "githubId": 11951015,
+      "roles": [
+        "experiment-permission",
+        "rebase-permission",
+        "compatibility-attestation",
+        "adoption-acceptance"
+      ]
+    }
+  ],
+  "policyVersion": "pilot-policy-v1",
+  "publicListing": {
+    "approved": true,
+    "assignments": [
+      {
+        "id": "swap-path",
+        "title": "Exercise execute_swap_exact_in against a devnet swap program",
+        "skills": [
+          "Anchor"
+        ],
+        "status": "open"
+      }
+    ],
+    "contactRoute": "https://github.com/Blockchains/sol-college/issues/new"
+  },
+  "disclosure": {
+    "securityReports": "private-only",
+    "mindsTranscripts": "private-only",
+    "publicFields": [
+      "displayName",
+      "description",
+      "sector",
+      "assignments",
+      "demonstrationNotice"
+    ]
+  },
+  "entitlement": {
+    "plan": "demonstration",
+    "status": "active",
+    "activation": "manual",
+    "paymentVerification": "not-applicable-demonstration"
+  },
+  "validation": {
+    "workflowRepo": "Blockchains/sol-college",
+    "workflowPath": ".github/workflows/candidate-validation.yml",
+    "fixture": "build-only",
+    "anchorVersion": "0.31.1",
+    "solanaVersion": "4.1.0",
+    "rustToolchain": "1.89.0",
+    "programDir": "programs/lobsterpay"
+  }
+}

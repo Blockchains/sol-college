@@ -3934,5 +3934,75 @@
     "limits": "dispute_channel, timeout_reclaim, commit_receipt, and facilitator bonds were not exercised. The official program id was not reused. The lab used the payer as the facilitator.",
     "functional": "full",
     "functional_evidence": "open_channel 34PspCsJ\u2026 locked 2_000_000 lab tokens in escrow ATA 9GeU2hYHjmFEJdvyrGmEw4G3j48zpT1RHBCk3ZX8W1uw (channel 3zfGyMqwd9cjbqsr2KZ99wrBX2Gu4gjwRm4vmVCJUK6t). close_channel without Ed25519 was rejected (MissingEd25519Instruction). close_channel 4AQp5jvY\u2026 with a payer-signed otomat/v2/check paid payee 4262h4DM9qRphCxxCmYxZXPeGBRgFBLR6yy4G8TkwhL8 exactly 1_000_000, refunded 1_000_000 to the payer, and closed the channel and escrow ATA."
+  },
+  {
+    "slug": "lobsterpay",
+    "name": "LobsterPay",
+    "lesson": "/explore/lobsterpay/",
+    "app": "/dapps/lobsterpay/",
+    "fork": "https://github.com/Blockchains/lobsterpay",
+    "commit": "c22a346841fda192b6d3423569f5c3aac39497f1",
+    "program": "2Rc85XXSoahDHscAVhvxVczBX5Csy3p7Tf7MnqPs81Ju",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the lab anchor build IDL. The lab tree is branch sol-college-devnet of Blockchains/lobsterpay (unique declare_id; the official A184DBQa\u2026 was not reused).",
+    "learn": "initialize_vault creates a vault PDA (seeds [\"vault\", owner]) and a policy PDA (seeds [\"policy\", vault]) holding allowed actions, per-tx and daily caps, and allow-lists for mints and destinations. initialize_fee_vault (seeds [\"fee_vault\", owner]) holds SOL that reimburses the agent's transaction fees. execute_pay_exact is signed by the authorized agent; it checks the policy, sends the net amount from the vault ATA to the destination and a 1.5% fee to the LobsterPay treasury ATA, then reimburses up to 10_000 lamports from the fee vault.",
+    "source": [
+      [
+        "programs/lobsterpay/src/lib.rs L19-L45 (initialize_vault, update_policy, ensure_vault_token_account, execute_pay_exact)",
+        "https://github.com/Blockchains/lobsterpay/blob/c22a346841fda192b6d3423569f5c3aac39497f1/programs/lobsterpay/src/lib.rs#L19-L45"
+      ],
+      [
+        "programs/lobsterpay/src/instructions/execute_pay_exact.rs",
+        "https://github.com/Blockchains/lobsterpay/blob/c22a346841fda192b6d3423569f5c3aac39497f1/programs/lobsterpay/src/instructions/execute_pay_exact.rs"
+      ],
+      [
+        "programs/lobsterpay/src/constants.rs (fee and treasury)",
+        "https://github.com/Blockchains/lobsterpay/blob/c22a346841fda192b6d3423569f5c3aac39497f1/programs/lobsterpay/src/constants.rs"
+      ]
+    ],
+    "flow": "tests/devnet/lobsterpay.mjs",
+    "log": "tests/devnet/logs/lobsterpay-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy lobsterpay as 2Rc85XXSoahDHscAVhvxVczBX5Csy3p7Tf7MnqPs81Ju on devnet",
+        "4qDfFAZv2HzcbizGoXeSQCKB9iS1Zoee76ToRRTY4pA1eKX7KZMarAGi7xFA2WVFhPGf4xk9ZZzPHMtbEnCGcLZT"
+      ],
+      [
+        "initialize_vault (vault 2rr4U5D68xdsBDjgenoTxeWeCBRsDP5AD6MhPebztw1g, policy 5YzNVgazT9LD8sbsWyP7wanprXX7zoo71mVoBcU8viBL, per-tx cap 2_000_000)",
+        "Qrj16DWSMc5QBwqXyLMWD7gRbJ8PmPLop8j7HUWFm9N7e26Mcsn4praLcu5eEDkEsjGRexb9vjucDmX54s1fqL6"
+      ],
+      [
+        "update_policy allow-lists lab mint BJMSdujxakjx7qypwfaFCnbkMTNPEYVWTTqnR9eJRL4D and merchant 22xTqz5emkaaFcShto9WdUU17r9Z5xiFuDqCXKN4JFXV",
+        "4sXskJtqpQsP3XZVUJJCJ5phvvjeDZudzHxJCaWgn4osxH647XoVtiYVYSqoZNhPmsHNPnJ975mHs2RUMqQA9gVC"
+      ],
+      [
+        "initialize_fee_vault (9Bk7rX4cEbKBNK39vjctV5ytrLYLjeS1nmBgp4KGpEg3)",
+        "3BEQSgQecx9iaw2wPT73t1Ebei8qvYerhMCqT4tkNRETsmcTSEQzC4n88LcPmHpDnG4VT7uEr3eHPixbCEUC3u5k"
+      ],
+      [
+        "deposit_fees 2_000_000 lamports",
+        "4ZageJkbe8bpnNMBgXFDT2ERqx36etBtKZCn3N4KJf8E5ToMfXqdMfT1Juve6vEpiKdQLPsZU8P2VjTzvCqLnpko"
+      ],
+      [
+        "ensure_vault_token_account (vault ATA BwYvYg66BwBgYYEhg5Y19otXWBpuRneWth4wPNSyWrdo)",
+        "3PW9U4skAXnwSVJrJhzpF22rAvWonix1EY8GEtyJd5m5TmJK2ANR9KTpaWzaUpUmabpWrbKxXuw9WrtRNFdLxMTH"
+      ],
+      [
+        "Mint 1_000_000 lab tokens to the vault ATA",
+        "2xDn8mYFKPmY4NV5eot4R1TVE5tBBBJogoBWtDg4Dt5vSG3gkUWJ9mbgVZrwFrYxdeqsrD4D1YkaYHAUe9HG7Tx"
+      ],
+      [
+        "execute_pay_exact 1_000_000: merchant +985_000, treasury +15_000, vault ATA 0",
+        "2wuDBpQPuLPkTdBV5qRUDDSaAQZAU1oZ3UVXuzbqKrj95xX4yQifCn9eU3z65PC9KpjtwCsnxub3ngsg3obVA9Xv"
+      ]
+    ],
+    "negative": [
+      "execute_pay_exact to a destination not on the allow-list was rejected (DestinationNotAllowed).",
+      "execute_pay_exact of 3_000_000 was rejected (AmountExceedsPerTxLimit; cap 2_000_000)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/lobsterpay.mjs.",
+    "limits": "execute_swap_exact_in, withdraw_owner, withdraw_fees, emergency_pause and update_authorized_agent were not exercised. The service fee goes to the treasury hard-coded in the upstream source (DvcQMhZm\u2026), not a Sol.College wallet. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "initialize_vault Qrj16DWS\u2026 created vault 2rr4U5D68xdsBDjgenoTxeWeCBRsDP5AD6MhPebztw1g and policy 5YzNVgazT9LD8sbsWyP7wanprXX7zoo71mVoBcU8viBL. update_policy 4sXskJtq\u2026 allow-listed lab mint BJMSdujx\u2026 and merchant 22xTqz5emkaaFcShto9WdUU17r9Z5xiFuDqCXKN4JFXV. initialize_fee_vault 3BEQSgQe\u2026 and deposit_fees 4ZageJkb\u2026 funded fee vault 9Bk7rX4cEbKBNK39vjctV5ytrLYLjeS1nmBgp4KGpEg3 with 2_000_000 lamports. ensure_vault_token_account 3PW9U4sk\u2026 created the vault ATA, which was minted 1_000_000 lab tokens. execute_pay_exact 2wuDBpQP\u2026 paid the merchant exactly 985_000 and the hard-coded LobsterPay devnet treasury DvcQMhZm\u2026 the 1.5% fee of 15_000; the vault ATA ended at 0. A payment to a non-allow-listed destination was rejected (DestinationNotAllowed) and a 3_000_000 payment was rejected (AmountExceedsPerTxLimit, cap 2_000_000)."
   }
 ]
