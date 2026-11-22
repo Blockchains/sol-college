@@ -4314,5 +4314,82 @@
     "limits": "The TEE is simulated (allow_simulated_tee is a devnet-only config flag); no real TDX quote was verified. Vaults, credit offerings, top_up_session, request_close and finalize_session were not exercised. The official program id was not reused.",
     "functional": "full",
     "functional_evidence": "initialize 2QjaDTi5\u2026 (upgrade-authority gated) wrote config EDGdEv18NiU541p4UopMtrgqLvgENYv6uNXw1mi895Jk with one verifier, 1% fee to the Sol.College lab treasury and simulated TEEs allowed. approve_measurement 4D8t5nrE\u2026 approved the reference gateway build. Operator 8nMpF4Sxsrjj4SWywuL3HRockjNBwtVhZhGxHkLCMjgw ran register_provider 5jfjyck6\u2026 and submit_attestation 4CDSKRvF\u2026 for enclave key 5aeWXfkSmuAJRuQBnucEct19DZwAWXNqp3ce3WeU9jjZ; verifier approve_attestation 2EbZph5v\u2026 activated it. open_session 4EyasBQK\u2026 escrowed 1_000_000 lab tokens in session Gor1BbrLuagw3yzKLtv4RRY7QBSmqgQZ39VSVwHPEsQF at 1_000 per unit. settle 4TAYD1Cw\u2026 verified an Ed25519 voucher (payer, cumulative 600_000) and an Ed25519 usage receipt (enclave, 500 units) and paid the provider exactly 495_000 and the treasury 5_000 (min(voucher, metered, deposit) = 500_000). settleAndClose 3HzXHZZh\u2026 refunded the payer exactly 500_000 and set the session to Closed. Rejected: approve_attestation by a non-verifier (NotVerifier) and settle with a receipt signed by a non-attested key (SignerMismatch)."
+  },
+  {
+    "slug": "prize-escrow",
+    "name": "Prize Escrow",
+    "lesson": "/explore/prize-escrow/",
+    "app": "/dapps/prize-escrow/",
+    "fork": "https://github.com/Blockchains/prize-escrow",
+    "commit": "6de296bd93ddd3e922a9e853c0482c506e917a5a",
+    "program": "3D5yadnLNxWP6WBm2LJZwTp1C6pHsJndQR6Ndy8dUdZ9",
+    "app_kind": "Sol.College generic IDL-driven wallet console, pointed at this devnet program. The hosted IDL is the upstream IDL with the lab program address substituted. The lab tree is branch sol-college-devnet of Blockchains/prize-escrow (unique declare_id; the official sHC7T46C\u2026 was not reused).",
+    "learn": "initialize_config (upgrade authority only) sets admin, guardian, arbiter, limits, window floors and allowlists of mints, sponsors and regraders. A sponsor opens an escrow per competition, depositing the prize into a PDA-owned vault. The resolver commits the entries root, then after the entries deadline posts result: a keccak merkle payout root, result and kit hashes, the total and a SOL bond. Anyone can challenge during the challenge window; if none, settle returns the bond and makes the escrow Claimable. Each winner claims with leaf keccak(0 || keccak(escrow || claimant || total_le)) and a sorted-pair proof; a receipt PDA blocks double claims.",
+    "source": [
+      [
+        "chain/programs/prize_escrow/src/lib.rs L189-L380",
+        "https://github.com/Blockchains/prize-escrow/blob/6de296bd93ddd3e922a9e853c0482c506e917a5a/chain/programs/prize_escrow/src/lib.rs#L189-L380"
+      ],
+      [
+        "chain/programs/prize_escrow/src/merkle.rs",
+        "https://github.com/Blockchains/prize-escrow/blob/6de296bd93ddd3e922a9e853c0482c506e917a5a/chain/programs/prize_escrow/src/merkle.rs"
+      ],
+      [
+        "chain/programs/prize_escrow/src/instructions/post_result.rs",
+        "https://github.com/Blockchains/prize-escrow/blob/6de296bd93ddd3e922a9e853c0482c506e917a5a/chain/programs/prize_escrow/src/instructions/post_result.rs"
+      ]
+    ],
+    "flow": "tests/devnet/prize-escrow.mjs",
+    "log": "tests/devnet/logs/prize-escrow-2026-11-22.jsonl",
+    "verified": "2026-11-22",
+    "steps": [
+      [
+        "Deploy prize_escrow as 3D5yadnLNxWP6WBm2LJZwTp1C6pHsJndQR6Ndy8dUdZ9 on devnet (final --arch v2 test-windows upgrade)",
+        "4Ac1y9BryVURkZXj6apaNeGNyXPWh2iwsdeRBRcYqPwLnpjEYoefCsWJU32XuYFKDLLr23wWCC6xREDH9CBNsivU"
+      ],
+      [
+        "initialize_config (config GZcpf2tG2PNS3xuMV31dqfkJ3A29eUHhKjeYYdDJXoRY, lab mint, test-windows floors)",
+        "62yG1FHGy2qaT1smvQWzcfVUZisYa6GWHLPswpb2KCR4qY6g4aK2W7GBGt7qSvhmvz32TZJQmMCwZu5cYPsX7mWy"
+      ],
+      [
+        "set_allowed regrader 77NcynLWf15V99r1JYyviaLy4nACzQnxHSSTujmhMXDZ",
+        "FPkMRLu7bkexBhDBeAVAGS1FBkn4CQAddJtH6A8Xm2Qc5DZS3yJfF3tDME5FvKgTCEjhE684xR5pEKrLQCwo1dp"
+      ],
+      [
+        "open_escrow 1_000_000 lab tokens (escrow CC8eHLKxVKrsrZ2NT2tNxCeFGc5Z4Z64etnK6dKnXxVb)",
+        "9ZuQkv4MsCQeg23tka9xR8RyxENs4dVbnNptJkUXqgrqqdhasiT1oi4mj3LX6TMDE6hG5jwUoCAq48vzuzmuxUn"
+      ],
+      [
+        "commit_entries (2 entries)",
+        "4rSYntyjbdQkKSURYuDPnEwGzcymAtxhWtpJh225UjXBZfipeJRhEidP9paf5iGobMvM6ZphkJ4Zo2QX1vFJBdwV"
+      ],
+      [
+        "post_result payout root for 700_000 + 300_000",
+        "3Ju7ERuDeq2xJ5mm4qZYeZMSb4iGNuAoHLMjC4Xcf2x43zEekgSrd4aZFJchhV2QKb1QNxz6KNj9bNDosnoYt8YU"
+      ],
+      [
+        "settle after the 60 s challenge window: status Claimable",
+        "4GaZNRHq5M1P32kecYQgbTiuycMt5iEPub1LUpbjJLJJThCzVWa3cke1ozT2pNAJWnjmDByboEDLzCkmfcHVQo2y"
+      ],
+      [
+        "claim winner1: +700_000",
+        "3F2TfmTj8W2DBsrvhSVwfjH8pVee7FK83Qd1WYvXUFz1R5gMC4kRvDUhHpjVSJ8K2rzX4vu5ZvWMJaUAMqcaXyGU"
+      ],
+      [
+        "claim winner2: +300_000, vault 0",
+        "2SUvGfi93tzJnRS3GySzCWjiWbFZHSa1qreadBiR43FP6XjPkEGFYVBe924unx7u3MpAZZ8UX28DepP6hVD8T9gE"
+      ]
+    ],
+    "negative": [
+      "open_escrow with a 10 s challenge window below the floor was rejected (InvalidWindow).",
+      "post_result with total 1_000_001 above the vault was rejected (TotalMismatch).",
+      "settle before the challenge deadline was rejected (DeadlineNotReached).",
+      "claim with a wrong amount was rejected (InvalidMerkleProof).",
+      "a second claim by winner1 was rejected (AlreadyClaimed)."
+    ],
+    "ui_check": "The hosted page is the generic IDL console (connect Phantom or Solflare on devnet). It was not driven in headless Chromium in this run; the flow was sent with lab keys through tests/devnet/prize-escrow.mjs.",
+    "limits": "Built with upstream's devnet-only test-windows feature (60 s challenge/attest/hold windows). Challenges, regrader attestation, arbiter_resolve, refunds, proposals, freezes and stop levels were not exercised. The lab wallet was sponsor, resolver and arbiter. A build without --arch v2 failed the vault deposit (transfer_checked decimals mismatch) on platform-tools v1.52; the v2 build matches upstream's release and works. The official program id was not reused.",
+    "functional": "full",
+    "functional_evidence": "Config GZcpf2tG2PNS3xuMV31dqfkJ3A29eUHhKjeYYdDJXoRY was initialised by the upgrade authority (initialize_config 62yG1FHG\u2026) with the lab mint, the lab wallet as sponsor and arbiter, and test-windows floors; set_allowed FPkMRLu7\u2026 registered regrader 77NcynLWf15V99r1JYyviaLy4nACzQnxHSSTujmhMXDZ. open_escrow 9ZuQkv4M\u2026 moved exactly 1_000_000 lab tokens into vault H4GwBwo34uvXZaFA7mWExpVCvbUQ5FFYxa5pZ5cHFE9z of escrow CC8eHLKxVKrsrZ2NT2tNxCeFGc5Z4Z64etnK6dKnXxVb. commit_entries 4rSYntyj\u2026 committed an entries root. After entries_deadline, post_result 3Ju7ERuD\u2026 posted a keccak payout root (winner1 700_000, winner2 300_000) and the resolver bond. After the 60 s challenge window, settle 4GaZNRHq\u2026 made the escrow Claimable. claim 3F2TfmTj\u2026 paid DEfcua9cY6bQB4f82g3S37zQjbA6XCoEFWpLc27fCsN5 exactly 700_000 and claim 2SUvGfi9\u2026 paid AtQNTsL1ZR9LsXi9TReZit77UHrcqGSTgMRfkfQmpyKj exactly 300_000, leaving the vault at 0. Rejected: open_escrow with a 10 s challenge window (InvalidWindow), post_result with total above the vault (TotalMismatch), settle before the challenge deadline (DeadlineNotReached), claim with a wrong amount (InvalidMerkleProof) and a second claim (AlreadyClaimed)."
   }
 ]

@@ -1,0 +1,38 @@
+{
+  "title": "Prize Escrow",
+  "summary": "Hold a competition prize on chain and pay winners from a challengeable merkle payout root.",
+  "what": "Prize Escrow is make.fun's Anchor 1.2.1 program for competition prizes. Sponsors lock the prize up front, a bonded resolver posts the result as a merkle root, a challenge window lets anyone dispute it, and winners pull their share with merkle proofs.",
+  "app_note": "The page at /dapps/prize-escrow/ is the generic IDL-driven wallet console. The lab tree is branch sol-college-devnet of Blockchains/prize-escrow.",
+  "try_steps": [
+    {
+      "do": "Open /dapps/prize-escrow/, switch to Devnet, and connect a wallet. The lab already ran a full competition.",
+      "see": "Escrow CC8eHLKx\u2026 is Claimable with its vault fully claimed.",
+      "ran": "open_escrow 9ZuQkv4M\u2026; post_result 3Ju7ERuD\u2026; settle 4GaZNRHq\u2026; claims 3F2TfmTj\u2026 / 2SUvGfi9\u2026"
+    }
+  ],
+  "diagram": "admin --initialize_config--> config; sponsor --open_escrow--> escrow + vault; resolver --commit_entries/post_result(+bond)--> Challengeable; (challenge window) --settle--> Claimable; winner --claim(proof)--> payout + receipt.",
+  "accounts": [
+    "config PDA",
+    "escrow PDA (sponsor, competition_id)",
+    "vault ATA owned by the escrow",
+    "receipt PDA (escrow, claimant)"
+  ],
+  "instructions": [
+    "initialize_config",
+    "set_allowed",
+    "open_escrow",
+    "commit_entries",
+    "post_result",
+    "settle",
+    "claim"
+  ],
+  "innovation": "The prize is locked before the competition and the result is a bonded, challengeable commitment, so winners do not depend on the sponsor paying later.",
+  "frontend": "Generic IDL console at /dapps/prize-escrow/.",
+  "exercises": [
+    "Why is the leaf hashed twice with a 0 prefix?",
+    "What stops a winner claiming twice?"
+  ],
+  "not_covered": [
+    "Challenges, attestation and arbiter resolution"
+  ]
+}

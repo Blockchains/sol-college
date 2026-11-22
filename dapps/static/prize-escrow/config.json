@@ -1,0 +1,10 @@
+{
+ "name": "Prize Escrow",
+ "fork": "https://github.com/Blockchains/prize-escrow",
+ "commit": "6de296bd93ddd3e922a9e853c0482c506e917a5a",
+ "lesson": "/explore/prize-escrow/",
+ "programs": {
+  "devnet": "3D5yadnLNxWP6WBm2LJZwTp1C6pHsJndQR6Ndy8dUdZ9",
+  "mainnet": null
+ }
+}

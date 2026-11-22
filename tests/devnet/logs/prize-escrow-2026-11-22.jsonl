@@ -1,0 +1,13 @@
+{"step":"setup","program":"3D5yadnLNxWP6WBm2LJZwTp1C6pHsJndQR6Ndy8dUdZ9","config":"GZcpf2tG2PNS3xuMV31dqfkJ3A29eUHhKjeYYdDJXoRY","winner1":"DEfcua9cY6bQB4f82g3S37zQjbA6XCoEFWpLc27fCsN5","winner2":"AtQNTsL1ZR9LsXi9TReZit77UHrcqGSTgMRfkfQmpyKj","regrader":"77NcynLWf15V99r1JYyviaLy4nACzQnxHSSTujmhMXDZ"}
+{"step":"set_allowed_regrader","sig":"FPkMRLu7bkexBhDBeAVAGS1FBkn4CQAddJtH6A8Xm2Qc5DZS3yJfF3tDME5FvKgTCEjhE684xR5pEKrLQCwo1dp","regrader":"77NcynLWf15V99r1JYyviaLy4nACzQnxHSSTujmhMXDZ"}
+{"step":"open_escrow_window_below_floor","rejected":true,"reason":"InvalidWindow"}
+{"step":"open_escrow","sig":"9ZuQkv4MsCQeg23tka9xR8RyxENs4dVbnNptJkUXqgrqqdhasiT1oi4mj3LX6TMDE6hG5jwUoCAq48vzuzmuxUn","escrow":"CC8eHLKxVKrsrZ2NT2tNxCeFGc5Z4Z64etnK6dKnXxVb","vault":"H4GwBwo34uvXZaFA7mWExpVCvbUQ5FFYxa5pZ5cHFE9z","vault_balance":"1000000"}
+{"step":"commit_entries","sig":"4rSYntyjbdQkKSURYuDPnEwGzcymAtxhWtpJh225UjXBZfipeJRhEidP9paf5iGobMvM6ZphkJ4Zo2QX1vFJBdwV"}
+{"step":"post_result_total_exceeds_vault","rejected":true,"reason":"TotalMismatch"}
+{"step":"post_result","sig":"3Ju7ERuDeq2xJ5mm4qZYeZMSb4iGNuAoHLMjC4Xcf2x43zEekgSrd4aZFJchhV2QKb1QNxz6KNj9bNDosnoYt8YU","payout_root":"3598fccfc75a3d1eafc773d50fe38a71de7346372c38f73d9695afc0af0f2d32"}
+{"step":"settle_before_challenge_deadline","rejected":true,"reason":"DeadlineNotReached"}
+{"step":"settle","sig":"4GaZNRHq5M1P32kecYQgbTiuycMt5iEPub1LUpbjJLJJThCzVWa3cke1ozT2pNAJWnjmDByboEDLzCkmfcHVQo2y","status":"claimable"}
+{"step":"claim_with_wrong_amount_proof","rejected":true,"reason":"InvalidMerkleProof"}
+{"step":"claim_winner1","sig":"3F2TfmTj8W2DBsrvhSVwfjH8pVee7FK83Qd1WYvXUFz1R5gMC4kRvDUhHpjVSJ8K2rzX4vu5ZvWMJaUAMqcaXyGU","winner1_received":"700000"}
+{"step":"claim_winner2","sig":"2SUvGfi93tzJnRS3GySzCWjiWbFZHSa1qreadBiR43FP6XjPkEGFYVBe924unx7u3MpAZZ8UX28DepP6hVD8T9gE","winner2_received":"300000","vault_left":"0"}
+{"step":"claim_twice","rejected":true,"reason":"AlreadyClaimed"}
