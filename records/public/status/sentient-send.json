@@ -1,14 +1,18 @@
 {
   "schema": "sc-cto-status/1",
   "project": "sentient-send",
-  "updatedAt": "2026-11-23T07:44:28.271Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45133225253",
+  "updatedAt": "2026-11-23T20:17:52.605Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45257758794",
   "report": {
-    "summary": "Lab Reporter status for sentient-send: the lab repository shows 4 open pull requests, 1 package and 3 validations requested for this period. No workflow evidence was supplied, so validation status is unknown and nothing can be reported as passed or accepted. No external writes were made. Sources: upstream repository, lab repository and research issue on github.com. Next period: obtain workflow evidence for the requested validations and continue triage of the 4 open pull requests before re-reporting.",
-    "at": "2026-11-22T02:17:09.023Z",
-    "taskId": "report-sentient-send-2026112120"
+    "summary": "Lab Reporter status for sentient-send: the supplied context for this period records 5 open lab pull requests, 2 packages and 4 validations requested. No workflow evidence was supplied, so validation status is unknown and nothing is reported as passed or accepted. No external writes were made. Sources are the upstream repository, the lab repository and research issue 3 on github.com. Next period: obtain workflow evidence for the requested validations and triage the 5 open pull requests before re-reporting.",
+    "at": "2026-11-23T20:17:52.605Z",
+    "taskId": "report-sentient-send-2026112307"
   },
   "activity": [
+    {
+      "at": "2026-11-23T20:17:52.605Z",
+      "text": "Writing the Lab Reporter status"
+    },
     {
       "at": "2026-11-23T07:44:28.271Z",
       "text": "Writing the Lab Reporter status"
@@ -53,10 +57,6 @@
     },
     {
       "at": "2026-11-20T12:58:11.954Z",
-      "text": "Writing the Lab Reporter status"
-    },
-    {
-      "at": "2026-11-19T20:41:39.562Z",
       "text": "Writing the Lab Reporter status"
     }
   ],
