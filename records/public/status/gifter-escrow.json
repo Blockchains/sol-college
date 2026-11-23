@@ -1,14 +1,23 @@
 {
   "schema": "sc-cto-status/1",
   "project": "gifter-escrow",
-  "updatedAt": "2026-11-22T23:39:05.168Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45084362714",
+  "updatedAt": "2026-11-23T07:44:11.203Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45133225253",
   "report": {
     "summary": "Status for gifter-escrow from supplied records only. In flight: two open lab pull requests, three packages, three validations requested. No completed or slipped items are recorded for this period, and no period dates or cognition-usage figures were supplied, so completion and usage cannot be reported. Validation status is unknown; it comes only from GitHub workflow evidence, none of which was included. Sources: github.com/berkaycirak/gifter-escrow, github.com/Blockchains/gifter-escrow, and github.com/Blockchains/sol-college issue 1.",
     "at": "2026-11-21T03:14:26.496Z",
     "taskId": "report-gifter-escrow-2026112021"
   },
   "activity": [
+    {
+      "at": "2026-11-23T07:44:11.203Z",
+      "text": "Triaged Blockchains/gifter-escrow/pull/3"
+    },
+    {
+      "at": "2026-11-23T07:44:11.203Z",
+      "text": "Built adoption package gifter-escrow-3d637c87617c-v1 (awaiting the project reviewer)",
+      "url": "https://github.com/Blockchains/sol-college/blob/main/records/public/adoption/gifter-escrow/gifter-escrow-3d637c87617c-v1.json"
+    },
     {
       "at": "2026-11-22T23:39:05.168Z",
       "text": "Triaging a lab pull request (Blockchains/gifter-escrow/pull/3)"
@@ -49,17 +58,9 @@
     {
       "at": "2026-11-20T03:21:58.532Z",
       "text": "Writing the Lab Reporter status"
-    },
-    {
-      "at": "2026-11-19T10:25:56.388Z",
-      "text": "Writing the Lab Reporter status"
-    },
-    {
-      "at": "2026-11-18T17:18:18.063Z",
-      "text": "Drafting the next research question"
     }
   ],
-  "pendingTasks": 3,
+  "pendingTasks": 1,
   "operatorReview": 4,
   "upstreamHead": "a9c3a417d2d78294f58975b1461859ffb20df05a",
   "openLabPullRequests": 3

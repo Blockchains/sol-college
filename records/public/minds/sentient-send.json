@@ -2,11 +2,11 @@
   "schema": "sc-mind-ops/1",
   "project": "sentient-send",
   "mind": "SolCollege-Sentient-CTO",
-  "at": "2026-11-22T23:40:01.127Z",
+  "at": "2026-11-23T07:44:28.271Z",
   "status": "active",
   "paused": false,
   "isEnabled": true,
-  "cognitionBalance": 294.96488474,
+  "cognitionBalance": 288.91168754,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
@@ -39,13 +39,17 @@
     {
       "bucket": "2026-11-22T00:00:00",
       "value": 55.00355716251746
+    },
+    {
+      "bucket": "2026-11-23T00:00:00",
+      "value": 7.235231195503151
     }
   ],
   "usageByTool": [
     {
       "tool": "LLM_Turn",
-      "callCount": 95,
-      "creditsUsed": 197.62921235475955
+      "callCount": 98,
+      "creditsUsed": 204.8644435502627
     },
     {
       "tool": "FILE_Analyze",
