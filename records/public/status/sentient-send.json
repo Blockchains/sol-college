@@ -1,8 +1,8 @@
 {
   "schema": "sc-cto-status/1",
   "project": "sentient-send",
-  "updatedAt": "2026-11-23T20:17:52.605Z",
-  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45257758794",
+  "updatedAt": "2026-11-24T06:06:13.939Z",
+  "runUrl": "https://github.com/Blockchains/sol-college/actions/runs/45337889279",
   "report": {
     "summary": "Lab Reporter status for sentient-send: the supplied context for this period records 5 open lab pull requests, 2 packages and 4 validations requested. No workflow evidence was supplied, so validation status is unknown and nothing is reported as passed or accepted. No external writes were made. Sources are the upstream repository, the lab repository and research issue 3 on github.com. Next period: obtain workflow evidence for the requested validations and triage the 5 open pull requests before re-reporting.",
     "at": "2026-11-23T20:17:52.605Z",
@@ -60,8 +60,8 @@
       "text": "Writing the Lab Reporter status"
     }
   ],
-  "pendingTasks": 2,
-  "operatorReview": 7,
+  "pendingTasks": 1,
+  "operatorReview": 8,
   "upstreamHead": "a1c663da3f31a9c74343a5f172445cf30a9eafbc",
   "openLabPullRequests": 5
 }
