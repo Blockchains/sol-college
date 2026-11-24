@@ -2,11 +2,11 @@
   "schema": "sc-mind-ops/1",
   "project": "gifter-escrow",
   "mind": "SolCollege-Gifter-CTO",
-  "at": "2026-11-24T06:05:59.078Z",
+  "at": "2026-11-24T17:50:47.329Z",
   "status": "active",
   "paused": false,
   "isEnabled": true,
-  "cognitionBalance": 342.76697121,
+  "cognitionBalance": 335.91038694,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
@@ -46,14 +46,14 @@
     },
     {
       "bucket": "2026-11-24T00:00:00",
-      "value": 1.342622678752957
+      "value": 6.203120951218594
     }
   ],
   "usageByTool": [
     {
       "tool": "LLM_Turn",
-      "callCount": 103,
-      "creditsUsed": 205.33664920177605
+      "callCount": 105,
+      "creditsUsed": 210.19714747424172
     },
     {
       "tool": "SKILL_LoadPlaybook",
