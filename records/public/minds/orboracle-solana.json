@@ -2,11 +2,11 @@
   "schema": "sc-mind-ops/1",
   "project": "orboracle-solana",
   "mind": "SolCollege-OrbOracle-CTO",
-  "at": "2026-11-25T02:33:41.973Z",
+  "at": "2026-11-25T14:29:28.691Z",
   "status": "active",
   "paused": false,
   "isEnabled": true,
-  "cognitionBalance": -32.8101986,
+  "cognitionBalance": -35.03811669,
   "usageDaily": [
     {
       "bucket": "2026-11-15T00:00:00",
@@ -35,13 +35,17 @@
     {
       "bucket": "2026-11-24T00:00:00",
       "value": 1.99036833520283
+    },
+    {
+      "bucket": "2026-11-25T00:00:00",
+      "value": 2.230762092730832
     }
   ],
   "usageByTool": [
     {
       "tool": "LLM_Turn",
-      "callCount": 15,
-      "creditsUsed": 31.35447853421857
+      "callCount": 16,
+      "creditsUsed": 32.987794667749405
     },
     {
       "tool": "LLM_CodeInterpreter",
@@ -55,8 +59,8 @@
     },
     {
       "tool": "SKILL_LoadPlaybook",
-      "callCount": 10,
-      "creditsUsed": 5.9215296748
+      "callCount": 11,
+      "creditsUsed": 6.518975634
     }
   ],
   "skills": [
@@ -107,6 +111,6 @@
       "tier": "verified"
     }
   ],
-  "conversations": 14,
+  "conversations": 15,
   "sdkVersion": "0.1.7"
 }
